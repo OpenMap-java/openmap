@@ -145,15 +145,13 @@
     <delete file="doc/package-list"/>
   </target>
 
-<!--
+<!--      depends="jars" -->
   <target name="run"
-          depends="jars"
 	  description="Run the OpenMap application.">
     <java classname="com.bbn.openmap.app.OpenMap"
           classpath="lib/openmap.jar:lib/omcontrib.jar"
 	  fork="yes"/>
 
   </target>
--->
 
 </project>
