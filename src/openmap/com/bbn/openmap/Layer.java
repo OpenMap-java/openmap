@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/09/22 22:29:17 $
+// $Revision: 1.10 $
+// $Date: 2003/10/10 15:37:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,9 +35,9 @@ import javax.swing.event.*;
 
 import com.bbn.openmap.ProjectionPainter;
 import com.bbn.openmap.event.*;
+import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.Inspector;
 
@@ -144,12 +144,12 @@ public abstract class Layer extends JComponent
      * information displays, like messages, requests for URL displays,
      * etc.
      */
-    protected Vector IDListeners = null;
+    protected ListenerSupport IDListeners = null;
 
     /**
      * List of LayerStatusListeners.
      */
-    protected Vector lsListeners = null;
+    protected ListenerSupport lsListeners = null;
 
     /**
      * Token uniquely identifying this layer in the application
@@ -187,13 +187,29 @@ public abstract class Layer extends JComponent
     private Projection projection = null;
 
     /**
+     * Support class that now handles palette windows.
+     */
+    protected transient WindowSupport windowSupport;
+
+    /**
+     * A helper component listener that is paying attention to the
+     * visibility of the palette.
+     */
+    protected transient ComponentListener paletteListener;
+
+    /**
+     * A pointer to the JDialog or JInternalFrame.  May be used by the
+     * layer's ComponentListeners to figure out if a component event
+     * is for the layer or for the palette.
+     */
+    protected transient Container palette;
+
+    /**
      * The BeanContext allows Layers to find other components, and
      * other components to find the layer, if the layer is added to
      * it.
      */
     protected final BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
-
-    protected transient Container palette = null;
 
     /**
      * Returns the package of the given class as a string.
@@ -472,9 +488,9 @@ public abstract class Layer extends JComponent
     public synchronized void addInfoDisplayListener(
 	InfoDisplayListener aInfoDisplayListener) {
 	if (IDListeners == null) {
-	    IDListeners = new java.util.Vector();
+	    IDListeners = new ListenerSupport(this);
 	}
-	IDListeners.addElement(aInfoDisplayListener);
+	IDListeners.addListener(aInfoDisplayListener);
     }
 
     /**
@@ -484,10 +500,10 @@ public abstract class Layer extends JComponent
      */
     public synchronized void removeInfoDisplayListener(
 	InfoDisplayListener aInfoDisplayListener) {
-	if (IDListeners == null) {
-	    return;
+
+	if (IDListeners != null) {
+	    IDListeners.removeListener(aInfoDisplayListener);
 	}
-	IDListeners.removeElement(aInfoDisplayListener);
     }
 
     /**
@@ -496,14 +512,12 @@ public abstract class Layer extends JComponent
      * @param evt the InfoDisplay event carrying the string.
      */
     public void fireRequestInfoLine(InfoDisplayEvent evt) {
-	InfoDisplayListener temp[] = getSynchronizedListeners();
-	if (temp != null) {
-	    for (int i = 0; i < temp.length; i++) {
-		temp[i].requestInfoLine(evt);
+	if (IDListeners != null) {
+	    for (Iterator it = IDListeners.iterator(); it.hasNext();) {
+		((InfoDisplayListener)it.next()).requestInfoLine(evt);
 	    }
 	} else if (Debug.debugging("layer")) { 
-	    Debug.output(getName() +
-			 "|Layer.fireRequestInfoLine(): no info request listener!");
+	    Debug.output(getName() + "|Layer.fireRequestInfoLine(): no info request listener!");
 	}
     }
 
@@ -535,14 +549,12 @@ public abstract class Layer extends JComponent
      * Browser.
      */
     public void fireRequestBrowserContent(InfoDisplayEvent evt) {
-	InfoDisplayListener temp[] = getSynchronizedListeners();
-	if (temp != null) {
-	    for (int i = 0; i < temp.length; i++) {
-		temp[i].requestBrowserContent(evt);
+	if (IDListeners != null) {
+	    for (Iterator it = IDListeners.iterator(); it.hasNext();) {
+		((InfoDisplayListener)it.next()).requestBrowserContent(evt);
 	    }
 	} else if (Debug.debugging("layer")) { 
-	    Debug.output(getName() +
-			 "|Layer.fireRequestBrowserContent(): no info request listener!");
+	    Debug.output(getName() + "|Layer.fireRequestBrowserContent(): no info request listener!");
 	}
     }
 
@@ -563,14 +575,12 @@ public abstract class Layer extends JComponent
      * the Browser.
      */
     public void fireRequestURL(InfoDisplayEvent evt) {
-	InfoDisplayListener temp[] = getSynchronizedListeners();
-	if (temp != null) {
-	    for (int i = 0; i < temp.length; i++) {
-		temp[i].requestURL(evt);
+	if (IDListeners != null) {
+	    for (Iterator it = IDListeners.iterator(); it.hasNext();) {
+		((InfoDisplayListener)it.next()).requestURL(evt);
 	    }
 	} else if (Debug.debugging("layer")) { 
-	    Debug.output(getName() +
-			 "|Layer.fireRequestURL(): no info request listener!");
+	    Debug.output(getName() + "|Layer.fireRequestURL(): no info request listener!");
 	}
     }
 
@@ -591,14 +601,12 @@ public abstract class Layer extends JComponent
      * @param cursor the cursor to use.
      */
     public void fireRequestCursor(java.awt.Cursor cursor) {
-	InfoDisplayListener temp[] = getSynchronizedListeners();
-	if (temp != null) {
-	    for (int i = 0; i < temp.length; i++) {
-		temp[i].requestCursor(cursor);
+	if (IDListeners != null) {
+	    for (Iterator it = IDListeners.iterator(); it.hasNext();) {
+		((InfoDisplayListener)it.next()).requestCursor(cursor);
 	    }
 	} else if (Debug.debugging("layer")) { 
-	    Debug.output(getName() +
-			 "|Layer.fireRequestCursor(): no info request listener!");
+	    Debug.output(getName() + "|Layer.fireRequestCursor(): no info request listener!");
 	}
     }
 
@@ -609,14 +617,12 @@ public abstract class Layer extends JComponent
      * the dialog window.
      */
     public void fireRequestMessage(InfoDisplayEvent evt) {
-	InfoDisplayListener[] temp = getSynchronizedListeners();
-	if (temp != null) {
-	    for (int i = 0; i < temp.length; i++) {
-		temp[i].requestMessage(evt);
+	if (IDListeners != null) {
+	    for (Iterator it = IDListeners.iterator(); it.hasNext();) {
+		((InfoDisplayListener)it.next()).requestMessage(evt);
 	    }
 	} else if (Debug.debugging("layer")) { 
-	    Debug.output(getName() +
-			 "|Layer.fireRequestMessage(): no info request listener!");
+	    Debug.output(getName() + "|Layer.fireRequestMessage(): no info request listener!");
 	}
     }
 
@@ -686,82 +692,34 @@ public abstract class Layer extends JComponent
      * fired. 
      */
     public void fireRequestToolTip(InfoDisplayEvent event) {
-	InfoDisplayListener[] temp = getSynchronizedListeners();
-	if (temp != null) {
-	    for (int i = 0; i < temp.length; i++) {
+	if (IDListeners != null) {
+	    for (Iterator it = IDListeners.iterator(); it.hasNext();) {
 		if (event != null) {
-		    temp[i].requestShowToolTip(event);
+		    ((InfoDisplayListener)it.next()).requestShowToolTip(event);
 		} else {
-		    temp[i].requestHideToolTip();
+		    ((InfoDisplayListener)it.next()).requestHideToolTip();
 		}
 	    }
 	} else if (Debug.debugging("layer")) { 
-	    Debug.output(getName() +
-			 "|Layer.fireRequestShowToolTip(): no info request listener!");
+	    Debug.output(getName() + "|Layer.fireRequestShowToolTip(): no info request listener!");
 	}
     }
-
-    /**
-     * Get the InfoDisplayListeners.
-     * Provides an internal InfoDisplayListener that is synchronized at the
-     * time of the check for null, so that we won't attempt to use it
-     * later where there might have been an opportunity for it to have
-     * been deleted.  Huh?
-     * @return a personal copy of the InfoDisplayListener
-     */
-    protected InfoDisplayListener[] getSynchronizedListeners() {
-	// use this for freakin' thread safety
-	InfoDisplayListener[] temp = null;
-	synchronized (this) {
-	    if (IDListeners == null) {
-		return temp;
-	    }
-	    int numListeners = IDListeners.size();
-	    temp =  new InfoDisplayListener[numListeners];
-	    for (int i = 0; i < numListeners; i++) {
-	       temp[i] = (InfoDisplayListener)IDListeners.elementAt(i);
-	    }
-	}
-	return temp;
-    }
-
 
     ///////////////////////////////////////////////////
     //  LayerStatus Handling Setup and Firing
-
-    /**
-     * Returns an array of all the LayerStatusListeners.
-     * @return LayerStatusListener[]
-     */
-    protected LayerStatusListener[] getSynchronizedStatusListeners() {
-	// use this for freakin' thread safety
-	LayerStatusListener[] temp = null;
-	synchronized (this) {
-	    if (lsListeners == null) {
-		return temp;
-	    }
-	    int numListeners = lsListeners.size();
-	    temp =  new LayerStatusListener[numListeners];
-	    for (int i = 0; i < numListeners; i++) {
-	       temp[i] = (LayerStatusListener)lsListeners.elementAt(i);
-	    }
-	}
-	return temp;
-    }
 
     /**
      * Adds a listener for <code>LayerStatusEvent</code>s.
      *
      * @param aLayerStatusListener LayerStatusListener
      */
-    public synchronized void addLayerStatusListener(LayerStatusListener aLayerStatusListener) {
-	if (lsListeners == null) {
-	    lsListeners = new java.util.Vector();
-	}
+    public synchronized void addLayerStatusListener(
+	LayerStatusListener aLayerStatusListener) {
 
-	if (!lsListeners.contains(aLayerStatusListener)) {
-	    lsListeners.addElement(aLayerStatusListener);
+	if (lsListeners == null) {
+	    lsListeners = new ListenerSupport(this);
 	}
+	lsListeners.addListener(aLayerStatusListener);
     }
 
     /**
@@ -772,10 +730,9 @@ public abstract class Layer extends JComponent
     public synchronized void removeLayerStatusListener(
 	LayerStatusListener aLayerStatusListener) {
 
-	if (lsListeners == null) {
-	    return;
+	if (lsListeners != null) {
+	    lsListeners.removeListener(aLayerStatusListener);
 	}
-	lsListeners.removeElement(aLayerStatusListener);
     }
 
     /**
@@ -784,14 +741,12 @@ public abstract class Layer extends JComponent
      */
     public void fireStatusUpdate(LayerStatusEvent evt) {
 	// AWTAvailable conditional removed, not used, not useful.
-	LayerStatusListener[] temp = getSynchronizedStatusListeners();
-	if (temp != null) {
-	    for (int i = 0; i < temp.length; i++) {
-		temp[i].updateLayerStatus(evt);
+	if (lsListeners != null) {
+	    for (Iterator it = lsListeners.iterator(); it.hasNext();) {
+		((LayerStatusListener)it.next()).updateLayerStatus(evt);
 	    }
 	} else if (Debug.debugging("layer")) {
-	    Debug.output(getName() + 
-			 "|Layer.fireStatusUpdate(): no LayerStatusListener!");
+	    Debug.output(getName() + "|Layer.fireStatusUpdate(): no LayerStatusListeners!");
 	}
     }
 
@@ -884,7 +839,7 @@ public abstract class Layer extends JComponent
      * component is hidden.  These components don't receive the
      * ComponentHidden notification.  Remove when it works.
      */
-    protected Vector localHackList;
+    protected ListenerSupport localHackList;
 
     /**
      * Part of a layer hack to notify the component listener when the
@@ -914,11 +869,9 @@ public abstract class Layer extends JComponent
     public void addComponentListener(ComponentListener cl) {
 	super.addComponentListener(cl);
 	if (localHackList == null) {
-	    localHackList = new Vector();
+	    localHackList = new ListenerSupport(this);
 	}
-	if (!localHackList.contains(cl)) {
-	    localHackList.add(cl);
-	}
+	localHackList.addListener(cl);
     }
 
     /**
@@ -929,7 +882,7 @@ public abstract class Layer extends JComponent
     public void removeComponentListener(ComponentListener cl) {
 	super.removeComponentListener(cl);
 	if (localHackList != null) {
-	    localHackList.remove(cl);
+	    localHackList.removeListener(cl);
 	}
     }
 
@@ -939,17 +892,15 @@ public abstract class Layer extends JComponent
      * ComponentHidden notification.  Remove when it works.
      */
     public void notifyHideHack() {
-	java.util.Vector targets;
-	synchronized (this) {
-	    if (localHackList == null) {
-	    	return;
-	    }
-	    targets = (java.util.Vector) localHackList.clone();
+	if (localHackList == null) {
+	    return;
 	}
-	ComponentEvent ce = new ComponentEvent(this, ComponentEvent.COMPONENT_HIDDEN);
-	for (int i = 0; i < targets.size(); i++) {
-	    ComponentListener target = (ComponentListener)targets.elementAt(i);
-	    target.componentHidden(ce);
+
+	ComponentEvent ce = 
+	    new ComponentEvent(this, ComponentEvent.COMPONENT_HIDDEN);
+
+	for (Iterator it = localHackList.iterator(); it.hasNext();) {
+	    ((ComponentListener)it.next()).componentHidden(ce);
 	}
     }
 
@@ -1111,13 +1062,13 @@ public abstract class Layer extends JComponent
 
     public void clearListeners() {
 	if (localHackList != null) {
-	    localHackList.clear();
+	    localHackList.removeAll();
 	}
 	if (IDListeners != null) {
-	    IDListeners.clear();
+	    IDListeners.removeAll();
 	}
 	if (lsListeners != null) {
-	    lsListeners.clear();
+	    lsListeners.removeAll();
 	}
 
 	BeanContext bc = getBeanContext();
@@ -1137,41 +1088,30 @@ public abstract class Layer extends JComponent
      * the palette as the component, letting them know if it's visible
      * or not.
      */
-    public void firePaletteEvent(boolean isVisible) {
-	java.util.Vector targets;
-	synchronized (this) {
-	    if (localHackList == null) {
-	    	return;
-	    }
-	    targets = (java.util.Vector) localHackList.clone();
-	}
-	
-
-	int eventType;
-
-	if (palette == null) return;
-
-	if (!palette.isVisible()) {
-	    eventType = ComponentEvent.COMPONENT_HIDDEN;
-	} else {
-	    eventType = ComponentEvent.COMPONENT_SHOWN;
+    public void firePaletteEvent(ComponentEvent event) {
+	if (localHackList == null) {
+	    return;
 	}
 
-	ComponentEvent ce = new ComponentEvent(palette, eventType);
-
-	for (int i = 0; i < targets.size(); i++) {
-	    ComponentListener target = (ComponentListener)targets.elementAt(i);
+	palette = (Container)event.getSource();
+	int eventType = event.getID();
+	for (Iterator it = localHackList.iterator(); it.hasNext();) {
+	    ComponentListener target = (ComponentListener)it.next();
 	    if (eventType == ComponentEvent.COMPONENT_HIDDEN) {
-		target.componentHidden(ce);
+		target.componentHidden(event);
 	    } else if (eventType == ComponentEvent.COMPONENT_SHOWN) {
-		target.componentShown(ce);
+		target.componentShown(event);
 	    }
+	}
+
+	if (eventType == ComponentEvent.COMPONENT_HIDDEN) {
+	    palette = null;
 	}
     }
 
     /**
-     * Return the JFrame, or JInternalFrame, that serves as the
-     * palette for the layer.
+     * Return the JDialog, or JInternalFrame, that serves as the
+     * palette for the layer.  May be null.
      */
     public Container getPalette() {
 	return palette;
@@ -1205,8 +1145,21 @@ public abstract class Layer extends JComponent
 	    showPalette();
 	} else {
 	    hidePalette();
-	    palette = null;
 	}
+    }
+
+    /**
+     * Set the WindowSupport object handling the palette.
+     */
+    public void setWindowSupport(WindowSupport ws) {
+	windowSupport = ws;
+    }
+
+    /**
+     * Get the WindowSupport object handling the palette.
+     */
+    public WindowSupport getWindowSupport() {
+	return windowSupport;
     }
 
     /**
@@ -1215,40 +1168,33 @@ public abstract class Layer extends JComponent
      * JInternalFrame over a JFrame if necessary.
      */
     public void showPalette() {
-	if (Environment.getBoolean(Environment.UseInternalFrames)) {
 
-	    final JLayeredPane desktop = 
-		Environment.getInternalFrameDesktop();
+	WindowSupport ws = getWindowSupport();
 
-	    // get the window
-	    palette = PaletteHelper.getPaletteInternalWindow(this,
-		  new InternalFrameAdapter() {
-		      public void internalFrameClosed(InternalFrameEvent e) {
+	if (ws == null) {
+	    ws = new WindowSupport(getGUI(), getName());
+	    paletteListener = new ComponentAdapter() {
+		    public void componentShown(ComponentEvent e) {
+			firePaletteEvent(e);
+		    }
+		    public void componentHidden(ComponentEvent e) {
+			firePaletteEvent(e);
+		    }
+		};
+	    setWindowSupport(ws);
+	}
 
-			  if (desktop != null) {
-			      desktop.remove((JInternalFrame)palette);
-			      desktop.repaint();
-			  }
-			  palette = null;
-			  firePaletteEvent(false);
-		      };
-		  });
-	    // add the window to the desktop
-	    if (desktop != null) desktop.add(palette);
-	    firePaletteEvent(true);
-	    palette.setVisible(true);
-	} else {
-	    if (palette == null) {
-		palette = PaletteHelper.getPaletteWindow(
-		    this, new ComponentAdapter(){  
-			    public void componentHidden(ComponentEvent e){
-				firePaletteEvent(false);
-			    };
-			} );
+	if (ws != null) {
+	    MapHandler mh = (MapHandler) getBeanContext();
+	    Frame frame = null;
+	    if (mh != null) {
+		frame = (Frame)mh.get(java.awt.Frame.class);
 	    }
-	    palette.setVisible(true);
-	    ((JFrame)palette).setState(java.awt.Frame.NORMAL);
-	    firePaletteEvent(true);
+
+	    if (paletteListener != null) {
+		ws.addComponentListener(paletteListener);
+	    }
+	    ws.displayInWindow(frame);
 	}
     }
     
@@ -1256,22 +1202,9 @@ public abstract class Layer extends JComponent
      * Hide the layer's palette.
      */
     public void hidePalette() {
-	if (palette == null) {
-	    return;
-	}
-
-	if (Environment.getBoolean(Environment.UseInternalFrames)){
-	    // close the palette
-	    try { 
-		((JInternalFrame)palette).setClosed(true); 
-	    } catch (java.beans.PropertyVetoException evt) {
-		com.bbn.openmap.util.Assert.assertExp(
-		    false, "Layer.hidePalette(): internal error!");
-	    }
-	    palette.setVisible(false);
-
-	} else {
-	    palette.setVisible(false);
+	WindowSupport ws = getWindowSupport();
+	if (ws != null) {
+	    ws.killWindow();
 	}
     }
 
