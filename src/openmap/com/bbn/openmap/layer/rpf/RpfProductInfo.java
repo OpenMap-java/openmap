@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfProductInfo.java,v $
 // $RCSfile: RpfProductInfo.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:04 $
+// $Revision: 1.5 $
+// $Date: 2005/02/11 22:34:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -107,6 +107,9 @@ public class RpfProductInfo {
      * Returns the RpfProductInfo that has the given two-letter series
      * code. If the code passed in is not recognized by the catalog,
      * the UNKNOWN RpfProductInfo is returned.
+     * 
+     * @param seriesCode needs to be the two letter code, in
+     *        uppercase.
      */
     public static RpfProductInfo get(String seriesCode) {
         Hashtable cat = getCatalog();

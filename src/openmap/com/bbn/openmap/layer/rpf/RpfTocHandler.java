@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocHandler.java,v $
 // $RCSfile: RpfTocHandler.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:06:04 $
+// $Revision: 1.10 $
+// $Date: 2005/02/11 22:34:14 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -538,7 +538,7 @@ public class RpfTocHandler {
                 // Interned so we can look it up in the catalog
                 // later...
                 entry.setInfo(frame.filename.substring(dot + 1, dot + 3)
-                        .intern());
+                        .toUpperCase().intern());
 
                 // We duplicate this below!!!
                 //              frame.framePath = new String(frame.rpfdir +

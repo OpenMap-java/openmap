@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.17 $
-// $Date: 2005/02/02 13:17:14 $
+// $Revision: 1.18 $
+// $Date: 2005/02/11 22:34:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -829,10 +829,14 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
                 public void stateChanged(ChangeEvent ce) {
                     JSlider slider = (JSlider) ce.getSource();
                     if (slider.getValueIsAdjusting()) {
-                        viewAttributes.opaqueness = slider.getValue();
+                        int opaqueval = slider.getValue();
+                        viewAttributes.opaqueness = opaqueval;
                         fireRequestInfoLine("RPF Opaqueness set to "
                                 + viewAttributes.opaqueness
                                 + " for future requests.");
+                        if (coverage != null) {
+                            coverage.setOpaqueness(opaqueval);
+                        }
                     }
                 }
             });

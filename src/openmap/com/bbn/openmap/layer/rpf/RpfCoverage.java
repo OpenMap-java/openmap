@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCoverage.java,v $
 // $RCSfile: RpfCoverage.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/02/02 13:17:14 $
+// $Revision: 1.8 $
+// $Date: 2005/02/11 22:34:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,18 +69,20 @@ import com.bbn.openmap.util.PropUtils;
  *   
  *    
  *     
- *      The properties for this file are:
- *       # Java Rpf properties
- *       # Number between 0-255: 0 is transparent, 255 is opaque
- *       jrpf.coverageOpaque=255
- *       #Default is true, don't need this entry if you like it...
- *       jrpf.CG.showcov=true
- *       #Default colors don't need this entry
- *       jrpf.CG.color=CE4F3F
- *       # Other types can be substituted for CG (TLM, JOG, TPC, ONC, JNC, GNC, CIB10, CIB5, MISC)
- *       # Fill the rectangle, default is true
- *       jrpf.coverageFill=true
  *      
+ *       The properties for this file are:
+ *        # Java Rpf properties
+ *        # Number between 0-255: 0 is transparent, 255 is opaque
+ *        jrpf.coverageOpaque=255
+ *        #Default is true, don't need this entry if you like it...
+ *        jrpf.CG.showcov=true
+ *        #Default colors don't need this entry
+ *        jrpf.CG.color=CE4F3F
+ *        # Other types can be substituted for CG (TLM, JOG, TPC, ONC, JNC, GNC, CIB10, CIB5, MISC)
+ *        # Fill the rectangle, default is true
+ *        jrpf.coverageFill=true
+ *       
+ *       
  *      
  *     
  *    
@@ -352,7 +354,8 @@ public class RpfCoverage implements ActionListener, RpfConstants,
         String prefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
 
         props.put(prefix + FillProperty, new Boolean(fillRects).toString());
-        props.put(prefix + CoverageProperty, new Boolean(showPalette).toString());
+        props.put(prefix + CoverageProperty,
+                new Boolean(showPalette).toString());
         props.put(prefix + CoverageOpaquenessProperty,
                 Integer.toString(opaqueness));
         props.put(prefix + CGColorProperty,
@@ -425,7 +428,7 @@ public class RpfCoverage implements ActionListener, RpfConstants,
                 CoverageProperty,
                 "Show Coverage Palette");
         list.put(CoverageProperty + LabelEditorProperty, interString);
-        
+
         interString = i18n.get(RpfLayer.class,
                 CoverageOpaquenessProperty,
                 I18n.TOOLTIP,
@@ -657,6 +660,21 @@ public class RpfCoverage implements ActionListener, RpfConstants,
                     getModifiedColor(MISCColor) };
         }
         return colors;
+    }
+
+    /**
+     * @return Returns the opaqueness.
+     */
+    public int getOpaqueness() {
+        return opaqueness;
+    }
+
+    /**
+     * @param opaqueness The opaqueness to set.
+     */
+    public void setOpaqueness(int opaqueness) {
+        this.opaqueness = opaqueness;
+        resetColors();
     }
 
     protected Color getModifiedColor(Color color) {

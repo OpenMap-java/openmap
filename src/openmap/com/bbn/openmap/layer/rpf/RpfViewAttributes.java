@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfViewAttributes.java,v $
 // $RCSfile: RpfViewAttributes.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/02/02 13:17:14 $
+// $Revision: 1.8 $
+// $Date: 2005/02/11 22:34:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,6 +44,9 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
 
     public final static String ANY = "ANY";
     public final static String ALL = "ALL";
+    public final static String COLORMODEL_DIRECT_STRING = "direct";
+    public final static String COLORMODEL_INDEXED_STRING = "indexed";
+
     protected String propertyPrefix = null;
 
     /** Number of colors to use - 16, 32, 216 */
@@ -160,7 +163,8 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
                 + ImageScaleFactorProperty, imageScaleFactor);
 
         String colormodel = props.getProperty(prefix + ColormodelProperty);
-        if (colormodel != null && colormodel.equalsIgnoreCase("indexed")) {
+        if (colormodel != null
+                && colormodel.equalsIgnoreCase(COLORMODEL_INDEXED_STRING)) {
             colorModel = OMRasterObject.COLORMODEL_INDEXED;
         } else {
             colorModel = OMRasterObject.COLORMODEL_DIRECT;
@@ -202,9 +206,9 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
                 Float.toString(imageScaleFactor));
 
         if (colorModel == OMRasterObject.COLORMODEL_INDEXED) {
-            props.put(prefix + ColormodelProperty, "indexed");
+            props.put(prefix + ColormodelProperty, COLORMODEL_INDEXED_STRING);
         } else {
-            props.put(prefix + ColormodelProperty, "direct");
+            props.put(prefix + ColormodelProperty, COLORMODEL_DIRECT_STRING);
         }
 
         return props;
@@ -254,7 +258,9 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
         list.put(NumColorsProperty + ".sixteen", "16");
         list.put(NumColorsProperty + ".thirtytwo", "32");
         list.put(NumColorsProperty + ".twosixteen", "216");
-        interString = i18n.get(RpfLayer.class, NumColorsProperty, "Number of Colors");
+        interString = i18n.get(RpfLayer.class,
+                NumColorsProperty,
+                "Number of Colors");
         list.put(NumColorsProperty + LabelEditorProperty, interString);
 
         interString = i18n.get(RpfLayer.class,
@@ -264,7 +270,9 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
         list.put(ShowMapsProperty, interString);
         list.put(ShowMapsProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
-        interString = i18n.get(RpfLayer.class, ShowMapsProperty, "Display Images");
+        interString = i18n.get(RpfLayer.class,
+                ShowMapsProperty,
+                "Display Images");
         list.put(ShowMapsProperty + LabelEditorProperty, interString);
 
         interString = i18n.get(RpfLayer.class,
@@ -274,7 +282,9 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
         list.put(ShowInfoProperty, interString);
         list.put(ShowInfoProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
-        interString = i18n.get(RpfLayer.class, ShowInfoProperty, "Display Attributes");
+        interString = i18n.get(RpfLayer.class,
+                ShowInfoProperty,
+                "Display Attributes");
         list.put(ShowInfoProperty + LabelEditorProperty, interString);
 
         interString = i18n.get(RpfLayer.class,
@@ -284,7 +294,9 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
         list.put(ScaleImagesProperty, interString);
         list.put(ScaleImagesProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
-        interString = i18n.get(RpfLayer.class, ScaleImagesProperty, "Scale Images");
+        interString = i18n.get(RpfLayer.class,
+                ScaleImagesProperty,
+                "Scale Images");
         list.put(ScaleImagesProperty + LabelEditorProperty, interString);
 
         interString = i18n.get(RpfLayer.class,
@@ -292,7 +304,9 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
                 I18n.TOOLTIP,
                 "The two-letter chart code to display.  ANY is default.");
         list.put(ChartSeriesProperty, interString);
-        interString = i18n.get(RpfLayer.class, ChartSeriesProperty, "Chart Series Code");
+        interString = i18n.get(RpfLayer.class,
+                ChartSeriesProperty,
+                "Chart Series Code");
         list.put(ChartSeriesProperty + LabelEditorProperty, interString);
 
         interString = i18n.get(RpfLayer.class,
@@ -302,7 +316,9 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
         list.put(AutoFetchAttributeProperty, interString);
         list.put(AutoFetchAttributeProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
-        interString = i18n.get(RpfLayer.class, AutoFetchAttributeProperty, "Auto-fetch Attributes");
+        interString = i18n.get(RpfLayer.class,
+                AutoFetchAttributeProperty,
+                "Auto-fetch Attributes");
         list.put(AutoFetchAttributeProperty + LabelEditorProperty, interString);
 
         interString = i18n.get(RpfLayer.class,
@@ -310,7 +326,9 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
                 I18n.TOOLTIP,
                 "Multiplier to limit the scale differential that a given chart will be displayed for a map (4.0 is the default).");
         list.put(ImageScaleFactorProperty, interString);
-        interString = i18n.get(RpfLayer.class, ImageScaleFactorProperty, "Image Scaling Factor");
+        interString = i18n.get(RpfLayer.class,
+                ImageScaleFactorProperty,
+                "Image Scaling Factor");
         list.put(ImageScaleFactorProperty + LabelEditorProperty, interString);
 
         interString = i18n.get(RpfLayer.class,
@@ -318,11 +336,15 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
                 I18n.TOOLTIP,
                 "If 'indexed', the images will be built using a colortable.  This is not the default.");
         list.put(ColormodelProperty, interString);
+        list.put(ColormodelProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.ComboBoxPropertyEditor");
         list.put(ColormodelProperty
-                + OptionPropertyEditor.ScopedOptionsProperty, "direct indexed");
-        list.put(ColormodelProperty + ".direct", "direct");
-        list.put(ColormodelProperty + ".indexed", "indexed");
-        interString = i18n.get(RpfLayer.class, ColormodelProperty, "Image Colormodel Type");
+                + OptionPropertyEditor.ScopedOptionsProperty, "dir ind");
+        list.put(ColormodelProperty + ".dir", COLORMODEL_DIRECT_STRING);
+        list.put(ColormodelProperty + ".ind", COLORMODEL_INDEXED_STRING);
+        interString = i18n.get(RpfLayer.class,
+                ColormodelProperty,
+                "Image Colormodel Type");
         list.put(ColormodelProperty + LabelEditorProperty, interString);
 
         return list;

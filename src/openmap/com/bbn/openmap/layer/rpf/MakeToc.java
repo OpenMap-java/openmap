@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/MakeToc.java,v $
 // $RCSfile: MakeToc.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:06:02 $
+// $Revision: 1.9 $
+// $Date: 2005/02/11 22:34:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -98,7 +98,19 @@ import com.bbn.openmap.proj.coords.DMSLatLonPoint;
  * <pre>
  * 
  *  
- *   Usage:  java com.bbn.openmap.layer.rpf.MakeToc (RPF dir path) (RPF dir path) ...
+ *   
+ *    
+ *     
+ *      
+ *       
+ *        
+ *         Usage:  java com.bbn.openmap.layer.rpf.MakeToc (RPF dir path) (RPF dir path) ...
+ *         
+ *        
+ *       
+ *      
+ *     
+ *    
  *   
  *  
  * </pre>
@@ -109,7 +121,19 @@ import com.bbn.openmap.proj.coords.DMSLatLonPoint;
  * <pre>
  * 
  *  
- *   java com.bbn.openmap.layer.rpf.MakeToc -help
+ *   
+ *    
+ *     
+ *      
+ *       
+ *        
+ *         java com.bbn.openmap.layer.rpf.MakeToc -help
+ *         
+ *        
+ *       
+ *      
+ *     
+ *    
  *   
  *  
  * </pre>
@@ -118,9 +142,14 @@ import com.bbn.openmap.proj.coords.DMSLatLonPoint;
  * 
  * <P>
  * NOTE: Make sure that the RPF directories and their contents are in
- * upper case. Its a spec requirement, although with CD copies and FTP
- * downloads, the file name cases sometimes get switched. Use
+ * upper case. It's a spec requirement, although with CD copies and
+ * FTP downloads, the file name cases sometimes get switched. Use
  * com.bbn.openmap.layer.rpf.ChangeCase to modify the file name cases.
+ * Also, if there is more than one RPF directory in the path to the
+ * image frames, use the absolute path option. Otherwise, the code
+ * will focus on making the top-most RPF directory the one to key the
+ * internal relative paths off of, and that might not be what you
+ * want.
  * </P>
  * 
  * @see com.bbn.openmap.layer.rpf.ChangeCase
@@ -561,7 +590,21 @@ public class MakeToc {
             }
 
             try {
+
                 BinaryFile binFile = new BinaryBufferedFile(framePath);
+
+                // Frame file names are 8.3 notation, might want to
+                // check
+                // that here, to blow off dummy files.
+                String fn = binFile.getName();
+                if (fn.length() != 12) {
+                    // Not a RPF Frame file
+                    if (Debug.debugging("maketoc")) {
+                        Debug.error("MakeToc: " + framePath
+                                + " is not a RPF image file - ignoring");
+                    }
+                    continue;
+                }
 
                 RpfFileSections rfs = new RpfFileSections();
 
@@ -569,8 +612,10 @@ public class MakeToc {
 
                 if (!head.read(binFile)) {
                     // Not a RPF Frame file
-                    Debug.error("MakeToc: " + framePath
-                            + " is not a RPF file - ignoring");
+                    if (Debug.debugging("maketoc")) {
+                        Debug.error("MakeToc: " + framePath
+                                + " is not a RPF image file - ignoring");
+                    }
                     continue;
                 }
 
@@ -1024,7 +1069,9 @@ public class MakeToc {
                 if (tail == -1) {
                     direct[i] = frame.filename;
                 } else {
-                    direct[i] = frame.filename.substring(0, ++tail);
+                    // Java-cise the name, so it meets spec.
+                    direct[i] = frame.filename.substring(0, ++tail)
+                            .replace('\\', '/');
                 }
 
                 if (Debug.debugging("maketocdetail"))
@@ -1044,7 +1091,7 @@ public class MakeToc {
                     if (rpfIndex != -1) {
                         rpfIndex += 3;
                         if (direct[i].length() > rpfIndex
-                                && direct[i].charAt(rpfIndex) == File.separatorChar) {
+                                && direct[i].charAt(rpfIndex) == '/') {
 
                             rpfIndex++;
                         }
