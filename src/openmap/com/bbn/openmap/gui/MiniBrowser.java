@@ -14,14 +14,15 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MiniBrowser.java,v $
 // $RCSfile: MiniBrowser.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/09 15:39:20 $
+// $Revision: 1.3 $
+// $Date: 2003/10/03 00:46:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
+import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -55,17 +56,25 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
     }
 
     public MiniBrowser(String mimeType, String content) {
+	this(null, mimeType, content);
+    }
+
+    public MiniBrowser(Frame owner, String mimeType, String content) {
 	WindowSupport ws = init();
 	push(mimeType, content);
 
-	ws.displayInWindow(200, 200, 300, 300);
+	ws.displayInWindow(owner, 200, 200, 300, 300);
     }
 
     public MiniBrowser(URL url) {
+	this(null, url);
+    }
+
+    public MiniBrowser(Frame owner, URL url) {
 	WindowSupport ws = init();
 	push(url);
 
-	ws.displayInWindow(200, 200, 300, 300);
+	ws.displayInWindow(owner, 200, 200, 300, 300);
     }
 
     protected WindowSupport init() {
@@ -218,7 +227,19 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
     }
 
     public static void display(String mimeType, String content) {
-	new MiniBrowser(mimeType, content);
+	display(null, mimeType, content);
+    }
+
+    public static void display(Frame owner, String mimeType, String content) {
+	new MiniBrowser(owner, mimeType, content);
+    }
+
+    public static void display(URL url) {
+	display(null, url);
+    }
+
+    public static void display(Frame owner, URL url) {
+	new MiniBrowser(owner, url);
     }
 
     public static void main(String[] argv) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/22 23:20:42 $
+// $Revision: 1.5 $
+// $Date: 2003/10/03 00:46:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,17 +47,13 @@ public class WindowSupport implements ComponentListener, ActionListener {
     public final static String DisplayWindowCmd = "displayWindowCmd";
     public final static String KillWindowCmd = "killWindowCmd";
 
-    /**
-     * The frame used when the DrawingToolLauncher is used in an
-     * application.  
-     */
-    protected transient JFrame frame;
-
     /** 
      * The frame used when the DrawingToolLauncher is used in an
      * applet. 
      */
     protected transient JInternalFrame iFrame;
+
+    protected transient JDialog dialog;
 
     /**
      * Create the window support.
@@ -106,6 +102,8 @@ public class WindowSupport implements ComponentListener, ActionListener {
 	    source = ((JFrame)source).getContentPane();
 	} else if (source instanceof JInternalFrame) {
 	    source = ((JInternalFrame)source).getContentPane();
+	} else if (source instanceof JDialog) {
+	    source = ((JDialog)source).getContentPane();
 	}
 	setComponentSize(new Dimension(source.getWidth(), source.getHeight()));
     }
@@ -128,7 +126,7 @@ public class WindowSupport implements ComponentListener, ActionListener {
      */
     public void componentHidden(ComponentEvent e) {
 	Component source = (Component)e.getSource();
-	if (source == frame || source == iFrame) {
+	if (source == dialog || source == iFrame) {
 	    killWindow();
 	}
     }
@@ -153,6 +151,16 @@ public class WindowSupport implements ComponentListener, ActionListener {
      * size and location are for the window.
      */
     public void displayInWindow() {
+	displayInWindow(null);
+    }
+
+    /**
+     * Display the window, and find out what the natural or revised
+     * size and location are for the window.
+     * @param owner Frame for JDialog
+     */
+    public void displayInWindow(Frame owner) {
+
 	int w = 0;
 	int h = 0;
 
@@ -176,7 +184,7 @@ public class WindowSupport implements ComponentListener, ActionListener {
 	}
 
 // 	displayInWindow(x, y, w, h);
-	displayInWindow(x, y, -1, -1);
+	displayInWindow(owner, x, y, -1, -1);
     }
 
     /**
@@ -189,12 +197,22 @@ public class WindowSupport implements ComponentListener, ActionListener {
      * equal to zero the content size will be used.
      */
     public void displayInWindow(int x, int y, int width, int height) {
-	if (iFrame == null && frame == null) {
-	    boolean controlWindowSize = true;
+	displayInWindow(null, x, y, width, height);
+    }
 
-	    if (height <= 0 || width <= 0) {
-		controlWindowSize = false;
-	    }
+    /**
+     * Display the window.
+     * @param owner Frame for JDialog
+     * @param x the horizontal pixel location for the window.
+     * @param y the vertical pixel location for the window.
+     * @param width the horizontal size of the window, if less than or
+     * equal to zero the content size will be used.
+     * @param height the vertical size of the window, if less than or
+     * equal to zero the content size will be used.
+     */
+    public void displayInWindow(Frame owner, int x, int y, int width, int height) {
+
+ 	if (iFrame == null && dialog == null) {
 	
 	    // Try to group the applet-specific stuff in here...
 	    if (Environment.getBoolean(Environment.UseInternalFrames)) {
@@ -212,12 +230,7 @@ public class WindowSupport implements ComponentListener, ActionListener {
 		if (content instanceof ComponentListener) {
 		    iFrame.addComponentListener((ComponentListener)content);
 		}
-		if (controlWindowSize) {
-		    iFrame.setBounds(x, y, width, height);
-		} else {
-		    iFrame.setLocation(x, y);
-		}
-
+		
 		JLayeredPane desktop = 
 		    Environment.getInternalFrameDesktop();
 
@@ -228,28 +241,36 @@ public class WindowSupport implements ComponentListener, ActionListener {
 		}
 		
 	    } else { // Working as an application...
- 		frame = new JFrame(title);
-		frame.getContentPane().add(content);
-		frame.pack();
-		if (controlWindowSize) {
-		    frame.setBounds(x, y, width, height);
-		} else {
-		    frame.setLocation(x, y);
-		}
-		frame.addComponentListener(this);
+
+		dialog = new JDialog(owner, title);
+		dialog.addComponentListener(this);
+		dialog.getContentPane().removeAll();
+		dialog.getContentPane().add(content);
+		dialog.pack();
+
 		if (content instanceof ComponentListener) {
-		    frame.addComponentListener((ComponentListener)content);
+		    dialog.addComponentListener((ComponentListener)content);
 		}
-		frame.show();
+
 	    }
-	} else {
-	    if (iFrame != null) {
-		iFrame.show();
-		iFrame.toFront();
-	    } else if (frame != null) {
-		frame.show();
-		frame.toFront();
+	}
+
+	if (iFrame != null) {
+	    if (height <= 0 || width <= 0) {
+		iFrame.setLocation(x, y);
+	    } else {
+		iFrame.setBounds(x, y, width, height);
 	    }
+
+	    iFrame.show();
+	    iFrame.toFront();
+	} else if (dialog != null) {
+	    if (height <= 0 || width <= 0) {
+		dialog.setLocation(x, y);
+	    } else {
+		dialog.setBounds(x, y, width, height);
+	    } 
+	    dialog.show();
 	}
     }
 
@@ -257,20 +278,20 @@ public class WindowSupport implements ComponentListener, ActionListener {
      * Get rid of the window used to display the content.
      */
     public void killWindow() {
-	if (iFrame != null) {
+
+	if (dialog != null) {
+	    dialog.removeComponentListener(this);
+	    if (content instanceof ComponentListener) {
+		dialog.removeComponentListener((ComponentListener)content);
+	    }
+	    dialog.dispose();
+	} else if (iFrame != null) {
 	    iFrame.removeComponentListener(this);
 	    if (content instanceof ComponentListener) {
 		iFrame.removeComponentListener((ComponentListener)content);
 	    }
 	    iFrame.dispose();
 	    iFrame = null;
-	} else if (frame != null) {
-	    frame.removeComponentListener(this);
-	    if (content instanceof ComponentListener) {
-		frame.removeComponentListener((ComponentListener)content);
-	    }
-	    frame.dispose();
-	    frame = null;
 	}
     }
 }

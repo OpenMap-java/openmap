@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ToolPanel.java,v $
 // $RCSfile: ToolPanel.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/09/22 23:20:42 $
+// $Revision: 1.6 $
+// $Date: 2003/10/03 00:46:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -107,9 +107,8 @@ public class ToolPanel extends JToolBar
      * Constructor
      */
     public ToolPanel() {
-	super();
-	setLayout(new FlowLayout(FlowLayout.LEFT));
-	setFloatable(false);
+  	setLayout(new FlowLayout(FlowLayout.LEFT));
+  	setFloatable(false);
 	setVisible(false);
     }
     
@@ -325,7 +324,7 @@ public class ToolPanel extends JToolBar
 		    }
 			
 		    if (index < getComponentCount()) {
-			add(((Tool)someObj).getFace(), index);
+			add((Tool)someObj, index);
 		    } else {
 			add((Tool)someObj);
 		    }
@@ -523,7 +522,8 @@ public class ToolPanel extends JToolBar
     public boolean areComponentsVisible() {
 	Enumeration enum = items.elements();
 	while (enum.hasMoreElements()) {
-	    if (((Component)enum.nextElement()).isVisible()) {
+	    Component comp = (Component)enum.nextElement();
+	    if (comp.isVisible()) {
 		return true;
 	    }
 	}

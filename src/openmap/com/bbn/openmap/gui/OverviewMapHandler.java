@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/09/22 23:20:42 $
+// $Revision: 1.6 $
+// $Date: 2003/10/03 00:46:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -459,9 +459,12 @@ public class OverviewMapHandler extends OMToolComponent
 	    // working as expected, though. DFD
 // 	    if ((overviewWindowFrame != null && overviewWindowFrame.isShowing()) ||
 // 		(overviewWindow != null && overviewWindow.isShowing()) ||
-// 		!getUseAsTool()) {
-// 		srcMap.addProjectionListener(this);
-// 	    }
+	    
+	    // Turns out non-tool overview maps weren't becoming
+	    // projection change listeners...
+	    if (!getUseAsTool() && isVisible()) {
+		srcMap.addProjectionListener(this);
+	    }
 
 	    srcMap.addPropertyChangeListener(this);
 	}
@@ -816,7 +819,13 @@ public class OverviewMapHandler extends OMToolComponent
 			y = (int) loc.getY();
 		    }
 
-		    ws.displayInWindow(x, y, w, h);
+		    MapHandler mh = (MapHandler) getBeanContext();
+		    Frame frame = null;
+		    if (mh != null) {
+			frame = (Frame)mh.get(java.awt.Frame.class);
+		    }
+
+		    ws.displayInWindow(frame, x, y, w, h);
 		}
 	    };
     }

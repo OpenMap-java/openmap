@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/CoordsMenuItem.java,v $
 // $RCSfile: CoordsMenuItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/16 22:12:32 $
+// $Revision: 1.2 $
+// $Date: 2003/10/03 00:46:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,10 +23,12 @@
 
 package com.bbn.openmap.gui.menu;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import com.bbn.openmap.MapBean;
+import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.gui.CombinedCoordPanel;
 import com.bbn.openmap.gui.WindowSupport;
 
@@ -61,15 +63,28 @@ public class CoordsMenuItem extends MapHandlerMenuItem
 	    if (ws == null) {
 		ws = new WindowSupport(ccp, "Go To Coordinates...");
 	    } 
-	    ws.displayInWindow();
+
+	    MapHandler mh = getMapHandler();
+	    Frame frame = null;
+	    if (mh != null) {
+		frame = (Frame)mh.get(java.awt.Frame.class);
+	    }
+
+	    ws.displayInWindow(frame);
 	}
     }
 
     public void findAndInit(Object someObj) {
+	if (someObj instanceof MapHandler) {
+	    setMapHandler((MapHandler)someObj);
+	}
 	ccp.findAndInit(someObj);
     }
 
     public void findAndUndo(Object someObj) {
+	if (someObj == getMapHandler()) {
+	    setMapHandler(null);
+	}
 	ccp.findAndUndo(someObj);
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerAddPanel.java,v $
 // $RCSfile: LayerAddPanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/07/15 23:50:22 $
+// $Revision: 1.5 $
+// $Date: 2003/10/03 00:46:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -288,7 +288,13 @@ public class LayerAddPanel extends OMComponentPanel
 	    y = (int) loc.getY();
 	}
 
-	ws.displayInWindow(x, y, -1, -1);
+	MapHandler mh = (MapHandler) getBeanContext();
+	Frame frame = null;
+	if (mh != null) {
+	    frame = (Frame)mh.get(java.awt.Frame.class);
+	}
+	
+	ws.displayInWindow(frame, x, y, -1, -1);
     }
 
     /**

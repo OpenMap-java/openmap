@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/04/08 18:41:27 $
+// $Revision: 1.6 $
+// $Date: 2003/10/03 00:46:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -372,7 +372,14 @@ public class LayersPanel extends OMToolComponent
 			x = (int) loc.getX();
 			y = (int) loc.getY();
 		    }
-		    ws.displayInWindow(x, y, w, h);
+
+		    MapHandler mh = (MapHandler) getBeanContext();
+		    Frame frame = null;
+		    if (mh != null) {
+			frame = (Frame)mh.get(java.awt.Frame.class);
+		    }
+
+		    ws.displayInWindow(frame, x, y, w, h);
 		}
 	    };
     }
