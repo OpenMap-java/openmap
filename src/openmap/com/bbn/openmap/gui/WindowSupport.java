@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/05 05:39:01 $
+// $Revision: 1.2 $
+// $Date: 2003/04/08 16:27:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,12 +37,15 @@ import com.bbn.openmap.util.Debug;
  * called.  The WindowSupport remembers size and location changes for
  * the window when it is recreated.
  */
-public class WindowSupport implements ComponentListener {
+public class WindowSupport implements ComponentListener, ActionListener {
 
     protected Component content;
     protected String title;
     protected Point componentLocation;
     protected Dimension componentSize;
+
+    public final static String DisplayWindowCmd = "displayWindowCmd";
+    public final static String KillWindowCmd = "killWindowCmd";
 
     /**
      * The frame used when the DrawingToolLauncher is used in an
@@ -129,6 +132,19 @@ public class WindowSupport implements ComponentListener {
 	if (source == frame || source == iFrame) {
 	    killWindow();
 	}
+    }
+
+    public void actionPerformed(ActionEvent ae) {
+	String command = ae.getActionCommand();
+	if (command == KillWindowCmd) {
+	    killWindow();
+	} else if (command == DisplayWindowCmd) {
+	    displayInWindow();
+	}
+    }
+
+    protected void finalize() {
+	Debug.output("WindowSupport being gc'd");
     }
 
     /**

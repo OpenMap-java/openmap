@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OpenMapFrame.java,v $
 // $RCSfile: OpenMapFrame.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/04 14:34:26 $
+// $Revision: 1.3 $
+// $Date: 2003/04/08 16:27:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -143,20 +143,37 @@ public class OpenMapFrame extends JFrame
     public void findAndInit(Iterator it) {
 	Object someObj;
 	while (it.hasNext()) {
-	    someObj = it.next();
-	    if (someObj instanceof MapPanel) {
-		Debug.message("basic", "OpenMapFrame: Found a MapPanel");
-		getContentPane().add((MapPanel)someObj);
-		setPosition();
-		invalidate();
-		show();
+	    findAndInit(it.next());
+	}
+    }
+
+    /**
+     * Called when an object is added to the MapHandler.
+     */
+    public void findAndInit(Object someObj) {
+
+	if (someObj instanceof MapPanel && someObj instanceof Container) {
+	    Debug.message("basic", "OpenMapFrame: Found a MapPanel");
+	    getContentPane().add((Container)someObj);
+
+	    JMenuBar jmb = ((MapPanel)someObj).getMapMenuBar();
+	    if (jmb != null) {
+		Debug.message("basic", "OpenMapFrame: Got MenuBar from MapPanel");
+		getRootPane().setJMenuBar(jmb);
 	    }
 
-	    if (someObj instanceof JMenuBar) {
-		Debug.message("basic", "OpenMapFrame: Found a MenuBar");
-		getRootPane().setJMenuBar((JMenuBar)someObj);
-		invalidate();
-	    }
+	    setPosition();
+	    invalidate();
+	    show();
+	}
+
+	// We shouldn't find this if we've already defined one 
+	// in the MapPanel, but we have this for backward
+	// compatibility.
+	if (someObj instanceof JMenuBar) {
+	    Debug.message("basic", "OpenMapFrame: Found a MenuBar");
+	    getRootPane().setJMenuBar((JMenuBar)someObj);
+	    invalidate();
 	}
     }
     
@@ -184,17 +201,28 @@ public class OpenMapFrame extends JFrame
 	Object someObj;
 	Iterator it = bcme.iterator();
 	while (it.hasNext()) {
-	    someObj = it.next();
-	    if (someObj instanceof MapPanel) {		
-		Debug.message("basic", "OpenMapFrame: MapBean is being removed from frame");
-		getContentPane().remove((MapPanel)someObj);
+	    findAndUndo(it.next());
+	}
+    }
+
+    /**
+     * Called when an object is removed from the MapHandler.
+     */
+    public void findAndUndo(Object someObj) {
+	if (someObj instanceof MapPanel && someObj instanceof Container) {
+	    Debug.message("basic", "OpenMapFrame: MapBean is being removed from frame");
+	    getContentPane().remove((Container)someObj);
+
+	    if (getJMenuBar() == ((MapPanel)someObj).getMapMenuBar()) {
+		Debug.message("basic", "OpenMapFrame: MenuPanel's MenuBar is being removed");
+		setJMenuBar(null);
 	    }
+	}
 	    
-	    if (someObj instanceof JMenuBar) {
-		if (getJMenuBar() == (JMenuBar) someObj) {
-		    Debug.message("basic", "OpenMapFrame: MenuPanel is being removed");
-		    setJMenuBar(null);
-		}
+	if (someObj instanceof JMenuBar) {
+	    if (getJMenuBar() == (JMenuBar) someObj) {
+		Debug.message("basic", "OpenMapFrame: MenuPanel is being removed");
+		setJMenuBar(null);
 	    }
 	}
     }

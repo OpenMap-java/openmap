@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMGraphicDeleteTool.java,v $
 // $RCSfile: OMGraphicDeleteTool.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/07 16:25:46 $
+// $Revision: 1.3 $
+// $Date: 2003/04/08 16:27:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -71,6 +71,7 @@ public class OMGraphicDeleteTool extends OMToolComponent
 	setKey(defaultKey);
 	Debug.message("deletebutton", "OMGTL()");
 
+	setLayout(new java.awt.GridLayout());
 	jToolBar = new JToolBar();
  	jToolBar.setFloatable(false);
 

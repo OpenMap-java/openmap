@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MapPanelChild.java,v $
 // $RCSfile: MapPanelChild.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/04 14:34:26 $
+// $Revision: 1.2 $
+// $Date: 2003/04/08 16:27:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,7 +28,7 @@ import java.awt.BorderLayout;
 /**
  * A simple interface to let an object know it wants to be added to
  * the MapPanel, and where it would like to be placed.  The MapPanel
- * looks for these components in the MapHandler.
+ * can look for these components in the MapHandler.
  */
 public interface MapPanelChild {
 
