@@ -7,6 +7,30 @@ Java-Bean: True
 Name: com/bbn/openmap/BufferedMapBean.class
 Java-Bean: True
 
+Name: com/bbn/openmap/InformationDelegator.class
+Java-Bean: True
+
+Name: com/bbn/openmap/LayerHandler.class
+Java-Bean: True
+
+Name: com/bbn/openmap/MapBean.class
+Java-Bean: True
+
+Name: com/bbn/openmap/MapHandler.class
+Java-Bean: True
+
+Name: com/bbn/openmap/MouseDelegator.class
+Java-Bean: True
+
+Name: com/bbn/openmap/PropertyHandler.class
+Java-Bean: True
+
+Name: com/bbn/openmap/SoloMapComponentRejectPolicy.class
+Java-Bean: True
+
+Name: com/bbn/openmap/SoloMapComponentReplacePolicy.class
+Java-Bean: True
+
 Name: com/bbn/openmap/event/DefaultOverviewMouseMode.class
 Java-Bean: True
 
@@ -25,31 +49,7 @@ Java-Bean: True
 Name: com/bbn/openmap/event/SelectMouseMode.class
 Java-Bean: True
 
-Name: com/bbn/openmap/examples/beanbox/Fighter.class
-Java-Bean: True
-
-Name: com/bbn/openmap/examples/beanbox/SimpleBeanContainer.class
-Java-Bean: True
-
-Name: com/bbn/openmap/examples/beanbox/SimpleBeanObject.class
-Java-Bean: True
-
-Name: com/bbn/openmap/examples/crew/RouteLayer.class
-Java-Bean: True
-
-Name: com/bbn/openmap/examples/hello/TextLayer.class
-Java-Bean: True
-
-Name: com/bbn/openmap/examples/simple/RouteLayer.class
-Java-Bean: True
-
-Name: com/bbn/openmap/gui/AboutMenuItem.class
-Java-Bean: True
-
 Name: com/bbn/openmap/gui/AbstractOpenMapMenu.class
-Java-Bean: True
-
-Name: com/bbn/openmap/gui/BackgroundColorButton.class
 Java-Bean: True
 
 Name: com/bbn/openmap/gui/ControlMenu.class
@@ -62,6 +62,9 @@ Name: com/bbn/openmap/gui/CoordInternalFrame.class
 Java-Bean: True
 
 Name: com/bbn/openmap/gui/CoordPanel.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/DMSCoordPanel.class
 Java-Bean: True
 
 Name: com/bbn/openmap/gui/DefaultHelpMenu.class
@@ -79,6 +82,9 @@ Java-Bean: True
 Name: com/bbn/openmap/gui/LayerAddPanel.class
 Java-Bean: True
 
+Name: com/bbn/openmap/gui/LayerControlButtonPanel.class
+Java-Bean: True
+
 Name: com/bbn/openmap/gui/LayerPane.class
 Java-Bean: True
 
@@ -88,7 +94,7 @@ Java-Bean: True
 Name: com/bbn/openmap/gui/LayersPanel.class
 Java-Bean: True
 
-Name: com/bbn/openmap/gui/LoadPropertiesMenuItem.class
+Name: com/bbn/openmap/gui/MGRSCoordPanel.class
 Java-Bean: True
 
 Name: com/bbn/openmap/gui/MapWindow.class
@@ -103,9 +109,6 @@ Java-Bean: True
 Name: com/bbn/openmap/gui/MouseModeButtonPanel.class
 Java-Bean: True
 
-Name: com/bbn/openmap/gui/MouseModeMenu.class
-Java-Bean: True
-
 Name: com/bbn/openmap/gui/MouseModePanel.class
 Java-Bean: True
 
@@ -113,6 +116,9 @@ Name: com/bbn/openmap/gui/NavigateMenu.class
 Java-Bean: True
 
 Name: com/bbn/openmap/gui/NavigatePanel.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/OMGraphicDeleteTool.class
 Java-Bean: True
 
 Name: com/bbn/openmap/gui/OMToolSet.class
@@ -133,13 +139,7 @@ Java-Bean: True
 Name: com/bbn/openmap/gui/ProjectionStackTool.class
 Java-Bean: True
 
-Name: com/bbn/openmap/gui/SaveAsImageMenuItem.class
-Java-Bean: True
-
-Name: com/bbn/openmap/gui/SaveAsVirtualImageMenuItem.class
-Java-Bean: True
-
-Name: com/bbn/openmap/gui/SavePropertiesMenuItem.class
+Name: com/bbn/openmap/gui/ScaleTextPanel.class
 Java-Bean: True
 
 Name: com/bbn/openmap/gui/ToolPanel.class
@@ -148,19 +148,67 @@ Java-Bean: True
 Name: com/bbn/openmap/gui/ToolPanelButton.class
 Java-Bean: True
 
+Name: com/bbn/openmap/gui/UTMCoordPanel.class
+Java-Bean: True
+
 Name: com/bbn/openmap/gui/UserGuideMenuItems.class
 Java-Bean: True
 
 Name: com/bbn/openmap/gui/ZoomPanel.class
 Java-Bean: True
 
+Name: com/bbn/openmap/gui/menu/AboutMenuItem.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/BackgroundColorButton.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/DataBoundsMenuItem.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/LoadPropertiesMenuItem.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/MouseModeMenu.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/ProjectionMenu.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/QuitMenuItem.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/SaveAsGifMenuItem.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/SaveAsImageFileChooser.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/SaveAsImageMenuItem.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/SaveAsJpegMenuItem.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/SaveAsMenu.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/SaveAsVirtualImageMenuItem.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/SavePropertiesMenuItem.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/ToolPanelToggleMenuItem.class
+Java-Bean: True
+
+Name: com/bbn/openmap/gui/menu/WebSiteHelpMenuItem.class
+Java-Bean: True
+
 Name: com/bbn/openmap/image/ImageServer.class
 Java-Bean: True
 
 Name: com/bbn/openmap/image/MapRequestHandler.class
-Java-Bean: True
-
-Name: com/bbn/openmap/InformationDelegator.class
 Java-Bean: True
 
 Name: com/bbn/openmap/layer/BufferedLayer.class
@@ -182,6 +230,9 @@ Name: com/bbn/openmap/layer/DrawingToolLayer.class
 Java-Bean: True
 
 Name: com/bbn/openmap/layer/dted/DTEDLayer.class
+Java-Bean: True
+
+Name: com/bbn/openmap/layer/editor/EditorLayer.class
 Java-Bean: True
 
 Name: com/bbn/openmap/layer/EarthquakeLayer.class
@@ -262,18 +313,6 @@ Java-Bean: True
 Name: com/bbn/openmap/layer/vpf/VPFLayer.class
 Java-Bean: True
 
-Name: com/bbn/openmap/LayerHandler.class
-Java-Bean: True
-
-Name: com/bbn/openmap/MapBean.class
-Java-Bean: True
-
-Name: com/bbn/openmap/MapHandler.class
-Java-Bean: True
-
-Name: com/bbn/openmap/MouseDelegator.class
-Java-Bean: True
-
 Name: com/bbn/openmap/plugin/CSVTiledImagePlugIn.class
 Java-Bean: True
 
@@ -286,22 +325,25 @@ Java-Bean: True
 Name: com/bbn/openmap/plugin/graphicLoader/AnimationTester.class
 Java-Bean: True
 
+Name: com/bbn/openmap/plugin/graphicLoader/GraphicLoaderConnector.class
+Java-Bean: True
+
+Name: com/bbn/openmap/plugin/graphicLoader/LOSGraphicLoader.class
+Java-Bean: True
+
+Name: com/bbn/openmap/plugin/netmap/NetMapConnector.class
+Java-Bean: True
+
 Name: com/bbn/openmap/plugin/PlugInLayer.class
 Java-Bean: True
 
 Name: com/bbn/openmap/plugin/shis/SHISPlugIn.class
 Java-Bean: True
 
+Name: com/bbn/openmap/plugin/shis/UTMGridPlugIn.class
+Java-Bean: True
+
 Name: com/bbn/openmap/plugin/wms/WMSPlugIn.class
-Java-Bean: True
-
-Name: com/bbn/openmap/PropertyHandler.class
-Java-Bean: True
-
-Name: com/bbn/openmap/SoloMapComponentRejectPolicy.class
-Java-Bean: True
-
-Name: com/bbn/openmap/SoloMapComponentReplacePolicy.class
 Java-Bean: True
 
 Name: com/bbn/openmap/tools/dnd/ComponentDragGestureListener.class
@@ -378,3 +420,22 @@ Java-Bean: True
 
 Name: com/bbn/openmap/util/propertyEditor/YesNoPropertyEditor.class
 Java-Bean: True
+
+Name: com/bbn/openmap/examples/beanbox/Fighter.class
+Java-Bean: True
+
+Name: com/bbn/openmap/examples/beanbox/SimpleBeanContainer.class
+Java-Bean: True
+
+Name: com/bbn/openmap/examples/beanbox/SimpleBeanObject.class
+Java-Bean: True
+
+Name: com/bbn/openmap/examples/crew/RouteLayer.class
+Java-Bean: True
+
+Name: com/bbn/openmap/examples/hello/TextLayer.class
+Java-Bean: True
+
+Name: com/bbn/openmap/examples/simple/RouteLayer.class
+Java-Bean: True
+
