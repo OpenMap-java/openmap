@@ -47,7 +47,7 @@
     <ant antfile="${openmap.src}/build.xml" target="classes" inheritAll="false"/>
     <antcall target="svg"/>
     <antcall target="j3d"/>
-    <antcall target="visibroker"/>
+<!--    <antcall target="visibroker"/> -->
   </target>
 
   <target name="svg" description="Compiles SVG OpenMap classes.">
@@ -71,7 +71,7 @@
   <target name="jars" depends="classes" 
           description="Compiles OpenMap and alternative classes.">
     <ant antfile="${openmap.src}/build.xml" target="jar.openmap" inheritAll="false"/>
-    <ant antfile="${corba.src}/build.xml" target="jar.visibroker" inheritAll="false"/>
+<!--    <ant antfile="${corba.src}/build.xml" target="jar.visibroker" inheritAll="false"/> -->
   </target>
 
   <target name="all" depends="jars"
