@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LayerGraphicWarehouseSupport.java,v $
-// $Revision: 1.5 $ $Date: 2004/01/26 18:18:12 $ $Author: dietrick $
+// $Revision: 1.6 $ $Date: 2004/02/01 21:21:59 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -83,14 +83,14 @@ public abstract class LayerGraphicWarehouseSupport
     /**
      * Get the DrawingAttributes used for the coverage type.
      */
-    public DrawingAttributes getDrawingAttributes(){
+    public DrawingAttributes getDrawingAttributes() {
         return drawingAttributes;
     }
 
     /**
      * Set the drawing attributes for the coverage type.
      */
-    public void setDrawingAttributes(DrawingAttributes da){
+    public void setDrawingAttributes(DrawingAttributes da) {
         drawingAttributes = da;
     }
     
@@ -419,7 +419,7 @@ public abstract class LayerGraphicWarehouseSupport
      * Set doThinning.
      * @param value boolean
      */
-    public static void setDoThinning (boolean value) {
+    public static void setDoThinning(boolean value) {
         doThinning = value;
     }
 
@@ -428,7 +428,7 @@ public abstract class LayerGraphicWarehouseSupport
      * Are we thinning?.
      * @return boolean
      */
-    public static boolean isDoThinning () {
+    public static boolean isDoThinning() {
         return doThinning;
     }
 
@@ -437,7 +437,7 @@ public abstract class LayerGraphicWarehouseSupport
      * Set fan compression epsilon.
      * @param value double
      */
-    public static void setFanEpsilon (double value) {
+    public static void setFanEpsilon(double value) {
         fan_eps = value;
     }
 
@@ -446,14 +446,14 @@ public abstract class LayerGraphicWarehouseSupport
      * Get fan compression epsilon.
      * @return double
      */
-    public static double getFanEpsilon () {
+    public static double getFanEpsilon() {
         return fan_eps;
     }
 
     /**
      * do fan compression of raw edge points
      */
-    protected static int doThinning (List ipts) {
+    protected static int doThinning(List ipts) {
         int size = ipts.size();
         int totalSize=0;
         for (int j=0; j<size; j++) {

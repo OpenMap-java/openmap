@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageTable.java,v $
-// $Revision: 1.6 $ $Date: 2004/01/26 18:18:11 $ $Author: dietrick $
+// $Revision: 1.7 $ $Date: 2004/02/01 21:21:59 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -44,9 +44,9 @@ public class CoverageTable {
     /** hack - used by EdgeTable */
     public int cachedLineSchema[] = null;
     /** hack - used by AreaTable */
-    public int cachedAreaSchema[] = null; //used by areatable
+    public int cachedAreaSchema[] = null;
     /** hack - used by TextTable */
-    public int cachedTextSchema[] = null; //used by texttable
+    public int cachedTextSchema[] = null;
     /** hack - used by nodetable */
     public int cachedEPointSchema[] = null;
     /** hack - used by nodetable */
@@ -463,10 +463,11 @@ public class CoverageTable {
                 continue;
             }
 
-            if (Debug.debugging("vpf")){
+            if (Debug.debugging("vpf")) {
                 Debug.output("CoverageTable getting " + 
                              currentFeature + " features");
             }
+
             // Get the feature class for this feature type.
             FeatureClassInfo fci = getFeatureClassInfo(currentFeature);
             
@@ -507,6 +508,7 @@ public class CoverageTable {
                 int getrow = 1;
                 for (List fcirow = new ArrayList();
                      fci.getRow(fcirow, getrow++); ) {
+
                     if (Debug.debugging("vpfdetail")) {
                         Debug.output("CoverageTable new feature " + fcirow);
                     }
@@ -536,10 +538,24 @@ public class CoverageTable {
                                                  ll2.getLongitude(),
                                                  ll1.getLongitude())) {
 
+                            // We should only be in here once, I
+                            // think, if the tile IDs are all stored
+                            // in order.  If the tile IDs are laid out
+                            // in the FCI in jumbled order, only the
+                            // first group of features will be
+                            // gathered because the tile will appear
+                            // cached.
+                            if (!warehouse.needToFetchTileContents(currentFeature, currentTile)) {
+                                if (Debug.debugging("vpf")) {
+                                    Debug.output("CoverageTable: Loaded Cached List for " + 
+                                                 currentFeature + " and " + currentTile.getPath());
+                                }
+                                continue;
+                            }
+
                             if (Debug.debugging("vpf.tile")) {
-                                Debug.output("Drawing " + featureType+
-                                             " features for " +
-                                             currentTile);
+                                Debug.output("CoverageTable: Drawing " + featureType+
+                                             " features for " + currentTile);
                             }
 
                             tables.setTables(featureType, currentTile);
@@ -566,6 +582,7 @@ public class CoverageTable {
 
                     if (tables.drawFeature(primitiveID, warehouse, ll1, ll2, 
                                            dpplat, dpplon, currentFeature)) {
+
                         didSomething = true;
                     }
                     
@@ -573,8 +590,8 @@ public class CoverageTable {
 
             }  catch (FormatException f) {
                 if (Debug.debugging("vpf.FormatException")) {
-                    Debug.output("Creating table: " + f.getClass()
-                                 + " " + f.getMessage());
+                    Debug.output("CoverageTable: Creating table: " + 
+                                 f.getClass() + " " + f.getMessage());
                 }
             }
             fci.close();
@@ -648,6 +665,14 @@ public class CoverageTable {
                         Debug.output("Drawing " + featureID.length + " " +
                                      featureType + " features for " +
                                      tileID + " " + currentTile);
+                    }
+
+                    if (!warehouse.needToFetchTileContents(currentFeature, currentTile)) {
+                        if (Debug.debugging("vpf")) {
+                            Debug.output("Loaded Cached List for " + currentFeature + 
+                                         " and " + currentTile.getPath());
+                        }
+                        continue;
                     }
 
                     for (int j = 0; j < featureID.length; j++) {
@@ -821,7 +846,7 @@ class TableHolder {
      * Construct the TableHandler with the CoverageTable it is
      * helping.
      */
-    protected TableHolder(CoverageTable ct){
+    protected TableHolder(CoverageTable ct) {
         coverageTable = ct;
     }
 

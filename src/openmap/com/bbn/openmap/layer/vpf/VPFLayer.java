@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.10 $
+// $Date: 2004/02/01 21:21:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -457,6 +457,11 @@ public class VPFLayer extends OMGraphicHandlerLayer
                     }
                     if (libraryBean != null) {
                         lst = libraryBean.getLibrarySelectionTable();
+                        warehouse = libraryBean.getWarehouse();
+                        // Set the warehouse with the properties
+                        // received when the layer was created.
+                        warehouse.setProperties(getPropertyPrefix(), props);
+
                         if (Debug.debugging("vpf")) {
                             Debug.output("VPFLayer.initLST(libraryBean)");
                         }
@@ -494,6 +499,7 @@ public class VPFLayer extends OMGraphicHandlerLayer
     /**
      * If the warehouse gets set as a result of this method being
      * called, the properties will beed to be reset on it.
+     * @param sbf Search by features.
      */
     public void checkWarehouse(boolean sbf) {
         if (warehouse == null) {
@@ -769,8 +775,6 @@ public class VPFLayer extends OMGraphicHandlerLayer
 
         if (configWindowSupport != null) {
             configWindowSupport.setTitle(getName());
-//          configWindowSupport.killWindow();
-//          configWindowSupport = null;
         }
     }
 

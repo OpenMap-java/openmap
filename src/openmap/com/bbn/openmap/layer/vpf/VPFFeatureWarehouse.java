@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFFeatureWarehouse.java,v $
 // $RCSfile: VPFFeatureWarehouse.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/02/01 21:21:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,6 +30,9 @@ import com.bbn.openmap.LatLonPoint;
  * Define an interface for a Graphic Factory for graphics read from VPF.
  */
 public interface VPFFeatureWarehouse extends VPFWarehouse {
+
+    public boolean needToFetchTileContents(String currentFeature, TileDirectory currentTile);
+
     /**
      *
      */

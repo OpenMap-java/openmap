@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibrarySelectionTable.java,v $
-// $Revision: 1.8 $ $Date: 2004/01/26 18:18:12 $ $Author: dietrick $
+// $Revision: 1.9 $ $Date: 2004/02/01 21:21:59 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -127,7 +127,6 @@ public class LibrarySelectionTable {
         // Figure out how files names should be constructed...
         boolean addSlash = true;
 
-//      if (vpfpath.endsWith(File.separator)) {
         if (vpfpath.endsWith("/") || vpfpath.endsWith(File.separator)) {
             addSlash = false;
         }
@@ -454,7 +453,7 @@ public class LibrarySelectionTable {
      * 
      * @param args command line arguments args[0] is a path to the VPF root
      */
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         Debug.init();
         Debug.put("vpf");
         String dcwbase = null;

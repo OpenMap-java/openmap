@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibraryBean.java,v $
 // $RCSfile: LibraryBean.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.4 $
+// $Date: 2004/02/01 21:21:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,6 +41,8 @@ import com.bbn.openmap.layer.util.LayerUtils;
  *VMAPData.class=com.bbn.openmap.layer.vpf.LibraryBean
  *# as in the layer .vpfPath, a ';' separated list of paths to VPF data
  *VMAPData.vpfPath=e:/VMAPLV0
+ *# Maximum number of tiles to cache.
+ *VMAPData.cacheSize=25
  * </pre>
  *
  * The VMAPData maker name, or whatever other name you decide to name
@@ -51,11 +53,14 @@ import com.bbn.openmap.layer.util.LayerUtils;
  */
 public class LibraryBean implements PropertyConsumer, Serializable { 
 
-    /** used for explicitly naming a library bean */
+    /** used for explicitly naming a library bean (name). */
     public static final String nameProperty = "name";
 
-    /** property extension used to set the VPF root directory */
+    /** property extension used to set the VPF root directory (vpfPath). */
     public static final String pathProperty = "vpfPath";
+
+    /** Maximum size of tile cache (cacheSize). */
+    public static final String cacheSizeProperty = "cacheSize";
 
     /** the lst for the path */
     private transient LibrarySelectionTable lst = null;
@@ -69,10 +74,16 @@ public class LibraryBean implements PropertyConsumer, Serializable {
     /** the paths used in constructing the lst */
     private String[] paths;
 
+    /**
+     * The VPFFeatureCache to use for cached features.
+     */
+    protected VPFFeatureCache featureCache;
+
     /** 
      * Construct an empty bean.
      */
     public LibraryBean() {
+        featureCache = new VPFFeatureCache();
     }
 
     public void setProperties(Properties setList) {
@@ -83,8 +94,8 @@ public class LibraryBean implements PropertyConsumer, Serializable {
         setPropertyPrefix(prefix);
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        paths = LayerUtils.initPathsFromProperties(setList,
-                                                   realPrefix + pathProperty);
+        paths = PropUtils.initPathsFromProperties(setList,
+                                                  realPrefix + pathProperty);
 
         String beanName = setList.getProperty(realPrefix + nameProperty);
         this.beanName = (beanName == null) ? prefix : beanName;
@@ -106,6 +117,11 @@ public class LibraryBean implements PropertyConsumer, Serializable {
             Debug.output("LibraryBean.setProperties:" + prefix +
                          ": path name not valid");
         }
+
+        int cacheSize = PropUtils.intFromProperties(setList, 
+                                                    realPrefix + cacheSizeProperty, 
+                                                    featureCache.getCacheSize());
+        featureCache.resetCache(cacheSize);
     }
     
     /**
@@ -116,12 +132,33 @@ public class LibraryBean implements PropertyConsumer, Serializable {
         return beanName;
     }
 
+    /**
+     * Not a good PropertyConsumer yet, doesn't return values.
+     */
     public Properties getProperties(Properties getList) {
-        return new Properties();
+        if (getList == null) {
+            getList = new Properties();
+        }
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        getList.put(prefix + nameProperty, beanName);
+        getList.put(prefix + cacheSizeProperty, Integer.toString(featureCache.getCacheSize()));
+        return getList;
     }
 
+    /**
+     */
     public Properties getPropertyInfo(Properties list) {
-        return new Properties();
+        if (list == null) {
+            list = new Properties();
+        }
+
+        list.put(nameProperty, "Name of Library Bean.");
+        list.put(pathProperty, "List of VPF directories.");
+        list.put(pathProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.MultiDirectoryPropertyEditor");
+        list.put(cacheSizeProperty, "Maximun number of tiles to cache (25 is default).");
+        
+        return list;
     }
 
     /**
@@ -151,5 +188,13 @@ public class LibraryBean implements PropertyConsumer, Serializable {
      */
     public LibrarySelectionTable getLibrarySelectionTable() {
         return lst;
+    }
+
+    public VPFCachedFeatureGraphicWarehouse getWarehouse() {
+        if (Debug.debugging("vpf")) {
+            Debug.output("LibraryBean.getWarehouse(): creating warehouse.");
+        }
+
+        return new VPFCachedFeatureGraphicWarehouse(featureCache);
     }
 }

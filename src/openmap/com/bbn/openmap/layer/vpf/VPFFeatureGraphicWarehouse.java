@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFFeatureGraphicWarehouse.java,v $
 // $RCSfile: VPFFeatureGraphicWarehouse.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/02/01 21:21:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -161,17 +161,24 @@ public class VPFFeatureGraphicWarehouse
      * feature.  Should be very unlikely to get a null value back.
      */
     public DrawingAttributes getAttributesForFeature(String featureType) {
-        DrawingAttributes ret;
+        if (featureType != null) {
+            DrawingAttributes ret;
 
-        if (featureDrawingAttributes != null) {
-            ret = (DrawingAttributes)featureDrawingAttributes.get(featureType);
-            if (ret == null) {
+            if (featureDrawingAttributes != null) {
+                ret = (DrawingAttributes)featureDrawingAttributes.get(featureType);
+                if (ret == null) {
+                    ret = drawingAttributes;
+                }
+
+            } else {
                 ret = drawingAttributes;
             }
+
+            return ret;
+
         } else {
-            ret = drawingAttributes;
+            return drawingAttributes;
         }
-        return ret;
     }
 
     /**
@@ -259,6 +266,10 @@ public class VPFFeatureGraphicWarehouse
         OMPoint pt = createOMPoint(latitude, longitude);
         getAttributesForFeature(featureType).setTo(pt);
         graphics.add(pt);
+    }
+
+    public boolean needToFetchTileContents(String currentFeature, TileDirectory currentTile) {
+        return true;
     }
 
     public static void main(String argv[]) {

@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/EdgeTable.java,v $
-// $Revision: 1.3 $ $Date: 2004/01/26 18:18:12 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2004/02/01 21:21:59 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -37,7 +37,8 @@ public class EdgeTable extends PrimitiveTable {
                 Constants.EDG_RIGHT_EDGE, Constants.EDG_LEFT_EDGE,
                 Constants.EDG_COORDINATES};
 
-    /** Construct an EdgeTable object for a tile of a coverage.
+    /**
+     * Construct an EdgeTable object for a tile of a coverage.
      * @param cov the coverage table that this tile is part of
      * @param tile the tile to parse
      * @throws FormatException a problem was encountered initializing this tile
@@ -61,6 +62,7 @@ public class EdgeTable extends PrimitiveTable {
     public final int getId(List l) {
         return ((Number)l.get(covtable.cachedLineSchema[0])).intValue();
     }
+
     /**
      * Get the value of the start_node column
      * @param l the list to retrieve the value from
@@ -68,6 +70,7 @@ public class EdgeTable extends PrimitiveTable {
     public final int getStartNode(List l) {
         return ((Number)l.get(covtable.cachedLineSchema[1])).intValue();
     }
+
     /**
      * Get the value of the end_node column
      * @param l the list to retrieve the value from
@@ -75,6 +78,7 @@ public class EdgeTable extends PrimitiveTable {
     public final int getEndNode(List l) {
         return ((Number)l.get(covtable.cachedLineSchema[2])).intValue();
     }
+
     /**
      * Get the value of the right_face column
      * @param l the list to retrieve the value from
@@ -84,12 +88,14 @@ public class EdgeTable extends PrimitiveTable {
     public final DcwCrossTileID getRightFace(List l) {
         return (DcwCrossTileID)l.get(covtable.cachedLineSchema[3]);
     }
+
     /**
      * Get the TilingAdapter for the right_face column
      */
     public final TilingAdapter getRightFaceTilingAdapter() {
         return getTilingAdapter(Constants.EDG_RIGHT_FACE);
     }
+
     /**
      * Get the value of the left_face column
      * @param l the list to retrieve the value from
@@ -99,12 +105,14 @@ public class EdgeTable extends PrimitiveTable {
     public final DcwCrossTileID getLeftFace(List l) {
         return (DcwCrossTileID)l.get(covtable.cachedLineSchema[4]);
     }
+
     /**
      * Get the TilingAdapter for the left_face column
      */
     public final TilingAdapter getLeftFaceTilingAdapter() {
         return getTilingAdapter(Constants.EDG_LEFT_FACE);
     }
+
     /**
      * Get the value of the right_edge column
      * @param l the list to retrieve the value from
@@ -114,12 +122,14 @@ public class EdgeTable extends PrimitiveTable {
     public final DcwCrossTileID getRightEdge(List l) {
         return (DcwCrossTileID)l.get(covtable.cachedLineSchema[5]);
     }
+
     /**
      * Get the TilingAdapter for the right_edge column
      */
     public final TilingAdapter getRightEdgeTilingAdapter() {
         return getTilingAdapter(Constants.EDG_RIGHT_EDGE);
     }
+
     /**
      * Get the value of the left_edge column
      * @param l the list to retrieve the value from
@@ -129,12 +139,14 @@ public class EdgeTable extends PrimitiveTable {
     public final DcwCrossTileID getLeftEdge(List l) {
         return (DcwCrossTileID)l.get(covtable.cachedLineSchema[6]);
     }
+
     /**
      * Get the TilingAdapter for the left_edge column
      */
     public final TilingAdapter getLeftEdgeTilingAdapter() {
         return getTilingAdapter(Constants.EDG_LEFT_EDGE);
     }
+
     /**
      * Get the value of the coordinates column
      * @param l the list to retrieve the value from
@@ -176,8 +188,8 @@ public class EdgeTable extends PrimitiveTable {
      */
     public void drawTile(VPFGraphicWarehouse warehouse,
                          float dpplat, float dpplon,
-                         LatLonPoint ll1, LatLonPoint ll2)
-    {
+                         LatLonPoint ll1, LatLonPoint ll2) {
+
         if (warehouse == null) {
             return;
         }
@@ -189,8 +201,7 @@ public class EdgeTable extends PrimitiveTable {
                                      dpplat, dpplon, getCoordinates(edge));
             }
         } catch (FormatException f) {
-            System.out.println(
-                    "Exception: " + f.getClass() + " " + f.getMessage());
+            System.out.println("Exception: " + f.getClass() + " " + f.getMessage());
         }
     }
 

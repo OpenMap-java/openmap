@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/FeatureClassInfo.java,v $
 // $RCSfile: FeatureClassInfo.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/02/01 21:21:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -96,7 +96,12 @@ public class FeatureClassInfo extends DcwRecordFile
         throws FormatException {
         super(tablepath + ftname, true); //defer initialization
 
-//      Debug.output("FCI: set to peruse (" + filename + ") and column (" + colname + ")");
+        if (Debug.debugging("vpf.fci")) {
+            Debug.output("FCI set to peruse (" + filename + 
+                         ") created with colname (" + colname + 
+                         ") , tablepath (" + tablepath + 
+                         ") and ftname (" + ftname + ")");
+        }
 
         ctable = cthis;
         columnname = colname.toLowerCase().intern();
@@ -147,10 +152,11 @@ public class FeatureClassInfo extends DcwRecordFile
             featureType = CoverageTable.SKIP_FEATURETYPE;
         }
 
-//      Debug.output("FCI: set to peruse (" + filename + ") and column (" + colname + ")");
-//      Debug.output("  setting tile directory file (" + tileDirFile + 
-//                   "), tile id column (" + tileDirFileColName + ")");
-
+        if (Debug.debugging("vpf.fci")) {
+            Debug.output("FCI: set to peruse (" + filename + ") and column (" + colname + ")");
+            Debug.output("  setting tile directory file (" + tileDirFile + 
+                         "), tile id column (" + tileDirFileColName + ")");
+        }
     }
 
     /**

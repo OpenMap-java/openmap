@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/PrimitiveTable.java,v $
 // $RCSfile: PrimitiveTable.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/02/01 21:21:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,6 +78,7 @@ public abstract class PrimitiveTable extends DcwRecordFile {
     public TileDirectory getTileDirectory() {
         return tile;
     }
+
     /**
      * Parse the records for this tile, calling warehouse.createXXXX
      * once for each record.
