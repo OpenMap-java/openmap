@@ -1,9 +1,9 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/user-guide.sgml,v $
 $RCSfile: user-guide.sgml,v $
-$Revision: 1.6 $
-$Date: 1999/04/05 19:06:42 $
-$Author: aculline $
+$Revision: 1.7 $
+$Date: 1999/11/04 15:09:53 $
+$Author: bmackiew $
 
 User's Guide for the OpenMap Viewer application.
 Launch the viewer with `java com.bbn.openmap.app.OpenMap' or by
@@ -60,7 +60,7 @@ settings to your own liking.
 <sect>Running the OpenMap Viewer
 <p>
 <#if output=html>
-<img src="images/openmap.gif">
+<img src="images/openmap.png">
 </#if>
 <p>
 Once the OpenMap Viewer application starts you will see a map of the
@@ -69,14 +69,14 @@ Earth with a 10° graticule.
 <sect1>Menu Options
 <p>
 <#if output=html>
-<img src="images/menubar.gif">
+<img src="images/menubar.png">
 </#if>
 <p>
 <itemize>
 <item>File Menu
 	<p>
 	<#if output=html>
-	<img src="images/file-menu.gif">
+	<img src="images/file-menu.png">
 	</#if>
 	<itemize>
 	<item><em>About</em> About the underlying OpenMap software.
@@ -86,7 +86,7 @@ Earth with a 10° graticule.
 <item>Navigate Menu
 	<p>
 	<#if output=html>
-	<img src="images/navigate-menu.gif">
+	<img src="images/navigate-menu.png">
 	</#if>
 	<itemize>
 	<item><em>Coordinates...</em> Reposition map dialog.
@@ -100,7 +100,7 @@ Earth with a 10° graticule.
 <item>Control Menu
 	<p>
 	<#if output=html>
-	<img src="images/control-menu.gif">
+	<img src="images/control-menu.png">
 	</#if>
 	<itemize>
 	<item><em>Mouse Mode...</em> Change the mouse behavior.
@@ -112,7 +112,7 @@ Earth with a 10° graticule.
 <item>Layers
 	<p>
 	<#if output=html>
-	<img src="images/layers-menu.gif">
+	<img src="images/layers-menu.png">
 	</#if>
 	<itemize>
 	<item><em>&lt;Layer1&gt;</em> Select topmost layer on map.
@@ -124,7 +124,7 @@ Earth with a 10° graticule.
 <item>Help
 	<p>
 	<#if output=html>
-	<img src="images/help-menu.gif">
+	<img src="images/help-menu.png">
 	</#if>
 	Bring up help in your Web Browser.  This option needs to be
 	configured in your <tt><ref id="sec-props"
@@ -134,7 +134,7 @@ Earth with a 10° graticule.
 <sect1>Toolbar Options
 <p>
 <#if output=html>
-<img src="images/toolbar.gif">
+<img src="images/toolbar.png">
 </#if>
 <p>
 <itemize>
@@ -155,7 +155,7 @@ Earth with a 10° graticule.
 <sect1>Layer Editor Window
 <p>
 <#if output=html>
-<img src="images/layers-window.gif">
+<img src="images/layers-window.png">
 </#if>
 <p>
 In addition to adding and removing layers from the map, the Layer
@@ -166,39 +166,39 @@ each other, and bring up their specific palette controls.
 
 <item>
 <#if output=html>
-<img src="images/layerNotSelected.gif">
-<img src="images/layerSelected.gif">
+<img src="images/layerNotSelected.png">
+<img src="images/layerSelected.png">
 </#if>
 Turn layer off/on.
 
 <item>
 <#if output=html>
-<img src="images/palette.gif">
-<img src="images/palette_on.gif">
+<img src="images/palette.png">
+<img src="images/palette_on.png">
 </#if>
 Turn layer palette (GUI) controls off/on.
 
 <item>
 <#if output=html>
-<img src="images/top.gif">
+<img src="images/top.png">
 </#if>
 Move selected layer to top of map.
 
 <item>
 <#if output=html>
-<img src="images/up.gif">
+<img src="images/up.png">
 </#if>
 Move selected layer up one level in map.
 
 <item>
 <#if output=html>
-<img src="images/down.gif">
+<img src="images/down.png">
 </#if>
 Move selected layer down one level in map.
 
 <item>
 <#if output=html>
-<img src="images/bottom.gif">
+<img src="images/bottom.png">
 </#if>
 Move selected layer to bottom of map.
 
@@ -208,7 +208,7 @@ Move selected layer to bottom of map.
 <sect1>Coordinates Window
 <p>
 <#if output=html>
-<img src="images/coordinates.gif">
+<img src="images/coordinates.png">
 </#if>
 <p>
 Specify coordinates in decimal degrees or DMS.  Click apply and the map

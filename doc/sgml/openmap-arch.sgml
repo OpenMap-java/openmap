@@ -1,9 +1,9 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
 $RCSfile: openmap-arch.sgml,v $
-$Revision: 1.7 $
-$Date: 1999/04/05 19:06:42 $
-$Author: aculline $
+$Revision: 1.8 $
+$Date: 1999/11/04 15:09:53 $
+$Author: bmackiew $
 
 OpenMap architecture document
 -->
@@ -24,14 +24,14 @@ and how to use various components of the OpenMap Toolkit.
 <toc>
 <p>
 <#if output=html>
-<img src="images/bigpicture.gif">
+<img src="images/bigpicture.png">
 </#if>
 
 
 <sect>Overview<label id="sec-overview">
 <p>
 <#if output=html>
-<img src="images/overview.gif">
+<img src="images/overview.png">
 </#if>
 <p>
 The <em/OpenMap Java Toolkit/ is made up of <htmlurl
@@ -63,7 +63,7 @@ forward to hearing how you will use OpenMap!</em>
 <sect>MapBean<label id="sec-mapbean">
 <p>
 <#if output=html>
-<img src="images/mapbean.gif">
+<img src="images/mapbean.png">
 </#if>
 <p>
 The <htmlurl url="api/com.bbn.openmap.MapBean.html" name="MapBean"> is
@@ -205,7 +205,7 @@ add them to your user interface.
 <sect3>ToolPanel<label id="sec-toolpanel">
 <p>
 <#if output=html>
-<img src="images/toolbar-minimal.gif">
+<img src="images/toolbar-minimal.png">
 </#if>
 <P>
 The <htmlurl url="./api/com.bbn.openmap.gui.ToolPanel.html" name="ToolPanel">
@@ -215,7 +215,7 @@ modes of the MapBean.  It is made up of the:
 <itemize>
 <item>
 <#if output=html>
-<img src="images/rosette.gif">
+<img src="images/rosette.png">
 </#if>
 Directional control.  Made from the <htmlurl
 url="./api/com.bbn.openmap.gui.NavigatePanel.html"
@@ -224,7 +224,7 @@ direction of the button that is pressed.
 
 <item>
 <#if output=html>
-<IMG SRC="images/zoombar.gif">
+<IMG SRC="images/zoombar.png">
 </#if>
 Zoom buttons.  Made from the <htmlurl
 url="./api/com.bbn.openmap.gui.ZoomPanel.html" name="ZoomPanel">.
@@ -234,7 +234,7 @@ scale by 2X), and the minus (-) button zooms out (decreases scale by
 
 <item>
 <#if output=html>
-<IMG SRC="images/scale_entry.gif">
+<IMG SRC="images/scale_entry.png">
 </#if>
 Scale field window. This shows the current scale setting (1:scale),
 and also lets you enter a desired scale directly.
@@ -243,7 +243,7 @@ and also lets you enter a desired scale directly.
 <sect3>InformationDelegator<label id="sec-infodelegator">
 <p>
 <#if output=html>
-<IMG SRC="images/whopanel.gif">
+<IMG SRC="images/whopanel.png">
 </#if>
 The <htmlurl url="./api/com.bbn.openmap.InformationDelegator.html"
 name="InformationDelegator"> is a JavaBean used for status updates and
@@ -257,7 +257,7 @@ one-liners, pop-up messages, and web pages.
 <sect3>LayersPanel<label id="sec-layerspanel">
 <p>
 <#if output=html>
-<IMG SRC="images/layers-window.gif">
+<IMG SRC="images/layers-window.png">
 </#if>
 <P>
 The <htmlurl url="./api/com.bbn.openmap.gui.LayersPanel.html"
@@ -269,43 +269,43 @@ layer.  Click on the layer name to select it.
 <itemize>
 <item>
 <#if output=html>
-<IMG SRC="images/top.gif">
+<IMG SRC="images/top.png">
 </#if>
 Move the selected layer to the top of the map.
 <item>
 <#if output=html>
-<IMG SRC="images/up.gif">
+<IMG SRC="images/up.png">
 </#if>
 The selected layer exchanges position with the one above it.
 <item>
 <#if output=html>
-<IMG SRC="images/down.gif">
+<IMG SRC="images/down.png">
 </#if>
 The selected layer exchanges position with the one below it.
 <item>
 <#if output=html>
-<IMG SRC="images/bottom.gif">
+<IMG SRC="images/bottom.png">
 </#if>
 Move the selected layer to the bottom of the map.
 <item>
 <#if output=html>
-<IMG SRC="images/layerNotSelected.gif">
+<IMG SRC="images/layerNotSelected.png">
 </#if>
 Click this to add the layer to the map.
 <item>
 <#if output=html>
-<IMG SRC="images/layerSelected.gif">
+<IMG SRC="images/layerSelected.png">
 </#if>
 Click this to remove the layer from the map.
 <item>
 <#if output=html>
-<IMG SRC="images/palette.gif">
+<IMG SRC="images/palette.png">
 </#if>
 The GUI palette for the layer is not active.  Click this to display
 it.
 <item>
 <#if output=html>
-<IMG SRC="images/palette_on.gif">
+<IMG SRC="images/palette_on.png">
 </#if>
 The GUI palette for the layer is active.  Click here to hide it.
 </itemize>
