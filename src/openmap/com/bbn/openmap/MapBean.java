@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/12/23 20:47:43 $
-// $Author: wjeuerle $
+// $Revision: 1.8 $
+// $Date: 2004/01/24 03:31:35 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -75,8 +75,8 @@ import com.bbn.openmap.LatLonPoint;
  */
 public class MapBean extends JComponent
     implements ComponentListener, ContainerListener,
-	       ProjectionListener, PanListener,
-	       ZoomListener, LayerListener,
+               ProjectionListener, PanListener,
+               ZoomListener, LayerListener,
                CenterListener, SoloMapComponent 
 {
 
@@ -105,9 +105,9 @@ public class MapBean extends JComponent
     private static final boolean DEBUG_THREAD = true;
 
     private static final String copyrightNotice =
-	"OpenMap(tm) Version " + version + "\r\n" +
-	"  Copyright (C) BBNT Solutions LLC.  All rights reserved.\r\n" +
-	"  See http://openmap.bbn.com/ for details.\r\n";
+        "OpenMap(tm) Version " + version + "\r\n" +
+        "  Copyright (C) BBNT Solutions LLC.  All rights reserved.\r\n" +
+        "  See http://openmap.bbn.com/ for details.\r\n";
 
     public final static float DEFAULT_CENTER_LAT = 0.0f;
     public final static float DEFAULT_CENTER_LON = 0.0f;
@@ -120,8 +120,8 @@ public class MapBean extends JComponent
     protected int minWidth = 100;
 
     protected Proj projection = new Mercator(
-	    new LatLonPoint(DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON),
-	    DEFAULT_SCALE, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            new LatLonPoint(DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON),
+            DEFAULT_SCALE, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     protected ProjectionSupport projectionSupport;
     /**
      * Layers that are removed from the MapBean are held until the
@@ -172,47 +172,47 @@ public class MapBean extends JComponent
      * @return String Copyright
      */
     public static String getCopyrightMessage() {
-	return copyrightNotice;
+        return copyrightNotice;
     }
 
     /**
      * Construct a MapBean.
      */
     public MapBean() {
-	if (Debug.debugging("mapbean")) {
-	    debugmsg("MapBean()");
-	}
-	if (! suppressCopyright) {
-	    Debug.output(copyrightNotice);
-	}
+        if (Debug.debugging("mapbean")) {
+            debugmsg("MapBean()");
+        }
+        if (! suppressCopyright) {
+            Debug.output(copyrightNotice);
+        }
 
-	background = DEFAULT_BACKGROUND_COLOR;
+        background = DEFAULT_BACKGROUND_COLOR;
 
-	// Don't need one for every MapBean, just the first one.
-	suppressCopyright = true;
+        // Don't need one for every MapBean, just the first one.
+        suppressCopyright = true;
 
-	super.setLayout(new OverlayLayout(this));
-	projectionSupport = new ProjectionSupport(this);
-	addComponentListener(this);
-	addContainerListener(this);
+        super.setLayout(new OverlayLayout(this));
+        projectionSupport = new ProjectionSupport(this);
+        addComponentListener(this);
+        addContainerListener(this);
 
-	//----------------------------------------
-	// In a builder tool it seems that the OverlayLayout
-	// makes the MapBean fail to resize.  And since it has
-	// no children by default, it has no size.  So I add
-	// a null Layer here to give it a default size.
-	//----------------------------------------
-	if (java.beans.Beans.isDesignTime()) {
-	    add(new Layer() {
-		public void projectionChanged (ProjectionEvent e) {}
-		public Dimension getPreferredSize() {
-		    return new Dimension(100, 100);
-		}
-		});
-	}
+        //----------------------------------------
+        // In a builder tool it seems that the OverlayLayout
+        // makes the MapBean fail to resize.  And since it has
+        // no children by default, it has no size.  So I add
+        // a null Layer here to give it a default size.
+        //----------------------------------------
+        if (java.beans.Beans.isDesignTime()) {
+            add(new Layer() {
+                public void projectionChanged (ProjectionEvent e) {}
+                public Dimension getPreferredSize() {
+                    return new Dimension(100, 100);
+                }
+                });
+        }
 
-	setPreferredSize(new Dimension(projection.getWidth(), 
-				       projection.getHeight()));
+        setPreferredSize(new Dimension(projection.getWidth(), 
+                                       projection.getHeight()));
     }
 
     /**
@@ -220,7 +220,7 @@ public class MapBean extends JComponent
      * @return String
      */
     public String toString() {
-	return getClass().getName() + "@" + Integer.toHexString(hashCode());
+        return getClass().getName() + "@" + Integer.toHexString(hashCode());
     }
 
     /*----------------------------------------------------------------------
@@ -237,13 +237,13 @@ public class MapBean extends JComponent
      * @param index int location
      */
     protected final void addImpl(Component comp,
-				 Object constraints,
-				 int index) {
-	if (comp instanceof Layer) {
-	    super.addImpl(comp, constraints, index);
-	} else {
-	    throw new IllegalArgumentException("only Layers can be added to a MapBean");
-	}
+                                 Object constraints,
+                                 int index) {
+        if (comp instanceof Layer) {
+            super.addImpl(comp, constraints, index);
+        } else {
+            throw new IllegalArgumentException("only Layers can be added to a MapBean");
+        }
     }
 
     /**
@@ -252,7 +252,7 @@ public class MapBean extends JComponent
      * the parent component and should not be called directly.
      */
     public final void setLayout(LayoutManager mgr) {
-	throw new IllegalArgumentException("cannot change layout of Map");
+        throw new IllegalArgumentException("cannot change layout of Map");
     }
 
     /**
@@ -260,7 +260,7 @@ public class MapBean extends JComponent
      * Included here to be a good citizen.  
      */
     public Dimension getMinimumSize() {
-	return new Dimension(minWidth, minHeight);
+        return new Dimension(minWidth, minHeight);
     }
 
     /**
@@ -268,8 +268,8 @@ public class MapBean extends JComponent
      * Included here to be a good citizen.  
      */
     public void setMinimumSize(Dimension dim) {
-	minWidth = (int)dim.getWidth();
-	minHeight = (int)dim.getHeight();
+        minWidth = (int)dim.getWidth();
+        minHeight = (int)dim.getHeight();
     }
 
     /**
@@ -282,7 +282,7 @@ public class MapBean extends JComponent
      * @return Insets 0-length Insets
      */
     public final Insets getInsets() {
-	return insets;
+        return insets;
     }
 
     private final transient static Insets insets = new Insets(0,0,0,0);
@@ -298,12 +298,12 @@ public class MapBean extends JComponent
      * @param e ComponentEvent
      */
     public void componentResized(ComponentEvent e) {
-	if (Debug.debugging("mapbean")) {
-	    debugmsg("Size changed: " + getWidth() + " x " + getHeight());
-	}
-	projection.setWidth(getWidth());
-	projection.setHeight(getHeight());
-	fireProjectionChanged();
+        if (Debug.debugging("mapbean")) {
+            debugmsg("Size changed: " + getWidth() + " x " + getHeight());
+        }
+        projection.setWidth(getWidth());
+        projection.setHeight(getHeight());
+        fireProjectionChanged();
     }
 
     /**
@@ -343,9 +343,9 @@ public class MapBean extends JComponent
      * @param l ProjectionListener
      */
     public synchronized void addProjectionListener(ProjectionListener l) {
-	projectionSupport.addProjectionListener(l);
-	// Assume that it wants the current projection
-	l.projectionChanged(new ProjectionEvent(this, getProjection()));
+        projectionSupport.addProjectionListener(l);
+        // Assume that it wants the current projection
+        l.projectionChanged(new ProjectionEvent(this, getProjection()));
     }
 
     /**
@@ -357,7 +357,7 @@ public class MapBean extends JComponent
      * @param l ProjectionListener
      */
     public synchronized void removeProjectionListener(ProjectionListener l) {
-	projectionSupport.removeProjectionListener(l);
+        projectionSupport.removeProjectionListener(l);
     }
 
     /**
@@ -365,12 +365,12 @@ public class MapBean extends JComponent
      * need to know about a projection change.
      */
     protected void fireProjectionChanged() {
-	// Fire the property change, so the messages get cleared out.
-	// Then, if any of the layers have a problem with their new
-	// projection, their messages will be displayed.
-	firePropertyChange(ProjectionProperty, null, getProjection());
-	projectionSupport.fireProjectionChanged(getProjection());
-	purgeAndNotifyRemovedLayers();
+        // Fire the property change, so the messages get cleared out.
+        // Then, if any of the layers have a problem with their new
+        // projection, their messages will be displayed.
+        firePropertyChange(ProjectionProperty, null, getProjection());
+        projectionSupport.fireProjectionChanged(getProjection());
+        purgeAndNotifyRemovedLayers();
     }
 
     /**
@@ -378,23 +378,23 @@ public class MapBean extends JComponent
      * those layers know they have been removed from the map.
      */
     public void purgeAndNotifyRemovedLayers() {
-	// Tell any layers that have been removed that they have 
-	// been removed
-	if (removedLayers.size() == 0) {
-	    return;
-	}
-	for (int i=0; i<removedLayers.size(); i++) {
-	    Layer l = ((Layer)removedLayers.elementAt(i));
-	    l.removed(this);
-	}
-	removedLayers.removeAllElements();
+        // Tell any layers that have been removed that they have 
+        // been removed
+        if (removedLayers.size() == 0) {
+            return;
+        }
+        for (int i=0; i<removedLayers.size(); i++) {
+            Layer l = ((Layer)removedLayers.elementAt(i));
+            l.removed(this);
+        }
+        removedLayers.removeAllElements();
 
-	// Shouldn't call this, but it's the only thing
-	// that seems to make it work...
-	// Seems to help gc'ing layers in a timely manner.
-	if (Debug.debugging("helpgc")) {
-	    System.gc();
-	}
+        // Shouldn't call this, but it's the only thing
+        // that seems to make it work...
+        // Seems to help gc'ing layers in a timely manner.
+        if (Debug.debugging("helpgc")) {
+            System.gc();
+        }
     }
 
     /*----------------------------------------------------------------------
@@ -407,7 +407,7 @@ public class MapBean extends JComponent
      * @see Projection#getScale
      */
     public float getScale() {
-	return projection.getScale();
+        return projection.getScale();
     }
 
     /**
@@ -418,8 +418,8 @@ public class MapBean extends JComponent
      * @see Proj#setScale
      */
     public void setScale(float newScale) {
-	projection.setScale(newScale);
-	fireProjectionChanged();
+        projection.setScale(newScale);
+        fireProjectionChanged();
     }
 
     /**
@@ -429,7 +429,7 @@ public class MapBean extends JComponent
      * @see Projection#getCenter
      */
     public LatLonPoint getCenter() {
-	return projection.getCenter();
+        return projection.getCenter();
     }
 
     /**
@@ -438,8 +438,8 @@ public class MapBean extends JComponent
      * @see Proj#setCenter(LatLonPoint)
      */
     public void setCenter(LatLonPoint newCenter) {
-	projection.setCenter(newCenter);
-	fireProjectionChanged();
+        projection.setCenter(newCenter);
+        fireProjectionChanged();
     }
 
     /**
@@ -449,8 +449,8 @@ public class MapBean extends JComponent
      * @see Proj#setCenter(float, float)
      */
     public void setCenter(float lat, float lon) {
-	projection.setCenter(lat, lon);
-	fireProjectionChanged();
+        projection.setCenter(lat, lon);
+        fireProjectionChanged();
     }
 
     /**
@@ -460,7 +460,7 @@ public class MapBean extends JComponent
      * @see Projection#getProjectionType
      */
     public int getProjectionType() {
-	return projection.getProjectionType();
+        return projection.getProjectionType();
     }
 
     /**
@@ -471,17 +471,17 @@ public class MapBean extends JComponent
      * @param newType the new projection type
      */
     public void setProjectionType(int newType) {
-	int oldType = projection.getProjectionType();
-	if (oldType != newType) {
-	    LatLonPoint ctr = projection.getCenter();
-	    setProjection((Proj)(ProjectionFactory.makeProjection(newType,
-								  ctr.getLatitude(),
-								  ctr.getLongitude(),
-								  projection.getScale(),
-								  projection.getWidth(),
-								  projection.getHeight()
-								  )));
-	}
+        int oldType = projection.getProjectionType();
+        if (oldType != newType) {
+            LatLonPoint ctr = projection.getCenter();
+            setProjection((Proj)(ProjectionFactory.makeProjection(newType,
+                                                                  ctr.getLatitude(),
+                                                                  ctr.getLongitude(),
+                                                                  projection.getScale(),
+                                                                  projection.getWidth(),
+                                                                  projection.getHeight()
+                                                                  )));
+        }
     }
 
     /**
@@ -492,12 +492,12 @@ public class MapBean extends JComponent
      * @param color java.awt.Color.  
      */
     public void setBackgroundColor(Color color) {
-	setBackground(color);
+        setBackground(color);
     }
 
     public void setBackground(Color color) {
-	super.setBackground(color);
-	setBckgrnd((Paint)color);
+        super.setBackground(color);
+        setBckgrnd((Paint)color);
     }
 
     /**
@@ -508,14 +508,14 @@ public class MapBean extends JComponent
      * @param paint java.awt.Paint.  
      */
     public void setBckgrnd(Paint paint) {
-	setBufferDirty(true);
+        setBufferDirty(true);
 
-	// Instead, do this.
-	Paint oldBackground = background;
-	background = paint;
-	firePropertyChange(BackgroundProperty, oldBackground, background);
+        // Instead, do this.
+        Paint oldBackground = background;
+        background = paint;
+        firePropertyChange(BackgroundProperty, oldBackground, background);
 
-	repaint();
+        repaint();
     }
 
     /**
@@ -528,12 +528,12 @@ public class MapBean extends JComponent
      * @return color java.awt.Color.  
      */
     public Color getBackground() {
-	Paint ret = getBckgrnd();
-	if (ret instanceof Color) {
-	    return (Color)ret;
-	}
+        Paint ret = getBckgrnd();
+        if (ret instanceof Color) {
+            return (Color)ret;
+        }
 
-	return super.getBackground();
+        return super.getBackground();
     }
 
     /**
@@ -545,12 +545,12 @@ public class MapBean extends JComponent
      * @return color java.awt.Color.  
      */
     public Paint getBckgrnd() {
-	Paint ret = background;
-	if (ret == null) {
-// 	    ret = projection.getBackgroundColor();
-	    ret = super.getBackground();
-	}
-	return ret;
+        Paint ret = background;
+        if (ret == null) {
+//          ret = projection.getBackgroundColor();
+            ret = super.getBackground();
+        }
+        return ret;
     }
 
     /**
@@ -558,7 +558,7 @@ public class MapBean extends JComponent
      * @return Projection
      */
     public Projection getProjection() {
-	return projection;
+        return projection;
     }
     
     /**
@@ -566,12 +566,12 @@ public class MapBean extends JComponent
      * @param aProjection Projection
      */
     public void setProjection(Projection aProjection) {
-	if (aProjection != null) {
-	    setBufferDirty(true);
-	    projection = (Proj)aProjection;
-	    setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
-	    fireProjectionChanged();
-	}
+        if (aProjection != null) {
+            setBufferDirty(true);
+            projection = (Proj)aProjection;
+            setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
+            fireProjectionChanged();
+        }
     }
 
     //------------------------------------------------------------
@@ -584,7 +584,7 @@ public class MapBean extends JComponent
      * @param evt the incoming center event
      */
     public void center(CenterEvent evt) {
-	setCenter(evt.getLatitude(), evt.getLongitude());
+        setCenter(evt.getLatitude(), evt.getLongitude());
     }
 
     //------------------------------------------------------------
@@ -597,18 +597,18 @@ public class MapBean extends JComponent
      * @param evt the incoming pan event
      */
     public void pan(PanEvent evt) {
-	if (Debug.debugging("mapbean")) {
-	    debugmsg("PanEvent: " + evt);
-	}
-	float az = evt.getAzimuth();
-	float c = evt.getArcDistance();
-	if (Float.isNaN(c)) {
-	    projection.pan(az);
-	} else {
-	    projection.pan(az, c);
-	}
+        if (Debug.debugging("mapbean")) {
+            debugmsg("PanEvent: " + evt);
+        }
+        float az = evt.getAzimuth();
+        float c = evt.getArcDistance();
+        if (Float.isNaN(c)) {
+            projection.pan(az);
+        } else {
+            projection.pan(az, c);
+        }
 
-	fireProjectionChanged();
+        fireProjectionChanged();
     }
 
     //------------------------------------------------------------
@@ -623,15 +623,15 @@ public class MapBean extends JComponent
      * @param evt the ZoomEvent describing the new scale.
      */
     public void zoom(ZoomEvent evt) {
-	float newScale;
-	if (evt.isAbsolute()) {
-	    newScale = evt.getAmount();
-	} else if (evt.isRelative()) {
-	    newScale = getScale() * evt.getAmount();
-	} else {
-	    return;
-	}
-	setScale(newScale);
+        float newScale;
+        if (evt.isAbsolute()) {
+            newScale = evt.getAmount();
+        } else if (evt.isRelative()) {
+            newScale = getScale() * evt.getAmount();
+        } else {
+            return;
+        }
+        setScale(newScale);
     }
 
     //------------------------------------------------------------
@@ -650,13 +650,13 @@ public class MapBean extends JComponent
      * @param value boolean
      */
     public void setDoContainerChange(boolean value) {
-	// if changing from false to true, call changeLayers()
+        // if changing from false to true, call changeLayers()
         if (!doContainerChange &&  value) {
-	    doContainerChange = value;
-	    changeLayers(null);
-	} else {
-	    doContainerChange = value;
-	}
+            doContainerChange = value;
+            changeLayers(null);
+        } else {
+            doContainerChange = value;
+        }
     }
 
     /**
@@ -678,12 +678,12 @@ public class MapBean extends JComponent
      * @param e ContainerEvent
      */
     public void componentAdded(ContainerEvent e) {
-	// Blindly cast.  addImpl has already checked to be
-	// sure the child is a Layer.
-	addProjectionListener((Layer)e.getChild());
+        // Blindly cast.  addImpl has already checked to be
+        // sure the child is a Layer.
+        addProjectionListener((Layer)e.getChild());
 
-	// If the new layer is in the queue to have removed() called
-	// on it take it off the queue, and don't add it to the
+        // If the new layer is in the queue to have removed() called
+        // on it take it off the queue, and don't add it to the
 	// added() queue (it doesn't know that it was removed, yet).
 	// Otherwise, add it to the queue to have added() called on
 	// it.

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/BufferedLayerMapBean.java,v $
 // $RCSfile: BufferedLayerMapBean.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/14 20:09:38 $
+// $Revision: 1.5 $
+// $Date: 2004/01/24 03:31:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,8 +66,8 @@ public class BufferedLayerMapBean extends BufferedMapBean {
      * Construct a MapBean.
      */
     public BufferedLayerMapBean() {
-	super();
-	DEBUG = Debug.debugging("mapbean");
+        super();
+        DEBUG = Debug.debugging("mapbean");
     }
 
     /**
@@ -77,27 +77,27 @@ public class BufferedLayerMapBean extends BufferedMapBean {
      * @param color java.awt.Color.  
      */
     public void setBackgroundColor(Color color) {
-	super.setBackground(color);
-	getBufferedLayer().setBackground(color);
+        super.setBackground(color);
+        getBufferedLayer().setBackground(color);
     }
 
     public void setBckgrnd(Paint paint) {
-	super.setBckgrnd(paint);
-	getBufferedLayer().setBckgrnd(paint);
+        super.setBckgrnd(paint);
+        getBufferedLayer().setBckgrnd(paint);
     }
 
     public synchronized void setBufferedLayer(BufferedLayer bl) {
-	bufferedLayer = bl;
+        bufferedLayer = bl;
     }
 
     public synchronized BufferedLayer getBufferedLayer() {
-	if (bufferedLayer == null) {
-	    bufferedLayer = new BufferedLayer();
-	    addPropertyChangeListener(bufferedLayer);
-	    bufferedLayer.setName("Background Layers");
-	}
+        if (bufferedLayer == null) {
+            bufferedLayer = new BufferedLayer();
+            addPropertyChangeListener(bufferedLayer);
+            bufferedLayer.setName("Background Layers");
+        }
 
-	return bufferedLayer;
+        return bufferedLayer;
     }
 
     /**
@@ -106,14 +106,14 @@ public class BufferedLayerMapBean extends BufferedMapBean {
      * stored in the internal BufferedLayer.
      */
     public void setMapBeanRepaintPolicy(MapBeanRepaintPolicy mbrp) {
-	super.setMapBeanRepaintPolicy(mbrp);
+        super.setMapBeanRepaintPolicy(mbrp);
 
-	MapBeanRepaintPolicy mbrp2 = (MapBeanRepaintPolicy)mbrp.clone();
-	MapBean mb = getBufferedLayer().getMapBean();
-	if (mb != null) {
-	    mb.setMapBeanRepaintPolicy(mbrp2);
-	    mbrp2.setMap(mb);
-	}
+        MapBeanRepaintPolicy mbrp2 = (MapBeanRepaintPolicy)mbrp.clone();
+        MapBean mb = getBufferedLayer().getMapBean();
+        if (mb != null) {
+            mb.setMapBeanRepaintPolicy(mbrp2);
+            mbrp2.setMap(mb);
+        }
     }
 
     /**
@@ -125,121 +125,121 @@ public class BufferedLayerMapBean extends BufferedMapBean {
     public void setLayers(LayerEvent evt) {
         bufferDirty = true;
         Layer[] layers = evt.getLayers();
-	int type = evt.getType();
+        int type = evt.getType();
 
-	if (type == LayerEvent.ALL) {
-	    // Don't care about these at all...
-	    return;
-	}
+        if (type == LayerEvent.ALL) {
+            // Don't care about these at all...
+            return;
+        }
 
-	// @HACK is this cool?:
-	if (layers == null) {
-	    System.err.println("MapBean.setLayers(): layers is null!");
-	    return;
-	}
+        // @HACK is this cool?:
+        if (layers == null) {
+            System.err.println("MapBean.setLayers(): layers is null!");
+            return;
+        }
 
-	boolean oldChange = getDoContainerChange();
-	setDoContainerChange(false);
+        boolean oldChange = getDoContainerChange();
+        setDoContainerChange(false);
 
-	BufferedLayer bufLayer;
+        BufferedLayer bufLayer;
 
-	synchronized (this) {
-	    bufLayer = getBufferedLayer();
-	}
+        synchronized (this) {
+            bufLayer = getBufferedLayer();
+        }
 
-	// use LayerEvent.REPLACE when you want to remove all current layers
-	// add a new set
-	if (type==LayerEvent.REPLACE) {
-	    if (DEBUG) {
-		debugmsg("Replacing all layers");
-	    }
-  	    removeAll();
-	    bufLayer.clearLayers();
+        // use LayerEvent.REPLACE when you want to remove all current layers
+        // add a new set
+        if (type==LayerEvent.REPLACE) {
+            if (DEBUG) {
+                debugmsg("Replacing all layers");
+            }
+            removeAll();
+            bufLayer.clearLayers();
 
-	    for (int i=0; i<layers.length; i++) {
-		// @HACK is this cool?:
-		if (layers[i] == null) {
-		    System.err.println("MapBean.setLayers(): layer " + 
-				       i + " is null");
-		    continue;
-		}
+            for (int i=0; i<layers.length; i++) {
+                // @HACK is this cool?:
+                if (layers[i] == null) {
+                    System.err.println("MapBean.setLayers(): layer " + 
+                                       i + " is null");
+                    continue;
+                }
 
-		if (DEBUG) {
-		    debugmsg("Adding layer[" +i+"]= " +layers[i].getName());
-		}
+                if (DEBUG) {
+                    debugmsg("Adding layer[" +i+"]= " +layers[i].getName());
+                }
 
-		if (layers[i].getAddAsBackground()) {
-		    if (DEBUG) {
-			Debug.output("Adding layer[" +i+"]= " +layers[i].getName() + 
-				     " to background");
-		    }
+                if (layers[i].getAddAsBackground()) {
+                    if (DEBUG) {
+                        Debug.output("Adding layer[" +i+"]= " +layers[i].getName() + 
+                                     " to background");
+                    }
 
-		    bufLayer.addLayer(layers[i]);
-		} else {
-		    add(layers[i]);
-		}
+                    bufLayer.addLayer(layers[i]);
+                } else {
+                    add(layers[i]);
+                }
 
-		layers[i].setVisible(true);
-	    }
+                layers[i].setVisible(true);
+            }
 
-	    if (bufLayer.hasLayers()) {
-		add(bufLayer);
-	    }
-	}
+            if (bufLayer.hasLayers()) {
+                add(bufLayer);
+            }
+        }
 
-	// use LayerEvent.ADD when adding and/or reshuffling layers
-	else if (type == LayerEvent.ADD) {
+        // use LayerEvent.ADD when adding and/or reshuffling layers
+        else if (type == LayerEvent.ADD) {
 
-	    remove(bufLayer);
+            remove(bufLayer);
 
-	    if (DEBUG) {
-		debugmsg("Adding new layers");
-	    }
-	    for (int i=0; i<layers.length; i++) {
-		if (DEBUG) {
-		    debugmsg("Adding layer[" +i+"]= " +layers[i].getName());
-		}
+            if (DEBUG) {
+                debugmsg("Adding new layers");
+            }
+            for (int i=0; i<layers.length; i++) {
+                if (DEBUG) {
+                    debugmsg("Adding layer[" +i+"]= " +layers[i].getName());
+                }
 
-// 		add(layers[i]);
-		layers[i].setVisible(true);
+//              add(layers[i]);
+                layers[i].setVisible(true);
 
-		if (layers[i].getAddAsBackground()) {
-		    if (DEBUG) {
-			Debug.output("Adding layer[" +i+"]= " +layers[i].getName() + 
-				     " to background");
-		    }
-		    bufLayer.addLayer(layers[i]);
-		} else {
-		    add(layers[i]);
-		}
-	    }
+                if (layers[i].getAddAsBackground()) {
+                    if (DEBUG) {
+                        Debug.output("Adding layer[" +i+"]= " +layers[i].getName() + 
+                                     " to background");
+                    }
+                    bufLayer.addLayer(layers[i]);
+                } else {
+                    add(layers[i]);
+                }
+            }
 
-	    if (bufLayer.hasLayers()) {
-		add(bufLayer);
-	    }
-	}
-	
-	// use LayerEvent.REMOVE when you want to delete layers from the map
-	else if (type == LayerEvent.REMOVE) {
-	    if (DEBUG) {
-		debugmsg("Removing layers");
-	    }
-	    for (int i=0; i<layers.length; i++) {
-		if (DEBUG) {
-		    debugmsg("Removing layer[" +i+"]= " +layers[i].getName());
-		}
-		remove(layers[i]);
-		bufLayer.removeLayer(layers[i]);
-	    }
-	}
+            if (bufLayer.hasLayers()) {
+                add(bufLayer);
+            }
+        }
+        
+        // use LayerEvent.REMOVE when you want to delete layers from the map
+        else if (type == LayerEvent.REMOVE) {
+            if (DEBUG) {
+                debugmsg("Removing layers");
+            }
+            for (int i=0; i<layers.length; i++) {
+                if (DEBUG) {
+                    debugmsg("Removing layer[" +i+"]= " +layers[i].getName());
+                }
+                remove(layers[i]);
+                bufLayer.removeLayer(layers[i]);
+            }
+        }
 
-	if (!layerRemovalDelayed) {
-	    purgeAndNotifyRemovedLayers();
-	}
+        if (!layerRemovalDelayed) {
+            purgeAndNotifyRemovedLayers();
+        }
 
-	setDoContainerChange(oldChange);
-	repaint();
-	revalidate();
+        setDoContainerChange(oldChange);
+        repaint();
+        revalidate();
     }
 
     /**
@@ -253,40 +253,40 @@ public class BufferedLayerMapBean extends BufferedMapBean {
         // Container Changes can be disabled to speed adding/removing
         // multiple layers
         if (!doContainerChange) {
-	    return;
-	}
+            return;
+        }
 
-	Component[] comps = this.getComponents();
-	int ncomponents = comps.length;
-	int nBufLayerComponents = 0;
+        Component[] comps = this.getComponents();
+        int ncomponents = comps.length;
+        int nBufLayerComponents = 0;
 
-	BufferedLayer bufLayer;
-	synchronized (this) {
-	    bufLayer = getBufferedLayer();
-	}
+        BufferedLayer bufLayer;
+        synchronized (this) {
+            bufLayer = getBufferedLayer();
+        }
 
-	if (ncomponents == 0 || comps[ncomponents - 1] != bufLayer) {
-	    super.changeLayers(e);
-	    return;
-	}
+        if (ncomponents == 0 || comps[ncomponents - 1] != bufLayer) {
+            super.changeLayers(e);
+            return;
+        }
 
-	Component[] bufLayers = bufLayer.getLayers();
-	nBufLayerComponents = bufLayers.length;
+        Component[] bufLayers = bufLayer.getLayers();
+        nBufLayerComponents = bufLayers.length;
 
-	// Take 1 off for the bufLayer
-	Layer[] newLayers = new Layer[ncomponents + nBufLayerComponents - 1];
-	System.arraycopy(comps, 0, newLayers, 0, ncomponents - 1);
-	System.arraycopy(bufLayers, 0, newLayers, ncomponents - 1, nBufLayerComponents);
+        // Take 1 off for the bufLayer
+        Layer[] newLayers = new Layer[ncomponents + nBufLayerComponents - 1];
+        System.arraycopy(comps, 0, newLayers, 0, ncomponents - 1);
+        System.arraycopy(bufLayers, 0, newLayers, ncomponents - 1, nBufLayerComponents);
 
-	if (DEBUG) debugmsg("changeLayers() - firing change");
-	firePropertyChange(LayersProperty, currentLayers, newLayers);
+        if (DEBUG) debugmsg("changeLayers() - firing change");
+        firePropertyChange(LayersProperty, currentLayers, newLayers);
 
-	// Tell the new layers that they have been added
-	for (int i=0; i<addedLayers.size(); i++) {
-	    ((Layer)addedLayers.elementAt(i)).added(this);
-	}
-	addedLayers.removeAllElements();
+        // Tell the new layers that they have been added
+        for (int i=0; i<addedLayers.size(); i++) {
+            ((Layer)addedLayers.elementAt(i)).added(this);
+        }
+        addedLayers.removeAllElements();
 
-	currentLayers = newLayers;
+        currentLayers = newLayers;
     }
 }

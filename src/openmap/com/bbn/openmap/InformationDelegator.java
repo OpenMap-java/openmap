@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/12/23 20:47:42 $
-// $Author: wjeuerle $
+// $Revision: 1.10 $
+// $Date: 2004/01/24 03:31:35 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -121,9 +121,9 @@ public class InformationDelegator extends OMComponentPanel
     protected ArrayList infoLineOrganizer = new ArrayList();
 
     public InformationDelegator() {
-	super();
+        super();
 
-	initInfoWidgets();
+        initInfoWidgets();
     }
 
     /**
@@ -133,56 +133,56 @@ public class InformationDelegator extends OMComponentPanel
      */
     public void initInfoWidgets() {
 
-	Debug.message("info", "InformationDelegator.initInfoWidgets");
+        Debug.message("info", "InformationDelegator.initInfoWidgets");
 
-	GridBagLayout gridbag = new GridBagLayout();
-	GridBagConstraints c = new GridBagConstraints();
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
 
-	setFont(new Font("Helvetica", Font.PLAIN, 9));
-	setLayout(gridbag);
-	
-	progressBar = new JProgressBar();
-	gridbag.setConstraints(progressBar, c);
-	add(progressBar);
-	progressBar.setVisible(false);
+        setFont(new Font("Helvetica", Font.PLAIN, 9));
+        setLayout(gridbag);
+        
+        progressBar = new JProgressBar();
+        gridbag.setConstraints(progressBar, c);
+        add(progressBar);
+        progressBar.setVisible(false);
 
-	JPanel infoLinePanel = new JPanel();
-	c.weightx=1;
-	c.anchor=GridBagConstraints.WEST;
-	c.fill=GridBagConstraints.HORIZONTAL;
+        JPanel infoLinePanel = new JPanel();
+        c.weightx=1;
+        c.anchor=GridBagConstraints.WEST;
+        c.fill=GridBagConstraints.HORIZONTAL;
 
-	gridbag.setConstraints(infoLinePanel, c);
+        gridbag.setConstraints(infoLinePanel, c);
 
-	GridBagLayout gridbag2 = new GridBagLayout();
-	GridBagConstraints c2 = new GridBagConstraints();
-	infoLinePanel.setLayout(gridbag2);
+        GridBagLayout gridbag2 = new GridBagLayout();
+        GridBagConstraints c2 = new GridBagConstraints();
+        infoLinePanel.setLayout(gridbag2);
 
-	infoLineHolder = new JLabel(fudgeString);
-	c2.weightx = 1;
-	c2.fill=GridBagConstraints.HORIZONTAL;
-	c2.anchor=GridBagConstraints.WEST;
-	c2.insets = new Insets(3, 10, 3, 10);
-	gridbag2.setConstraints(infoLineHolder, c2);
-	infoLinePanel.add(infoLineHolder);
+        infoLineHolder = new JLabel(fudgeString);
+        c2.weightx = 1;
+        c2.fill=GridBagConstraints.HORIZONTAL;
+        c2.anchor=GridBagConstraints.WEST;
+        c2.insets = new Insets(3, 10, 3, 10);
+        gridbag2.setConstraints(infoLineHolder, c2);
+        infoLinePanel.add(infoLineHolder);
 
-	infoLineHolder2 = new JLabel(fudgeString, SwingConstants.RIGHT);
-	c2.weightx = 0;
-	c2.anchor=GridBagConstraints.EAST;
-	gridbag2.setConstraints(infoLineHolder2, c2);
-	infoLinePanel.add(infoLineHolder2);
+        infoLineHolder2 = new JLabel(fudgeString, SwingConstants.RIGHT);
+        c2.weightx = 0;
+        c2.anchor=GridBagConstraints.EAST;
+        gridbag2.setConstraints(infoLineHolder2, c2);
+        infoLinePanel.add(infoLineHolder2);
 
-	addInfoLine(COORDINATE_INFO_LINE, infoLineHolder);
-	addInfoLine(MAP_OBJECT_INFO_LINE, infoLineHolder2);
+        addInfoLine(COORDINATE_INFO_LINE, infoLineHolder);
+        addInfoLine(MAP_OBJECT_INFO_LINE, infoLineHolder2);
 
-	add(infoLinePanel);
-	infoLinePanel.setVisible(showInfoLine);
+        add(infoLinePanel);
+        infoLinePanel.setVisible(showInfoLine);
 
-	c.weightx=0;
-	c.anchor=GridBagConstraints.EAST;
- 	statusBar = new StatusLightPanel();
-	gridbag.setConstraints(statusBar, c);
-	add(statusBar);
-  	statusBar.setVisible(showLights);
+        c.weightx=0;
+        c.anchor=GridBagConstraints.EAST;
+        statusBar = new StatusLightPanel();
+        gridbag.setConstraints(statusBar, c);
+        add(statusBar);
+        statusBar.setVisible(showLights);
     }
 
     /**
@@ -191,15 +191,15 @@ public class InformationDelegator extends OMComponentPanel
      * is involved with the application.
      */
     public void setMap(MapBean map) {
-	if (this.map != null) {
-	    this.map.removePropertyChangeListener(this);
-	}
+        if (this.map != null) {
+            this.map.removePropertyChangeListener(this);
+        }
 
-	this.map = map;
-	if (map != null) {
-	    map.addPropertyChangeListener(this);
-	    fallbackMapBeanCursor = map.getCursor();
-	}
+        this.map = map;
+        if (map != null) {
+            map.addPropertyChangeListener(this);
+            fallbackMapBeanCursor = map.getCursor();
+        }
    }
 
     /**
@@ -210,18 +210,18 @@ public class InformationDelegator extends OMComponentPanel
      */
     public void propertyChange(PropertyChangeEvent evt) {
 
-  	if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
-	    MapMouseMode mmm = (MapMouseMode)evt.getNewValue();
-	    setAllLabels(fudgeString);
-  	    setResetCursor(mmm.getModeCursor());
-  	} else if (evt.getPropertyName() == MapBean.CursorProperty) {
-	    fallbackMapBeanCursor = ((Cursor)evt.getNewValue());
-	} else if (evt.getPropertyName() == MapBean.LayersProperty) {
-	    resetForLayers((Layer[])evt.getNewValue(), (Layer[])evt.getOldValue());
-	    setAllLabels(fudgeString);
-	} else if (evt.getPropertyName() == MapBean.ProjectionProperty) {
-	    setAllLabels(fudgeString);
-	}
+        if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
+            MapMouseMode mmm = (MapMouseMode)evt.getNewValue();
+            setAllLabels(fudgeString);
+            setResetCursor(mmm.getModeCursor());
+        } else if (evt.getPropertyName() == MapBean.CursorProperty) {
+            fallbackMapBeanCursor = ((Cursor)evt.getNewValue());
+        } else if (evt.getPropertyName() == MapBean.LayersProperty) {
+            resetForLayers((Layer[])evt.getNewValue(), (Layer[])evt.getOldValue());
+            setAllLabels(fudgeString);
+        } else if (evt.getPropertyName() == MapBean.ProjectionProperty) {
+            setAllLabels(fudgeString);
+        }
     }
 
     /**
@@ -231,56 +231,56 @@ public class InformationDelegator extends OMComponentPanel
      * layers, and remove it from the old layers.
      */
     public void resetForLayers(Layer[] connectToLayers, 
-			       Layer[] removeFromLayers) {
+                               Layer[] removeFromLayers) {
 
-	int i = 0;
-	if (removeFromLayers != null && removeFromLayers.length != 0) {
-	    int removeLength = removeFromLayers.length;
-	    for (i = 0; i < removeLength; i++) {
-		removeFromLayers[i].removeInfoDisplayListener(this);
-	    }
-	}
+        int i = 0;
+        if (removeFromLayers != null && removeFromLayers.length != 0) {
+            int removeLength = removeFromLayers.length;
+            for (i = 0; i < removeLength; i++) {
+                removeFromLayers[i].removeInfoDisplayListener(this);
+            }
+        }
 
-	if (connectToLayers != null && connectToLayers.length != 0) {
-	    int removeLength = connectToLayers.length;
-	    for (i = 0; i < removeLength; i++) {
-		connectToLayers[i].addInfoDisplayListener(this);
-	    }
-	}
+        if (connectToLayers != null && connectToLayers.length != 0) {
+            int removeLength = connectToLayers.length;
+            for (i = 0; i < removeLength; i++) {
+                connectToLayers[i].addInfoDisplayListener(this);
+            }
+        }
     }
 
     /**
      * Receive a ProgressEvent, and use it if possible.
      */
     public void updateProgress(ProgressEvent evt) {
-	if (progressBar != null) {
-	    int type = evt.getType();
-	    if (type == ProgressEvent.START ||
-		type == ProgressEvent.UPDATE) {
+        if (progressBar != null) {
+            int type = evt.getType();
+            if (type == ProgressEvent.START ||
+                type == ProgressEvent.UPDATE) {
 
-		progressBar.setVisible(true);
-		progressBar.setValue(evt.getPercentComplete());
-		setLabel(evt.getTaskDescription());
-	    } else {
-		progressBar.setVisible(false);
-	    }
-	}
+                progressBar.setVisible(true);
+                progressBar.setValue(evt.getPercentComplete());
+                setLabel(evt.getTaskDescription());
+            } else {
+                progressBar.setVisible(false);
+            }
+        }
     }
 
     public void addInfoLine(int refIndex, JLabel iLine) {
-	try {
-	    infoLineOrganizer.set(refIndex, iLine);
-	} catch (IndexOutOfBoundsException ioobe) {
-	    while (refIndex > 0 && infoLineOrganizer.size() <= refIndex + 1) {
-		infoLineOrganizer.add(iLine);
-	    }
-	}
+        try {
+            infoLineOrganizer.set(refIndex, iLine);
+        } catch (IndexOutOfBoundsException ioobe) {
+            while (refIndex > 0 && infoLineOrganizer.size() <= refIndex + 1) {
+                infoLineOrganizer.add(iLine);
+            }
+        }
     }
 
     public void removeInfoLine(int refIndex) {
-	try {
-	    infoLineOrganizer.set(refIndex, null);
-	} catch (IndexOutOfBoundsException iiobe) {}
+        try {
+            infoLineOrganizer.set(refIndex, null);
+        } catch (IndexOutOfBoundsException iiobe) {}
     }
 
     /**
@@ -288,13 +288,13 @@ public class InformationDelegator extends OMComponentPanel
      * @param str String
      */
     public void setLabel(String str) {
-	setLabel(str, MAP_OBJECT_INFO_LINE);
+        setLabel(str, MAP_OBJECT_INFO_LINE);
     }
 
     public void setAllLabels(String str) {
-	for (int i = 0; i < infoLineOrganizer.size(); i++) {
-	    setLabel(str, i);
-	}
+        for (int i = 0; i < infoLineOrganizer.size(); i++) {
+            setLabel(str, i);
+        }
     }
 
     /**
@@ -304,22 +304,22 @@ public class InformationDelegator extends OMComponentPanel
      * information line to use to display the string.
      */
     public void setLabel(String str, int infoLineDesignator) {
-	JLabel iLine;
-	try {
-	    iLine = (JLabel)infoLineOrganizer.get(infoLineDesignator);
-	} catch (IndexOutOfBoundsException ioobe) {
-	    // This should be OK.
-	    iLine = (JLabel)infoLineOrganizer.get(MAP_OBJECT_INFO_LINE);
-	}
+        JLabel iLine;
+        try {
+            iLine = (JLabel)infoLineOrganizer.get(infoLineDesignator);
+        } catch (IndexOutOfBoundsException ioobe) {
+            // This should be OK.
+            iLine = (JLabel)infoLineOrganizer.get(MAP_OBJECT_INFO_LINE);
+        }
 
-	if (iLine != null) {
-	    iLine.setText(str);
-	}
+        if (iLine != null) {
+            iLine.setText(str);
+        }
 
-	// HACK This wasn't necessary in JDK1.1.5 and Swing1.0.1, but is now.
-	// Without the following two lines, the infoline doesn't show up at all
-//  	infoLineHolder.invalidate();
-//  	this.validate();
+        // HACK This wasn't necessary in JDK1.1.5 and Swing1.0.1, but is now.
+        // Without the following two lines, the infoline doesn't show up at all
+//      infoLineHolder.invalidate();
+//      this.validate();
     }
 
     /**
@@ -328,89 +328,89 @@ public class InformationDelegator extends OMComponentPanel
      * method.
      */
     protected void setStatusBar() {
-	statusBar.reset();
+        statusBar.reset();
     }
 
     public void initBrowser() {
-	setBrowser(new WebBrowser());
+        setBrowser(new WebBrowser());
     }
 
     public void setBrowser(WebBrowser wb) {
-	browser = wb;
-	browser.setInfoDelegator(this);
+        browser = wb;
+        browser.setInfoDelegator(this);
     }
 
     public WebBrowser getBrowser() {
-	if (browser == null) {
-	    initBrowser();
-	}
-	return browser;
+        if (browser == null) {
+            initBrowser();
+        }
+        return browser;
     }
 
     /**
      * Callback method.
      */
     public void checkBrowser() {
-	if (browser != null) browser.exitValue();
+        if (browser != null) browser.exitValue();
     }
 
     /**
      * Try to display a URL in a web browser.
      */
     public void displayURL(String url) {
-	MapHandler mh = (MapHandler) getBeanContext();
-	Frame frame = null;
-	if (mh != null) {
-	    frame = (Frame)mh.get(java.awt.Frame.class);
-	}
+        MapHandler mh = (MapHandler) getBeanContext();
+        Frame frame = null;
+        if (mh != null) {
+            frame = (Frame)mh.get(java.awt.Frame.class);
+        }
 
-	try {
-	    com.bbn.openmap.gui.MiniBrowser.display(frame, new URL(url));
-	} catch (java.net.MalformedURLException murle) {
-	    Debug.error("InformationDelegator can't launch " + url);
-	}
+        try {
+            com.bbn.openmap.gui.MiniBrowser.display(frame, new URL(url));
+        } catch (java.net.MalformedURLException murle) {
+            Debug.error("InformationDelegator can't launch " + url);
+        }
 
-// 	WebBrowser wb = getBrowser();
-// 	if (wb != null) {
-// 	    wb.launch(url);
-// 	}	    
+//      WebBrowser wb = getBrowser();
+//      if (wb != null) {
+//          wb.launch(url);
+//      }           
     }
     
     /**
      * Display a html String in a window.
      */
     public void displayBrowserContent(String content) {
-	MapHandler mh = (MapHandler) getBeanContext();
-	Frame frame = null;
-	if (mh != null) {
-	    frame = (Frame)mh.get(java.awt.Frame.class);
-	}
+        MapHandler mh = (MapHandler) getBeanContext();
+        Frame frame = null;
+        if (mh != null) {
+            frame = (Frame)mh.get(java.awt.Frame.class);
+        }
 
-	com.bbn.openmap.gui.MiniBrowser.display(frame, "text/html", content);
+        com.bbn.openmap.gui.MiniBrowser.display(frame, "text/html", content);
     }
     
     /**
      * Display a line of text in a info line.
      */
     public void displayInfoLine(String infoLine) {
-	displayInfoLine(infoLine, MAP_OBJECT_INFO_LINE);
+        displayInfoLine(infoLine, MAP_OBJECT_INFO_LINE);
     }
 
     /**
      * Display a line of text in a designated info line.
      */
     public void displayInfoLine(String infoLine, int labelDesignator) {
-	if (infoLineHolder != null) {
-	    setLabel((infoLine != null && infoLine.length() > 0)?infoLine:fudgeString, labelDesignator);
-	}
+        if (infoLineHolder != null) {
+            setLabel((infoLine != null && infoLine.length() > 0)?infoLine:fudgeString, labelDesignator);
+        }
     }
 
     /**
      * Display a message in a pop-up window.
      */
     public void displayMessage(String title, String message) {
-	JOptionPane.showMessageDialog(null, message, title,
-				      JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, message, title,
+                                      JOptionPane.INFORMATION_MESSAGE);
     }
 
     ///////////////////////////////////////////
@@ -422,7 +422,7 @@ public class InformationDelegator extends OMComponentPanel
      * @param event InfoDisplayEvent
      */
     public void requestURL(InfoDisplayEvent event) {
-	displayURL(event.getInformation());
+        displayURL(event.getInformation());
     }
 
     /**
@@ -431,12 +431,12 @@ public class InformationDelegator extends OMComponentPanel
      *
      * @param event InfoDisplayEvent
      */
-    public void requestMessage(InfoDisplayEvent event) {	    
-	Layer l = event.getLayer();
-	String layername = (l == null) ? null : l.getName();
-	displayMessage("Message from " + 
-		       layername + " layer:",
-		       event.getInformation());
+    public void requestMessage(InfoDisplayEvent event) {            
+        Layer l = event.getLayer();
+        String layername = (l == null) ? null : l.getName();
+        displayMessage("Message from " + 
+                       layername + " layer:",
+                       event.getInformation());
     }
     
     /**
@@ -446,7 +446,7 @@ public class InformationDelegator extends OMComponentPanel
      * @param event InfoDisplayEvent
      */
     public void requestInfoLine(InfoDisplayEvent event) {
-	displayInfoLine(event.getInformation(), event.getPreferredLocation());
+        displayInfoLine(event.getInformation(), event.getPreferredLocation());
     }
 
     /**
@@ -456,7 +456,7 @@ public class InformationDelegator extends OMComponentPanel
      * @param event InfoDisplayEvent
      */
     public void requestBrowserContent(InfoDisplayEvent event) {
-	displayBrowserContent(event.getInformation());
+        displayBrowserContent(event.getInformation());
     }
 
     /**
@@ -472,7 +472,7 @@ public class InformationDelegator extends OMComponentPanel
      * @deprecated use requestShowToolTip(InfoDisplayEvent) instead.
      */
     public void requestShowToolTip(MouseEvent me, InfoDisplayEvent event) { 
-	requestShowToolTip(event);
+        requestShowToolTip(event);
     }
 
     /**
@@ -485,16 +485,16 @@ public class InformationDelegator extends OMComponentPanel
      * @param event an event containing the ToolTip to show
      */
     public void requestShowToolTip(InfoDisplayEvent event) { 
-	//shows a tooltip over the map
-	if (map != null) {
-	    if (ttmanager == null) { 
-		//make sure the MapBean is registered first
-		ttmanager=ToolTipManager.sharedInstance(); 
-		ttmanager.registerComponent(map);
-	    }
-	    map.setToolTipText(event.getInformation()); 
-	    ttmanager.setEnabled(true);
-	}
+        //shows a tooltip over the map
+        if (map != null) {
+            if (ttmanager == null) { 
+                //make sure the MapBean is registered first
+                ttmanager=ToolTipManager.sharedInstance(); 
+                ttmanager.registerComponent(map);
+            }
+            map.setToolTipText(event.getInformation()); 
+            ttmanager.setEnabled(true);
+        }
     }
 
     /**
@@ -507,7 +507,7 @@ public class InformationDelegator extends OMComponentPanel
      * @deprecated call requestHideToolTip() instead.
      */
     public void requestHideToolTip(MouseEvent me) { 
-	requestHideToolTip();
+        requestHideToolTip();
     }
 
     /**
@@ -516,12 +516,12 @@ public class InformationDelegator extends OMComponentPanel
      * method should always follow a call to <code>showToolTip</code?
      */
     public void requestHideToolTip() { 
-	//disables a tooltip over the map
-	if (ttmanager==null) {
-	    return; //in case showToolTip was never called
-	}
-	ttmanager.setEnabled(false);
-	initToolTip();
+        //disables a tooltip over the map
+        if (ttmanager==null) {
+            return; //in case showToolTip was never called
+        }
+        ttmanager.setEnabled(false);
+        initToolTip();
     }
 
     /**
@@ -530,13 +530,13 @@ public class InformationDelegator extends OMComponentPanel
      * listening to mouse events.  
      */
     public void initToolTip() {
-	if (ttmanager == null) {
-	    return; //in case showToolTip was never called
-	}
+        if (ttmanager == null) {
+            return; //in case showToolTip was never called
+        }
 
-	if (map != null) {
-	    map.setToolTipText(null);
-	}
+        if (map != null) {
+            map.setToolTipText(null);
+        }
     }
 
     /**
@@ -550,27 +550,27 @@ public class InformationDelegator extends OMComponentPanel
      * @param cursor java.awt.Cursor to change the cursor to.
      */
     public void requestCursor(java.awt.Cursor cursor) {
-	// This is interpreted as a release from a requester
-	if (cursor == null) {
-	    // If we're not supposed to be showing the wait cursor...
-	    if (showWaitCursor && !waitingForLayers)
-		resetCursor();
-	    // Set this to null, so that when we're done waiting for
-	    // the layers, we'll just reset.
-	    currentMapBeanCursor = null;
-	}
-	else if (this.map != null) {
-	    Cursor newCursor;
-	    // If we're supposed to be showing the watch, do it, but
-	    // save the request for when the layers are done.
-	    if (showWaitCursor && waitingForLayers) {
-		newCursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-		currentMapBeanCursor = cursor;
-	    }
-	    else newCursor = cursor;
+        // This is interpreted as a release from a requester
+        if (cursor == null) {
+            // If we're not supposed to be showing the wait cursor...
+            if (showWaitCursor && !waitingForLayers)
+                resetCursor();
+            // Set this to null, so that when we're done waiting for
+            // the layers, we'll just reset.
+            currentMapBeanCursor = null;
+        }
+        else if (this.map != null) {
+            Cursor newCursor;
+            // If we're supposed to be showing the watch, do it, but
+            // save the request for when the layers are done.
+            if (showWaitCursor && waitingForLayers) {
+                newCursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+                currentMapBeanCursor = cursor;
+            }
+            else newCursor = cursor;
 
-	    map.setCursor(newCursor);
-	}
+            map.setCursor(newCursor);
+        }
     }
 
     /**
@@ -579,7 +579,7 @@ public class InformationDelegator extends OMComponentPanel
      * changes, this is automatically called.
      */
     public void setResetCursor(java.awt.Cursor cursor) {
-	fallbackMapBeanCursor = cursor;
+        fallbackMapBeanCursor = cursor;
     }
 
     /** 
@@ -587,8 +587,8 @@ public class InformationDelegator extends OMComponentPanel
      * whatever has been set by the MouseMode.
      */
     public void resetCursor() {
-	if (this.map != null)
-	    map.setCursor(fallbackMapBeanCursor);
+        if (this.map != null)
+            map.setCursor(fallbackMapBeanCursor);
     }
 
     /**
@@ -598,7 +598,7 @@ public class InformationDelegator extends OMComponentPanel
      * the cursor won't change if the layers are working.
      */
     public void setShowWaitCursor(boolean value) {
-	showWaitCursor = value;
+        showWaitCursor = value;
     }
 
     /**
@@ -606,7 +606,7 @@ public class InformationDelegator extends OMComponentPanel
      * are working.
      */
     public boolean isShowWaitCursor() {
-	return showWaitCursor;
+        return showWaitCursor;
     }
 
     ////////////  MapHandlerChild methods overridden from OMComponentPanel
@@ -616,15 +616,15 @@ public class InformationDelegator extends OMComponentPanel
      * InformationDelegator will look for certain objects it needs.
      */
     public void findAndInit(Object someObj) {
-	if (someObj instanceof MapBean) {
-	    setMap((MapBean)someObj);
-	}
-	if (someObj instanceof MouseDelegator) {
-	    MouseDelegator md = (MouseDelegator)someObj;
-	    md.addPropertyChangeListener(this);
-	}
+        if (someObj instanceof MapBean) {
+            setMap((MapBean)someObj);
+        }
+        if (someObj instanceof MouseDelegator) {
+            MouseDelegator md = (MouseDelegator)someObj;
+            md.addPropertyChangeListener(this);
+        }
 
-	statusBar.findAndInit(someObj);
+        statusBar.findAndInit(someObj);
     }
 
     /**
@@ -633,103 +633,103 @@ public class InformationDelegator extends OMComponentPanel
      * InformationDelegator if it is being used.
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof MapBean) {
-	    setMap(null);
-	}
-	if (someObj instanceof MouseDelegator) {
-	    MouseDelegator md = (MouseDelegator)someObj;
-	    md.removePropertyChangeListener(this);
-	}
+        if (someObj instanceof MapBean) {
+            setMap(null);
+        }
+        if (someObj instanceof MouseDelegator) {
+            MouseDelegator md = (MouseDelegator)someObj;
+            md.removePropertyChangeListener(this);
+        }
 
-	statusBar.findAndUndo(someObj);
+        statusBar.findAndUndo(someObj);
     }
 
     ///////  PropertyConsumer methods overridden from OMComponentPanel
 
     public void setProperties(String prefix, Properties props) {
-	setPropertyPrefix(prefix);
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        setPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	statusBar.setProperties(prefix, props);
-	setShowLights(LayerUtils.booleanFromProperties(props, prefix + ShowLightsProperty, showLights));
-	setShowInfoLine(LayerUtils.booleanFromProperties(props, prefix + ShowInfoLineProperty, showInfoLine));
+        statusBar.setProperties(prefix, props);
+        setShowLights(LayerUtils.booleanFromProperties(props, prefix + ShowLightsProperty, showLights));
+        setShowInfoLine(LayerUtils.booleanFromProperties(props, prefix + ShowInfoLineProperty, showInfoLine));
 
-	String pl = props.getProperty(prefix + PreferredLocationProperty);
-	if (pl != null) {
-	    setPreferredLocation(pl);
-	}
+        String pl = props.getProperty(prefix + PreferredLocationProperty);
+        if (pl != null) {
+            setPreferredLocation(pl);
+        }
     }
 
     public Properties getProperties(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-	statusBar.getProperties(props);
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	props.put(prefix + ShowLightsProperty, new Boolean(showLights).toString());
-	props.put(prefix + ShowInfoLineProperty, new Boolean(showInfoLine).toString());
-	props.put(prefix + PreferredLocationProperty, getPreferredLocation());
-	return props;
+        statusBar.getProperties(props);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        props.put(prefix + ShowLightsProperty, new Boolean(showLights).toString());
+        props.put(prefix + ShowInfoLineProperty, new Boolean(showInfoLine).toString());
+        props.put(prefix + PreferredLocationProperty, getPreferredLocation());
+        return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
-	if (props == null) {
-	    props = new Properties();
-	}
+        if (props == null) {
+            props = new Properties();
+        }
 
-	statusBar.getPropertyInfo(props);
-	props.put(ShowLightsProperty, "Show the layer status lights");
-	props.put(ShowLightsProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	props.put(ShowInfoLineProperty, "Show the information line below the map");
-	props.put(ShowInfoLineProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-	props.put(PreferredLocationProperty, "The preferred BorderLayout direction to place this component.");
+        statusBar.getPropertyInfo(props);
+        props.put(ShowLightsProperty, "Show the layer status lights");
+        props.put(ShowLightsProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(ShowInfoLineProperty, "Show the information line below the map");
+        props.put(ShowInfoLineProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(PreferredLocationProperty, "The preferred BorderLayout direction to place this component.");
 
-	return props;
+        return props;
     }
 
     /////// Setters and Getters
 
     public void setInfoLineHolder(JLabel ilh) {
-	infoLineHolder = ilh;
+        infoLineHolder = ilh;
     }
 
     public JLabel getInfoLineHolder() {
-	return infoLineHolder;
+        return infoLineHolder;
     }
 
     public void setProgressBar(JProgressBar progressBar) {
-	this.progressBar = progressBar;
+        this.progressBar = progressBar;
     }
 
     public JProgressBar getProgressBar() {
-	return progressBar;
+        return progressBar;
     }
 
     public void setShowLights(boolean set) {
-	showLights = set;
-	statusBar.setVisible(set);
+        showLights = set;
+        statusBar.setVisible(set);
     }
 
     public boolean getShowLights() {
-	return showLights;
+        return showLights;
     }
 
     public void setShowInfoLine(boolean set) {
-	showInfoLine = set;
-	infoLineHolder.setVisible(set);
+        showInfoLine = set;
+        infoLineHolder.setVisible(set);
     }
     
     public boolean getShowInfoLine() {
-	return showInfoLine;
+        return showInfoLine;
     }
 
     public void setLightTriggers(boolean set) {
-	statusBar.setLightTriggers(set);
+        statusBar.setLightTriggers(set);
     }
 
     public boolean getLightTriggers() {
-	return statusBar.getLightTriggers();
+        return statusBar.getLightTriggers();
     }
 
     public void setFloatable(boolean value) {}
@@ -743,14 +743,14 @@ public class InformationDelegator extends OMComponentPanel
      * MapPanelChild method.
      */
     public void setPreferredLocation(String value) {
-	preferredLocation = value;
+        preferredLocation = value;
     }
 
     /** 
      * MapPanelChild method. 
      */
     public String getPreferredLocation() {
-	return preferredLocation;
+        return preferredLocation;
     }
 }
 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/OMComponent.java,v $
 // $RCSfile: OMComponent.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:47:43 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/24 03:31:35 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -83,7 +83,7 @@ public class OMComponent extends MapHandlerChild implements PropertyConsumer {
 	    props = new Properties();
 	}
 
-//  	String prefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
+//  	String prefix = PropUtils.getScopedPropertyPrefix(this);
 
 	return props;
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/BufferedMapBean.java,v $
 // $RCSfile: BufferedMapBean.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/04 18:12:50 $
+// $Revision: 1.4 $
+// $Date: 2004/01/24 03:31:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,7 +59,7 @@ public class BufferedMapBean extends MapBean {
     public void setLayers(com.bbn.openmap.event.LayerEvent evt) {
 
         bufferDirty = true;
-	super.setLayers(evt);
+        super.setLayers(evt);
     }
 
     /**
@@ -69,21 +69,21 @@ public class BufferedMapBean extends MapBean {
      */
     public void componentResized(ComponentEvent e) {
         // reset drawingBuffer
-	boolean bad = false;
-	try {
-	    drawingBuffer=createImage(getWidth(), getHeight());
-	} catch (java.lang.NegativeArraySizeException nae){
-	    bad = true;
-	} catch (java.lang.IllegalArgumentException iae){
-	    bad = true;
-	}
+        boolean bad = false;
+        try {
+            drawingBuffer=createImage(getWidth(), getHeight());
+        } catch (java.lang.NegativeArraySizeException nae){
+            bad = true;
+        } catch (java.lang.IllegalArgumentException iae){
+            bad = true;
+        }
 
-	if (bad) {
-	    Debug.message("mapbean", "BufferedMapBean: component resizing is not valid for buffer.");
-	    drawingBuffer = createImage(1, 1);
-	}	    
+        if (bad) {
+            Debug.message("mapbean", "BufferedMapBean: component resizing is not valid for buffer.");
+            drawingBuffer = createImage(1, 1);
+        }           
 
-	super.componentResized(e);
+        super.componentResized(e);
     }
 
     /**
@@ -101,7 +101,7 @@ public class BufferedMapBean extends MapBean {
      *  @param g Graphics
      */
     public void paintChildren(Graphics g) {
-	paintChildren(g, null);
+        paintChildren(g, null);
     }
 
     /**
@@ -112,54 +112,54 @@ public class BufferedMapBean extends MapBean {
      */
     public void paintChildren(Graphics g, Rectangle clip) {
 
-	// if a layer has requested a render, then we render all of them into
-	// a drawing buffer
-	if (bufferDirty) {
-	    bufferDirty = false;
+        // if a layer has requested a render, then we render all of them into
+        // a drawing buffer
+        if (bufferDirty) {
+            bufferDirty = false;
 
-	    int w = getWidth();
-	    int h = getHeight();
+            int w = getWidth();
+            int h = getHeight();
 
             if (drawingBuffer == null) {
                 drawingBuffer = createImage(w, h);
             }
 
-	    // draw the old image
-  	    Graphics gr = getMapBeanRepaintPolicy().modifyGraphicsForPainting(drawingBuffer.getGraphics());
+            // draw the old image
+            Graphics gr = getMapBeanRepaintPolicy().modifyGraphicsForPainting(drawingBuffer.getGraphics());
 
-	    if (clip == null) {
-  		gr.setClip(0, 0, w, h);
-	    } else {
-		gr.setClip(clip);
-	    }
-	    // gr.drawImage(drawingBuffer,0,0,null);
-	    if (Debug.debugging("mapbean")) {
-		Debug.output("BufferedMapBean.rendering layers to buffer.");
-	    }
+            if (clip == null) {
+                gr.setClip(0, 0, w, h);
+            } else {
+                gr.setClip(clip);
+            }
+            // gr.drawImage(drawingBuffer,0,0,null);
+            if (Debug.debugging("mapbean")) {
+                Debug.output("BufferedMapBean.rendering layers to buffer.");
+            }
 
-	    paintChildrenWithBorder(gr, false);
+            paintChildrenWithBorder(gr, false);
 
-	    // reset the clip to full map
-	    // gr.setClip(0, 0, w, h);
-	    gr.dispose();
-	} else if (Debug.debugging("mapbean")) {
-	    Debug.output("BufferedMapBean.rendering buffer.");
-	}
+            // reset the clip to full map
+            // gr.setClip(0, 0, w, h);
+            gr.dispose();
+        } else if (Debug.debugging("mapbean")) {
+            Debug.output("BufferedMapBean.rendering buffer.");
+        }
 
-	// Should be be clipping the graphics here?  I'm not sure.  Think so.
-	if (clip != null) {
-	    g.setClip(clip);
-	}
+        // Should be be clipping the graphics here?  I'm not sure.  Think so.
+        if (clip != null) {
+            g.setClip(clip);
+        }
 
- 	// draw the buffer to the screen
-	g.drawImage(drawingBuffer, 0, 0, null);
+        // draw the buffer to the screen
+        g.drawImage(drawingBuffer, 0, 0, null);
 
-	// Take care of the PaintListeners
-	if (painters != null) {
-	    painters.paint(g);
-	}
-	// border gets overwritten accidentally, so redraw it now    
-	paintBorder(g);
+        // Take care of the PaintListeners
+        if (painters != null) {
+            painters.paint(g);
+        }
+        // border gets overwritten accidentally, so redraw it now    
+        paintBorder(g);
     }
 
     /**
@@ -171,7 +171,7 @@ public class BufferedMapBean extends MapBean {
      * BufferedMapBean, always true.
      */
     public boolean isBuffered() {
-	return true;
+        return true;
     }
 
     /**
@@ -190,7 +190,7 @@ public class BufferedMapBean extends MapBean {
      * @return boolean whether the layer buffer is dirty
      */
     public boolean isBufferDirty() {
-        return bufferDirty;
+	return bufferDirty;
     }
 
 }
