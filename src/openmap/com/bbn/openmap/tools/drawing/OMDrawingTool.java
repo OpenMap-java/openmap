@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/16 22:22:15 $
+// $Revision: 1.3 $
+// $Date: 2003/02/18 00:42:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -545,6 +545,43 @@ public class OMDrawingTool
     }
 
     /**
+     * A Vector of Classes that can be handled by the OMDrawingTool.
+     * Constructed the first time canEdit() is called after an
+     * EditToolLoader is added or removed.
+     */
+    protected Vector possibleEditableClasses = null;
+
+    /**
+     * Return true if the OMDrawingTool can edit the OMGraphic.  Meant
+     * to be a low-cost check, with a minimal allocation of memory.
+     */
+    public boolean canEdit(Class omgc) {
+	Iterator iterator;
+	if (possibleEditableClasses == null) {
+	    Set keys = loaders.keySet();
+	    possibleEditableClasses = new Vector(keys.size());
+	    iterator = keys.iterator();
+	    while (iterator.hasNext()) {
+		String key = (String)iterator.next();
+		try {
+		    possibleEditableClasses.add(Class.forName(key));
+		} catch (ClassNotFoundException cnfe) {
+		    // Don't worry about this now...
+		}
+	    }
+	}
+
+	iterator = possibleEditableClasses.iterator();
+	while (iterator.hasNext()) {
+	    Class kc = (Class) iterator.next();
+	    if (kc == omgc || kc.isAssignableFrom(omgc)) {
+		return true;
+	    }
+	}
+	return false;
+    }
+
+    /**
      * Set the EditableOMGraphic being used, if it hasn't already been
      * set.  You can set it to null all the time.
      */
@@ -611,6 +648,7 @@ public class OMDrawingTool
 		loaders.put(classnames[i].intern(), loader);
 	    }
 	    firePropertyChange(LoadersProperty, null, loaders);
+	    possibleEditableClasses = null;
 	}
     }
 
@@ -635,6 +673,7 @@ public class OMDrawingTool
 		}
 	    }
 	    firePropertyChange(LoadersProperty, null, loaders);
+	    possibleEditableClasses = null;
 	}
     }
 

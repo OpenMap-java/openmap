@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/DrawingTool.java,v $
 // $RCSfile: DrawingTool.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/02/18 00:42:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -188,6 +188,12 @@ public interface DrawingTool {
     public OMGraphic edit(EditableOMGraphic eomg, 
 			  DrawingToolRequestor requestor,
 			  MouseEvent e);
+
+    /**
+     * Check to see if the class type can be created/edited by the
+     * DrawingTool.
+     */
+    public boolean canEdit(Class clas);
 
     /**
      * Add an EditToolLoader to the DrawingTool, expanding the
