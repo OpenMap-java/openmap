@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:32:54 $
+// $Revision: 1.4 $
+// $Date: 2003/09/26 19:11:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -101,6 +101,15 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
 	if (command == CreateCmd) {
 	    // Get the active EditToolLoader
 	    DrawingTool dt = getDrawingTool();
+
+	    if (dt instanceof OMDrawingTool) {
+		OMDrawingTool omdt = (OMDrawingTool) dt;
+
+		if (omdt.isActivated()) {
+		    omdt.deactivate();
+		}
+	    }
+
 	    if (dt != null && currentCreation != null && 
 		currentRequestor != null) {
 		// Copy the default GraphicAttributes into another copy...
