@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.14 $
-// $Date: 2003/10/03 00:49:57 $
+// $Revision: 1.15 $
+// $Date: 2003/10/03 22:27:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,6 +37,7 @@ import com.bbn.openmap.omGraphics.event.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -59,6 +60,31 @@ import javax.swing.event.*;
  * tries to keep the presentation of the OMGraphic up to date, by
  * managing the repaints of the Component to include the graphic being
  * modified. <P>
+ *
+ * The OMDrawingTool is also a com.bbn.openmap.gui.Tool, which allows
+ * it to appear in the OpenMap toolbar.  The OMDrawingTool keeps track
+ * of whether it is a tool, and appears accordingly:<P>
+ *
+ * If the OMDrawingTool is being used as a tool (getUseAsTool() ==
+ * true), then it will set itself to be visible.  If you are putting
+ * an OMDrawingTool in the OpenMap application and you want the
+ * color/line/graphic options to be visible in the toolbar, use the
+ * itTool property for the OMDrawingTool in the properties file.  If
+ * you are using your own OMDrawingTool, in your EditorLayerTool for
+ * instance, you should set useAsTool(true) programmatically to get
+ * the visiblity of the tool to appear.  There is a property to tell
+ * the OMDrawingTool to be visible when it is inactive, and that flag
+ * is true by default.  You can set that property
+ * (visibleWhenInactive) to change this behavior.
+ *
+ * If the OMDrawingTool is not being used as a tool, it can be brought
+ * up in a window.  This window can be brought up with a right click
+ * or control-click on the object being edited. <P>
+ *
+ * If the OMGraphic being edited doesn't want to have the
+ * OMDrawingTool visible, it won't be.  Neither the tool nor the
+ * option to bring the window up won't be displayed with a
+ * right/control click. <P>
  *
  * The OMDrawingTool uses a behavior mask to give control over how it
  * behaves.  You can control if the attribute palette appears, if a
@@ -97,7 +123,9 @@ public class OMDrawingTool extends OMToolComponent
      * A GraphicAttributes object that describes the current coloring
      * parameters for the current graphic. 
      */
-    protected GraphicAttributes graphicAttributes = new GraphicAttributes();
+    protected GraphicAttributes graphicAttributes = 
+	GraphicAttributes.getGADefaultClone();
+
     /** The current graphic being modified. */
     protected EditableOMGraphic currentEditable;
     /**
@@ -122,23 +150,35 @@ public class OMDrawingTool extends OMToolComponent
      */
     protected OMDrawingToolMouseMode dtmm;
 
-//     // palette variables
-//     protected transient JInternalFrame paletteWindow = null;
-//     protected transient JFrame paletteWindow2 = null;
-
+    /**
+     * The component to notify when the drawing tool is finished.
+     */
     protected DrawingToolRequestor requestor = null;
     /** The current projection. */
     protected Projection projection = null;
-
+    /**
+     * A support object to handle telling listeners that the drawing
+     * tool is in the process of editing an object, hence making it
+     * selected.
+     */
     protected SelectionSupport selectionSupport = null;
     
     /**
-     * A behavior mask to show the GUI for the OMDrawingTool.
+     * A behavior mask to show the GUI for the OMDrawingTool.  Since
+     * the OMDrawingTool is a com.bbn.openmap.gui.Tool object, it will
+     * only appear on the tool panel if it has been added to it, and
+     * if it is being used as a tool.
      */
     public final static int SHOW_GUI_BEHAVIOR_MASK = 1 << 0; // + 1
     /**
      * A behavior mask to add a menu item to the popup that will allow
-     * the GUI to appear.
+     * the GUI to appear.  If the OMDrawingTool is not being used as a
+     * tool and this is set along with USE_POPUP_BEHAVIOR_MASK or
+     * ALT_POPUP_BEHAVIOR_MASK, then the OMDrawingTool will appear in
+     * a window when the <B>Change Appearance</B> option is selected
+     * in the popup menu.  Not used anymore, this behavior occurs when
+     * the tool isn't being used as a tool and SHOW_GUI_BEHAVIOR_MASK
+     * is set.
      */
     public final static int GUI_VIA_POPUP_BEHAVIOR_MASK = 1 << 1; // + 2
     /**
@@ -146,7 +186,7 @@ public class OMDrawingTool extends OMToolComponent
      * gesturing/modifications appear to be over.  Was the default
      * action of the tool, but was moved to only happening when the
      * ctrl key or right mouse button is pressed.  You can force the
-     * old behavior by setting this.
+     * old behavior by setting this.  Not used anymore.
      */
     public final static int USE_POPUP_BEHAVIOR_MASK = 1 << 2; // + 4
     /**
@@ -162,8 +202,8 @@ public class OMDrawingTool extends OMToolComponent
      * before create/edit is called, and then you have to make sure
      * that you provide MouseEvents to the OMDrawingToolMouseMode or
      * EditableOMGraphic in order to modify the OMGraphic.  Don't call
-     * this if you have already started using the tool, it won't do
-     * anything unless nothing is currently being modified.
+     * this if you have already started using the tool, the tool won't
+     * do anything if anything else is currently being modified.
      */
     public final static int PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK = 1 << 4; // + 16
     /**
@@ -173,9 +213,9 @@ public class OMDrawingTool extends OMToolComponent
     public final static int DEACTIVATE_ASAP_BEHAVIOR_MASK = 1 << 5; // + 32
     /**
      * A convenience value that tells the OMDrawingTool to show the
-     * GUI, and to only display the popup with the ctrl key or right
-     * mouse button.  A combination of SHOW_GUI, GUI_VIA_POPUP and
-     * ALT_POPUP.
+     * GUI if it is a tool, or to only display the popup with the ctrl
+     * key or right mouse button if it isn't.  A combination of
+     * SHOW_GUI, GUI_VIA_POPUP and ALT_POPUP.
      */
     public final static int DEFAULT_BEHAVIOR_MASK = 11;
     /**
@@ -191,12 +231,55 @@ public class OMDrawingTool extends OMToolComponent
      * behaviors.
      */
     protected int behaviorMask = DEFAULT_BEHAVIOR_MASK;
-
+    /**
+     * Used for property change notifications.
+     */
     public final static String LoadersProperty = "OMDrawingTool.loaders";
 
+    /**
+     * Debug flag turned on when <B>drawingtool</B> debug flag enabled.
+     */
     protected boolean DEBUG = false;
 
+    /**
+     * A handle to the InformationDelegator to use for status messages.
+     */
     protected InformationDelegator informationDelegator = null;
+
+    /**
+     * A Vector of Classes that can be handled by the OMDrawingTool.
+     * Constructed the first time canEdit() is called after an
+     * EditToolLoader is added or removed.
+     */
+    protected Vector possibleEditableClasses = null;
+
+    /**
+     * Just a helper flag to reduce work caused by unnecessary
+     * deactivate calls.  Set internally in activate() and deactivate().
+     */
+    protected boolean activated = false;
+
+    /**
+     * Tell the drawing tool to be invisible when it is inactive.
+     * True by default.
+     */
+    protected boolean visibleWhenInactive = true;
+
+    /**
+     * The property, visibleWhenIactive, to set to false if you want that behavior.
+     */
+    public final static String VisibleWhenInactiveProperty = "visibleWhenInactive";
+
+    /**
+     * Flag to tell tool to reset the GUI when it is deactivated.  The
+     * only time you would want this to be false (true is default) is
+     * when you are creating many objects of the same type, and don't
+     * want the gui to keep going back and forth between the default
+     * and special settings.  Usually set to in the drawingComplete
+     * method of an EditorTool.  Reset to true when showPalette is
+     * called.
+     */
+    protected boolean resetGUIWhenDeactivated = true;
 
     /**
      * Create a OpenMap Drawing Tool.
@@ -208,6 +291,12 @@ public class OMDrawingTool extends OMToolComponent
 	selectionSupport = new SelectionSupport(this);
 	setAttributes(new GraphicAttributes());
 	setMouseMode(createMouseMode());
+
+	// Shouldn't assume that the drawing tool is a tool.  This can
+	// be set in the properties if it should be.  Otherwise, the
+	// default action is to appear on a right click called from
+	// the GUI.
+	setUseAsTool(false);
     }
 
     /**
@@ -463,7 +552,8 @@ public class OMDrawingTool extends OMToolComponent
 
 	if (setCurrentEditable(eomg)) {
 
-//  	    getGUI();// reset GUI for current EOMG, called later anyway from activate
+	    // resetGUI() for current EOMG doesn't need to be called
+	    // here, it's called later from activate
 
 	    if (DEBUG) {
 		Debug.output("OMDrawingTool.edit success");
@@ -513,7 +603,7 @@ public class OMDrawingTool extends OMToolComponent
 	OMGraphic ret = null;
 
 	if (getCurrentEditable() == null) {
-	    ret = edit(g, requestor, false);
+	    ret = edit(g, requestor, g.getShowEditablePalette());
 	    if (ret != null) {
 		currentEditable.getStateMachine().setEdit();
 		if (e != null) {
@@ -575,13 +665,6 @@ public class OMDrawingTool extends OMToolComponent
 
 	return ret;
     }
-
-    /**
-     * A Vector of Classes that can be handled by the OMDrawingTool.
-     * Constructed the first time canEdit() is called after an
-     * EditToolLoader is added or removed.
-     */
-    protected Vector possibleEditableClasses = null;
 
     /**
      * Return true if the OMDrawingTool can edit the OMGraphic.  Meant
@@ -736,12 +819,19 @@ public class OMDrawingTool extends OMToolComponent
 	}
     }
 
+    public void resetGUIWhenDeactivated(boolean value) {
+	resetGUIWhenDeactivated = value;
+    }
+
     /**
      * Get the GUI that dictates what the OMDrawingTool has control
      * over.  This should include a section on controlling the
      * GraphicAttributes, a section for controls provided by the
      * current EditableOMGraphic for parameters unique to the EOMG,
-     * and any other controls that the tool may need.  <P>
+     * and any other controls that the tool may need.  This method now
+     * returns this OMDrawingTool, but also serves as a reset method
+     * for the GUI to configure itself for the current
+     * EditableOMGraphic.<P>
      *
      * To create different types of graphics, the
      * OMDrawingToolMouseMode can be used, to attach to a layer to
@@ -751,11 +841,11 @@ public class OMDrawingTool extends OMToolComponent
      * just deal with the actual controls over the particular graphic
      * loaded and being modified.<P>
      *
-     * @return null if no GUI is to be used - parameters for the EOMG
-     * are not to be modified.  Otherwise, return the GUI from the
-     * EOMG with a Dismiss button and a remarks text window.
+     * @return this.
      */
     public Component getGUI() {
+	if (!resetGUIWhenDeactivated) return this;
+
 	removeAll();
 	Component eomgc = null;
 
@@ -794,12 +884,6 @@ public class OMDrawingTool extends OMToolComponent
 	    informationDelegator.displayInfoLine(message, InformationDelegator.MAP_OBJECT_INFO_LINE);
 	}
     }
-
-    /**
-     * Just a helper flag to reduce work caused by unnecessary
-     * deactivate calls.  Set internally in activate() and deactivate().
-     */
-    protected boolean activated = false;
 
     /**
      * Convenience function to tell if the OMDrawingTool is currently
@@ -919,26 +1003,43 @@ public class OMDrawingTool extends OMToolComponent
 	    }
 	}
 
-	// hide the gui.
-	hidePalette();
-
 	OMGraphic g = null;
 
 	if (currentEditable != null) {
 	    g = currentEditable.getGraphic();
 	    currentEditable.removeEOMGListener(this);
-	    if (g != null && requestor != null) {
-		g.setVisible(true);
-		OMAction action = new OMAction();
-		action.setMask(actionToDoWithOMGraphic);
-		generateOMGraphic(g);
-		notifyListener(g, action);
-	    }
 	}
+
+	//////////////////////////////////
+	// Clean up, then notify listener
+
 	setCurrentEditable(null);
+	// hide the gui while currentEditable is null, so it resets to
+	// the default.
+	hidePalette();
 	unsetMask(DEACTIVATE_ASAP_BEHAVIOR_MASK);
 	popup = null;
 	activated = false;
+
+	// End cleanup
+	//////////////////////////////////
+
+	if (g != null && requestor != null) {
+	    g.setVisible(true);
+	    OMAction action = new OMAction();
+	    action.setMask(actionToDoWithOMGraphic);
+	    generateOMGraphic(g);
+	    notifyListener(g, action);
+	}
+
+	// By putting this here, it gives the listener the slight
+	// opportunity to not have the gui reset right away.  This
+	// opportunity gives an editor tool a smoother runtime when
+	// duplicate objects are being created one after another, and
+	// you don't want all the GUI reconfiguring to happen when it
+	// will just go back to the same thing in a second.
+	getGUI();
+
     }
 
     /**
@@ -1177,9 +1278,16 @@ public class OMDrawingTool extends OMToolComponent
      */
     public void showPalette() {
 	Debug.message("drawingtool", "OMDrawingTool.showPalette()");
-
+	resetGUIWhenDeactivated = true;
 	getGUI(); // resets the gui.
-	setVisible(true); // just to make sure.
+
+	// Should only be visible if the tool isn't being used as a
+	// tool, which means that it's being held by something else,
+	// or if it is a tool and the SHOW_GUI flag is set.
+	boolean shouldBeVisible = !getUseAsTool() ||
+	    (isMask(SHOW_GUI_BEHAVIOR_MASK) && getUseAsTool());
+
+	setVisible(shouldBeVisible);
     }
     
     /**
@@ -1187,13 +1295,13 @@ public class OMDrawingTool extends OMToolComponent
      */
     public void hidePalette() {
 	Debug.message("drawingtool", "OMDrawingTool.hidePalette()");
-	getGUI();
+
+	setVisible(visibleWhenInactive);
 
 	WindowSupport ws = getWindowSupport();
 	if (ws != null) {
 	    ws.killWindow();
 	}
-
     }
 
     public void showInWindow() {
@@ -1242,11 +1350,18 @@ public class OMDrawingTool extends OMToolComponent
     }
 
     /**
+     * Set the behavior mask to the default.
+     */
+    public void resetBehaviorMask() {
+	behaviorMask = DEFAULT_BEHAVIOR_MASK;
+    }
+
+    /**
      * Set a particular mask bit in the internal value.
      * @param mask an OMDrawingTool behavior mask.
      * @return the changed integer value.
      */
-    public int setMask(int mask){
+    public int setMask(int mask) {
 	behaviorMask = OMAction.setMask(behaviorMask, mask);
 	return behaviorMask;
     }
@@ -1256,7 +1371,7 @@ public class OMDrawingTool extends OMToolComponent
      * @param mask an OMDrawingTool behavior mask.
      * @return the changed integer value.
      */
-    public int unsetMask(int mask){
+    public int unsetMask(int mask) {
 	behaviorMask = OMAction.unsetMask(behaviorMask, mask);
 	return behaviorMask;
     }
@@ -1266,7 +1381,7 @@ public class OMDrawingTool extends OMToolComponent
      * @param mask an OMDrawingTool behavior mask.
      * @return whether the value bit is set on the internal value.
      */
-    public boolean isMask(int mask){
+    public boolean isMask(int mask) {
 	return OMAction.isMask(behaviorMask, mask);
     }
 
@@ -1316,72 +1431,76 @@ public class OMDrawingTool extends OMToolComponent
 	// places for coordinate information and map object
 	// information, we can sent the info there, and it looks OK.
 
-	String message = event.getMessage().intern();
-	if (message != null && message != lastRemarks) {
+	String message = event.getMessage();
+	if (message != null && !message.equals(lastRemarks)) {
 	    lastRemarks = message;
 	    setRemarks(message);
 	}
-	EditableOMGraphic source = event.getSource();
 
 	// EOMGDefined means unselected.
-	if (source.getStateMachine().getState()
-	    instanceof com.bbn.openmap.omGraphics.editable.EOMGDefinedState) {
+	if (event.shouldShowGUI()) {
 	    if (DEBUG) Debug.output("OMDrawingTool.eomgChanged(): try for menu.");
+	    MouseEvent me = event.getMouseEvent();
+
+	    // While we're here, get a good place for the window in
+	    // case we need to put it up later.
 	    if (currentEditable != null) {
-		GrabPoint gp = source.getMovingPoint();
-		if (gp != null) {
 
-		    /** Let's see if we should bring up pop-up menu
-		     * with all sorts of lovely options - if the right
-		     * mouse key was pressed, or if the ctrl key was
-		     * pressed with the mouse button being released,
-		     * display the option menu.  Otherwise, just get
-		     * ready to end. */
+		currentEditable.getStateMachine().setSelected();
+		currentEditable.redraw(me, true);
 
-		    MouseEvent me = event.getMouseEvent();
-		    boolean showPopup = false;
-
-		    boolean theCorrectMouseKeys = (me != null && (me.isControlDown() || (me.getModifiers() & InputEvent.BUTTON3_MASK) > 0));
-
-		    if (popup == null && (theCorrectMouseKeys || isMask(USE_POPUP_BEHAVIOR_MASK)) && !getUseAsTool()) {
-			Shape ces = currentEditable.getGraphic().getShape();
-			if (ces != null) {
-			    Rectangle rect = ces.getBounds();
-			    windowx = (int)rect.getX();
-			    windowy = (int)rect.getY() - 50;
-			}
-			popup = createPopupMenu();
-			showPopup = true;
-		    } else {
-			setMask(DEACTIVATE_ASAP_BEHAVIOR_MASK);
-		    }
-
-		    JComponent map = null;
-		    if (mouseDelegator != null) {
-			map = mouseDelegator.getMap();
-		    } else if (canvas != null) {
-			// If a MouseDelegator is not being used, go
-			// directly to the MapBean.
-			map = canvas;
-		    }
-
-		    if (showPopup) {
-			if (map != null) {
-			    popup.show(map, gp.getX(), gp.getY());
-			} else {
-			    Debug.error("OMDrawingTool: no component to show popup on!");
-			}
-		    }
-		} else {
-		    if (DEBUG) Debug.output("OMDrawingTool.eomgChanged(). no valid location for popup supplied.");
+		Shape ces = currentEditable.getGraphic().getShape();
+		if (ces != null) {
+		    Rectangle rect = ces.getBounds();
+		    windowx = (int)rect.getX();
+		    windowy = (int)rect.getY() - 50;
 		}
-	    } else {
-		if (DEBUG) Debug.output("OMDrawingTool.eomgChanged(). no currentEditable to deal with.");
 	    }
+
+	    /**
+	     * Let's see if we should bring up pop-up menu
+	     * with all sorts of lovely options - if the right
+	     * mouse key was pressed, or if the ctrl key was
+	     * pressed with the mouse button being released,
+	     * display the option menu.  Otherwise, just get
+	     * ready to end. 
+	     */
+
+	    boolean showPopup = (popup != null);
+
+	    if (popup == null && !getUseAsTool()) {
+		popup = createPopupMenu();
+		showPopup = (popup != null);
+	    }
+
+	    if (showPopup) {
+
+		JComponent map = null;
+		if (mouseDelegator != null) {
+		    map = mouseDelegator.getMap();
+		} else if (canvas != null) {
+		    // If a MouseDelegator is not being used, go
+		    // directly to the MapBean.
+		    map = canvas;
+		}
+		    
+		if (map != null && me != null) {
+		    popup.show(map, me.getX(), me.getY());
+		} else {
+		    Debug.error("OMDrawingTool: no " +
+				(map == null?"/component":"/") +
+				(me == null?"location/":"/") + " to show popup on!");
+		}
+	    }
+	} else if (event.shouldDeactivate()) {
+	    deactivate();
 	}
     }
 
     public JPopupMenu createPopupMenu() {
+
+	if (!isMask(ALT_POPUP_BEHAVIOR_MASK)) return null;
+
 	JPopupMenu pum = new JPopupMenu();
 	JMenuItem delete = new JMenuItem("Delete");
 	delete.addActionListener(new ActionListener() {
@@ -1400,21 +1519,17 @@ public class OMDrawingTool extends OMToolComponent
 		}
 	    });
 
-// 	JMenuItem done = new JMenuItem("Done");
-// 	done.addActionListener(new ActionListener() {
-// 		public void actionPerformed(ActionEvent ae) {
-// 		    deactivate();
-// 		}
-// 	    });
-
-	JMenuItem gui = new JMenuItem("Change Appearance ");
+	JMenuItem gui = new JMenuItem("Change Appearance");
 	gui.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent ae) {
 		    EditableOMGraphic eomg = getCurrentEditable();
 		    if (eomg != null) {
 			boolean previous = eomg.getShowGUI();
 			eomg.setShowGUI(true);
-			showInWindow();
+			setVisible(true);
+			if (!getUseAsTool()) {
+			    showInWindow();
+			}
 			eomg.setShowGUI(previous);
 			eomg.getStateMachine().setSelected();
 		    }
@@ -1431,16 +1546,18 @@ public class OMDrawingTool extends OMToolComponent
 // 		}
 // 	    });
 
-// 	pum.add(done);
-// 	pum.addSeparator();
-// 	if (isMask(GUI_VIA_POPUP_BEHAVIOR_MASK)) {
+ 	if (isMask(SHOW_GUI_BEHAVIOR_MASK) && 
+	    !getUseAsTool()) {
 	    pum.add(gui);
-	    pum.addSeparator();
-// 	}
+ 	} else {
+	    Debug.output("Not adding Change Appearance to popup: guiViaPopup(" +
+			 isMask(SHOW_GUI_BEHAVIOR_MASK) + ") isTool(" +
+			 getUseAsTool() + ")");
+	}
+
 //  	pum.add(reset);
 	pum.add(delete);
-// 	pum.addSeparator();
-// 	pum.add(cancel);
+
 	return pum;
     }
 
@@ -1461,5 +1578,14 @@ public class OMDrawingTool extends OMToolComponent
     public static void main(String[] args) {
 	OMDrawingTool omdt = new OMDrawingTool();
 	omdt.showPalette();
+    }
+
+    public void setProperties(String prefix, Properties props) {
+	super.setProperties(prefix, props);
+
+	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+	visibleWhenInactive = PropUtils.booleanFromProperties(props, prefix + VisibleWhenInactiveProperty, visibleWhenInactive);
+	getGUI();
+	setVisible(visibleWhenInactive);
     }
 }
