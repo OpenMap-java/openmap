@@ -1,0 +1,114 @@
+<!--
+$Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
+$RCSfile: openmap-arch.sgml,v $
+$Revision: 1.1 $
+$Date: 1998/12/02 20:51:37 $
+$Author: aculline $
+
+OpenMap architecture document
+-->
+
+<!doctype linuxdoc system>
+
+<article>
+
+<title>OpenMap Architecture
+<author>BBN Technologies
+<date>2 December 1998
+<abstract>
+This document contains information about the OpenMap component
+architecture.
+</abstract>
+
+
+<toc>
+<p>
+<figure>
+<eps file=bigpicture>
+<img src="images/bigpicture.gif">
+<caption></caption>
+</figure>
+
+
+<sect>Overview
+<p>
+<figure>
+<eps file=overview>
+<img src="images/overview.gif">
+<caption></caption>
+</figure>
+<p>
+
+
+<sect>MapBean
+<p>
+<figure>
+<eps file=mapbean>
+<img src="images/mapbean.gif">
+<caption></caption>
+</figure>
+<p>
+
+
+<sect>Layers
+<p>
+Layers are components that get added to the MapBean.  These components
+are responsible for aquiring and rendering their geospatial data.
+Layers can be interactive.  They can register for mouse events, and
+they can construct their very own GUI display.
+
+<sect1>ShapeLayer
+<p>
+This is a generic layer for displaying data in ESRI shape file format.
+See the <tt><htmlurl
+url="api/com.bbn.openmap.layer.shape.ShapeLayer.html"
+name="com.bbn.openmap.layer.shape.ShapeLayer"></tt> class.
+
+<sect1>VPF Layer
+<p>
+This is a generic layer for displaying NIMA VPF data.
+See the <tt><htmlurl
+url="api/com.bbn.openmap.layer.vpf.VPFLayer.html"
+name="com.bbn.openmap.layer.vpf.VPFLayer"></tt> class.
+
+<sect1>Writing your own layer
+<p>
+To write your own layer, you need to extend the
+<tt><htmlurl url="api/com.bbn.openmap.Layer.html"
+name="com.bbn.openmap.Layer"></tt> class.  The minimum requirement is
+that you override the <tt>projectionChanged()</tt> and
+<tt>paint()</tt>methods.  This former method is invoked when your
+layer is part of the MapBean and the view changes (e.g., when someone
+recenters the map).  It is up to you to fetch and prepare your
+graphics (or maybe do something else), and then <tt>repaint()</tt>
+yourself.  The easiest way to write your own layer is to derive it
+from another layer.  For some simple examples see the
+<tt><htmlurl url="api/com.bbn.openmap.layer.GraticuleLayer.html"
+name="com.bbn.openmap.layer.GraticuleLayer"></tt> and
+<tt><htmlurl url="api/com.bbn.openmap.layer.TestLayer.html"
+name="com.bbn.openmap.layer.TestLayer"></tt> classes.
+
+
+<sect>Layer Support
+<p>
+There is alot of supporting code for helping to manage layer graphics
+and tasks.
+
+
+<sect1>OMGraphics
+<p>
+The OMGraphics help you to turn your vector or raster data into
+graphics rendered on the map.  You can create OMGraphics out of XY or
+LatLon points, or raster images.  For LatLon vector graphics, the
+OMGraphics manage the projecting of the vertices.  Furthermore the
+OMGraphics manage rendering and user gesturing.
+
+
+<sect1>Projections
+<p>
+The <htmlurl url="api/com.bbn.openmap.proj.Projection.html"
+name="Projection"> interface allows you read-only access to the
+current MapBean Projection.
+
+
+</article>
