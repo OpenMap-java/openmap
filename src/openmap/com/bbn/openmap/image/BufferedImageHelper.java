@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/BufferedImageHelper.java,v $
 // $RCSfile: BufferedImageHelper.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.6 $
+// $Date: 2004/12/08 01:00:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -107,10 +107,10 @@ public class BufferedImageHelper {
 
             if (planarImageObject != null) {
                 Method getBufferedImageMethod = planarImageObject.getClass()
-                        .getMethod("getAsBufferedImage", null);
+                        .getMethod("getAsBufferedImage", (Class[])null);
 
                 return (BufferedImage) getBufferedImageMethod.invoke(planarImageObject,
-                        null);
+                        (Object[])null);
             }
 
         } catch (ClassNotFoundException cnfe) {
