@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.16 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.17 $
+// $Date: 2004/11/26 03:42:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -146,14 +146,17 @@ public class WindowSupport extends ListenerSupport implements
      * it is hidden.
      */
     public void componentHidden(ComponentEvent e) {
-        Component source = (Component) e.getSource();
-        if (source == dialog || source == iFrame) {
-            cleanUp();
-        }
-
         Iterator it = iterator();
         while (it.hasNext()) {
             ((ComponentListener) it.next()).componentHidden(e);
+        }
+
+        // We need to do this after componentHidden notifications,
+        // otherwise the component never finds out it's been hidden,
+        // it gets removed as a ComponentListener at cleanup.
+        Component source = (Component) e.getSource();
+        if (source == dialog || source == iFrame) {
+            cleanUp();
         }
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerPane.java,v $
 // $RCSfile: LayerPane.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:48 $
+// $Revision: 1.8 $
+// $Date: 2004/11/26 03:42:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -177,6 +177,14 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
 
     public void setLayerHandler(LayerHandler in_layerHandler) {
         layerHandler = in_layerHandler;
+    }
+
+    /**
+     * @return LayerHandler if it has been found in the MapHandler or
+     *         set.
+     */
+    protected LayerHandler getLayerHandler() {
+        return layerHandler;
     }
 
     /**
