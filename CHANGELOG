@@ -1,3 +1,44 @@
+2005-01-10  Donald Dietrick  <dietrick@dhcp89-077-058.bbn.com>
+
+	* Updated the com.bbn.openmap.tools.symbology.milStd2525
+	package, specifically, the SymbolReferenceLibrary and the
+	SymbolChooser, which can now create icon symbols given the
+	proper data source.  The SymbolChooser now updates the symbol
+	code based on option settings, and the SymbolReferenceLibrary
+	uses a SymbolImageMaker to decide how to make a image based on
+	that code.  The SVGSymbolImageMaker can use the SVG symbol
+	library available from DISA, and also requires the Batik
+	package from http://xml.apache.org/batik.  The GIFSymbolImageMaker
+	will create scaled icons from a gif file selection.
+
+	* Added labeling capabilties to OMGraphics, handled by their
+	attribute capabilities.  If the OMGraphicConstants.LABEL attribute
+	is set with an OMLabel object (the OMTextLabel is one
+	implementation), labels will appear on the map for an OMGraphic.
+	Added OMGraphicConstants.TOOLTIP and OMGraphicConstants.INFOLINE
+	constants, too, that can be used by layers to look up these kind
+	of attributes in an OMGraphic.  The VPFLayer now looks for these
+	attributes for it's display.
+
+	* Updated the StandardMapMouseInterpreter to handle right mouse
+	button clicks better, by trapping the popup trigger.
+
+	* Updated VPF package components to provide access to feature
+	attribute information, which can be displayed via tooltip,
+	information line, or label on the map.  The choice of display
+	type and attribute type can be specified in the layer's palette
+	and/or properties.  The VPFLayer's 'searchByFeatures' property
+	must be set to true for this capability.
+
+	* Added ImageIOFormatter class, a super class for creating image
+	files via the java imageio package.  Added GIF and PNG
+	implementations.
+	
+	* Moved the LayerHandler threading support to the LayerSupport
+	object that also performs some queueing capability, so that the
+	threads lauched form layers changes are performed in order to
+	preserve stability.
+
 2004-11-25  Donald Dietrick  <dietrick@jader.local>
 
 	* Modified the ProjectionSupport and LayerHandler to launch
