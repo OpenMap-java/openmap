@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoint.java,v $
 // $RCSfile: OMPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 03:11:09 $
+// $Revision: 1.3 $
+// $Date: 2003/03/07 16:27:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -125,21 +125,21 @@ public class OMPoint extends OMGraphic implements Serializable {
 
     /** For lat/lon rendertype points, to move the point location. */
     public void set(float lat, float lon) {
-	this.lat1 = lat;
-	this.lon1 = lon;
-	setNeedToRegenerate(true);
+	setLat(lat);
+	setLon(lon);
     }
 
     /** For offset rendertype points, to move the point location. */
     public void set(float lat, float lon, int offsetx, int offsety) {
-	this.lat1 = lat;
-	this.lon1 = lon;
-	this.x = offsetx;
-	this.y = offsety;
-	setNeedToRegenerate(true);
+	setLat(lat);
+	setLon(lon);;
+	set(offsetx, offsety);
     }
 
-    /** For screen x/y rendertype points, to move the point location. */
+    /**
+     * For screen x/y rendertype points, to move the point
+     * location. This method does not call setX() and setY().
+     */
     public void set(int x, int y) {
 	// You have to set these directly, or you can mess up the grab
 	// points by using set methods - VerticalGrabPoints and
