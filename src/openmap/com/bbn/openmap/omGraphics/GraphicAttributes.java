@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/GraphicAttributes.java,v $
 // $RCSfile: GraphicAttributes.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 23:02:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -133,16 +133,14 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
 
     public Object clone() {
 	GraphicAttributes clone = new GraphicAttributes();
-	clone.linePaint = linePaint;
-	clone.textPaint = textPaint;
-	clone.selectPaint = selectPaint;
-	clone.fillPaint = fillPaint;
-	clone.fillPattern = fillPattern;
-	clone.setStroke(stroke);
-	clone.baseScale = baseScale;
+	setTo(clone);
+	return clone;
+    }
+
+    public void setTo(GraphicAttributes clone) {
+	super.setTo(clone);
 	clone.renderType = renderType;
 	clone.lineType = lineType;
-	return clone;
     }
 
     /**

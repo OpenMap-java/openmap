@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/15 23:59:37 $
+// $Revision: 1.3 $
+// $Date: 2003/08/14 23:02:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -756,8 +756,18 @@ public class OMPoly extends OMGraphic implements Serializable {
 			}
 		    }
 		    
-		    // only draw outline if different color
-		    if (!isLineClear || !edgeMatchesFill) {
+		    // only draw outline if different color or matted
+		    if (matted || !isLineClear || !edgeMatchesFill) {
+
+			if (matted) {
+			    if (g instanceof Graphics2D && 
+				stroke instanceof BasicStroke) {
+				((Graphics2D)g).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
+				setGraphicsColor(g, mattingPaint);
+				g.drawPolyline(_x, _y, _x.length);
+			    }
+			}
+
 			setGraphicsForEdge(g);
 			// for some reason, this used to be drawPolygon
 			g.drawPolygon(_x, _y, _x.length);
@@ -766,6 +776,16 @@ public class OMPoly extends OMGraphic implements Serializable {
 		
 		// render polyline
 		else {
+
+		    if (matted) {
+			if (g instanceof Graphics2D && 
+			    stroke instanceof BasicStroke) {
+			    ((Graphics2D)g).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
+			    setGraphicsColor(g, mattingPaint);
+			    g.drawPolyline(_x, _y, _x.length);
+			}
+		    }
+
 		    // draw main outline
 		    setGraphicsForEdge(g);
 		    g.drawPolyline(_x, _y, _x.length);
