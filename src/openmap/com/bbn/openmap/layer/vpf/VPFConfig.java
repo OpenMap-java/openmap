@@ -93,8 +93,14 @@ public class VPFConfig extends JPanel implements ActionListener {
     }
 
     public VPFConfig(String[] dataPaths, LayerHandler layerHandler) {
+	this(dataPaths, layerHandler, false);
+    }
+
+    protected VPFConfig(String[] dataPaths, LayerHandler layerHandler,
+			boolean standAlone) {
 
 	this.layerHandler = layerHandler;
+	this.standAlone = standAlone;
 
 	if (dataPaths != null && dataPaths.length > 0) {
 	    StringBuffer buf = new StringBuffer(dataPaths[0]);
@@ -199,6 +205,7 @@ public class VPFConfig extends JPanel implements ActionListener {
 	c.gridx = 1;
 	c.gridheight = 1;
 	c.gridy = 0;
+	c.fill = GridBagConstraints.HORIZONTAL;
 	c.insets = new Insets(0, 5, 0, 5);
 	addFeatureButton = new JButton("Add Feature");
 	addFeatureButton.addActionListener(this);
@@ -540,8 +547,7 @@ public class VPFConfig extends JPanel implements ActionListener {
 	    System.exit(0);
 	}
 
-	VPFConfig vpfc = new VPFConfig(args);
-	vpfc.standAlone = true;
+	VPFConfig vpfc = new VPFConfig(args, null, true);
 	launchFrame(vpfc, true);
     }
 }
