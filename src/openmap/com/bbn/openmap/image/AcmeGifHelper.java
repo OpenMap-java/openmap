@@ -14,16 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AcmeGifHelper.java,v $
 // $RCSfile: AcmeGifHelper.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/12/10 14:11:57 $
+// $Revision: 1.5 $
+// $Date: 2005/01/10 16:14:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.image;
 
-import java.io.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import com.bbn.openmap.util.Debug;
 
