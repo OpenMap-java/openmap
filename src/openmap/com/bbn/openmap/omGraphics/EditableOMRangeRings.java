@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/03 00:53:03 $
+// $Revision: 1.5 $
+// $Date: 2003/10/23 21:13:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,7 @@
 package com.bbn.openmap.omGraphics;
 
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.*;
 import com.bbn.openmap.proj.*;
@@ -159,7 +160,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
 
     protected JToolBar getRangeRingGUI() {
 	if (rrToolBar == null) {
-	    rrToolBar = new JToolBar();
+	    rrToolBar = new GridBagToolBar();
 	    rrToolBar.setFloatable(false);
 	    rrToolBar.setMargin(new Insets(0, 1, 0, 1));
 		

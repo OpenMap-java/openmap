@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/10 19:18:44 $
+// $Revision: 1.5 $
+// $Date: 2003/10/23 21:13:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,7 @@
 package com.bbn.openmap.omGraphics;
 
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.*;
 import com.bbn.openmap.proj.*;
@@ -482,12 +483,9 @@ public class EditableOMPoint extends EditableOMGraphic {
 
     protected JToolBar getPointGUI() {
 	if (pToolBar == null) {
-	    pToolBar = new JToolBar();
-	    pToolBar.setFloatable(false);
-	    pToolBar.setMargin(new Insets(0, 0, 0, 0));
+	    pToolBar = new GridBagToolBar();
+	    // Add buttons to toggle oval/rect, radius of point.
 	} 
-
-	// Add buttons to toggle oval/rect, radius of point.
 
 	return pToolBar;
     }    

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/03 00:53:03 $
+// $Revision: 1.6 $
+// $Date: 2003/10/23 21:13:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,10 +24,11 @@
 package com.bbn.openmap.omGraphics;
 
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.*;
-import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 import java.awt.Component;
@@ -1215,9 +1216,7 @@ public class EditableOMPoly extends EditableOMGraphic {
     }
 
     public JToolBar getPolyGUI(boolean includeEnclose, boolean includeAdd, boolean includeDelete) {
-	JToolBar buttonBox = new JToolBar();
-	buttonBox.setFloatable(false);
-	buttonBox.setMargin(new Insets(0, 1, 0, 1));
+	JToolBar buttonBox = new GridBagToolBar();
 
 	URL url;
 	ImageIcon imageIcon;

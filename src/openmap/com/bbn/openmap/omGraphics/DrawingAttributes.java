@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/10/16 14:11:41 $
+// $Revision: 1.10 $
+// $Date: 2003/10/23 21:13:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,6 +44,7 @@ import javax.swing.event.*;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.tools.icon.BasicIconPart;
 import com.bbn.openmap.tools.icon.IconPart;
 import com.bbn.openmap.tools.icon.IconPartList;
@@ -186,7 +187,7 @@ public class DrawingAttributes
      */
     protected TexturePaint fillPattern = null;
     /** The line stroke, for dashes, etc. */
-    protected Stroke stroke = new BasicStroke(1);
+    protected transient Stroke stroke = new BasicStroke(1);
     /**
      * The base scale for scaling the fill pattern image. If NONE,
      * then the resolution of the raw image will always be used. 
@@ -235,7 +236,7 @@ public class DrawingAttributes
 
     public static boolean alwaysSetTextToBlack = false;
 
-    protected BasicStrokeEditorMenu bse;
+    protected transient BasicStrokeEditorMenu bse;
 
     /**
      * The JButton used to bring up the line menu.
@@ -870,6 +871,7 @@ public class DrawingAttributes
     }
 
     protected JPanel palette = null;
+    protected JToolBar toolbar = null;
 
     /**
      * Get the GUI components that control the DrawingAttributes. This
@@ -893,19 +895,25 @@ public class DrawingAttributes
      */
     protected JPanel getColorAndLineGUI() {
 
-	if (palette == null) {
+	if (palette == null || toolbar == null) {
 	    palette = new JPanel();
- 	    palette.setBorder(BorderFactory.createEmptyBorder());
+
+	    if (Debug.debugging("layout")) {
+		palette.setBorder(BorderFactory.createLineBorder(Color.red));
+	    }
+
+	    GridBagLayout gridbag = new GridBagLayout();
+	    GridBagConstraints c = new GridBagConstraints();
+	    palette.setLayout(gridbag);
+
+	    toolbar = new GridBagToolBar();
+	    gridbag.setConstraints(toolbar, c);
 	}	    
 
 	resetGUI();
-
-	palette.removeAll();
-	palette.removeAll();
-
-	JToolBar toolbar = new JToolBar();
-	toolbar.setFloatable(false);
-	toolbar.setMargin(new Insets(0, 0, 0, 0));
+	palette.removeAll(); // Remove cruft from past OMGraphics
+	toolbar.removeAll(); // Remove cruft from past OMGraphics
+	palette.add(toolbar); // Add back the basic toolbar
 	toolbar.add(lineColorButton);
 	toolbar.add(fillColorButton);
 	toolbar.add(selectColorButton);
@@ -950,8 +958,6 @@ public class DrawingAttributes
 		toolbar.add(lineButton);
 	    }
 	}
-
-	palette.add(toolbar);
 	   
 	return palette;
     }
