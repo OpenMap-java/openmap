@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGrid.java,v $
 // $RCSfile: OMGrid.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:13 $
+// $Revision: 1.8 $
+// $Date: 2004/10/15 14:39:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,9 +51,12 @@ import com.bbn.openmap.proj.Projection;
  * OMGridObjects - If the OMGridGenerator is set within the grid, the
  * OMGridGenerator will create the OMGraphics to be displayed for the
  * grid, as opposed the OMGridObjects getting a chance to generate
- * themselves.
+ * themselves. The OMGrid extends OMGraphicList, and the OMGraphics
+ * that the OMGridGenerator creates are added to the OMGrid. If you
+ * want the OMGrid to hide the OMGraphics that are created, make it
+ * vague.
  */
-public class OMGrid extends OMGraphic {
+public class OMGrid extends OMGraphicList {
 
     /**
      * The orientation angle of the grid, in radians. Up/North is
@@ -158,8 +161,7 @@ public class OMGrid extends OMGraphic {
 
     /** An object that knows how to generate graphics for the matrix. */
     protected OMGridGenerator generator = null;
-    /** How the grid should be drawn on the screen. */
-    protected OMGraphic graphic = null;
+
     /**
      * Means that the first dimension of the array refers to the
      * column count.
@@ -186,9 +188,7 @@ public class OMGrid extends OMGraphic {
     protected Length units = null;
 
     /** Default constructor. */
-    public OMGrid() {
-        super(RENDERTYPE_UNKNOWN, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-    }
+    public OMGrid() {}
 
     /**
      * Create a OMGrid that covers a lat/lon area. Column major by
@@ -208,7 +208,7 @@ public class OMGrid extends OMGraphic {
      */
     public OMGrid(float lat, float lon, float vResolution, float hResolution,
             int[][] data) {
-        super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setRenderType(RENDERTYPE_LATLON);
         set(lat, lon, 0, 0, vResolution, hResolution, data);
     }
 
@@ -230,7 +230,7 @@ public class OMGrid extends OMGraphic {
      */
     public OMGrid(int x, int y, float vResolution, float hResolution,
             int[][] data) {
-        super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setRenderType(RENDERTYPE_XY);
         set(0.0f, 0.0f, x, y, vResolution, hResolution, data);
     }
 
@@ -257,7 +257,7 @@ public class OMGrid extends OMGraphic {
      */
     public OMGrid(float lat, float lon, int x, int y, float vResolution,
             float hResolution, int[][] data) {
-        super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setRenderType(RENDERTYPE_OFFSET);
         set(lat, lon, x, y, vResolution, hResolution, data);
     }
 
@@ -278,7 +278,7 @@ public class OMGrid extends OMGraphic {
      */
     public OMGrid(float lat, float lon, float vResolution, float hResolution,
             GridData data) {
-        super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setRenderType(RENDERTYPE_LATLON);
         set(lat, lon, 0, 0, vResolution, hResolution, data);
     }
 
@@ -299,7 +299,7 @@ public class OMGrid extends OMGraphic {
      */
     public OMGrid(int x, int y, float vResolution, float hResolution,
             GridData data) {
-        super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setRenderType(RENDERTYPE_XY);
         set(0.0f, 0.0f, x, y, vResolution, hResolution, data);
     }
 
@@ -325,7 +325,7 @@ public class OMGrid extends OMGraphic {
      */
     public OMGrid(float lat, float lon, int x, int y, float vResolution,
             float hResolution, GridData data) {
-        super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
+        setRenderType(RENDERTYPE_OFFSET);
         set(lat, lon, x, y, vResolution, hResolution, data);
     }
 
@@ -602,6 +602,9 @@ public class OMGrid extends OMGraphic {
         float upLat;
         int columns = getColumns();
         int rows = getRows();
+        // Clear out the OMGraphicList part
+        super.clear();
+        shape = null;
 
         /**
          * Let's figure out the dimensions and location of the grid,
@@ -654,22 +657,21 @@ public class OMGrid extends OMGraphic {
                     + point2 + " with height " + height + " and width " + width);
         }
 
+        // THis has to happen here, in case the generator wants to
+        // check the OMGrid coverage before deciding to do the work
+        // for creating OMGraphics.
+        setShape();
+
         /** Now generate the grid in the desired way... */
         if (generator != null && generator.needGenerateToRender()) {
-            graphic = generator.generate(this, proj);
+            add(generator.generate(this, proj));
         } else if (gridObjects != null) {
-            graphic = generateGridObjects(proj);
+            add(generateGridObjects(proj));
         }
-
-        setShape();
 
         setNeedToRegenerate(false);
 
-        if (graphic != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 
     /**
@@ -677,17 +679,13 @@ public class OMGrid extends OMGraphic {
      * location and size of the coverage of the grid.
      */
     public void setShape() {
-        if (graphic != null) {
-            shape = graphic.getShape();
-        } else {
-            // If nothing is available as the shape, generate shape
-            // that is a boundary of the generated image.
-            // We'll make it a GeneralPath rectangle.
-            int w = width;
-            int h = height;
+        // If nothing is available as the shape, generate shape
+        // that is a boundary of the generated image.
+        // We'll make it a GeneralPath rectangle.
+        int w = width;
+        int h = height;
 
-            shape = createBoxShape(point1.x, point1.y, w, h);
-        }
+        setShape(createBoxShape(point1.x, point1.y, w, h));
     }
 
     /**
@@ -703,41 +701,9 @@ public class OMGrid extends OMGraphic {
             }
         }
 
-        if (graphic != null) {
-            Debug.message("omGraphics", "OMGrid: rendering...");
-            graphic.render(g);
-        } else {
-            Debug.message("omGraphics", "OMGrid: nothing to render...");
-        }
+        super.render(g);
     }
 
-    /**
-     * Return the shortest distance from the graphic to an XY-point.
-     * <p>
-     * 
-     * This method used to be abstract, but with the conversion of
-     * OMGraphics to internally represent themselves as java.awt.Shape
-     * objects, it's a more generic method. If the OMGraphic hasn't
-     * been updated to use Shape objects, it should have its own
-     * distance method.
-     * 
-     * @param x X coordinate of the point.
-     * @param y Y coordinate of the point.
-     * @return float distance, in pixels, from graphic to the point.
-     *         Returns Float.POSITIVE_INFINITY if the graphic isn't
-     *         ready (ungenerated).
-     */
-    public float distance(int x, int y) {
-        float distance = Float.POSITIVE_INFINITY;
-        if (graphic != null) {
-            distance = graphic.distance(x, y);
-        } else {
-            distance = super.distance(x, y);
-        }
-
-        return distance;
-    }
-    
     /**
      * Called from generate() if there isn't a OMGridGenerator. Goes
      * through the grid, figuring out which data array indexes are on
