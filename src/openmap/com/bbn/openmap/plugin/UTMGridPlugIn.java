@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/02/04 00:04:17 $
+// $Revision: 1.9 $
+// $Date: 2004/09/22 14:58:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -181,7 +181,10 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 
         QuadTree labelTree = new QuadTree();
 
-        UTMPoint utm = new UTMPoint();
+        // Need to use MGRSPoint to get MGRS zone letters, the UTM
+        // zone letters are N and S for the hemisphere, which isn't
+        // very interesting.
+        UTMPoint utm = new MGRSPoint();
         LatLonPoint llp = new LatLonPoint();
         float latitude;
         float longitude;
