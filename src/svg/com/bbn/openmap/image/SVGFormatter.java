@@ -16,8 +16,8 @@
  * **********************************************************************
  * 
  * $Source: /cvs/distapps/openmap/src/svg/com/bbn/openmap/image/SVGFormatter.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/03/14 18:22:21 $
+ * $Revision: 1.3 $
+ * $Date: 2003/11/18 16:28:17 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -26,6 +26,7 @@
 package com.bbn.openmap.image;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.GraphicsEnvironment;
 import java.io.*;
@@ -101,7 +102,7 @@ public class SVGFormatter extends AbstractImageFormatter {
 	map.addPropertyChangeListener(this);
 
 	// Layers should be set...
-	proj.drawBackground(graphics);
+	proj.drawBackground((Graphics2D)graphics, map.getBckgrnd());
 
 	if (layers != null) {
 	    for (int i = layers.length - 1; i >= 0; i--) {
