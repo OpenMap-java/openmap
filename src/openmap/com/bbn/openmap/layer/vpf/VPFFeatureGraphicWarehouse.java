@@ -14,24 +14,34 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFFeatureGraphicWarehouse.java,v $
 // $RCSfile: VPFFeatureGraphicWarehouse.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:09 $
+// $Revision: 1.6 $
+// $Date: 2005/01/10 16:36:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
+import java.awt.Component;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.io.FormatException;
-
-import java.awt.Component;
-import java.util.*;
-
-import javax.swing.JTabbedPane;
 
 /**
  * Implement a graphic factory that builds OMGraphics. It's different
@@ -45,13 +55,21 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
         implements VPFFeatureWarehouse {
 
     public final static String DEFAULT = "DEFAULT";
-    Hashtable featureDrawingAttributes;
+    protected Hashtable featureDrawingAttributes;
 
     /**
      *  
      */
     public VPFFeatureGraphicWarehouse() {
         super();
+    }
+
+    /**
+     * Called from super class constructor.
+     *  
+     */
+    protected void initDrawingAttributes() {
+        drawingAttributes = new FeatureDrawingAttributes();
     }
 
     /**
@@ -89,12 +107,12 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
         if (drawingAttributes != null) {
             featureDrawingAttributes.put(DEFAULT, drawingAttributes);
         } else {
-            drawingAttributes = DrawingAttributes.getDefaultClone();
+            drawingAttributes = new FeatureDrawingAttributes();
         }
 
         for (Iterator fiter = features.iterator(); fiter.hasNext();) {
             String feature = ((String) fiter.next()).intern();
-            DrawingAttributes da = (DrawingAttributes) drawingAttributes.clone();
+            FeatureDrawingAttributes da = (FeatureDrawingAttributes) drawingAttributes.clone();
             da.setStroke(drawingAttributes.cloneBasicStroke());
             da.setProperties(realPrefix + feature, props);
             featureDrawingAttributes.put(feature, da);
@@ -128,6 +146,7 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
      *        about the data, if needed.
      */
     public Component getGUI(LibrarySelectionTable lst) {
+
         JTabbedPane jtp = new JTabbedPane();
 
         jtp.addTab(DEFAULT,
@@ -135,11 +154,13 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
                 drawingAttributes.getGUI(),
                 "General Attributes");
         List features = getFeatures();
-        int size = features.size();
-        for (int i = 0; i < size; i++) {
+        int numFeatures = features.size();
+
+        for (int i = 0; i < numFeatures; i++) {
             String currentFeature = (String) features.get(i);
             DrawingAttributes da = getAttributesForFeature(currentFeature);
-            if (da != null) {// && !da.equals(drawingAttributes)) {
+
+            if (da != null) {
                 String desc = null;
                 try {
                     desc = lst.getDescription(currentFeature);
@@ -149,8 +170,10 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
                 if (desc == null) {
                     desc = "Feature Description Unavailable";
                 }
+                JPanel featurePanel = new JPanel();
+                featurePanel.add(da.getGUI());
 
-                jtp.addTab(currentFeature, null, da.getGUI(), desc);
+                jtp.addTab(currentFeature, null, featurePanel, desc);
             }
         }
         return jtp;
@@ -160,24 +183,24 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
      * Given a feature type, get the DrawingAttributes for that
      * feature. Should be very unlikely to get a null value back.
      */
-    public DrawingAttributes getAttributesForFeature(String featureType) {
+    public FeatureDrawingAttributes getAttributesForFeature(String featureType) {
         if (featureType != null) {
-            DrawingAttributes ret;
+            FeatureDrawingAttributes ret;
 
             if (featureDrawingAttributes != null) {
-                ret = (DrawingAttributes) featureDrawingAttributes.get(featureType);
+                ret = (FeatureDrawingAttributes) featureDrawingAttributes.get(featureType);
                 if (ret == null) {
-                    ret = drawingAttributes;
+                    ret = (FeatureDrawingAttributes) drawingAttributes;
                 }
 
             } else {
-                ret = drawingAttributes;
+                ret = (FeatureDrawingAttributes) drawingAttributes;
             }
 
             return ret;
 
         } else {
-            return drawingAttributes;
+            return (FeatureDrawingAttributes) drawingAttributes;
         }
     }
 
@@ -209,8 +232,9 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
                 dpplon,
                 covtable.doAntarcticaWorkaround);
 
-        getAttributesForFeature(featureType).setTo(py);
-
+        //        getAttributesForFeature(featureType).setTo(py);
+        int id = ((Integer) facevec.get(0)).intValue();
+        setAttributesForFeature(py, covtable, featureType, id);
         // HACK to get tile boundaries to not show up for areas.
         //         py.setLinePaint(py.getFillPaint());
         //         py.setSelectPaint(py.getFillPaint());
@@ -220,6 +244,8 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
         addArea(py);
     }
 
+    protected String info = null;
+
     /**
      *  
      */
@@ -228,11 +254,28 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
                            float dpplon, CoordFloatString coords,
                            String featureType) {
 
+        int id = ((Integer) edgevec.get(0)).intValue();
+
         OMPoly py = createEdgeOMPoly(coords, ll1, ll2, dpplat, dpplon);
-        getAttributesForFeature(featureType).setTo(py);
+        setAttributesForFeature(py, c, featureType, id);
         py.setFillPaint(OMColor.clear);
         py.setIsPolygon(false);
         addEdge(py);
+    }
+
+    /**
+     * @param py
+     * @param c
+     */
+    protected void setAttributesForFeature(OMGraphic omg, CoverageTable c,
+                                           String featureType, int id) {
+        FeatureDrawingAttributes fda = getAttributesForFeature(featureType);
+
+        if (fda.getFci() == null) {
+            fda.setFci(c.getFeatureClassInfo(featureType));
+        }
+
+        fda.setTo(omg, id);
     }
 
     /**
@@ -243,7 +286,9 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
                            String featureType) {
 
         OMText txt = createOMText(text, latitude, longitude);
-        getAttributesForFeature(featureType).setTo(txt);
+        int id = ((Integer) textvec.get(0)).intValue();
+        setAttributesForFeature(txt, c, featureType, id);
+        //        getAttributesForFeature(featureType).setTo(txt);
         addText(txt);
     }
 
@@ -255,7 +300,9 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
                            float latitude, float longitude,
                            boolean isEntityNode, String featureType) {
         OMPoint pt = createOMPoint(latitude, longitude);
-        getAttributesForFeature(featureType).setTo(pt);
+        int id = ((Integer) nodeprim.get(0)).intValue();
+        setAttributesForFeature(pt, c, featureType, id);
+        //        getAttributesForFeature(featureType).setTo(pt);
         addPoint(pt);
     }
 

@@ -14,15 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFGraphicWarehouse.java,v $
 // $RCSfile: VPFGraphicWarehouse.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:10 $
+// $Revision: 1.4 $
+// $Date: 2005/01/10 16:36:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.util.*;
+import java.util.List;
+
 import com.bbn.openmap.LatLonPoint;
 
 /**

@@ -14,28 +14,37 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.16 $
-// $Date: 2004/11/08 15:35:07 $
+// $Revision: 1.17 $
+// $Date: 2005/01/10 16:36:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.InputStream;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicConstants;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
@@ -198,6 +207,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
     public VPFLayer() {
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
         setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
+        setMouseModeIDsForEvents(new String[] {"Gestures"});
     }
 
     /**
@@ -864,5 +874,12 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
             configWindowSupport.setTitle(getName());
         }
     }
-
+    
+    public String getToolTipTextFor(OMGraphic omg) {
+        return (String)omg.getAttribute(OMGraphicConstants.TOOLTIP);
+    }
+    
+    public String getInfoText(OMGraphic omg) {
+        return (String)omg.getAttribute(OMGraphicConstants.INFOLINE);
+    }
 }

@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LayerGraphicWarehouseSupport.java,v $
-// $Revision: 1.9 $ $Date: 2004/10/14 18:06:08 $ $Author: dietrick $
+// $Revision: 1.10 $ $Date: 2005/01/10 16:36:21 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -35,7 +35,7 @@ import java.util.*;
 public abstract class LayerGraphicWarehouseSupport implements
         VPFGraphicWarehouse {
 
-    protected DrawingAttributes drawingAttributes = new DrawingAttributes();
+    protected DrawingAttributes drawingAttributes;
 
     /** HACK around antarctica display problem. */
     final transient protected static float antarcticaThreshold = ProjMath.degToRad(-89.9f);
@@ -65,10 +65,19 @@ public abstract class LayerGraphicWarehouseSupport implements
      * Construct an object, initialiazes graphiclist
      */
     public LayerGraphicWarehouseSupport() {
+        initDrawingAttributes();
         graphics = new OMGraphicList();
         graphics.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
     }
 
+    /**
+     * Called from super class constructor.
+     *
+     */
+    protected void initDrawingAttributes() {
+        drawingAttributes = new DrawingAttributes();
+    }
+    
     /**
      * Get the current graphics list.
      * 
