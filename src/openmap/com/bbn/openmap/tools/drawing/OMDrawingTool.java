@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/03/07 16:05:44 $
+// $Revision: 1.7 $
+// $Date: 2003/03/07 16:24:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -876,7 +876,11 @@ public class OMDrawingTool
      * knows if the graphic is being updated or created.
      */
     public void deactivate() {
-	deactivate(currentEditable.getActionMask());
+	int actionMask = 0;
+	if (currentEditable != null) {
+	    actionMask = currentEditable.getActionMask();
+	}
+	deactivate(actionMask);
     }
 
     /**
