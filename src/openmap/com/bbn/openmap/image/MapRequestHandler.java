@@ -14,64 +14,73 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapRequestHandler.java,v $
 // $RCSfile: MapRequestHandler.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/03/04 04:14:29 $
+// $Revision: 1.9 $
+// $Date: 2004/10/01 20:43:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.image;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.util.*;
 
 import com.bbn.openmap.*;
 import com.bbn.openmap.proj.*;
-import com.bbn.openmap.event.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.PropertyStringFormatException;
 import com.bbn.openmap.layer.util.http.*;
 import com.bbn.openmap.layer.util.LayerUtils;
 
-/** 
+/**
  * The MapRequestHandler is the front end for String requests to the
- * ImageServer.  It's goal is to be able to handle OpenGIS WMT
+ * ImageServer. It's goal is to be able to handle OpenGIS WMT
  * mapserver requests, so the String request format is in the same
- * format.  We've included some OpenMap extensions to that format, so
- * an OpenMap projection can be defined.<P>
- *
+ * format. We've included some OpenMap extensions to that format, so
+ * an OpenMap projection can be defined.
+ * <P>
+ * 
  * The MapRequestHandler should be able to handle map requests,
  * resulting in a map image, and capabilities requests, so a client
  * can find out what layers, projection types and image formats are
- * available. <P>
- *
+ * available.
+ * <P>
+ * 
  * If the 'layers' property is not defined the openmap.properties
  * file, then the 'openmap.layers' property will be used, and the
  * 'openmap.startUpLayers' property will be used to define the default
- * set of layers.  This lets there be more layers available to the
+ * set of layers. This lets there be more layers available to the
  * client than would be sent by default (if the client doesn't specify
  * layers).
+ * <P>
+ * 
+ * The MapRequestHandler assumes that the ProjectionFactory shared
+ * instance has ProjectionLoaders added to it to let it know how to
+ * handle different projection names. A call to
+ * ProjectionFactory.loadDefaultProjections() will take care of this
+ * requirement if you just want the standard projections loaded.
  */
-public class MapRequestHandler extends ImageServer 
-    implements ImageServerConstants {
+public class MapRequestHandler extends ImageServer implements
+        ImageServerConstants {
 
     public final static String valueSeparator = ",";
     public final static String hexSeparator = "%";
 
-    public final static String defaultLayersProperty = OpenMapPrefix + "startUpLayers";
+    public final static String defaultLayersProperty = OpenMapPrefix
+            + "startUpLayers";
 
     /**
-     * The real new property for doing this.  The old property,
+     * The real new property for doing this. The old property,
      * defaultLayersProperty set to openmap.startUpLayers, will work
-     * if this is not set.  At some point, we should all start using
+     * if this is not set. At some point, we should all start using
      * this one, it's just right. (defaultLayers)
      */
     public final static String DefaultLayersProperty = "defaultLayers";
     /**
      * The property for using visibility of the layers to mark the
-     * default layers.  The order that they are used depends on how
+     * default layers. The order that they are used depends on how
      * they are specified in the layers property.
      */
     public final static String UseVisibilityProperty = "useLayerVisibility";
@@ -92,8 +101,8 @@ public class MapRequestHandler extends ImageServer
     /**
      * The layers' visibility will be set to true at initialization if
      * this property is set, and the layers' visibility will determine
-     * if a layer will be part of the image.  If you set this flag,
-     * then you have to set the layers' visibility yourself.  This
+     * if a layer will be part of the image. If you set this flag,
+     * then you have to set the layers' visibility yourself. This
      * property takes precedence over the default layers property if
      * both are defined.
      */
@@ -103,7 +112,8 @@ public class MapRequestHandler extends ImageServer
         this(null, props);
     }
 
-    public MapRequestHandler(String prefix, Properties props) throws IOException {
+    public MapRequestHandler(String prefix, Properties props)
+            throws IOException {
         setProperties(prefix, props);
     }
 
@@ -119,7 +129,8 @@ public class MapRequestHandler extends ImageServer
             defaultLayers = props.getProperty(defaultLayersProperty);
         }
 
-        setUseVisibility(LayerUtils.booleanFromProperties(props, prefix + UseVisibilityProperty, getUseVisibility()));
+        setUseVisibility(LayerUtils.booleanFromProperties(props, prefix
+                + UseVisibilityProperty, getUseVisibility()));
     }
 
     public Properties getPropertyInfo(Properties props) {
@@ -127,7 +138,8 @@ public class MapRequestHandler extends ImageServer
 
         // Still have to do projection, and default layers.
 
-        props.put(UseVisibilityProperty, "Flag to use layer visibility settings to determine default layers");
+        props.put(UseVisibilityProperty,
+                "Flag to use layer visibility settings to determine default layers");
 
         return props;
     }
@@ -147,37 +159,41 @@ public class MapRequestHandler extends ImageServer
     /**
      * Set up the default projection, which parts are used if any
      * parts of a projection are missing on an image request.
-     *
-     * @param props the properties to look for openmap projection parameters.
-     * @return a projection created from the properties.  A mercator
-     * projection is created if no properties pertaining to a
-     * projection are found.  
+     * 
+     * @param props the properties to look for openmap projection
+     *        parameters.
+     * @return a projection created from the properties. A mercator
+     *         projection is created if no properties pertaining to a
+     *         projection are found.
      */
     protected Projection initProjection(Properties props) {
-        String projName = Environment.get(Environment.Projection, 
-                                          Mercator.MercatorName);
-        int projType = ProjectionFactory.getProjType(projName);
-        
-        Projection proj = 
-            ProjectionFactory.makeProjection(
-                projType,
-                Environment.getFloat(Environment.Latitude, 0f),
-                Environment.getFloat(Environment.Longitude, 0f),
-                Environment.getFloat(Environment.Scale, 
-                                     Float.POSITIVE_INFINITY),
-                Environment.getInteger(Environment.Width, 640),
-                Environment.getInteger(Environment.Height, 480));
+        loadProjections(props);
+        Projection proj = ProjectionFactory.getDefaultProjectionFromEnvironment();
 
         if (Debug.debugging("imageserver")) {
-            Debug.output("MRH starting with default projection = " + 
-                         proj);
+            Debug.output("MRH starting with default projection = " + proj);
         }
         return proj;
     }
 
     /**
+     * Method called from initProjection to initialize the
+     * ProjectionFactory. By default, the standard OpenMap projections
+     * are loaded into the ProjectionFactory. If you want those
+     * projections replaced or add more projections to the default
+     * set, override this method and do what you need. *
+     * 
+     * @param props Properties that can be used to figure out what to
+     *        do. This implementation of the method doesn't use the
+     *        Properties.
+     */
+    protected void loadProjections(Properties props) {
+        ProjectionFactory.loadDefaultProjections();
+    }
+
+    /**
      * Set the default projection to grab parameters from in case some
-     * projection terms are missing from the request string.  
+     * projection terms are missing from the request string.
      */
     public void setDefaultProjection(Projection proj) {
         defaultProjection = proj;
@@ -185,7 +201,7 @@ public class MapRequestHandler extends ImageServer
 
     /**
      * Get the Projection being used for parameters in case some
-     * parameters are missing from request strings.  
+     * parameters are missing from request strings.
      */
     public Projection getDefaultProjection() {
         return defaultProjection;
@@ -193,7 +209,7 @@ public class MapRequestHandler extends ImageServer
 
     /**
      * Set the default layers that will be used for requests that
-     * don't specify layers.  The String should be a comma separated
+     * don't specify layers. The String should be a comma separated
      * list of prefix scoping strings for the layer
      * (layer.getPropertyPrefix()).
      */
@@ -207,47 +223,48 @@ public class MapRequestHandler extends ImageServer
 
     /**
      * Get a list of all the layer identifiers that can be used in a
-     * request, for the current configuration of the MapRequestHandler.
+     * request, for the current configuration of the
+     * MapRequestHandler.
      */
     public String getAllLayerNames() {
         Layer[] layers = getLayers();
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < layers.length; i++) {
-            sb.append((i > 0?" ":"") + layers[i].getPropertyPrefix());
+            sb.append((i > 0 ? " " : "") + layers[i].getPropertyPrefix());
         }
         return sb.toString();
     }
 
     protected Properties convertRequestToProps(String request)
-        throws MapRequestFormatException {
+            throws MapRequestFormatException {
         try {
             // Convert any %XX to the real ASCII value.
-            request = java.net.URLDecoder.decode(request);
+            request = URLDecoder.decode(request, "UTF-8");
 
             Properties requestProperties = PropUtils.parsePropertyList(request);
 
             if (Debug.debugging("imageserver")) {
                 Debug.output("MRH: parsed request " + requestProperties);
             }
-        
-            return  requestProperties;
+
+            return requestProperties;
         } catch (PropertyStringFormatException psfe) {
             throw new MapRequestFormatException(psfe.getMessage());
         } catch (Exception e) {
             throw new MapRequestFormatException(e.getMessage());
         }
-    }   
+    }
 
     /**
-     * Given a general request, parse it and handle it.  This is the
-     * method that servlets should call.  Currently only handles image
+     * Given a general request, parse it and handle it. This is the
+     * method that servlets should call. Currently only handles image
      * requests.
-     *
+     * 
      * @param request the request string of key value pairs.
      * @return a byte[] for the image.
      */
-    public byte[] handleRequest(String request)
-        throws IOException, MapRequestFormatException {
+    public byte[] handleRequest(String request) throws IOException,
+            MapRequestFormatException {
 
         Properties requestProperties = convertRequestToProps(request);
         String requestType = requestProperties.getProperty(REQUEST);
@@ -256,15 +273,18 @@ public class MapRequestHandler extends ImageServer
             if (requestType.equalsIgnoreCase(MAP)) {
                 Debug.message("imageserver", "MRH: Map request...");
                 return handleMapRequest(requestProperties);
-//          } else if (requestType.equalsIgnoreCase(CAPABILITIES)) {
-//              Debug.message("imageserver", "MRH: Capabilities request...");
-//              handleCapabilitiesRequest(requestProperties, out);
+                //          } else if
+                // (requestType.equalsIgnoreCase(CAPABILITIES)) {
+                //              Debug.message("imageserver", "MRH: Capabilities
+                // request...");
+                //              handleCapabilitiesRequest(requestProperties, out);
             } else {
-                throw new MapRequestFormatException("Request type not handled: " +
-                                                    requestType);
+                throw new MapRequestFormatException("Request type not handled: "
+                        + requestType);
             }
         } else {
-            throw new MapRequestFormatException("Request not understood: " + request);
+            throw new MapRequestFormatException("Request not understood: "
+                    + request);
         }
     }
 
@@ -272,12 +292,12 @@ public class MapRequestHandler extends ImageServer
      * Given a general request, parse it and handle it. Appends a
      * content type to the output stream which may mess things up for
      * servlets asking for images.
-     *
+     * 
      * @param request the request string of key value pairs.
      * @param out OutputStream to reply on.
      */
-    public void handleRequest(String request, OutputStream out) 
-        throws IOException, MapRequestFormatException {
+    public void handleRequest(String request, OutputStream out)
+            throws IOException, MapRequestFormatException {
 
         Properties requestProperties = convertRequestToProps(request);
 
@@ -286,51 +306,52 @@ public class MapRequestHandler extends ImageServer
             if (requestType.equalsIgnoreCase(MAP)) {
                 Debug.message("imageserver", "MRH: Map request...");
                 handleMapRequest(requestProperties, out);
-            } else
-                if (requestType.equalsIgnoreCase(CAPABILITIES)) {
-                    Debug.message("imageserver", "MRH: Capabilities request...");
-                    handleCapabilitiesRequest(requestProperties, out);
-                } else
-                    if (requestType.equalsIgnoreCase(PAN)) {
-                        Debug.message("imageserver", "MRH: Pan request...");
-                        handlePanRequest(requestProperties, out);
-                    } else
-                        if (requestType.equalsIgnoreCase(RECENTER)) {
-                            Debug.message("imageserver", "MRH: Recenter request...");
-                            handleRecenterRequest(requestProperties, out);
-    
-                        } else {
-                            throw new MapRequestFormatException("Request type not handled: " + requestType);
-                        }
+            } else if (requestType.equalsIgnoreCase(CAPABILITIES)) {
+                Debug.message("imageserver", "MRH: Capabilities request...");
+                handleCapabilitiesRequest(requestProperties, out);
+            } else if (requestType.equalsIgnoreCase(PAN)) {
+                Debug.message("imageserver", "MRH: Pan request...");
+                handlePanRequest(requestProperties, out);
+            } else if (requestType.equalsIgnoreCase(RECENTER)) {
+                Debug.message("imageserver", "MRH: Recenter request...");
+                handleRecenterRequest(requestProperties, out);
+
+            } else {
+                throw new MapRequestFormatException("Request type not handled: "
+                        + requestType);
+            }
         } else {
-            throw new MapRequestFormatException("Request not understood: " + request);
+            throw new MapRequestFormatException("Request not understood: "
+                    + request);
         }
 
     }
 
     /**
      * Handle a map request, and create and image for it.
+     * 
      * @param requestProperties the request in properties format.
      * @return byte[] of formatted image.
      */
     public byte[] handleMapRequest(Properties requestProperties)
-        throws IOException, MapRequestFormatException {
+            throws IOException, MapRequestFormatException {
 
-        Proj projection = ImageServerUtils.createOMProjection(requestProperties, defaultProjection);
+        Proj projection = ImageServerUtils.createOMProjection(requestProperties,
+                defaultProjection);
 
         setBackground(ImageServerUtils.getBackground(requestProperties));
 
         boolean formatFound = false;
-        
+
         String format = requestProperties.getProperty(FORMAT);
         if (format != null) {
             formatFound = setFormatter(format.toUpperCase());
             formatFound = true;
-            Debug.message("imageserver","Format requested " + format);
+            Debug.message("imageserver", "Format requested " + format);
         }
 
-        if (Debug.debugging("imageserver") && 
-            (format == null || formatFound == false)) {
+        if (Debug.debugging("imageserver")
+                && (format == null || formatFound == false)) {
             Debug.output("MRH: no formatter defined, using default");
         }
 
@@ -339,20 +360,22 @@ public class MapRequestHandler extends ImageServer
         // We need to think about using the layer mask, parsing it
         // intelligently, and not using it if it's a little freaky.
 
-//      String strLayerMask = requestProperties.getProperty(LAYERMASK);
-//      // default is to show all the layers server knows about.
-//      int layerMask = 0xFFFFFFFF;
-//      if (strLayerMask != null) {
-//          if (Debug.debugging("imageserver") {
-//              Debug.output("MRH.handleMapRequest: LayerMask unsigned int is " +
-//                           strLayerMask);
-//          }
-//          layerMask = Integer.parseInt(strLayerMask);
-//      }
-        
+        //      String strLayerMask =
+        // requestProperties.getProperty(LAYERMASK);
+        //      // default is to show all the layers server knows about.
+        //      int layerMask = 0xFFFFFFFF;
+        //      if (strLayerMask != null) {
+        //          if (Debug.debugging("imageserver") {
+        //              Debug.output("MRH.handleMapRequest: LayerMask unsigned int
+        // is " +
+        //                           strLayerMask);
+        //          }
+        //          layerMask = Integer.parseInt(strLayerMask);
+        //      }
+
         String strLayers = requestProperties.getProperty(LAYERS);
 
-        // Pass any properties to the layers???  Maybe if another
+        // Pass any properties to the layers??? Maybe if another
         // property is set, to bother with taking up the time to run
         // through all of this...
 
@@ -360,22 +383,28 @@ public class MapRequestHandler extends ImageServer
 
             Vector layers = PropUtils.parseMarkers(strLayers, ",");
             if (Debug.debugging("imageserver")) {
-                Debug.output("MRH.handleMapRequest: requested layers >> " + layers);
+                Debug.output("MRH.handleMapRequest: requested layers >> "
+                        + layers);
             }
             image = createImage(projection, -1, -1, layers);
         } else {
             // if LAYERS property is not specified
-            // Check default layers or if visibility should be used to determine default
+            // Check default layers or if visibility should be used to
+            // determine default
 
             if (getUseVisibility()) {
                 if (Debug.debugging("imageserver")) {
                     Debug.output("MRH.handleMapRequest: Using visibility to determine layers");
                 }
-                image = createImage(projection, -1, -1, calculateVisibleLayerMask());
+                image = createImage(projection,
+                        -1,
+                        -1,
+                        calculateVisibleLayerMask());
             } else {
                 Vector layers = PropUtils.parseMarkers(defaultLayers, " ");
                 if (Debug.debugging("imageserver")) {
-                    Debug.output("MRH.handleMapRequest: requested layers >> " + layers + " out of " + getAllLayerNames());
+                    Debug.output("MRH.handleMapRequest: requested layers >> "
+                            + layers + " out of " + getAllLayerNames());
                 }
                 image = createImage(projection, -1, -1, layers);
             }
@@ -388,7 +417,7 @@ public class MapRequestHandler extends ImageServer
      * stream which may mess things up for servlets.
      */
     public void handleMapRequest(Properties requestProperties, OutputStream out)
-        throws IOException, MapRequestFormatException {
+            throws IOException, MapRequestFormatException {
 
         byte[] image = handleMapRequest(requestProperties);
 
@@ -408,25 +437,30 @@ public class MapRequestHandler extends ImageServer
     }
 
     /**
-     * Handle a Pan Request. 
+     * Handle a Pan Request.
      */
-    public void handlePanRequest(Properties requestProperties, OutputStream out) throws IOException, MapRequestFormatException {
-    
-        Proj projection = ImageServerUtils.createOMProjection(requestProperties, defaultProjection);
-    
+    public void handlePanRequest(Properties requestProperties, OutputStream out)
+            throws IOException, MapRequestFormatException {
+
+        Proj projection = ImageServerUtils.createOMProjection(requestProperties,
+                defaultProjection);
+
         String contentType = HttpConnection.CONTENT_PLAIN;
         String response;
         float panAzmth;
-    
+
         try {
             panAzmth = Float.parseFloat(requestProperties.getProperty(AZIMUTH));
             projection.pan(panAzmth);
         } catch (Exception exc) {
             Debug.output("MSH: Invalid Azimuth");
         }
-    
-        response = Math.round(projection.getCenter().getLatitude() * 100.0) / 100.0 + ":" + Math.round(projection.getCenter().getLongitude() * 100.0) / 100.0;
-    
+
+        response = Math.round(projection.getCenter().getLatitude() * 100.0)
+                / 100.0 + ":"
+                + Math.round(projection.getCenter().getLongitude() * 100.0)
+                / 100.0;
+
         HttpConnection.writeHttpResponse(out, contentType, response);
     }
 
@@ -434,14 +468,17 @@ public class MapRequestHandler extends ImageServer
      * Handle a Recenter Request. Appends a content type to the output
      * stream which may mess things up for servlets.
      */
-    public void handleRecenterRequest(Properties requestProperties, OutputStream out) throws IOException, MapRequestFormatException {
-    
-        Proj projection = ImageServerUtils.createOMProjection(requestProperties, defaultProjection);
-    
+    public void handleRecenterRequest(Properties requestProperties,
+                                      OutputStream out) throws IOException,
+            MapRequestFormatException {
+
+        Proj projection = ImageServerUtils.createOMProjection(requestProperties,
+                defaultProjection);
+
         String contentType = HttpConnection.CONTENT_PLAIN;
         ;
         String response;
-    
+
         try {
             int x = Integer.parseInt(requestProperties.getProperty(X));
             int y = Integer.parseInt(requestProperties.getProperty(Y));
@@ -449,15 +486,18 @@ public class MapRequestHandler extends ImageServer
         } catch (Exception exc) {
             Debug.output("MSH: Invalid Azimuth");
         }
-    
-        response = Math.round(projection.getCenter().getLatitude() * 100.0) / 100.0 + ":" + Math.round(projection.getCenter().getLongitude() * 100.0) / 100.0;
-    
+
+        response = Math.round(projection.getCenter().getLatitude() * 100.0)
+                / 100.0 + ":"
+                + Math.round(projection.getCenter().getLongitude() * 100.0)
+                / 100.0;
+
         HttpConnection.writeHttpResponse(out, contentType, response);
     }
 
     /**
      * Given an ImageFormatter, get the HttpConnection content type
-     * that matches it.  
+     * that matches it.
      */
     public String getFormatterContentType(ImageFormatter formatter) {
         String ret = null;
@@ -475,11 +515,11 @@ public class MapRequestHandler extends ImageServer
     }
 
     /**
-     * Handle a capabilities request. 
+     * Handle a capabilities request.
      */
-    public void handleCapabilitiesRequest(Properties requestProperties, 
-                                          OutputStream out)
-        throws IOException, MapRequestFormatException {
+    public void handleCapabilitiesRequest(Properties requestProperties,
+                                          OutputStream out) throws IOException,
+            MapRequestFormatException {
 
         if (Debug.debugging("imageserver")) {
             Debug.output("MRH.handleCapabilitiesRequest: unimplemented");

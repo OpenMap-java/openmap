@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/SimpleHttpImageServer.java,v $
 // $RCSfile: SimpleHttpImageServer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/03/15 23:46:14 $
+// $Revision: 1.6 $
+// $Date: 2004/10/01 20:43:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,21 +23,14 @@
 
 package com.bbn.openmap.image;
 
-import java.awt.*;
-import java.awt.image.*;
+import com.bbn.openmap.*;
+import com.bbn.openmap.util.ArgParser;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.layer.util.http.*;
+
 import java.io.*;
 import java.net.MalformedURLException;
 import java.util.*;
-import javax.swing.ImageIcon;
-
-import com.bbn.openmap.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.util.ArgParser;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.layer.util.http.*;
-import com.bbn.openmap.layer.util.LayerUtils;
 
 /** 
  * The SimpleHttpImageServer is an ImageServer extended into a simple
