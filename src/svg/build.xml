@@ -55,7 +55,7 @@
   </target>
 
   <target name="jar.svg"
-	  depends="classes.svg"
+	  depends="init.svg"
 	  description="Builds jar files, placing them in the lib directory."
 	  if="do.svg">
 

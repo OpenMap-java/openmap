@@ -9,8 +9,6 @@
 	        description="Sets properties needed by the OpenMap code targets.">
 		<tstamp/>
 
-		<echo message="OpenMap base code..."/>
-
 		<property name="openmap.home" value="../.."/>
 		<property name="openmap.class_dir" value="${openmap.home}/classes"/>
 		<property name="openmap.classes" value="${openmap.home}/classes/openmap"/>
@@ -44,18 +42,18 @@
 	      Main targets
 	      ############################ -->  
 
-	<target name="classes" depends="openmap"/>
+	<target name="classes" depends="classes.openmap"/>
 	<target name="all" depends="all.openmap"/>
 
 	<!-- Targets that should be called from upper level build.xml file,
 	     because that init target needs to be called -->
 
 	<target name="all.openmap" 
-	        depends="jar.openmap"
+	        depends="classes.openmap, jar.openmap"
 		description="Compiles standard OpenMap classes and creates the jar files."/>
 
 	<target name="jar.openmap"
-	        depends="build.openmap"
+	        depends="init.openmap"
 		description="Builds jar files, placing them in the lib directory.">
 
 	  <jar jarfile="${openmap.jar}" 
@@ -67,10 +65,6 @@
 			 **/*.properties"/>
 	</target>    
   
-	<target name="build.openmap" 
-	        depends="openmap" 
-                description="Compiles standard OpenMap classes."/>
-
   <!--  ############################
 	ext relies on OpenMap Debug class - but we need to build it first.
 	############################ -->  
@@ -88,7 +82,6 @@
 	############################ -->  
 	<target name="ext" depends="debug"
 		description="Compiles the ext classes that OpenMap needs.">
-	       <echo message="Building OpenMap ext classes..."/>
 	       <javac srcdir="${openmap.src_ext}"
 	              destdir="${openmap.classes}"
 		      debug="on"
@@ -98,10 +91,9 @@
   <!--  ############################
 	Standard target, to build everything you can.
 	############################ -->  
-	<target name="openmap" 
+	<target name="classes.openmap" 
 	        depends="ext"
 		description="Compiles the OpenMap classes.  Ext classes compiled if needed.">
-	     <echo message="Building OpenMap classes..."/>
 	     <javac srcdir="${openmap.src}" 
 	            destdir="${openmap.classes}"
 		    debug="on"

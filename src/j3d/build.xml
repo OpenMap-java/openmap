@@ -5,7 +5,7 @@
 	  description="Sets properties needed by the other targets.">
     <tstamp/>
 
-    <property name="openmap.home" value="."/>
+    <property name="openmap.home" value="../.."/>
     <property name="openmap.class_dir" value="${openmap.home}/classes"/>
     <property name="j3d.classes" value="${openmap.class_dir}/j3d"/>
     <property name="j3d.src" value="${openmap.home}/src/j3d"/>
@@ -31,9 +31,7 @@
 	Main targets
 	############################ -->  
 
-  <target name="classes" 
-	  depends="classes.j3d">
-  </target>
+  <target name="classes"  depends="classes.j3d"/>
 
   <!--  ############################
 	End of cleanup targets.
@@ -42,10 +40,10 @@
   <target name="classes.j3d"
           depends="init.j3d"
 	  description="Compiles the Java 3D OpenMap code and adds it to the jar.  You must have the Java 3D extension package (http://java.sun.com/products/java-media/3D/index.html) installed in your Java installation. (Call this to build J3D targets)"
-	  if="{$do.j3d}">
+	  if="do.j3d">
     
     <mkdir dir="${j3d.classes}"/>
-    <echo message="J3D classes included in jar files."/>
+    <echo message="Compiling J3D classes."/>
     <javac srcdir="${j3d.src}"
 	   destdir="${j3d.classes}"
 	   debug="on"
@@ -54,7 +52,7 @@
   </target>
 
   <target name="jar.j3d"
-	  depends="classes.j3d"
+	  depends="init.j3d"
 	  description="Builds Java 3D jar files, placing them in the lib directory."
 	  if="do.j3d">
 

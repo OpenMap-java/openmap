@@ -106,7 +106,7 @@
   </target>
 
   <target name="jar.visibroker"
-	  depends="classes.corba"
+	  depends="init.corba"
 	  description="Builds jar files, placing them in the lib directory."
 	  if="do.visibroker">
 
