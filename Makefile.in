@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.13 $
-# $Date: 1998/11/16 23:04:31 $
+# $Revision: 1.14 $
+# $Date: 1998/11/21 01:46:30 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -59,7 +59,6 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.nitf \
 		com.bbn.openmap.layer.pluginLayer \
 		com.bbn.openmap.layer.plotLayer \
-		com.bbn.openmap.layer.rpf \
 		com.bbn.openmap.layer.shape \
 		com.bbn.openmap.layer.util.cacheHandler \
 		com.bbn.openmap.layer.util.html \
