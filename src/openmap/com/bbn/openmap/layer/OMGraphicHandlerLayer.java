@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.19 $
-// $Date: 2004/03/04 04:14:29 $
+// $Revision: 1.20 $
+// $Date: 2004/03/23 05:35:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -623,7 +623,14 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     }
 
     /**
-     * Overrides the Layer setProperties method.  Also calls Layer's version.
+     * Overrides the Layer setProperties method.  Also calls Layer's
+     * version.  If the ProjectionChangePolicy and RenderPolicy
+     * objects are set programmatically and are PropertyConsumers,
+     * they will still have access to properties if this method is
+     * called.  Their property prefix will be scoped as if the
+     * OMGraphicHandlerLayer had them created, with their prefix being
+     * prefix + . + PropertyChangePolicyProperty and prefix + . +
+     * RenderPolicyProperty.
      *
      * @param prefix the token to prefix the property names
      * @param props the <code>Properties</code> object
@@ -639,28 +646,43 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         String policyPrefix;
         if (pcpString != null) {
             policyPrefix = realPrefix + pcpString;
-            String pcpClass = props.getProperty(policyPrefix + ".class");
-            if (pcpClass == null) {
-                Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for PropertyChangePolicy, but " + policyPrefix + ".class property is undefined.");
-            } else {
-                Object obj = ComponentFactory.create(pcpClass, policyPrefix, props);
-                if (obj != null) {
 
-                    if (Debug.debugging("layer")) {
-                        Debug.output("Layer " + getName() + " setting ProjectionChangePolicy [" + 
-                                     obj.getClass().getName() + "]");
-                    }
-
-                    try {
-                        setProjectionChangePolicy((ProjectionChangePolicy)obj);
-                    } catch (ClassCastException cce) {
-                        Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for ProjectionChangePolicy, but " + policyPrefix + ".class property (" + pcpClass + ") does not define a valid ProjectionChangePolicy. A " + obj.getClass().getName() + " was created instead.");
-                    }
-
+            // If the projection change policy is null, try to create it.
+            if (projectionChangePolicy == null) {
+                String pcpClass = props.getProperty(policyPrefix + ".class");
+                if (pcpClass == null) {
+                    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for PropertyChangePolicy, but " + policyPrefix + ".class property is undefined.");
                 } else {
-                    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for PropertyChangePolicy, but " + policyPrefix + ".class property does not define a valid PropertyChangePolicy.");
+                    Object obj = ComponentFactory.create(pcpClass, policyPrefix, props);
+                    if (obj != null) {
+
+                        if (Debug.debugging("layer")) {
+                            Debug.output("Layer " + getName() + " setting ProjectionChangePolicy [" + 
+                                         obj.getClass().getName() + "]");
+                        }
+
+                        try {
+                            setProjectionChangePolicy((ProjectionChangePolicy)obj);
+                        } catch (ClassCastException cce) {
+                            Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for ProjectionChangePolicy, but " + policyPrefix + ".class property (" + pcpClass + ") does not define a valid ProjectionChangePolicy. A " + obj.getClass().getName() + " was created instead.");
+                        }
+
+                    } else {
+                        Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for PropertyChangePolicy, but " + policyPrefix + ".class property does not define a valid PropertyChangePolicy.");
+                    }
+                }
+
+            } else { // ProjectionChangePolicy is not null...
+                // If the projection change policy is not null and the
+                // policy is a PropertyConsumer, pass the properties
+                // to the policy.  Note that the property prefix for
+                // the policy is prefix + ProjectionChangePolicyProperty
+
+                if (projectionChangePolicy instanceof PropertyConsumer) {
+                    ((PropertyConsumer)projectionChangePolicy).setProperties(policyPrefix, props);
                 }
             }
+
         } else if (Debug.debugging("layer")) {
             Debug.output("Layer " + getName() + 
                          " using default ProjectionChangePolicy [" + 
@@ -671,26 +693,33 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         String rpString = props.getProperty(realPrefix + RenderPolicyProperty);
         if (rpString != null) {
             policyPrefix = realPrefix + rpString;
-            String rpClass = props.getProperty(policyPrefix + ".class");
-            if (rpClass == null) {
-                Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property is undefined.");
-            } else {
-
-                Object rpObj = ComponentFactory.create(rpClass, policyPrefix, props);
-
-                if (rpObj != null) {
-                    if (Debug.debugging("layer")) {
-                        Debug.output("Layer " + getName() + " setting RenderPolicy [" + 
-                                     rpObj.getClass().getName() + "]");
-                    }
-
-                    try {
-                        setRenderPolicy((RenderPolicy)rpObj);
-                    } catch (ClassCastException cce) {
-                        Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property (" + rpClass + ") does not define a valid RenderPolicy. A " + rpObj.getClass().getName() + " was created instead.");
-                    }
+            if (renderPolicy == null) {
+                String rpClass = props.getProperty(policyPrefix + ".class");
+                if (rpClass == null) {
+                    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property is undefined.");
                 } else {
-                    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property (" + rpClass + ") isn't being created.");
+
+                    Object rpObj = ComponentFactory.create(rpClass, policyPrefix, props);
+
+                    if (rpObj != null) {
+                        if (Debug.debugging("layer")) {
+                            Debug.output("Layer " + getName() + " setting RenderPolicy [" + 
+                                         rpObj.getClass().getName() + "]");
+                        }
+
+                        try {
+                            setRenderPolicy((RenderPolicy)rpObj);
+                        } catch (ClassCastException cce) {
+                            Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property (" + rpClass + ") does not define a valid RenderPolicy. A " + rpObj.getClass().getName() + " was created instead.");
+                        }
+                    } else {
+                        Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property (" + rpClass + ") isn't being created.");
+                    }
+                }
+            } else { // RenderPolicy is not null...
+                // Same thing with renderPolicy as with projection change policy.
+                if (renderPolicy instanceof PropertyConsumer) {
+                    ((PropertyConsumer)renderPolicy).setProperties(policyPrefix, props);
                 }
             }
 
@@ -714,7 +743,6 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         }
 
         consumeEvents = PropUtils.booleanFromProperties(props, realPrefix + ConsumeEventsProperty, consumeEvents);
-
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/MakeToc.java,v $
 // $RCSfile: MakeToc.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.7 $
+// $Date: 2004/03/23 05:35:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1129,7 +1129,13 @@ public class MakeToc {
                     fout.writeBytes("55:1 ");
                 } /* else */
                 
-                fout.writeBytes(group.scale);  // Already 12 padded chars
+                // Should be 12 padded chars, check just in case...
+                if (group.scale.length() < 12) {
+                    fout.writeBytes(group.scale);  
+                    fout.writeBytes(createPadding(12 - group.scale.length(), false));
+                } else {
+                    fout.writeBytes(group.scale.substring(0, 12));  // Already 12 padded chars
+                }
                 
                 // All this trouble just for a silly character.
                 charArray[0] = group.zone;
