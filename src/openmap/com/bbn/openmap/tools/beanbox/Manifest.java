@@ -12,8 +12,14 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /*
  * Stores a list of headers that all pertain to a particular file in
@@ -59,9 +65,9 @@ public class Manifest {
     }
 
     public MessageHeader getEntry(String name) {
-        Enumeration enum = entries();
-        while (enum.hasMoreElements()) {
-            MessageHeader mh = (MessageHeader) enum.nextElement();
+        Enumeration enumeration = entries();
+        while (enumeration.hasMoreElements()) {
+            MessageHeader mh = (MessageHeader) enumeration.nextElement();
             String nameVal = mh.findValue("Name");
             if (nameVal != null && nameVal.equals(name)) {
                 return mh;
