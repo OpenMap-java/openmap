@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
 $RCSfile: openmap-arch.sgml,v $
-$Revision: 1.13 $
-$Date: 2001/11/02 21:38:38 $
+$Revision: 1.14 $
+$Date: 2001/11/05 23:30:44 $
 $Author: dietrick $
 
 OpenMap architecture document
@@ -350,6 +350,25 @@ application.  The <htmlurl url="api/com/bbn/openmap/util/Debug.html"
 name="Debug"> class is used for controlling output.  It maintains a
 table that turns different Debug statements on, and can also direct
 standard output and error output to log files.
+
+<sect2>Customized Menus<label id="sec-menus">
+<p>
+Menus can be customized within the OpenMap framework.  At the top
+level is the <htmlurl url="api/com/bbn/openmap/gui/MenuBar.html"
+name="MenuBar">, which is an extension of the Java JMenuBar.  This extension
+is the implementation of the MapHandlerChild methods that let it use
+the MapHandler to find <htmlurl
+url="api/com/bbn/openmap/gui/MenuBarMenu.html" name="MenuBarMenus">
+which will be added to the MenuBar in the order in which they are
+found.  The AbstractOpenMapMenu is the MapHandlerChild implementation
+for menus, and by extending this class menu contents can connect with
+the other OpenMap components they are controlling. The <htmlurl
+url="../com/bbn/openmap/gui/FileMenu.java" name="FileMenu">, <htmlurl
+url="../com/bbn/openmap/gui/ControlMenu.java" name="ControlMenu">, <htmlurl
+url="../com/bbn/openmap/gui/NavigateMenu.java" name="NavigateMenu">,
+and  <htmlurl
+url="../com/bbn/openmap/gui/GoToMenu.java" name="GoToMenu">
+can be used as examples of how to write different menus.
 
 <sect2>ToolPanel<label id="sec-toolpanel">
 <p>
