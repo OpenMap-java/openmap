@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies, a Verizon Company
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArrowHead.java,v $
 // $RCSfile: OMArrowHead.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 04:22:30 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 
@@ -55,10 +55,10 @@ public class OMArrowHead {
 				DEFAULT_WINGTIP, DEFAULT_WINGLENGTH);
     }
 
-    public static GeneralPath createArrowHeads(int arrowDirectionType, 
+    public static GeneralPath createArrowHeads(int arrowDirectionType,
 					       int location,
-					       OMLine line, 
-					       int wingTip, 
+					       OMLine line,
+					       int wingTip,
 					       int wingLength) {
 
 	Point[] locPoints = locateArrowHeads(arrowDirectionType, location, line);
@@ -71,7 +71,7 @@ public class OMArrowHead {
 	    wingLength += lineWidth * 2;
 	}
 
-	GeneralPath shape = createArrowHead(locPoints[0], locPoints[1], 
+	GeneralPath shape = createArrowHead(locPoints[0], locPoints[1],
 					    wingTip, wingLength);
 
 	if (locPoints.length > 2) {
@@ -81,7 +81,7 @@ public class OMArrowHead {
 	return shape;
     }
 
-    public static void addArrowHeads(int arrowDirectionType, int location, 
+    public static void addArrowHeads(int arrowDirectionType, int location,
 				     OMLine line) {
 
 	Shape arrowHeads = createArrowHeads(arrowDirectionType, location, line);
@@ -90,8 +90,8 @@ public class OMArrowHead {
 
     protected static GeneralPath createArrowHead(Point from, Point to,
 						 int wingTip, int wingLength) {
-  	int dx = to.x - from.x;
-  	int dy = to.y - from.y;
+	int dx = to.x - from.x;
+	int dy = to.y - from.y;
 
 	int dd = (int) DrawUtil.distance(to.x, to.y, from.x, from.y);
 
@@ -117,8 +117,8 @@ public class OMArrowHead {
      * on the OMLine.  It adds the ArrowHeads to the GeneralPath Shape
      * object.
      */
-    protected static Point[] locateArrowHeads(int arrowDirection, 
-					      int arrowLocation, 
+    protected static Point[] locateArrowHeads(int arrowDirection,
+					      int arrowLocation,
 					      OMLine line) {
 
 	//NOTE: xpoints[0] refers to the original copy of the xpoints,
@@ -132,8 +132,10 @@ public class OMArrowHead {
 	    Debug.output("createArrowHeads(): Number of points = " + pointIndex);
 	}
 
-	int drawingLinetype = OMLine.STRAIGHT_LINE;	
-	if (pointIndex > 1) drawingLinetype = OMLine.CURVED_LINE;
+	int drawingLinetype = OMLine.STRAIGHT_LINE; // default
+	if (pointIndex > 1) {
+	    drawingLinetype = OMLine.CURVED_LINE;
+	}
 
 	// Used as the index for points in the xy point array to use
 	// as anchors for the arrowheads
@@ -143,13 +145,25 @@ public class OMArrowHead {
 	start[0] = 0;
 	end[1] = 0;
 	start[1] = pointIndex;
+		
+	// better names:
+	int origEnd = pointIndex;
+	int origStart = 0;
+		
+		
+		
 	int numArrows = 1; // default
+	if ( arrowDirection == OMArrowHead.ARROWHEAD_DIRECTION_BOTH ) {
+	    numArrows = 2;
+	}
 
 	// one for the start and end of each arrowhead (there could be two)
 	Point sPoint1 = new Point();
 	Point ePoint1 = new Point();
-	Point sPoint2 = new Point(); 
+	Point sPoint2 = new Point();
 	Point ePoint2 = new Point();
+
+	// do we have to reverse the arrows?
 
 	if (line.arc != null && line.arc.getReversed() == true) {
 	    if (arrowDirection == OMArrowHead.ARROWHEAD_DIRECTION_FORWARD) {
@@ -161,185 +175,258 @@ public class OMArrowHead {
 
 	switch(drawingLinetype) {
 	case OMLine.STRAIGHT_LINE:
-  	    Debug.message("arrowheads","createArrowHeads(): Inside x-y space");
-	    int newEndX = line.xpoints[0][end[0]];
-	    int newEndY = line.ypoints[0][end[0]];
+	    Debug.message("arrowheads","createArrowHeads(): Inside x-y space");
+	    int newEndX;
+	    int newEndY;
 	    int dx, dy;
 	    float dd;
-	    switch(arrowDirection) {
-	    case OMArrowHead.ARROWHEAD_DIRECTION_BOTH:
-		// Doing the backward arrow here...
 
-  	        Debug.message("arrowheads","createArrowHeads(): direction backward and");
-		int newEndX2 = line.xpoints[0][end[1]];
-		int newEndY2 = line.ypoints[0][end[1]];
-		if (arrowLocation != 100) {
-		    dx = line.xpoints[0][end[1]] - line.xpoints[0][start[1]];
-		    dy = line.ypoints[0][end[1]] - line.ypoints[0][start[1]];
+	    // backwards arrow
+
+	    if ( needBackwardArrow(arrowDirection)) {
+
+		// need to have the newEndX/Y point at the original start.
+
+		newEndX = line.xpoints[0][origStart];
+		newEndY = line.ypoints[0][origStart];
+
+		if ( arrowLocation != 100 ) {
+		    // find out where the location should be, but in reverse.
+		    dx = line.xpoints[0][origStart] - line.xpoints[0][origEnd];
+		    dy = line.ypoints[0][origStart] - line.ypoints[0][origEnd];
 		    int offset = 0;
 		    // Straight up or down
 		    if (dx == 0) {
 			// doesn't matter, start and end the same
-			newEndX2 = line.xpoints[0][start[1]]; 
+			newEndX = line.xpoints[0][origEnd];
 			// calculate the percentage from start of line
-			offset = (int)((float)dy*(arrowLocation/100.0));
+			offset = (int)((float)dy*(arrowLocation/100.0f));
 			// set the end at the begining...
-			newEndY2 = line.ypoints[0][start[1]];
-			// and adjust...
-			if (dy < 0) newEndY2 -= offset;
-			else newEndY2 += offset;
+			newEndY = line.ypoints[0][origEnd] + offset;
+
 		    } else {
+						
+						
 			dd = Math.abs((float)dy/(float)dx);
 			// If the line moves more x than y
 			if (Math.abs(dx) > Math.abs(dy)) {
 			    // set the x
-			    newEndX2 = line.xpoints[0][start[1]] + 
+			    newEndX = line.xpoints[0][origEnd] +
 				(int)((float)dx*(arrowLocation/100.0));
 			    // find the y for that x and set that
-			    newEndY2 = line.ypoints[0][start[1]];
-			    offset = (int)((float)Math.abs(line.xpoints[0][start[1]] - newEndX2)*dd);
-			    if (dy < 0) newEndY -= offset;
-			    else newEndY += offset;
+			    newEndY = line.ypoints[0][origEnd];
+			    offset = (int)((float)Math.abs(line.xpoints[0][origEnd] - newEndX)*dd);
+
+			    if ( dy < 0 ) {
+				newEndY -= offset;
+			    } else {
+				newEndY += offset;
+			    }
+
 			} else  {
 			    // switch everything...set y end
-			    newEndY2 = line.ypoints[0][start[1]] + 
+			    newEndY = line.ypoints[0][origEnd] +
 				(int)((float)dy*(arrowLocation/100.0));
 			    // initialize the x to beginning
-			    newEndX2 = line.xpoints[0][start[1]];
+			    newEndX = line.xpoints[0][origEnd];
 			    // calculate the difference x has to move based on y end
-			    offset = (int)((float)Math.abs(line.ypoints[0][start[1]] - newEndY2)/dd);
+			    offset = (int)((float)Math.abs(line.ypoints[0][origEnd] - newEndY)/dd);
 			    // set the end
 			    if (dx < 0) {
-				newEndX2 -= offset;
+				newEndX -= offset;
 			    } else {
-				newEndX2 += offset;
+				newEndX += offset;
 			    }
 			}
+						
 		    }
-		}
+
+
+
+		} // if (arrowLocation != 100)
+
+
 
 		if (start[1] < 0 ) {
 		    start[1] = 0;
 		}
-		sPoint2.x = line.xpoints[0][start[1]];
-		sPoint2.y = line.ypoints[0][start[1]];
-		ePoint2.x = newEndX2;
-		ePoint2.y = newEndY2;
-		numArrows = 2;
-	    case OMArrowHead.ARROWHEAD_DIRECTION_FORWARD:
- 	        Debug.message("arrowheads","createArrowHeads(): direction forward.");
-		break;
-	    case OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD:
- 	        Debug.message("arrowheads","createArrowHeads(): direction backward.");
-		start[0] = pointIndex;
-		end[0] = 0;
-		break;
-	    }
-	    // And doing the forward arrow here...
-	    if (arrowLocation != 100) {
-		dx = line.xpoints[0][end[0]] - line.xpoints[0][start[0]];
-		dy = line.ypoints[0][end[0]] - line.ypoints[0][start[0]];
-		int offset = 0;
-		// Straight up or down
-		if (dx == 0) {
-		    // doesn't matter, start and end the same
-		    newEndX = line.xpoints[0][start[0]]; 
-		    // calculate the percentage from start of line
-		    offset = (int)((float)dy*(arrowLocation/100.0));
-		    // set the end at the begining...
-		    newEndY = line.ypoints[0][start[0]];
-		    // and adjust...
-		    if (dy < 0) newEndY -= offset;
-		    else newEndY += offset;
+
+		// which point do we copy to?
+		if ( numArrows == 2 ) {
+		    // we copy the backwards arrow to sPoint2/ePoint2
+
+
+		    sPoint2.x = line.xpoints[0][origEnd];
+		    sPoint2.y = line.ypoints[0][origEnd];
+		    ePoint2.x = newEndX;
+		    ePoint2.y = newEndY;
+
 		} else {
-		    dd = Math.abs((float)dy/(float)dx);
-		    // If the line moves more x than y
-		    if (Math.abs(dx) > Math.abs(dy)) {
-			// set the x
-			newEndX = line.xpoints[0][start[0]] + 
-			    (int)((float)dx*(arrowLocation/100.0f));
-			// find the y for that x and set that
-			newEndY = line.ypoints[0][start[0]];
-			offset = (int)((float)Math.abs(line.xpoints[0][start[0]] - newEndX)*dd);
-			if (dy < 0) newEndY -= offset;
-			else newEndY += offset;
-		    } else {
-			// switch everything...set y end
-			newEndY = line.ypoints[0][start[0]] + 
-			    (int)((float)dy*(arrowLocation/100.0));
-			// initialize the x to beginning
-			newEndX = line.xpoints[0][start[0]];
-			// calculate the difference x has to move based on y end
-			offset = (int)((float)Math.abs(line.ypoints[0][start[0]] - newEndY)/dd);
-			// set the end
-			if (dx < 0) {
-			    newEndX -= offset;
-			} else {
-			    newEndX += offset;
-			}
-		    }
+		    // we copy the backwards arrow to sPoint1/ePoint1
+
+
+		    sPoint1.x = line.xpoints[0][origEnd];
+		    sPoint1.y = line.ypoints[0][origEnd];
+		    ePoint1.x = newEndX;
+		    ePoint1.y = newEndY;
+
+
 		}
+
+	    } // end if needBackwardArrow.
+
+	    if ( needForwardArrow(arrowDirection)) {
+
+		newEndX = line.xpoints[0][origEnd];
+		newEndY = line.ypoints[0][origEnd];
+
+		if ( arrowLocation != 100 ) {
+		    // find out where the location should be.
+		    dx = line.xpoints[0][origEnd] - line.xpoints[0][origStart];
+		    dy = line.ypoints[0][origEnd] - line.ypoints[0][origStart];
+		    int offset = 0;
+		    // Straight up or down
+		    if (dx == 0) {
+			// doesn't matter, start and end the same
+			newEndX = line.xpoints[0][origStart];
+			// calculate the percentage from start of line
+			offset = (int)((float)dy*(arrowLocation/100.0f));
+			// set the end at the begining...
+			newEndY = line.ypoints[0][origStart] + offset;
+						
+		    } else {
+						
+						
+			dd = Math.abs((float)dy/(float)dx);
+			// If the line moves more x than y
+			if (Math.abs(dx) > Math.abs(dy)) {
+			    // set the x
+			    newEndX = line.xpoints[0][origStart] +
+				(int)((float)dx*(arrowLocation/100.0f));
+			    // find the y for that x and set that
+			    newEndY = line.ypoints[0][origStart];
+			    offset = (int)((float)Math.abs(line.xpoints[0][origStart] - newEndX)*dd);
+
+			    if (dy < 0) {
+				newEndY -= offset;
+			    } else {
+				newEndY += offset;
+			    }
+
+			} else {
+			    // switch everything...set y end
+			    newEndY = line.ypoints[0][origStart] +
+				(int)((float)dy*(arrowLocation/100.0));
+			    // initialize the x to beginning
+			    newEndX = line.xpoints[0][origStart];
+			    // calculate the difference x has to move based on y end
+			    offset = (int)((float)Math.abs(line.ypoints[0][origStart] - newEndY)/dd);
+			    // set the end
+			    if (dx < 0) {
+				newEndX -= offset;
+			    } else {
+				newEndX += offset;
+			    }
+			}
+						
+		    }
+
+		} //end if (arrowLocation != 100)
+
+
+
+		// finally, copy the results to sPoint1/ePoint1
+
+		// no longer needed: if (start[0] < 0) { start[0] = 0; }
+
+		sPoint1.x = line.xpoints[0][origStart];
+		sPoint1.y = line.ypoints[0][origStart];
+		ePoint1.x = newEndX;
+		ePoint1.y = newEndY;
+
+
 	    }
 
-	    if (start[0] < 0) start[0] = 0;
 
-	    sPoint1.x = line.xpoints[0][start[0]];
-	    sPoint1.y = line.ypoints[0][start[0]];
-	    ePoint1.x = newEndX;
-	    ePoint1.y = newEndY;
 	    break;
 	case OMLine.CURVED_LINE:
-   	    Debug.message("arrowheads","createArrowHeads(): Curved line arrowhead");
-	    switch(arrowDirection) {
-	    case OMArrowHead.ARROWHEAD_DIRECTION_BOTH:
- 	        Debug.message("arrowheads","createArrowHeads(): direction backward and");
-		start[1] = pointIndex - 
-		    (int)((float)pointIndex*(float)(arrowLocation/100.0)) - 1;
-		if (start[1] < 1) start[1] = 1;
-		end[1] = start[1] - 1;
-
-		sPoint2.x = line.xpoints[0][start[1]];
-		sPoint2.y = line.ypoints[0][start[1]];
-		ePoint2.x = line.xpoints[0][end[1]];
-		ePoint2.y = line.ypoints[0][end[1]];
-
-		numArrows = 2;
-	    case OMArrowHead.ARROWHEAD_DIRECTION_FORWARD:
-   	        Debug.message("arrowheads", "createArrowHeads(): direction forward.");
-		pointIndex = (int)((float)pointIndex*(float)(arrowLocation/100.0));
-		end[0] = pointIndex;
-		start[0] = pointIndex - 1;
-		break;
-	    case OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD:
- 	        Debug.message("arrowheads", "createArrowHeads(): direction backward.");
-		start[0] =  pointIndex - 
-		    (int)((float)pointIndex*(float)(arrowLocation/100.0)) - 1;
-		if (start[0] < 1) start[0] = 1;
-		end[0] = start[0] - 1;
-		break;
-	    }
-	    if (start[0] < 0) start[0] = 0;
-	    if (end[0] < 0) end[0] = 0;
-
-	    sPoint1.x = line.xpoints[0][start[0]];
-	    sPoint1.y = line.ypoints[0][start[0]];
-	    ePoint1.x = line.xpoints[0][end[0]]; 
-	    ePoint1.y = line.ypoints[0][end[0]];
+	    Debug.message("arrowheads","createArrowHeads(): Curved line arrowhead");
+			
+			
+	    if ( needBackwardArrow(arrowDirection)) {
+				
+		Debug.message("arrowheads","createArrowHeads(): direction backward and");
+				
+		// compute the backward index....
+		int bindex = pointIndex - (int)((float)pointIndex*(float)(arrowLocation/100.0));
+		if ( bindex == 0 ) { 
+		    bindex = 1;
+		}
+			
+				
+		if ( numArrows == 2 ) { 
+		    // copy it to s/ePoint2
+					
+		    sPoint2.x = line.xpoints[0][bindex];
+		    sPoint2.y = line.ypoints[0][bindex];
+		    ePoint2.x = line.xpoints[0][bindex-1];
+		    ePoint2.y = line.ypoints[0][bindex-1];
+		} else {
+		    // copy it to s/ePoint1
+					
+		    sPoint1.x = line.xpoints[0][bindex];
+		    sPoint1.y = line.ypoints[0][bindex];
+		    ePoint1.x = line.xpoints[0][bindex-1];
+		    ePoint1.y = line.ypoints[0][bindex-1];
+					
+		}
+				
+				
+				
+				
+	    } // end if (needBackwardArrow(arrowDirection))
+			
+	    if ( needForwardArrow(arrowDirection)) { 
+				
+		int findex = (int)((float)pointIndex*(float)(arrowLocation/100.0));
+		if ( findex == pointIndex ) { 
+		    findex = findex - 1;
+		}
+				
+		sPoint1.x = line.xpoints[0][findex];
+		sPoint1.y = line.ypoints[0][findex];
+		ePoint1.x = line.xpoints[0][findex+1];
+		ePoint1.y = line.ypoints[0][findex+1];
+				
+				
+	    } //end if (needForwardArrow(arrowDirection))
+			
 	    break;
 
-	}
+	} // end switch(drawingLinetype)
 
 	Point[] ret = new Point[numArrows*2];
+
 	// Should be at least 1, maybe 2
-  	ret[0] = sPoint1;
+	ret[0] = sPoint1;
 	ret[1] = ePoint1;
 
-  	if (numArrows > 1) {
+	if (numArrows > 1) {
 	    ret[2] = sPoint2;
 	    ret[3] = ePoint2;
-  	}
+	}
 
 	return ret;
     }
-    
+
+    private static  boolean needBackwardArrow(int arrowDir) {
+	return (arrowDir == ARROWHEAD_DIRECTION_BACKWARD ||
+		arrowDir == ARROWHEAD_DIRECTION_BOTH );
+    }
+
+    private static boolean needForwardArrow(int arrowDir) {
+	return (arrowDir == ARROWHEAD_DIRECTION_FORWARD ||
+		arrowDir == ARROWHEAD_DIRECTION_BOTH );
+    }
+
 }
