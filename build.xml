@@ -107,7 +107,7 @@
              use="true"
              windowtitle="OpenMap API"
              doctitle="OpenMap"
-             bottom="Copyright 1998-2000, BBNT Solutions LLC, a part of GTE; See http://openmap.bbn.com/ for details"
+             bottom="Copyright (C) 2002, BBNT Solutions LLC; See http://openmap.bbn.com/ for details"
     />
   </target>
   
