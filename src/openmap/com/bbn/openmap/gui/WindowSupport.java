@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/01/14 16:39:12 $
+// $Revision: 1.12 $
+// $Date: 2004/02/01 21:17:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -303,14 +303,19 @@ public class WindowSupport extends ListenerSupport
                 JLayeredPane desktop = 
                     Environment.getInternalFrameDesktop();
 
+                Debug.message("windows", "WindowSupport creating internal frame");
+
                 if (desktop != null) {
                     desktop.remove(iFrame);
                     desktop.add(iFrame, JLayeredPane.PALETTE_LAYER);
+                } else {
+                    Debug.output("WindowSupport:  No desktop set for internal frame");
                 }
                 
             } else { // Working as an application...
                 dialog = new JDialog(owner, title);
                 dialog.addComponentListener(this);
+                Debug.message("windows", "WindowSupport creating frame");
             }
         }
 

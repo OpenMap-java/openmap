@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OpenMapFrame.java,v $
 // $RCSfile: OpenMapFrame.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.8 $
+// $Date: 2004/02/01 21:17:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,7 +43,9 @@ import javax.swing.JMenuBar;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The OpenMapFrame is the application window frame that holds the
@@ -65,6 +67,15 @@ public class OpenMapFrame extends JFrame
     /** Starting Y coordinate of window */
     public static final String yProperty = Environment.OpenMapPrefix + ".y";
 
+
+    /**
+     * useAsInternalFrameRootPaneIfNecessary will tell the
+     * OpenMapFrame to set its root pane as the Environment's desktop
+     * if the Environment has been told to use internal frames, and if
+     * a root pane hasn't been set.  True by default.
+     */
+    protected boolean useAsInternalFrameRootPaneIfNecessary = true;
+
     /**
      * BeanContextChildSupport object provides helper functions for
      * BeanContextChild interface.  
@@ -79,13 +90,37 @@ public class OpenMapFrame extends JFrame
     }
 
     /**
-     * Create a OpenMap frame with a title, with a WindowListner that
-     * says what to do when the OpenMapFrame is closed.
+     * @param useAsInternalFrameRootPaneIfNecessary will tell the
+     * OpenMapFrame to set its root pane as the Environment's desktop
+     * if the Environment has been told to use internal frames, and if
+     * a root pane hasn't been set.
+     */
+    public OpenMapFrame(boolean useAsInternalFrameRootPaneIfNecessary) {
+        this(Environment.get(Environment.Title), useAsInternalFrameRootPaneIfNecessary);
+    }
+
+    /**
+     * Create a OpenMap frame with a title.
      * 
      * @param title The Frame title.
      */
     public OpenMapFrame(String title) {
+        this(title, true);
+    } 
+
+    /**
+     * Create a OpenMap frame with a title, with a WindowListner that
+     * says what to do when the OpenMapFrame is closed.
+     * 
+     * @param title The Frame title.
+     * @param useAsInternalFrameRootPaneIfNecessary will tell the
+     * OpenMapFrame to set its root pane as the Environment's desktop
+     * if the Environment has been told to use internal frames, and if
+     * a root pane hasn't been set.
+     */
+    public OpenMapFrame(String title, boolean useAsInternalFrameRootPaneIfNecessary) {
         super(title);
+        this.useAsInternalFrameRootPaneIfNecessary = useAsInternalFrameRootPaneIfNecessary;
     }
 
     /**
@@ -167,6 +202,15 @@ public class OpenMapFrame extends JFrame
             Debug.message("basic", "OpenMapFrame: Found a MenuBar");
             getRootPane().setJMenuBar((JMenuBar)someObj);
             invalidate();
+        }
+
+        if (someObj instanceof PropertyHandler) {
+            // Might get called twice if someone uses the
+            // ComponentFactory to create the OpenMapFrame, but the
+            // default OpenMap application doesn't use the
+            // ComponentFactory to create the OpenMapFrame, so
+            // setProperties isn't called by default.
+            setProperties(((PropertyHandler)someObj).getProperties());
         }
     }
     
@@ -262,7 +306,9 @@ public class OpenMapFrame extends JFrame
      * can use to retrieve expected properties it can use for
      * configuration.
      */
-    public void setProperties(Properties setList) {}
+    public void setProperties(Properties setList) {
+        setProperties(null, setList);
+    }
 
     /**
      * Method to set the properties in the PropertyConsumer.  The
@@ -280,7 +326,20 @@ public class OpenMapFrame extends JFrame
      * can use to retrieve expected properties it can use for
      * configuration.  
      */
-    public void setProperties(String prefix, Properties setList) {}
+    public void setProperties(String prefix, Properties setList) {
+
+        if (useAsInternalFrameRootPaneIfNecessary) {
+            boolean useInternalFrames = 
+                PropUtils.booleanFromProperties(setList, Environment.UseInternalFrames, false);
+            
+            if (useInternalFrames && Environment.getInternalFrameDesktop() == null) {
+                if (Debug.debugging("windows")) {
+                    Debug.output("Setting OpenMapFrame as internal pane.");
+                }
+                Environment.useInternalFrames(getRootPane());
+            }
+        }
+    }
 
     /**
      * Method to fill in a Properties object, reflecting the current
@@ -353,5 +412,13 @@ public class OpenMapFrame extends JFrame
      */
     public String getPropertyPrefix() {
         return Environment.OpenMapPrefix;
+    }
+
+    public void setUseAsInternalFrameRootPaneIfNecessary(boolean val) {
+        useAsInternalFrameRootPaneIfNecessary = true;
+    }
+
+    public boolean getUseAsInternalFrameRootPaneIfNecessary() {
+        return useAsInternalFrameRootPaneIfNecessary;
     }
 }
