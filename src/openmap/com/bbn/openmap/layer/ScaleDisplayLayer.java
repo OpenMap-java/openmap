@@ -12,8 +12,8 @@
  * **********************************************************************
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleDisplayLayer.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/23 21:16:23 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/23 22:55:23 $
  * $Author: wjeuerle $
  *
  * **********************************************************************
@@ -104,7 +104,7 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer  {
      * <code>Layer</code>s to get a richer set of parameters than the
      * <code>setArgs</code> method.
      * @param prefix the token to prefix the property names
-     * @param props the <code>Properties</code> object
+     * @param properties the <code>Properties</code> object
      */
     public void setProperties(String prefix, Properties properties) {
         super.setProperties(prefix, properties);

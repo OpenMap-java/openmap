@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapGraphicLoader.java,v $
 // $RCSfile: NetMapGraphicLoader.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 21:16:23 $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 22:55:23 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -181,7 +181,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader
      * Properties object, representing an event from the NetMap
      * server, is evaluated and used to modify the NodeCache and
      * LineCache accordingly. 
-     * @param eventProperties the properties from a NetMapEvent.
+     * @param eventProps the properties from a NetMapEvent.
      */
     protected void processEventProperties(Properties eventProps) {
 	JIcon jicon=null;

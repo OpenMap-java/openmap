@@ -33,9 +33,6 @@ import com.bbn.openmap.util.Debug;
  *
  * If the OMGraphicList's AppObject holds a DbfTableModel, it will be
  * used for the shape file database file.
- *
- * @author    dietrick
- * @created May 7, 2002 
  */
 public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 21:16:27 $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 22:55:27 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -203,7 +203,7 @@ public class MGRSPoint extends UTMPoint {
 
     /**
      * Create a LatLonPoint from a MGRSPoint.
-     * @param mrgsp to convert.
+     * @param mgrsp to convert.
      * @param ellip Ellipsoid for earth model.
      * @param llp a LatLonPoint to fill in values for.  If null, a new
      * LatLonPoint will be returned.  If not null, the new values will
@@ -400,7 +400,7 @@ public class MGRSPoint extends UTMPoint {
 
     /**
      * Create the mgrs string based on the internal UTM settings.
-     * @param accuracy The number of digits to use for the northing
+     * @param digitAccuracy The number of digits to use for the northing
      * and easting numbers.  5 digits reflect a 1 meter accuracy, 4 -
      * 10 meter, 3 - 100 meter, 2 - 1000 meter, 1 - 10,000 meter.
      */

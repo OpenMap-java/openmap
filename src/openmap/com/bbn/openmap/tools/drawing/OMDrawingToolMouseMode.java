@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolMouseMode.java,v $
-// $RCSfile: OMDrawingToolMouseMode.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
-// 
+// $Revision: 1.2 $ $Date: 2003/12/23 22:55:28 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -63,7 +58,7 @@ public class OMDrawingToolMouseMode extends CoordMouseMode {
      * the event.  If they are not consumed, then all of the listeners
      * get a chance to act on the event.
      *
-     * @param shouldConsumeEvents the mode setting.  
+     * @param omdt the drawing tool for this mousemode
      */
     public OMDrawingToolMouseMode(OMDrawingTool omdt) {
 	this();

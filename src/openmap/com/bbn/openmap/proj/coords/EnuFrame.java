@@ -42,7 +42,7 @@ public class EnuFrame {
      * Construct a EnuFrame from a ECEF vector and a LatLonPoint.
      *
      * @param llpt LatLonPoint.
-     * @param double[] ecefv representing an ecef vector.
+     * @param ecefv representing an ecef vector.
      */
     public EnuFrame(double[] ecefv, LatLonPoint llpt) {
     	double lat_ = (double)llpt.getLatitude();
@@ -69,7 +69,7 @@ public class EnuFrame {
     /**
      * Convert to geocentric frame using a LatLonPoint.
      *
-     * @param llpt.
+     * @param llpt
      * @return a double of ecef values
      */
     public double[] toGeocentricFrame(LatLonPoint llpt) {
@@ -94,10 +94,10 @@ public class EnuFrame {
     /**
      * Internal conversion routine.
      *
-     * @param ecef vector
+     * @param ecefVector vector
      * @param latitude in radians.
      * @param longitude in radians
-     * @param enu vector
+     * @param enuVector vector
      */
     public void ecef2enu(double ecefVector[], double latitude, double longitude, double enuVector[]) {
 
@@ -130,10 +130,10 @@ public class EnuFrame {
     /**
      * Internal conversion routine.
      *
-     * @param ecef vector
+     * @param ecefVector vector
      * @param latitude in radians.
      * @param longitude in radians
-     * @param enu vector
+     * @param enuVector vector
      */
     protected void enu2ecef(double ecefVector[], double latitude, double longitude, double enuVector[]) {
 
@@ -166,7 +166,7 @@ public class EnuFrame {
 	 
     /**
      * Set x.
-     * @param x in meters.
+     * @param pX in meters.
      */
     public void setX(float pX) {
         x = pX;
@@ -174,7 +174,7 @@ public class EnuFrame {
 
     /**
      * Set y.
-     * @param y in meters.
+     * @param pY in meters.
      */
     public void setY(float pY) {
         y = pY;
@@ -182,7 +182,7 @@ public class EnuFrame {
     
     /**
      * Set z.
-     * @param z in meters.
+     * @param pZ in meters.
      */
     public void setZ(float pZ) {
         z = pZ;
@@ -230,7 +230,7 @@ public class EnuFrame {
      * @param degrees is heading 0-360
      * @param latitude in degrees.
      * @param longitude in degrees.
-     * @param ecef vector
+     * @param ecefVector vector
      */
     public void toDirectionVector(double degrees, double latitude, double longitude, double ecefVector[]) {
    

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/GestureResponsePolicy.java,v $
 // $RCSfile: GestureResponsePolicy.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/10 15:47:30 $
-// $Author: dietrick $
+// $Revision: 1.7 $
+// $Date: 2003/12/23 22:55:26 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -52,10 +52,10 @@ public interface GestureResponsePolicy {
     public boolean isHighlightable(OMGraphic omgr);
 
     /**
-     * A query from the MapMouseInterpreter wondering if the OMGraphic
-     * is selectable, i.e. able to be selected for modification,
-     * deletion or movement.  Selection may happen to an OMGraphic by
-     * itself or in a group of other OMGraphics.
+     * A query from the MapMouseInterpreter wondering if the OMGraphic is
+     * selectable. Returns true if the OMGraphic is able to be selected for
+     * modification, deletion or movement.  Selection may happen to an
+     * OMGraphic by itself or in a group of other OMGraphics.
      */
     public boolean isSelectable(OMGraphic omgr);
 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/db/DBLocationHandler.java,v $
 // $RCSfile: DBLocationHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/23 21:09:31 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 22:55:24 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -64,24 +64,24 @@ import com.bbn.openmap.util.quadtree.QuadTree;
  * graphic other than the default LocationDataRecordSet, you can
  * create different layer effects pretty easily.
  *
- * <P>In the openmap.properties file (for instance):<BR>
- * <BR>
- * # In the section for the LocationLayer:<BR>
- * locationLayer.locationHandlers=dblocationhandler<BR>
- * <BR>
- * dblocationhandler.class=com.bbn.openmap.layer.location.db.DBLocationHandler<BR>
- * dblocationhandler.locationColor=FF0000<BR>
- * dblocationhandler.nameColor=008C54<BR>
- * dblocationhandler.showNames=false<BR>
- * dblocationhandler.showLocations=true<BR>
- * dblocationhandler.jdbcDriver=oracle.jdbc.driver.OracleDriver<BR>
- * dblocationhandler.jdbcString=jdbc login string<BR>
- * dblocationhandler.userName=username<BR>
- * dblocationhandler.userPassword=password<BR>
+ * <P>In the openmap.properties file (for instance):
+ * <pre>
+ * # In the section for the LocationLayer:
+ * locationLayer.locationHandlers=dblocationhandler
+ * 
+ * dblocationhandler.class=com.bbn.openmap.layer.location.db.DBLocationHandler
+ * dblocationhandler.locationColor=FF0000
+ * dblocationhandler.nameColor=008C54
+ * dblocationhandler.showNames=false
+ * dblocationhandler.showLocations=true
+ * dblocationhandler.jdbcDriver=oracle.jdbc.driver.OracleDriver
+ * dblocationhandler.jdbcString=jdbc login string
+ * dblocationhandler.userName=username
+ * dblocationhandler.userPassword=password
  * dblocationhandler.locationQueryString=select statement the data
- * object needs.  See each Data object (like LocationData) to see what
- * kind of select statement it needs.
- * <P>
+ *  object needs.  See each Data object (like LocationData) to see what
+ *  kind of select statement it needs.
+ * </pre>
  * In addition, this particular location handler is using the
  * LocationData object to handle the results from the location.
  */
@@ -380,6 +380,7 @@ public class DBLocationHandler extends AbstractLocationHandler
 	locMenu.add(new LocationMenuItem(showdetails, locMenu, getLayer()));
     }
 
+    /** Box used for constructing the palette widgets */
     protected Box box = null;
 
    /** 

@@ -4,8 +4,7 @@
  * 	     restricted rights as set forth in the DFARS.
  *  
  * 			   BBNT Solutions LLC
- * 			       A Part of 
- *                  Verizon      
+ * 			    A Part of Verizon      
  * 			    10 Moulton Street
  * 			   Cambridge, MA 02138
  * 			    (617) 873-3000
@@ -92,7 +91,7 @@ public class BeanBoxDnDCatcher
   protected HashMap beanInfoMap = null;
 
   /**
-   * Constructor. creates a new 
+   * Constructs a new 
    * {@link com.bbn.openmap.tools.dnd.DnDListener} object.
    */
   public BeanBoxDnDCatcher() {

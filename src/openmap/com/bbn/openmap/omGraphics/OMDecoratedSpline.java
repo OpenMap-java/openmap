@@ -195,7 +195,6 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
 	
     /**
      * Called by constructor, may be overriden.
-     * @param decorator The decorator to set
      */
     protected void initDecorations() {}
 

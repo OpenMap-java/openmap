@@ -113,7 +113,7 @@ public class OMSpline extends OMPoly {
      * @param latPoint latitude in decimal degrees
      * @param lonPoint longitude in decimal degrees
      * @param xypoints int[] of x,y pairs
-     * @param cmode offset coordinate mode
+     * @param cMode offset coordinate mode
      */
     public OMSpline(
 	float latPoint,
@@ -132,7 +132,7 @@ public class OMSpline extends OMPoly {
      * @param lonPoint longitude in decimal degrees
      * @param xPoints int[] of x coordinates
      * @param yPoints int[] of y coordinates
-     * @param cmode offset coordinate mode
+     * @param cMode offset coordinate mode
      */
     public OMSpline(
 	float latPoint,

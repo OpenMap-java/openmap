@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationHandler.java,v $
-// $RCSfile: LocationHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/20 17:50:24 $
-// $Author: dietrick $
-// 
+// $Revision: 1.3 $ $Date: 2003/12/23 22:55:24 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -36,13 +31,15 @@ import java.util.Vector;
  * represent the data on the map. It also provides controls for
  * changing the display of the data, provided through the getGUI()
  * method, and therefore controls how the data is displayed at a
- * supervisory level.  Each location handler should have its own set of properties:
- * <P>
+ * supervisory level.  Each location handler should have its own set of
+ * properties:
+ * <pre>
  * # Properties for LocationHandler
  * # Show the graphics for all the locations.
  * handler.showLocations=true
  * # Show the labels for all the locations.
  * handler.showNames=true
+ * </pre>
  */
 public interface LocationHandler extends PropertyConsumer {
 

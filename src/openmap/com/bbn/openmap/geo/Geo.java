@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/geo/Geo.java,v $
 // $RCSfile: Geo.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 21:16:22 $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 22:55:23 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -219,7 +219,7 @@ public class Geo {
     }
   
     /**
-     * Eqvivalent to this.cross(b).length(). 
+     * Equivalent to this.cross(b).length(). 
      */
     public double crossLength(Geo b) {
 	double x = this.y()*b.z() - this.z()*b.y();
@@ -229,7 +229,7 @@ public class Geo {
     }
   
     /** 
-     * Eqvivalent to this.cross.(b).normalize(). 
+     * Equivalent to this.cross(b).normalize(). 
      */
     public Geo crossNormalize(Geo b) {
 	double x = this.y()*b.z() - this.z()*b.y();
@@ -240,7 +240,7 @@ public class Geo {
     }
   
     /**
-     * Eqvivalent to this.cross.(b).normalize(). 
+     * Eqvivalent to this.cross(b).normalize(). 
      */
     public static Geo crossNormalize(Geo a, Geo b) {
 	return a.crossNormalize(b);

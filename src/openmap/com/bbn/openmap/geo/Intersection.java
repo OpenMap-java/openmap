@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/geo/Intersection.java,v $
 // $RCSfile: Intersection.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 21:16:22 $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 22:55:23 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -215,7 +215,7 @@ public class Intersection {
      * Calculates the great circle distance from the point (lat, lon)
      * to the great circle containing the points (lat1, lon1) and
      * (lat2, lon2). <br> All lat-lon values are in degrees.
-     * @returns distance in radians.
+     * @return distance in radians.
      */
     public static float pointCircleDistance(float lat1, float lon1, 
 					    float lat2, float lon2,

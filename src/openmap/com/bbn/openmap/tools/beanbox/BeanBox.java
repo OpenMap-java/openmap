@@ -76,7 +76,7 @@ public abstract class BeanBox {
 
   /**
    * Utility method to obtain the BeanInfo object associated with 
-   * a bean class that the BeanBox knows about. returns a null if none found.
+   * a bean class that the BeanBox knows about. Returns a null if none found.
    */
   public BeanInfo getBeanInfoForBean(String beanClassName) {
     BeanInfo beanInfo = (BeanInfo)beanInfoMap.get(beanClassName);

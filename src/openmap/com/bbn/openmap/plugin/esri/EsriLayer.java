@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriLayer.java,v $
 // $RCSfile: EsriLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 21:16:27 $
+// $Revision: 1.6 $
+// $Date: 2003/12/23 22:55:27 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -159,7 +159,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
     
     /**
      * Creates an EsriLayer from a set of shape files
-     * @param label The name of the layer that may be used to
+     * @param name The name of the layer that may be used to
      * reference the layer
      * @param dbf The url referencing the dbf extension file
      * @param shp The url referencing the shp extension file
@@ -175,7 +175,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
 
     /**
      * Creates an EsriLayer from a set of shape files
-     * @param label The name of the layer that may be used to
+     * @param name The name of the layer that may be used to
      * reference the layer
      * @param dbf The url referencing the dbf extension file
      * @param shp The url referencing the shp extension file
@@ -187,7 +187,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
 
     /**
      * Creates an EsriLayer from a set of shape files
-     * @param label The name of the layer that may be used to
+     * @param name The name of the layer that may be used to
      * reference the layer
      * @param dbf The url referencing the dbf extension file
      * @param shp The url referencing the shp extension file
@@ -257,7 +257,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
     
     /**
      * Sets the DbfTableModel
-     * @param DbfTableModel The DbfModel to set for this layer
+     * @param model The DbfModel to set for this layer
      */
     public void setModel(DbfTableModel model) {
 	_model = model;
@@ -266,7 +266,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
     /**
      * Sets the properties for the <code>Layer</code>.
      * @param prefix the token to prefix the property names
-     * @param props the <code>Properties</code> object
+     * @param properties the <code>Properties</code> object
      */
     public void setProperties(String prefix, Properties properties) {
 	super.setProperties(prefix, properties);

@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCoverageBox.java,v $
 // $RCSfile: RpfCoverageBox.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 21:16:24 $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 22:55:25 $
 // $Author: wjeuerle $
 //
 // **********************************************************************
@@ -89,14 +89,14 @@ public class RpfCoverageBox {
    }
 
    /**
-	* Modified to make the semi-unique ID more unique. The former method
+    * Modified to make the semi-unique ID more unique. The former method
     * of generating these ID numbers was causing some coverage boxes that are
     * geographically close to each other to have the same ID, which resulted
     * in caching problems.  In particular, if two non-identical boxes had
     * the same ID, they could invalidate each others' caches in certain regions.
     * Modified these IDs so that the numbers would be more unique.  This was a
     * major cause of gaps at zone boundaries.
-    * @return
+    * @return a unique ID for the coverage box
     */
    public String getID() {
       if (id == null) {

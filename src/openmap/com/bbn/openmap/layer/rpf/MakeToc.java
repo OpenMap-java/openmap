@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/MakeToc.java,v $
 // $RCSfile: MakeToc.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 21:16:24 $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 22:55:24 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -786,7 +786,7 @@ public class MakeToc {
     
     /**
      * Create and write out an A.TOC file.
-     * @param the output filename.
+     * @param filename the output filename.
      * @param head the RpfHeader containing header information.
      * @param frames the frame Vector.
      * @param groups the file groups Vector.

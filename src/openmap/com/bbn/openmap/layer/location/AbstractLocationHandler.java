@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/AbstractLocationHandler.java,v $
-// $RCSfile: AbstractLocationHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 20:43:28 $
-// $Author: wjeuerle $
-// 
+// $Revision: 1.5 $ $Date: 2003/12/23 22:55:24 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -38,17 +33,16 @@ import com.bbn.openmap.util.PropUtils;
  * implementation of a <code>LocationHandler</code> by implementing a
  * number of methods.  By extending this class, a developer need only
  * implement get(), setProperties(), and reloadData().
- * <P>
- *
- * @see         com.bbn.openmap.layer.location.LocationHandler
- * @version    $Revision: 1.4 $ $Date: 2003/12/23 20:43:28 $
+ * <pre>
+ * locationhandler.locationColor=FF0000
+ * locationhandler.nameColor=008C54
+ * locationhandler.showNames=false
+ * locationhandler.showLocations=true
+ * locationhandler.override=true
+ * </pre>
+ * @see        com.bbn.openmap.layer.location.LocationHandler
+ * @version    $Revision: 1.5 $ $Date: 2003/12/23 22:55:24 $
  * @author     Michael E. Los D530/23448
- *
- * locationhandler.locationColor=FF0000<BR>
- * locationhandler.nameColor=008C54<BR>
- * locationhandler.showNames=false<BR>
- * locationhandler.showLocations=true<BR>
- * locationhandler.override=true<br>
  */
 public abstract class AbstractLocationHandler implements LocationHandler {
     

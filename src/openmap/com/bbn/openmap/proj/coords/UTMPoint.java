@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 21:16:28 $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 22:55:27 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -28,11 +28,10 @@ import com.bbn.openmap.proj.Ellipsoid;
 import com.bbn.openmap.proj.ProjMath;
 
 /**
- * A class representing a UTM co-ordinate <p> 
+ * A class representing a UTM co-ordinate.  <p>
  *
- * Adapted to Java by Colin
- * Mummery (colin_mummery@yahoo.com) from C++ code by Chuck Gantz
- * (chuck.gantz@globalstar.com) 
+ * Adapted to Java by Colin Mummery (colin_mummery@yahoo.com) from C++ code
+ * by Chuck Gantz (chuck.gantz@globalstar.com)
  */
 public class UTMPoint {
     
@@ -64,7 +63,6 @@ public class UTMPoint {
      *
      * @param northing The northing component.
      * @param easting The easting component.
-     * @param zone_number The zone of the coordinate.
      * @param zone_number The zone of the coordinate.
      */
     public UTMPoint(float northing, float easting, 
@@ -157,8 +155,7 @@ public class UTMPoint {
      * Converts a set of Longitude and Latitude co-ordinates to UTM given an ellipsoid
      *
      * @param ellip an ellipsoid definition.
-     * @param Lat A float value for the latitude to be converted.
-     * @param Long A float value for the longitude to be converted.
+     * @param llpoint the coordinate to be converted
      * @param utmpoint A UTMPoint instance to put the results in.  If
      * null, a new UTMPoint will be allocated.
      * @return A UTM class instance containing the value of
@@ -244,7 +241,7 @@ public class UTMPoint {
      * Determines the correct UTM letter designator for the given latitude
      * returns 'Z' if latitude is outside the UTM limits of 84N to 80S.
      * 
-     * @param Long The float value of the latitude.
+     * @param Lat The float value of the latitude.
      *
      * @return A char value which is the UTM zone letter.
      */

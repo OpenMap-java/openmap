@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapHandler.java,v $
 // $RCSfile: MapHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 21:16:21 $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 22:55:21 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -159,7 +159,7 @@ public class MapHandler extends BeanContextServicesSupport {
      * policy is a SoloMapComponentRejectPolicy and the
      * SoloMapComponent is a duplicate type of another component
      * already added.
-     * @param smc the map component to nest within this BeanContext.
+     * @param obj the map component to nest within this BeanContext.
      * @return true if addition is successful, false if not.
      * @throws MultipleSoloMapComponentException.
      */

@@ -75,9 +75,6 @@ public class TextShapeDecoration extends AbstractShapeDecoration {
     /**
      * Constructor.
      * @param text
-     * @param font
-     * @param orientation
-     * @param verticalAlignment
      */
     public TextShapeDecoration(String text) {
 	super(0.0f, 0.0f, FORWARD);
@@ -199,7 +196,7 @@ public class TextShapeDecoration extends AbstractShapeDecoration {
     /**
      * Draws the text character per character to follow the polyline
      * @param g
-     * @param points
+     * @param pts
      * @param reverse
      */
     protected void drawFollow(Graphics g, Point2D[] pts, boolean reverse) {

@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocHandler.java,v $
 // $RCSfile: RpfTocHandler.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 21:16:24 $
+// $Revision: 1.6 $
+// $Date: 2003/12/23 22:55:25 $
 // $Author: wjeuerle $
 //
 // **********************************************************************
@@ -723,11 +723,12 @@ public class RpfTocHandler {
      *
      * @param ullat upper left latitude, in decimal degrees
      * @param ullon upper left longitude, in decimal degrees
-     * @param ullat lower right latitude, in decimal degrees
-     * @param ullon lower right longitude, in decimal degrees
+     * @param lrlat lower right latitude, in decimal degrees
+     * @param lrlon lower right longitude, in decimal degrees
      * @param proj CADRG projection describing map.
      * @param chartSeriesCode chart selection.  If null, all coverage
      * boxes fitting on the screen will be returned.
+     * @param coverages a list of potential coverages
      * @return a Vector of applicable RpfCoverageBoxes.
      */
     public void getCatalogCoverage(float ullat, float ullon,
@@ -784,11 +785,10 @@ public class RpfTocHandler {
      * Note that this now returns a list of coverage entries
      * instead of just one.
      *
-     * @param box description of subframes to use for screen.
      * @param ullat upper left latitude, in decimal degrees
      * @param ullon upper left longitude, in decimal degrees
-     * @param ullat lower right latitude, in decimal degrees
-     * @param ullon lower right longitude, in decimal degrees
+     * @param lrlat lower right latitude, in decimal degrees
+     * @param lrlon lower right longitude, in decimal degrees
      * @param proj CADRG projection describing map.
      * @param viewAtts view attributes determine chart selection.
      * @return a Vector of applicable RpfCoverageBoxes.

@@ -35,7 +35,7 @@ public class ColdFrontShapeDecoration extends AbstractShapeDecoration {
     }
 
     /**
-     * @see com.bbn.awt.ShapeDecoration#draw(Graphics, Point2D[], boolean)
+     * @see com.bbn.bbn.openmap.omGraphics.awt.ShapeDecoration#draw(Graphics, Point2D[], boolean)
      */
     public void draw(Graphics g, Point2D[] points, boolean complete) {
 	Graphics2D g2D = (Graphics2D) g;

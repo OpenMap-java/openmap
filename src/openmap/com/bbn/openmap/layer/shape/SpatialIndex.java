@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 21:16:25 $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 22:55:25 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -123,21 +123,21 @@ import com.bbn.openmap.Environment;
  * </UL>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.4 $ $Date: 2003/12/23 21:16:25 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/23 22:55:25 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils {
 
-    /** Size of a shape file header. (100 bytes) */
+    /** Size of a shape file header in bytes. */
     public final static int SHAPE_FILE_HEADER_LENGTH = 100;
 
-    /** Size of a shape file record header. (8 bytes) */
+    /** Size of a shape file record header in bytes. */
     public final static int SHAPE_RECORD_HEADER_LENGTH = 8;
 
-    /** Size of the spatial index header. (100 bytes) */
+    /** Size of the spatial index header in bytes. */
     public final static int SPATIAL_INDEX_HEADER_LENGTH = 100;
 
-    /** Size of the spatial index record. (40 bytes) */
+    /** Size of the spatial index record in bytes. */
     public final static int SPATIAL_INDEX_RECORD_LENGTH = 40;
 
     /** Default size for shape record buffer. */
@@ -217,7 +217,7 @@ public class SpatialIndex extends ShapeUtils {
      *                  in <code>ShapeUtils</code>
      * @param b the buffer pointing to the raw record data
      * @param off the offset of the data starting point in the buffer
-     @ @exception IOException if something goes wrong reading the file
+     * @exception IOException if something goes wrong reading the file
      * @see ShapeUtils
      */
     public ESRIRecord makeESRIRecord(int shapeType, byte[] b, int off)
@@ -765,7 +765,7 @@ public class SpatialIndex extends ShapeUtils {
      * <p>
      * See the file documentation for usage.
      *
-     * @param args the command line arguments
+     * @param argv the command line arguments
      * @exception IOException if something goes wrong reading or
      *            writing the file
      */

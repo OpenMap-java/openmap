@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/LittleEndianInputStream.java,v $
 // $RCSfile: LittleEndianInputStream.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 21:16:21 $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 22:55:22 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -35,7 +35,7 @@ public class LittleEndianInputStream extends DataInputStream {
 
     /**
      * Constructor
-     * @param is An input stream that this is chained to.
+     * @param in An input stream that this is chained to.
      */
     public LittleEndianInputStream(InputStream in) {
 	super(in);

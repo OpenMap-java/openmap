@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMDistance.java,v $
 // $RCSfile: EditableOMDistance.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 21:16:25 $
+// $Revision: 1.6 $
+// $Date: 2003/12/23 22:55:25 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -72,7 +72,7 @@ public class EditableOMDistance extends EditableOMPoly {
      * Create the EditableOMDistance with an OMDistance already defined, ready
      * for editing.
      *
-     * @param oml OMDistance that should be edited.
+     * @param omp OMDistance that should be edited.
      */
     public EditableOMDistance(OMDistance omp) {
 	super(omp);

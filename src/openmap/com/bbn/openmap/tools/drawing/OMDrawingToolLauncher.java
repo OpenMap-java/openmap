@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
-// $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.10 $
-// $Date: 2003/10/27 12:55:34 $
-// $Author: dietrick $
-// 
+// $Revision: 1.11 $ $Date: 2003/12/23 22:55:28 $ $Author: wjeuerle $
 // **********************************************************************
 
 

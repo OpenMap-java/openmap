@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrameCacheHandler.java,v $
 // $RCSfile: RpfFrameCacheHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 21:16:24 $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 22:55:25 $
 // $Author: wjeuerle $
 //
 // **********************************************************************
@@ -125,12 +125,12 @@ public class RpfFrameCacheHandler extends CacheHandler
      * RpfFrameProvider interface method.  Return all the
      * RpfCoverageBoxes that fall in the area of interest.
      *
-     * @param float ullat NW latitude.
-     * @param float ullon NW longitude.
-     * @param float ullat SE latitude.
-     * @param float ullat SE longitude
-     * @param float CADRG projection to use for zone decisions.
-     * @param RpfProductInfo.seriesCode entry.
+     * @param ullat NW latitude.
+     * @param ullon NW longitude.
+     * @param lrlat SE latitude.
+     * @param lrlon SE longitude
+     * @param proj CADRG projection to use for zone decisions.
+     * @param chartSeries RpfProductInfo.seriesCode entry.
      * @return Vector of RpfCoverageBoxes.
      */
     public Vector getCatalogCoverage(float ullat, float ullon,
@@ -160,12 +160,12 @@ public class RpfFrameCacheHandler extends CacheHandler
      * getCatalogCoverage call.  Don't send a chart series code of
      * ANY, since that doesn't make sense.
      *
-     * @param float ullat NW latitude.
-     * @param float ullon NW longitude.
-     * @param float ullat SE latitude.
-     * @param float ullat SE longitude
-     * @param float CADRG projection to use for zone decisions.
-     * @param RpfProductInfo.seriesCode entry.
+     * @param ullat NW latitude.
+     * @param ullon NW longitude.
+     * @param lrlat SE latitude.
+     * @param lrlon SE longitude
+     * @param p projection to use for zone decisions.
+     * @param chartSeries RpfProductInfo.seriesCode entry.
      * @return percentage of map covered by specific chart type.
      * @see #getCatalogCoverage
      */
@@ -271,11 +271,11 @@ public class RpfFrameCacheHandler extends CacheHandler
      * 4. Iterates thru list returned by RpcTocHandler since the return type
      * for getBestCoverageEntry changed from RpfTocEntry to List.
      *
-     * @param float ullat NW latitude.
-     * @param float ullon NW longitude.
-     * @param float ullat SE latitude.
-     * @param float ullat SE longitude
-     * @param float CADRG projection to use for zone decisions.
+     * @param ullat NW latitude.
+     * @param ullon NW longitude.
+     * @param lrlat SE latitude.
+     * @param lrlon SE longitude
+     * @param proj CADRG projection to use for zone decisions.
      * @return Vector of RpfCoverageBoxes.
      */
     public Vector getCoverage(float ullat, float ullon,

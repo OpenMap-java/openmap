@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/ShpInputStream.java,v $
 // $RCSfile: ShpInputStream.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 21:16:22 $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 22:55:22 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -106,8 +106,7 @@ public class ShpInputStream implements ShapeConstants {
     
     /**
      * Iterates through the given input stream to contruct geometry objects
-     * @param is The input stream from which to iterate through
-     * @param vector A list of offsets obtained by iterating through
+     * @param indexData A list of offsets obtained by iterating through
      * the associated SHX file
      * @return list An OMGraphicList that contains the collection of
      * objects created by iterating through this input stream 
@@ -166,8 +165,8 @@ public class ShpInputStream implements ShapeConstants {
     
     /**
      * Iterates through the given input stream to contruct geometry objects
-     * @param is The input stream from which to iterate through
-     * @param vector A list of offsets obtained by iterating through
+     * @param shapeType the type of shape to read
+     * @param indexData A list of offsets obtained by iterating through
      * the associated SHX file
      * @return list An OMGraphicList that contains the collection of
      * objects created by iterating through this input stream 

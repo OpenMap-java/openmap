@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/ShxInputStream.java,v $
 // $RCSfile: ShxInputStream.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 21:16:22 $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 22:55:22 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -53,8 +53,7 @@ public class ShxInputStream {
      * derived from AbstractSupport will use to iterate through the
      * associated SHP file
      *
-     * @param is The input stream from which to obtain offsets
-     * @return Vector a list of offset, which will be passed into the
+     * @return an array of offsets, which will be passed into the
      * open method of classes which extend AbstractSupport.  
      */
     public int[][] getIndex() {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapConnector.java,v $
 // $RCSfile: NetMapConnector.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 21:16:23 $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 22:55:23 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -540,7 +540,7 @@ public class NetMapConnector
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @param String prefix String.  
+     * @return the property prefix
      */
     public String getPropertyPrefix() {
 	return propertyPrefix;

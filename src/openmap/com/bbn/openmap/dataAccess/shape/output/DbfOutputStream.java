@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 21:16:22 $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 22:55:22 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -50,8 +50,7 @@ public class DbfOutputStream {
 
     /**
      *
-     * @param os The outputstream to write data to
-     * @param fakeNumRecords The number of dummy records to generate
+     * @param model the tablemodel to write
      */
     public void writeModel(DbfTableModel model) throws IOException {
 	int rowCount = model.getRowCount();
