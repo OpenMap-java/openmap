@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolSet.java,v $
 // $RCSfile: OMToolSet.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/05 05:39:01 $
+// $Revision: 1.4 $
+// $Date: 2003/09/08 22:25:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -255,6 +255,13 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      */
     public void setProperties(String prefix, Properties setList) {
 	setPropertyPrefix(prefix);
+
+	// Important for ToolPanel that controls what it is listening
+	// for, instead of grabbing any Tool.  The prefix will be used
+	// as a discriminator.
+	if (prefix != null) {
+	    setKey(prefix);
+	}
 
 	prefix = PropUtils.getScopedPropertyPrefix(prefix);
 

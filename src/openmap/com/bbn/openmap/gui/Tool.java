@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Tool.java,v $
 // $RCSfile: Tool.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/08 22:25:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,7 +29,10 @@ import java.awt.event.*;
 import java.awt.*;
 
 /** 
- * Represents an item on the ToolPanel.
+ * Represents an item on the ToolPanel.  If the Tool is a
+ * PropertyConsumer and a property prefix is used, the prefix should
+ * be used as the key as it is supposed to be unique and can be used
+ * as a known discriminator.
  *
  * @author john gash contributed to this notion of a Tool.
  */
@@ -45,14 +48,14 @@ public interface Tool {
     public Container getFace();
     
     /** 
-     * The retrieval key for this tool
+     * The retrieval key for this tool.
      *
      * @return String The key for this tool.
-     **/
+     */
     public String getKey();
     
     /** 
-     * Set the retrieval key for this tool
+     * Set the retrieval key for this tool.
      *
      * @param key The key for this tool.
      */

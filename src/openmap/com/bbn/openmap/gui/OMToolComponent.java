@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolComponent.java,v $
 // $RCSfile: OMToolComponent.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/08 22:25:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -116,6 +116,13 @@ public abstract class OMToolComponent extends OMComponentPanel
 
     public void setProperties(String prefix, Properties props) {
 	super.setProperties(prefix, props);
+
+	// Important for ToolPanel that controls what it is listening
+	// for, instead of grabbing any Tool.  The prefix will be used
+	// as a discriminator.
+	if (prefix != null) {
+	    setKey(prefix);
+	}
 
 	prefix = PropUtils.getScopedPropertyPrefix(prefix);
 	useAsTool = LayerUtils.booleanFromProperties(props, prefix + UseAsToolProperty, useAsTool);

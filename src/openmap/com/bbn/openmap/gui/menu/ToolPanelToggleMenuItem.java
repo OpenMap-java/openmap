@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/ToolPanelToggleMenuItem.java,v $
 // $RCSfile: ToolPanelToggleMenuItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/06 02:31:29 $
+// $Revision: 1.2 $
+// $Date: 2003/09/08 22:25:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,14 +28,19 @@ import com.bbn.openmap.gui.ToolPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import javax.swing.JMenuItem;
 
 /**
  * Menu item that holds onto the tool panel, and hides/displays it
- * when selected.  
+ * when selected.  Since the ToolPanel will make itself invisible if
+ * all of its components are invisible, this menu item will disable
+ * itself when the ToolPanel has set itself to be invisible, and
+ * vice-versa.
  */
 public class ToolPanelToggleMenuItem extends JMenuItem 
-    implements ActionListener, LightMapHandlerChild {
+    implements ActionListener, LightMapHandlerChild, ComponentListener {
 
     protected ToolPanel toolPanel = null;
     protected final static String hideLabel = "Hide Tool Panel";
@@ -59,8 +64,17 @@ public class ToolPanelToggleMenuItem extends JMenuItem
     }
 
     public void setToolPanel(ToolPanel tp) {
+	if (toolPanel != null) {
+	    toolPanel.removeComponentListener(this);
+	}
+
 	toolPanel = tp;
 	this.setVisible(toolPanel != null);
+
+	if (toolPanel != null) {
+	    toolPanel.addComponentListener(this);
+	    stateCheck();
+	}
     }
 
     public ToolPanel getToolPanel() {
@@ -90,5 +104,28 @@ public class ToolPanelToggleMenuItem extends JMenuItem
 	    getToolPanel() == (ToolPanel)someObj) {
 	    setToolPanel(null);
 	}
+    }
+
+    /**
+     * Check the state of the ToolPanel and set enabled state and text
+     * accordingly.
+     */
+    public void stateCheck() {
+	if (toolPanel != null) {
+	    setEnabled(toolPanel.areComponentsVisible());
+	    setText(toolPanel.isVisible()?hideLabel:displayLabel);
+	}
+    }
+
+    public void componentHidden(ComponentEvent ce) {
+	stateCheck();
+    }
+
+    public void componentMoved(ComponentEvent ce) {}
+
+    public void componentResized(ComponentEvent ce) {}
+
+    public void componentShown(ComponentEvent ce) {
+	stateCheck();
     }
 }
