@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.18 $
-// $Date: 2005/01/10 16:36:21 $
+// $Revision: 1.19 $
+// $Date: 2005/01/13 01:29:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -381,7 +381,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
                 omsi.setMaxScale(5000000);
                 omList.add(omsi);
             } else {
-                Debug.output("DemoLayer: couldn't create symbol");
+                Debug.output("DemoLayer: couldn't create symbol from SymbolReferenceLibrary");
             }
         }
 
