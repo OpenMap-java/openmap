@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapHandler.java,v $
 // $RCSfile: MapHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/05 15:38:20 $
+// $Revision: 1.3 $
+// $Date: 2003/09/05 20:58:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,9 @@ import java.beans.beancontext.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Vector;
+
+import com.bbn.openmap.util.Debug;
 
 /**
  * The MapHandler is an extension of the BeanContextServicesSupport, 
@@ -68,8 +71,13 @@ import java.util.LinkedList;
 public class MapHandler extends BeanContextServicesSupport {
 
     protected SoloMapComponentPolicy policy;
+    protected boolean DEBUG = false;
+    protected boolean addInProgress = false;
+    protected Vector addLaterVector = null;
 
-    public MapHandler() {}
+    public MapHandler() {
+	DEBUG = Debug.debugging("maphandler");
+    }
 
     /**
      * Set the policy of behavior for the MapHandler on how it should
@@ -95,6 +103,56 @@ public class MapHandler extends BeanContextServicesSupport {
     }
 
     /**
+     * Call made from the add() method for objects that added when
+     * another object was being added, setting up a
+     * ConcurrentModificationException condition.  This is a coping
+     * mechanism.
+     */
+    protected synchronized void addLater(Object obj) {
+	if (addLaterVector == null) {
+	    addLaterVector = new Vector();
+	}
+	if (DEBUG) {
+	    Debug.output("=== Adding " + obj.getClass().getName() + 
+			 " to list for later addition");
+	}
+	addLaterVector.add(obj);
+    }
+
+    /**
+     * Call to add any objects on the addLaterVector to the
+     * MapHandler.  These are objects that were previously added which
+     * another object was being added, setting up a
+     * ConcurrentModificationException condition.  Part of the coping
+     * mechanism.
+     */
+    protected synchronized void purgeLaterList() {
+	Vector tmpList = addLaterVector;
+	addLaterVector = null;
+
+	if (tmpList != null) {
+	    Iterator it = tmpList.iterator();
+	    while (it.hasNext()) {
+		Object obj = it.next();
+		if (DEBUG) {
+		    Debug.output("+++ Adding " + obj.getClass().getName() + 
+				 " to MapHandler from later list.");
+		}
+		add(obj);
+	    }
+	    tmpList.clear();
+	}
+    }
+
+    protected synchronized void setAddInProgress(boolean value) {
+	addInProgress = value;
+    }
+    
+    protected synchronized boolean isAddInProgress() {
+	return addInProgress;
+    }
+
+    /**
      * Add an object to the MapHandler BeanContextSupport.  Uses the
      * current SoloMapComponentPolicy to handle the SoloMapComponents
      * added.  May throw MultipleSoloMapComponentException if the
@@ -106,16 +164,31 @@ public class MapHandler extends BeanContextServicesSupport {
      * @throws MultipleSoloMapComponentException.
      */
     public boolean add(Object obj) {
-	boolean passedSoloMapComponentTest = true;
-	if (obj instanceof SoloMapComponent) {
-	    passedSoloMapComponentTest = getPolicy().canAdd(this, obj);
-	} 
+	try {
+	    boolean passedSoloMapComponentTest = true;
+	    if (obj instanceof SoloMapComponent) {
+		passedSoloMapComponentTest = getPolicy().canAdd(this, obj);
+	    } 
 
-	if (obj != null && passedSoloMapComponentTest) {
-	    return super.add(obj);
-	} else {
-	    return false;
+	    if (obj != null && passedSoloMapComponentTest) {
+		
+		if (isAddInProgress()) {
+		    if (DEBUG) {
+			Debug.output("MapHandler: Attempting to add while add in progress, adding [" + obj.getClass().getName() + "]object to list");
+		    }
+		    addLater(obj);
+		} else {
+		    setAddInProgress(true);
+		    boolean ret = super.add(obj);
+		    setAddInProgress(false);
+		    purgeLaterList();
+		    return ret;
+		}
+	    }
+	} catch (java.util.ConcurrentModificationException cme) {
+	    Debug.error("MapHandler caught ConcurrentModificationException when adding [" + obj.getClass().getName() + "]. The addition of this component to the MapHandler is causing some other component to attempt to be added as well, and the coping mechanism in the MapHandler is not handling it well.");
 	}
+	return false;
     }
 
     public String toString() {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/09/05 15:38:21 $
+// $Revision: 1.10 $
+// $Date: 2003/09/05 20:58:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -641,11 +641,7 @@ public class PropertyHandler implements SoloMapComponent {
 		    continue;
 		}
 
-		if (obj instanceof SoloMapComponent) {
-		    mapHandler.add((SoloMapComponent) obj);
-		} else {
-		    mapHandler.add(obj);
-		}
+		mapHandler.add(obj);
 
 		String markerName = ((String)componentList.elementAt(i)).intern();
 		prefixLibrarian.put(markerName, obj);
