@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/terrain/LOSGenerator.java,v $
 // $RCSfile: LOSGenerator.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:47:50 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/24 03:40:33 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -26,7 +26,7 @@ package com.bbn.openmap.tools.terrain;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.layer.dted.DTEDFrameCache;
+import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Planet;
