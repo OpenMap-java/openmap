@@ -1110,6 +1110,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/tools/Makefile
 	com/bbn/openmap/tools/drawing/Makefile
 	com/bbn/openmap/util/Makefile
+	com/bbn/openmap/util/propertyEditor/Makefile
 	com/bbn/openmap/util/quadtree/Makefile
 	" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
@@ -1255,6 +1256,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/tools/Makefile
 	com/bbn/openmap/tools/drawing/Makefile
 	com/bbn/openmap/util/Makefile
+	com/bbn/openmap/util/propertyEditor/Makefile
 	com/bbn/openmap/util/quadtree/Makefile
 	"}
 EOF

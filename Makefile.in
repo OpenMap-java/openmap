@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.57 $  $Date: 2001/08/23 00:01:42 $
+# $Revision: 1.58 $  $Date: 2001/09/20 22:24:40 $
 # **********************************************************************
 
 
@@ -49,6 +49,7 @@ Core.pkgs =	com.bbn.openmap \
 		com.bbn.openmap.proj \
 		com.bbn.openmap.tools.drawing \
 		com.bbn.openmap.util \
+		com.bbn.openmap.util.propertyEditor \
 		com.bbn.openmap.util.quadtree
 
 Core.classes =	com/bbn/openmap/*.class \
@@ -70,6 +71,7 @@ Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/proj/*.class \
 		com/bbn/openmap/tools/drawing/*.class \
 		com/bbn/openmap/util/*.class \
+		com/bbn/openmap/util/propertyEditor/*.class \
 		com/bbn/openmap/util/quadtree/*.class
 
 Core.extra =	com/bbn/openmap/*.gif \
