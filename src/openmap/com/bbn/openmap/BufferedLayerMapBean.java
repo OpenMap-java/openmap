@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/BufferedLayerMapBean.java,v $
 // $RCSfile: BufferedLayerMapBean.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/04 18:12:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -81,13 +81,27 @@ public class BufferedLayerMapBean extends BufferedMapBean {
      * @param color java.awt.Color.  
      */
     public void setBackgroundColor(Color color) {
-	super.setBackgroundColor(color);
 	bufLayer.setBackgroundColor(color);
+	super.setBackgroundColor(color);
     }
 
     public void setBckgrnd(Paint paint) {
-	super.setBckgrnd(paint);
 	bufLayer.setBckgrnd(paint);
+	super.setBckgrnd(paint);
+    }
+
+    /**
+     * Set the MapBeanRepaintPolicy used by the MapBean.  This method
+     * is overriden in order to pass the policy on to the MapBean
+     * stored in the internal BufferedLayer.
+     */
+    public void setMapBeanRepaintPolicy(MapBeanRepaintPolicy mbrp) {
+	super.setMapBeanRepaintPolicy(mbrp);
+
+	MapBeanRepaintPolicy mbrp2 = (MapBeanRepaintPolicy)mbrp.clone();
+	MapBean mb = bufLayer.getMapBean();
+	mb.setMapBeanRepaintPolicy(mbrp2);
+	mbrp2.setMap(mb);
     }
 
     /**

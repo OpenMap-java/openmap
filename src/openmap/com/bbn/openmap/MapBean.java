@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/08/28 21:57:00 $
+// $Revision: 1.5 $
+// $Date: 2003/09/04 18:12:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -817,8 +817,7 @@ public class MapBean extends JComponent
      */
     public void paintChildren(Graphics g, Rectangle clip) {
 
-// 	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-// 					 RenderingHints.VALUE_ANTIALIAS_ON);
+	g = getMapBeanRepaintPolicy().modifyGraphicsForPainting(g);
 
 	if (clip != null) {
 	    g.setClip(clip);

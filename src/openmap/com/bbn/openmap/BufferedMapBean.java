@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/BufferedMapBean.java,v $
 // $RCSfile: BufferedMapBean.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/28 21:57:00 $
+// $Revision: 1.3 $
+// $Date: 2003/09/04 18:12:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -125,9 +125,8 @@ public class BufferedMapBean extends MapBean {
             }
 
 	    // draw the old image
-	    Graphics gr = drawingBuffer.getGraphics();
-// 	    ((Graphics2D)gr).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-// 					      RenderingHints.VALUE_ANTIALIAS_ON);
+  	    Graphics gr = getMapBeanRepaintPolicy().modifyGraphicsForPainting(drawingBuffer.getGraphics());
+
 	    if (clip == null) {
   		gr.setClip(0, 0, w, h);
 	    } else {
