@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/vpf/GraphicWarehouseSupport.java,v $
 // $RCSfile: GraphicWarehouseSupport.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/03/11 17:08:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -605,4 +605,31 @@ public abstract class GraphicWarehouseSupport implements VPFGraphicWarehouse {
 	return new ArrayList();
     }
 
+    /**
+     * Set which library to use. If null, all applicable libraries in
+     * database will be searched.
+     */
+    private String useLibrary = null;
+
+    /**
+     * Set the VPF library to use.  If null, all libraries will be
+     * searched.  Null is default.
+     */
+    public void setUseLibrary(String lib) {
+	useLibrary = lib;
+    }
+
+    /**
+     * Get a library name to limit selections from.  Used by the
+     * LibrarySelectionTable to find out if selection from database
+     * should be limitied to tiles or feature from certain libraries.
+     * Specified here instead of the LibrarySelectionTable in case the
+     * LST is shared among layers, since the warehouse is specific to
+     * a particular layer.
+     */
+    public String getUseLibrary() {
+	return useLibrary;
+    }
+
 }
+
