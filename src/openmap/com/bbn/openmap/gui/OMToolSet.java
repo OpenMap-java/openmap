@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolSet.java,v $
 // $RCSfile: OMToolSet.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 04:22:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -187,7 +187,8 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
     }
 
     /**
-     * Add a button to the panel.
+     * Add a button to the panel.  Will attempt to create a URL from
+     * the name of the image file.
      * @param name image filename
      * @param info tool tip
      * @param al ActionListener
@@ -195,16 +196,27 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
     public void addButton(String name, String info, ActionListener al) {
 	try {
 	    URL url = LayerUtils.getResourceOrFileOrURL(null, name);
-	    // 	URL url = OMToolSet.class.getResource(name);
-	    JButton b = new JButton(new ImageIcon(url, info));
-	    b.setToolTipText(info);
-	    b.setMargin(new Insets(0,0,0,0));
-	    b.addActionListener(al);
-	    b.setBorderPainted(false);
-	    add(b);
+	    if (url != null) {
+		addButton(url, info, al);
+	    }
 	} catch (MalformedURLException murle) {
 	    Debug.error("OMToolSet.addButton: can't create button for " + info);
 	}
+    }
+
+    /**
+     * Add a button to the panel.
+     * @param name URL for image
+     * @param info tool tip
+     * @param al ActionListener
+     */
+    public void addButton(URL url, String info, ActionListener al) {
+        JButton b = new JButton(new ImageIcon(url, info));
+        b.setToolTipText(info);
+        b.setMargin(new Insets(0,0,0,0));
+        b.addActionListener(al);
+        b.setBorderPainted(false);
+        add(b);
     }
 
     /**

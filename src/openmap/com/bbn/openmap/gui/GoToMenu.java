@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/06 03:09:04 $
+// $Revision: 1.4 $
+// $Date: 2003/03/06 04:22:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -354,21 +354,18 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
 	    buttonPanel.setLayout(gridbag);
 
-	    closebutton = new JButton("Cancel");
-	    closebutton.addActionListener(this);
-	    c.gridx = 0;
-	    c.gridy = 0;
-	    gridbag.setConstraints(closebutton, c);
-
-	    buttonPanel.add(closebutton);
-
-	    applybutton = new JButton("OK");
+	    applybutton = new JButton("Add View");
 	    applybutton.addActionListener(this);
-	    c.gridx = GridBagConstraints.RELATIVE;
 	    gridbag.setConstraints(applybutton, c);
 
+	    closebutton = new JButton("Close");
+	    closebutton.addActionListener(this);
+	    c.gridx = GridBagConstraints.RELATIVE;
+	    gridbag.setConstraints(closebutton, c);
+
 	    buttonPanel.add(applybutton);
-	    
+	    buttonPanel.add(closebutton);
+
 	    palette.add(buttonPanel);
 	    
 	    this.getContentPane().add(palette);
