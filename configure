@@ -1,6 +1,7 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.26 
+# From configure.in OpenMap Revision: 1.27 
+
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.12 
 # Copyright (C) 1992, 93, 94, 95, 96 Free Software Foundation, Inc.
@@ -536,6 +537,9 @@ fi
 ## 1. The user used the --without-jdk command line flag.
 ##
 ##   In this case, error.  We can't build without a JDK.
+##   Actually I've lied.  We can build with jikes, and maybe other
+##   JVMs...  But the user must specify all the JAVA{C,DOC,*} stuff by
+##   hand.
 ##
 ## 2. The user either didn't use a command line flag or she
 ##    specified --with-jdk, but didn't specify a directory
@@ -548,12 +552,16 @@ fi
 ##   In this case, try the specified directory and then the specified
 ##   directory with '/bin' appended.
 ##
+## Some of the OpenMap code requires the Java 2 (JDK1.2) virtual
+## machine.  Once we've found Java, we check the version to determine
+## whether to compile the extra Java 2 code.
+##
 #
 JDK_PATH=""
 case $with_jdk in
   no)
     # user specified --without-jdk
-    { echo "configure: error: Can't compile OpenMap without a JDK" 1>&2; exit 1; }
+    { echo "configure: error: Without a JDK, you must specify the various Java executables." 1>&2; exit 1; }
     ;;
   "" | yes)
     # user specified --with-jdk, but didn't specify where to find it
@@ -578,7 +586,7 @@ CLASSPATH_SEP=":"
 
 
 echo $ac_n "checking for cygwin platform""... $ac_c" 1>&6
-echo "configure:582: checking for cygwin platform" >&5
+echo "configure:590: checking for cygwin platform" >&5
 if uname -s 2>/dev/null | grep -i cyg >/dev/null 2>&1; then
   echo "$ac_t""yes" 1>&6
   CLASSPATH_SEP=";"
@@ -616,7 +624,7 @@ ac_configure=$ac_aux_dir/configure # This should be Cygnus configure.
 # SVR4 /usr/ucb/install, which tries to use the nonexistent group "staff"
 # ./install, which can be erroneously created by make from ./install.sh.
 echo $ac_n "checking for a BSD compatible install""... $ac_c" 1>&6
-echo "configure:620: checking for a BSD compatible install" >&5
+echo "configure:628: checking for a BSD compatible install" >&5
 if test -z "$INSTALL"; then
 if eval "test \"`echo '$''{'ac_cv_path_install'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -672,7 +680,7 @@ test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 # Extract the first word of "java", so it can be a program name with args.
 set dummy java; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:676: checking for $ac_word" >&5
+echo "configure:684: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVA'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -704,7 +712,7 @@ fi
 # Extract the first word of "javac", so it can be a program name with args.
 set dummy javac; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:708: checking for $ac_word" >&5
+echo "configure:716: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVAC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -736,7 +744,7 @@ fi
 # Extract the first word of "jar", so it can be a program name with args.
 set dummy jar; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:740: checking for $ac_word" >&5
+echo "configure:748: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAR'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -768,7 +776,7 @@ fi
 # Extract the first word of "javadoc", so it can be a program name with args.
 set dummy javadoc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:772: checking for $ac_word" >&5
+echo "configure:780: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVADOC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -795,6 +803,22 @@ if test -n "$JAVADOC"; then
 else
   echo "$ac_t""no" 1>&6
 fi
+
+
+#----------------------------------------------------------------------
+#  Check the Java version
+#----------------------------------------------------------------------
+echo $ac_n "checking java version""... $ac_c" 1>&6
+echo "configure:813: checking java version" >&5
+JAVA_VERSION=`$JAVA -version 2>&1 | head -1 | sed 's/^.*"\(.*\)".*/\1/'`
+echo "$ac_t""$JAVA_VERSION" 1>&6
+JAVA2=`echo $JAVA_VERSION | sed -e 's#^\(1\.2.*\)#\1#'`
+if test ! -z "${JAVA2}" ; then
+  JAVA2_SRCS="\${JAVA2_SRCS}"
+else
+  JAVA2_SRCS=""
+fi
+
 
 
 #----------------------------------------------------------------------
@@ -1051,6 +1075,7 @@ s%@JAVA@%$JAVA%g
 s%@JAVAC@%$JAVAC%g
 s%@JAR@%$JAR%g
 s%@JAVADOC@%$JAVADOC%g
+s%@JAVA2_SRCS@%$JAVA2_SRCS%g
 s%@rootdir@%$rootdir%g
 s%@classpath@%$classpath%g
 s%@DEFAULT_TARGET@%$DEFAULT_TARGET%g

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION(OpenMap $Revision: 1.27 $)
+AC_REVISION(OpenMap $Revision: 1.28 $)
 AC_INIT(openmap.mk.in)
 
 #
@@ -13,6 +13,9 @@ AC_PREFIX_DEFAULT(/usr/local/openmap)
 ## 1. The user used the --without-jdk command line flag.
 ##
 ##   In this case, error.  We can't build without a JDK.
+##   Actually I've lied.  We can build with jikes, and maybe other
+##   JVMs...  But the user must specify all the JAVA{C,DOC,*} stuff by
+##   hand.
 ##
 ## 2. The user either didn't use a command line flag or she
 ##    specified --with-jdk, but didn't specify a directory
@@ -25,12 +28,16 @@ AC_PREFIX_DEFAULT(/usr/local/openmap)
 ##   In this case, try the specified directory and then the specified
 ##   directory with '/bin' appended.
 ##
+## Some of the OpenMap code requires the Java 2 (JDK1.2) virtual
+## machine.  Once we've found Java, we check the version to determine
+## whether to compile the extra Java 2 code.
+##
 #
 JDK_PATH=""
 case $with_jdk in
   no)
     # user specified --without-jdk
-    AC_MSG_ERROR([Can't compile OpenMap without a JDK])
+    AC_MSG_ERROR([Without a JDK, you must specify the various Java executables.])
     ;;
   "" | yes)
     # user specified --with-jdk, but didn't specify where to find it
@@ -75,6 +82,11 @@ AC_PATH_PROG(JAVAC,javac,,$JDK_PATH)
 AC_PATH_PROG(JAR,jar,,$JDK_PATH)
 
 AC_PATH_PROG(JAVADOC,javadoc,,$JDK_PATH)
+
+#----------------------------------------------------------------------
+#  Check the Java version
+#----------------------------------------------------------------------
+AC_CHECK_JAVA_VERSION
 
 #----------------------------------------------------------------------
 #  Determine a reasonable CLASSPATH for building OpenMap
