@@ -9,7 +9,7 @@ Frequently Asked Questions for the OpenMap system.
 
 <title>OpenMap FAQ
 <author>BBN Technologies
-<date>8 February 2000
+<date>15 February 2000
 <abstract>
 This FAQ contains questions and answers about the OpenMap system.
 </abstract>
@@ -61,12 +61,25 @@ High-level functionality-type questions.
 <sect1>Flexibility of the layer interface
 
 <sect>Hardware and Development Environment Requirements
+<p>
 What do you need to run and develop with OpenMap?
 
 <sect1>What systems have you tested OpenMap on?
 <sect1>What JDK issues are there?
 <sect1>What GUI builders have you worked with?
-<sect1>What potential problems are there with...
+<sect1>Can I use OpenMap in Symantec Visual Cafe?  I get the "jar file contains  no valid beans" message when I try to load in openmap.jar.
+<p>
+Symantec's Visual Cafe product requires that beans be "100% JavaBean
+compliant", according to the Sun JavaBeans(tm) specification available
+at Sun's Java web site at <tt><htmlurl url="http://java.sun.com/beans/docs/spec.html"></tt>. Right now, the openmap.jar file is not 100% JavaBean compliant, and
+thus cannot be imported as a component.
+
+While the bean is not all the way there, however, it should be
+relatively close.  Since OpenMap is open source, we welcome 
+contributions from the user community, including the necessary
+modifications to bring the jar files up to spec.  If you're interested
+in contributing, send mail to openmap@bbn.com and let us know!
+
 
 <sect>About the OpenMap Package
 <sect1> What does the OpenMap package contain?
@@ -76,10 +89,55 @@ What do you need to run and develop with OpenMap?
 
 <sect>Using/Building OpenMap
 <sect1> How can I compile and run on Windows?
+<p>
+OpenMap comes with jar files and scripts to let you run under Windows with
+little configuration.  To get it running on your system, you'll first need
+to:
+
+<list>
+<item> Load the openmap.bat batch file in your favorite editor.
+<item> Change the path to the Java virtual machine to match where your installation of Java is.
+<item> Change the path of OpenMap to match where you unpacked the distribution.
+</list>
+
+Then, run the openmap.bat file.
+
+If you want to build OpenMap from the source code yourself, we recommend
+the cygwin toolkit from Cygnus (http://sourceware.cygnus.com/cygwin).  Note
+that we've had better luck under Windows NT than Windows 95 or 98, as there
+are some problems with long command lines under these operating systems.
+
 <sect1> How can I compile and run on Unix?
+<p>
+
+You'll need to have a Java compiler and VM to build and run the OpenMap
+software, as well as the Java Foundation Classes (JFC).  
+
+Once you have this software on your system, you can:
+
+<list>
+<item> `cd' to the top level directory of the OpenMap package and type `./configure' to configure the package for your system.  If you're using csh on an old version of System V, you might need to type `sh ./configure' instead to prevent sh from trying to execute `configure' itself.
+<item> Type `make' to compile the package.
+<item> Type `make install' to install the programs and any data files and documentation.
+<item> If you want documentation, type `make docs'.  NOTE: javadoc documentation is now pre-built.  This step is unnecessary unless you want to rebuild the javadoc documentation.
+<item> To install the documentation, type `make install-docs'.
+</list>
+
+You can test OpenMap by running the various launch scripts provided in the bin/ and the com/bbn/openmap/examples/ directories.  Read the INSTALL file in the distribution for more information.
+
 <sect1> What flavors of Unix do you work with?
+<p>
+We've successfully tested on Solaris 2.5, 2.5.1, 2.6, and 2.7, as well as
+RedHat Linux 5.1, 5.2, 6.0, and 6.1.  OpenMap should work on any system on
+which you have a Java compiler, VM, and the Java Foundation Classes.
+
 <sect1> How can I compile and run on a Macintosh?
 <sect1> How can I generate the Javadoc documentation?
+<p>
+The Javadocs come pre-built with the OpenMap distribution in the doc/
+directory.  If you want to rebuild the documentation, read the answer
+above for compiling/running under Unix.
+
 <sect1>Do you have any suggestions for debugging my layer/application
 with OpenMap?
 <p>
@@ -120,6 +178,12 @@ is set up properly to point to your layer code, this becomes:
 <sect1> What does the InformationDelegator do?
 <sect1> What do Listeners do?
 <sect1> What are MouseModes?
+<sect1> What are OpenMap's scale units?
+<p>
+
+OpenMap's scale is a ratio, based on a pixelsPerMeter constant that we computed long ago.  (It's roughly the number of pixels per meter on a Sun monitor from 1994.)  The idea was that projections are calculated in meters, and that the pixelsPerMeter should be settable to match your output device.  In theory, the scale would have been a measurable quantity.
+	
+In practice, X-windows was supposed to provide a way of getting the actual pPM but few vendors went through the trouble of setting the value properly.  In the meantime, the OpenMap's scale can be used as a general ratio.
 
 <sect>Layers
 <sect1> How can I put my data on a map?
@@ -233,8 +297,15 @@ Raster Product Format, i.e. the underlying format of CADRG and CIB.
 <tt><htmlurl
 url="http://164.214.2.59:80/publications/specs/index.html"></tt>
 
+<sect1> Does OpenMap read Arc/Info or GeoTIFF files?
+<p>
+Not at the moment.  We haven't worked with projects that have required
+reading Arc/Info or GeoTIFF files.  Please let us know if you would 
+like to contribute a reader!
 
 <sect1> You didn't list this specific data type.  When will you support it?
+
+
 <sect1>When adding ESRI shape files to OpenMap I don't see (some/all) of the data.  What's wrong?
 <p>
 The Openmap <htmlurl
@@ -256,6 +327,25 @@ country.spatialIndex=country.ssx
 </verb>
 Be sure to substitute the correct name of your shape file and layer
 for the word 'country' in the examples above.
+
+<sect1> How can I use the .dbf files that came with my shape file data through  OpenMap?
+
+<p>
+The .dbf file holds attributes for the graphical objects stored in
+the shapefile (.shp).  There are a couple of ways you can go to
+take advantage of the information in that file.  You can load the
+file into the database, and then perform queries into the database
+from within the Layer, and then associate the attributes to the
+OpenMap grpahical objects created from the shapefile.  You can also
+convert the .dbf file to a csv file, and then do the same thing.
+There is a package com.bbn.openmap.layer.shape.areas that helps with
+this approach that will be in the next release of OpenMap.
+
+We do not provide a generic solution for this, because it is our
+experience that there isn't one.  We've always had to come up with
+specialized code to display the graphics and attributes in a manner
+that was appropriate for the particular goal of the layer.
+
 
 <sect>Image Server Functionality
 <sect1> How to make your own server.
