@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Gnomonic.java,v $
 // $RCSfile: Gnomonic.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/04 16:05:43 $
+// $Revision: 1.6 $
+// $Date: 2004/09/17 18:26:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -346,15 +346,15 @@ public class Gnomonic extends Azimuth {
 //             MoreMath.approximately_equal(lon, ctrLon) &&
 //             (Math.abs(x-(width/2))<2) &&
 //             (Math.abs(y-(height/2))<2))
-        if (Float.isNaN(lat) || Float.isNaN(lon))
-        {
-//          Debug.message("proj", "Gnomonic.inverse(): outer space!");
+
+        if (Float.isNaN(lat) || Float.isNaN(lon)) {
+            Debug.message("proj", "Gnomonic.inverse(): outer space!");
             lat = ctrLat;
             lon = ctrLon;
         }
-        llp.setLatLon(
-                ProjMath.radToDeg(lat),
-                ProjMath.radToDeg(lon));
+
+        llp.setLatLon(ProjMath.radToDeg(lat),
+                      ProjMath.radToDeg(lon));
         return llp;
     }
 

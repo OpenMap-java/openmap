@@ -1,32 +1,35 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies, a Verizon Company
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.6 $
+// $Date: 2004/09/17 18:26:38 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 
 package com.bbn.openmap.proj.coords;
 
+import java.io.*;
+
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Ellipsoid;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
+
 
 /**
  * A class representing a MGRS coordinate that has the ability to
@@ -45,12 +48,12 @@ public class MGRSPoint extends UTMPoint {
     public final static int[] SET_ORIGIN_ROW_LETTERS = {'A', 'F', 'A', 'F', 'A', 'F'};
     /**
      * The column letters (for easting) of the lower left value, per
-     * set,, for Bessel Ellipsoid. 
+     * set,, for Bessel Ellipsoid.
      */
     public final static int[] BESSEL_SET_ORIGIN_COLUMN_LETTERS = {'A', 'J', 'S', 'A', 'J', 'S'};
     /**
      * The row letters (for northing) of the lower left value, per
-     * set, for Bessel Ellipsoid. 
+     * set, for Bessel Ellipsoid.
      */
     public final static int[] BESSEL_SET_ORIGIN_ROW_LETTERS = {'L', 'R', 'L', 'R', 'L', 'R'};
 
@@ -93,7 +96,7 @@ public class MGRSPoint extends UTMPoint {
 
     /**
      * Point to create if you are going to use the static methods to
-     * fill the values in.  
+     * fill the values in.
      */
     public MGRSPoint() {
         DEBUG = Debug.debugging("mgrs");
@@ -136,7 +139,7 @@ public class MGRSPoint extends UTMPoint {
 
     /**
      * Construct a MGRSPoint from a LatLonPoint and a particular
-     * ellipsoid.  
+     * ellipsoid.
      */
     public MGRSPoint(LatLonPoint llpoint, Ellipsoid ellip) {
         this();
@@ -155,7 +158,7 @@ public class MGRSPoint extends UTMPoint {
         } catch (StringIndexOutOfBoundsException sioobe) {
             throw new NumberFormatException("MGRSPoint has bad string: " + mgrsString);
         } catch (NullPointerException npe) {
-            // Blow off     
+            // Blow off
         }
     }
 
@@ -187,7 +190,7 @@ public class MGRSPoint extends UTMPoint {
 
     /**
      * Fill in the given LatLonPoint with the converted values of this
-     * MGRSPoint, and use the given ellipsoid.  
+     * MGRSPoint, and use the given ellipsoid.
      */
     public LatLonPoint toLatLonPoint(Ellipsoid ellip, LatLonPoint llpoint) {
         return MGRStoLL(this, ellip, llpoint);
@@ -267,7 +270,7 @@ public class MGRSPoint extends UTMPoint {
     /**
      * Set the UTM parameters from a MGRS string.
      */
-    protected void decode(String mgrsString) 
+    protected void decode(String mgrsString)
         throws NumberFormatException {
 
         if (mgrsString == null || mgrsString.length() == 0) {
@@ -309,8 +312,8 @@ public class MGRSPoint extends UTMPoint {
             zone_letter >= 'Z' ||
             zone_letter == 'I' ||
             zone_letter == 'O') {
-            throw new NumberFormatException("MGRSPoint zone letter " + 
-                                            (char)zone_letter + " not handled: " + 
+            throw new NumberFormatException("MGRSPoint zone letter " +
+                                            (char)zone_letter + " not handled: " +
                                             mgrsString);
         }
 
@@ -321,36 +324,11 @@ public class MGRSPoint extends UTMPoint {
         float east100k = getEastingFromChar(hunK.charAt(0), set);
         float north100k = getNorthingFromChar(hunK.charAt(1), set);
 
-        // We have a bug where the northing may be 2000000 too low.  How 
-        // do we know when to roll over?  Every 18 degrees. Q - 3, S -
-        // 5, U - 5, W - 8
+        // We have a bug where the northing may be 2000000 too low.  How
+        // do we know when to roll over?
 
-        if ((zone_letter == 'Q' && north100k < 1700000) ||
-            (zone_letter >= 'R')) {
+        while (north100k < getMinNorthing(zone_letter)){
             north100k += 2000000;
-            if (DEBUG) Debug.output(" northing rolled over 18, adding 200k to " + north100k);
-        }
-
-        if ((zone_letter == 'S' && north100k < 3000000) ||
-            (zone_letter >= 'T')) {
-            north100k += 2000000;
-            if (DEBUG) Debug.output(" northing rolled over 36, adding 200k to " + north100k);
-        }
-
-        if ((zone_letter == 'U' && north100k < 5330000) ||
-            (zone_letter >= 'V')) {
-            north100k += 2000000;
-            if (DEBUG) Debug.output(" northing rolled over 54, adding 200k to " + north100k);
-        }
-
-        if (zone_letter >= 'X') {
-            north100k += 2000000;
-            if (DEBUG) Debug.output(" northing rolled over 72, adding 200k to " + north100k);       
-            if (north100k > 9500000) {
-                // There's a tiny sliver of space that does this...
-                north100k -= 2000000;
-                if (DEBUG) Debug.output(" - rolling back to " + north100k);
-            }
         }
 
         // calculate the char index for easting/northing separator
@@ -359,7 +337,7 @@ public class MGRSPoint extends UTMPoint {
         if (remainder%2 != 0) {
             throw new NumberFormatException("MGRSPoint has to have an even number \nof digits after the zone letter and two 100km letters - front \nhalf for easting meters, second half for \nnorthing meters" + mgrsString);
         }
-            
+
         int sep = remainder / 2;
 
         float sepEasting = 0f;
@@ -376,16 +354,16 @@ public class MGRSPoint extends UTMPoint {
             if (DEBUG) Debug.output(" parsed northing as " + sepNorthingString);
             sepNorthing = Float.parseFloat(sepNorthingString) * accuracyBonus;
         }
-        
+
         easting = sepEasting + east100k;
         northing = sepNorthing + north100k;
 
         if (DEBUG) {
-            Debug.output("Decoded " + mgrsString + 
-                         " as zone number: " + zone_number + 
-                         ", zone letter: " + zone_letter + 
+            Debug.output("Decoded " + mgrsString +
+                         " as zone number: " + zone_number +
+                         ", zone letter: " + zone_letter +
                          ", easting: " + easting +
-                         ", northing: " + northing      + 
+                         ", northing: " + northing      +
                          ", 100k: " + hunK);
         }
     }
@@ -405,43 +383,51 @@ public class MGRSPoint extends UTMPoint {
      * 10 meter, 3 - 100 meter, 2 - 1000 meter, 1 - 10,000 meter.
      */
     protected void resolve(int digitAccuracy) {
-        StringBuffer sb = 
-            new StringBuffer(zone_number + "" + (char)zone_letter + 
-                             get100kID(easting, northing, zone_number));
-        StringBuffer seasting = new StringBuffer(Integer.toString((int)easting));
-        StringBuffer snorthing = new StringBuffer(Integer.toString((int)northing));
+        if (zone_letter == 'Z') {
+            mgrs = "Latitude limit exceeded";
+        } else {
+            StringBuffer sb =
+                new StringBuffer(zone_number + "" + (char) zone_letter +
+                                 get100kID(easting, northing, zone_number));
+            StringBuffer seasting = new StringBuffer(Integer.toString( (int) easting));
+            StringBuffer snorthing = new StringBuffer(Integer.toString( (int)
+                                                                        northing));
 
-        if (DEBUG) {
-            Debug.output(" Resolving MGRS from easting: " + seasting + " derived from " + easting + ", and northing: " + snorthing + " derived from " + northing);
-        }
-        
-        while (digitAccuracy > seasting.length()) {
-            seasting.insert(0, '0');
-        }
+            if (DEBUG) {
+                Debug.output(" Resolving MGRS from easting: " + seasting +
+                             " derived from " + easting + ", and northing: " +
+                             snorthing + " derived from " + northing);
+            }
 
-        // We have to be careful here, the 100k values shouldn't be 
-        // used for calculating stuff here.
+            while (digitAccuracy + 1 > seasting.length()) {
+                seasting.insert(0, '0');
+            }
 
-        while (digitAccuracy > snorthing.length()) {
-            snorthing.insert(0, '0');
-        }
+            // We have to be careful here, the 100k values shouldn't be
+            // used for calculating stuff here.
 
-        while (snorthing.length() > 6) {
-            snorthing.deleteCharAt(0);
-        }
+            while (digitAccuracy + 1 > snorthing.length()) {
+                snorthing.insert(0, '0');
+            }
 
-        if (DEBUG) {
-            Debug.output(" -- modified easting: " + seasting + 
-                         " and northing: " + snorthing);
-        }
+            while (snorthing.length() > 6) {
+                snorthing.deleteCharAt(0);
+            }
 
-        try {
-            sb.append(seasting.substring(1, digitAccuracy + 1) + 
-                      snorthing.substring(1, digitAccuracy + 1));
-        
-            mgrs = sb.toString();
-        } catch (IndexOutOfBoundsException ioobe) {
-            mgrs = null;
+            if (DEBUG) {
+                Debug.output(" -- modified easting: " + seasting +
+                             " and northing: " + snorthing);
+            }
+
+            try {
+                sb.append(seasting.substring(1, digitAccuracy + 1) +
+                          snorthing.substring(1, digitAccuracy + 1));
+
+                mgrs = sb.toString();
+            }
+            catch (IndexOutOfBoundsException ioobe) {
+                mgrs = null;
+            }
         }
     }
 
@@ -526,13 +512,13 @@ public class MGRSPoint extends UTMPoint {
         }
 
         if (DEBUG) {
-            Debug.output("Easting value for " + (char)e + 
-                         " from set: " + set + ", col: " + curCol + 
+            Debug.output("Easting value for " + (char)e +
+                         " from set: " + set + ", col: " + curCol +
                          " is " + eastingValue);
         }
         return eastingValue;
     }
-    
+
     /**
      * Given the second letter from a two-letter MGRS 100k zone, and
      * given the MGRS table set for the zone number, figure out the
@@ -564,8 +550,8 @@ public class MGRSPoint extends UTMPoint {
         }
 
         if (DEBUG) {
-            Debug.output("Northing value for " + (char)n + 
-                         " from set: " + set + ", row: " + curRow + 
+            Debug.output("Northing value for " + (char)n +
+                         " from set: " + set + ", row: " + curRow +
                          " is " + northingValue);
         }
 
@@ -611,12 +597,12 @@ public class MGRSPoint extends UTMPoint {
             if (DEBUG) System.out.println("rolling over col, new value: " + (char)colInt);
         }
 
-        if (colInt == I || (colOrigin < I && colInt > I) || 
+        if (colInt == I || (colOrigin < I && colInt > I) ||
             ((colInt > I || colOrigin < I) && rollover)) {
             colInt++;
             if (DEBUG) System.out.println("skipping I in col, new value: " + (char)colInt);
         }
-        if (colInt == O || (colOrigin < O && colInt > O) || 
+        if (colInt == O || (colOrigin < O && colInt > O) ||
             ((colInt > O || colOrigin < O) && rollover)) {
             colInt++;
             if (DEBUG) System.out.println("skipping O in col, new value: " + (char)colInt);
@@ -639,13 +625,13 @@ public class MGRSPoint extends UTMPoint {
             rollover = false;
         }
 
-        if (rowInt == I || (rowOrigin < I && rowInt > I) || 
+        if (rowInt == I || (rowOrigin < I && rowInt > I) ||
             ((rowInt > I || rowOrigin < I) && rollover)) {
             rowInt++;
             if (DEBUG) System.out.println("skipping I in row, new value: " + (char)rowInt);
         }
 
-        if (rowInt == O || (rowOrigin < O && rowInt > O) || 
+        if (rowInt == O || (rowOrigin < O && rowInt > O) ||
             ((rowInt > O || rowOrigin < O) && rollover)) {
             rowInt++;
             if (DEBUG) System.out.println("skipping O in row, new value: " + (char)rowInt);
@@ -689,6 +675,211 @@ public class MGRSPoint extends UTMPoint {
         }
     }
 
+    /**
+     * The function getMinNorthing returns the minimum northing value
+     * of a MGRS zone.
+     *
+     * portted from Geotrans' c Lattitude_Band_Value strucure table.
+     * zoneLetter           : MGRS zone  (input)
+     */
+
+    protected float getMinNorthing(char zoneLetter)
+        throws NumberFormatException {
+        float northing ;
+        switch (zoneLetter){
+        case 'C':
+            northing = 1100000.0f;
+            break;
+        case 'D':
+            northing = 2000000.0f;
+            break;
+        case 'E':
+            northing = 2800000.0f;
+            break;
+        case 'F':
+            northing = 3700000.0f;
+            break;
+        case 'G':
+            northing = 4600000.0f;
+            break;
+        case 'H':
+            northing = 5500000.0f;
+            break;
+        case 'J':
+            northing = 6400000.0f;
+            break;
+        case 'K':
+            northing = 7300000.0f;
+            break;
+        case 'L':
+            northing = 8200000.0f;
+            break;
+        case 'M':
+            northing = 9100000.0f;
+            break;
+        case 'N':
+            northing = 0.0f;
+            break;
+        case 'P':
+            northing = 800000.0f;
+            break;
+        case 'Q':
+            northing = 1700000.0f;
+            break;
+        case 'R':
+            northing = 2600000.0f;
+            break;
+        case 'S':
+            northing = 3500000.0f;
+            break;
+        case 'T':
+            northing = 4400000.0f;
+            break;
+        case 'U':
+            northing = 5300000.0f;
+            break;
+        case 'V':
+            northing = 6200000.0f;
+            break;
+        case 'W':
+            northing = 7000000.0f;
+            break;
+        case 'X':
+            northing = 7900000.0f;
+            break;
+        default:
+            northing = -1.0f;
+        }
+        if (northing >= 0.0 ){
+            return northing;
+        }
+        else {
+            throw new NumberFormatException("Invalid zone letter: " + zone_letter);
+        }
+
+    }
+
+    private static void runTests(String fName, String inType) {
+
+        LineNumberReader lnr = null;
+        PrintStream pos = null;
+        String record = null;
+        StringBuffer outStr1 = new StringBuffer();
+        StringBuffer outStr2 = new StringBuffer();
+
+        try {
+
+            /*File inFile = new File(fName + ".dat");
+              File outFile = new File(fName + ".out");
+              FileInputStream fis = new FileInputStream(inFile);
+              FileOutputStream fos = new FileOutputStream(outFile);
+              BufferedInputStream bis = new BufferedInputStream(fis);*/
+            pos = new PrintStream(new FileOutputStream(new File(fName + ".out")));
+            lnr = new LineNumberReader(new InputStreamReader(new BufferedInputStream(new FileInputStream(new File(fName)))));
+
+            if (inType.equalsIgnoreCase("MGRS")) {
+                outStr1.append("MGRS to LatLonPoint\n\tMGRS\t\tLatitude   Longitude\n");
+                outStr2.append("MGRS to UTM\n\tMGRS\t\tZone Easting Northing\n");
+            }
+            else if (inType.equalsIgnoreCase("UTM")) {
+                outStr1.append("UTM to LatLonPoint\n\tUTM\t\tLatitude   Longitude\n");
+                outStr2.append("UTM to MGRS\n\tUTM\t\tMGRS\n");
+            }
+            else if (inType.equalsIgnoreCase("LatLon")) {
+                outStr1.append("LatLonPoint to UTM\nLatitude   Longitude\t\tZone Easting Northing     \n");
+                outStr2.append("LatLonPoint to MGRS\nLatitude   Longitude\t\tMGRS\n");
+            }
+
+            while ( (record = lnr.readLine()) != null) {
+                if (inType.equalsIgnoreCase("MGRS")) {
+                    try {
+                        MGRSPoint mgrsp = new MGRSPoint(record);
+                        record.trim();
+                        mgrsp.decode(record);
+
+                        outStr1.append(record + " is " + mgrsp.toLatLonPoint() + "\n");
+                        outStr2.append(record + " to UTM: " +
+                                       mgrsp.zone_number + " " +
+                                       mgrsp.easting + " " +
+                                       mgrsp.northing + "\n");
+                    }
+                    catch (NumberFormatException nfe) {
+                        Debug.error(nfe.getMessage());
+                    }
+
+                } else if (inType.equalsIgnoreCase("UTM")) {
+                    MGRSPoint mgrsp;
+                    UTMPoint utmp;
+                    float e, n;
+                    int z;
+                    char zl;
+                    String tmp;
+                    record.trim();
+                    tmp = record.substring(0, 2);
+                    z = Integer.parseInt(tmp);
+                    tmp = record.substring(5, 11);
+                    e = Float.parseFloat(tmp);
+                    tmp = record.substring(12, 19);
+                    n = Float.parseFloat(tmp);
+                    zl = record.charAt(3);
+                    utmp = new UTMPoint(n, e, z, zl);
+                    LatLonPoint llp = utmp.toLatLonPoint();
+                    mgrsp = LLtoMGRS(llp);
+                    outStr1.append(record + " is " + llp + " back to " + LLtoUTM(llp) + "\n");
+                    outStr2.append(record + " is " + mgrsp + "\n");
+                } else if (inType.equalsIgnoreCase("LatLon")) {
+                    MGRSPoint mgrsp;
+                    UTMPoint utmp;
+                    LatLonPoint llp;
+                    float lat, lon;
+                    int index;
+                    String tmp;
+                    record.trim();
+                    index = record.indexOf("\040");
+                    if (index < 0) {
+                        index = record.indexOf("\011");
+                    }
+                    tmp = record.substring(0, index);
+                    lat = Float.parseFloat(tmp);
+                    tmp = record.substring(index);
+                    lon = Float.parseFloat(tmp);
+                    llp = new LatLonPoint(lat, lon);
+                    utmp = LLtoUTM(llp);
+                    mgrsp = LLtoMGRS(llp);
+                    outStr1.append(record + " to UTM: " +
+                                   mgrsp.zone_number + " " +
+                                   mgrsp.easting + " " +
+                                   mgrsp.northing + "\n");
+                    outStr2.append(record + "    ->    " + mgrsp.mgrs + "\n");
+                }
+
+            }
+
+        } catch (IOException e) {
+            // catch io errors from FileInputStream or readLine()
+            System.out.println("IO error: " + e.getMessage());
+
+        } finally {
+            if (pos != null ){
+                pos.print(outStr1.toString());
+                pos.print("\n");
+                pos.print(outStr2.toString());
+                pos.close();
+            }
+            // if the file opened okay, make sure we close it
+            if (lnr != null) {
+                try {
+                    lnr.close();
+                }
+                catch (IOException ioe) {
+                }
+            }
+
+        }
+
+    }
+
+
     public static void main(String[] argv) {
         Debug.init();
 
@@ -697,6 +888,7 @@ public class MGRSPoint extends UTMPoint {
         ap.add("latlon", "Print MGRS for Latitude and Longitude values", 2, true);
         ap.add("sets", "Print the MGRS 100k table");
         ap.add("altsets", "Print the MGRS 100k table for the Bessel ellipsoid");
+        ap.add("rtc", "Run test case, with filename and input data type [MGRS | UTM | LatLon]", 2);
 
         if (!ap.parse(argv)) {
             ap.printUsage();
@@ -708,7 +900,7 @@ public class MGRSPoint extends UTMPoint {
         if (arg != null) {
             new MGRSPoint().print100kSets();
         }
-        
+
         arg = ap.getArgValues("altsets");
         if (arg != null) {
             MGRSPoint mgrsp = new MGRSPoint();
@@ -716,17 +908,17 @@ public class MGRSPoint extends UTMPoint {
             mgrsp.setOriginRowLetters(BESSEL_SET_ORIGIN_ROW_LETTERS);
             mgrsp.print100kSets();
         }
-        
+
         arg = ap.getArgValues("mgrs");
         if (arg != null) {
             try {
                 MGRSPoint mgrsp = new MGRSPoint(arg[0]);
-                Debug.output(arg[0] + " is " + mgrsp.toLatLonPoint());  
+                Debug.output(arg[0] + " is " + mgrsp.toLatLonPoint());
             } catch (NumberFormatException nfe) {
                 Debug.error(nfe.getMessage());
             }
         }
-        
+
         arg = ap.getArgValues("latlon");
         if (arg != null) {
             try {
@@ -736,6 +928,14 @@ public class MGRSPoint extends UTMPoint {
 
                 LatLonPoint llp = new LatLonPoint(lat, lon);
                 MGRSPoint mgrsp = LLtoMGRS(llp);
+                UTMPoint utmp = LLtoUTM(llp);
+
+                if (utmp.zone_letter == 'Z'){
+                    Debug.output(llp + "to UTM: latitude limit exceeded.");
+                }
+                else {
+                    Debug.output(llp + " is " + utmp);
+                }
 
                 Debug.output(llp + " is " + mgrsp);
 
@@ -744,6 +944,12 @@ public class MGRSPoint extends UTMPoint {
                             argv[1] + " aren't valid");
             }
         }
+
+        arg = ap.getArgValues("rtc");
+        if (arg != null) {
+            runTests(arg[0], arg[1]);
+        }
+
 
     }
 }

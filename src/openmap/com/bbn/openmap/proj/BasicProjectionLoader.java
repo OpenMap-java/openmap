@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/BasicProjectionLoader.java,v $
 // $RCSfile: BasicProjectionLoader.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/05/15 02:21:47 $
+// $Revision: 1.2 $
+// $Date: 2004/09/17 18:26:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -128,17 +128,23 @@ public abstract class BasicProjectionLoader extends OMComponent
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
 
-        String internString = i18n.get(ProjectionLoader.class, 
-                                       PrettyNameProperty, I18n.TOOLTIP,
-                                       "Presentable name for Projection");
+        String internString = i18n.get(BasicProjectionLoader.class, PrettyNameProperty, 
+                                      "Projection Name");
         props.put(PrettyNameProperty + LabelEditorProperty, internString);
-        props.put(PrettyNameProperty, prettyName);
+
+        internString = i18n.get(BasicProjectionLoader.class, 
+                                PrettyNameProperty, I18n.TOOLTIP,
+                                "Presentable name for Projection");
+        props.put(PrettyNameProperty, internString);
+
+        internString = i18n.get(BasicProjectionLoader.class, DescriptionProperty, 
+                               "Projection Description");
+        props.put(DescriptionProperty + LabelEditorProperty, internString);
 
         internString = i18n.get(ProjectionLoader.class, 
                                 DescriptionProperty, I18n.TOOLTIP,
                                 "Presentable description name for Projection");
-        props.put(DescriptionProperty + LabelEditorProperty, internString);
-        props.put(DescriptionProperty, description);
+        props.put(DescriptionProperty, internString);
 
         props.put(initPropertiesProperty, PrettyNameProperty + " " + DescriptionProperty);
 
