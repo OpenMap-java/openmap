@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/WebBrowser.java,v $
 // $RCSfile: WebBrowser.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/08 18:56:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -68,8 +68,10 @@ public class WebBrowser {
 	File tmpFile = null;
 
 	try {
-	    tmpFile = File.createTempFile(Environment.OpenMapPrefix, ".tmp", 
-					  new File(Environment.get(Environment.TmpDir)));
+	    tmpFile = File.createTempFile(
+		Environment.OpenMapPrefix, ".html", 
+		new File(Environment.get(Environment.TmpDir)));
+
 	    tmpFile.deleteOnExit(); // get rid of it when the user quits.
 
 	    FileOutputStream fs = new FileOutputStream(tmpFile);
@@ -99,7 +101,6 @@ public class WebBrowser {
      * @param url URL to go
      */
     protected void sendTo(String url) {
-
 
 	if (!oldWay) {
 	    try {
