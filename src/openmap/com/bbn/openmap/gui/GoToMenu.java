@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/09/22 23:20:42 $
+// $Revision: 1.7 $
+// $Date: 2003/10/08 21:31:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,6 +53,37 @@ import com.bbn.openmap.layer.util.LayerUtils;
  * to those views.  There is a set of optional default views, but new
  * views can be added.  If these views are added to the properties
  * file, they will be added to the menu automatically for later uses.
+ * This menu can understand a set of properties: <pre>
+ *
+ * gotoMenu.class=com.bbn.openmap.gui.GoToMenu
+ * #Add the default, world view option
+ * gotoMenu.addDefaults=true
+ * #Add the menu for DataBoundsProviders
+ * gotoMenu.addDataViews=true
+ * #Additional views
+ * goto.views=Argentina India United_States Caspian_Sea
+ * Argentina.latitude=-39.760445
+ * Argentina.longitude=-65.92294
+ * Argentina.name=Argentina
+ * Argentina.projection=Mercator
+ * Argentina.scale=5.0E7
+ * India.latitude=20.895763
+ * India.longitude=80.437485
+ * India.name=India
+ * India.projection=Mercator
+ * India.scale=3.86688E7
+ * United_States.latitude=38.82259
+ * United_States.longitude=-96.74999
+ * United_States.name=United States
+ * United_States.projection=Mercator
+ * United_States.scale=5.186114E7
+ * Caspian_Sea.name=Caspian Sea
+ * Caspian_Sea.latitude=40f
+ * Caspian_Sea.longitude=47f
+ * Caspian_Sea.scale=1000000
+ * Caspian_Sea.projection=CADRG
+ *
+ * </pre>
  */
 public class GoToMenu extends AbstractOpenMapMenu {
 
@@ -76,7 +107,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
     public final static String LonProperty = "longitude";
     /** The scale of the view projection. */
     public final static String ScaleProperty = "scale";
-    /** The projection type the view projection. */
+    /** The projection type of the view projection. */
     public final static String ProjectionTypeProperty = "projection";
     /** Flag to use to add default views (World, each continent. */
     public final static String AddDefaultListProperty = "addDefaults";

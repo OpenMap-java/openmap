@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMGraphicDeleteTool.java,v $
 // $RCSfile: OMGraphicDeleteTool.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/08 16:27:19 $
+// $Revision: 1.4 $
+// $Date: 2003/10/08 21:31:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 
 package com.bbn.openmap.gui;
 
+import com.bbn.openmap.MapBean;
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.omGraphics.event.*;
@@ -35,6 +36,8 @@ import java.beans.beancontext.*;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Iterator;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -57,7 +60,7 @@ import javax.swing.*;
  * the openmap.components property in the openmap.properties file.
  */
 public class OMGraphicDeleteTool extends OMToolComponent
-    implements SelectionListener, ActionListener {
+    implements SelectionListener, ActionListener, KeyListener {
 
     protected JButton deleteButton = null;
     protected String defaultKey = "omgraphicdeletetool";
@@ -94,9 +97,20 @@ public class OMGraphicDeleteTool extends OMToolComponent
 	add(jToolBar);
     }
 
+    public void keyPressed(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+	if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+	    deleteSelected();
+	}
+    }
+    public void keyTyped(KeyEvent e) {}
+
     public void actionPerformed(ActionEvent ae) {
 	Debug.message("deletebutton", "OMGDT.actionPerformed()");
+	deleteSelected();
+    }
 
+    public void deleteSelected() {
 	Iterator it = deleteList.values().iterator();
 
 	while (it.hasNext()) {
@@ -164,6 +178,10 @@ public class OMGraphicDeleteTool extends OMToolComponent
 	    // just ignore the request.
 	    requestors.add((DrawingToolRequestor)obj);
 	}
+
+	if (obj instanceof MapBean) {
+ 	    ((MapBean)obj).addKeyListener(this);
+	}
     }
 
     public void findAndUndo(Object obj) {
@@ -173,6 +191,10 @@ public class OMGraphicDeleteTool extends OMToolComponent
 
 	if (obj instanceof DrawingToolRequestor) {
 	    requestors.remove((DrawingToolRequestor)obj);
+	}
+
+	if (obj instanceof MapBean) {
+ 	    ((MapBean)obj).removeKeyListener(this);
 	}
     }
 
