@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/GestureResponsePolicy.java,v $
 // $RCSfile: GestureResponsePolicy.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/05/10 20:48:08 $
+// $Revision: 1.9 $
+// $Date: 2004/09/17 19:19:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -148,8 +148,9 @@ public interface GestureResponsePolicy {
      * @param mme a MapMouseEvent describing the location over where
      * the menu items should apply, in case different options are
      * appropriate for different places.
-     * @return a JMenu for the map.  Return null or empty List if
-     * no input required.
+     * @return a List containing java.awt.Component options over the
+     * provided place on the map.  Return null or empty List if no
+     * input required.
      */
     public List getItemsForMapMenu(MapMouseEvent mme);
 
@@ -157,8 +158,9 @@ public interface GestureResponsePolicy {
      * Return a java.util.List containing input for a JMenu with
      * contents applicable to a popup menu for a location over an
      * OMGraphic.
-     * @return a List containing options for the given OMGraphic.
-     * Return null or empty list if there are no options.
+     * @return a List containing java.awt.Component options for the
+     * given OMGraphic.  Return null or empty list if there are no
+     * options.
      */
     public List getItemsForOMGraphicMenu(OMGraphic omg);
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/05/10 20:48:08 $
+// $Revision: 1.13 $
+// $Date: 2004/09/17 19:19:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -184,7 +184,8 @@ public class StandardMapMouseInterpreter
             // as in me.getButton, shouldn't make a difference.
             if (SwingUtilities.isLeftMouseButton(me)) {
                 return 0;
-            } else if (SwingUtilities.isRightMouseButton(me)) {
+            } else if (SwingUtilities.isRightMouseButton(me) || 
+                       me.isControlDown()) {
                 return 1;
             } else {
                 return 2;
@@ -604,6 +605,7 @@ public class StandardMapMouseInterpreter
     /**
      * Notification that the user clicked on something else other than
      * the provided OMGraphic that was previously left-clicked on.
+     * Calls deselect(omg).
      * @return false
      */
     public boolean leftClickOff(OMGraphic omg, MouseEvent me) {
@@ -611,6 +613,8 @@ public class StandardMapMouseInterpreter
             Debug.output("leftClickOff(" + omg.getClass().getName() + ") at " + 
                          me.getX() + ", " + me.getY());
         }
+
+        deselect(omg);
 
         return false;
     }
@@ -657,7 +661,10 @@ public class StandardMapMouseInterpreter
             JPopupMenu jpm = new JPopupMenu();
             Iterator it = contents.iterator();
             while (it.hasNext()) {
-                jpm.add((java.awt.Component)it.next());
+                Object obj = it.next();
+                if (obj instanceof java.awt.Component) {
+                    jpm.add((java.awt.Component)obj);
+                }
             }
             jpm.show((java.awt.Component)me.getSource(), me.getX(), me.getY());
             return true;
