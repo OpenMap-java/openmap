@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/10/03 22:18:41 $
+// $Revision: 1.9 $
+// $Date: 2003/10/16 14:11:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -657,7 +657,10 @@ public class DrawingAttributes
 	// potentially harms other parameters, like renderType.
 	stroke = graphic.getStroke();
 
-	resetGUI();
+	// Don't want to call this here, it is CPU intensive.
+	// resetGUI should be called only when the GUI needs to be
+	// updated.
+// 	resetGUI();
 
 	if (propertyChangeSupport != null) {
 	    propertyChangeSupport.firePropertyChange("all", true, true);
