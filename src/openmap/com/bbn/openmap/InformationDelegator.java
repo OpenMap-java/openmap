@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/18 00:41:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -393,7 +393,7 @@ public class InformationDelegator extends OMComponentPanel
      * indicate that the tooltip should no longer be displayed. This
      * method should always follow a call to <code>showToolTip</code?
      *
-     * n@param me A MouseEvent which passes from a MapMouseListener to
+     * @param me A MouseEvent which passes from a MapMouseListener to
      * indicate that a tooltip should disappear 
      */
     public void requestHideToolTip(MouseEvent me) { 
