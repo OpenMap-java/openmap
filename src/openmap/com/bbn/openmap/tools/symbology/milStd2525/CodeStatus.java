@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeStatus.java,v $
 // $RCSfile: CodeStatus.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/08 18:37:51 $
+// $Revision: 1.2 $
+// $Date: 2003/12/11 08:31:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,16 +28,13 @@ import java.util.List;
 
 public class CodeStatus extends CodePosition {
 
-    protected final static int position = 4;
-    protected final static int length = 1;
-
     public final static CodeStatus ANTICIPATED_PLANNED = 
-	new CodeStatus('A', "ANTICIPATED/PlANNED");
+	new CodeStatus('A', "ANTICIPATED/PLANNED");
     public final static CodeStatus PRESENT = 
 	new CodeStatus('P', "PRESENT");
 
     protected CodeStatus(char idChar, String name) {
-	super(0, idChar, name);
+	super(0, idChar, name, 4, 4, null);
     }
 
     public static List getList() {
@@ -51,15 +48,4 @@ public class CodeStatus extends CodePosition {
 	return list;
     }
 
-    public int getPosition() {
-	return position;
-    }
-
-    public int getLength() {
-	return length;
-    }
-
-    public Class getNextPosition() {
-	return null;
-    }
 }

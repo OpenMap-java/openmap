@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeOrderOfBattle.java,v $
 // $RCSfile: CodeOrderOfBattle.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/08 18:37:51 $
+// $Revision: 1.2 $
+// $Date: 2003/12/11 08:31:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,10 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CodeOrderOfBattle extends CodePosition {
-
-    public final static int position = 15;
-    public final static int length = 1;
-    protected final static Class nextPosition = null;
 
     public final static CodeOrderOfBattle AIR_OB = 
 	new CodeOrderOfBattle('A', "AIR OB");
@@ -48,7 +44,7 @@ public class CodeOrderOfBattle extends CodePosition {
 	new CodeOrderOfBattle('X', "CONTROL MARKINGS");
 
     protected CodeOrderOfBattle(char idChar, String name) {
-	super(0, idChar, name);
+	super(0, idChar, name, 15, 15, null);
     }
 
     public static List getList() {
@@ -64,18 +60,6 @@ public class CodeOrderOfBattle extends CodePosition {
 	    positions.put(CodeOrderOfBattle.class, list);
 	}
 	return list;
-    }
-
-    public int getPosition() {
-	return position;
-    }
-
-    public int getLength() {
-	return length;
-    }
-
-    public Class getNextPosition() {
-	return nextPosition;
     }
 
 }

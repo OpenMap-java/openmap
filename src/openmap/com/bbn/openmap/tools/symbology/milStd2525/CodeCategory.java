@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeCategory.java,v $
 // $RCSfile: CodeCategory.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/08 18:37:51 $
+// $Revision: 1.2 $
+// $Date: 2003/12/11 08:31:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,9 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CodeCategory extends CodePosition {
-
-    public final static int position = 3;
-    public final static int length = 1;
 
     public final static CodeCategory TASKS = 
 	new CodeCategory(1, 'T', "TASKS");
@@ -45,7 +42,7 @@ public class CodeCategory extends CodePosition {
 	new CodeCategory(6, 'O', "OTHER");
 
     protected CodeCategory(int heirarchyLevelNumber, char idChar, String name) {
-	super(heirarchyLevelNumber, idChar, name);
+	super(heirarchyLevelNumber, idChar, name, 3, 3, null);
     }
 
     public static List createList() {
@@ -59,15 +56,4 @@ public class CodeCategory extends CodePosition {
 	return list;
     }
 
-    public int getPosition() {
-	return position;
-    }
-
-    public int getLength() {
-	return length;
-    }
-
-    public Class getNextPosition() {
-	return null;
-    }
 }

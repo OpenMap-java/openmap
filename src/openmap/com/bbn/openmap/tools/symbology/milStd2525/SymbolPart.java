@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolPart.java,v $
 // $RCSfile: SymbolPart.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/08 18:37:51 $
+// $Revision: 1.2 $
+// $Date: 2003/12/11 08:31:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,23 +28,59 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
+import com.bbn.openmap.dataAccess.cgm.CGM;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 public class SymbolPart {
 
+    /** Property file property for pretty name 'name' */
     public final static String NameProperty = "name";
-    public final static String IconFileProperty = "iconFile";
+    /** Property file property for cgm file too represent the symbol. */
+    public final static String CGMProperty = "cgm";
 
+    /**
+     * The Object that describes the location of this symbol part in
+     * the symbol heirarchy as defined by the 15 digit symbol code.
+     */
     protected CodePosition codePosition;
-    protected char code;
+    /**
+     * The part of the symbol code unique to this symbol part.
+     * Parents and children will make up the other parts of the code.
+     */
+    protected String code;
+    /**
+     * The pretty name for a symbol represented by this SymbolPart at
+     * this point in the heirarchy.
+     */
     protected String prettyName;
-//     protected CGM symbolPart;
+    /**
+     * The file containing the symbol geometry for this SymbolPart.
+     */
+    protected String cgmName;
+    /**
+     * The symbol geometery object for this SymbolPart.
+     */
+    protected CGM cgm;
+    /**
+     * A list of children SymbolParts relative to this one.
+     */
     protected List subs;
+    /**
+     * The parent SymbolPart to this one.
+     */
     protected SymbolPart parent;
+    /** 
+     * Some positions need to shift for entries that don't follow the
+     * conventions on the specification.
+     */
+    protected int positionShift = 0;
 
     protected static boolean DEBUG = false;
 
+    public final char UNUSED = '-';
+    public final char WILD = '*';
+    
     /**
      * A special constructor for the head.
      */
@@ -81,25 +117,45 @@ public class SymbolPart {
 
     public SymbolPart(CodePosition codePosition, String symbolCode,
 		      Properties props, SymbolPart parent) {
-	int pos = codePosition.getPosition();
- 	this.code = symbolCode.charAt(pos - 1); // off by 1
-	this.prettyName = props.getProperty(symbolCode + "." + NameProperty);
-	this.parent = parent;
+	int start = codePosition.getStartIndex();
+	int end = codePosition.getEndIndex();
+ 	this.code = symbolCode.substring(start, end);
 	this.codePosition = codePosition;
 
-	if (DEBUG) {
-	    Debug.output("SymbolPart(): read " + pos +
+	boolean debug = DEBUG;
+
+	// This corrects the situation where the symbol code is
+	// shorter in the specification than it would seem
+	// appropriate for its place in the heirarchy.
+	while (code.charAt(0) == UNUSED && start > 1) {
+	    code = symbolCode.substring(--start, end);
+	    this.positionShift--;
+	}
+
+	this.prettyName = props.getProperty(symbolCode + "." + NameProperty);
+	this.cgmName = props.getProperty(symbolCode + "." + CGMProperty);
+	this.parent = parent;
+
+	String sc = getSymbolCode();
+
+	if (!symbolCode.equals(sc)) {
+	    debug = true;
+	}
+
+	if (debug) {
+	    Debug.output("SymbolPart(): read " + start +
 			 " of [" + symbolCode + 
-			 "] as [" + getSymbolCode() +
-			 "] : " + this.prettyName);
+			 "] as [" + sc +
+			 "] : " + this.prettyName + 
+			 " (" + code + ")");
 	}
     }
 
-    public void setCode(char c) {
+    public void setCode(String c) {
 	code = c;
     }
 
-    public char getCode() {
+    public String getCode() {
 	return code;
     }
    
@@ -194,8 +250,14 @@ public class SymbolPart {
 	    symbolCode = new StringBuffer("---------------");
 	}
 
+
 	if (codePosition != null) {
-	    symbolCode.setCharAt(codePosition.getPosition() - 1, code);
+	    int key = codePosition.getStartIndex() + positionShift;
+// 	    char sChar = symbolCode.charAt(key);
+
+	    symbolCode = symbolCode.replace(key, codePosition.getEndIndex(), code);
+
+// 	    symbolCode.setCharAt(key, code);
 	}
 
 	return symbolCode;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePosition.java,v $
 // $RCSfile: CodePosition.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/08 18:37:51 $
+// $Revision: 1.2 $
+// $Date: 2003/12/11 08:31:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,21 +32,26 @@ import java.util.Properties;
 
 import com.bbn.openmap.util.Debug;
 
-public abstract class CodePosition {
+public class CodePosition {
 
     protected int heirarchyNumber;
     protected char id;
     protected String prettyName;
-  
+    protected int startIndex;
+    protected int endIndex;
+    protected Class nextPosition = null;
+
     public static boolean DEBUG = false;
 
     protected static Hashtable positions = new Hashtable();
 
-    protected CodePosition() {
-	DEBUG = Debug.debugging("codeposition");
-    }
+    protected CodePosition(int heirarchyLevelNumber, char idChar, String name, 
+			   int start, int end, Class np) {
 
-    protected CodePosition(int heirarchyLevelNumber, char idChar, String name) {
+	DEBUG = Debug.debugging("codeposition");
+	startIndex = start - 1;
+	endIndex = end;
+	nextPosition = np;
 	heirarchyNumber = heirarchyLevelNumber;
 	id = idChar;
 	prettyName = name;
@@ -141,10 +146,16 @@ public abstract class CodePosition {
 	return prettyName;
     }
 
-    public abstract int getPosition();
+    public int getStartIndex() {
+	return startIndex;
+    }
 
-    public abstract int getLength();
+    public int getEndIndex() {
+	return endIndex;
+    }
 
-    public abstract Class getNextPosition();
+    public Class getNextPosition() {
+	return nextPosition;
+    }
 
 }

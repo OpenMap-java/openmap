@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeAffiliation.java,v $
 // $RCSfile: CodeAffiliation.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/08 18:37:51 $
+// $Revision: 1.2 $
+// $Date: 2003/12/11 08:31:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,9 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CodeAffiliation extends CodePosition {
-
-    protected final static int position = 2;
-    protected final static int length = 1;
 
     public final static CodeAffiliation PENDING = new CodeAffiliation('P', "PENDING");
     public final static CodeAffiliation UNKNOWN = new CodeAffiliation('U', "UNKNOWN");
@@ -43,7 +40,7 @@ public class CodeAffiliation extends CodePosition {
     public final static CodeAffiliation NONE_SPECIFIED = new CodeAffiliation('O', "NONE SPECIFIED");
 
     protected CodeAffiliation(char idChar, String name) {
-	super(0, idChar, name);
+	super(0, idChar, name, 2, 2, null);
     }
 
     public static List getList() {
@@ -65,15 +62,4 @@ public class CodeAffiliation extends CodePosition {
 	return list;
     }
 
-    public int getPosition() {
-	return position;
-    }
-
-    public int getLength() {
-	return length;
-    }
-
-    public Class getNextPosition() {
-	return null;
-    }
 }

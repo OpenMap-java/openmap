@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeScheme.java,v $
 // $RCSfile: CodeScheme.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/08 18:37:51 $
+// $Revision: 1.2 $
+// $Date: 2003/12/11 08:31:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,9 +33,6 @@ import com.bbn.openmap.util.Debug;
 
 public class CodeScheme extends CodePosition {
 
-    protected final static int position = 1;
-    protected final static int length = 1;
-    protected Class nextPosition;
     protected String defaultSymbolCode;
 
     public final static CodeScheme WARFIGHTING = 
@@ -70,8 +67,7 @@ public class CodeScheme extends CodePosition {
 			 char heirarchyLevelChar, String name,
 			 Class nextCodePosition,
 			 String defaultSymbolCode) {
-	super(heirarchyLevelNumber, heirarchyLevelChar, name);
-	nextPosition = nextCodePosition;
+	super(heirarchyLevelNumber, heirarchyLevelChar, name, 1, 1, nextCodePosition);
 	this.defaultSymbolCode = defaultSymbolCode;
     }
 
@@ -181,18 +177,6 @@ public class CodeScheme extends CodePosition {
 	}
 
 	return nextLevelList;
-    }
-
-    public int getPosition() {
-	return position;
-    }
-
-    public int getLength() {
-	return length;
-    }
-
-    public Class getNextPosition() {
- 	return nextPosition;
     }
 
     public StringBuffer getDefaultSymbolCode() {

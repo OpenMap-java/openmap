@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeFunctionID.java,v $
 // $RCSfile: CodeFunctionID.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/08 18:37:51 $
+// $Revision: 1.2 $
+// $Date: 2003/12/11 08:31:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,16 +31,18 @@ import com.bbn.openmap.util.Debug;
 
 public class CodeFunctionID extends CodePosition {
 
-    public int position = 5;
-    public final static int length = 1;
-    public Class nextPosition = CodeFunctionID.class;
-
     protected CodeFunctionID() {
-	// Position == 5
+	// Code function IDs are not kept around, they are just used
+	// to create the SymbolPart Structure.  The first three
+	// arguments in the super call are meaningless.
+	this(5);
     }
 
     protected CodeFunctionID(int pos) {
-	position = pos;
+	// Code function IDs are not kept around, they are just used
+	// to create the SymbolPart Structure.  The first three
+	// arguments in the super call are meaningless.
+	super(0, ' ', null, pos, 10, CodeFunctionID.class);
     }
 
     protected void parse(String hCode, Properties props, SymbolPart parent) {
@@ -48,13 +50,16 @@ public class CodeFunctionID extends CodePosition {
 	List parentList = null;
 	int subLevelNumber = 1;
 
-	int pos = getPosition();
+	int pos = getStartIndex() + parent.positionShift;
+	if (pos < 4) pos = 4;
 
 	if (pos == 10) {
 	    return;
 	}
 
-	CodeFunctionID cp = new CodeFunctionID(pos + 1);
+	// startIndex is one less that originally specified, need to
+	// add an extra 1 to the new position of counteract that.
+	CodeFunctionID cp = new CodeFunctionID(pos + 2);  
 
 	while (subLevelNumber > 0) {
 	    String hCode2 = hCode + "." + subLevelNumber;
@@ -77,7 +82,9 @@ public class CodeFunctionID extends CodePosition {
 		}
 
 		if (DEBUG) {
-		    Debug.output("CodeFunctionID.parse: adding " + sp.getPrettyName() + " to " + parent.getPrettyName());
+		    Debug.output("CodeFunctionID.parse: adding " + 
+				 sp.getPrettyName() + 
+				 " to " + parent.getPrettyName());
 		}
 
 		parentList.add(sp);
@@ -96,15 +103,4 @@ public class CodeFunctionID extends CodePosition {
 	}
     }
 
-    public int getPosition() {
-	return position;
-    }
-
-    public int getLength() {
-	return length;
-    }
-
-    public Class getNextPosition() {
-	return nextPosition;
-    }
 }

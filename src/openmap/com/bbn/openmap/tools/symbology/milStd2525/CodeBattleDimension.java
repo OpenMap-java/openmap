@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeBattleDimension.java,v $
 // $RCSfile: CodeBattleDimension.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/08 18:37:51 $
+// $Revision: 1.2 $
+// $Date: 2003/12/11 08:31:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,9 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CodeBattleDimension extends CodePosition {
-
-    protected final static int position = 3;
-    protected final static int length = 1;
 
     public final static CodeBattleDimension SPACE = 
 	new CodeBattleDimension(1, 'P', "SPACE");
@@ -47,7 +44,7 @@ public class CodeBattleDimension extends CodePosition {
 	new CodeBattleDimension(0, 'X', "OTHER (No frame)");
 
     protected CodeBattleDimension(int heirarchyLevelNumber, char idChar, String name) {
-	super(heirarchyLevelNumber, idChar, name);
+	super(heirarchyLevelNumber, idChar, name, 3, 3, null);
     }
 
     public static List getList() {
@@ -64,18 +61,6 @@ public class CodeBattleDimension extends CodePosition {
 	    positions.put(CodeMETOCCategory.class, list);
 	}
 	return list;
-    }
-
-    public int getPosition() {
-	return position;
-    }
-
-    public int getLength() {
-	return length;
-    }
-
-    public Class getNextPosition() {
-	return null;
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeMOOTWCategory.java,v $
 // $RCSfile: CodeMOOTWCategory.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/08 18:37:51 $
+// $Revision: 1.2 $
+// $Date: 2003/12/11 08:31:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,10 +28,6 @@ import java.util.List;
 
 public class CodeMOOTWCategory extends CodePosition {
 
-    protected final static int position = 3;
-    protected final static int length = 1;
-    protected final static Class nextPosition = CodeFunctionID.class;
-
     public final static CodeMOOTWCategory VIOLENT_ACTIVITIES = 
 	new CodeMOOTWCategory(1, 'V', "VIOLENT ACTIVITIES");
     public final static CodeMOOTWCategory LOCATIONS = 
@@ -42,7 +38,7 @@ public class CodeMOOTWCategory extends CodePosition {
 	new CodeMOOTWCategory(4, 'I', "ITEMS");
 
     protected CodeMOOTWCategory(int heirarchyLevelNumber, char idChar, String name) {
-	super(heirarchyLevelNumber, idChar, name);
+	super(heirarchyLevelNumber, idChar, name, 3, 3, CodeFunctionID.class);
     }
 
     public static List getList() {
@@ -56,18 +52,6 @@ public class CodeMOOTWCategory extends CodePosition {
 	    positions.put(CodeMOOTWCategory.class, list);
 	}
 	return list;
-    }
-
-    public int getPosition() {
-	return position;
-    }
-
-    public int getLength() {
-	return length;
-    }
-
-    public Class getNextPosition() {
-	return nextPosition;
     }
 
 }
