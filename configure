@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.7 
+# From configure.in OpenMap Revision: 1.8 
 ac_extraJavaPath=/usr/local/java/bin:/usr/local/jdk/bin
 
 
@@ -692,7 +692,7 @@ case $with_swing in
     # comment
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   for entry in $ac_swing_path; do
-    if basename $entry | grep -q "swing.*\.jar"; then
+    if basename $entry | grep "swing.*\.jar" 2>&1 >/dev/null; then
       ac_swing_jar=$entry
       break
     fi
@@ -704,7 +704,7 @@ case $with_swing in
     # comment
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   for entry in $ac_swing_path; do
-    if basename $entry | grep -q $with_swing; then
+    if basename $entry | grep $with_swing 2>&1 >/dev/null; then
       ac_swing_jar=$entry
       break
     fi

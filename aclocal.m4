@@ -159,7 +159,7 @@ dnl $ac_dummy forces splitting on constant user-supplied paths.
 dnl bash word splitting is done only on the output of word expansions,
 dnl not every word.  This closes a longstanding sh security hole.
   for entry in $3; do
-    if basename $entry | grep -q $2; then
+    if basename $entry | grep $2 2>&1 >/dev/null; then
       $1=$entry
       break
     fi
