@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCoverage.java,v $
 // $RCSfile: RpfCoverage.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.5 $
+// $Date: 2004/05/11 23:21:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,7 +36,6 @@ import java.net.URL;
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.io.*;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -88,46 +87,67 @@ public class RpfCoverage implements ActionListener, RpfConstants, PropertyConsum
     protected String propertyPrefix = null;
 
     /** Flag to tell the cache to return the coverage for city graphics. */
-    protected boolean showCG;
+    protected boolean showCG = true;
     /** Flag to tell the cache to return the coverage for tlm. */
-    protected boolean showTLM;
+    protected boolean showTLM = true;
     /** Flag to tell the cache to return the coverage for jog. */
-    protected boolean showJOG;
+    protected boolean showJOG = true;
     /** Flag to tell the cache to return the coverage for jog. */
-    protected boolean showTPC;
+    protected boolean showTPC = true;
     /** Flag to tell the cache to return the coverage for jog. */
-    protected boolean showONC;
+    protected boolean showONC = true;
     /** Flag to tell the cache to return the coverage for jog. */
-    protected boolean showJNC;
+    protected boolean showJNC = true;
     /** Flag to tell the cache to return the coverage for jog. */
-    protected boolean showGNC;
+    protected boolean showGNC = true;
     /** Flag to tell the cache to return the coverage for 10M CIB. */
-    protected boolean showCIB10;
+    protected boolean showCIB10 = true;
     /** Flag to tell the cache to return the coverage for 5M CIB. */
-    protected boolean showCIB5;
+    protected boolean showCIB5 = true;
     /** Flag to tell the cache to return the coverage for others. */
-    protected boolean showMISC;
+    protected boolean showMISC = true;
+
+    /** The default color int value.  */
+    public final static int defaultCGColorInt = 0xAC4853; 
+    /** The default color int value.  */
+    public final static int defaultTLMColorInt = 0xCE4F3F;
+    /** The default color int value.  */
+    public final static int defaultJOGColorInt = 0xAC7D74;
+    /** The default color int value.  */
+    public final static int defaultTPCColorInt = 0xACCD10;
+    /** The default color int value.  */
+    public final static int defaultONCColorInt = 0xFCCDE5;
+    /** The default color int value.  */
+    public final static int defaultJNCColorInt = 0x7386E5;
+    /** The default color int value.  */
+    public final static int defaultGNCColorInt = 0x55866B;
+    /** The default color int value.  */
+    public final static int defaultCIB10ColorInt = 0x07516B;
+    /** The default color int value.  */
+    public final static int defaultCIB5ColorInt = 0x071CE0;
+    /** The default color int value.  */
+    public final static int defaultMISCColorInt = 0xF2C921;
 
     /** The color to outline the shapes. */
-    protected Color CGColor;
+    protected Color CGColor = new Color(defaultCGColorInt);
     /** The color to outline the shapes. */
-    protected Color TLMColor;
+    protected Color TLMColor = new Color(defaultTLMColorInt);
     /** The color to outline the shapes. */
-    protected Color JOGColor;
+    protected Color JOGColor = new Color(defaultJOGColorInt);
     /** The color to outline the shapes. */
-    protected Color TPCColor;
+    protected Color TPCColor = new Color(defaultTPCColorInt);
     /** The color to outline the shapes. */
-    protected Color ONCColor;
+    protected Color ONCColor = new Color(defaultONCColorInt);
     /** The color to outline the shapes. */
-    protected Color JNCColor;
+    protected Color JNCColor = new Color(defaultJNCColorInt);
     /** The color to outline the shapes. */
-    protected Color GNCColor;
+    protected Color GNCColor = new Color(defaultGNCColorInt);
     /** The color to outline the shapes. */
-    protected Color CIB10Color;
+    protected Color CIB10Color = new Color(defaultCIB10ColorInt);
     /** The color to outline the shapes. */
-    protected Color CIB5Color;
+    protected Color CIB5Color = new Color(defaultCIB5ColorInt);
     /** The color to outline the shapes. */
-    protected Color MISCColor;
+    protected Color MISCColor = new Color(defaultMISCColorInt);
 
     /** A setting for how transparent to make the images.  The default
      * is 255, which is totally opaque.  Not used right now.
@@ -217,59 +237,39 @@ public class RpfCoverage implements ActionListener, RpfConstants, PropertyConsum
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
                 
-        fillRects = LayerUtils.booleanFromProperties(properties,
+        fillRects = PropUtils.booleanFromProperties(properties,
                                                      prefix + FillProperty,
                                                      true);
 
-        opaqueness = LayerUtils.intFromProperties(properties,
+        opaqueness = PropUtils.intFromProperties(properties,
                                                   prefix + OpaquenessProperty,
                                                   RpfColortable.DEFAULT_OPAQUENESS);
         
-        CGColor = LayerUtils.parseColorFromProperties(properties, 
-                                                      prefix + CGColorProperty, 
-                                                      RpfCoverageManager.defaultCGColorString);
-        TLMColor = LayerUtils.parseColorFromProperties(properties, 
-                                                       prefix + TLMColorProperty, 
-                                                       RpfCoverageManager.defaultTLMColorString);
-        JOGColor = LayerUtils.parseColorFromProperties(properties, 
-                                                       prefix + JOGColorProperty, 
-                                                       RpfCoverageManager.defaultJOGColorString);
-        TPCColor = LayerUtils.parseColorFromProperties(properties, 
-                                                       prefix + TPCColorProperty, 
-                                                       RpfCoverageManager.defaultTPCColorString);
-        ONCColor = LayerUtils.parseColorFromProperties(properties, 
-                                                       prefix + ONCColorProperty, 
-                                                       RpfCoverageManager.defaultONCColorString);
-        JNCColor = LayerUtils.parseColorFromProperties(properties, 
-                                                       prefix + JNCColorProperty, 
-                                                       RpfCoverageManager.defaultJNCColorString);
-        GNCColor = LayerUtils.parseColorFromProperties(properties, 
-                                                       prefix + GNCColorProperty, 
-                                                       RpfCoverageManager.defaultGNCColorString);
-        CIB10Color = LayerUtils.parseColorFromProperties(properties, 
-                                                         prefix + CIB10ColorProperty, 
-                                                         RpfCoverageManager.defaultCIB10ColorString);
-        CIB5Color = LayerUtils.parseColorFromProperties(properties, 
-                                                        prefix + CIB5ColorProperty, 
-                                                        RpfCoverageManager.defaultCIB5ColorString);
-        MISCColor = LayerUtils.parseColorFromProperties(properties, 
-                                                        prefix + MISCColorProperty, 
-                                                        RpfCoverageManager.defaultMISCColorString);
+        CGColor = (Color) PropUtils.parseColorFromProperties(properties, prefix + CGColorProperty, CGColor);
+        TLMColor = (Color) PropUtils.parseColorFromProperties(properties, prefix + TLMColorProperty, TLMColor);
+        JOGColor = (Color) PropUtils.parseColorFromProperties(properties, prefix + JOGColorProperty, JOGColor);
+        TPCColor = (Color) PropUtils.parseColorFromProperties(properties, prefix + TPCColorProperty, TPCColor);
+        ONCColor = (Color) PropUtils.parseColorFromProperties(properties, prefix + ONCColorProperty, ONCColor);
+        JNCColor = (Color) PropUtils.parseColorFromProperties(properties, prefix + JNCColorProperty, JNCColor);
+        GNCColor = (Color) PropUtils.parseColorFromProperties(properties, prefix + GNCColorProperty, GNCColor);
+        CIB10Color = (Color) PropUtils.parseColorFromProperties(properties, prefix + CIB10ColorProperty, CIB10Color);
+        CIB5Color = (Color) PropUtils.parseColorFromProperties(properties, prefix + CIB5ColorProperty, CIB5Color);
+        MISCColor = (Color) PropUtils.parseColorFromProperties(properties, prefix + MISCColorProperty, MISCColor);
 
         // If the palette is turned off, then we all of them have been
         // set to true.  Only the coverage of the limited series will
         // be asked for.
         if (showPalette) {
-            showCG = LayerUtils.booleanFromProperties(properties, prefix + ShowCGProperty, true);
-            showTLM = LayerUtils.booleanFromProperties(properties, prefix + ShowTLMProperty, true);
-            showJOG = LayerUtils.booleanFromProperties(properties, prefix + ShowJOGProperty, true);
-            showTPC = LayerUtils.booleanFromProperties(properties, prefix + ShowTPCProperty, true);
-            showONC = LayerUtils.booleanFromProperties(properties, prefix + ShowONCProperty, true);
-            showJNC = LayerUtils.booleanFromProperties(properties, prefix + ShowJNCProperty, true);
-            showGNC = LayerUtils.booleanFromProperties(properties, prefix + ShowGNCProperty, true);
-            showCIB10 = LayerUtils.booleanFromProperties(properties, prefix + ShowCIB10Property, true);
-            showCIB5 = LayerUtils.booleanFromProperties(properties, prefix + ShowCIB5Property, true);
-            showMISC = LayerUtils.booleanFromProperties(properties, prefix + ShowMISCProperty, true);
+            showCG = PropUtils.booleanFromProperties(properties, prefix + ShowCGProperty, showCG);
+            showTLM = PropUtils.booleanFromProperties(properties, prefix + ShowTLMProperty, showTLM);
+            showJOG = PropUtils.booleanFromProperties(properties, prefix + ShowJOGProperty, showJOG);
+            showTPC = PropUtils.booleanFromProperties(properties, prefix + ShowTPCProperty, showTPC);
+            showONC = PropUtils.booleanFromProperties(properties, prefix + ShowONCProperty, showONC);
+            showJNC = PropUtils.booleanFromProperties(properties, prefix + ShowJNCProperty, showJNC);
+            showGNC = PropUtils.booleanFromProperties(properties, prefix + ShowGNCProperty, showGNC);
+            showCIB10 = PropUtils.booleanFromProperties(properties, prefix + ShowCIB10Property, showCIB10);
+            showCIB5 = PropUtils.booleanFromProperties(properties, prefix + ShowCIB5Property, showCIB5);
+            showMISC = PropUtils.booleanFromProperties(properties, prefix + ShowMISCProperty, showMISC);
         }
     }
 
@@ -297,16 +297,16 @@ public class RpfCoverage implements ActionListener, RpfConstants, PropertyConsum
 
         props.put(prefix + FillProperty, new Boolean(fillRects).toString());
         props.put(prefix + OpaquenessProperty, Integer.toString(opaqueness));
-        props.put(prefix + CGColorProperty, CGColor);
-        props.put(prefix + TLMColorProperty, TLMColor);
-        props.put(prefix + JOGColorProperty, JOGColor);
-        props.put(prefix + TPCColorProperty, TPCColor);
-        props.put(prefix + ONCColorProperty, ONCColor);
-        props.put(prefix + JNCColorProperty, JNCColor);
-        props.put(prefix + GNCColorProperty, GNCColor);
-        props.put(prefix + CIB10ColorProperty, CIB10Color);
-        props.put(prefix + CIB5ColorProperty, CIB5Color);
-        props.put(prefix + MISCColorProperty, MISCColor);
+        props.put(prefix + CGColorProperty, Integer.toHexString(CGColor.getRGB()));
+        props.put(prefix + TLMColorProperty, Integer.toHexString(TLMColor.getRGB()));
+        props.put(prefix + JOGColorProperty, Integer.toHexString(JOGColor.getRGB()));
+        props.put(prefix + TPCColorProperty, Integer.toHexString(TPCColor.getRGB()));
+        props.put(prefix + ONCColorProperty, Integer.toHexString(ONCColor.getRGB()));
+        props.put(prefix + JNCColorProperty, Integer.toHexString(JNCColor.getRGB()));
+        props.put(prefix + GNCColorProperty, Integer.toHexString(GNCColor.getRGB()));
+        props.put(prefix + CIB10ColorProperty, Integer.toHexString(CIB10Color.getRGB()));
+        props.put(prefix + CIB5ColorProperty, Integer.toHexString(CIB5Color.getRGB()));
+        props.put(prefix + MISCColorProperty, Integer.toHexString(MISCColor.getRGB()));
 
         return props;
     }
@@ -438,23 +438,40 @@ public class RpfCoverage implements ActionListener, RpfConstants, PropertyConsum
         // IF the data arrays have not been set up yet, do it!
         if (coverageManager == null) {
             coverageManager = new RpfCoverageManager(frameProvider);
-            Color[] colors = new Color[10];
-            int opa = opaqueness << 24;
-            colors[0] = ColorFactory.createColor(((CGColor.getRGB() & 0x00FFFFFF) | opa), true);
-            colors[1] = ColorFactory.createColor(((TLMColor.getRGB() & 0x00FFFFFF) | opa), true);
-            colors[2] = ColorFactory.createColor(((JOGColor.getRGB() & 0x00FFFFFF) | opa), true);
-            colors[3] = ColorFactory.createColor(((TPCColor.getRGB() & 0x00FFFFFF) | opa), true);
-            colors[4] = ColorFactory.createColor(((ONCColor.getRGB() & 0x00FFFFFF) | opa), true);
-            colors[5] = ColorFactory.createColor(((JNCColor.getRGB() & 0x00FFFFFF) | opa), true);
-            colors[6] = ColorFactory.createColor(((GNCColor.getRGB() & 0x00FFFFFF) | opa), true);
-            colors[7] = ColorFactory.createColor(((CIB10Color.getRGB() & 0x00FFFFFF) | opa), true);
-            colors[8] = ColorFactory.createColor(((CIB5Color.getRGB() & 0x00FFFFFF) | opa), true);
-            colors[9] =ColorFactory.createColor(((MISCColor.getRGB() & 0x00FFFFFF) | opa), true) ;
-            coverageManager.setColors(colors, opaqueness, fillRects);
         }
         
         setGraphicLists(coverageManager.getCatalogCoverage(ullat, ullon, lrlat, lrlon,
-                                                           projection, chartSeries));
+                                                           projection, chartSeries, 
+                                                           getColors(), fillRects));
+    }
+
+    protected Color[] colors = null;
+
+    protected void resetColors() {
+        colors = null;
+    }
+
+    protected Color[] getColors() {
+        if (colors == null) {
+            colors = new Color[] {
+                getModifiedColor(CGColor), 
+                getModifiedColor(TLMColor),
+                getModifiedColor(JOGColor), 
+                getModifiedColor(TPCColor), 
+                getModifiedColor(ONCColor), 
+                getModifiedColor(JNCColor), 
+                getModifiedColor(GNCColor), 
+                getModifiedColor(CIB10Color), 
+                getModifiedColor(CIB5Color), 
+                getModifiedColor(MISCColor)
+            };
+        }
+        return colors;
+    }
+
+    protected Color getModifiedColor(Color color) {
+        int opa = opaqueness << 24;
+        return ColorFactory.createColor(((color.getRGB() & 0x00FFFFFF) | opa), true);
     }
 
     public synchronized void setGraphicLists(Vector lists) {

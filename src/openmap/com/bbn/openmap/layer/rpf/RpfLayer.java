@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/03/05 02:25:58 $
+// $Revision: 1.14 $
+// $Date: 2004/05/11 23:21:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -156,6 +156,7 @@ public class RpfLayer extends OMGraphicHandlerLayer
      * paths. 
      */
     public RpfLayer() {
+        setName("RPF");
         viewAttributes = new RpfViewAttributes();
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }

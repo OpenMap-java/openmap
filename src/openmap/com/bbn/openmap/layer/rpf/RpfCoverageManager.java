@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCoverageManager.java,v $
 // $RCSfile: RpfCoverageManager.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.3 $
+// $Date: 2004/05/11 23:21:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -71,55 +71,6 @@ public class RpfCoverageManager {
      * projection change. */
     protected int currentLineType;
 
-    /** The default line color.  */
-    public final static String defaultCGColorString = "AC4853"; 
-    /** The default line color.  */
-    public final static String defaultTLMColorString = "CE4F3F";
-    /** The default line color.  */
-    public final static String defaultJOGColorString = "AC7D74";
-    /** The default line color.  */
-    public final static String defaultTPCColorString = "ACCD10";
-    /** The default line color.  */
-    public final static String defaultONCColorString = "FCCDE5";
-    /** The default line color.  */
-    public final static String defaultJNCColorString = "7386E5";
-    /** The default line color.  */
-    public final static String defaultGNCColorString = "55866B";
-    /** The default line color.  */
-    public final static String defaultCIB10ColorString = "07516B";
-    /** The default line color.  */
-    public final static String defaultCIB5ColorString = "071CE0";
-    /** The default line color.  */
-    public final static String defaultMISCColorString = "F2C921";
-
-    /** The color to outline the shapes. */
-    protected Color CGColor = new Color(Integer.parseInt(defaultCGColorString, 16));
-    /** The color to outline the shapes. */
-    protected Color TLMColor = new Color(Integer.parseInt(defaultTLMColorString, 16));
-    /** The color to outline the shapes. */
-    protected Color JOGColor = new Color(Integer.parseInt(defaultJOGColorString, 16));
-    /** The color to outline the shapes. */
-    protected Color TPCColor = new Color(Integer.parseInt(defaultTPCColorString, 16));
-    /** The color to outline the shapes. */
-    protected Color ONCColor = new Color(Integer.parseInt(defaultONCColorString, 16));
-    /** The color to outline the shapes. */
-    protected Color JNCColor = new Color(Integer.parseInt(defaultJNCColorString, 16));
-    /** The color to outline the shapes. */
-    protected Color GNCColor = new Color(Integer.parseInt(defaultGNCColorString, 16));
-    /** The color to outline the shapes. */
-    protected Color CIB10Color = new Color(Integer.parseInt(defaultCIB10ColorString, 16));
-    /** The color to outline the shapes. */
-    protected Color CIB5Color = new Color(Integer.parseInt(defaultCIB5ColorString, 16));
-    /** The color to outline the shapes. */
-    protected Color MISCColor = new Color(Integer.parseInt(defaultMISCColorString, 16));
-
-    /** A setting for how transparent to make the images.  The default
-     * is 255, which is totally opaque.  Not used right now.
-     * */
-    protected int opaqueness = 255;
-    /** Flag to fill the coverage rectangles. */
-    protected boolean fillRects = true;
-
     /** Graphic lists of coverage rectangles. */
     protected Vector omGraphics = null;
 
@@ -127,50 +78,24 @@ public class RpfCoverageManager {
     protected RpfFrameProvider frameProvider;
 
     /** Don't use this. */
-    public RpfCoverageManager(RpfFrameProvider rfp){
+    public RpfCoverageManager(RpfFrameProvider rfp) {
         frameProvider = rfp;
         omGraphics = new Vector();
-    }
-
-    /** 
-     * Method that sets all the colorvariables to the non-default
-     * values. The colors array is assumed to be length 10, one for
-     * each chart type.
-     * 
-     * @param colors array of colors for different chart types, in
-     * this order: CGColor, TLMColor, JOGColor, TPCColor, ONCColor,
-     * JNCColor, GNCColor, CIB10Color, CIB5Color, MISCColor.
-     * @param opaque how transparent the frames should be if they are filled.
-     * @param fillRectangles whether to fill the rectangles with color.  
-     */
-    public void setColors(Color[] colors, int opaque, boolean fillRectangles){
-        if (colors.length == 10){
-            CGColor = colors[0];
-            TLMColor = colors[1];
-            JOGColor = colors[2];
-            TPCColor = colors[3];
-            ONCColor = colors[4];
-            JNCColor = colors[5];
-            GNCColor = colors[6];
-            CIB10Color = colors[7];
-            CIB5Color = colors[8];
-            MISCColor = colors[9];
-        }
-
-        opaqueness = opaque;
-        fillRects = fillRectangles;
     }
 
     /** 
      * Looks at the paths for the A.TOC files and gets all the
      * coverage rectangles from them.  Sets the entries to a big list
      * of rectangles from all the A.TOC files.
-     *
+     * @param colors looks for an array of 10 colors.
+     * @param fillRects whether to fill the rectangles with the color,
+     * or just do outlines.
      * @return entries from within the A.TOC files.
      */
     protected Vector getCatalogCoverage(float ullat, float ullon, 
                                         float lrlat, float lrlon,
-                                        Projection proj, String chartSeries){
+                                        Projection proj, String chartSeries, 
+                                        Color[] colors, boolean fillRects) {
 
         Debug.message("rpfcov", 
                       "RpfCoverageManager: Getting catalog coverage from RpfFrameProvider");
@@ -179,7 +104,7 @@ public class RpfCoverageManager {
         }
 
         CADRG cadrg;
-        if (proj instanceof CADRG){
+        if (proj instanceof CADRG) {
             cadrg = (CADRG)proj;
         } else {
             cadrg = new CADRG(proj.getCenter(), proj.getScale(), 
@@ -188,7 +113,8 @@ public class RpfCoverageManager {
 
         Vector[] hemisphereData;
 
-        if (ullon > 0 && lrlon < 0 || (Math.abs(ullon - lrlon) < .001)){
+        if ((ullon > lrlon) || MoreMath.approximately_equal(ullon, lrlon, .001f)) {
+
             hemisphereData = new Vector[2];
             hemisphereData[0] = frameProvider.getCatalogCoverage(ullat, ullon, 
                                                                  lrlat, 180f, cadrg, 
@@ -234,14 +160,14 @@ public class RpfCoverageManager {
 
         OMRect rect;
 
-        for (int j = 0; j < hemisphereData.length; j++){
-            if (hemisphereData[j] == null){
+        for (int j = 0; j < hemisphereData.length; j++) {
+            if (hemisphereData[j] == null) {
                 Debug.message("rpfcov", "RpfCoverageManager. vector " + j + " is null");
                 continue;
             }
 
             int size = hemisphereData[j].size();
-            for (int i = 0; i < size; i++){
+            for (int i = 0; i < size; i++) {
                 RpfCoverageBox box = (RpfCoverageBox) hemisphereData[j].elementAt(i);
 
                 rect = new OMRect((float) box.nw_lat, (float) box.nw_lon, 
@@ -250,49 +176,69 @@ public class RpfCoverageManager {
             
                 float scale = RpfProductInfo.get(box.chartCode).scale;
 
-                if (scale < 15000f){
-                    rect.setLinePaint(CGColor);
-                    if (fillRects) rect.setFillPaint(CGColor);
+                if (scale < 15000f) {
+                    if (colors != null && colors.length >= 1) {
+                        rect.setLinePaint(colors[0]);
+                        if (fillRects) rect.setFillPaint(colors[0]);
+                    }
                     cgs.add(rect);
-                } else if (scale == 50000f){
-                    rect.setLinePaint(TLMColor);
-                    if (fillRects) rect.setFillPaint(TLMColor);
+                } else if (scale == 50000f) {
+                    if (colors != null && colors.length >= 2) {
+                        rect.setLinePaint(colors[1]);
+                        if (fillRects) rect.setFillPaint(colors[1]);
+                    }
                     tlms.add(rect);
-                } else if (scale == 250000f){
-                    rect.setLinePaint(JOGColor);
-                    if (fillRects) rect.setFillPaint(JOGColor);
+                } else if (scale == 250000f) {
+                    if (colors != null && colors.length >= 3) {
+                        rect.setLinePaint(colors[2]);
+                        if (fillRects) rect.setFillPaint(colors[2]);
+                    }
                     jogs.add(rect);
-                } else if (scale == 500000f){
-                    rect.setLinePaint(TPCColor);
-                    if (fillRects) rect.setFillPaint(TPCColor);
+                } else if (scale == 500000f) {
+                    if (colors != null && colors.length >= 4) {
+                        rect.setLinePaint(colors[3]);
+                        if (fillRects) rect.setFillPaint(colors[3]);
+                    }
                     tpcs.add(rect);
-                } else if (scale == 1000000f){
-                    rect.setLinePaint(ONCColor);
-                    if (fillRects) rect.setFillPaint(ONCColor);
+                } else if (scale == 1000000f) {
+                    if (colors != null && colors.length >= 5) {
+                        rect.setLinePaint(colors[4]);
+                        if (fillRects) rect.setFillPaint(colors[4]);
+                    }
                     oncs.add(rect);
-                } else if (scale == 2000000f){
-                    rect.setLinePaint(JNCColor);
-                    if (fillRects) rect.setFillPaint(JNCColor);
+                } else if (scale == 2000000f) {
+                    if (colors != null && colors.length >= 6) {
+                        rect.setLinePaint(colors[5]);
+                        if (fillRects) rect.setFillPaint(colors[5]); 
+                    }
                     jncs.add(rect);
-                } else if (scale == 5000000f){
-                    rect.setLinePaint(GNCColor);
-                    if (fillRects) rect.setFillPaint(GNCColor);
+                } else if (scale == 5000000f) {
+                    if (colors != null && colors.length >= 7) {
+                        rect.setLinePaint(colors[6]);
+                        if (fillRects) rect.setFillPaint(colors[6]);
+                    }
                     gncs.add(rect);
-                } else if (scale == 66666f){
-                    rect.setLinePaint(CIB10Color);
-                    if (fillRects) rect.setFillPaint(CIB10Color);
+                } else if (scale == 66666f) {
+                    if (colors != null && colors.length >= 8) {
+                        rect.setLinePaint(colors[7]);
+                        if (fillRects) rect.setFillPaint(colors[7]);
+                    }
                     cib10s.add(rect);
-                } else if (scale == 33333f){
-                    rect.setLinePaint(CIB5Color);
-                    if (fillRects) rect.setFillPaint(CIB5Color);
+                } else if (scale == 33333f) {
+                    if (colors != null && colors.length >= 9) {
+                        rect.setLinePaint(colors[8]);
+                        if (fillRects) rect.setFillPaint(colors[8]);
+                    }
                     cib5s.add(rect);
-                } else if (scale == RpfConstants.Various){
+                } else if (scale == RpfConstants.Various) {
                     // Don't show it, because we don't know how to
                     // display it anyway.  Don't bother projecting it.
                     continue;
                 } else {
-                    rect.setLinePaint(MISCColor);
-                    if (fillRects) rect.setFillPaint(MISCColor);
+                    if (colors != null && colors.length >= 10) {
+                        rect.setLinePaint(colors[9]);
+                        if (fillRects) rect.setFillPaint(colors[9]);
+                    }
                     miscs.add(rect);
                 }
                 rect.generate(proj);
