@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SlopeGenerator.java,v $
 // $RCSfile: SlopeGenerator.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:18 $
+// $Revision: 1.4 $
+// $Date: 2005/01/19 14:18:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -86,6 +86,28 @@ public class SlopeGenerator implements OMGridGenerator {
      */
     public boolean isIncompleteImage() {
         return incomplete;
+    }
+
+    /**
+     * A more defining API method to get what this SlopeGenerator can
+     * create. An OMGridGenerator generates an OMGraphic, this method
+     * lets you specifically ask for an OMRaster if that's what you
+     * want. If SlopeGenerator is extended so that it doesn't
+     * necessarily return an OMRaster from generate, this method
+     * checks for that and will return null if generate returns
+     * something other than an OMRaster.
+     * 
+     * @param grid
+     * @param proj
+     * @return
+     */
+    public OMRaster generateRasterForProjection(OMGrid grid, Projection proj) {
+        OMGraphic omg = generate(grid, proj);
+        if (omg instanceof OMRaster) {
+            return (OMRaster) omg;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -223,9 +245,9 @@ public class SlopeGenerator implements OMGridGenerator {
                 // points.
                 try {
                     short e2 = data[xse][yse]; // down & right
-                                               // elevation
+                    // elevation
                     short e1 = data[xnw][ynw]; // up and left
-                                               // elevation
+                    // elevation
 
                     // colormap value darker for negative slopes,
                     // brighter for
@@ -279,7 +301,7 @@ public class SlopeGenerator implements OMGridGenerator {
         // of 5. 0 is very high contrast.
 
         float vRes = grid.getVerticalResolution(); // Degrees per data
-                                                   // point
+        // point
         float hRes = grid.getHorizontalResolution();
 
         float vResRad = Length.DECIMAL_DEGREE.toRadians(vRes);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrame.java,v $
 // $RCSfile: DTEDFrame.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:05:42 $
+// $Revision: 1.3 $
+// $Date: 2005/01/19 14:18:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,8 +30,9 @@ import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.Closable;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.OMGrid;
-import com.bbn.openmap.omGraphics.grid.OMGridData;
 import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.omGraphics.grid.OMGridData;
+import com.bbn.openmap.omGraphics.grid.SlopeGenerator;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Length;
@@ -540,8 +541,8 @@ public class DTEDFrame implements Closable {
     public OMRaster getOMRaster(EqualArc proj) {
         OMGrid grid = getOMGrid();
         grid.generate(proj);
-        com.bbn.openmap.omGraphics.grid.SlopeGenerator sg = new com.bbn.openmap.omGraphics.grid.SlopeGenerator();
-        return (OMRaster) sg.generate(grid, proj);
+        SlopeGenerator sg = new SlopeGenerator();
+        return sg.generateRasterForProjection(grid, proj);
     }
 
     public static void main(String args[]) {
