@@ -45,11 +45,17 @@
     
     <mkdir dir="${j3d.classes}"/>
     <echo message="Compiling J3D classes."/>
+
     <javac srcdir="${j3d.src}"
 	   destdir="${j3d.classes}"
 	   debug="on"
 	   classpath="${openmap.home}/lib/openmap.jar;${openmap.home}"
 	   excludes="${javac.excludes}"/>
+
+    <copy todir="${j3d.classes}/com/bbn/openmap"> 
+      <fileset dir="${j3d.src}/com/bbn/openmap" 
+	       includes="**/*.gif, **/*.png, **/*.properties"/>
+    </copy>
   </target>
 
   <target name="jar.j3d"
@@ -59,7 +65,7 @@
 
     <jar jarfile="${openmap.home}/lib/omj3d.jar" 
 	 basedir="${j3d.classes}"
-	 includes="**/*.class, **/*.properties"/>
+	 includes="**/*.class, **/*.properties, **/*.gif, **/*.png"/>
   </target>    
  
   <!--  ############################

@@ -105,6 +105,12 @@
 		     **/plugin/corbaImage/**/*.java"
 	   excludes="**/unimplemented/**"
 	   bootclasspath="${visibroker.bootclasspath}" />
+
+    <copy todir="${corba.classes}/com/bbn/openmap"> 
+      <fileset dir="${corba.src}/com/bbn/openmap" 
+	       includes="**/*.gif, **/*.png, **/*.properties"/>
+    </copy>
+
   </target>
 
   <target name="jar.visibroker"
