@@ -1,8 +1,8 @@
 <!--
 $source: /net/blatz/u4/rcs/openmap/doc/sgml/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.13 $
-$Date: 2000/02/28 17:20:59 $
+$Revision: 1.14 $
+$Date: 2000/02/28 17:49:40 $
 $Author: bmackiew $
 
 Frequently Asked Questions for the OpenMap system.
@@ -14,7 +14,7 @@ Frequently Asked Questions for the OpenMap system.
 
 <title>OpenMap FAQ
 <author>BBN Technologies
-<date>25 February 2000
+<date>28 February 2000
 <abstract>
 This FAQ contains questions and answers about the OpenMap system.
 </abstract>
@@ -807,7 +807,7 @@ Alternatively, Shape data can be displayed in an applet if it is displayed
 through a layer that is contacting a server (as opposed to having the data
 be local).  An example of this would be our link layer.   We will soon add
 entries to the FAQ about how to use this layer, but for now check out the
-<htmlurl url=".api/com/bbn/openmap/layer/link/LinkLayer.html" 
+<htmlurl url="./api/com/bbn/openmap/layer/link/LinkLayer.html" 
 name="API documentation">.  There's a shape directory in the link layer
 code that may give you some hints.
 
