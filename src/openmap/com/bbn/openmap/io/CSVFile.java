@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/CSVFile.java,v $
 // $RCSfile: CSVFile.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/11 23:50:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,7 +60,7 @@ public class CSVFile {
      * Don't do anything special, since all defaults are set already 
      */
     public CSVFile(String name) throws MalformedURLException {
-	infoUrl = LayerUtils.getResourceOrFileOrURL(this, name); 
+	infoUrl = LayerUtils.getResourceOrFileOrURL(null, name); 
     }
     
     /** 
@@ -114,7 +114,7 @@ public class CSVFile {
 	    // even if it's not specified as file:/<name> in
 	    // the properties file.
 	    URL csvURL = infoUrl;
-	    streamReader = new BufferedReader(new InputStreamReader (csvURL.openStream()));
+	    streamReader = new BufferedReader(new InputStreamReader(csvURL.openStream()));
 	    CSVTokenizer csvt = new CSVTokenizer(streamReader, readNumbersAsStrings);
 	    String name = null;
 	    String abbreviation = null;
@@ -181,9 +181,8 @@ public class CSVFile {
 	try { 
 	    vector = (Vector)infoRecords.elementAt(recordnumber);
 	} catch (ArrayIndexOutOfBoundsException e) {
-	    Debug.error(infoUrl.toString() 
-			       + ": Don't have information for shape record "
-			       + recordnumber);
+	    Debug.error(infoUrl.toString() + 
+			": Don't have information for shape record " + recordnumber);
 	    return null;
 	}
 	return vector;
