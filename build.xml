@@ -65,6 +65,7 @@
                    com/bbn/openmap/omGraphics/*.gif, 
                    com/bbn/openmap/omGraphics/editable/*.class, 
                    com/bbn/openmap/omGraphics/event*.class, 
+                   com/bbn/openmap/omGraphics/geom/*.class, 
                    com/bbn/openmap/omGraphics/grid/*.class, 
                    com/bbn/openmap/omGraphics/labeled/*.class, 
                    com/bbn/openmap/omGraphics/util/*.class, 
