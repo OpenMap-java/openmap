@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoordFloatString.java,v $
 // $RCSfile: CoordFloatString.java,v $
-// $Revision: 1.1.1.2 $
-// $Date: 2003/09/16 14:16:35 $
+// $Revision: 1.2 $
+// $Date: 2003/09/16 14:23:43 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
