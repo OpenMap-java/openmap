@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.14 $
-// $Date: 2004/02/01 21:14:12 $
+// $Revision: 1.15 $
+// $Date: 2004/02/02 23:55:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -442,6 +442,8 @@ public class DrawingAttributes
      * @param lPaint the paint.  
      */
     public void setLinePaint(Paint lPaint) {
+        if (lPaint == linePaint) return;
+
         Paint oldPaint = linePaint;
         linePaint = lPaint;
 
@@ -473,6 +475,8 @@ public class DrawingAttributes
      * @param sPaint the paint.  
      */
     public void setSelectPaint(Paint sPaint) {
+        if (sPaint == selectPaint) return;
+
         Paint oldPaint = selectPaint;
         selectPaint = sPaint;
         
@@ -500,6 +504,8 @@ public class DrawingAttributes
      * @param fPaint the paint.  
      */
     public void setFillPaint(Paint fPaint) {
+        if (fPaint == fillPaint) return;
+
         Paint oldPaint = fillPaint;
         fillPaint = fPaint;
         
@@ -532,6 +538,8 @@ public class DrawingAttributes
      * @param mPaint the paint.  
      */
     public void setMattingPaint(Paint mPaint) {
+        if (mPaint == mattingPaint) return;
+
         Paint oldPaint = mattingPaint;
         mattingPaint = mPaint;
         
