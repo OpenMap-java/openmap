@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/GestureResponsePolicy.java,v $
 // $RCSfile: GestureResponsePolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:24:12 $
+// $Revision: 1.3 $
+// $Date: 2003/09/23 22:46:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,6 +36,8 @@ public interface GestureResponsePolicy {
     public boolean isHighlightable(OMGraphic omgr);
 
     public boolean isSelectable(OMGraphic omgr);
+
+    public OMGraphicList getSelected();
 
     ////// Reactions
     public void select(OMGraphicList omgl);

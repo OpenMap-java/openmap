@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/TestResponsePolicy.java,v $
 // $RCSfile: TestResponsePolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:24:12 $
+// $Revision: 1.3 $
+// $Date: 2003/09/23 22:46:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,6 +32,8 @@ import com.bbn.openmap.util.Debug;
 
 public class TestResponsePolicy implements GestureResponsePolicy {
 
+    protected OMGraphicList selected;
+
     public TestResponsePolicy() {}
 
     ////// Queries
@@ -44,6 +46,11 @@ public class TestResponsePolicy implements GestureResponsePolicy {
     public boolean isSelectable(OMGraphic omg) {
 	Debug.output("isSelectable(" + omg.getClass().getName() + ")");
 	return true;
+    }
+
+    public OMGraphicList getSelected() {
+	Debug.output("getSelected()");
+	return selected;
     }
 
     ////// Reactions
@@ -59,10 +66,12 @@ public class TestResponsePolicy implements GestureResponsePolicy {
 
    public void select(OMGraphicList omgl) {
 	Debug.output("select(" + omgl.getDescription() + ")");
+	selected = omgl;
     }
 
     public void deselect(OMGraphicList omgl) {
 	Debug.output("deselect(" + omgl.getDescription() + ")");
+	selected = null;
     }
 
     public OMGraphicList cut(OMGraphicList omgl) {

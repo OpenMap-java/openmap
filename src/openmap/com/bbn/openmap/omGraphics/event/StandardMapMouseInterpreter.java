@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:24:12 $
+// $Revision: 1.3 $
+// $Date: 2003/09/23 22:46:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,6 +41,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
     protected GestureResponsePolicy grp = null;
     protected GeometryOfInterest clickInterest = null;
     protected GeometryOfInterest movementInterest = null;
+    protected boolean consumeEvents = false;
 
     public StandardMapMouseInterpreter() {
 	DEBUG = Debug.debugging("grp");
@@ -84,6 +85,23 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
 	public boolean isLeftButton() {
 	    return leftButton;
 	}
+    }
+
+    /**
+     * A flag to tell the interpreter to be selfish about consuming
+     * MouseEvents it receives.  If set to true, it will consume
+     * events so that other MapMouseListeners will not receive the
+     * events.  If false, lower layers will also receive events, which
+     * will let them react too.  Intended to let other layers provide
+     * information about what the mouse is over when editing is
+     * occuring.
+     */
+    public void setConsumeEvents(boolean consume) {
+	consumeEvents = consume;
+    }
+
+    public boolean getConsumeEvents() {
+	return consumeEvents;
     }
 
     public void setLayer(OMGraphicHandlerLayer l) {
@@ -169,12 +187,12 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
 	    setClickInterest(null);
 	}
 
-	if (omg != null && grp.isSelectable(omg)) {
+	if (omg != null && grp != null && grp.isSelectable(omg)) {
 	    setClickInterest(new GeometryOfInterest(omg, e));
 	    ret = true;
 	}
 
-	return ret;
+	return ret && consumeEvents;
     }
 
     /**
@@ -210,7 +228,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
 	    }
 	}
 
-	return true;
+	return consumeEvents;
     }
 
     /**
@@ -240,7 +258,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
 	    setClickInterest(null);
 	}
 
-	return mouseMoved(e);
+	return mouseMoved(e) && consumeEvents;
     }
 
     /**
@@ -267,7 +285,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
 
 		goi = new GeometryOfInterest(omg, e);
 		setMovementInterest(goi);
-		mouseOver(omg, e);
+		ret = mouseOver(omg, e);
 	    }
 
 	} else {
@@ -275,10 +293,10 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
 		mouseNotOver(goi.getGeometry());
 		setMovementInterest(null);
 	    }
-	    mouseOver(e);
+	    ret = mouseOver(e);
 	}
 
-	return ret;
+	return ret && consumeEvents;
     }
 
     /**
