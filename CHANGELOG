@@ -1,3 +1,30 @@
+2004-11-25  Donald Dietrick  <dietrick@jader.local>
+
+	* Modified the ProjectionSupport and LayerHandler to launch
+	threads for projection notifications to the layers and for layer
+	reordering, to prevent the application from getting hung up for
+	some of the more extensive notification event reactions.
+
+	* Updated VMAP2Shape to use EsriShapeExport class, instead of
+	using the Shape package stuff.  Updated VPFConfig to check for
+	 backslashes and replace them with Java-friendly forward slashes.
+
+	* Modified the ESRIPolygonRecord to include the donated code to
+	handle polygon holes using OMAreaList.  This code is disabled,
+	however, because OMAreaList doesn't really handle shapes that go
+	around the earth yet, and having this modification breaks
+	world-level shapefile display.  OMAreaList needs to be fixed
+	before this code is enabled full-time.
+
+	* Updated BasicGeometry to have the option of connecting shapes
+	that are appended, instead of automatically not doing that.
+	Updated OMAreaList to make that BasicGeometry append call with
+	the connect parameter.
+
+2004-11-01  Donald Dietrick  <dietrick@jader.local>
+
+	* Released OpenMap 4.6.1
+
 2004-10-15  Donald Dietrick  <dietrick@jader.local>
 
 	* Changed OMGrid to extend OMGraphicList instead of OMGraphic.
