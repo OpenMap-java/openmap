@@ -42,7 +42,7 @@
 
 
     <property name="visibroker.jars" value="${visibroker.home}/lib/vbjapp.jar:${visibroker.home}/lib/vbjcosnm.jar:${visibroker.home}/lib/vbjtools.jar:${visibroker.home}/lib/vbjorb.jar"/>
-    <property name="visibroker.bootclasspath" value="${visibroker.jars}:${java.home}/lib/rt.jar:${openmap.classes}"/>
+    <property name="visibroker.bootclasspath" value="${visibroker.jars}:${java.home}/lib/rt.jar:${corba.classes}:${openmap.classes}"/>
 
 
   </target>
@@ -55,17 +55,17 @@
     
     <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
       <jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
-      <arg line='-root_dir ${openmap.home} -package com.bbn.openmap.layer.rpf.corba com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl'/>
+      <arg line='-root_dir ${corba.src} -package com.bbn.openmap.layer.rpf.corba com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl'/>
     </java>
 
     <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
       <jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
-      <arg line='-root_dir ${openmap.home} -package com.bbn.openmap com/bbn/openmap/layer/specialist/Specialist.idl'/>
+      <arg line='-root_dir ${corba.src} -package com.bbn.openmap com/bbn/openmap/layer/specialist/Specialist.idl'/>
     </java>
 
     <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
       <jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
-      <arg line='-root_dir ${openmap.home} -package com.bbn.openmap.plugin.corbaImage com/bbn/openmap/plugin/corbaImage/CorbaImageServer.idl'/>
+      <arg line='-root_dir ${corba.src} -package com.bbn.openmap.plugin.corbaImage com/bbn/openmap/plugin/corbaImage/CorbaImageServer.idl'/>
     </java>
   </target>
 
@@ -108,7 +108,7 @@
   <target name="jar.visibroker"
 	  depends="classes.corba"
 	  description="Builds jar files, placing them in the lib directory."
-	  if="do.corba">
+	  if="do.visibroker">
 
     <jar jarfile="${corba.jar}" 
 	 basedir="${corba.classes}"
@@ -130,6 +130,11 @@
 	  depends="init.corba"
 	  description="Delete the Corba OpenMap class files and the stub classes, but not the jar files.">
     <delete dir="${corba.classes}"/>
+  </target>
+
+  <target name="clean_stubs.corba"
+	  depends="init.corba"
+	  description="Delete the Corba OpenMap Stub classes generated from IDLs.">
     <delete dir="${corba.src}/com/bbn/openmap/layer/rpf/corba/CRpfFrameProvider"/>
     <delete dir="${corba.src}/com/bbn/openmap/CSpecialist"/>
     <delete dir="${corba.src}/com/bbn/openmap/plugin/corbaImage/corbaImageServer"/>
