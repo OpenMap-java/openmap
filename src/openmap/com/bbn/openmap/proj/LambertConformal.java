@@ -4,8 +4,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LambertConformal.java,v $
 // $RCSfile: LambertConformal.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:22 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 22:35:28 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -13,6 +13,7 @@
 package com.bbn.openmap.proj;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import com.bbn.openmap.LatLonPoint;
@@ -171,16 +172,16 @@ public class LambertConformal extends Proj {
         // projections
         locationPixelsPerLambert = getMaxScale() / getScale() * 100;
 
-        LambertPoint lp = new LambertPoint();
+        Point2D lp = new Point2D.Double();
         LatLonPoint origin = new LatLonPoint(referenceLatitude, centralMeridian);
         LLToWorld(origin.getLatitude(), origin.getLongitude(), lp);
-        locationOriginX = lp.x;
-        locationOriginY = lp.y;
+        locationOriginX = lp.getX();
+        locationOriginY = lp.getY();
 
         LatLonPoint center = getCenter();
         LLToWorld(center.getLatitude(), center.getLongitude(), lp);
-        locationCenterXLambert = lp.x;
-        locationCenterYLambert = lp.y;
+        locationCenterXLambert = lp.getX();
+        locationCenterYLambert = lp.getY();
 
         if (Debug.debugging("lcc")) {
             Debug.output("Creating LambertConformal: center x = "
@@ -210,11 +211,6 @@ public class LambertConformal extends Proj {
             return SOUTH_POLE;
         }
         return lat;
-    }
-
-    class LambertPoint {
-        double x;
-        double y;
     }
 
     /**
@@ -258,7 +254,7 @@ public class LambertConformal extends Proj {
      * DESCRIPTION:  This function converts lat, lon coordinate to lambert
      *               coordinate. 
      *--------------------------------------------------------------------------*/
-    public LambertPoint LLToWorld(double lat, double lon, LambertPoint lp) {
+    public Point2D LLToWorld(double lat, double lon, Point2D lp) {
         double formula_one = Math.abs(lambert_lamf)
                 * Math.pow(Math.abs(Math.tan(ProjMath.degToRad(90.0 - (double) lat) / 2.0)),
                         Math.abs(lambert_lamn));
@@ -271,8 +267,8 @@ public class LambertConformal extends Proj {
 
         double formula_two = ProjMath.degToRad(Math.abs(lambert_lamn) * (lon));
 
-        lp.x = formula_one * Math.sin(formula_two);
-        lp.y = formula_one * Math.cos(formula_two);
+        lp.setLocation(formula_one * Math.sin(formula_two),
+                formula_one * Math.cos(formula_two));
 
         return lp;
     } /* end of function LLToWorld */
@@ -286,12 +282,12 @@ public class LambertConformal extends Proj {
      *--------------------------------------------------------------------------*/
 
     public Point LLToPixel(double lat, double lon, Point p) {
-        LambertPoint lp = new LambertPoint();
+        Point2D lp = new Point2D.Double();
 
         LLToWorld(lat, lon, lp);
 
-        double xrel = lp.x - locationCenterXLambert;
-        double yrel = lp.y - locationCenterYLambert;
+        double xrel = lp.getX() - locationCenterXLambert;
+        double yrel = lp.getY() - locationCenterYLambert;
 
         xrel = locationCenterXPixel + (xrel * locationPixelsPerLambert) + .5;
         yrel = locationCenterYPixel + (yrel * locationPixelsPerLambert) + .5;
