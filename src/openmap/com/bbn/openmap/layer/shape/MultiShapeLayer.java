@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/02/05 18:15:08 $
+// $Revision: 1.8 $
+// $Date: 2004/03/19 21:23:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,7 +77,7 @@ import com.bbn.openmap.util.SwingWorker;
  * ############################
  * </pre></code>
  *
- * @version $Revision: 1.7 $ $Date: 2004/02/05 18:15:08 $
+ * @version $Revision: 1.8 $ $Date: 2004/03/19 21:23:22 $
  * @see SpatialIndex 
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -127,7 +127,7 @@ public class MultiShapeLayer extends ShapeLayer {
 
         /// end from Layer.java
 
-        setSpatialIndexes(realPrefix, props);
+        setSpatialIndexes(prefix, props);
 
         shadowX = LayerUtils.intFromProperties(props, realPrefix + shadowXProperty, 0);
         shadowY = LayerUtils.intFromProperties(props, realPrefix + shadowYProperty, 0);
@@ -140,7 +140,7 @@ public class MultiShapeLayer extends ShapeLayer {
 
         String listValue = p.getProperty(prefix + ShapeFileListProperty);
 
-        if (Debug.debugging("shape")){
+        if (Debug.debugging("shape")) {
             Debug.output(getName() + "| list = \"" + listValue + "\"");
         }
 
