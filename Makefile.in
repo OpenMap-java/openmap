@@ -17,9 +17,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.25 $
-# $Date: 1999/03/18 18:31:35 $
-# $Author: dietrick $
+# $Revision: 1.26 $
+# $Date: 1999/04/05 14:16:54 $
+# $Author: aculline $
 # 
 # **********************************************************************
 
@@ -183,8 +183,10 @@ install::	all
 install::	${prefix}
 	${RM} ${prefix}/README
 	${RM} ${prefix}/LICENSE
+	${RM} ${prefix}/AUTHORS
 	${INSTALL.doc} README ${prefix}
 	${INSTALL.doc} LICENSE ${prefix}
+	${INSTALL.doc} AUTHORS ${prefix}
 
 # install in bin
 install::	${bindir} bin/openmap
