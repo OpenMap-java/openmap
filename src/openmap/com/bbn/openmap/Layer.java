@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.18 $
-// $Date: 2004/02/06 00:00:18 $
+// $Revision: 1.19 $
+// $Date: 2004/03/04 04:14:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -526,7 +526,7 @@ public abstract class Layer extends JComponent
      * </pre></code>
      * @return null
      */
-    public synchronized MapMouseListener getMapMouseListener() {
+    public MapMouseListener getMapMouseListener() {
         return null;
     }
  

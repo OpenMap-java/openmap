@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/ScenarioGraphicLoader.java,v $
 // $RCSfile: ScenarioGraphicLoader.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/24 21:50:32 $
+// $Revision: 1.6 $
+// $Date: 2004/03/04 04:14:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,7 +57,6 @@ import com.bbn.openmap.gui.time.TimerRateComboBox;
 import com.bbn.openmap.gui.time.TimerToggleButton;
 import com.bbn.openmap.io.CSVFile;
 import com.bbn.openmap.layer.location.LocationHandler;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicHandler;
@@ -654,29 +653,29 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
 
         locationFile = properties.getProperty(
             prefix + LocationFileProperty);
-        iconIndex = LayerUtils.intFromProperties(
+        iconIndex = PropUtils.intFromProperties(
             properties, prefix + IconIndexProperty, -1);
-        nameIndex = LayerUtils.intFromProperties(
+        nameIndex = PropUtils.intFromProperties(
             properties, prefix + NameIndexProperty, -1);
-        activityNameIndex = LayerUtils.intFromProperties(
+        activityNameIndex = PropUtils.intFromProperties(
             properties, prefix + ActivityNameIndexProperty, -1);
         activityFile = properties.getProperty(
             prefix + ActivityFileProperty);
-        latIndex = LayerUtils.intFromProperties(
+        latIndex = PropUtils.intFromProperties(
             properties, prefix + LatIndexProperty, -1);
-        lonIndex = LayerUtils.intFromProperties(
+        lonIndex = PropUtils.intFromProperties(
             properties, prefix + LonIndexProperty, -1);
-        timeIndex = LayerUtils.intFromProperties(
+        timeIndex = PropUtils.intFromProperties(
             properties, prefix + TimeIndexProperty, -1);
-        eastIsNeg = LayerUtils.booleanFromProperties(
+        eastIsNeg = PropUtils.booleanFromProperties(
             properties, prefix + EastIsNegProperty, eastIsNeg);
-        showNames = LayerUtils.booleanFromProperties(
+        showNames = PropUtils.booleanFromProperties(
             properties, prefix + ShowNamesProperty, showNames);
         defaultIconURL = properties.getProperty(
             prefix + DefaultIconURLProperty);
-        locationHeader = LayerUtils.booleanFromProperties(
+        locationHeader = PropUtils.booleanFromProperties(
             properties, prefix + LocationHeaderProperty, false);
-        activityHeader = LayerUtils.booleanFromProperties(
+        activityHeader = PropUtils.booleanFromProperties(
             properties, prefix + ActivityHeaderProperty, false);
 
         String timeFormatString = properties.getProperty(

@@ -179,6 +179,7 @@
 
     <jar jarfile="${corba.jar}" 
 	 basedir="${corba.classes}"
+         index="true"
 	 includes="**/*.class"/>
   </target>    
 

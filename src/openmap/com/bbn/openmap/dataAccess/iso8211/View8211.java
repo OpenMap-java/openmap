@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * $Id: View8211.java,v 1.2 2004/03/02 20:45:06 dietrick Exp $
+ * $Id: View8211.java,v 1.3 2004/03/04 04:14:29 dietrick Exp $
  *
  * Project:  SDTS Translator
  * Purpose:  Example program dumping data in 8211 data to stdout.
@@ -82,7 +82,8 @@ public class View8211 {
                 /* ------------------------------------------------------------ */
                 for (Iterator it = poRecord.iterator(); 
                      it != null && it.hasNext(); 
-                     Debug.output(((DDFField)it.next()).toString()));
+//                      Debug.output(((DDFField)it.next()).toString()));
+                     viewRecordField(((DDFField)it.next())));
             }
 
         } catch (IOException ioe) {

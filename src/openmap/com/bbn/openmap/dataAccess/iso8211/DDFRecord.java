@@ -339,8 +339,8 @@ public class DDFRecord implements DDFConstants {
 
                 // Save the info for reading later directly out of the field.
                 ddff = new DDFField(poFieldDefn, nFieldPos, nFieldLength);
+                ddff.setHeaderOffset(poModule._recLength + _fieldAreaStart);
             }
-
             paoFields.add(ddff);
         }
 

@@ -53,7 +53,8 @@
 
 	  <jar jarfile="${openmap.jar}" 
 	       basedir="${openmap.classes}"
-	       manifest="${openmap.home}/share/manifest.txt" 
+	       manifest="${openmap.home}/share/manifest.txt"
+               index="true"
 	       includes="openmap.properties,
 			 **/*.class,
 			 **/*.gif, **/*.png,

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapRequestHandler.java,v $
 // $RCSfile: MapRequestHandler.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/02/13 17:19:15 $
+// $Revision: 1.8 $
+// $Date: 2004/03/04 04:14:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -239,7 +239,9 @@ public class MapRequestHandler extends ImageServer
     }   
 
     /**
-     * Given a general request, parse it and handle it.
+     * Given a general request, parse it and handle it.  This is the
+     * method that servlets should call.  Currently only handles image
+     * requests.
      *
      * @param request the request string of key value pairs.
      * @return a byte[] for the image.
@@ -267,7 +269,9 @@ public class MapRequestHandler extends ImageServer
     }
 
     /**
-     * Given a general request, parse it and handle it.
+     * Given a general request, parse it and handle it. Appends a
+     * content type to the output stream which may mess things up for
+     * servlets asking for images.
      *
      * @param request the request string of key value pairs.
      * @param out OutputStream to reply on.
@@ -380,7 +384,8 @@ public class MapRequestHandler extends ImageServer
     }
 
     /**
-     * Handle a Map Request.
+     * Handle a Map Request. Appends a content type to the output
+     * stream which may mess things up for servlets.
      */
     public void handleMapRequest(Properties requestProperties, OutputStream out)
         throws IOException, MapRequestFormatException {
@@ -403,7 +408,7 @@ public class MapRequestHandler extends ImageServer
     }
 
     /**
-     * Handle a Pan Request.
+     * Handle a Pan Request. 
      */
     public void handlePanRequest(Properties requestProperties, OutputStream out) throws IOException, MapRequestFormatException {
     
@@ -426,7 +431,8 @@ public class MapRequestHandler extends ImageServer
     }
 
     /**
-     * Handle a Recenter Request.
+     * Handle a Recenter Request. Appends a content type to the output
+     * stream which may mess things up for servlets.
      */
     public void handleRecenterRequest(Properties requestProperties, OutputStream out) throws IOException, MapRequestFormatException {
     
@@ -469,7 +475,7 @@ public class MapRequestHandler extends ImageServer
     }
 
     /**
-     * Handle a capabilities request.
+     * Handle a capabilities request. 
      */
     public void handleCapabilitiesRequest(Properties requestProperties, 
                                           OutputStream out)

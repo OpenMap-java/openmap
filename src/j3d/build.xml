@@ -65,6 +65,7 @@
 
     <jar jarfile="${openmap.home}/lib/omj3d.jar" 
 	 basedir="${j3d.classes}"
+         index="true"
 	 includes="**/*.class, **/*.properties, **/*.gif, **/*.png"/>
   </target>    
  

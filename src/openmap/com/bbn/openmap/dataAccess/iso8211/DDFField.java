@@ -47,6 +47,8 @@ public class DDFField {
     protected Hashtable subfields;
     protected int dataPosition;
     protected int dataLength;
+    protected int headerOffset;
+
     public DDFField() {}
 
     public DDFField(DDFFieldDefinition poDefnIn, int dataPositionIn, int dataLengthIn) {
@@ -73,8 +75,28 @@ public class DDFField {
     }
 
     /**
-     * Return the pointer to the entire data block for this record. This
-     * is an internal copy, and shouldn't be freed by the application.
+     * Set how many bytes to add to the data position for absolute
+     * position in the data file for the field data.
+     */
+    protected void setHeaderOffset(int headerOffsetIn) {
+        headerOffset = headerOffsetIn;
+    }
+
+    /**
+     * Get how many bytes to add to the data position for absolute
+     * position in the data file for the field data.
+     */
+    public int getHeaderOffset() {
+        return headerOffset;
+    }
+
+    /**
+     * Return the pointer to the entire data block for this
+     * record. This is an internal copy, and shouldn't be freed by the
+     * application.  If null, then check the dataPosition and
+     * daataLength for byte offsets for the data in the file, and go
+     * get it yourself.  This is done for really large files where it
+     * doesn't make sense to load the data.
      */
     public byte[] getData() { 
         return pachData; 
@@ -90,6 +112,26 @@ public class DDFField {
     /** Fetch the corresponding DDFFieldDefn. */
     public DDFFieldDefinition getFieldDefn() { 
         return poDefn; 
+    }
+
+    /**
+     * If getData() returns null, it'll be your responsibilty to go
+     * after the data you need for this field.
+     * @return the byte offset into the source file to start reading
+     * this field.
+     */
+    public int getDataPosition() {
+        return dataPosition;
+    }
+
+    /**
+     * If getData() returns null, it'll be your responsibilty to go
+     * after the data you need for this field.
+     * @return the number of bytes contained in the source file for
+     * this field.
+     */
+    public int getDataLength() {
+        return dataLength;
     }
     
     /**
@@ -108,6 +150,7 @@ public class DDFField {
         buf.append("\tDataSize = " + size + "\n");
 
         if (pachData == null) {
+            buf.append("\tHeader offset = " + headerOffset + "\n");
             buf.append("\tData position = " + dataPosition + "\n");
             buf.append("\tData length = " + dataLength + "\n");
             return buf.toString();
@@ -179,11 +222,13 @@ public class DDFField {
         Object obj = subfields.get(subfieldName);
         if (obj instanceof List) {
             return (List) obj;
-        } else {
+        } else if (obj != null) {
             LinkedList ll = new LinkedList();
             ll.add(obj);
             return ll;
         }
+
+        return null;
     }
 
     /**

@@ -35,6 +35,7 @@ import java.util.Vector;
 public class DDFModule implements DDFConstants {
 
     protected BinaryFile fpDDF;
+    protected String fileName;
     protected long nFirstRecordOffset;
 
     protected byte _interchangeLevel;
@@ -69,8 +70,8 @@ public class DDFModule implements DDFConstants {
     }
 
     /**
-     * Close an ISO 8211 file.  Note that closing a file also destroys
-     * essentially all other module datastructures.
+     * Close an ISO 8211 file.  Just close the file pointer to the
+     * file.
      */
     public void close() {
 
@@ -82,6 +83,13 @@ public class DDFModule implements DDFConstants {
             }
             fpDDF = null;
         }
+    }
+
+    /**
+     * Clean up, get rid of data and close file pointer.
+     */
+    public void destroy() {
+        close();
 
         // Cleanup the working record.
         poRecord = null;
@@ -104,7 +112,9 @@ public class DDFModule implements DDFConstants {
      *
      * @param pszFilename   The name of the file to open.
      */
-    protected BinaryFile open(String pszFilename) throws IOException {
+    public BinaryFile open(String pszFilename) throws IOException {
+
+        fileName = pszFilename;
 
         fpDDF = new BinaryBufferedFile(pszFilename);
 
@@ -112,7 +122,7 @@ public class DDFModule implements DDFConstants {
         byte[] achLeader = new byte[DDF_LEADER_SIZE];
     
         if (fpDDF.read(achLeader) != DDF_LEADER_SIZE) {
-            close();
+            destroy();
             if (Debug.debugging("iso8211")) {
                 Debug.output("DDFModule: Leader is short on DDF file " + 
                              pszFilename);
@@ -174,7 +184,7 @@ public class DDFModule implements DDFConstants {
         // If the header is invalid, then clean up, report the error
         // and return.
         if (!bValid) {
-            close();
+            destroy();
 
             if (Debug.debugging("iso8211")) {
                 Debug.error("DDFModule: File " + pszFilename + 
@@ -355,6 +365,10 @@ public class DDFModule implements DDFConstants {
      * @return the number of bytes read.
      */
     public int read(byte[] toData, int offset, int length) {
+        if (fpDDF == null) {
+            reopen();
+        }
+
         if (fpDDF != null) {
             try {
                 return fpDDF.read(toData, offset, length);
@@ -376,7 +390,11 @@ public class DDFModule implements DDFConstants {
      * in the data file.  For DDFFields that haven't loaded their
      * subfields.
      */
-    protected int read() {
+    public int read() {
+        if (fpDDF == null) {
+            reopen();
+        }
+
         if (fpDDF != null) {
             try {
                 return fpDDF.read();
@@ -394,7 +412,11 @@ public class DDFModule implements DDFConstants {
      * loaded their subfields.
      * @param pos the byte position to reposition the file pointer to.
      */
-    protected void seek(long pos) throws IOException {
+    public void seek(long pos) throws IOException {
+        if (fpDDF == null) {
+            reopen();
+        }
+
         if (fpDDF != null) {
             fpDDF.seek(pos);
         } else {
@@ -439,5 +461,15 @@ public class DDFModule implements DDFConstants {
             }
         }
         
+    }
+
+    public void reopen() {
+        try {
+            if (fpDDF == null) {
+                fpDDF = new BinaryBufferedFile(fileName);
+            }
+        } catch (IOException ioe) {
+
+        }
     }
 }
