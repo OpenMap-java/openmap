@@ -13,7 +13,7 @@
 // **********************************************************************
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/SeparatorListener.java,v $
-// $Revision: 1.2 $ $Date: 2003/12/23 20:43:32 $ $Author: wjeuerle $
+// $Revision: 1.3 $ $Date: 2003/12/23 21:19:21 $ $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -24,7 +24,7 @@ import java.io.Writer;
 import java.io.IOException;
 
 /**
- * An HttpRequestListener that writes an HTML Separator ("&lt;HR&gt;>")
+ * An HttpRequestListener that writes an HTML Separator ("&lt;HR&gt;")
  * to the client.
  */
 public class SeparatorListener implements HttpRequestListener {
