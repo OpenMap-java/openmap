@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/DbfInputStream.java,v $
 // $RCSfile: DbfInputStream.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/18 02:42:48 $
+// $Revision: 1.3 $
+// $Date: 2003/10/23 18:20:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,7 +43,7 @@ public class DbfInputStream {
     private String[] _columnNames = null;
 
     /** An array of column lengths, as read from the field descripter array */
-    private byte[] _lengths = null;
+    private int[] _lengths = null;
 
     /** An array of decimal counts, as read from the field descripter array */
     private byte[] _decimalCounts = null;
@@ -83,7 +83,7 @@ public class DbfInputStream {
      * Returns an array of column names
      * @return An array of column names
      */
-    public String[] getColumnNames(){
+    public String[] getColumnNames() {
 	return _columnNames;
     }
 
@@ -91,7 +91,7 @@ public class DbfInputStream {
      * Returns an array of character lengths
      * @return An array of character lengths
      */
-    public byte[] getLengths(){
+    public int[] getLengths() {
 	return _lengths;
     }
 
@@ -99,7 +99,7 @@ public class DbfInputStream {
      * Returns an array of decimal counts
      * @return An array of decimal counts
      */
-    public byte[] getDecimalCounts(){
+    public byte[] getDecimalCounts() {
 	return _decimalCounts;
     }
 
@@ -115,7 +115,7 @@ public class DbfInputStream {
      * Returns an ArrayList of records
      * @return An ArrayList of recrods
      */
-    public ArrayList getRecords(){
+    public ArrayList getRecords() {
 	return _records;
     }
 
@@ -123,7 +123,7 @@ public class DbfInputStream {
      * Returns the number of columns
      * @return The nunber of columns
      */
-    public int getColumnCount(){
+    public int getColumnCount() {
 	return _columnCount;
     }
 
@@ -131,7 +131,7 @@ public class DbfInputStream {
      * Returns the number of rows
      * @return The number of rows
      */
-    public int getRowCount(){
+    public int getRowCount() {
 	return _rowCount;
 
     }
@@ -158,14 +158,14 @@ public class DbfInputStream {
     private void readFieldDescripters() throws IOException {
 	_columnNames = new String[_columnCount];
 	_types = new byte[_columnCount];
-	_lengths = new byte[_columnCount];
+	_lengths = new int[_columnCount];
 	_decimalCounts = new byte[_columnCount];
 
 	for (int n=0; n<=_columnCount-1; n++) {
 	    _columnNames[n] = _leis.readString(11);
 	    _types[n] = (byte)_leis.readByte();
 	    _leis.skipBytes(4);
-	    _lengths[n] = _leis.readByte();
+	    _lengths[n] = _leis.readUnsignedByte();
 	    _decimalCounts[n] = _leis.readByte();
 	    _leis.skipBytes(14);
 	}

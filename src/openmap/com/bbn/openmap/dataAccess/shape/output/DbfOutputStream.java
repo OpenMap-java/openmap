@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/10/23 18:20:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -141,7 +141,7 @@ public class DbfOutputStream {
 	int columnCount = model.getColumnCount();
 	for(int i = 0; i<=columnCount-1; i++) {
 	    String name = model.getColumnName(i);
-	    byte length = model.getLength(i);
+	    int length = model.getLength(i);
 	    byte decimalCount = model.getDecimalCount(i);
 	    byte type = model.getType(i);
 	    writeFieldDescriptor(name, type, length, decimalCount);
@@ -156,7 +156,7 @@ public class DbfOutputStream {
      * @param length The field length
      * @param decimalPlaces The number of decimal places for each field
      */
-    private void writeFieldDescriptor(String name,  byte type, byte length, byte decimalPlaces) throws IOException {
+    private void writeFieldDescriptor(String name,  byte type, int length, byte decimalPlaces) throws IOException {
 	_leos.writeString(name, 11);                      //Byte 0-10
 	_leos.writeByte(type);                            //Byte 11
 	_leos.writeByte(0);                               //Byte 12      Field data address(0)

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 22:31:59 $
+// $Revision: 1.3 $
+// $Date: 2003/10/23 18:20:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,7 +95,7 @@ public class DbfTableModel extends AbstractTableModel
      * An array of bytes that contain the character lengths for each
      * column 
      */
-    protected byte[] _lengths = null;
+    protected int[] _lengths = null;
 
     /** 
      * An array of bytes that contain the number of decimal places for
@@ -132,7 +132,7 @@ public class DbfTableModel extends AbstractTableModel
     public DbfTableModel(int columnCount) {
 	_columnCount = columnCount;
 	_records = new ArrayList();
-	_lengths = new byte[columnCount];
+	_lengths = new int[columnCount];
 	_decimalCounts = new byte[columnCount];
 	_types = new byte[columnCount];
 	_names = new String[columnCount];
@@ -254,7 +254,7 @@ public class DbfTableModel extends AbstractTableModel
      * @param column The column index
      * @return The charcter length for the given column index
      */
-    public byte getLength(int column) {
+    public int getLength(int column) {
 	return _lengths[column];
     }
 
@@ -315,7 +315,7 @@ public class DbfTableModel extends AbstractTableModel
      * @param length The character length to assign for the passed-in
      * column index 
      */
-    public void setLength(int column, byte length) {
+    public void setLength(int column, int length) {
 	_lengths[column] = length;
     }
 
@@ -567,6 +567,17 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      */
+    protected int[] remove(int[] current, int index) {
+
+	int[] newBytes = new int[current.length - 1];
+	System.arraycopy(current, 0, newBytes, 0, index);
+	System.arraycopy(current, index + 1, newBytes, index,
+			 current.length - index - 1);
+	return newBytes;
+    }
+
+    /**
+     */
     protected byte[] remove(byte[] current, int index) {
 
 	byte[] newBytes = new byte[current.length - 1];
@@ -609,8 +620,16 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      */
-    protected byte[] add(byte[] current, byte nb) {
+    protected int[] add(int[] current, byte nb) {
+	int[] newBytes = new int[current.length + 1];
+	System.arraycopy(current, 0, newBytes, 0, current.length);
+	newBytes[current.length] = nb;
+	return newBytes;
+    }
 
+    /**
+     */
+    protected byte[] add(byte[] current, byte nb) {
 	byte[] newBytes = new byte[current.length + 1];
 	System.arraycopy(current, 0, newBytes, 0, current.length);
 	newBytes[current.length] = nb;
@@ -618,7 +637,6 @@ public class DbfTableModel extends AbstractTableModel
     }
 
     protected String[] add(String[] current, String string) {
-
 	String[] newStrings = new String[current.length + 1];
 	System.arraycopy(current, 0, newStrings, 0, current.length);
 	newStrings[current.length] = string;

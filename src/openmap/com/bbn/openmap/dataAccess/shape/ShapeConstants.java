@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/ShapeConstants.java,v $
 // $RCSfile: ShapeConstants.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/10/23 18:20:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,7 +65,6 @@ public interface ShapeConstants {
     public static final String DBF_LOGICAL = "Boolean";
     public static final Byte DBF_TYPE_MEMO = new Byte((byte)77);
     public static final String DBF_MEMO = "Memo";
-
 
     public static final String PARAM_DBF = "dbf";
     public static final String PARAM_SHX = "shx";
