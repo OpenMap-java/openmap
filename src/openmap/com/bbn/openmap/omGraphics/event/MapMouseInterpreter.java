@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/MapMouseInterpreter.java,v $
 // $RCSfile: MapMouseInterpreter.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/25 18:49:01 $
+// $Revision: 1.4 $
+// $Date: 2003/10/08 21:34:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -99,11 +99,6 @@ public interface MapMouseInterpreter extends MapMouseListener {
      * was previously over.
      */
     public boolean mouseNotOver(OMGraphic omg);
-
-    /**
-     * Notification that a particular keyboard button was pressed.
-     */
-    public boolean keyPressed(OMGraphic omg, int virtualKey);
 
     /**
      * Set the GestureResponsePolicy to notify when MouseEvents have
