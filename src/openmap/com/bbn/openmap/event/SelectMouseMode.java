@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/SelectMouseMode.java,v $
 // $RCSfile: SelectMouseMode.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/05 15:44:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,7 +48,7 @@ import java.awt.event.*;
  * except that it actually calls the fire methods in the
  * MapMouseSupport object to propagate the events.
  */
-public class SelectMouseMode extends AbstractMouseMode {
+public class SelectMouseMode extends CoordMouseMode {
 
     /**
      * Mouse Mode identifier, which is "Gestures".
@@ -61,7 +61,7 @@ public class SelectMouseMode extends AbstractMouseMode {
      * Default constructor.  Sets the ID to the modeID, and the
      * consume mode to true. 
      */
-    public SelectMouseMode(){
+    public SelectMouseMode() {
 	this(true);
     }
 
@@ -70,7 +70,7 @@ public class SelectMouseMode extends AbstractMouseMode {
      * The constructor that lets you set the consume mode. 
      * @param consumeEvents the consume mode setting.
      */
-    public SelectMouseMode(boolean consumeEvents){
+    public SelectMouseMode(boolean consumeEvents) {
 	this(modeID, consumeEvents);
     }
 
@@ -80,7 +80,7 @@ public class SelectMouseMode extends AbstractMouseMode {
      * @param id the id for the mouse mode.
      * @param consumeEvents the consume mode setting.
      */
-    public SelectMouseMode(String id, boolean consumeEvents){
+    public SelectMouseMode(String id, boolean consumeEvents) {
 	super(id, consumeEvents);
     }
 
@@ -129,6 +129,7 @@ public class SelectMouseMode extends AbstractMouseMode {
      * @param e mouse event.
      */
     public void mouseDragged(MouseEvent e) {
+	fireMouseLocation(e);
 	mouseSupport.fireMapMouseDragged(e);
     }
 
@@ -137,6 +138,7 @@ public class SelectMouseMode extends AbstractMouseMode {
      * @param e mouse event.
      */
     public void mouseMoved(MouseEvent e) {
+	fireMouseLocation(e);
 	mouseSupport.fireMapMouseMoved(e);
     }
 }
