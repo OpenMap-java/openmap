@@ -23,7 +23,7 @@
     <property name="svg.src" value="${openmap.home}/src/svg"/>
     <property name="j3d.src" value="${openmap.home}/src/j3d"/>
     <property name="corba.src" value="${openmap.home}/src/corba"/>
-
+  
   </target>
 
   <!--  ############################
@@ -116,6 +116,16 @@
     <java classname="com.bbn.openmap.app.OpenMap"
 	  classpath="lib/openmap.jar"
 	  fork="yes"/>
+  </target>
+
+  <target name="osxize" depends="init">
+    <taskdef name="osxize" classname="com.neo.util.mac.OSXizeAntTask" />
+    <osxize name="OpenMap" shortname="openmap"
+            mainclass="com.bbn.openmap.app.OpenMap" 
+	    dir="bin"
+            jars="lib/openmap.jar:lib/omsvg.jar"
+	    verbose="true" />
+       <!--":lib/j3d.jar:lib/omcorba_vb.jar" --> 
   </target>
 
 </project>

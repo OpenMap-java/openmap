@@ -14,8 +14,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile,v $
 # $RCSfile: Makefile,v $
-# $Revision: 1.5 $
-# $Date: 2003/02/15 04:53:28 $
+# $Revision: 1.6 $
+# $Date: 2003/03/13 01:22:36 $
 # $Author: dietrick $
 # 
 # **********************************************************************
@@ -55,6 +55,9 @@ visibroker:
 
 todo:
 	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+
+mac:
+	cd ${OPENMAP_HOME} && bin/ant -emacs osxize
 
 help:
 	cd ${OPENMAP_HOME} && bin/ant -emacs -projecthelp
