@@ -313,8 +313,8 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
     }
 
     /**
-     * Method createGraphic. chooses what type of geometry to render
-     * @param mg - Database object which will be rendered
+     * Method chooses what type of geometry to render.
+     * @param mg Database object which will be rendered
      */
     protected OMGraphic createGraphic(MysqlGeometry mg) {
 	OMGraphic ret = null;
