@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/java.mk,v $
 # $RCSfile: java.mk,v $
-# $Revision: 1.5 $
-# $Date: 1998/06/01 23:31:01 $
+# $Revision: 1.6 $
+# $Date: 1998/09/24 13:29:15 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -31,10 +31,10 @@
 JC = javac
 
 # Java compiler flags for optimizing
-JFLAGS_OPT = -O
+JFLAGS_OPT = -J-mx128m -O
 
 # Java compiler flags for development
-JFLAGS_DEV = -g -deprecation
+JFLAGS_DEV = -J-mx128m -g -deprecation
 
 # Set depending on development vs. optimization
 JFLAGS = $(JFLAGS_OPT)
@@ -43,4 +43,4 @@ JFLAGS = $(JFLAGS_DEV)
 
 # *.java to *.class make rule
 .java.class:
-	$(JC) -J-mx128m $(JFLAGS) $<
+	$(JC) $(JFLAGS) $<
