@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/05/14 17:11:51 $
+// $Revision: 1.8 $
+// $Date: 2003/05/14 18:45:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -272,7 +272,7 @@ public class PropertyHandler implements SoloMapComponent {
 	    tmpProperties.clear();
 	}
 
-	if (foundProperties == false && (Environment.isApplet() || showDebugMessages)) {
+	if (!foundProperties && (Environment.isApplet() || showDebugMessages)) {
 	    Debug.output("PropertyHandler: Unable to locate as resource: " + propsFileName);
 	}
 
@@ -317,9 +317,10 @@ public class PropertyHandler implements SoloMapComponent {
 			 (openmapConfigDirectory == null?"not set":openmapConfigDirectory));
 	}
 
-	foundProperties = PropUtils.loadProperties(tmpProperties, 
-						   openmapConfigDirectory, 
-						   propsFileName);
+	// We want foundProperties to reflect if properties have ever been found.
+	foundProperties |= PropUtils.loadProperties(tmpProperties, 
+						    openmapConfigDirectory, 
+						    propsFileName);
 	
 	// Include properties from config file properties.
 	includeProperties = 
@@ -344,9 +345,10 @@ public class PropertyHandler implements SoloMapComponent {
 			 userHomeDirectory);
 	}
 	
-	foundProperties = PropUtils.loadProperties(tmpProperties, 
-						   userHomeDirectory, 
-						   propsFileName);
+	// We want foundProperties to reflect if properties have ever been found.
+	foundProperties |= PropUtils.loadProperties(tmpProperties, 
+						    userHomeDirectory, 
+						    propsFileName);
 	if (showDebugMessages) {
 	    Debug.output("***** Done with property search ****");
 	}
