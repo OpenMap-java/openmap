@@ -14,19 +14,26 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/BasicI18n.java,v $
 // $RCSfile: BasicI18n.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:39 $
+// $Revision: 1.5 $
+// $Date: 2005/02/11 22:25:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ResourceBundle;
-import java.util.MissingResourceException;
-import java.util.Locale;
 import java.text.MessageFormat;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -39,12 +46,27 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.FileUtils;
 
 /**
  * Basic implementation of internationalization support.
  * <P>
  * This class backs the I18n interface by I18n.property files that it
  * expects to find in each package.
+ * <P>
+ * This class provides a mechanism for creating the I18n.property
+ * files that it expects to use in the application. If the
+ * 'i18n.create' flag is set in the Debug class, then this class will
+ * track what resource bundle property files were searched for, and
+ * what values were returned for requested keys. The
+ * dumpCreatedResourceBundles() method will cause the resource bundles
+ * to be written out, where they can be modified to change the strings
+ * displayed in the GUI. If the 'i18n.default' flag is set, then
+ * 'I18N.properties' files will be created. If that flag is not set,
+ * then the name of the files will be modified for the locale
+ * currently set for the application (i.e. I18N_en_US.properties for
+ * the US locale). You can add the I18nFileCreateMenuItem to an
+ * application to trigger the dumpCreatedResourceBundles() method.
  */
 public class BasicI18n implements I18n {
 
@@ -54,12 +76,29 @@ public class BasicI18n implements I18n {
     public static final String DEBUG = "i18n";
 
     /**
+     * Debug string that causes the BasicI18n class to keep track of
+     * resource property files and strings it looks for, as well as
+     * their defaults. These files can be created by calling
+     * dumpCreatedResourceBundles().
+     */
+    public static final String DEBUG_CREATE = "i18n.create";
+
+    /**
+     * If set, created ResourceBundle files will not have the local
+     * suffixes added to them. Otherwise, the locale set in I18n will
+     * be used and appended.
+     */
+    public static final String DEBUG_CREATE_DEFAULT = "i18n.default";
+
+    /**
      * All properties files containing string should be contained in a
      * file called I18N.properties. This string defines the I18N.
      */
     public static final String ResourceFileNamePrefix = "I18N";
 
     private Locale loc;
+
+    protected Hashtable createHash = null;
 
     //Constructors:
     ///////////////
@@ -94,10 +133,22 @@ public class BasicI18n implements I18n {
     public String get(Class requestor, String field, int type,
                       String defaultString) {
         String ret = getInternal(requestor, field, type);
+
+        if (Debug.debugging(DEBUG_CREATE)) {
+            setForBundleCreation(requestor, field, type, defaultString);
+        }
+
         if (ret == null) {
             return defaultString;
         }
         return ret;
+    }
+
+    protected Hashtable getCreateHash() {
+        if (createHash == null) {
+            createHash = new Hashtable();
+        }
+        return createHash;
     }
 
     //Methods making it easier to use MessageFormat:
@@ -401,6 +452,7 @@ public class BasicI18n implements I18n {
                     + bString.replace('.', '/') + ".properties");
             return null;
         }
+
         String key = shortClassName(requestor) + "." + field;
         switch (type) {
         case TEXT:
@@ -416,13 +468,133 @@ public class BasicI18n implements I18n {
             key += ".mnemonic";
             break;
         }
+
         try {
+
             return bundle.getString(key);
+
         } catch (MissingResourceException e) {
             Debug.message(DEBUG, "Could not locate string in resource: "
                     + requestor.getPackage().getName().replace('.', '/')
                     + ".properties for key: " + key);
+
             return null;
+        }
+    }
+
+    /**
+     * Obtain a String from the underlying data for the given
+     * class/field/type.
+     * 
+     * @return null if the data can't be found -- defaulting happens
+     *         above here.
+     */
+    protected void setForBundleCreation(Class requestor, String field,
+                                        int type, String defaultString) {
+        ResourceBundle bundle = null;
+
+        String bString = requestor.getPackage().getName() + "."
+                + ResourceFileNamePrefix;
+
+        String propertyFileNameKey = null;
+        Properties propertyFileProperties = null;
+
+        // OK, first see what the property file should be.
+        StringBuffer sbuf = new StringBuffer(bString.replace('.', '/'));
+        // Scope the desired resource bundle property file if the
+        // default isn't wanted.
+        if (!Debug.debugging(DEBUG_CREATE_DEFAULT)) {
+            sbuf.append("_" + loc.toString());
+        }
+        sbuf.append(".properties");
+        propertyFileNameKey = sbuf.toString().intern();
+
+        // See if we already have a properties file with the key-value
+        // pairs for this particular resource bundle.
+        propertyFileProperties = (Properties) getCreateHash().get(propertyFileNameKey);
+
+        // If not, create it.
+        if (propertyFileProperties == null) {
+            propertyFileProperties = new Properties();
+            getCreateHash().put(propertyFileNameKey, propertyFileProperties);
+        }
+
+        try {
+            bundle = ResourceBundle.getBundle(bString, loc);
+        } catch (MissingResourceException e) {
+        }
+
+        String resourceKey = shortClassName(requestor) + "." + field;
+        switch (type) {
+        case TEXT:
+            //Do nothing.
+            break;
+        case TITLE:
+            resourceKey += ".title";
+            break;
+        case TOOLTIP:
+            resourceKey += ".tooltip";
+            break;
+        case MNEMONIC:
+            resourceKey += ".mnemonic";
+            break;
+        }
+
+        try {
+            if (bundle != null) {
+                String resourceValue = bundle.getString(resourceKey);
+                propertyFileProperties.put(resourceKey, resourceValue);
+            } else {
+                propertyFileProperties.put(resourceKey, defaultString);
+            }
+        } catch (MissingResourceException e) {
+            propertyFileProperties.put(resourceKey, defaultString);
+        }
+    }
+
+    /**
+     * If called, will bring up a JFileChooser so you can pick a
+     * location to dump the resource files that were searched for,
+     * with values that were found or the defaults provided in the
+     * code. This will only do something if the BasicI18n class was
+     * accessed with the 'i18n.create' flag set in the Debug class.
+     */
+    public void dumpCreatedResourceBundles() {
+        String location = FileUtils.getFilePathToSaveFromUser("Choose Location");
+        if (location != null) {
+            dumpCreatedResourceBundles(location);
+        }
+    }
+
+    /**
+     * Will dump the resource bundle property files searched for by
+     * this class, along with the contents that were returned or with
+     * the defaults provided by the application.
+     * 
+     * @param location directory location to use as the root for
+     *        resource bundle file hierarchy.
+     */
+    public void dumpCreatedResourceBundles(String location) {
+        Hashtable bundleHash = getCreateHash();
+        for (Enumeration enumeration = bundleHash.keys(); enumeration.hasMoreElements();) {
+            String key = (String) enumeration.nextElement();
+            Properties props = (Properties) bundleHash.get(key);
+
+            try {
+                File propFile = new File(location + "/" + key);
+
+                File parentDir = new File(propFile.getParent());
+                parentDir.mkdirs();
+
+                propFile.createNewFile();
+                FileOutputStream fos = new FileOutputStream(propFile);
+                props.store(fos, "I18N Resource File");
+                fos.close();
+            } catch (FileNotFoundException fnfe) {
+                fnfe.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

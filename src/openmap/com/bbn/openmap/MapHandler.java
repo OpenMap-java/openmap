@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapHandler.java,v $
 // $RCSfile: MapHandler.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:05:39 $
+// $Revision: 1.8 $
+// $Date: 2005/02/11 22:25:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -163,7 +163,7 @@ public class MapHandler extends BeanContextServicesSupport {
      * @return true if addition is successful, false if not.
      * @throws MultipleSoloMapComponentException.
      */
-    public boolean add(Object obj) {
+    public synchronized boolean add(Object obj) {
         try {
             boolean passedSoloMapComponentTest = true;
             if (obj instanceof SoloMapComponent) {
@@ -190,6 +190,11 @@ public class MapHandler extends BeanContextServicesSupport {
             Debug.error("MapHandler caught ConcurrentModificationException when adding ["
                     + obj.getClass().getName()
                     + "]. The addition of this component to the MapHandler is causing some other component to attempt to be added as well, and the coping mechanism in the MapHandler is not handling it well.");
+            if (Debug.debugging("maphandler")) {
+                cme.printStackTrace();
+            }
+            addLater(obj);
+            setAddInProgress(false);
         }
         return false;
     }
