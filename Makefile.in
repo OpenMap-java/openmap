@@ -14,8 +14,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.68 $
-# $Date: 2002/04/29 19:17:02 $
+# $Revision: 1.69 $
+# $Date: 2002/05/08 00:54:11 $
 # $Author: dietrick $
 # 
 # **********************************************************************
@@ -86,8 +86,7 @@ Core.classes =	com/bbn/openmap/*.class \
 Core.extra =	com/bbn/openmap/*.gif \
 		com/bbn/openmap/gui/*.gif \
 		com/bbn/openmap/omGraphics/*.gif \
-		com/bbn/openmap/tools/drawing/*.gif \
-		com/bbn/openmap/tools/j3d/*.gif
+		com/bbn/openmap/tools/drawing/*.gif
 
 Core.jar =	${Core.classes} ${Core.extra}
 
@@ -197,6 +196,7 @@ all:	omcore jar contrib
 
 clean distclean::
 	cd com && $(MAKE) $@
+	$(RM) *~
 
 # NOTE: distclean should NOT remove documentation or JAR files.  Our
 # autobuild script depends on this.
@@ -230,25 +230,39 @@ svg:	omcore
 	cd com/bbn/openmap/image && $(MAKE) $@
 	${JAR} cf lib/openmap.jar ${Core.jar} ${Layer.jar} ${PlugIn.jar} ${App.jar} ${Example.jar}
 
-J3D.jar: \
+J3D.jar = \
 	com/bbn/openmap/tools/j3d/*.class \
+	com/bbn/openmap/tools/j3d/*.gif \
 	com/bbn/openmap/plugin/pilot/*.class
 
 j3d:	omcore
-	cd com/bbn/openmap/tools/j3d && $(MAKE) $@
-	cd com/bbn/openmap/plugin/pilot && $(MAKE) $@
+	cd com/bbn/openmap/tools/j3d && $(MAKE)
+	cd com/bbn/openmap/plugin/pilot && $(MAKE)
 	${JAR} cf lib/openmap.jar ${Core.jar} ${J3D.jar} ${Layer.jar} ${PlugIn.jar} ${App.jar} ${Example.jar}
 
-corba:	omcore
+j3d_clean j3d_reallyclean::
+	cd com/bbn/openmap/tools/j3d && $(MAKE) $@
+	cd com/bbn/openmap/plugin/pilot && $(MAKE) $@
+
+corba_idl: 
 	cd com/bbn/openmap/layer/rpf/corba && ${MAKE} idl
+	cd com/bbn/openmap/layer/specialist && ${MAKE} idl
+	cd com/bbn/openmap/plugin/corbaImage && ${MAKE} idl
+
+corba:	omcore
 	cd com/bbn/openmap/layer/rpf/corba && ${MAKE}
 	cd com/bbn/openmap/layer/rpf/corba && ${MAKE} jar
-	cd com/bbn/openmap/layer/specialist && ${MAKE} idl
 	cd com/bbn/openmap/layer/specialist && ${MAKE} 
 	cd com/bbn/openmap/layer/specialist && ${MAKE} jar
-	cd com/bbn/openmap/plugin/corbaImage && ${MAKE} idl
 	cd com/bbn/openmap/plugin/corbaImage && ${MAKE} 
 	cd com/bbn/openmap/plugin/corbaImage && ${MAKE} jar
+
+corba_clean corba_reallyclean::
+	cd com/bbn/openmap/layer/rpf/corba && ${MAKE} $@
+	cd com/bbn/openmap/layer/specialist && ${MAKE} $@
+	cd com/bbn/openmap/plugin/corbaImage && ${MAKE} $@
+
+corba_all: corba_idl corba
 
 #################
 # documentation #

@@ -1110,6 +1110,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/omGraphics/labeled/Makefile
 	com/bbn/openmap/omGraphics/util/Makefile
 	com/bbn/openmap/plugin/Makefile
+	com/bbn/openmap/plugin/corbaImage/Makefile
 	com/bbn/openmap/plugin/earthImage/Makefile
 	com/bbn/openmap/plugin/esri/Makefile
 	com/bbn/openmap/plugin/esri/input/Makefile
@@ -1122,6 +1123,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/tools/Makefile
 	com/bbn/openmap/tools/drawing/Makefile
 	com/bbn/openmap/tools/j3d/Makefile
+	com/bbn/openmap/tools/j3d/geometry/Makefile
 	com/bbn/openmap/tools/terrain/Makefile
 	com/bbn/openmap/util/Makefile
 	com/bbn/openmap/util/corba/Makefile
@@ -1271,6 +1273,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/omGraphics/labeled/Makefile
 	com/bbn/openmap/omGraphics/util/Makefile
 	com/bbn/openmap/plugin/Makefile
+	com/bbn/openmap/plugin/corbaImage/Makefile
 	com/bbn/openmap/plugin/earthImage/Makefile
 	com/bbn/openmap/plugin/esri/Makefile
 	com/bbn/openmap/plugin/esri/input/Makefile
@@ -1283,6 +1286,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/tools/Makefile
 	com/bbn/openmap/tools/drawing/Makefile
 	com/bbn/openmap/tools/j3d/Makefile
+	com/bbn/openmap/tools/j3d/geometry/Makefile
 	com/bbn/openmap/tools/terrain/Makefile
 	com/bbn/openmap/util/Makefile
 	com/bbn/openmap/util/corba/Makefile
