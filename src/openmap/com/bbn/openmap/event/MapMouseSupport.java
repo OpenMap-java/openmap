@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseSupport.java,v $
 // $RCSfile: MapMouseSupport.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/24 23:03:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -68,12 +68,24 @@ public class MapMouseSupport implements java.io.Serializable {
      */
     protected boolean clickHappened = false;
 
+    protected MapMouseMode parentMode = null;
+
     /**
      * Construct a default MapMouseSupport.
      * The default value of consumeEvents is set to true.
      */
     public MapMouseSupport() {
-	this(true);
+	this(null, true);
+    }
+
+    /**
+     * Construct a default MapMouseSupport.
+     * The default value of consumeEvents is set to true.
+     * @param mode the parent MapMouseMode to use with creating the
+     * MapMouseEvent.
+     */
+    public MapMouseSupport(MapMouseMode mode) {
+	this(mode, true);
     }
 
     /**
@@ -83,7 +95,31 @@ public class MapMouseSupport implements java.io.Serializable {
      * event, if false, events are propagated to all MapMouseListeners
      */
     public MapMouseSupport(boolean shouldConsumeEvents) {
+	this(null, shouldConsumeEvents);
+    }
+
+    /**
+     * Construct a MapMouseSupport.
+     * @param mode the parent MapMouseMode to use with creating the
+     * MapMouseEvent.
+     * @param shouldConsumeEvents if true, events are propagated to
+     * the first MapMouseListener that successfully processes the
+     * event, if false, events are propagated to all MapMouseListeners
+     */
+    public MapMouseSupport(MapMouseMode mode, boolean shouldConsumeEvents) {
+	parentMode = mode;
 	consumeEvents = shouldConsumeEvents;
+    }
+
+    /**
+     * Set the parent MapMouseMode to use in constructing MapMouseEvents.
+     */
+    public void setParentMode(MapMouseMode mode) {
+	parentMode = mode;
+    }
+
+    public MapMouseMode getParentMode() {
+	return parentMode;
     }
 
     /**
@@ -158,6 +194,14 @@ public class MapMouseSupport implements java.io.Serializable {
 	if (Debug.debugging("gestures")) {
 	    System.out.println("MapMouseSupport.fireMapMousePressed()");
 	}
+
+	if (proxy != null) {
+	    proxy.mousePressed(evt);
+	    return true;
+	}
+
+	evt = new MapMouseEvent(parentMode, evt);
+
 	java.util.Vector targets = getTargets();
 	if (targets == null) return false;
 
@@ -182,6 +226,13 @@ public class MapMouseSupport implements java.io.Serializable {
      */
     public boolean fireMapMouseReleased(java.awt.event.MouseEvent evt) {
 //  	System.out.println("MapMouseSupport: fireMapMouseReleased");
+
+	if (proxy != null) {
+	    proxy.mouseReleased(evt);
+	    return true;
+	}
+
+	evt = new MapMouseEvent(parentMode, evt);
 
 	if (priorityListener != null) {
 	    priorityListener.mouseReleased(evt);
@@ -213,6 +264,14 @@ public class MapMouseSupport implements java.io.Serializable {
     public boolean fireMapMouseClicked(java.awt.event.MouseEvent evt) {
 //  	System.out.println("MapMouseSupport: fireMapMouseClicked");
 	clickHappened = true;
+
+	if (proxy != null) {
+	    proxy.mouseClicked(evt);
+	    return true;
+	}
+
+	evt = new MapMouseEvent(parentMode, evt);
+
 	if (priorityListener != null && evt.getClickCount() > 1){
 	    priorityListener.mouseClicked(evt);
 	    return true;
@@ -240,8 +299,16 @@ public class MapMouseSupport implements java.io.Serializable {
      */
     public boolean fireMapMouseEntered(java.awt.event.MouseEvent evt) {
 //  	System.out.println("MapMouseSupport: fireMapMouseEntered");
+
+	if (proxy != null) {
+	    proxy.mouseEntered(evt);
+	    return true;
+	}
+
 	java.util.Vector targets = getTargets();
 	if (targets == null) return false;
+
+	evt = new MapMouseEvent(parentMode, evt);
 
 	for (int i = 0; i < targets.size(); i++) {
 	    MapMouseListener target = 
@@ -261,6 +328,8 @@ public class MapMouseSupport implements java.io.Serializable {
 	java.util.Vector targets = getTargets();
 	if (targets == null) return false;
 
+	evt = new MapMouseEvent(parentMode, evt);
+
 	for (int i = 0; i < targets.size(); i++) {
 	    MapMouseListener target = 
 		(MapMouseListener)targets.elementAt(i);
@@ -278,6 +347,13 @@ public class MapMouseSupport implements java.io.Serializable {
 //  	System.out.println("MapMouseSupport: fireMapMouseDragged");
 	clickHappened = false;
 	
+	if (proxy != null) {
+	    proxy.mouseDragged(evt);
+	    return true;
+	}
+
+	evt = new MapMouseEvent(parentMode, evt);
+
 	if (priorityListener != null){
 	    priorityListener.mouseDragged(evt);
 	    return true;
@@ -306,10 +382,18 @@ public class MapMouseSupport implements java.io.Serializable {
      */
     public boolean fireMapMouseMoved(java.awt.event.MouseEvent evt) {
 //  	System.out.println("MapMouseSupport: fireMapMouseMoved");
+
+	if (proxy != null) {
+	    proxy.mouseMoved(evt);
+	    return true;
+	}
+
 	boolean movedConsumed = false;
 
 	java.util.Vector targets = getTargets();
 	if (targets == null) return false;
+
+	evt = new MapMouseEvent(parentMode, evt);
 
 	for (int i = 0; i < targets.size(); i++) {
 	    MapMouseListener target = 
@@ -345,7 +429,6 @@ public class MapMouseSupport implements java.io.Serializable {
         s.writeObject(null);
     }
 
-
     private void readObject(ObjectInputStream s) 
 	throws ClassNotFoundException, IOException {
         s.defaultReadObject();
@@ -354,5 +437,41 @@ public class MapMouseSupport implements java.io.Serializable {
         while(null != (listenerOrNull = s.readObject())) {
 	  addMapMouseListener((MapMouseListener)listenerOrNull);
         }
+    }
+
+    protected transient MapMouseMode proxy = null;
+
+    /**
+     * Request to have the parent MapMouseMode act as a proxy for a
+     * MapMouseMode that wants to remain hidden.  Can be useful for
+     * directing events to one object.
+     *
+     * @param mmm the hidden MapMouseMode for this MapMouseMode to
+     * send events to.
+     * @return true if the proxy setup (essentially a lock) is
+     * successful, false if the proxy is already set up for another
+     * listener.
+     */
+    protected synchronized boolean setProxyFor(MapMouseMode mmm) {
+	if (proxy == null) {
+	    proxy = mmm;
+	    return true;
+	}
+	return false;
+    }
+
+    /**
+     * Can check if the MapMouseMode is acting as a proxy for another
+     * MapMouseMode.
+     */
+    public synchronized boolean isProxyFor(MapMouseMode mmm) {
+	return proxy == mmm;
+    }
+
+    /**
+     * Release the proxy lock on the MapMouseMode.
+     */
+    protected synchronized void releaseProxy() {
+	proxy = null;
     }
 }

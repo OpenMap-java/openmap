@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/AbstractMouseMode.java,v $
 // $RCSfile: AbstractMouseMode.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/24 23:03:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,11 +76,11 @@ public class AbstractMouseMode extends OMComponent
      * will look for a resource gif file that has the same ID string -
      * Navigation.gif for the NavMouseMode, for instance.
      */
-    protected Icon guiIcon = null;
+    protected transient Icon guiIcon = null;
 
-    public DecimalFormat df = new DecimalFormat("0.###");
+    public transient DecimalFormat df = new DecimalFormat("0.###");
 
-    protected boolean visible = true;
+    protected transient boolean visible = true;
 
     /**
      * Construct an AbstractMouseMode.
@@ -98,7 +98,7 @@ public class AbstractMouseMode extends OMComponent
      * event, if false, events are propagated to all MapMouseListeners
      */
     public AbstractMouseMode(String name, boolean shouldConsumeEvents) {
-	mouseSupport = new MapMouseSupport(shouldConsumeEvents);
+	mouseSupport = new MapMouseSupport(this, shouldConsumeEvents);
 	ID = name;
 
 	java.net.URL url = getClass().getResource(name + ".gif");
@@ -255,7 +255,7 @@ public class AbstractMouseMode extends OMComponent
 
     /**
      * Part of the MapMouseMode interface.  Called when the MouseMode
-     * is made active or inactive.
+     * is made active or inactive.  
      *
      * @param active true if the mode has been made active, false if
      * it has been made inactive.
@@ -295,4 +295,35 @@ public class AbstractMouseMode extends OMComponent
     public void setVisible(boolean value) {
 	visible = value;
     }
+
+    /**
+     * Request to have the MapMouseMode act as a proxy for a
+     * MapMouseMode that wants to remain hidden.  Can be useful for
+     * directing events to one object.
+     *
+     * @param mmm the hidden MapMouseMode for this MapMouseMode to
+     * send events to.
+     * @return true if the proxy setup (essentially a lock) is
+     * successful, false if the proxy is already set up for another
+     * listener.
+     */
+    public boolean actAsProxyFor(MapMouseMode mmm) {
+	return mouseSupport.setProxyFor(mmm);
+    }
+
+    /**
+     * Can check if the MapMouseMode is acting as a proxy for another
+     * MapMouseMode.
+     */
+    public boolean isProxyFor(MapMouseMode mmm) {
+	return mouseSupport.isProxyFor(mmm);
+    }
+
+    /**
+     * Release the proxy lock on the MapMouseMode.
+     */
+    public void releaseProxy() {
+	mouseSupport.releaseProxy();
+    }
+
 }

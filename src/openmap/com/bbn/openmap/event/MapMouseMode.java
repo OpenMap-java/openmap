@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseMode.java,v $
 // $RCSfile: MapMouseMode.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/24 23:03:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,4 +95,28 @@ public interface MapMouseMode extends MouseListener, MouseMotionListener {
      * may be controlled by other tools.
      */
     public boolean isVisible();
+
+    /**
+     * Request to have the MapMouseMode act as a proxy for a
+     * MapMouseMode that wants to remain hidden.  Can be useful for
+     * directing events to one object.
+     *
+     * @param mml the hidden MapMouseMode for this MapMouseMode to
+     * send events to.
+     * @return true if the proxy setup (essentially a lock) is
+     * successful, false if the proxy is already set up for another
+     * listener.
+     */
+    public boolean actAsProxyFor(MapMouseMode mmm);
+
+    /**
+     * Can check if the MapMouseMode is acting as a proxy for a
+     * MapMouseMode.
+     */
+    public boolean isProxyFor(MapMouseMode mmm);
+
+    /**
+     * Release the proxy lock on the MapMouseMode.
+     */
+    public void releaseProxy();
 }
