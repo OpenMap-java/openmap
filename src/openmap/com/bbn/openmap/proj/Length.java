@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Length.java,v $
 // $RCSfile: Length.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/10 21:58:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,12 +57,13 @@ public class Length {
     
     /**
      * Create a Length, with a name an the number of it's units that
-     * go around the earth at its equator.
+     * go around the earth at its equator.  The name and abbreviation
+     * are converted to lower case for consistency.
      */
     public Length(String name, String abbr, float unitEquatorCircumference) {
-	this.name = name;
+	this.name = name.toLowerCase().intern();
 	constant = unitEquatorCircumference/com.bbn.openmap.MoreMath.TWO_PI;
-	this.abbr = abbr;
+	this.abbr = abbr.toLowerCase().intern();
     }
 
     /**
@@ -112,15 +113,17 @@ public class Length {
     }
 
     /**
-     * Get the Length object with the given name or abbreviation.  If nothing exists
-     * with that name, then return null.
+     * Get the Length object with the given name or abbreviation.  If
+     * nothing exists with that name, then return null.  The lower
+     * case version of the name or abbreviation is checked against the
+     * available options.
      */
     public static Length get(String name) {
 	Length[] choices = getAvailable();
 
 	for (int i = 0; i < choices.length; i++) {
-	    if (name.intern() == choices[i].toString() ||
-		name.intern() == choices[i].getAbbr()) {
+	    if (name.toLowerCase().intern() == choices[i].toString() ||
+		name.toLowerCase().intern() == choices[i].getAbbr()) {
 		return choices[i];
 	    }
 	}
