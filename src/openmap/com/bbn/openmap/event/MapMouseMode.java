@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseMode.java,v $
 // $RCSfile: MapMouseMode.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/28 22:02:14 $
+// $Revision: 1.4 $
+// $Date: 2003/09/22 23:12:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,7 @@ import javax.swing.Icon;
  * @see SelectMouseMode
  * @see NullMouseMode
  */
-public interface MapMouseMode extends MouseListener, MouseMotionListener {
+public interface MapMouseMode extends MouseListener, MouseMotionListener, PaintListener {
 
     /**
      * Returns the id (MapMouseMode name).
@@ -49,6 +49,11 @@ public interface MapMouseMode extends MouseListener, MouseMotionListener {
      * @return String ID
      */
     public String getID();
+
+    /**
+     * Return a pretty name, suitable for the GUI.
+     */
+    public String getPrettyName();
 
     /**
      * Gets the mouse cursor recommended for use when this mouse mode

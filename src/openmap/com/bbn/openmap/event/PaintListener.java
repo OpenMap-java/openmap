@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/PaintListener.java,v $
 // $RCSfile: PaintListener.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:12:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,6 +29,6 @@ package com.bbn.openmap.event;
  */
 public interface PaintListener {
 
-    public void paint(java.awt.Graphics graphics);
+    public void listenerPaint(java.awt.Graphics graphics);
 
 }

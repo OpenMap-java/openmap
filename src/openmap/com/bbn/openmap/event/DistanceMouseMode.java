@@ -34,6 +34,7 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.beans.*;
@@ -135,7 +136,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * setInfoDelegator, setUnit and setLineType if you use this
      * constructor.  
      */
-    public DistanceMouseMode(){
+    public DistanceMouseMode() {
 	this(true);
         // if you really want to change the cursor shape
 	// setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
@@ -151,7 +152,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * constructor.
      * @param consumeEvents the mode setting.  
      */
-    public DistanceMouseMode(boolean consumeEvents){
+    public DistanceMouseMode(boolean consumeEvents) {
 	super(modeID, consumeEvents);
         // if you really want to change the cursor shape
 	// setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
@@ -166,7 +167,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * need to setInfoDelegator, setUnit and setLineType if you use
      * this constructor.  
      */
-    public DistanceMouseMode(String name, boolean consumeEvents){
+    public DistanceMouseMode(String name, boolean consumeEvents) {
 	super(name, consumeEvents);
         // if you really want to change the cursor shape
 	// setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
@@ -185,7 +186,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * as Length.NM, Length.KM or Length.MILE.  If null, display all of them.
      */
     public DistanceMouseMode(boolean consumeEvents, InformationDelegator id, 
-			     Length units){
+			     Length units) {
 	super(modeID, consumeEvents);
         // if you really want to change the cursor shape
 	//  setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
@@ -208,7 +209,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      *      LINETYPE_GREATCIRCLE, LINETYPE_RHUMB, LINETYPE_STRAIGHT
      */
     public DistanceMouseMode(boolean consumeEvents, InformationDelegator id,
-                             Length units, int lType){
+                             Length units, int lType) {
 	super(modeID, consumeEvents);
         // if you really want to change the cursor shape
 	//  setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
@@ -226,7 +227,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param consumeEvents the mode setting.
      * @param id the calling object's info delegator.
      */
-    public DistanceMouseMode(boolean consumeEvents, InformationDelegator id){
+    public DistanceMouseMode(boolean consumeEvents, InformationDelegator id) {
 	super(modeID, consumeEvents);
         // if you really want to change the cursor shape
 	//  setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
@@ -244,7 +245,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param id the calling object's info delegator.
      */
     public DistanceMouseMode(String name, boolean consumeEvents, 
-			     InformationDelegator id){
+			     InformationDelegator id) {
 	super(name, consumeEvents);
         // if you really want to change the cursor shape
 	//  setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
@@ -413,8 +414,20 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
      */
-    public void paintLine(LatLonPoint pt1, LatLonPoint pt2){
-	Graphics2D g = (Graphics2D)(theMap.getGraphics());
+    public void paintLine(LatLonPoint pt1, LatLonPoint pt2) {
+	if (theMap != null) {
+	    paintLine(pt1, pt2, theMap.getGraphics());
+	}
+    }
+
+    /**
+     * Draw a rubberband line between two points into the Graphics object.
+     * @param pt1 the anchor point.
+     * @param pt2 the current (mouse) position.
+     * @param graphics a java.awt.Graphics object to render into.
+     */
+    public void paintLine(LatLonPoint pt1, LatLonPoint pt2, Graphics graphics) {
+	Graphics2D g = (Graphics2D)graphics;
 	g.setXORMode(java.awt.Color.lightGray);
 	g.setColor(java.awt.Color.darkGray);
 	if (pt1 != null && pt2 != null) {
@@ -439,10 +452,22 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
      */
-    public void paintCircle(LatLonPoint pt1, LatLonPoint pt2){
+    public void paintCircle(LatLonPoint pt1, LatLonPoint pt2) {
+	if (theMap != null) {
+	    paintCircle(pt1, pt2, theMap.getGraphics());
+	}
+    }
+
+    /**
+     * Draw a rubberband circle between two points
+     * @param pt1 the anchor point.
+     * @param pt2 the current (mouse) position.
+     * @param graphics a java.awt.Graphics object to render into.
+     */
+    public void paintCircle(LatLonPoint pt1, LatLonPoint pt2, Graphics graphics) {
 	// do all this only if want to display the rubberband circle
 	if (displayCircle) {
-	    Graphics2D g = (Graphics2D)(theMap.getGraphics());
+	    Graphics2D g = (Graphics2D)graphics;
 	    g.setXORMode(java.awt.Color.lightGray);
 	    g.setColor(java.awt.Color.darkGray);
 	    if (pt1 != null && pt2 != null) {
@@ -473,15 +498,27 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
      */
-    public void paintRubberband(LatLonPoint pt1, LatLonPoint pt2){
-	paintLine(pt1, pt2);
-	paintCircle(pt1, pt2);
+    public void paintRubberband(LatLonPoint pt1, LatLonPoint pt2) {
+	if (theMap != null) {
+	    paintRubberband(pt1, pt2, theMap.getGraphics());
+	}
+    }
+
+    /**
+     * Draw a rubberband line and circle between two points
+     * @param pt1 the anchor point.
+     * @param pt2 the current (mouse) position.
+     * @param graphics a java.awt.Graphics object to render into.
+     */
+    public void paintRubberband(LatLonPoint pt1, LatLonPoint pt2, Graphics g) {
+	paintLine(pt1, pt2, g);
+	paintCircle(pt1, pt2, g);
     }
 
     /**
      * Erase all line segments.
      */
-    public void eraseLines(){
+    public void eraseLines() {
 	for (int i=0; i<segments.size()-1; i++) {
 	    paintLine((LatLonPoint)(segments.elementAt(i)),
 		      (LatLonPoint)(segments.elementAt(i+1)));
@@ -491,14 +528,14 @@ public class DistanceMouseMode extends CoordMouseMode {
     /**
      * Erase the current segment circle.
      */
-    public void eraseCircle(){
+    public void eraseCircle() {
 	paintCircle(rPoint1, rPoint2);
     }
 
     /**
      * Reset the segments and distances
      */
-    public void cleanUp(){
+    public void cleanUp() {
 	// a quick way to clean the vector
 	segments = new Vector();
 	// reset the total distance
@@ -697,4 +734,18 @@ public class DistanceMouseMode extends CoordMouseMode {
 	list.put(RepaintToCleanProperty, "Flag to tell the map to repaint to clean up on a double click (true/false).");
 	return list;
     }
+
+    /**
+     * Called by the MapBean when it repaints, to let the MouseMode
+     * know when to update itself on the map. PaintListener interface.
+     */
+    public void listenerPaint(java.awt.Graphics g) {
+	for (int i=0; i<segments.size()-1; i++) {
+	    paintLine((LatLonPoint)(segments.elementAt(i)),
+		      (LatLonPoint)(segments.elementAt(i+1)),
+		      g);
+	}
+	paintRubberband(rPoint1, rPoint2, g);
+    }
+
 }

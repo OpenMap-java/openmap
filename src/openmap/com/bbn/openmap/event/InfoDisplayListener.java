@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/InfoDisplayListener.java,v $
 // $RCSfile: InfoDisplayListener.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:12:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,17 +65,14 @@ public interface InfoDisplayListener extends java.util.EventListener {
     /**
      * Request a tool tip be shown.
      *
-     * @param me MouseEvent for where the tip should be placed.
      * @param event The InfoDisplayEvent containing the text and
      * requestor.  
      */
-    public void requestShowToolTip(MouseEvent me, InfoDisplayEvent event);
+    public void requestShowToolTip(InfoDisplayEvent event);
 
     /**
      * Request a tool tip be hidden.
-     *
-     * @param me MouseEvent for where the tip was. May not be exact.
      */
-    public void requestHideToolTip(MouseEvent me);
+    public void requestHideToolTip();
 
 }

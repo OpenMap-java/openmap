@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode2.java,v $
 // $RCSfile: NavMouseMode2.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/28 22:02:14 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:12:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -175,12 +175,11 @@ public class NavMouseMode2 extends NavMouseMode {
      * coordinates.
      * @param pt2 the opposite corner of the box.
      */
-    protected void paintRectangle(MapBean map, Point pt1, Point pt2){
-	Graphics g = map.getGraphics();
+    protected void paintRectangle(Graphics g, Point pt1, Point pt2) {
 	g.setXORMode(java.awt.Color.lightGray);
 	g.setColor(java.awt.Color.darkGray);
 
-	if (pt1 != null && pt2 != null){
+	if (pt1 != null && pt2 != null) {
 
 	    int width = Math.abs(pt2.x - pt1.x);
 	    int height = Math.abs(pt2.y - pt1.y);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/AbstractMouseMode.java,v $
 // $RCSfile: AbstractMouseMode.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/28 22:02:14 $
+// $Revision: 1.4 $
+// $Date: 2003/09/22 23:12:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,6 +33,7 @@ import java.beans.beancontext.*;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Vector;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -41,6 +42,7 @@ import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * Base class of the MouseModes.  It takes care of the administrative
@@ -82,6 +84,21 @@ public class AbstractMouseMode extends OMComponent
 
     protected transient boolean visible = true;
 
+    protected String prettyName;
+
+    /**
+     * The MouseModeID to use for a particular instance of a
+     * MapMouseMode.  If not set, the default mouse mode ID of the
+     * MapMouseMode will be used.
+     */
+    public static final String IDProperty = "id";
+
+    /**
+     * The String to use for a key lookup in a Properties object to
+     * find the name to use in a GUI relating to this Mouse Mode.  
+     */
+    public static final String PrettyNameProperty = "prettyName";
+
     /**
      * Construct an AbstractMouseMode.
      * Default constructor, allocates the mouse support object.
@@ -121,6 +138,23 @@ public class AbstractMouseMode extends OMComponent
      */
     public void setID(String id) {
 	ID = id;
+    }
+
+    public void setPrettyName(String pn) {
+	prettyName = pn;
+    }
+
+    /**
+     * Return a pretty name, suitable for the GUI.  If set, is
+     * independent of the mode ID.  If not set, is the same as the
+     * mode ID.
+     */
+    public String getPrettyName() {
+	if (prettyName == null) {
+	    return ID;
+	} else {
+	    return prettyName;
+	}
     }
 
     /**
@@ -363,4 +397,46 @@ public class AbstractMouseMode extends OMComponent
     public int getProxyDistributionMask() {
 	return mouseSupport.getProxyDistributionMask();
     }
+
+    public void setProperties(String prefix, Properties props) {
+	super.setProperties(prefix, props);
+
+	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+
+	String prettyNameString = props.getProperty(prefix + PrettyNameProperty);
+	if (prettyNameString != null) {
+	    setPrettyName(prettyNameString);
+	}
+
+	String idString = props.getProperty(prefix + IDProperty);
+	if (idString != null) {
+	    setID(idString);
+	}
+    }
+
+    public Properties getProperties(Properties props) {
+	props = super.getProperties(props);
+
+	String prefix = PropUtils.getScopedPropertyPrefix(this);
+	if (prettyName != null) {
+	    props.put(prefix + PrettyNameProperty, prettyName);
+	}
+
+	props.put(prefix + IDProperty, getID());
+	return props;
+    }
+
+    public Properties getPropertyInfo(Properties props) {
+	props = super.getPropertyInfo(props);
+	props.put(PrettyNameProperty, "Presentable name for Mouse Mode.");
+	props.put(IDProperty, "Internal ID for Mouse Mode, used by Layers.");
+	return props;
+    }
+
+    /**
+     * PaintListener interface, notifying the MouseMode that the
+     * MapBean has repainted itself.  Useful if the MouseMode is
+     * drawing stuff.
+     */
+    public void listenerPaint(java.awt.Graphics g) {}
 }
