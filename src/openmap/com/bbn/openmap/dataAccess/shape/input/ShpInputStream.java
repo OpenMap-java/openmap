@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/ShpInputStream.java,v $
 // $RCSfile: ShpInputStream.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/03 19:35:52 $
+// $Revision: 1.3 $
+// $Date: 2003/08/14 22:42:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -214,15 +214,12 @@ public class ShpInputStream implements ShapeConstants {
 
 	    float[] points;
 	    OMGraphic poly = null;
-//  	    OMGraphicList sublist = new OMGraphicList();
-	    
 	    EsriGraphicList sublist = null;
 
 	    if (numParts > 1) {
 		if (shapeType == SHAPE_TYPE_POLYLINE) {
 		    sublist = new EsriPolylineList();
-		}
-		else if (shapeType == SHAPE_TYPE_POLYGON) {
+		} else if (shapeType == SHAPE_TYPE_POLYGON) {
 		    sublist = new EsriPolygonList();
 		}
 
@@ -253,8 +250,7 @@ public class ShpInputStream implements ShapeConstants {
 
 		if (shapeType == SHAPE_TYPE_POLYLINE) {
 		    poly = new EsriPolyline(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
-		}
-		else if (shapeType == SHAPE_TYPE_POLYGON) {
+		} else if (shapeType == SHAPE_TYPE_POLYGON) {
 		    poly = new EsriPolygon(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
 		}
 
