@@ -14,14 +14,13 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:06:23 $
+// $Revision: 1.10 $
+// $Date: 2005/02/02 00:26:55 $
 // $Author: dietrick $
 //
 // **********************************************************************
 
 package com.bbn.openmap.proj.coords;
-
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -298,6 +297,19 @@ public class MGRSPoint extends UTMPoint {
         mgrsp = (MGRSPoint) LLtoUTM(llp, ellip, mgrsp);
         mgrsp.resolve();
         return mgrsp;
+    }
+
+    /**
+     * Convert MGRS zone letter to UTM zone letter, N or S.
+     * @param mgrsZone
+     * @return N of given zone is equal or larger than N, S otherwise.
+     */
+    public static char MGRSZoneToUTMZone(char mgrsZone) {
+        if (Character.toUpperCase(mgrsZone) >= 'N') {
+            return 'N';
+        } else {
+            return 'S';
+        }
     }
 
     /**

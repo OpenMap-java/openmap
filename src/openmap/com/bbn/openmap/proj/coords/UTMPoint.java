@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:24 $
+// $Revision: 1.8 $
+// $Date: 2005/02/02 00:26:55 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -66,8 +66,8 @@ public class UTMPoint {
      * @param easting The easting component.
      * @param zone_number The zone of the coordinate.
      * @param zone_letter. For UTM, 'N' or 'S', to designate the
-     *        northern or southern hemisphere. If the letter is
-     *        something else instead of 'N' or 'S', 'N' is assumed.
+     *        northern or southern hemisphere.
+     * @throws Number format exception of N or S isn't used.
      */
     public UTMPoint(float northing, float easting, int zone_number,
             char zone_letter) {
