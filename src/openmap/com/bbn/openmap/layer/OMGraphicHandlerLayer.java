@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/07/28 20:13:39 $
+// $Revision: 1.6 $
+// $Date: 2003/08/28 22:16:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,8 +25,10 @@ package com.bbn.openmap.layer;
 
 import java.awt.Graphics;
 import java.awt.Shape;
+import java.util.Properties;
 
 import com.bbn.openmap.Layer;
+import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.InfoDisplayEvent;
 import com.bbn.openmap.event.LayerStatusEvent;
 import com.bbn.openmap.event.ProjectionEvent;
@@ -36,7 +38,9 @@ import com.bbn.openmap.layer.policy.RenderPolicy;
 import com.bbn.openmap.layer.policy.StandardRenderPolicy;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.SwingWorker;
 
 /**
@@ -84,6 +88,21 @@ import com.bbn.openmap.util.SwingWorker;
  * gets launched if doPrepare() gets called.
  */
 public class OMGraphicHandlerLayer extends Layer {
+
+    /**
+     * The property that can be set for the ProjectionChangePolicy.
+     * This property should be set with a scoping marker name used to
+     * define a policy class and any other properties that the policy
+     * should use.  "projectionChangePolicy"
+     */
+    public final static String ProjectionChangePolicyProperty = "projectionChangePolicy";
+    /**
+     * The property that can be set for the RenderPolicy. This
+     * property should be set with a marker name used to define a
+     * policy class and any other properties that the policy should
+     * use.  "renderPolicy"
+     */
+    public final static String RenderPolicyProperty = "renderPolicy";
 
     /**
      * Filter support that can be used to manage OMGraphics.
@@ -230,6 +249,11 @@ public class OMGraphicHandlerLayer extends Layer {
      * @see com.bbn.openmap.layer.policy.ListResetPCPolicy
      */
     public void projectionChanged(ProjectionEvent pe) {    
+	if (Debug.debugging("layer")) {
+	    Debug.output("OMGraphicHandlerLayer " + getName() + 
+			 " projection changed, calling " + 
+			 getProjectionChangePolicy().getClass().getName());
+	}
 	getProjectionChangePolicy().projectionChanged(pe);
     }
 
@@ -344,8 +368,12 @@ public class OMGraphicHandlerLayer extends Layer {
 	if (layerWorker == null) {
 	    layerWorker = new LayerWorker();
 	    layerWorker.execute();
+	} else {
+	    if (Debug.debugging("layer")) {
+		Debug.output(getName() + " layer already working in prepare(), cancelling");
+	    }
+	    setCancelled(true);
 	}
-	else setCancelled(true);
     }
 
     /**
@@ -405,7 +433,8 @@ public class OMGraphicHandlerLayer extends Layer {
     protected synchronized void workerComplete(LayerWorker worker) {
 	if (!isCancelled()) {
 	    layerWorker = null;
-	    setList((OMGraphicList)worker.get());
+	    getProjectionChangePolicy().workerComplete((OMGraphicList)worker.get());
+// 	    setList((OMGraphicList)worker.get());
 	    repaint();
 	}
 	else{
@@ -440,10 +469,9 @@ public class OMGraphicHandlerLayer extends Layer {
 		OMGraphicList list = getRenderPolicy().prepare();
 		long stop = System.currentTimeMillis();
 		if (Debug.debugging("layer")) {
-		    int size = list.size();
 		    Debug.output(getName() + "|LayerWorker.construct(): fetched "+
-				 size + " graphics in " + 
-				 (double)((stop-start)/1000d) + " seconds");
+				 (list == null?"null list ":(list.size() + " graphics ")) +
+				 "in " + (double)((stop-start)/1000d) + " seconds");
 		}
 		return list;
 
@@ -471,5 +499,157 @@ public class OMGraphicHandlerLayer extends Layer {
 	    workerComplete(this);
 	    fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
 	}
+    }
+
+    /**
+     * Overrides the Layer setProperties method.  Also calls Layer's version.
+     *
+     * @param prefix the token to prefix the property names
+     * @param props the <code>Properties</code> object
+     */
+    public void setProperties(String prefix, Properties props) {
+	super.setProperties(prefix, props);
+
+	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+
+	// Check to see if the layer wants to set its own projection
+	// change policy.
+	String pcpString = props.getProperty(realPrefix + ProjectionChangePolicyProperty);
+	String policyPrefix;
+	if (pcpString != null) {
+	    policyPrefix = realPrefix + pcpString;
+	    String pcpClass = props.getProperty(policyPrefix + ".class");
+	    if (pcpClass == null) {
+		Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for PropertyChangePolicy, but " + policyPrefix + ".class property is undefined.");
+	    } else {
+		Object obj = ComponentFactory.create(pcpClass, policyPrefix, props);
+		if (obj instanceof ProjectionChangePolicy) {
+		    if (Debug.debugging("layer")) {
+			Debug.output("Layer " + getName() + " setting ProjectionChangePolicy [" + 
+				     obj.getClass().getName() + "]");
+		    }
+		    setProjectionChangePolicy((ProjectionChangePolicy)obj);
+		} else {
+		    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for PropertyChangePolicy, but " + policyPrefix + ".class property does not define a valid PropertyChangePolicy.");
+		}
+	    }
+	} else if (Debug.debugging("layer")) {
+	    Debug.output("Layer " + getName() + " using default ProjectionChangePolicy [" + 
+			 getProjectionChangePolicy().getClass().getName() + "]");
+	}
+
+	// Check to see if the layer want to set its own rendering policy.
+	String rpString = props.getProperty(realPrefix + RenderPolicyProperty);
+	if (rpString != null) {
+	    policyPrefix = realPrefix + rpString;
+	    String rpClass = props.getProperty(policyPrefix + ".class");
+	    if (rpClass == null) {
+		Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property is undefined.");
+	    } else {
+		Object obj = ComponentFactory.create(rpClass, policyPrefix, props);
+		if (obj instanceof RenderPolicy) {
+		    if (Debug.debugging("layer")) {
+			Debug.output("Layer " + getName() + " setting RenderPolicy [" + 
+				     obj.getClass().getName() + "]");
+		    }
+		    setRenderPolicy((RenderPolicy)obj);
+		} else {
+		    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property does not define a valid RenderPolicy.");
+		}
+	    }
+	} else if (Debug.debugging("layer")) {
+	    Debug.output("Layer " + getName() + " using default RenderPolicy [" + 
+			 getRenderPolicy().getClass().getName() + "]");
+	}
+    }
+
+    /**
+     * Overrides Layer getProperties method., also calls that method
+     * on Layer.  Sets the properties from the policy objects used by
+     * this OMGraphicHandler layer.
+     */
+    public Properties getProperties(Properties props) {
+	props = super.getProperties(props);
+
+	String prefix = PropUtils.getScopedPropertyPrefix(this);
+	String policyPrefix = null;
+
+	ProjectionChangePolicy pcp = getProjectionChangePolicy();
+	if (pcp instanceof PropertyConsumer) {
+	    policyPrefix = ((PropertyConsumer)pcp).getPropertyPrefix();
+	    ((PropertyConsumer)pcp).getProperties(props);
+	}
+
+	if (policyPrefix == null) {
+	    policyPrefix = prefix + ".pcp";
+	}
+	
+	props.put(prefix + ProjectionChangePolicyProperty, policyPrefix);
+	props.put(policyPrefix + ".class", pcp.getClass().getName());
+
+	RenderPolicy rp = getRenderPolicy();
+	if (rp instanceof PropertyConsumer) {
+	    policyPrefix = ((PropertyConsumer)rp).getPropertyPrefix();
+	    ((PropertyConsumer)rp).getProperties(props);
+	}
+
+	if (policyPrefix == null) {
+	    policyPrefix = prefix + ".rp";
+	}
+
+	props.put(prefix + RenderPolicyProperty, policyPrefix);
+	props.put(policyPrefix + ".class", rp.getClass().getName());
+
+	return props;
+    }
+
+    /**
+     * Overrides Layer getProperties method., also calls that method
+     * on Layer.  Sets the properties from the policy objects used by
+     * this OMGraphicHandler layer.
+     */
+    public Properties getPropertyInfo(Properties list) {
+	list = super.getPropertyInfo(list);
+
+	String policyPrefix = null;
+
+	ProjectionChangePolicy pcp = getProjectionChangePolicy();
+	if (pcp instanceof PropertyConsumer) {
+	    policyPrefix = ((PropertyConsumer)pcp).getPropertyPrefix();
+	    if (policyPrefix != null) {
+		int index = policyPrefix.indexOf(".");
+		if (index != -1) {
+		    policyPrefix = policyPrefix.substring(index + 1);
+		}
+
+		((PropertyConsumer)pcp).getPropertyInfo(list);
+	    }
+	}
+
+	if (policyPrefix == null) {
+	    policyPrefix = "pcp";
+	}
+	
+	list.put(policyPrefix + ".class", "Class name of ProjectionChangePolicy (optional)");
+
+	RenderPolicy rp = getRenderPolicy();
+	if (rp instanceof PropertyConsumer) {
+	    policyPrefix = ((PropertyConsumer)rp).getPropertyPrefix();
+	    if (policyPrefix != null) {
+		int index = policyPrefix.indexOf(".");
+		if (index != -1) {
+		    policyPrefix = policyPrefix.substring(index + 1);
+		}
+	    }
+
+	    ((PropertyConsumer)rp).getPropertyInfo(list);
+	}
+
+	if (policyPrefix == null) {
+	    policyPrefix = "rp";
+	}
+	
+	list.put(policyPrefix + ".class", "Class name of RenderPolicy (optional)");
+	return list;
     }
 }

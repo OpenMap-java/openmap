@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.15 $
-// $Date: 2003/08/22 16:14:16 $
+// $Revision: 1.16 $
+// $Date: 2003/08/28 22:16:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -216,7 +216,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 			    // active MouseMode to be the proxy for it...
 			    if (!omdtmm.isVisible()) {
 				MapMouseMode mmm = ((MapMouseEvent)e).getMapMouseMode();
-				if (mmm.actAsProxyFor(omdtmm)) {
+				if (mmm.actAsProxyFor(omdtmm, MapMouseSupport.PROXY_DISTRIB_MOUSE_MOVED & MapMouseSupport.PROXY_DISTRIB_MOUSE_DRAGGED)) {
 				    if (DTL_DEBUG) {
 					Debug.output("DTL: Setting " + mmm.getID() + " as proxy for drawing tool");
 				    }
