@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/03/10 22:04:54 $
+// $Revision: 1.6 $
+// $Date: 2003/10/10 22:50:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -503,7 +503,7 @@ public class VPFLayer extends OMGraphicHandlerLayer
 		return null;
 	    }
 	}
-	if (warehouse == null){
+	if (warehouse == null) {
 	    StringBuffer dpb = new StringBuffer();
 	    if (dataPaths != null) {
 		for (int num = 0; num < dataPaths.length; num++) {
@@ -520,6 +520,11 @@ public class VPFLayer extends OMGraphicHandlerLayer
 	}
 
 	Projection p = getProjection();
+
+	if (p == null) {
+	    Debug.error("VPFLayer.getRectangle() called without a projection set in the layer. Make sure a projection is set in the layer before calling getRectangle.");
+	    return new OMGraphicList();
+	}
 
 	LatLonPoint upperleft = p.getUpperLeft();
 	LatLonPoint lowerright = p.getLowerRight();

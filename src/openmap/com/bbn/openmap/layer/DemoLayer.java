@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/09/22 23:39:45 $
+// $Revision: 1.9 $
+// $Date: 2003/10/10 22:50:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -344,7 +344,7 @@ public class DemoLayer extends OMGraphicHandlerLayer
 	    llPoints[nCounter++]=llPt.getLongitude();
 	}
 
-	return new OMPoly(llPoints,OMGraphic.DECIMAL_DEGREES,OMGraphic.LINETYPE_GREATCIRCLE);
+	return new OMPoly(llPoints,OMGraphic.DECIMAL_DEGREES,OMGraphic.LINETYPE_STRAIGHT);
     }
 
     public void setProperties(String prefix, Properties props) {
@@ -388,7 +388,7 @@ public class DemoLayer extends OMGraphicHandlerLayer
 		    0f);
 	    filterGA.setStroke(filterStroke);
 	}
-	return filterGA;
+	return (GraphicAttributes)filterGA.clone();
     }
 
     public java.awt.Component getGUI() {
@@ -824,7 +824,10 @@ public class DemoLayer extends OMGraphicHandlerLayer
 	    && !action.isMask(OMGraphicConstants.DELETE_GRAPHIC_MASK)) {
 
 	    java.awt.Shape filterShape = omg.getShape();
-	    filter(filterShape, (omg.getAppObject() == internalKey));
+	    OMGraphicList filteredList = filter(filterShape, (omg.getAppObject() == internalKey));
+	    if (Debug.debugging("demo")) {
+		Debug.output("DemoLayer filter: " + filteredList.getDescription());
+	    }
 	} else {
 	    getList().doAction(omg, action);
 	}
