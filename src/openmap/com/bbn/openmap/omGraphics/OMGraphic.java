@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/06/25 15:33:25 $
+// $Revision: 1.4 $
+// $Date: 2003/07/29 15:09:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -224,13 +224,12 @@ public abstract class OMGraphic extends BasicGeometry
      * @param rType render type
      * @param lType line type
      * @param dcType declutter type
-     * @param lw line width
      * @param lc line color
      * @param fc fill color
      * @param sc select color 
      */
     public OMGraphic(int rType, int lType, int dcType,
-		     int lw, Color lc, Color fc, Color sc) {
+		     Color lc, Color fc, Color sc) {
 	this(rType, lType, dcType);
 	setLineColor(lc);
 	setSelectColor(sc);
