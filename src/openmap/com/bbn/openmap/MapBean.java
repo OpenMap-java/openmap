@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/01/26 18:18:05 $
+// $Revision: 1.10 $
+// $Date: 2004/02/04 16:06:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -800,10 +800,23 @@ public class MapBean extends JComponent
      */
     public void paint(Graphics g) {
         if (getComponentCount() == 0 && projection != null) {
-            projection.drawBackground((Graphics2D)g, getBckgrnd());
+            drawProjectionBackground(g);
             paintBorder(g);
         } else {
             super.paint(g);
+        }
+    }
+
+    /**
+     * Convenience method to test if Graphics is Graphics2D object,
+     * and to try to do the right thing.
+     */
+    protected void drawProjectionBackground(Graphics g) {
+        if (g instanceof Graphics2D) {
+            projection.drawBackground((Graphics2D)g, getBckgrnd());
+        } else {
+            g.setColor(getBackground());
+            projection.drawBackground(g);
         }
     }
 
@@ -834,7 +847,7 @@ public class MapBean extends JComponent
             g.setClip(0, 0, getWidth(), getHeight());
         }
 
-        projection.drawBackground((Graphics2D)g, getBckgrnd());
+        drawProjectionBackground(g);
         super.paintChildren(g);
 
         // Take care of the PaintListeners...
@@ -853,7 +866,7 @@ public class MapBean extends JComponent
      * around.
      */
     public void paintChildrenWithBorder(Graphics g, boolean drawBorder) {
-        projection.drawBackground((Graphics2D)g, getBckgrnd());
+        drawProjectionBackground(g);
         if (drawBorder) {
             paintChildren(g);
         } else {
