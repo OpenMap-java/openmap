@@ -14,14 +14,15 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMScalingRaster.java,v $
 // $RCSfile: EditableOMScalingRaster.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/02/11 22:35:48 $
+// $Revision: 1.5 $
+// $Date: 2005/02/15 17:25:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
+import com.bbn.openmap.Environment;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.*;
@@ -29,6 +30,8 @@ import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
 
 import java.awt.image.BufferedImage;
+
+import javax.swing.JOptionPane;
 
 /**
  * The EditableOMScalingRaster encompasses an OMScalingRaster,
@@ -121,9 +124,16 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     public void createGraphic(GraphicAttributes ga) {
         init();
         stateMachine.setUndefined();
+        
+        String pathToFile = null;
 
         /// This would be an ideal place to bring up a chooser!
-        String pathToFile = com.bbn.openmap.util.FileUtils.getFilePathToOpenFromUser("Choose Image File for Raster");
+        if (!Environment.isApplet()) {
+            pathToFile = com.bbn.openmap.util.FileUtils.getFilePathToOpenFromUser("Choose Image File for Raster");
+        } else {
+            JOptionPane.showMessageDialog(null, "Can't search for images in an applet!", "Can't Choose Image", JOptionPane.ERROR_MESSAGE);
+        }
+
         if (pathToFile == null)
             return;
 
@@ -256,16 +266,16 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
         if (!(graphic instanceof OMScalingRaster)) {
             return;
         }
-        
+
         assertGrabPoints();
 
         OMScalingRaster raster = (OMScalingRaster) graphic;
 
         if (graphic instanceof OMScalingIcon) {
-            setGrabPointsForOMSI((OMScalingIcon)graphic);
+            setGrabPointsForOMSI((OMScalingIcon) graphic);
             return;
         }
-        
+
         boolean ntr = raster.getNeedToRegenerate();
         int renderType = raster.getRenderType();
         int lineType = raster.getLineType();
@@ -383,11 +393,11 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
             if (renderType == OMGraphic.RENDERTYPE_LATLON) {
                 gpc.set((int) p.getX(), (int) p.getY());
             }
-        }        
+        }
     }
 
     protected void setGrabPointsForOMSI() {
-        
+
         if (projection != null) {
             //movingPoint == gpc
             LatLonPoint llp1 = projection.inverse(gpc.getX(), gpc.getY());
@@ -395,12 +405,12 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
             raster.setLon(llp1.getLongitude());
             // point.setNeedToRegenerate set
         }
-        
+
         if (projection != null) {
             regenerate(projection);
         }
     }
-    
+
     /**
      * Take the current location of the GrabPoints, and modify the
      * location parameters of the OMScalingRaster with them. Called
@@ -422,7 +432,7 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
                     setGrabPointsForOMSI();
                     return;
                 }
-                
+
                 // Need to figure out which point was moved, and then
                 // set the upper left and lower right points
                 // accordingly.
