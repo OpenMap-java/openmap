@@ -1,3 +1,66 @@
+2002-12-20  Donald Dietrick  <dietrick@bbn.com>
+
+	* Moved the CHANGELOG to the top-level directory, in order to help
+	people find it.
+
+	* Added a method to the ComponentFactory that lets you ask it to
+	create Objects using an Object[] that serves as a set of arguments
+	to the constructor.  The method uses reflection to figure out if
+	the Object[] contents make sense for the new Object type, and will
+	create the new Object if it can.
+
+	* Modified how com.bbn.openmap.proj.ProjUtil.getScale() works, in
+	order to get a better scale value.  The calculation has been moved
+	back into the Projection objects, and the getScale() method now
+	queries the projection for the scale value that is appropriate for
+	the situation.
+
+	* Modified how the PlugInLayer works between the MapHandler and
+	its PlugIn.  The PlugInLayer used to forward all communication to the
+	PlugIn, now it simply adds the PlugIn to the MapHandler and steps
+	out of the way.
+
+	* The VPFLayer components have been modified to read data from a
+	URL, and the bug that prevented data from being read from a jar
+	file by an applet running 1.4.1 has been fixed.  The API for the
+	VPF components changed, so that components no longer take a File
+	object for the paths, but instead take a String.  Also, code was
+	added to prevent multiple File separator characters from appearing
+	in file paths.
+
+	* The DrawingTool has been modified to have a notion of behaviors,
+	which can be set via an integer mask.  The pop-up menu that used
+	to be required to complete modifications to an OMGraphic is no
+	longer needed, but remains a behavior option.  By default, it
+	still appears with a right-click or ctrl-click.  See java docs for
+	details.
+
+	* Added the com.bbn.openmap.layer.editor package, which contains
+	the EditorLayer.  The EditorLayer uses EditorTools to create a
+	more application-centric layer, one that needs to capture
+	MouseEvents exclusively, and also place a GUI in the ToolPanel
+	when the EditorLayer is active.  A DrawingEditorTool is provided,
+	which provides the action most likely expected from a drawing
+	layer, as opposed to the flexibility that the
+	OMDrawingToolLauncher provides.  The DrawingToolEditor makes the
+	EditorLayer look like a drawing layer, with the controls and mouse
+	events acting on its own OMGraphics.
+
+	* MapMouseModes now have a notion of not being visible, and the
+	OpenMap GUI components that display status of MapMouseModes honor that.
+
+	* Misc bug fixes - Layer has correct setAsBackground flag set.  The
+	ToolPanel correctly removes Tools that have been removed from the
+	MapHandler.  The BinaryFile pays attention to a
+	-Ddebug.connection_problems flag, and if it is set it will let the
+	Thread sleep for a second.  This is a fix, suggested by Sun, for
+	problems that may occur by the client unexpectedly closing down a
+	socket too soon before all the data has been read off the stream.
+	The LocationLayer GUI has tabs for multiple LayerHandlers again.
+
+	* Modifed the build.xml file so compilations are performed with
+	debugging on.
+
 2002-11-08  Bill Mackiewicz <bmackiew@bbn.com>
 	* OpenMap 4.5.4 released.
 	
