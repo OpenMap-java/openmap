@@ -14,66 +14,46 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFLayer.java,v $
 // $RCSfile: MIFLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.6 $
+// $Date: 2004/01/27 21:01:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.mif;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.*;
+import java.awt.Graphics;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import javax.swing.*;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * An OpenMap Layer that displays MapInfo Interchange Format (MIF)
- * files. Currently only a subset of the possible MIF options is
+ * files Currently only a subset of the possible MIF options is
  * supported.  Specifically the PLine and Region options with their
- * associated parameters, however, maps will be reproduced exactly as
- * they appear in the MapInfo Professional product. <P>
+ * associated parameters however maps will be reproduced exactly as
+ * they appear in the MapInfo Professional product.
  * 
- * There is only one property for this layer: <pre>
- * miflayer.mifFile=path to MIF file
- *
- * <pre> 
+ * 26th January 2004 - added support for TEXT and POINT
  */
 public class MIFLayer extends OMGraphicHandlerLayer {
-
     public final static String MIF_FileProperty = "mifFile";
+    public final static String textVisibleProperty = "textVisible";
+    public final static String pointVisibleProperty = "pointVisible";
+	
     boolean accurate = true;
     MIFLoader mifl = null;
 
     public MIFLayer() {
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
-    }
-
-    /**
-     * Sets the accuracy of the rendering. The default is true. If set
-     * to false then the regions will not always be drawn correctly
-     * (ie. as they appear in MapInfo) however processing will be much
-     * faster. This option effects the drawing of Regions which can
-     * have nested regions. Nested regions appear as holes in the outer
-     * region and it is this that can take a lot of processing
-     * time. Usually something like a street layout will take much more
-     * time to draw. The more holes then the longer it takes. By
-     * setting accuracy to false the regions are drawn as lines instead
-     * of filled which is much faster.
-     *  */
-    public void setAccuracy(boolean accurate) {
-        this.accurate=accurate;
     }
 
     /**
@@ -89,24 +69,48 @@ public class MIFLayer extends OMGraphicHandlerLayer {
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         String mifFileName = props.getProperty(prefix + MIF_FileProperty);
-        try{
+        float textVisible = PropUtils.floatFromProperties(props, prefix + textVisibleProperty, -1f);
+        float pointVisible = PropUtils.floatFromProperties(props, prefix + pointVisibleProperty, -1f);
+
+        try {
             BufferedReader bfr = new BufferedReader(new FileReader(mifFileName));
-            mifl = new MIFLoader(bfr,accurate);
-        } catch(IOException ioe) {
-            Debug.error("MIFLayer: didn't find file " + mifFileName); 
+            mifl = new MIFLoader(bfr, accurate, textVisible, pointVisible);
+        } catch (IOException ioe) {
+            Debug.error("MIFLayer: didn't find file " + mifFileName);
             return;
         }
     }
 
     /**
-     * Creates the OMGraphicList from the MIF file if needed, projects
-     * the list otherwise.
+     * Sets the accuracy of the rendering. The default is true. If set
+     * to false then the regions will not always be drawn correctly
+     * (ie. as they appear in MapInfo) however processing will be much
+     * faster. This option effects the drawing of Regions which can
+     * have nested regions. Nested regions appear as holes in the outer
+     * region and it is this that can take a lot of processing
+     * time. Usually something like a street layout will take much more
+     * time to draw. The more holes then the longer it takes. By
+     * setting accuracy to false the regions are drawn as lines instead
+     * of filled which is much faster.
+     *  */
+    public void setAccuracy(boolean accurate) {
+        this.accurate = accurate;
+    }
+
+    /**
+     * OMGraphicHandlerLayer method for gathering data.
      */
     public OMGraphicList prepare() {
-        if (mifl != null && !mifl.isLoaded()) {
-            setList(mifl.getList());
+        if (mifl != null) {
+            OMGraphicList list = mifl.getList();
+            if (list != null) {
+                list.generate(getProjection());
+            }
+            return list;
+        } else {
+            return new OMGraphicList();
         }
-
-        return super.prepare();
     }
 }
+
+/* Last line of file */
