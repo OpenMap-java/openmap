@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/20 06:59:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -451,7 +451,8 @@ public class OverviewMapHandler extends OMToolComponent
 	    // is, we should add the overview map as a projection
 	    // listener to it.
 	    if ((overviewWindowFrame != null && overviewWindowFrame.isShowing()) ||
-		(overviewWindow != null && overviewWindow.isShowing())) {
+		(overviewWindow != null && overviewWindow.isShowing()) ||
+		!getUseAsTool()) {
 		srcMap.addProjectionListener(this);
 	    }
 	}

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigatePanel.java,v $
 // $RCSfile: NavigatePanel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/20 06:59:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -220,6 +220,9 @@ public class NavigatePanel extends OMToolComponent
 	seButton.setPreferredSize(new Dimension(w+2,h+2));
 	seButton.setBorderPainted(false);
 	add(seButton);
+
+	setMinimumSize(new Dimension(width, height));
+	setPreferredSize(new Dimension(width, height));
     }
 
     /**

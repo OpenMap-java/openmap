@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/19 20:36:50 $
+// $Revision: 1.3 $
+// $Date: 2003/03/20 06:59:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -217,7 +217,6 @@ public class LayersPanel extends OMToolComponent
     public LayersPanel() {
 	super();
 	setKey(defaultKey);
-	// lay out all widgets horizontally
 	setLayout(new BorderLayout());
     }
 

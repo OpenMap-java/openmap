@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ZoomPanel.java,v $
 // $RCSfile: ZoomPanel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/20 06:59:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,6 +76,7 @@ public class ZoomPanel extends OMToolComponent
 	this.setOpaque(false);
 	zoomDelegate = new ZoomSupport(this);
 	zoomInButton = addButton("zoomIn", "Zoom In", zoomInCmd);
+	add(Box.createVerticalGlue());
 	zoomOutButton = addButton("zoomOut", "Zoom Out", zoomOutCmd);
     }
 
@@ -143,7 +144,7 @@ public class ZoomPanel extends OMToolComponent
 	URL url = ZoomPanel.class.getResource(name + ".gif");
 	JButton b = new JButton(new ImageIcon(url, info));
 	b.setToolTipText(info);
-	b.setMargin(new Insets(0,0,0,0));
+	b.setMargin(new Insets(2, 2, 2, 2));
         b.setActionCommand(command);
 	b.addActionListener(this);
 	b.setBorderPainted(false);
