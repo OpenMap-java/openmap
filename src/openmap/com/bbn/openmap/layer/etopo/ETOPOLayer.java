@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/etopo/ETOPOLayer.java,v $
 // $RCSfile: ETOPOLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/21 20:41:49 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -39,7 +39,6 @@ import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
@@ -49,6 +48,7 @@ import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.SwingWorker;
 
 import javax.swing.*;
@@ -190,11 +190,11 @@ public class ETOPOLayer extends Layer implements ActionListener {
     protected int opaqueness;
 
     /** property suffixes */
-    public static final String ETOPOPathProperty = ".path";
-    public static final String OpaquenessProperty = ".opaque";
-    public static final String ETOPOViewTypeProperty = ".view.type";
-    public static final String ETOPOSlopeAdjustProperty = ".contrast";
-    public static final String ETOPOMinuteSpacingProperty = ".minute.spacing";
+    public static final String ETOPOPathProperty = "path";
+    public static final String OpaquenessProperty = "opaque";
+    public static final String ETOPOViewTypeProperty = "view.type";
+    public static final String ETOPOSlopeAdjustProperty = "contrast";
+    public static final String ETOPOMinuteSpacingProperty = "minute.spacing";
 
     /** Holds the slope values, updated when the resolution changes or the
      * slope adjustment (contrast) is changed. Slope values are scaled between
@@ -204,18 +204,18 @@ public class ETOPOLayer extends Layer implements ActionListener {
 
     /** elevation bands */
     protected static final int[] elevLimit = { -11000,-9000,-7000,-5000,-3000,
-					     -1500,0,250,500,750,1000,2000,3500,5000 };
+					       -1500,0,250,500,750,1000,2000,3500,5000 };
     /** number of elevation bands */
     protected static final int elevLimitCnt = 14;
 
 
     /** elevation band colors (one for each elevation band) */
     protected static final int[] redElev = { 0,0,4,20,124,130,135,117,252,253,
-					   229,244,252,132 };
+					     229,244,252,132 };
     protected static final int[] greenElev = { 2,12,51,159,235,255,235,255,
-					     236,162,115,50,20,132 };
+					       236,162,115,50,20,132 };
     protected static final int[] blueElev = { 76,145,242,249,252,255,110,58,
-					    29,35,5,14,46,132 };
+					      29,35,5,14,46,132 };
 
     /** for slope shading colors, indexed by elevation band then slope */
     protected static Color[][] slopeColors=null;
@@ -379,23 +379,25 @@ public class ETOPOLayer extends Layer implements ActionListener {
 
 	super.setProperties(prefix, properties);
 
+ 	prefix = PropUtils.getScopedPropertyPrefix(this);
+
 	path = properties.getProperty(prefix + ETOPOPathProperty);
 
-	opaqueness = LayerUtils.intFromProperties(properties,
-						  prefix + OpaquenessProperty,
-						  DEFAULT_OPAQUENESS);
+	opaqueness = PropUtils.intFromProperties(properties,
+						 prefix + OpaquenessProperty,
+						 DEFAULT_OPAQUENESS);
 	
-	viewType = LayerUtils.intFromProperties(properties,
-						prefix + ETOPOViewTypeProperty,
-						COLOREDSHADING);
+	viewType = PropUtils.intFromProperties(properties,
+					       prefix + ETOPOViewTypeProperty,
+					       COLOREDSHADING);
 
-	slopeAdjust = LayerUtils.intFromProperties(properties,
-						   prefix + ETOPOSlopeAdjustProperty,
-						   DEFAULT_SLOPE_ADJUST);
+	slopeAdjust = PropUtils.intFromProperties(properties,
+						  prefix + ETOPOSlopeAdjustProperty,
+						  DEFAULT_SLOPE_ADJUST);
 
-	minuteSpacing = LayerUtils.intFromProperties(properties,
-						     prefix + ETOPOMinuteSpacingProperty,
-						     DEFAULT_MINUTE_SPACING);
+	minuteSpacing = PropUtils.intFromProperties(properties,
+						    prefix + ETOPOMinuteSpacingProperty,
+						    DEFAULT_MINUTE_SPACING);
 	
     }
 
@@ -726,7 +728,7 @@ public class ETOPOLayer extends Layer implements ActionListener {
 			if (viewType == SLOPESHADING) {
 			    // HACK (see method description above)
 			    if ((llp.getLatitude() == center.getLatitude()) &&
-				 (llp.getLongitude() == center.getLongitude()))
+				(llp.getLongitude() == center.getLongitude()))
 				gray = 0;
 			    else
 				gray = 127+sl;
@@ -735,7 +737,7 @@ public class ETOPOLayer extends Layer implements ActionListener {
 			else if (viewType == COLOREDSHADING) {
 			    // HACK (see method description above)
 			    if ((llp.getLatitude() == center.getLatitude()) &&
-				 (llp.getLongitude() == center.getLongitude()))
+				(llp.getLongitude() == center.getLongitude()))
 				pix = new Color(0,0,0,opaqueness);
 			    else
 				pix = getColor(el,sl);
@@ -845,10 +847,10 @@ public class ETOPOLayer extends Layer implements ActionListener {
 	    Debug.message("basic", getName()+
 			  "|ETOPOLayer.prepare(): finished with "+
 			  size+" graphics");
+	} else {
+	    Debug.message("basic", getName() + "|ETOPOLayer.prepare(): finished with null graphics list");
+	    omGraphicList = new OMGraphicList();
 	}
-	else
-	    Debug.message("basic", getName()+
-	      "|ETOPOLayer.prepare(): finished with null graphics list");
 
 	// Don't forget to project them.  Since they are only being
 	// recalled if the projection hase changed, then we need to
@@ -901,25 +903,25 @@ public class ETOPOLayer extends Layer implements ActionListener {
 	    JPanel resPanel = PaletteHelper.createPaletteJPanel
 		("Lat/Lon Spacing");
 	    String[] resStrings =
-	    {"2 Minute", "5 Minute", "10 Minute", "15 Minute"}; //ep-g
+		{"2 Minute", "5 Minute", "10 Minute", "15 Minute"}; //ep-g
 
 	    JComboBox resList = new JComboBox(resStrings);
 	    resList.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    JComboBox jcb = (JComboBox) e.getSource();
-		    int newRes = jcb.getSelectedIndex();
-		    int curRes = minuteSpacing/5; //ep-g
-		    if (curRes != newRes)
-			spacingReset = true;
-		    switch(newRes) {
-		    case 0: minuteSpacing = 2; break; //ep-g
-		    case 1: minuteSpacing = 5; break; //ep-g
-		    case 2: minuteSpacing = 10; break; //ep-g
-		    case 3: minuteSpacing = 15; break; //ep-g
-		    }
+		    public void actionPerformed(ActionEvent e) {
+			JComboBox jcb = (JComboBox) e.getSource();
+			int newRes = jcb.getSelectedIndex();
+			int curRes = minuteSpacing/5; //ep-g
+			if (curRes != newRes)
+			    spacingReset = true;
+			switch(newRes) {
+			case 0: minuteSpacing = 2; break; //ep-g
+			case 1: minuteSpacing = 5; break; //ep-g
+			case 2: minuteSpacing = 10; break; //ep-g
+			case 3: minuteSpacing = 15; break; //ep-g
+			}
 
-		}
-	    });
+		    }
+		});
 
 	    resList.setSelectedIndex(minuteSpacing/5); //ep-g
 	    resPanel.add(resList);
@@ -930,18 +932,18 @@ public class ETOPOLayer extends Layer implements ActionListener {
 
 	    JComboBox viewList = new JComboBox(viewStrings);
 	    viewList.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    JComboBox jcb = (JComboBox) e.getSource();
-		    int newView = jcb.getSelectedIndex();
-		    if (newView != viewType)
-			slopeReset = true;
-		    switch(newView) {
-		    case 0: viewType = SLOPESHADING; break;
-		    case 1: viewType = COLOREDSHADING; break;
-		    }
+		    public void actionPerformed(ActionEvent e) {
+			JComboBox jcb = (JComboBox) e.getSource();
+			int newView = jcb.getSelectedIndex();
+			if (newView != viewType)
+			    slopeReset = true;
+			switch(newView) {
+			case 0: viewType = SLOPESHADING; break;
+			case 1: viewType = COLOREDSHADING; break;
+			}
 
-		}
-	    });
+		    }
+		});
 
 	    viewList.setSelectedIndex(viewType);
 	    viewPanel.add(viewList);
@@ -957,15 +959,15 @@ public class ETOPOLayer extends Layer implements ActionListener {
 	    contrastSlide.setMajorTickSpacing(1);
 	    contrastSlide.setPaintTicks(true);
 	    contrastSlide.addChangeListener(new ChangeListener() {
-		public void stateChanged(ChangeEvent ce) {
-		    JSlider slider = (JSlider) ce.getSource();
-		    if (slider.getValueIsAdjusting()) {
-		        Debug.output("ETOPOLayer - Contrast Slider value = " +
-				     slider.getValue());
-			slopeAdjust = slider.getValue();
+		    public void stateChanged(ChangeEvent ce) {
+			JSlider slider = (JSlider) ce.getSource();
+			if (slider.getValueIsAdjusting()) {
+			    Debug.output("ETOPOLayer - Contrast Slider value = " +
+					 slider.getValue());
+			    slopeAdjust = slider.getValue();
+			}
 		    }
-		}
-	    });
+		});
 	    contrastPanel.add(contrastSlide);
 
 
@@ -973,15 +975,15 @@ public class ETOPOLayer extends Layer implements ActionListener {
 	    JPanel opaquenessPanel = PaletteHelper.createPaletteJPanel("Opaqueness");
 	    JSlider opaquenessSlide = new JSlider(JSlider.HORIZONTAL, 0/*min*/, 255/*max*/, opaqueness/*inital*/);
 	    opaquenessSlide.addChangeListener(new ChangeListener() {
-		public void stateChanged(ChangeEvent ce) {
-		    JSlider slider = (JSlider) ce.getSource();
-		    if (slider.getValueIsAdjusting()) {
-			fireRequestInfoLine("ETOPOLayer - Opaqueness Slider value = " +
-					    slider.getValue());
-			opaqueness = slider.getValue();
+		    public void stateChanged(ChangeEvent ce) {
+			JSlider slider = (JSlider) ce.getSource();
+			if (slider.getValueIsAdjusting()) {
+			    fireRequestInfoLine("ETOPOLayer - Opaqueness Slider value = " +
+						slider.getValue());
+			    opaqueness = slider.getValue();
+			}
 		    }
-		}
-	    });
+		});
 
 	    opaquenessPanel.add(opaquenessSlide);
 
