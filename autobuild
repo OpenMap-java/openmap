@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.11 $
-# $Date: 1998/05/12 17:59:18 $
+# $Revision: 1.12 $
+# $Date: 1998/05/17 16:07:28 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -39,6 +39,8 @@
 echo ""
 echo "MapBean build started at `date`"
 
+DefaultBuildDir=$BuildRoot/$BeanDir
+
 # if BuildRoot is already set, then use it
 BuildRoot=${BuildRoot:-/u4/openmap/builds}
 echo "building in $BuildRoot"
@@ -46,8 +48,11 @@ echo "building in $BuildRoot"
 VersionID=Autobuild
 
 DateString=`date +"%Y%m%d"`      # 17750419
-BeanDir=mapBean-$DateString
+DefaultBeanDir=mapBean-$DateString
+BeanDir=${BeanDir:-$DefaultBeanDir}
+
 BuildDir=$BuildRoot/$BeanDir
+
 
 CVSROOT=:server:blatz:/u4/rcs
 
@@ -60,8 +65,8 @@ JdkClassPath=$JDK/lib/classes.zip
 SWING=/usr/local/blatz/swing-1.0.2
 SwingClassPath=$SWING/swing.jar
 
-VBJ=/usr/local/vbroker-java
-VbjClassPath=$VBJ/lib/vbj30.jar
+VBJ=/usr/local/matt/VisiBroker3.2-java
+VbjClassPath=$VBJ/lib/vbjorb.jar
 
 CLASSPATH=$OpenMapClassPath:$SwingClassPath:$JdkClassPath:$VbjClassPath:$BuildDir/openmap
 export CLASSPATH
