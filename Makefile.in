@@ -17,9 +17,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.15 $
-# $Date: 1998/11/30 23:31:42 $
-# $Author: tmitchel $
+# $Revision: 1.16 $
+# $Date: 1998/12/01 20:26:09 $
+# $Author: aculline $
 # 
 # **********************************************************************
 
@@ -85,9 +85,11 @@ Layer.jar =	${Layer.classes}
 
 App.pkgs = 	com.bbn.openmap.app
 
+App.props = 	com/bbn/openmap/app/openmap.properties
+
 App.classes = 	com/bbn/openmap/app/*.class
 
-App.jar = 	${App.classes}
+App.jar = 	${App.classes} ${App.props}
 
 
 #########
@@ -166,7 +168,9 @@ install::	all
 # install in main dir
 install::	${prefix}
 	${RM} ${prefix}/README
+	${RM} ${prefix}/LICENSE
 	${INSTALL.doc} README ${prefix}
+	${INSTALL.doc} LICENSE ${prefix}
 
 # install in bin
 install::	${bindir} bin/openmap

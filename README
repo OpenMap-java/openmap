@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/README,v $
 $RCSfile: README,v $
-$Revision: 1.3 $
-$Date: 1998/11/13 21:16:16 $
+$Revision: 1.4 $
+$Date: 1998/12/01 20:26:09 $
 $Author: aculline $
 
 
@@ -35,10 +35,11 @@ of GTE Internetworking.
 Downloads and home page
 -----------------------
 Downloads of the current distribution are available at:
+<URL:ftp://javamap.bbn.com/pub/openmap/>
 
-<URL:ftp://javamap.bbn.com/pub/mapBean/>.
-
-The homepage is at <URL:http://javamap.bbn.com/>.
+The homepage is at:
+<URL:http://openmap.bbn.com/> and
+<URL:http://javamap.bbn.com/>
 
 
 Anonymous CVS repository
