@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/02 14:21:37 $
+// $Revision: 1.4 $
+// $Date: 2003/04/04 14:41:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,6 +35,7 @@ import javax.swing.event.*;
 import javax.accessibility.*;
 
 import com.bbn.openmap.event.*;
+import com.bbn.openmap.gui.MapPanelChild;
 import com.bbn.openmap.gui.OMComponentPanel;
 import com.bbn.openmap.gui.StatusLightPanel;
 import com.bbn.openmap.layer.util.LayerUtils;
@@ -69,8 +70,7 @@ import com.bbn.openmap.util.propertyEditor.*;
  * </pre>
  */
 public class InformationDelegator extends OMComponentPanel
-    implements InfoDisplayListener, PropertyChangeListener, ProgressListener
-{
+    implements InfoDisplayListener, PropertyChangeListener, ProgressListener, MapPanelChild {
 
     protected JLabel infoLineHolder;
     protected WebBrowser browser;
@@ -142,6 +142,7 @@ public class InformationDelegator extends OMComponentPanel
 	c.weightx=1;
 	c.gridwidth=GridBagConstraints.RELATIVE;
 	c.anchor=GridBagConstraints.WEST;
+	c.insets = new Insets(3, 10, 3, 10);
 	gridbag.setConstraints(infoLineHolder, c);
 	add(infoLineHolder);
 	infoLineHolder.setVisible(showInfoLine);
@@ -535,6 +536,10 @@ public class InformationDelegator extends OMComponentPanel
 	setShowLights(LayerUtils.booleanFromProperties(props, prefix + ShowLightsProperty, showLights));
 	setShowInfoLine(LayerUtils.booleanFromProperties(props, prefix + ShowInfoLineProperty, showInfoLine));
 
+	String pl = props.getProperty(prefix + PreferredLocationProperty);
+	if (pl != null) {
+	    setPreferredLocation(pl);
+	}
     }
 
     public Properties getProperties(Properties props) {
@@ -546,7 +551,7 @@ public class InformationDelegator extends OMComponentPanel
 	String prefix = PropUtils.getScopedPropertyPrefix(this);
 	props.put(prefix + ShowLightsProperty, new Boolean(showLights).toString());
 	props.put(prefix + ShowInfoLineProperty, new Boolean(showInfoLine).toString());
-
+	props.put(prefix + PreferredLocationProperty, getPreferredLocation());
 	return props;
     }
 
@@ -560,6 +565,7 @@ public class InformationDelegator extends OMComponentPanel
 	props.put(ShowLightsProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 	props.put(ShowInfoLineProperty, "Show the information line below the map");
 	props.put(ShowInfoLineProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+	props.put(PreferredLocationProperty, "The preferred BorderLayout direction to place this component.");
 
 	return props;
     }
@@ -609,5 +615,24 @@ public class InformationDelegator extends OMComponentPanel
     }
 
     public void setFloatable(boolean value) {}
+
+    /**
+     * BorderLayout.SOUTH by default for this class.
+     */
+    protected String preferredLocation = java.awt.BorderLayout.SOUTH;
+
+    /**
+     * MapPanelChild method.
+     */
+    public void setPreferredLocation(String value) {
+	preferredLocation = value;
+    }
+
+    /** 
+     * MapPanelChild method. 
+     */
+    public String getPreferredLocation() {
+	return preferredLocation;
+    }
 }
 

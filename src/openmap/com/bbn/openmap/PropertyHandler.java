@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/03 15:30:04 $
+// $Revision: 1.3 $
+// $Date: 2003/04/04 14:41:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -397,7 +397,13 @@ public class PropertyHandler implements SoloMapComponent {
 		try {
 		    tmpProps.clear();
 		    // Open URL to read in properties
-		    InputStream is = new URL(include).openStream();
+		    URL tmpInclude = LayerUtils.getResourceOrFileOrURL(null, include);
+
+		    if (tmpInclude == null) {
+			continue;
+		    }
+
+		    InputStream is = tmpInclude.openStream();
 		    tmpProps.load(is);
 		    if (Debug.debugging("properties")) {
 			Debug.output("PropertyHandler.getIncludeProperties(): located include properties file URL: " + include);
