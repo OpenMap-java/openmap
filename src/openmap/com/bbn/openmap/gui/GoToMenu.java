@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/03/06 04:22:04 $
+// $Revision: 1.5 $
+// $Date: 2003/03/21 22:41:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,16 +29,21 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
-import java.util.Vector;
+import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Vector;
 import javax.swing.*;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
+import com.bbn.openmap.gui.menu.DataBoundsViewMenuItem;
+import com.bbn.openmap.gui.menu.OMBasicMenu;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.DataBounds;
+import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.layer.util.LayerUtils;
 
@@ -54,7 +59,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
     private String defaultText = "Views";
     private int defaultMnemonic = 'v';
 
-    protected AddNewViewButton bcb;
+    protected Hashtable dataBoundsProviders = new Hashtable();
+    protected OMBasicMenu dataBoundsMenu;
     protected MapBean map;
 
     /**
@@ -74,31 +80,46 @@ public class GoToMenu extends AbstractOpenMapMenu {
     public final static String ProjectionTypeProperty = "projection";
     /** Flag to use to add default views (World, each continent. */
     public final static String AddDefaultListProperty = "addDefaults";
+    /** Flag to use to enable/disable the gathering of DataBoundsProviders.*/
+    public final static String AddDataViewsProperty = "addDataViews";
 
     protected boolean addDefaults = true;
+    protected boolean addDataViews = true;
 
     public GoToMenu() {
 	super();
 	setText(I18N.get("menu.goto", defaultText));
 	setMnemonic(defaultMnemonic);
 
+	dataBoundsMenu = new OMBasicMenu("Go Over Data");
 	add(new AddNewViewButton("Add Saved View..."));
+	add(dataBoundsMenu);
 	add(new JSeparator());
     }
   
     public void findAndUndo(Object someObj) {
+	super.findAndUndo(someObj);
 	if (someObj instanceof MapBean) {
 	    // do the initializing that need to be done here
 	    if (getMap() == (MapBean)someObj) {
 		setMap(null);
 	    }
 	}
+
+	if (someObj instanceof DataBoundsProvider) {
+	    removeDataBoundsProvider((DataBoundsProvider)someObj);
+	}
     }
 
     public void findAndInit(Object someObj) {
+	super.findAndInit(someObj);
 	if (someObj instanceof MapBean) {
 	    // do the initializing that need to be done here
 	    setMap((MapBean)someObj);
+	}
+
+	if (someObj instanceof DataBoundsProvider) {
+	    addDataBoundsProvider((DataBoundsProvider)someObj);
 	}
     }
 
@@ -118,6 +139,10 @@ public class GoToMenu extends AbstractOpenMapMenu {
 	prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
 	addDefaults = LayerUtils.booleanFromProperties(props, prefix + AddDefaultListProperty, addDefaults);
+
+	addDataViews = LayerUtils.booleanFromProperties(props, prefix + AddDataViewsProperty, addDataViews);
+	
+	dataBoundsMenu.setVisible(addDataViews);
 
 	if (addDefaults) {
 	    addDefaultLocations();
@@ -143,6 +168,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
 	String prefix = PropUtils.getScopedPropertyPrefix(this);
 
 	props.put(prefix + AddDefaultListProperty, new Boolean(addDefaults).toString());
+	props.put(prefix + AddDataViewsProperty, new Boolean(addDataViews).toString());
 
 	StringBuffer viewList = new StringBuffer();
 
@@ -178,6 +204,9 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
 	props.put(ViewListProperty, "Space-separated marker list of different views");
 	props.put(AddDefaultListProperty, "Flag to add default views (true/false).");
+	props.put(AddDefaultListProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+	props.put(AddDataViewsProperty, "Flag to add views from some data components.");
+	props.put(AddDataViewsProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 	props.put(NameProperty, "The formal name of the view for the user.");
 	props.put(LatProperty, "The latitude of the center of the view.");
 	props.put(LonProperty, "The longitude of the center of the view.");
@@ -226,6 +255,21 @@ public class GoToMenu extends AbstractOpenMapMenu {
 	    return;
    	} catch (Exception e) {
 	    return;
+	}
+    }
+
+    public void addDataBoundsProvider(DataBoundsProvider provider) {
+	DataBoundsViewMenuItem dbvmi = new DataBoundsViewMenuItem(provider);
+	dataBoundsProviders.put(provider, dbvmi);
+	dbvmi.findAndInit(getBeanContext());
+	dataBoundsMenu.add(dbvmi);
+    }
+
+    public void removeDataBoundsProvider(DataBoundsProvider provider) {
+	JMenuItem item = 
+	    (DataBoundsViewMenuItem)dataBoundsProviders.get(provider);
+	if (item != null) {
+	    dataBoundsMenu.remove(item);
 	}
     }
 
