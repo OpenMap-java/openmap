@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.17 $
-# $Date: 1998/12/07 20:13:33 $
+# $Revision: 1.18 $
+# $Date: 1998/12/15 20:30:48 $
 # $Author: aculline $
 # 
 # **********************************************************************
@@ -187,13 +187,12 @@ install::	${libdir} lib/omcore.jar lib/openmap.jar
 	${INSTALL.jar} lib/omcore.jar ${libdir}/omcore.jar
 	${INSTALL.jar} lib/openmap.jar ${libdir}/openmap.jar
 
-DATA_FILES =	share/openmap.properties \
-		share/dcwpo-browse.shp \
-		share/dcwpo-browse.ssx
-
-# install in share
+# install in share.  (this must be done one file at a time for
+# install-sh to work properly)
 install::	${datadir}
-	${INSTALL.data} ${DATA_FILES} ${datadir}
+	${INSTALL.data} share/openmap.properties ${datadir}
+	${INSTALL.data} share/dcwpo-browse.shp ${datadir}
+	${INSTALL.data} share/dcwpo-browse.ssx ${datadir}
 
 # install in doc
 install-docs::
