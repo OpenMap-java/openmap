@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapConnectionHandler.java,v $
 // $RCSfile: NetMapConnectionHandler.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2003/09/05 21:04:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,7 +44,7 @@ public class NetMapConnectionHandler extends GraphicLoaderConnector {
      */
     public void findAndInit(Object obj) {
 	if (obj instanceof NetMapConnector) {
-	    super.findAndInit(new NetMapGraphicLoader((NetMapConnector)obj));
+ 	    checkGraphicLoader(new NetMapGraphicLoader((NetMapConnector)obj));
 	} else {
 	    super.findAndInit(obj);
 	}
