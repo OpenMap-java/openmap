@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeMOOTWModifier.java,v $
 // $RCSfile: CodeMOOTWModifier.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/17 00:23:49 $
+// $Revision: 1.2 $
+// $Date: 2003/12/18 19:11:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,6 +29,11 @@ import java.util.Properties;
 
 import com.bbn.openmap.util.PropUtils;
 
+/**
+ * A CodeMOOTWCategory is similar to the CodeModifier CodeCategory,
+ * but it applies to the MOOTW symbol set instead.  This CodePosition
+ * notes the 11 and 12 characters in MOOTW symbol codes.
+ */
 public class CodeMOOTWModifier extends CodePosition {
 
     public CodeMOOTWModifier() {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolReferenceLibrary.java,v $
 // $RCSfile: SymbolReferenceLibrary.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/17 00:23:49 $
+// $Revision: 1.4 $
+// $Date: 2003/12/18 19:11:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,12 +31,17 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
+ * The SymbolReferenceLibrary is a organizational class for creating
+ * and managing a SymbolPart tree.  It can handle requests for
+ * decoding a Symbol code and providing a SymbolPart for that code,
+ * and can fetch ImageIcons for codes and SymbolParts.
  */
 public class SymbolReferenceLibrary {
 
     protected SymbolPart head;
     protected CodePositionTree positionTree;
     protected static SymbolReferenceLibrary library = null;
+    protected CodeOptions symbolAttributes;
 
     public SymbolReferenceLibrary() {
 	Properties props = getProperties("heirarchy.properties");
@@ -84,6 +89,13 @@ public class SymbolReferenceLibrary {
 	    Debug.output("SRL: initialized");
 	}
 
+    }
+
+    public CodeOptions getCodeOptions() {
+	if (positionTree != null) {
+	    return positionTree.getCodeOptions(null);
+	}
+	return null;
     }
 
     /**

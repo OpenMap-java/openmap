@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePosition.java,v $
 // $RCSfile: CodePosition.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/17 00:44:14 $
+// $Revision: 1.6 $
+// $Date: 2003/12/18 19:11:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,6 +34,30 @@ import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
+/**
+ * The CodePosition class is a base class used to interpret and
+ * organize role settings for a symbol.  The SymbolCode describes a
+ * symbol and its role, with different characters having defined
+ * meanings and optional values, depending on the symbol.  The
+ * CodePosition object defines a character and meaning for a character
+ * in a certain place.  A SymbolPart refers to a particlar
+ * CodePosition that uniquely defines it, giving it some
+ * organizational meaning.  SymbolParts that share a parent can get to
+ * the parent's CodePositin to see that meaning as well. <P>
+ *
+ * CodePositions have some intelligence for parsing position
+ * properties and heirarchy properties, which allow the whole symbol
+ * tree to be defined. <P>
+ *
+ * CodePositions server a couple of different roles.  Some
+ * CodePosition objects organize the kinds of set values that may be
+ * applicable for a certain character position, and can offer those
+ * choices.  These organizational CodePositions won't have a
+ * SymbolPart to represent itself.  Other CodePositions, including the
+ * choices and those tied directly to SymbolParts in the SymbolPart
+ * tree, don't offer choices but can provide SymbolParts to represent
+ * themselves in the symbol.
+ */
 public class CodePosition {
 
     public final static char NO_CHAR = ' ';
@@ -238,30 +262,57 @@ public class CodePosition {
 	}
     }
 
+    /**
+     * The SymbolPart tree can be represented by a heirarchy number
+     * system, and this system is what is used in the heirarchy
+     * properties file to build the symbol tree.
+     */
     public int getHeirarchyNumber() {
 	return heirarchyNumber;
     }
 
+    /**
+     * Return a string version of the heirarchy number.
+     */
     public String getHeirarchyNumberString() {
 	return Integer.toString(heirarchyNumber);
     }
 
+    /**
+     * Get the character, in the symbol code, that this position represents.
+     */
     public char getID() {
 	return id;
     }
 
+    /**
+     * Get the pretty name that states what this position and character represents.
+     */
     public String getPrettyName() {
 	return prettyName;
     }
 
+    /**
+     * Get the starting index of the span that this position
+     * represents.  This value is a java index value starting at 0.
+     */
     public int getStartIndex() {
 	return startIndex;
     }
 
+    /**
+     * Get the ending index of the span that this position represents.
+     * This value is a java index value starting at 0.
+     */
     public int getEndIndex() {
 	return endIndex;
     }
 
+    /**
+     * Return the next CodePosition.  An organizational tool to help
+     * build the SymbolPart tree when parsing the heirarchy
+     * properties.
+     */
     public CodePosition getNextPosition() {
 	return nextPosition;
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolPart.java,v $
 // $RCSfile: SymbolPart.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/17 00:44:14 $
+// $Revision: 1.6 $
+// $Date: 2003/12/18 19:11:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,14 +33,14 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The SymbolPart class represents the heirarchy of pieces needed to
- * represent an actual symbol.  A symbol may require geometries from
- * its parents, as each piece further down the heirarchy makes each
- * symbol's meaning more specific, or scoped for a particular task.
- * The top-level SymbolPart represents the entire symbology tree.
- * Descending down through the tree, a SymbolPart representing one of
- * the 5 Scheme sections is next, with the lower levels dependent on
- * the Scheme definitions. <P>
+ * The SymbolPart class represents one part in a heirarchy of pieces
+ * needed to represent an actual symbol.  A symbol may require
+ * geometries from its parents, as each piece further down the
+ * heirarchy makes each symbol's meaning more specific, or scoped for
+ * a particular task.  The top-level SymbolPart represents the entire
+ * symbology tree.  Descending down through the tree, a SymbolPart
+ * representing one of the 5 Scheme sections is next, with the lower
+ * levels dependent on the Scheme definitions. <P>
  *
  * The SymbolPart is smart enough to use the heirarchy.properties file
  * that defines the symbol set and create the symbol tree using the
@@ -374,4 +374,10 @@ public class SymbolPart {
 	}
 	return null;
     }
+
+    public void paintIcon(Graphics2D g, CodeOptions co, Dimension di) {
+	
+
+    }
+
 }

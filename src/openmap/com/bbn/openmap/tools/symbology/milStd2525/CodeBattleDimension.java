@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeBattleDimension.java,v $
 // $RCSfile: CodeBattleDimension.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/16 01:08:49 $
+// $Revision: 1.4 $
+// $Date: 2003/12/18 19:11:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * The CodeBattleDimension CodePositions notes whether the symbol
+ * represents an object in space, in the air, on the ground, surface
+ * of the water or underneath the water.  The battle dimension usually
+ * changes the background shape of the symbol, and is noted on the
+ * third character of the symbol codes of those symbols that have
+ * battle dimensions.
+ */
 public class CodeBattleDimension extends CodePosition {
 
     public CodeBattleDimension() {

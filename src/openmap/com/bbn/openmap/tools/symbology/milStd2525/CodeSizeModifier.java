@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeSizeModifier.java,v $
 // $RCSfile: CodeSizeModifier.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/17 00:23:49 $
+// $Revision: 1.3 $
+// $Date: 2003/12/18 19:11:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,10 @@ package com.bbn.openmap.tools.symbology.milStd2525;
 import java.util.Properties;
 import com.bbn.openmap.util.PropUtils;
 
+/**
+ * The CodeSizeModifier is a CodeModifier for the tactical graphics
+ * scheme set, for code symbol positions 11 and 12.
+ */
 public class CodeSizeModifier extends CodePosition {
 
     public CodeSizeModifier() {

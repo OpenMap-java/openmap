@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeOptions.java,v $
 // $RCSfile: CodeOptions.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/17 00:23:49 $
+// $Revision: 1.3 $
+// $Date: 2003/12/18 19:11:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,11 @@ package com.bbn.openmap.tools.symbology.milStd2525;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * CodeOptions represent a set of CodePositions that can be chosen for
+ * a particular SymbolPart.  This class is a holder for affiliations,
+ * order of battle, modifier settings, etc.
+ */
 public class CodeOptions {
     protected List options;
 
@@ -43,5 +48,8 @@ public class CodeOptions {
 	return sb.toString();
     }
 
+    public List getOptions() {
+	return options;
+    }
 
 }

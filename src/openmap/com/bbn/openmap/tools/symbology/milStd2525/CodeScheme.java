@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeScheme.java,v $
 // $RCSfile: CodeScheme.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/17 00:23:49 $
+// $Revision: 1.5 $
+// $Date: 2003/12/18 19:11:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,6 +33,19 @@ import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
+/**
+ * The CodeScheme represents the options presented in the first
+ * character of the 15 character symbol code.  This character
+ * represents the scheme, or symbology set, of the top-most branches
+ * of the MIL-STD-2525B symbol tree.  The layout and meaning of the 15
+ * characters depend on the scheme, and the CodeScheme can figure out
+ * some of them when it parses the position properties to see what
+ * other CodePositions are fundamental for a particular instance of a
+ * CodeScheme.  There are other CodePositions that present choices for
+ * a particular scheme type, and the CodeScheme needs to be told what
+ * those options are.  The CodePositionTree handles setting up the
+ * CodeScheme with its optional CodePositions.
+ */
 public class CodeScheme extends CodePosition {
 
     /**
@@ -101,6 +114,13 @@ public class CodeScheme extends CodePosition {
 	return cs;
     }
 
+    /**
+     * Parse the heirarchy properties to create SymbolParts for those
+     * parts under a particular scheme represented by this instance of
+     * CodeScheme.
+     * @param props the heirarchy properties.
+     * @parent the SymbolPart parent that the new SymbolPart tree falls under.
+     */
     public SymbolPart parseHeirarchy(Properties props, SymbolPart parent) {
 	String hCode = getHeirarchyNumber() + heirarchyAddition;
 	String entry = props.getProperty(hCode);
@@ -114,6 +134,15 @@ public class CodeScheme extends CodePosition {
 	return sp;
     }
 
+    /**
+     * Parse the heirarchy properties to create SymbolParts for those
+     * parts under a particular scheme represented by this instance of
+     * CodeScheme.
+     * @param hCode the heirarchy code of this scheme, used to grow
+     * the tree for subsequent generations.
+     * @param props the heirarchy properties.
+     * @parent the SymbolPart parent that the new SymbolPart tree falls under.
+     */
     public void parseHeirarchy(String hCode, Properties props, SymbolPart parent) {
 	
  	List codePositionList = null;
@@ -172,16 +201,53 @@ public class CodeScheme extends CodePosition {
 	}
     }
 
+    /**
+     * Return the default 15 character symbol code for this instance
+     * of a scheme.  Pretty much all of the symbols below this node in
+     * the SymbolPart tree will have the same base code, with their
+     * parameters written on top of it.
+     */
     public StringBuffer getDefaultSymbolCode() {
 	return new StringBuffer(defaultSymbolCode);
     }
 
+    /**
+     * A set of CodePostitions that can be set with on this scheme.
+     * It's different from the choices, which is a list of
+     * instantiated CodePositions for a particular CodePosition.  The
+     * options are a set of CodePositions, containing choices.  For
+     * instance, for a warfighing code scheme, there would be code
+     * positions for affiliation, status, order of battle and
+     * modifiers.  The metoc code scheme wouldn't have options.  Each
+     * CodePosition returned in the options can represent a setting
+     * for the position (its choices will be null), or can represent a
+     * suite of choices if there is a list of other CodePositions in
+     * its choices parameter.
+     */
     protected CodeOptions options;
 
+    /**
+     * Set the code options for this scheme.
+     */
     public void setCodeOptions(CodeOptions co) {
 	options = co;
     }
 
+    /**
+     * Get the code options set for this scheme.
+     */
+    public CodeOptions getCodeOptions() {
+	return options;
+    }
+
+    /**
+     * Get the code options for the scheme as it relates to the symbol
+     * part.  The symbol part may have some restrictions set on it by
+     * having one of the option CodePositions set within it.  If
+     * that's the case, then the CodeOptions returned will have the
+     * CodePosition object for that aspect of the symbol represented
+     * by a CodePosition object without choices.
+     */
     public CodeOptions getCodeOptions(SymbolPart sp) {
 	// Check with the symbol part first to see of there are any
 	// options for the particular positions established and
@@ -190,7 +256,5 @@ public class CodeScheme extends CodePosition {
 	
 
 	return options;
-
-
     }
 }

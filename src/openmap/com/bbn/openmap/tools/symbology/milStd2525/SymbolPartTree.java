@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolPartTree.java,v $
 // $RCSfile: SymbolPartTree.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/12/16 01:08:49 $
+// $Revision: 1.2 $
+// $Date: 2003/12/18 19:11:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,10 @@
 
 package com.bbn.openmap.tools.symbology.milStd2525;
 
+/**
+ * The SymbolPartTree is a SymbolPart that serves as the top node of
+ * the SymbolPart tree.
+ */
 public class SymbolPartTree extends SymbolPart {
 
     public SymbolPartTree(String name) {

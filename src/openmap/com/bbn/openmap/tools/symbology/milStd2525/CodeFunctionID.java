@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeFunctionID.java,v $
 // $RCSfile: CodeFunctionID.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/16 01:08:49 $
+// $Revision: 1.4 $
+// $Date: 2003/12/18 19:11:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,6 +29,15 @@ import java.util.Properties;
 
 import com.bbn.openmap.util.Debug;
 
+/**
+ * The CodeFunctionID CodePosition represents a single level of the
+ * part of the tree that starts to really scope in on a symbol's
+ * purpose.  CodeFunctionIDs are used to represent the 5-10 characters
+ * of a symbol code.  The CodePositions are linked together in a tree
+ * format when the heirarchy tree is read and interpreted, with like
+ * features grouped together under a common SymbolPart by a
+ * CodeFunctionID.
+ */
 public class CodeFunctionID extends CodePosition {
 
     public CodeFunctionID() {

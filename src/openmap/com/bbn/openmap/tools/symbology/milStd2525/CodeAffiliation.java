@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeAffiliation.java,v $
 // $RCSfile: CodeAffiliation.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/17 00:23:49 $
+// $Revision: 1.5 $
+// $Date: 2003/12/18 19:11:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,12 @@ package com.bbn.openmap.tools.symbology.milStd2525;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The CodeAffiliation CodePosition presents options for symbols,
+ * noting that the symbol represents a friend, foe or unknown.  This
+ * notation is made in the second character of some symbol code
+ * strings (those that allow affilications).
+ */
 public class CodeAffiliation extends CodePosition {
 
     public CodeAffiliation() {

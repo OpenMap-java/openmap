@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeWarfightingModifier.java,v $
 // $RCSfile: CodeWarfightingModifier.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/17 00:23:49 $
+// $Revision: 1.3 $
+// $Date: 2003/12/18 19:11:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,11 @@ import java.util.Properties;
 
 import com.bbn.openmap.util.PropUtils;
 
+/**
+ * The CodeWarfightingModifier CodePosition defines different
+ * modifiers used for symbols in the warfighting scheme.  It is used
+ * in position 11 and 12 of the symbol code.
+ */
 public class CodeWarfightingModifier extends CodePosition {
 
     public CodeWarfightingModifier() {
