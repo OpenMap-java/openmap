@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageTable.java,v $
-// $Revision: 1.9 $ $Date: 2004/12/08 01:04:23 $ $Author: dietrick $
+// $Revision: 1.10 $ $Date: 2005/01/10 16:36:21 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -301,7 +301,7 @@ public class CoverageTable {
                             || foreign_key.equals("fac_id")
                             || foreign_key.equals("edg_id") || foreign_key.equals("txt_id"))) {
                 if (Debug.debugging("vpf")) {
-                    Debug.output("Found entry in the CoverageTable for: "
+                    Debug.output("CoverageTable: Found entry for: "
                             + feature_class + ": " + table1 + "|" + foreign_key
                             + "|" + table2 + "|" + primary_key);
                 }

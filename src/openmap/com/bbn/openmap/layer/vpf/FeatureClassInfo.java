@@ -14,17 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/FeatureClassInfo.java,v $
 // $RCSfile: FeatureClassInfo.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:08 $
+// $Revision: 1.5 $
+// $Date: 2005/01/10 16:36:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.util.*;
-import com.bbn.openmap.util.Debug;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.util.Debug;
 
 /**
  * This class wraps a feature type file (potext.tft, polbndl.lft, etc)
@@ -94,9 +96,10 @@ public class FeatureClassInfo extends DcwRecordFile implements
         super(tablepath + ftname, true); //defer initialization
 
         if (Debug.debugging("vpf.fci")) {
-            Debug.output("FCI set to peruse (" + filename
-                    + ") created with colname (" + colname + ") , tablepath ("
-                    + tablepath + ") and ftname (" + ftname + ")");
+            Debug.output("FCI: set to peruse (" + filename
+                    + ")\n\tcreated with colname (" + colname
+                    + ")\n\ttablepath (" + tablepath + ")\n\tftname (" + ftname
+                    + ")");
         }
 
         ctable = cthis;
@@ -127,7 +130,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
             String tileDirFileColName) throws FormatException {
 
         super(tablepath + ftname, false); //don't defer
-                                          // initialization
+        // initialization
         fullInit = true;
 
         ctable = cthis;
@@ -151,10 +154,10 @@ public class FeatureClassInfo extends DcwRecordFile implements
         }
 
         if (Debug.debugging("vpf.fci")) {
-            Debug.output("FCI: set to peruse (" + filename + ") and column ("
-                    + colname + ")");
-            Debug.output("  setting tile directory file (" + tileDirFile
-                    + "), tile id column (" + tileDirFileColName + ")");
+            Debug.output("FCI: set to peruse (" + filename
+                    + ")\n\tcreated with column name (" + colname
+                    + ")\n\ttile directory file (" + tileDirFile
+                    + ")\n\ttile id column (" + tileDirFileColName + ")");
         }
     }
 
@@ -270,7 +273,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
      */
     public synchronized void run() {
         if (fullInit == true) {//run already ran, or the file didn't
-                               // exist
+            // exist
             return;
         }
 
@@ -323,13 +326,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
      * @return the description string for the list
      */
     public synchronized String getDescription(List l, MutableInt type) {
-        if (fullInit == false) {
-            if (Debug.debugging("vpf")) {
-                Debug.output("getDescription forcing init " + columnname + " "
-                        + tablename);
-            }
-            run();
-        }
+        checkInit();
         if (mycolumn == -1) {
             return null;
         }
@@ -338,6 +335,54 @@ public class FeatureClassInfo extends DcwRecordFile implements
             return null;
         }
         return getDescription(i, type);
+    }
+
+    /**
+     * Given a row from the primitive table, this function returns a
+     * full string description of the row
+     * 
+     * @param l the record list from the primitive table
+     * @param colIndex column index for attribute to return
+     * @param type the first integral type
+     * @return the description string for the list
+     */
+//    public synchronized String getAttribute(List l, int colIndex,
+    public synchronized String getAttribute(int ftid, int colIndex,
+                                            MutableInt type) {
+        checkInit();
+//        if (mycolumn == -1) {
+//            return null;
+//        }
+//        int ftid = VPFUtil.objectToInt(l.get(mycolumn));
+        if (ftid <= 0) {
+            return null;
+        }
+
+        try {
+            if (!getRow(tmpVec, ftid)) {
+                return null;
+            }
+        } catch (FormatException fe) {
+            if (Debug.debugging("vpf")) {
+                fe.printStackTrace();
+            }
+        }
+
+        return getAttribute(columnInfo[colIndex], tmpVec.get(colIndex), type);
+    }
+
+    /**
+     * Check to see if the file has been fully initialized, call run()
+     * to do that if needed.
+     */
+    public synchronized void checkInit() {
+        if (fullInit == false) {
+            if (Debug.debugging("vpf")) {
+                Debug.output("FCI.checkInit() forcing init " + columnname + " "
+                        + tablename);
+            }
+            run();
+        }
     }
 
     /**
@@ -357,36 +402,42 @@ public class FeatureClassInfo extends DcwRecordFile implements
                 return null;
             }
             boolean haveivdtindex = false;
+
             for (int i = 0; i < columnInfo.length; i++) {
                 DcwColumnInfo dci = columnInfo[i];
-                String s = null;
-                String dciVDT = dci.getVDT();
-                if (dciVDT == Constants.intVDTTableName) {
-                    int val = VPFUtil.objectToInt(tmpVec.get(i));
-                    if (val == Integer.MIN_VALUE) {//VPF null
-                        continue;
-                    }
-                    if (!haveivdtindex) {
-                        type.value = (short) val;
-                        haveivdtindex = true;
-                    }
-                    s = ctable.getDescription(tablename,
-                            dci.getColumnName(),
-                            val);
-                    if (s == null) {
-                        s = "[" + val + "]";
-                    }
-                } else if (dciVDT == Constants.charVDTTableName) {
-                    String val = (String) tmpVec.get(i);
-                    s = ctable.getDescription(tablename,
-                            dci.getColumnName(),
-                            val);
-                    if (s == null) {
-                        s = "[" + val + "]";
-                    }
-                } else if (dci.isNonKey()) {
-                    s = tmpVec.get(i).toString();
-                }
+
+                String s = getAttribute(dci, tmpVec.get(i), type);
+                //////////
+                //                String s = null;
+                //                String dciVDT = dci.getVDT();
+                //                if (dciVDT == Constants.intVDTTableName) {
+                //                    int val = VPFUtil.objectToInt(tmpVec.get(i));
+                //                    if (val == Integer.MIN_VALUE) {//VPF null
+                //                        continue;
+                //                    }
+                //                    if (!haveivdtindex) {
+                //                        type.value = (short) val;
+                //                        haveivdtindex = true;
+                //                    }
+                //                    s = ctable.getDescription(tablename,
+                //                            dci.getColumnName(),
+                //                            val);
+                //                    if (s == null) {
+                //                        s = "[" + val + "]";
+                //                    }
+                //                } else if (dciVDT == Constants.charVDTTableName) {
+                //                    String val = (String) tmpVec.get(i);
+                //                    s = ctable.getDescription(tablename,
+                //                            dci.getColumnName(),
+                //                            val);
+                //                    if (s == null) {
+                //                        s = "[" + val + "]";
+                //                    }
+                //                } else if (dci.isNonKey()) {
+                //                    s = tmpVec.get(i).toString();
+                //                }
+                ////////
+
                 if (s != null) {
                     if (retval == null) {
                         retval = new StringBuffer(s);
@@ -402,4 +453,36 @@ public class FeatureClassInfo extends DcwRecordFile implements
         }
         return ((retval == null) ? null : retval.toString());
     }
+
+    protected String getAttribute(DcwColumnInfo dci, Object colObj,
+                                  MutableInt type) {
+        String s = null;
+        String dciVDT = dci.getVDT();
+        if (dciVDT == Constants.intVDTTableName) {
+            int val = VPFUtil.objectToInt(colObj);
+            if (val == Integer.MIN_VALUE) {//VPF null
+                return null;
+            }
+
+            if (type != null) {
+                type.value = (short) val;
+            }
+
+            s = ctable.getDescription(tablename, dci.getColumnName(), val);
+//            if (s == null) {
+//                s = "[" + val + "]";
+//            }
+        } else if (dciVDT == Constants.charVDTTableName) {
+            String val = (String) colObj;
+            s = ctable.getDescription(tablename, dci.getColumnName(), val);
+//            if (s == null) {
+//                s = "[" + val + "]";
+//            }
+        } else if (dci.isNonKey()) {
+            s = colObj.toString();
+        }
+
+        return s;
+    }
+
 }

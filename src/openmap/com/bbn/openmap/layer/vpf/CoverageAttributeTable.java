@@ -12,16 +12,21 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageAttributeTable.java,v $
-// $Revision: 1.6 $ $Date: 2004/10/14 18:06:07 $ $Author: dietrick $
+// $Revision: 1.7 $ $Date: 2005/01/10 16:36:21 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.io.*;
 
 /**
  * Handle the library level VPF directory. "noamer" in DCW is an
@@ -351,16 +356,33 @@ public class CoverageAttributeTable {
             if (ce.getCoverageTable() == null) {
                 ce.setCoverageTable(new CoverageTable(dirpath, covname.intern(), this));
                 if (Debug.debugging("vpf")) {
-                    Debug.output("Created new coveragetable for " + covname
+                    Debug.output("Created new CoverageTable for " + covname
                             + ": " + ce.description);
                 }
             } else {
                 if (Debug.debugging("vpf")) {
-                    Debug.output("Using cached coveragetable for " + covname
+                    Debug.output("Using cached CoverageTable for " + covname
                             + ": " + ce.description);
                 }
             }
             return ce.getCoverageTable();
+        }
+        return null;
+    }
+    
+    public CoverageTable getCoverageTableForFeature(String featureName) {
+        for (Iterator it = coverages.keySet().iterator(); it.hasNext();) {
+            String key = (String)it.next();
+            CoverageEntry ce = (CoverageEntry)coverages.get(key);
+            Debug.output("CoverageTable: got " + ce + " for " + key);
+            CoverageTable ct = ce.getCoverageTable();
+            if (ct != null) {
+                if (ct.getFeatureClassInfo(featureName) != null) {
+                    return ct;
+                }
+            } else {
+                Debug.output("no coverage table for " + ce);
+            }
         }
         return null;
     }

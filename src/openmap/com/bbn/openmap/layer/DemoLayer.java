@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.17 $
-// $Date: 2004/12/10 14:49:14 $
+// $Revision: 1.18 $
+// $Date: 2005/01/10 16:36:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,6 +40,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.event.MapMouseEvent;
 import com.bbn.openmap.omGraphics.EditableOMPoly;
 import com.bbn.openmap.omGraphics.FontSizer;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
@@ -62,6 +63,7 @@ import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMScalingIcon;
 import com.bbn.openmap.omGraphics.OMSpline;
 import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.omGraphics.OMTextLabeler;
 import com.bbn.openmap.omGraphics.awt.CircleShapeDecoration;
 import com.bbn.openmap.omGraphics.awt.LineShapeDecoration;
 import com.bbn.openmap.omGraphics.awt.ShapeDecorator;
@@ -189,6 +191,8 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
 
         OMCircle circle = new OMCircle(40f, -70f, 50, 200);
         circle.setRotationAngle(com.bbn.openmap.MoreMath.HALF_PI / 2f);
+        circle.putAttribute(OMGraphicConstants.LABEL,
+                new OMTextLabeler("Circle Label", OMText.JUSTIFY_CENTER));
         omList.add(circle);
 
         int[] llPointsx = new int[5];
@@ -211,6 +215,9 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         omList.add(spline);
 
         OMSpline spline2 = new OMSpline(llPointsx, llPointsy);
+        spline2.putAttribute(OMGraphicConstants.LABEL,
+                new OMTextLabeler("Spline Label"));
+        spline2.setLinePaint(Color.green);
         omList.add(spline2);
 
         float[] llPoints = { 55.0f, -10.0f, 50.0f, -5.0f, 45.0f, -7.0f, 43.0f,
@@ -263,10 +270,13 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         };
         //      omList.add(spline3);
 
-        OMLine line = new OMLine(40f, -75f, 42f, -70f, OMGraphic.LINETYPE_STRAIGHT);
+        OMLine line = new OMLine(40f, -75f, 42f, -70f, OMGraphic.LINETYPE_GREATCIRCLE);
         //      line.addArrowHead(true);
         line.addArrowHead(OMArrowHead.ARROWHEAD_DIRECTION_BOTH);
         line.setStroke(new BasicStroke(2));
+        line.putAttribute(OMGraphicConstants.LABEL,
+                new OMTextLabeler("Line Label"));
+
         omList.add(line);
 
         OMGraphicList pointList = new OMGraphicList();
@@ -301,6 +311,8 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         arc.setLinePaint(Color.red);
         arc.setFillPaint(new Color(120, 0, 0, 128));
         arc.setArcType(java.awt.geom.Arc2D.PIE);
+        arc.putAttribute(OMGraphicConstants.LABEL,
+                new OMTextLabeler("Arc Label", OMText.JUSTIFY_CENTER));
         omList.add(arc);
 
         OMAreaList combo = new OMAreaList();
@@ -990,11 +1002,18 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         }
     }
 
-    public List getItemsForOMGraphicMenu(OMGraphic omg) {
+    public List getItemsForMapMenu(MapMouseEvent me) {
         List l = new ArrayList();
         l.add(new JMenuItem("When"));
         l.add(new JMenuItem("Where"));
         l.add(new JMenuItem("How"));
+        return l;
+    }
+
+    public List getItemsForOMGraphicMenu(OMGraphic omg) {
+        List l = new ArrayList();
+        l.add(new JMenuItem("Which"));
+        l.add(new JMenuItem("Why"));
         return l;
     }
 

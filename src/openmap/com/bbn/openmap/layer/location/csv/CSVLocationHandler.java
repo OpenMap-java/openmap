@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/csv/CSVLocationHandler.java,v $
 // $RCSfile: CSVLocationHandler.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/10/14 18:06:00 $
+// $Revision: 1.11 $
+// $Date: 2005/01/10 16:36:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,21 +26,29 @@ package com.bbn.openmap.layer.location.csv;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 
-/*  OpenMap  */
-import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.layer.location.AbstractLocationHandler;
+import com.bbn.openmap.layer.location.Location;
+import com.bbn.openmap.layer.location.LocationCBMenuItem;
+import com.bbn.openmap.layer.location.LocationHandler;
+import com.bbn.openmap.layer.location.LocationLayer;
+import com.bbn.openmap.layer.location.LocationMenuItem;
+import com.bbn.openmap.layer.location.LocationPopupMenu;
+import com.bbn.openmap.layer.location.URLRasterLocation;
 import com.bbn.openmap.util.CSVTokenizer;
-import com.bbn.openmap.util.quadtree.QuadTree;
+import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.layer.location.*;
+import com.bbn.openmap.util.quadtree.QuadTree;
 
 /**
  * The CSVLocationLayer is a LocationHandler designed to let you put
@@ -83,27 +91,31 @@ import com.bbn.openmap.layer.location.*;
  * 
  * <pre>
  * 
- *  # In the section for the LocationLayer:
- *  locationLayer.locationHandlers=csvlocationhandler
  *  
- *  csvlocationhandler.class=com.bbn.openmap.layer.location.csv.CSVLocationHandler
- *  csvlocationhandler.locationFile=/data/worldpts/WorldLocs_point.csv
- *  csvlocationhandler.csvFileHasHeader=true
- *  csvlocationhandler.locationColor=FF0000
- *  csvlocationhandler.nameColor=008C54
- *  csvlocationhandler.showNames=false
- *  csvlocationhandler.showLocations=true
- *  csvlocationhandler.nameIndex=0
- *  csvlocationhandler.latIndex=8
- *  csvlocationhandler.lonIndex=10
- *  # Optional property, if you have a column in the file for URLs of
- *  # images to use for an icon.
- *  csvlocationhandler.iconIndex=11
- *  # Optional property, URL of image to use as marker for all entries in
- *  # csv file without a URL listed at the iconIndex.
- *  csvlocationhandler.defaultIconURL=/data/symbols/default.gif
- *  # Optional property, if the eastern hemisphere longitudes are negative.  False by default.
- *  csvlocationhandler.eastIsNeg=false
+ *   
+ *    # In the section for the LocationLayer:
+ *    locationLayer.locationHandlers=csvlocationhandler
+ *    
+ *    csvlocationhandler.class=com.bbn.openmap.layer.location.csv.CSVLocationHandler
+ *    csvlocationhandler.locationFile=/data/worldpts/WorldLocs_point.csv
+ *    csvlocationhandler.csvFileHasHeader=true
+ *    csvlocationhandler.locationColor=FF0000
+ *    csvlocationhandler.nameColor=008C54
+ *    csvlocationhandler.showNames=false
+ *    csvlocationhandler.showLocations=true
+ *    csvlocationhandler.nameIndex=0
+ *    csvlocationhandler.latIndex=8
+ *    csvlocationhandler.lonIndex=10
+ *    # Optional property, if you have a column in the file for URLs of
+ *    # images to use for an icon.
+ *    csvlocationhandler.iconIndex=11
+ *    # Optional property, URL of image to use as marker for all entries in
+ *    # csv file without a URL listed at the iconIndex.
+ *    csvlocationhandler.defaultIconURL=/data/symbols/default.gif
+ *    # Optional property, if the eastern hemisphere longitudes are negative.  False by default.
+ *    csvlocationhandler.eastIsNeg=false
+ *    
+ *   
  *  
  * </pre>
  */
@@ -207,6 +219,12 @@ public class CSVLocationHandler extends AbstractLocationHandler implements
         eastIsNeg = PropUtils.booleanFromProperties(properties, prefix
                 + eastIsNegProperty, false);
         defaultIconURL = properties.getProperty(prefix + DefaultIconURLProperty);
+        if (defaultIconURL != null && defaultIconURL.trim() == "") {
+            // If it's empty, it should be null, otherwise it causes
+            // confusion later when the empty string can't be
+            // interpreted as a valid URL to an image file.
+            defaultIconURL = null;
+        }
 
         csvHasHeader = PropUtils.booleanFromProperties(properties, prefix
                 + csvHeaderProperty, false);
@@ -242,6 +260,8 @@ public class CSVLocationHandler extends AbstractLocationHandler implements
         props.put(prefix + LocationFileProperty, PropUtils.unnull(locationFile));
 
         props.put(prefix + eastIsNegProperty, new Boolean(eastIsNeg).toString());
+        props.put(prefix + csvHeaderProperty,
+                new Boolean(csvHasHeader).toString());
         props.put(prefix + NameIndexProperty,
                 (nameIndex != -1 ? Integer.toString(nameIndex) : ""));
         props.put(prefix + LatIndexProperty,
@@ -299,6 +319,8 @@ public class CSVLocationHandler extends AbstractLocationHandler implements
                 "The column index, in the location file, of the icon for locations (optional).");
         list.put(DefaultIconURLProperty,
                 "The URL of an image file to use as a default for the location markers (optional).");
+        list.put(csvHeaderProperty,
+                "Flag to note that the first line in the csv file is a header line and should be ignored.");
 
         return list;
     }

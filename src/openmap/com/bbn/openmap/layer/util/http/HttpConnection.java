@@ -14,17 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/HttpConnection.java,v $
 // $RCSfile: HttpConnection.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/29 12:28:28 $
+// $Revision: 1.6 $
+// $Date: 2005/01/10 16:36:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.util.http;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.Socket;
 import java.util.StringTokenizer;
+
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -48,6 +54,7 @@ public class HttpConnection extends Thread {
     public final static String CONTENT_JPEG = "image/jpeg";
     public final static String CONTENT_GIF = "image/gif";
     public final static String CONTENT_PPM = "image/ppm";
+    public final static String CONTENT_PNG = "image/png";
     public final static String CONTENT_HTML = "text/html";
     public final static String CONTENT_MOV = "video/quicktime";
     public final static String CONTENT_PLAIN = "text/plain";

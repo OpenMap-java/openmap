@@ -12,16 +12,20 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwRecordFile.java,v $
-// $Revision: 1.5 $ $Date: 2004/10/14 18:06:08 $ $Author: dietrick $
+// $Revision: 1.6 $ $Date: 2005/01/10 16:36:21 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.io.*;
-import java.util.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.io.*;
+import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 
 /**
  * Read and encapsulate VPF table files.
@@ -36,7 +40,7 @@ public class DcwRecordFile {
     protected String documentationFileName = null;
     /** number of bytes consumed by the table header */
     private int headerLength = 4; //for the 4 bytes of the
-                                  // headerlength field
+    // headerlength field
     /**
      * big-endian (<code>true</code>) or little-endian (
      * <code>false</code>)
