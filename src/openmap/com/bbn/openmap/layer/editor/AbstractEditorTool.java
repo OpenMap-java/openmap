@@ -14,32 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/AbstractEditorTool.java,v $
 // $RCSfile: AbstractEditorTool.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/25 18:59:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.editor;
 
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Iterator;
-import javax.swing.*;
+import java.awt.Container;
 
-import com.bbn.openmap.MapBean;
-import com.bbn.openmap.event.MapMouseListener;
-import com.bbn.openmap.gui.Tool;
-import com.bbn.openmap.omGraphics.GraphicAttributes;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.tools.drawing.*;
+import com.bbn.openmap.omGraphics.event.StandardMapMouseInterpreter;
 import com.bbn.openmap.util.Debug;
 
-public class AbstractEditorTool implements EditorTool {
+public class AbstractEditorTool extends StandardMapMouseInterpreter implements EditorTool {
 
     /**
      * Flag to let it's layer know when it wants control over mouse
@@ -47,12 +38,9 @@ public class AbstractEditorTool implements EditorTool {
      */
     protected boolean wantsEvents = false;
     /**
-     * The parent layer.
+     * Used as a placeholder if face is null. 
      */
-    protected EditorLayer layer = null;
-    /** Used as a placeholder if face is null. */
     protected boolean visible = false; // until we are told otherwise.
-
     /**
      * Make sure you set the EditorLayer at some point.
      */
@@ -63,16 +51,15 @@ public class AbstractEditorTool implements EditorTool {
     /**
      * The preferred constructor.
      */
-    protected AbstractEditorTool(EditorLayer eLayer) {
-	layer = eLayer;
+    public AbstractEditorTool(EditorLayer eLayer) {
+	setLayer(eLayer);
     }
 
-    public void setEditorLayer(EditorLayer eLayer) {
-	layer = eLayer;
-    }
-
-    public EditorLayer getEditorLayer() {
-	return layer;
+    public void setLayer(OMGraphicHandlerLayer eLayer) {
+	super.setLayer(eLayer);
+	if (eLayer != null && eLayer instanceof EditorLayer) {
+	    ((EditorLayer)eLayer).setMouseEventInterpreter(this);
+	}
     }
 
     /**
@@ -132,88 +119,6 @@ public class AbstractEditorTool implements EditorTool {
 	    return visible;  // they should be the same...
 	}
     }
-
-    ////////////////////////
-    // Mouse Listener events
-    ////////////////////////
-
-    /**
-     * Return a list of the modes that are interesting to the
-     * MapMouseListener.  For the EditorTool, it is going to be fed
-     * events from the SelectMouseMode "Gestures".
-     */
-    public String[] getMouseModeServiceList() {
-	return null;  // we are going to be fed mouse events.
-    }
-    
-    /**
-     * Invoked when a mouse button has been pressed on a component.
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mousePressed(MouseEvent e) { 
-	return false;
-    }
-    
-    /**
-     * Invoked when a mouse button has been released on a component.
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseReleased(MouseEvent e) {      
-	return false;
-    }
-    
-    /**
-     * Invoked when the mouse has been clicked on a component.
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseClicked(MouseEvent e) { 
-	return false;
-    }
-    
-    /**
-     * Invoked when the mouse enters a component.
-     * @param e MouseEvent
-     */
-    public void mouseEntered(MouseEvent e) {}
-    
-    /**
-     * Invoked when the mouse exits a component.
-     * @param e MouseEvent
-     */
-    public void mouseExited(MouseEvent e) {}
-    
-    ///////////////////////////////
-    // Mouse Motion Listener events
-    ///////////////////////////////
-    
-    /**
-     * Invoked when a mouse button is pressed on a component and then 
-     * dragged.  The listener will receive these events if it
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseDragged(MouseEvent e) {      
-	return false;
-    }
-
-    /**
-     * Invoked when the mouse button has been moved on a component
-     * (with no buttons down).
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseMoved(MouseEvent e) {  
-	return false;
-    }
-    
-    /**
-     * Handle a mouse cursor moving without the button being pressed.
-     * Another layer has consumed the event.
-     */
-    public void mouseMoved() {}
 
     ///////////////////////////////
     // Tool interface methods

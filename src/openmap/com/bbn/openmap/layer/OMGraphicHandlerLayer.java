@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/09/23 22:53:08 $
+// $Revision: 1.10 $
+// $Date: 2003/09/25 18:59:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -728,18 +728,59 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	return list;
     }
 
-    public synchronized MapMouseListener getMapMouseListener() {
-	String[] modeList = getMouseModeIDsForEvents();
-	if (modeList != null) {
-	    StandardMapMouseInterpreter smmi = 
-		new StandardMapMouseInterpreter(this);
-	    smmi.setMouseModeServiceList(modeList);
-	    smmi.setConsumeEvents(getConsumeEvents());
-	    smmi.setGRP(this);
-	    return smmi;
-	} else {
-	    return null;
+    protected MapMouseInterpreter mouseEventInterpreter = null;
+
+    /**
+     * Set the interpreter used to field and interpret MouseEvents,
+     * thereby calling GestureResponsePolicy methods on this layer.
+     */
+    public void setMouseEventInterpreter(MapMouseInterpreter mmi) {
+	if (mmi instanceof StandardMapMouseInterpreter) {
+	    String[] modeList = getMouseModeIDsForEvents();
+	    ((StandardMapMouseInterpreter)mmi).setMouseModeServiceList(modeList);
+	    ((StandardMapMouseInterpreter)mmi).setConsumeEvents(getConsumeEvents());
 	}
+	mmi.setGRP(this);
+	mouseEventInterpreter = mmi;
+    }
+
+    /**
+     * Get the interpreter used to field and interpret MouseEvents,
+     * thereby calling GestureResponsePolicy methods on this layer.
+     * This method checks to see if any mouse modes ids have been set
+     * via the getMouseModeIDsForEvents() method, and if there were
+     * and the interpreter hasn't been set, it will create a
+     * StandardMapMouseInterpreter.  Otherwise, it returns whatever
+     * has been set as the interpreter, which could be null.
+     */
+    public MapMouseInterpreter getMouseEventInterpreter() {
+	if (getMouseModeIDsForEvents() != null && mouseEventInterpreter == null) {
+	    setMouseEventInterpreter(new StandardMapMouseInterpreter(this));
+	}
+	return mouseEventInterpreter;
+    }
+
+    /**
+     * Query asked from the MouseDelegator for interest in receiving MapMouseEvents.
+     */
+    public synchronized MapMouseListener getMapMouseListener() {
+	MapMouseListener mml = getMouseEventInterpreter();
+
+	if (mml != null) {
+	    String[] modes = mml.getMouseModeServiceList();
+	    StringBuffer sb = new StringBuffer();
+	    for (int i = 0; i < modes.length; i++) {
+		sb.append(modes[i] + ", ");
+	    }
+
+	    if (Debug.debugging("layer")) {
+		Debug.output("Layer " + getName() + " returning " + 
+			     mml.getClass().getName() + 
+			     " as map mouse listener that listens to :" + sb.toString());
+	    }
+	}
+
+	return mml;
     }
 
     /**
@@ -768,7 +809,10 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	for (int i = 0; i < mm.length;i++) {
 	    sb.append(mm[i] + " ");
 	}
-	Debug.output("For layer " + getName() + ", setting mouse modes to " + sb.toString());
+
+	if (Debug.debugging("layer")) {
+	    Debug.output("For layer " + getName() + ", setting mouse modes to " + sb.toString());
+	}
 
 	mouseModeIDs = mm;
     }

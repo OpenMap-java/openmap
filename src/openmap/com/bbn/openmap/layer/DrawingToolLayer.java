@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.18 $
-// $Date: 2003/09/23 22:53:08 $
+// $Revision: 1.19 $
+// $Date: 2003/09/25 18:59:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,10 +24,12 @@
 package com.bbn.openmap.layer;
 
 import com.bbn.openmap.Layer;
+import com.bbn.openmap.MouseDelegator;
 import com.bbn.openmap.dataAccess.shape.EsriShapeExport;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.tools.drawing.DrawingTool;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
@@ -65,7 +67,6 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
     public DrawingToolLayer() {
 	setList(new OMGraphicList());
 	setAddToBeanContext(true);
-	setMouseModeIDsForEvents(new String[] {SelectMouseMode.modeID});
 
 	DTL_DEBUG = Debug.debugging("dtl");
     }
@@ -75,6 +76,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 
 	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 	showHints = PropUtils.booleanFromProperties(props, realPrefix + ShowHintsProperty, showHints);
+
+	if (getMouseModeIDsForEvents() == null) {
+	    setMouseModeIDsForEvents(new String[] {SelectMouseMode.modeID});
+	}
     }
     
     public OMDrawingTool getDrawingTool() {
@@ -102,6 +107,11 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	// First thing, release the proxy MapMouseMode, if there is one.
 	releaseProxyMouseMode();
 
+	// GRP, assuming that selection is off.
+	OMGraphicList omgl = new OMGraphicList();
+	omgl.add(omg);
+	deselect(omgl);
+	
 	OMGraphicList list = getList();
 	if (list != null) {
 	    doAction(omg, action);
@@ -152,35 +162,13 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      * is removed from the BeanContext of this object.
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof DrawingTool) {
-	    if (getDrawingTool() == (DrawingTool)someObj) {
-		setDrawingTool(null);
-	    }
+	if (someObj instanceof DrawingTool &&
+	    getDrawingTool() == someObj) {
+
+	    setDrawingTool(null);
 	}
     }
 
-    /**
-     * Overriding the OMGraphicHandlerLayer method that sets the
-     * StandardMapMouseInterpreter, and setting a
-     * DrawingToolLayerInterpreter instead, which allows movement of
-     * edited OMGraphics on the downclick.  The mouseModes property
-     * needs to be set in the properties file if you want this layer
-     * to respond to something different than the SelectMouseMode.
-     */
-    public synchronized MapMouseListener getMapMouseListener() {
-	String[] modeList = getMouseModeIDsForEvents();
-	if (modeList != null) {
-	    DrawingToolLayerInterpreter interpreter = 
-		new DrawingToolLayerInterpreter(this);
-	    interpreter.setMouseModeServiceList(modeList);
-	    interpreter.setConsumeEvents(getConsumeEvents());
-	    interpreter.setGRP(this);
-	    return interpreter;
-	} else {
-	    return null;
-	}
-    }
-    
     protected MapMouseMode proxyMMM = null;
 
     /**
@@ -293,5 +281,78 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	}
     }
 
+    /**
+     * GestureResponsePolicy method.
+     */
+    public void select(OMGraphicList omgl) {
+	super.select(omgl);
+	if (omgl != null && omgl.size() > 0) {
+	    if (omgl.size() == 1) {
+		edit(omgl.getOMGraphicAt(0));
+	    } else {
+		Debug.output("DrawingToolLayer can't handle multiple OMGraphics at one time, yet!");
+	    }
+	}
+    }
+
+    public void edit(OMGraphic omg) {
+
+	OMDrawingTool dt = getDrawingTool();
+
+	if (dt != null && dt.canEdit(omg.getClass())) {
+	    if (!dt.getUseAsTool()) {
+		dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
+	    }
+
+	    MapMouseMode omdtmm = dt.getMouseMode();
+	    if (!omdtmm.isVisible()) {
+		int behaviorMask = OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK;
+		if (!dt.getUseAsTool()) {
+		    behaviorMask |= OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK; 
+		}
+		dt.setBehaviorMask(behaviorMask);
+	    }
+
+	    MapMouseInterpreter mmi = (MapMouseInterpreter)getMapMouseListener();
+
+	    MouseEvent mevent = null;
+	    if (mmi != null) {
+		mevent = mmi.getCurrentMouseEvent();
+	    }
+
+	    if (dt.edit(omg, this, mevent) != null) {
+		// OK, means we're editing - let's lock up the MouseMode
+		if (DTL_DEBUG) {
+		    Debug.output("DTL: starting edit of OMGraphic...");
+		}
+
+		// Check to see if the DrawingToolMouseMode wants to 
+		// be invisible.  If it does, ask the current
+		// active MouseMode to be the proxy for it...
+		if (!omdtmm.isVisible() && mevent instanceof MapMouseEvent) {
+		    MapMouseMode mmm = ((MapMouseEvent)mevent).getMapMouseMode();
+		    if (mmm.actAsProxyFor(omdtmm, MapMouseSupport.PROXY_DISTRIB_MOUSE_MOVED & MapMouseSupport.PROXY_DISTRIB_MOUSE_DRAGGED)) {
+			if (DTL_DEBUG) {
+			    Debug.output("DTL: Setting " + mmm.getID() + " as proxy for drawing tool");
+			}
+			setProxyMouseMode(mmm);
+		    } else {
+			// WHOA, couldn't get proxy lock - bail
+			if (DTL_DEBUG) {
+			    Debug.output("DTL: couldn't get proxy lock on " + mmm.getID() + " deactivating internal drawing tool");
+			}
+			dt.deactivate();
+		    }
+		} else {
+		    if (DTL_DEBUG) {
+			Debug.output("DTL: MouseMode wants to be visible(" +
+				     (omdtmm.isVisible()) + 
+				     "), or MouseEvent is not a MapMouseEvent(" +
+				     !(mevent instanceof MapMouseEvent) + ")");
+		    }
+		}
+	    }
+	}
+    }
 }
 

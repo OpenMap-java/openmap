@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorTool.java,v $
 // $RCSfile: EditorTool.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/25 18:59:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,9 +24,11 @@ package com.bbn.openmap.layer.editor;
 
 import java.awt.Container;
 
+import com.bbn.openmap.LightMapHandlerChild;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
 
 /**
  * An EditorTool is a component that provides specific functionality
@@ -35,21 +37,7 @@ import com.bbn.openmap.omGraphics.OMGraphic;
  * actually represent a specific set of objects on the map, and the
  * actions on the OMGraphics need to be controlled.
  */
-public interface EditorTool extends MapMouseListener {
-
-    /**
-     * Part of the interface where the EditorLayer can provide
-     * components that are available via the MapHandler/BeanContext.
-     * The object is something that has been added to the MapHandler.
-     */
-    public void findAndInit(Object obj);
-
-    /**
-     * Part of the interface where the EditorLayer can provide
-     * components that are available via the MapHandler/BeanContext.
-     * The object is something that has been removed from the MapHandler.
-     */
-    public void findAndUndo(Object obj);
+public interface EditorTool extends MapMouseInterpreter, LightMapHandlerChild {
 
     /**
      * Method where the EditorLayer lets the tool know that the

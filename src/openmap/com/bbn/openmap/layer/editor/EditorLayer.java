@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayer.java,v $
 // $RCSfile: EditorLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/09/23 22:53:08 $
+// $Revision: 1.7 $
+// $Date: 2003/09/25 18:59:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,6 +28,7 @@ import com.bbn.openmap.event.*;
 import com.bbn.openmap.gui.Tool;
 import com.bbn.openmap.layer.DrawingToolLayer;
 import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.tools.drawing.*;
 import com.bbn.openmap.util.*;
@@ -69,7 +70,9 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      */
     public final static String EditorToolProperty = "editor";
 
-    public EditorLayer() {}
+    public EditorLayer() {
+	super();
+    }
 
     public void setProperties(String prefix, Properties props) {
 	super.setProperties(prefix, props);
@@ -193,27 +196,15 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
     }
 
     /**
-     * Overriding the OMGraphicHandlerLayer method that sets the
-     * StandardMapMouseInterpreter, and setting a
-     * DrawingToolLayerInterpreter instead, which allows movement of
-     * edited OMGraphics on the downclick.  The mouseModes property
-     * needs to be set in the properties file if you want this layer
-     * to respond to something different than the SelectMouseMode.
+     * Get the interpreter used to field and interpret MouseEvents,
+     * thereby calling GestureResponsePolicy methods on this layer.
+     * It returns whatever has been set as the interpreter, which
+     * could be null.
      */
-    public synchronized MapMouseListener getMapMouseListener() {
-	String[] modeList = getMouseModeIDsForEvents();
-	if (modeList != null) {
-	    EditorLayerInterpreter interpreter = 
-		new EditorLayerInterpreter(this);
-	    interpreter.setMouseModeServiceList(modeList);
-	    interpreter.setConsumeEvents(getConsumeEvents());
-	    interpreter.setGRP(this);
-	    return interpreter;
-	} else {
-	    return null;
-	}
+    public MapMouseInterpreter getMouseEventInterpreter() {
+	return mouseEventInterpreter;
     }
-    
+
     /**
      * Part of a layer hack to notify the component listener when the
      * component is hidden.  These components don't receive the
