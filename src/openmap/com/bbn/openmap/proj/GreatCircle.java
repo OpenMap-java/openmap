@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/GreatCircle.java,v $
 // $RCSfile: GreatCircle.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:22 $
+// $Revision: 1.7 $
+// $Date: 2005/01/10 17:06:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -356,6 +356,7 @@ public class GreatCircle {
         float sinphi1 = (float) Math.sin(phi1);
         float sinc = (float) Math.sin(c);
         float cosc = (float) Math.cos(c);
+        if (n < 2) n = 2; // Safety to avoid / by zero later.
         int end = n << 1;//*2
 
         // Only want to create a new return float array if there was a
@@ -365,7 +366,7 @@ public class GreatCircle {
             ret_val = new float[end];
         }
 
-        float inc = e / n;
+        float inc = e / (n - 1);
         Az = s;
 
         // generate the points in clockwise order (conforming to

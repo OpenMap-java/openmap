@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionFactory.java,v $
 // $RCSfile: ProjectionFactory.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/10/25 15:04:01 $
+// $Revision: 1.11 $
+// $Date: 2005/01/10 17:06:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -316,7 +316,7 @@ public class ProjectionFactory extends OMComponent {
         if (projClassName == null) {
             throw new ProjectionException("No projection class name specified");
         }
-        
+
         try {
             return makeProjection(Class.forName(projClassName),
                     centerLat,
@@ -415,11 +415,13 @@ public class ProjectionFactory extends OMComponent {
                     h);
 
         } catch (com.bbn.openmap.proj.ProjectionException pe) {
-            Debug.output("ProjectionFactory.getDefaultProjectionFromEnvironment(): Can't use ("
-                    + Environment.Projection
-                    + " = "
-                    + Environment.get(Environment.Projection)
-                    + ") property as a projection class, need a class name instead.  Using default of com.bbn.openmap.proj.Mercator.");
+            if (Debug.debugging("proj")) {
+                Debug.output("ProjectionFactory.getDefaultProjectionFromEnvironment(): Can't use ("
+                        + Environment.Projection
+                        + " = "
+                        + Environment.get(Environment.Projection)
+                        + ") property as a projection class, need a class name instead.  Using default of com.bbn.openmap.proj.Mercator.");
+            }
             proj = ProjectionFactory.makeProjection(Mercator.class,
                     Environment.getFloat(Environment.Latitude, 0f),
                     Environment.getFloat(Environment.Longitude, 0f),
