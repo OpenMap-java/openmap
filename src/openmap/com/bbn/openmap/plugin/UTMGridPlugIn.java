@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.8 $
+// $Date: 2004/02/04 00:04:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 
 package com.bbn.openmap.plugin;
 
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.*;
@@ -598,7 +599,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         GridBagConstraints c = new GridBagConstraints();
         panel.setLayout(gridbag);
 
-        JCheckBox setZonesButton = new JCheckBox("Show UTM Zone Grid", showZones);
+        JCheckBox setZonesButton = new JCheckBox(i18n.get(UTMGridPlugIn.class,"setZonesButton","Show UTM Zone Grid"), showZones);
         setZonesButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     JCheckBox button = (JCheckBox)ae.getSource();
@@ -611,7 +612,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         gridbag.setConstraints(setZonesButton, c);
         panel.add(setZonesButton);
 
-        JCheckBox set100kGridButton = new JCheckBox("Show 100Km Distance Grid", show100kGrid);  
+        JCheckBox set100kGridButton = new JCheckBox(i18n.get(UTMGridPlugIn.class,"set100kGridButton","Show 100Km Distance Grid"), show100kGrid);        
         set100kGridButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     JCheckBox button = (JCheckBox)ae.getSource();
@@ -624,7 +625,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         gridbag.setConstraints(set100kGridButton, c);
         panel.add(set100kGridButton);
 
-        JCheckBox setLabelsButton = new JCheckBox("Show Zone Labels", showLabels);
+        JCheckBox setLabelsButton = new JCheckBox(i18n.get(UTMGridPlugIn.class,"setLabelsButton","Show Zone Labels"), showLabels);
         setLabelsButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     JCheckBox button = (JCheckBox)ae.getSource();
@@ -636,8 +637,19 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         gridbag.setConstraints(setLabelsButton, c);
         panel.add(setLabelsButton);
 
-        JPanel resPanel = PaletteHelper.createPaletteJPanel("Distance Grid Units");
-        String[] resStrings = {" No Grid ", " 10,000 meter   ", " 1000 meter ", " 100 meter ", " 10 meter ", " 1 meter "};
+        JPanel resPanel = 
+            PaletteHelper.createPaletteJPanel(i18n.get(UTMGridPlugIn.class,
+                                                       "resPanel",
+                                                       "Distance Grid Units"));
+
+        String[] resStrings = {
+            i18n.get(UTMGridPlugIn.class,"resStrings.noGrid"," No Grid "),
+            i18n.get(UTMGridPlugIn.class,"resStrings.10000m"," 10,000 meter   "),
+            i18n.get(UTMGridPlugIn.class,"resStrings.1000m"," 1000 meter "),
+            i18n.get(UTMGridPlugIn.class,"resStrings.100m"," 100 meter "),
+            i18n.get(UTMGridPlugIn.class,"resStrings.10m"," 10 meter "),
+            i18n.get(UTMGridPlugIn.class,"resStrings.1m"," 1 meter ")
+        };
 
         JComboBox resList = new JComboBox(resStrings);
         resList.addActionListener(new ActionListener() {
@@ -655,11 +667,15 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         gridbag.setConstraints(resPanel, c);
         panel.add(resPanel);
 
-        JButton utmGridColorButton = new JButton("Set UTM Grid Color");
+        JButton utmGridColorButton = new JButton(i18n.get(UTMGridPlugIn.class,
+                                                          "utmGridColorButton",
+                                                          "Set UTM Grid Color"));
         utmGridColorButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     Color tmpPaint = getNewPaint((Component)ae.getSource(), 
-                                                 "Choose UTM Grid Color", 
+                                                 i18n.get(UTMGridPlugIn.class,
+                                                          "utmGridColorChooser",
+                                                          "Choose UTM Grid Color"), 
                                                  (Color)getUTMGridPaint());
                     if (tmpPaint != null) {
                         setUTMGridPaint(tmpPaint);
@@ -672,11 +688,15 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         gridbag.setConstraints(utmGridColorButton, c);
         panel.add(utmGridColorButton);
 
-        JButton distGridColorButton = new JButton("Set Distance Grid Color");
+        JButton distGridColorButton = new JButton(i18n.get(UTMGridPlugIn.class,
+                                                           "distGridColorButton",
+                                                           "Set Distance Grid Color"));
         distGridColorButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     Color tmpPaint = getNewPaint((Component)ae.getSource(), 
-                                                 "Choose Distance Grid Color", 
+                                                 i18n.get(UTMGridPlugIn.class,
+                                                          "distanceGridColorChooser",
+                                                          "Choose Distance Grid Color"), 
                                                  (Color)getDistanceGridPaint());
                     if (tmpPaint != null) {
                         setDistanceGridPaint(tmpPaint);
@@ -770,28 +790,47 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
-
-        props.put(ShowZonesProperty, "Show UTM Zone Grid Lines");
+        String interString;
+    
+        interString = i18n.get(UTMGridPlugIn.class,ShowZonesProperty,I18n.TOOLTIP,"Show UTM Zone Grid Lines.");
+        props.put(ShowZonesProperty, interString);
+        interString = i18n.get(UTMGridPlugIn.class, ShowZonesProperty, ShowZonesProperty);
+        props.put(ShowZonesProperty + LabelEditorProperty, interString);
         props.put(ShowZonesProperty + ScopedEditorProperty, 
                   "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        props.put(UTMGridColorProperty, "Color for UTM Zone Grid lines.");
+        interString = i18n.get(UTMGridPlugIn.class,UTMGridColorProperty,I18n.TOOLTIP,"Color for UTM Zone Grid lines.");
+        props.put(UTMGridColorProperty, interString);
+        interString = i18n.get(UTMGridPlugIn.class, UTMGridColorProperty, UTMGridColorProperty);
+        props.put(UTMGridColorProperty + LabelEditorProperty, interString);
         props.put(UTMGridColorProperty + ScopedEditorProperty, 
-                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+                  "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        props.put(ShowLabelsProperty, "Show Labels for Grid Lines");
+        interString = i18n.get(UTMGridPlugIn.class,ShowLabelsProperty,I18n.TOOLTIP,"Show Labels for Grid Lines");
+        props.put(ShowLabelsProperty, interString);
+        interString = i18n.get(UTMGridPlugIn.class, ShowLabelsProperty, ShowLabelsProperty);
+        props.put(ShowLabelsProperty + LabelEditorProperty, interString);
         props.put(ShowLabelsProperty + ScopedEditorProperty, 
                   "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        props.put(Show100kGridProperty, "Show 100Km Distance Grid Lines");
+        interString = i18n.get(UTMGridPlugIn.class,Show100kGridProperty,I18n.TOOLTIP,"Show 100Km Distance Grid Lines");
+        props.put(Show100kGridProperty, interString);
+        interString = i18n.get(UTMGridPlugIn.class, Show100kGridProperty, Show100kGridProperty);
+        props.put(Show100kGridProperty + LabelEditorProperty, interString);
         props.put(Show100kGridProperty + ScopedEditorProperty, 
                   "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        props.put(DistanceGridColorProperty, "Color for Equal-Distance Grid Lines.");
+        interString = i18n.get(UTMGridPlugIn.class,DistanceGridColorProperty,I18n.TOOLTIP,"Color for Equal-Distance Grid Lines.");
+        props.put(DistanceGridColorProperty, interString);
+        interString = i18n.get(UTMGridPlugIn.class, DistanceGridColorProperty, DistanceGridColorProperty);
+        props.put(DistanceGridColorProperty + LabelEditorProperty, interString);
         props.put(DistanceGridColorProperty + ScopedEditorProperty, 
                   "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        props.put(DistanceGridResolutionProperty, "Meter Resolution for Distance Grid Lines (0-5)");
+        interString = i18n.get(UTMGridPlugIn.class,DistanceGridResolutionProperty,I18n.TOOLTIP,"Meter Resolution for Distance Grid Lines (0-5)");
+        props.put(DistanceGridResolutionProperty, interString);
+        interString = i18n.get(UTMGridPlugIn.class, DistanceGridResolutionProperty, DistanceGridResolutionProperty);
+        props.put(DistanceGridResolutionProperty + LabelEditorProperty, interString);
 
         props.put(initPropertiesProperty, ShowZonesProperty + " " + 
                   UTMGridColorProperty + " " + 
@@ -869,6 +908,5 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 
     public Paint getDistanceGridPaint() {
         return distanceGridPaint;
-
     }
 }

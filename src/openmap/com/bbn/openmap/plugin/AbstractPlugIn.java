@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/AbstractPlugIn.java,v $
 // $RCSfile: AbstractPlugIn.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.8 $
+// $Date: 2004/02/04 00:04:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,8 @@ import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.util.Properties;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.MapMouseListener;
@@ -66,6 +68,11 @@ public abstract class AbstractPlugIn
      * context (MapHandler).  True by default.
      */
     protected boolean addToBeanContext = true;
+    
+    /**
+     * Internationalization
+     */
+    public I18n i18n = Environment.getI18n();
 
     public AbstractPlugIn() {}
 
@@ -284,7 +291,7 @@ public abstract class AbstractPlugIn
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @return the property prefix for the plugin
+     * @return the property prefix for the plugin.
      */
     public String getPropertyPrefix() {
         return prefix;
