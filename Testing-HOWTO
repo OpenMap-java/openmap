@@ -1,0 +1,146 @@
+# **********************************************************************
+# 
+#  BBN Corporation
+#  10 Moulton St.
+#  Cambridge, MA 02138
+#  (617) 873-2000
+# 
+#  Copyright (C) 1997
+#  This software is subject to copyright protection under the laws of 
+#  the United States and other countries.
+# 
+# **********************************************************************
+# 
+# $Source: /cvs/distapps/openmap/Attic/Testing-HOWTO,v $
+# $RCSfile: Testing-HOWTO,v $
+# $Revision: 1.1 $
+# $Date: 1998/08/25 15:29:20 $
+# $Author: aculline $
+# 
+# **********************************************************************
+
+
+OpenMap test script
+-------------------
+
+This is a test script for QA of the OpenMap applet/application.  These
+directions assume that the tester is at least familiar with the OpenMap GUI.
+
+All problems/questions/flames can be sent to dstl-help@bbn.com.
+
+Applet:
+------
+
+Go to the javamap applet demo page http://javamap.bbn.com/demo/.
+
+Follow the links to the latest release page.  You should get to a page with
+links to run the applet at different resolutions.  Select you favorite
+resolution.
+
+Once the Applet loads, you should see a map of the Eastern U.S. with graticule
+lines.  You can now skip to the common Applet/Application instructions.
+
+Application:
+-----------
+
+On Windows, run the OpenMap.bat file found in the bin directory.  This file
+may need to be configured properly to run on your machine (JDK and CLASSPATH).
+
+On UNIX, run the OpenMap shell script found in the bin directory.  You need
+your CLASSPATH set properly before running.
+
+
+Running the Applet/Application:
+------------------------------
+
+	i) File Menu
+		- Select File->About and verify that a popup dialog box
+		  describing OpenMap comes up.
+		- Other selections except File->Shutdown/Quit should be
+		  grayed out.
+
+	ii) Navigate Menu
+		- Select Navigate->Coordinates and verify that an internal
+		  window with text entry fields comes up. Type in 70,0,0 for
+		  DMS Latitude and 180,0,0 for DMS Longitude.  Click apply
+		  and the map should recenter over the Chukchi sea.  Now
+		  select on the "Dec Deg" tab and enter 19.5 latitude, -155.4
+		  longitude.  Click apply and the map should recenter over the
+		  island of Hawaii.  Close the dialog.
+		- Select Navigate->Projection->CADRG to change the projection.
+		  Verify that the map redraws (you may not notice much
+		  difference).
+		- Verify that the Navigate->ZoomIn and Navigate->ZoomOut
+		  selections work as advertised.
+
+	iii) Control Menu
+		Skip this for now.
+
+	iv) Layers Menu
+		- Verify that there are two layer selections, a political solid
+		  type and a graticule type.
+		- Select Layers->Edit Layers.  This should bring up an
+		  internal window with a list of layers.  Find the topmost
+		  selected layer and move it below the other selected layer.
+		  Make sure this change is reflected in the Map.  Toggle off
+		  one layer and verify that it is no longer showing on the
+		  map.  Click it back on and it should redraw itself quickly.
+		  Now click off both layers, and turn on the DTED layer.
+
+	v) DTED Specialist interaction
+		- After the last step in the previous section, you should have
+		  an internal window with radio buttons and sliders --the DTED
+		  palette.  Select the "Colors" radio button and dismiss the
+		  palette.
+		- Select Control->Redraw.  The map will change and you will
+		  see color terrain data of Hawaii.
+		- Select Control->MouseMode->Gestures.  Click on one of the
+		  peaks.  You should see some text indicating elevation drawn
+		  on the map.
+		- If you haven't already, turn off the Layers menu.
+
+	vi) Help Menu
+		- Verify that Help->OpenMap points your web browser at the
+		  OpenMap help pages.
+
+	vii) Toolbar
+		- Verify that the pan rosette works as advertised.  ("Pan
+		  West" should move the map center west by 1/2 screen, etc).
+		- Verify that the zoom buttons work.  They zoom by a factor of
+		  2.
+		- Check the scale entry textbox.  Type 250K for 1:250,000.
+		  Press return and the map should change the scale.  Try other
+		  scales of 1M (1 million), 5m, and 10,000,000.
+		- Change the MouseMode back to Navigation mode.  Verify that
+		  you get a + mouse cursor when the mouse is over the map.
+		  You should also get lat/lon and x/y coordinates showing
+		  across the bottom of the map.
+		- Click on the map.  The map should recenter where you
+		  clicked.  Click and drag a selection box.  The map should
+		  zoom and recenter over the selection.
+
+	viii) Random
+		- Now go ahead and play around with the various controls in
+		  random and senseless ways.  It actually isn't that hard to
+		  bring OpenMap to its knees (especially when running as an
+		  applet).  Gee I wonder what will happen if I select all
+		  the layers?  What happens when I click on and off their
+		  palettes while they're getting data?  What about zooming in
+		  and out and recentering while they're off getting data?  And
+		  how about toggling them on/off when they're out fetching
+		  data.
+
+	ix) Acceptable and unacceptable failures
+		- It is acceptable for the Java VM or Netscape to crash
+		  (SIGSEGV, SIGBUS, GPF/etc) while running OpenMap (blame
+		  a broken Netscape or Sun JDK or the underlying OS).
+		- It is mostly acceptable for CORBA errors to occur since
+		  those are *usually* out of our control.  Often the CORBA
+		  errors will go away if you powercycle the offending layer.
+		  If problems persist, be sure to contact the email list
+		  mentioned at the top of this file.
+		- It is NOT ACCEPTABLE if OpenMap gets a NullPointerException,
+		  ArrayOutOfBoundsException, or similar exceptions/errors that
+		  occur because of bugs in our code.  Please let the mailing
+		  list mentioned above know about the problem.  Be
+		  sure to include any generated output of the problem.

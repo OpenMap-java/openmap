@@ -1,0 +1,108 @@
+# **********************************************************************
+# 
+#  BBN Corporation
+#  10 Moulton St.
+#  Cambridge, MA 02138
+#  (617) 873-2000
+# 
+#  Copyright (C) 1997
+#  This software is subject to copyright protection under the laws of 
+#  the United States and other countries.
+# 
+# **********************************************************************
+# 
+# $Source: /cvs/distapps/openmap/Attic/NewVersion-HOWTO,v $
+# $RCSfile: NewVersion-HOWTO,v $
+# $Revision: 1.1 $
+# $Date: 1998/08/25 15:29:20 $
+# $Author: aculline $
+# 
+# **********************************************************************
+
+
+This file details how to package up OpenMap into a release version.  Basically
+you check out a fresh version of OpenMap, bump the version number in
+Environment.java to a stable release version, commit the change, cvs tag and
+branch, and then run the autobuild script to compile it.  After the autobuild
+completes, you include all the appropriate stuff out of the build directory and
+etc/ directory into the new openmap-<version>/ release directory.
+
+
+1) Check out and compile
+------------------------
+
+Check out the version of OpenMap you want into your own openmap
+directory.
+	cvs co openmap
+
+Tag this version of the openmap source tree.  Do a...
+	cvs tag -b OpenMap_<major>_<minor> openmap
+
+Where <major> and <minor> constitute the OpenMap version as hardcoded
+in Environment.java.  We use the Linux development model where odd minor
+numbers are bleeding-edge releases, and even minor numbers are stable release
+versions.  Any 3rd numbers are the patchlevel of the particular branch.
+You should only tag, branch, and release versions like 2.0, 2.2, 3.0,
+etc.
+
+Compile OpenMap by running the autobuild script.  Use autobuild --help for
+up-to-date arguments.
+	autobuild
+
+2) Create the openmap-<version> distribution
+--------------------------------------------------
+
+Copy the appropriate jar files to the etc/lib directory.
+	cp openmap.jar etc/lib/
+	cp cspec58.jar etc/lib/
+	cp swingall.jar etc/lib/
+
+Copy any additional freely available and necessary jar files to the etc/lib
+directory.
+
+Include the appropriate READMEs, HOWTOs, javadocs, and additional
+documentation in the appropriate subdirectory.
+
+Copy sample specialist IDL and sample source code to the etc/src
+directory:
+	cp com/bbn/openmap/CSpecialist/Specialist.idl etc/src
+	cp com/bbn/openmap/specialist/sample/*.java etc/src
+
+Remove unnecessary files from the etc and etc/scripts directory
+including this file (once you're done with it!).  And remove any CVS/
+directories and .cvsignore files in etc and all its subdirectories.
+
+Also, you'll need to run the HTML-Converter program on the
+openmap*.html files to make them work with the Java PlugIn for
+browsers.  This program is located in /usr/local/matt/HTML_Converter,
+or /usr/local/blatz/HTML_Converter.  Watch out, though.  The
+HTML_Convertor converts all PARAM tags, even if they are commented
+out.  So take out all of the PARAM tags you do not want in the
+resulting file before you run the convertor.  The originals should be
+put in a backup directory so that a customer can modify them if they
+need to.
+
+Rename the etc/scripts directory as etc/bin and symlink etc/scripts to
+it.
+
+Rename the etc directory as openmap-<version> and then create tar.gz, tar.Z,
+and .zip files out of it:
+	mv etc openmap-<version>
+	tar cvf openmap-<version>.tar openmap-version
+	gzip openmap-<version>.tar
+
+3) Final steps
+--------------
+
+Now you have an official OpenMap release.  The final step is to change
+the hardcoded version number in the main OpenMap source tree to the next
+development version (for example from 2.4 to 2.5).
+	cvs update -A openmap
+		(update to main tree)
+	vi openmap/com/bbn/openmap/Environment.java
+		(change the minor number)
+	cvs commit openmap/com/bbn/openmap/Environment.java
+		(commit to main tree)
+
+Copy the release files out to the javamap/openmap FTP directories, and notify
+our customers.
