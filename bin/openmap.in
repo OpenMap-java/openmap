@@ -71,7 +71,7 @@ OM_HOME=`dirname $PRG`/..
 #
 # Final CLASSPATH setup
 #
-CLASSPATH=$OM_HOME:$OM_HOME/lib/openmap.jar:$OM_HOME/share:$DEV_CLASSPATH
+CLASSPATH=$OM_HOME:$OM_HOME/lib/openmap.jar:$OM_HOME/lib/omcontrib.jar:$OM_HOME/share:$DEV_CLASSPATH
 if [ ! -z "${full_classpath}" ] ; then
     CLASSPATH=$full_classpath
 elif [ ! -z "${extra_classpath}" ] ; then

@@ -842,7 +842,7 @@ case $rootdir in
     ;;
 esac
 
-classpath=$rootdir
+classpath=$rootdir${CLASSPATH_SEP}$rootdir/contrib
 
 case $with_classpath in
   no | "" | yes)
@@ -1039,6 +1039,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/layer/plotLayer/Makefile
 	com/bbn/openmap/layer/pluginLayer/Makefile
 	com/bbn/openmap/layer/rpf/Makefile
+	com/bbn/openmap/layer/rpf/corba/Makefile
 	com/bbn/openmap/layer/shape/Makefile
 	com/bbn/openmap/layer/shape/areas/Makefile
 	com/bbn/openmap/layer/util/Makefile
@@ -1165,6 +1166,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/layer/plotLayer/Makefile
 	com/bbn/openmap/layer/pluginLayer/Makefile
 	com/bbn/openmap/layer/rpf/Makefile
+	com/bbn/openmap/layer/rpf/corba/Makefile
 	com/bbn/openmap/layer/shape/Makefile
 	com/bbn/openmap/layer/shape/areas/Makefile
 	com/bbn/openmap/layer/util/Makefile
