@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.53 $  $Date: 2001/06/18 19:45:08 $
+# $Revision: 1.54 $  $Date: 2001/06/23 11:59:12 $
 # **********************************************************************
 
 
@@ -263,9 +263,14 @@ install::	${libdir} lib/omcore.jar lib/openmap.jar
 # install in share.  (this must be done one file at a time for
 # install-sh to work properly)
 install::	${datadir}
-	${INSTALL.data} share/openmap.properties ${datadir}
-	${INSTALL.data} share/dcwpo-browse.shp ${datadir}
-	${INSTALL.data} share/dcwpo-browse.ssx ${datadir}
+	${INSTALL.dir} ${datadir}/data
+	${INSTALL.dir} ${datadir}/data/shape
+	${INSTALL.data} share/data/shape/dcwpo-browse.shp ${datadir}/data/shape
+	${INSTALL.data} share/data/shape/dcwpo-browse.ssx ${datadir}/data/shape
+	${INSTALL.data} share/data/shape/vmap_area_thin.shp ${datadir}/data/shape
+	${INSTALL.data} share/data/shape/vmap_area_thin.ssx ${datadir}/data/shape
+	${INSTALL.data} share/data/shape/vmap_edge_thin.shp ${datadir}/data/shape
+	${INSTALL.data} share/data/shape/vmap_edge_thin.ssx ${datadir}/data/shape
 
 # install in doc
 install-docs::
