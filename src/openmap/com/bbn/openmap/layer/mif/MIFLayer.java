@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFLayer.java,v $
 // $RCSfile: MIFLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/10 22:04:54 $
+// $Revision: 1.4 $
+// $Date: 2003/09/29 21:12:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,10 +40,15 @@ import javax.swing.*;
 
 /**
  * An OpenMap Layer that displays MapInfo Interchange Format (MIF)
- * files Currently only a subset of the possible MIF options is
+ * files. Currently only a subset of the possible MIF options is
  * supported.  Specifically the PLine and Region options with their
- * associated parameters however maps will be reproduced exactly as
- * they appear in the MapInfo Professional product. 
+ * associated parameters, however, maps will be reproduced exactly as
+ * they appear in the MapInfo Professional product. <P>
+ * 
+ * There is only one property for this layer: <pre>
+ * miflayer.mifFile=path to MIF file
+ *
+ * <pre> 
  */
 public class MIFLayer extends OMGraphicHandlerLayer {
 
