@@ -1,3 +1,10 @@
+2004-10-15  Donald Dietrick  <dietrick@jader.local>
+
+	* Changed OMGrid to extend OMGraphicList instead of OMGraphic.
+	This provides better access to the OMGraphics that the
+	OMGridGenerator creates.  If that access is not wanted, just set
+	the OMGrid (OMGraphicList) to be vague.
+
 2004-10-05  Donald Dietrick  <dietrick@dhcp89-077-080.bbn.com>
 
 	* Updated the SwingWorker to match the latest version from Sun.
