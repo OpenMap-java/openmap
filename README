@@ -1,8 +1,8 @@
 $Source: /cvs/distapps/openmap/README,v $
 $RCSfile: README,v $
-$Revision: 1.10 $
-$Date: 2002/08/30 14:35:18 $
-$Author: dietrick $
+$Revision: 1.11 $
+$Date: 2002/11/06 19:11:02 $
+$Author: bmackiew $
 
 
 OpenMap(tm)
@@ -176,12 +176,12 @@ Anonymous CVS repository
 There is currently no anonymous CVS access.  Please let us know if
 this service would be valuable to you.
 
+Bug Tracking Software
+---------------------
+BBN maintains a Bugzilla site for tracking bugs and suggestions for
+OpenMap.  You can find it at:
 
-GNATS Buglist
--------------
-There is currently no GNATS access.  Please let us know if this
-service would be valuable to you.
-
+<URL:http://openmap.bbn.com/bugzilla/>
 
 Mailing lists
 -------------
