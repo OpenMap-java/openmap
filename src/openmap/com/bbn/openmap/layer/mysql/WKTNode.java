@@ -15,13 +15,14 @@ package com.bbn.openmap.layer.mysql;
 import java.util.Vector;
 
 /**
- * This class represents a Node used to construct a tree while parsing the 
- * WKT (text) representation of the Geometry.
+ * This class represents a Node used to construct a tree while parsing
+ * the WKT (text) representation of the Geometry.
  * 
- * Copyright 2003 by the Author<br>
+ * Copyright 2003 by the Author <br>
  * <p>
- * @author Uwe Baier  uwe.baier@gmx.net<br>
- * @version 1.0<br>
+ * 
+ * @author Uwe Baier uwe.baier@gmx.net <br>
+ * @version 1.0 <br>
  */
 public class WKTNode {
 
@@ -34,6 +35,7 @@ public class WKTNode {
 
     /**
      * Returns the geoWKT.
+     * 
      * @return String
      */
     public String getGeoWKT() {
@@ -42,6 +44,7 @@ public class WKTNode {
 
     /**
      * Returns the leaf.
+     * 
      * @return boolean
      */
     public boolean isLeaf() {
@@ -50,6 +53,7 @@ public class WKTNode {
 
     /**
      * Returns the parent.
+     * 
      * @return WKTNode
      */
 
@@ -59,6 +63,7 @@ public class WKTNode {
 
     /**
      * Returns the root.
+     * 
      * @return boolean
      */
     public boolean isRoot() {
@@ -67,6 +72,7 @@ public class WKTNode {
 
     /**
      * Sets the geoWKT.
+     * 
      * @param c The geoWKT to set
      */
     public void adToGeoWKT(char[] c) {
@@ -75,6 +81,7 @@ public class WKTNode {
 
     /**
      * Sets the leaf.
+     * 
      * @param leaf The leaf to set
      */
     public void setLeaf(boolean leaf) {
@@ -83,6 +90,7 @@ public class WKTNode {
 
     /**
      * Sets the parent.
+     * 
      * @param parent The parent to set
      */
     public void setParent(WKTNode parent) {
@@ -91,6 +99,7 @@ public class WKTNode {
 
     /**
      * Sets the root.
+     * 
      * @param root The root to set
      */
     public void setRoot(boolean root) {

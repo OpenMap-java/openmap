@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,79 +14,73 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/CSVShapeInfoFile.java,v $
 // $RCSfile: CSVShapeInfoFile.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.shape;
 
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.io.CSVFile;
-
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 
-//import java.io.*;
-//import java.util.*;
 import java.net.URL;
 import java.net.MalformedURLException;
 
 /**
- * The CSVShapeInfoFile holds on to the contents of a CSV file, with the
- * intent of cross referencing the contents of the file with the
- * contents of a shape file.  The order that the contents are read
+ * The CSVShapeInfoFile holds on to the contents of a CSV file, with
+ * the intent of cross referencing the contents of the file with the
+ * contents of a shape file. The order that the contents are read
  * should correspond to the order that the shapefile contents are
  * read.
- *<P>
+ * <P>
  * NOTE: By default, the numbers that are found in the CSV file are
- * converted to Doubles.  Use the load(boolean) method to control
- * this, especially if you are using the fields later as the key in a
- * Hashtable.  
+ * converted to Doubles. Use the load(boolean) method to control this,
+ * especially if you are using the fields later as the key in a
+ * Hashtable.
  */
 public class CSVShapeInfoFile extends CSVFile {
 
-    /** 
-     * Don't do anything special, since all defaults are set already 
+    /**
+     * Don't do anything special, since all defaults are set already
      */
-    public CSVShapeInfoFile(String name) 
-        throws MalformedURLException {
+    public CSVShapeInfoFile(String name) throws MalformedURLException {
         super(name);
     }
-    
-    /** 
-     * Don't do anything special, since all defaults are set already 
+
+    /**
+     * Don't do anything special, since all defaults are set already
      */
-    public CSVShapeInfoFile(URL url) 
-        throws MalformedURLException {
+    public CSVShapeInfoFile(URL url) throws MalformedURLException {
         super(url);
     }
 
     /**
      * This function takes an OMGraphicList and loads each one with
-     * the vector representing the records in the csv file.  Each
+     * the vector representing the records in the csv file. Each
      * graphics stores the graphic in its object slot.
      */
-    public void loadIntoGraphics(OMGraphicList list){
-        if (list != null && infoRecords != null){
+    public void loadIntoGraphics(OMGraphicList list) {
+        if (list != null && infoRecords != null) {
             int numgraphics = list.size();
 
-            for (int i = 0 ; i < numgraphics ; i++) {
+            for (int i = 0; i < numgraphics; i++) {
                 try {
                     OMGraphic omg = list.getOMGraphicAt(i);
-                    Integer recnum = (Integer)(omg.getAppObject());
-                    // OFF BY ONE!!!  The shape record numbers
+                    Integer recnum = (Integer) (omg.getAppObject());
+                    // OFF BY ONE!!! The shape record numbers
                     // assigned to the records start with 1, while
                     // everything else we do starts with 0...
-                    Object inforec = getRecord(recnum.intValue()-1);
+                    Object inforec = getRecord(recnum.intValue() - 1);
                     omg.setAppObject(inforec);
                 } catch (ClassCastException cce) {
-                    if (Debug.debugging("shape")){
+                    if (Debug.debugging("shape")) {
                         cce.printStackTrace();
                     }
-                } catch (NullPointerException npe){
+                } catch (NullPointerException npe) {
                     npe.printStackTrace();
                 }
             }

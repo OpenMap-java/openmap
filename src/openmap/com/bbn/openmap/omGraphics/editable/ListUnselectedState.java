@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,23 +12,21 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/ListUnselectedState.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/ListUnselectedState.java,v
+// $
 // $RCSfile: ListUnselectedState.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.util.Debug;
 
 public class ListUnselectedState extends GraphicUnselectedState {
@@ -43,12 +41,12 @@ public class ListUnselectedState extends GraphicUnselectedState {
      * it should become the moving point, and the graphic should be
      * changed to edit mode.
      */
-    public boolean mousePressed(MouseEvent e){ 
+    public boolean mousePressed(MouseEvent e) {
         Debug.message("eomg", "ListStateMachine|unselected state|mousePressed");
         GrabPoint mp = graphic.getMovingPoint(e);
 
         if (mp != null) {
-            // Else, set the moving point, and go to edit mode.  If
+            // Else, set the moving point, and go to edit mode. If
             // the mouse is released, we'll consider ourselves
             // unselected again.
             graphic.getStateMachine().setEdit();
@@ -71,7 +69,8 @@ public class ListUnselectedState extends GraphicUnselectedState {
     }
 
     public boolean mouseMoved(MouseEvent e) {
-        Debug.message("eomgdetail", "ListStateMachine|unselected state|mouseMoved");
+        Debug.message("eomgdetail",
+                "ListStateMachine|unselected state|mouseMoved");
 
         GrabPoint mp = graphic.getMovingPoint(e);
         if (mp != null) {
@@ -82,13 +81,4 @@ public class ListUnselectedState extends GraphicUnselectedState {
         return false;
     }
 }
-
-
-
-
-
-
-
-
-
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,44 +14,52 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/html/ListElement.java,v $
 // $RCSfile: ListElement.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.util.html;
+
 import java.util.*;
 
 /** A basic html container type */
 public class ListElement implements ContainerElement {
-    
+
     /** An ordered vector of elements */
     protected Vector v = new Vector();
-    
+
     /** Construct a new ListElement */
-    public ListElement() {
-    }
-    
-    /** Add an element to the end of the list
-     * @param e the element to add */
+    public ListElement() {}
+
+    /**
+     * Add an element to the end of the list
+     * 
+     * @param e the element to add
+     */
     public void addElement(Element e) {
         v.addElement(e);
     }
 
-    /** Add an element to the end of the list
-     * @param s the string to add */
+    /**
+     * Add an element to the end of the list
+     * 
+     * @param s the string to add
+     */
     public void addElement(String s) {
         addElement(new StringElement(s));
     }
-    
-    /** convert representation to html and write it out
+
+    /**
+     * convert representation to html and write it out
+     * 
      * @param out the output Writer
-     * @exception java.io.IOException an IO error occurred accessing out
+     * @exception java.io.IOException an IO error occurred accessing
+     *            out
      */
     public void generate(java.io.Writer out) throws java.io.IOException {
-        for (Enumeration e = v.elements(); e.hasMoreElements(); )
-            ((Element)e.nextElement()).generate(out);
+        for (Enumeration e = v.elements(); e.hasMoreElements();)
+            ((Element) e.nextElement()).generate(out);
     }
 }

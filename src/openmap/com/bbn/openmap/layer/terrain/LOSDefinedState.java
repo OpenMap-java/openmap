@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,32 +12,30 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/LOSDefinedState.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/LOSDefinedState.java,v
+// $
 // $RCSfile: LOSDefinedState.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.terrain;
 
-import java.util.*;
-import java.awt.*;
 import java.awt.event.*;
 import com.bbn.openmap.layer.util.stateMachine.*;
-import com.bbn.openmap.event.LayerStatusEvent;
 
-class LOSDefinedState extends State{
+class LOSDefinedState extends State {
 
     protected LOSGenerator LOSTool;
 
-    public LOSDefinedState(LOSGenerator tool){
+    public LOSDefinedState(LOSGenerator tool) {
         LOSTool = tool;
     }
 
-    public boolean mousePressed(MouseEvent e){ 
+    public boolean mousePressed(MouseEvent e) {
         LOSTool.reset();
         LOSTool.layer.repaint();
         LOSTool.setCenter(e);
@@ -45,22 +43,22 @@ class LOSDefinedState extends State{
         return true;
     }
 
-    public boolean mouseReleased(MouseEvent e){ 
+    public boolean mouseReleased(MouseEvent e) {
         LOSTool.reset();
         return true;
     }
 
-    public boolean mouseClicked(MouseEvent e){
+    public boolean mouseClicked(MouseEvent e) {
         LOSTool.reset();
         return true;
     }
 
-    public void actionPerformed(ActionEvent e){
+    public void actionPerformed(ActionEvent e) {
         String ac = e.getActionCommand();
-        if (ac.equalsIgnoreCase(TerrainLayer.createCommand)){
+        if (ac.equalsIgnoreCase(TerrainLayer.createCommand)) {
             LOSTool.doImage();
             LOSTool.stateMachine.setState(LOSStateMachine.TOOL_VIEW);
-        }
-        else LOSTool.reset();
+        } else
+            LOSTool.reset();
     }
 }

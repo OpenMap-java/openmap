@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfSubframe.java,v $
 // $RCSfile: RpfSubframe.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/23 21:10:38 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 /*
  * Some of the ideas for this code is based on source code provided by
@@ -33,23 +32,17 @@
 
 package com.bbn.openmap.layer.rpf;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.awt.Color;
 
-import com.bbn.openmap.io.*;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMRasterObject;
-import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMScalingRaster;
 import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.util.Debug;
 
 /**
  * The RpfSubframe is a holder for images and attributes within the
- * cache. 
+ * cache.
  */
 public class RpfSubframe {
     /** The version of the subframe. */
@@ -89,15 +82,12 @@ public class RpfSubframe {
 
         if (colorModel == OMRasterObject.COLORMODEL_DIRECT) {
             // have to set the location and pixels later.
-            image = new OMScalingRaster(0f, 0f, 0f, 0f,
-                                        PIXEL_EDGE_SIZE, PIXEL_EDGE_SIZE, 
-                                        new int[PIXEL_EDGE_SIZE*PIXEL_EDGE_SIZE]);
+            image = new OMScalingRaster(0f, 0f, 0f, 0f, PIXEL_EDGE_SIZE, PIXEL_EDGE_SIZE, new int[PIXEL_EDGE_SIZE
+                    * PIXEL_EDGE_SIZE]);
         }
         // Have to set the location, colortable, pixel indexes later
-        else {  
-            image = new OMScalingRaster(0f, 0f, 0f, 0f,
-                                        PIXEL_EDGE_SIZE, PIXEL_EDGE_SIZE, 
-                                        (byte[]) null, (Color[]) null, opaqueness);
+        else {
+            image = new OMScalingRaster(0f, 0f, 0f, 0f, PIXEL_EDGE_SIZE, PIXEL_EDGE_SIZE, (byte[]) null, (Color[]) null, opaqueness);
         }
         information = new OMText(0f, 0f, 10, 20, "***", new java.awt.Font("Helvetica", java.awt.Font.PLAIN, 10), OMText.JUSTIFY_LEFT);
         information.setLinePaint(Color.yellow);
@@ -107,7 +97,7 @@ public class RpfSubframe {
         rectangle.setLineType(OMGraphic.LINETYPE_STRAIGHT);
     }
 
-    public int getColorModel() { 
+    public int getColorModel() {
         return colorModel;
     }
 
@@ -124,28 +114,33 @@ public class RpfSubframe {
     }
 
     /**
-     * Set the lat/lon of the frame and attribute text. 
-     * @param lat latitude of upper left point, in decimal degrees. 
-     * @param lon longitude of upper left point, in decimal degrees. 
+     * Set the lat/lon of the frame and attribute text.
+     * 
+     * @param lat latitude of upper left point, in decimal degrees.
+     * @param lon longitude of upper left point, in decimal degrees.
      * @deprecated use the other setLocation, with upper left and
-     * lower right coordinates.  
+     *             lower right coordinates.
      */
     public void setLocation(float lat, float lon) {
         image.setLat(lat);
         image.setLon(lon);
         information.setLat(lat);
         information.setLon(lon);
-        rectangle.setLocation(lat, lon, 0, 0, 
-                              rectangle.getRight(), 
-                              rectangle.getBottom());
+        rectangle.setLocation(lat,
+                lon,
+                0,
+                0,
+                rectangle.getRight(),
+                rectangle.getBottom());
     }
 
     /**
-     * Set the lat/lon of the frame and attribute text. 
-     * @param ulat latitude of upper left point, in decimal degrees. 
-     * @param wlon longitude of upper left point, in decimal degrees. 
-     * @param llat latitude of lower right point, in decimal degrees. 
-     * @param elon longitude of lower right point, in decimal degrees. 
+     * Set the lat/lon of the frame and attribute text.
+     * 
+     * @param ulat latitude of upper left point, in decimal degrees.
+     * @param wlon longitude of upper left point, in decimal degrees.
+     * @param llat latitude of lower right point, in decimal degrees.
+     * @param elon longitude of lower right point, in decimal degrees.
      */
     public void setLocation(float ulat, float wlon, float llat, float elon) {
         image.setULLat(ulat);
@@ -154,13 +149,17 @@ public class RpfSubframe {
         image.setLRLon(elon);
         information.setLat(ulat);
         information.setLon(wlon);
-        rectangle.setLocation(ulat, wlon, llat, elon, OMGraphic.LINETYPE_STRAIGHT);
+        rectangle.setLocation(ulat,
+                wlon,
+                llat,
+                elon,
+                OMGraphic.LINETYPE_STRAIGHT);
     }
 
     /**
      * setScalingTo has to be called after this for the changes to
      * take place, or else you need to call the information.setData()
-     * methods directly. 
+     * methods directly.
      */
     public void setAttributeText(String text) {
         data = text;
@@ -168,15 +167,15 @@ public class RpfSubframe {
 
     /**
      * getAttributeText retrieves the text that would be displayed as
-     * attribute information about the subframe.  
+     * attribute information about the subframe.
      */
     public String getAttributeText() {
         return data;
     }
 
-//      public void finalize() {
-//      Debug.message("gc", "  RpfSubframe: getting GC'd");
-//      }
+    //      public void finalize() {
+    //      Debug.message("gc", " RpfSubframe: getting GC'd");
+    //      }
 
 }
 

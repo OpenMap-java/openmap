@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.25 $
-// $Date: 2004/09/30 22:39:29 $
+// $Revision: 1.26 $
+// $Date: 2004/10/14 18:05:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -125,8 +125,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             doAction(omg, action);
             repaint();
         } else {
-            Debug.error("Layer " + getName() + " received " + omg + " and " + action
-                    + " with no list ready");
+            Debug.error("Layer " + getName() + " received " + omg + " and "
+                    + action + " with no list ready");
         }
     }
 
@@ -146,7 +146,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                 pmmm.releaseProxy();
                 setProxyMouseMode(null);
                 fireRequestInfoLine(""); // hidden drawing tool put up
-                                         // coordinates, clean up.
+                // coordinates, clean up.
             }
 
             if (dt.isActivated()) {
@@ -224,8 +224,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             public void actionPerformed(ActionEvent event) {
                 OMGraphicList list = getList();
                 if (list != null) {
-                    EsriShapeExport ese = new EsriShapeExport(list, getProjection(),
-                            null);
+                    EsriShapeExport ese = new EsriShapeExport(list, getProjection(), null);
                     ese.export();
                 } else {
                     fireRequestMessage("There's nothing on the map for this layer to save.");
@@ -285,7 +284,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
      */
     public String getToolTipTextFor(OMGraphic omgr) {
         OMDrawingTool dt = getDrawingTool();
-        if (shouldEdit(omgr) && dt.canEdit(omgr.getClass()) && !dt.isActivated()) {
+        if (shouldEdit(omgr) && dt.canEdit(omgr.getClass())
+                && !dt.isActivated()) {
             return "Click to Edit";
         } else {
             return null;
@@ -347,11 +347,9 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                 // active MouseMode to be the proxy for it...
                 if (!omdtmm.isVisible() && mevent instanceof MapMouseEvent) {
                     MapMouseMode mmm = ((MapMouseEvent) mevent).getMapMouseMode();
-                    if (mmm
-                            .actAsProxyFor(
-                                           omdtmm,
-                                           MapMouseSupport.PROXY_DISTRIB_MOUSE_MOVED
-                                                   & MapMouseSupport.PROXY_DISTRIB_MOUSE_DRAGGED)) {
+                    if (mmm.actAsProxyFor(omdtmm,
+                            MapMouseSupport.PROXY_DISTRIB_MOUSE_MOVED
+                                    & MapMouseSupport.PROXY_DISTRIB_MOUSE_DRAGGED)) {
                         if (DTL_DEBUG) {
                             Debug.output("DTL: Setting " + mmm.getID()
                                     + " as proxy for drawing tool");
@@ -376,9 +374,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                 }
             } else {
                 if (DTL_DEBUG) {
-                    Debug
-                            .output("DTL.edit: dt.select returns false, avoiding modification over "
-                                    + omg.getClass().getName());
+                    Debug.output("DTL.edit: dt.select returns false, avoiding modification over "
+                            + omg.getClass().getName());
                 }
             }
         }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MenuBar.java,v $
 // $RCSfile: MenuBar.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
@@ -30,30 +29,28 @@ import java.io.Serializable;
 import java.util.*;
 import javax.swing.*;
 
-import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
 
 /**
  * This object looks for objects implementing MenuI interface and adds
- * them to itself.  if an object implements HelpMenuI, it is then
- * added as the last element.
+ * them to itself. if an object implements HelpMenuI, it is then added
+ * as the last element.
  */
-public class MenuBar extends JMenuBar 
-  implements Serializable, BeanContextMembershipListener, BeanContextChild
-{
+public class MenuBar extends JMenuBar implements Serializable,
+        BeanContextMembershipListener, BeanContextChild {
     protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
 
     /**
-     * Default Constructor is required to create instances at runtime 
+     * Default Constructor is required to create instances at runtime
      */
     public MenuBar() {}
-    
+
     /**
      * Called when the MenuBar is a part of a BeanContext, and it is
      * added to the BeanContext, or while other objects are added to
      * the BeanContext after that.
-     *
-     * @param it Iterator 
+     * 
+     * @param it Iterator
      */
     protected void findAndInit(Iterator it) {
         Object someObj;
@@ -77,31 +74,32 @@ public class MenuBar extends JMenuBar
             if (Debug.debugging("menubar")) {
                 Debug.output("MenuBar: Adding help menu at " + getMenuCount());
             }
-            add((JMenu)someObj,getMenuCount());
+            add((JMenu) someObj, getMenuCount());
 
         } else if (someObj instanceof MenuBarMenu) {
-                
+
             if (Debug.debugging("menubar")) {
-                Debug.output("MenuBar: Adding Menu " + ((JMenu)someObj) + 
-                             "to index " + menuCount);
+                Debug.output("MenuBar: Adding Menu " + ((JMenu) someObj)
+                        + "to index " + menuCount);
             }
 
             JMenu lastMenu = getLastMenu();
             if (lastMenu instanceof HelpMenu) {
                 remove(lastMenu);
-                add((JMenu)someObj, menuCount -1);
+                add((JMenu) someObj, menuCount - 1);
                 add(lastMenu, menuCount);
                 if (Debug.debugging("menubar")) {
-                    Debug.output("MenuBar: last menu is HelpMenu\n moving helpMenu to " + menuCount);
+                    Debug.output("MenuBar: last menu is HelpMenu\n moving helpMenu to "
+                            + menuCount);
                 }
             } else {
-                add((JMenu)someObj, menuCount);
+                add((JMenu) someObj, menuCount);
             }
         }
     }
 
     /**
-     * Get the last menu item on the menu bar.  If there are no menu
+     * Get the last menu item on the menu bar. If there are no menu
      * items, it returns null.
      */
     public JMenu getLastMenu() {
@@ -110,53 +108,55 @@ public class MenuBar extends JMenuBar
             return getMenu(menuCount - 1);
         } else {
             return null;
-        } 
+        }
     }
 
     /** Method for BeanContextChild interface */
-    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {    
+    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
         beanContextChildSupport.setBeanContext(in_bc);
-        if (in_bc!=null) {
+        if (in_bc != null) {
             in_bc.addBeanContextMembershipListener(this);
             findAndInit(in_bc.iterator());
         }
     }
-  
+
     /** Method for BeanContextChild interface */
     public void addPropertyChangeListener(String propertyName,
                                           PropertyChangeListener in_pcl) {
         beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
     }
-  
+
     /** Method for BeanContextChild interface */
-    public void removePropertyChangeListener(String propertyName, 
+    public void removePropertyChangeListener(String propertyName,
                                              PropertyChangeListener in_pcl) {
-        beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
+        beanContextChildSupport.removePropertyChangeListener(propertyName,
+                in_pcl);
     }
-  
+
     /** Method for BeanContextChild interface */
     public void addVetoableChangeListener(String propertyName,
                                           VetoableChangeListener in_vcl) {
         beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
     }
-  
+
     /** Method for BeanContextChild interface */
-    public void removeVetoableChangeListener(String propertyName, 
-                                             VetoableChangeListener in_vcl){
-        beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
+    public void removeVetoableChangeListener(String propertyName,
+                                             VetoableChangeListener in_vcl) {
+        beanContextChildSupport.removeVetoableChangeListener(propertyName,
+                in_vcl);
     }
-  
+
     /** Method for BeanContextChild interface */
     public BeanContext getBeanContext() {
         return beanContextChildSupport.getBeanContext();
     }
-  
+
     /** Method for BeanContextMembership interface */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
         Iterator it = bcme.iterator();
         findAndInit(it);
     }
-  
+
     /** Method for BeanContextMembership interface */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
         Iterator it = bcme.iterator();
@@ -170,7 +170,7 @@ public class MenuBar extends JMenuBar
         if (someObj instanceof HelpMenu) {
             setHelpMenu(null);
         } else if (someObj instanceof MenuBarMenu) {
-            remove((Component)someObj);
-        }       
+            remove((Component) someObj);
+        }
     }
 }

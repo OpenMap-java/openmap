@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/Pilot.java,v $
 // $RCSfile: Pilot.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:05 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.plugin.pilot;
 
@@ -38,8 +37,7 @@ import com.bbn.openmap.util.PaletteHelper;
 /**
  * The Pilot is the base class representing a location over the map.
  */
-public class Pilot extends OMPoint 
-    implements ActionListener, FocusListener {
+public class Pilot extends OMPoint implements ActionListener, FocusListener {
 
     public static Color CONNECTED_COLOR = Color.green;
     public static Color DISCONNECTED_COLOR = Color.red;
@@ -57,7 +55,7 @@ public class Pilot extends OMPoint
     public void resetConnected() {
         setFillPaint(DISCONNECTED_COLOR);
     }
-    
+
     /** Really has no meaning, other than to set the color. */
     public void connected(boolean connected) {
         if (connected) {
@@ -66,14 +64,15 @@ public class Pilot extends OMPoint
     }
 
     /**
-     * A little method that will cause the location to move around a little.
+     * A little method that will cause the location to move around a
+     * little.
      */
     protected void moveRandomly(float factor) {
         double hor = Math.random() - .5;
         double vert = Math.random() - .5;
 
-        setLat(getLat() + (float)vert/factor);
-        setLon(getLon() + (float)hor/factor);
+        setLat(getLat() + (float) vert / factor);
+        setLon(getLon() + (float) hor / factor);
     }
 
     /**
@@ -87,10 +86,10 @@ public class Pilot extends OMPoint
     }
 
     public void move(int distance, Length units, float Az) {
-        LatLonPoint newLocation = GreatCircle.spherical_between(
-            ProjMath.degToRad(getLat()),
-            ProjMath.degToRad(getLon()),
-            units.toRadians(distance), Az);
+        LatLonPoint newLocation = GreatCircle.spherical_between(ProjMath.degToRad(getLat()),
+                ProjMath.degToRad(getLon()),
+                units.toRadians(distance),
+                Az);
 
         setLat(newLocation.getLatitude());
         setLon(newLocation.getLongitude());
@@ -121,8 +120,7 @@ public class Pilot extends OMPoint
             heightField.setText(Float.toString(h));
         }
         if (Debug.debugging("pilotloader")) {
-            Debug.output("Pilot: " + getName() + 
-                         " setting height to : " + h);
+            Debug.output("Pilot: " + getName() + " setting height to : " + h);
         }
     }
 
@@ -133,28 +131,26 @@ public class Pilot extends OMPoint
     protected transient java.awt.Container palette = null;
 
     /**
-     * Make the palette visible.  Will automatically determine if
-     * we're running in an applet environment and will use a
-     * JInternalFrame over a JFrame if necessary.
+     * Make the palette visible. Will automatically determine if we're
+     * running in an applet environment and will use a JInternalFrame
+     * over a JFrame if necessary.
      */
     public void showPalette() {
-        if (Environment.getBoolean(Environment.UseInternalFrames)){
+        if (Environment.getBoolean(Environment.UseInternalFrames)) {
 
-            final JLayeredPane desktop = 
-                Environment.getInternalFrameDesktop();
+            final JLayeredPane desktop = Environment.getInternalFrameDesktop();
 
             // get the window
-            palette = PaletteHelper.getPaletteInternalWindow(
-                getGUI(),
-                getName(),
-                new InternalFrameAdapter() {
+            palette = PaletteHelper.getPaletteInternalWindow(getGUI(),
+                    getName(),
+                    new InternalFrameAdapter() {
                         public void internalFrameClosed(InternalFrameEvent e) {
                             if (desktop != null) {
-                                desktop.remove((JInternalFrame)palette);
+                                desktop.remove((JInternalFrame) palette);
                                 desktop.repaint();
                             }
                             palette = null;
-//                          firePaletteEvent(false);
+                            //                          firePaletteEvent(false);
                         };
                     });
             // add the window to the desktop
@@ -164,20 +160,19 @@ public class Pilot extends OMPoint
             }
         } else {
             if (palette == null) {
-                palette = PaletteHelper.getPaletteWindow(
-                    getGUI(), 
-                    getName(),
-                    new ComponentAdapter(){  
-                            public void componentHidden(ComponentEvent e){
-//                              firePaletteEvent(false);
+                palette = PaletteHelper.getPaletteWindow(getGUI(),
+                        getName(),
+                        new ComponentAdapter() {
+                            public void componentHidden(ComponentEvent e) {
+                            //                              firePaletteEvent(false);
                             };
-                        } );
+                        });
             }
             palette.setVisible(true);
-            ((JFrame)palette).setState(java.awt.Frame.NORMAL);
+            ((JFrame) palette).setState(java.awt.Frame.NORMAL);
         }
     }
-    
+
     /**
      * Hide the Pilot's palette.
      */
@@ -186,13 +181,13 @@ public class Pilot extends OMPoint
             return;
         }
 
-        if (Environment.getBoolean(Environment.UseInternalFrames)){
+        if (Environment.getBoolean(Environment.UseInternalFrames)) {
             // close the palette
-            try { 
-                ((JInternalFrame)palette).setClosed(true); 
+            try {
+                ((JInternalFrame) palette).setClosed(true);
             } catch (java.beans.PropertyVetoException evt) {
-                com.bbn.openmap.util.Assert.assertExp(
-                    false, "Pilot.hidePalette(): internal error!");
+                com.bbn.openmap.util.Assert.assertExp(false,
+                        "Pilot.hidePalette(): internal error!");
             }
         } else {
             palette.setVisible(false);
@@ -203,10 +198,10 @@ public class Pilot extends OMPoint
     JTextField heightField = null;
 
     /**
-     * Gets the gui controls associated with the Pilot.
-     * This default implementation returns null indicating
-     * that the Pilot has no gui controls.
-     *
+     * Gets the gui controls associated with the Pilot. This default
+     * implementation returns null indicating that the Pilot has no
+     * gui controls.
+     * 
      * @return java.awt.Component or null
      */
     public java.awt.Component getGUI() {
@@ -232,19 +227,18 @@ public class Pilot extends OMPoint
         }
         heightPanel.add(heightField);
         heightPanel.add(new JLabel(" meters"));
-        
-        panel.add(heightPanel);
 
+        panel.add(heightPanel);
 
         return panel;
     }
 
     public final static String MoveCmd = "MoveCommand";
 
-    public void actionPerformed(java.awt.event.ActionEvent ae){
+    public void actionPerformed(java.awt.event.ActionEvent ae) {
         String cmd = ae.getActionCommand();
         if (cmd == MoveCmd) {
-            JCheckBox check = (JCheckBox)ae.getSource();
+            JCheckBox check = (JCheckBox) ae.getSource();
             setStationary(check.isSelected());
         } else {
             try {
@@ -256,9 +250,10 @@ public class Pilot extends OMPoint
     }
 
     public void focusGained(FocusEvent e) {}
+
     public void focusLost(FocusEvent e) {
         try {
-            setHeight(Float.parseFloat(((JTextField)(e.getSource())).getText()));
+            setHeight(Float.parseFloat(((JTextField) (e.getSource())).getText()));
         } catch (NumberFormatException nfe) {
             setHeight(0);
         }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,32 +14,28 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoint.java,v $
 // $RCSfile: OMPoint.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/02/10 00:12:42 $
+// $Revision: 1.8 $
+// $Date: 2004/10/14 18:06:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
-
 package com.bbn.openmap.omGraphics;
+
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Ellipse2D;
 import java.io.Serializable;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.DrawUtil;
 
 /**
- * A OMPoint is used to mark a specific point.  You can set this point
+ * A OMPoint is used to mark a specific point. You can set this point
  * as a lat/lon position, a screen X/Y position, or a lat/lon position
- * with a screen X/Y offset.  The position can be marked with a
- * rectangle or circle with an adjusted radius.  The radius is the pixel
- * distance from the center of the location to each edge of the
+ * with a screen X/Y offset. The position can be marked with a
+ * rectangle or circle with an adjusted radius. The radius is the
+ * pixel distance from the center of the location to each edge of the
  * marking rectangle or circle.
  */
 public class OMPoint extends OMGraphic implements Serializable {
@@ -47,17 +43,18 @@ public class OMPoint extends OMGraphic implements Serializable {
     public final static int DEFAULT_RADIUS = 2;
     public final static boolean DEFAULT_ISOVAL = false;
     /**
-     * The number of pixels in the radius for the point representation.
+     * The number of pixels in the radius for the point
+     * representation.
      */
     protected int radius = DEFAULT_RADIUS;
     /**
      * Horizontal window position of point, in pixels from left side
-     * of window. 
+     * of window.
      */
     protected int x = 0;
-    /** 
-     * Vertical window position of point, in pixels from the
-     * top of the window. 
+    /**
+     * Vertical window position of point, in pixels from the top of
+     * the window.
      */
     protected int y = 0;
     /** Latitude of point, decimal degrees. */
@@ -74,14 +71,16 @@ public class OMPoint extends OMGraphic implements Serializable {
     }
 
     /**
-     * Create an OMPoint at a lat/lon position, with the default radius.
+     * Create an OMPoint at a lat/lon position, with the default
+     * radius.
      */
     public OMPoint(float lat, float lon) {
         this(lat, lon, DEFAULT_RADIUS);
-    } 
+    }
 
     /**
-     * Create an OMPoint at a lat/lon position, with the specified radius.
+     * Create an OMPoint at a lat/lon position, with the specified
+     * radius.
      */
     public OMPoint(float lat, float lon, int radius) {
         setRenderType(RENDERTYPE_LATLON);
@@ -91,7 +90,7 @@ public class OMPoint extends OMGraphic implements Serializable {
 
     /**
      * Create an OMPoint at a lat/lon position with a screen X/Y pixel
-     * offset, with the default radius.  
+     * offset, with the default radius.
      */
     public OMPoint(float lat, float lon, int offsetx, int offsety) {
         this(lat, lon, offsetx, offsety, DEFAULT_RADIUS);
@@ -99,7 +98,7 @@ public class OMPoint extends OMGraphic implements Serializable {
 
     /**
      * Create an OMPoint at a lat/lon position with a screen X/Y pixel
-     * offset, with the specified radius.  
+     * offset, with the specified radius.
      */
     public OMPoint(float lat, float lon, int offsetx, int offsety, int radius) {
         setRenderType(RENDERTYPE_OFFSET);
@@ -134,18 +133,19 @@ public class OMPoint extends OMGraphic implements Serializable {
     /** For offset rendertype points, to move the point location. */
     public void set(float lat, float lon, int offsetx, int offsety) {
         setLat(lat);
-        setLon(lon);;
+        setLon(lon);
+        ;
         set(offsetx, offsety);
     }
 
     /**
-     * For screen x/y rendertype points, to move the point
-     * location. This method does not call setX() and setY().
+     * For screen x/y rendertype points, to move the point location.
+     * This method does not call setX() and setY().
      */
     public void set(int x, int y) {
         // You have to set these directly, or you can mess up the grab
         // points by using set methods - VerticalGrabPoints and
-        // HorizontalGrabPoints disable some methods.  This method is
+        // HorizontalGrabPoints disable some methods. This method is
         // used to override them, for initialization purposes.
         this.x = x;
         this.y = y;
@@ -158,7 +158,7 @@ public class OMPoint extends OMGraphic implements Serializable {
         setNeedToRegenerate(true);
     }
 
-    /** Get the latitude of the point, in decimal degrees.  */
+    /** Get the latitude of the point, in decimal degrees. */
     public float getLat() {
         return lat1;
     }
@@ -197,8 +197,8 @@ public class OMPoint extends OMGraphic implements Serializable {
     }
 
     /**
-     * Set the radius of the marking rectangle.  The edge size of the
-     * marking rectangle will be radius * 2 + 1. 
+     * Set the radius of the marking rectangle. The edge size of the
+     * marking rectangle will be radius * 2 + 1.
      */
     public void setRadius(int radius) {
         this.radius = radius;
@@ -213,7 +213,8 @@ public class OMPoint extends OMGraphic implements Serializable {
     }
 
     /**
-     * Set whether little circles should be marking the point. 
+     * Set whether little circles should be marking the point.
+     * 
      * @param set true for circles.
      */
     public void setOval(boolean set) {
@@ -221,10 +222,10 @@ public class OMPoint extends OMGraphic implements Serializable {
             setNeedToRegenerate(true);
             oval = set;
         }
-    } 
+    }
 
     /**
-     * Get whether little circles should be marking the point. 
+     * Get whether little circles should be marking the point.
      */
     public boolean isOval() {
         return oval;
@@ -232,7 +233,7 @@ public class OMPoint extends OMGraphic implements Serializable {
 
     /**
      * Prepare the rectangle for rendering.
-     *
+     * 
      * @param proj Projection
      * @return true if generate was successful
      */
@@ -251,9 +252,9 @@ public class OMPoint extends OMGraphic implements Serializable {
 
         switch (renderType) {
         case RENDERTYPE_XY:
-            x1 = x - radius; 
+            x1 = x - radius;
             y1 = y - radius;
-            x2 = x + radius; 
+            x2 = x + radius;
             y2 = y + radius;
             break;
         case RENDERTYPE_OFFSET:
@@ -275,16 +276,11 @@ public class OMPoint extends OMGraphic implements Serializable {
         }
 
         if (oval) {
-            shape = new GeneralPath(
-                new Ellipse2D.Float((float)Math.min(x2, x1),
-                                    (float)Math.min(y2, y1),
-                                    (float)Math.abs(x2 - x1), 
-                                    (float)Math.abs(y2 - y1)));
+            shape = new GeneralPath(new Ellipse2D.Float((float) Math.min(x2, x1), (float) Math.min(y2,
+                    y1), (float) Math.abs(x2 - x1), (float) Math.abs(y2 - y1)));
         } else {
-            shape = createBoxShape((int)Math.min(x2, x1),
-                                   (int)Math.min(y2, y1),
-                                   (int)Math.abs(x2 - x1), 
-                                   (int)Math.abs(y2 - y1));
+            shape = createBoxShape((int) Math.min(x2, x1), (int) Math.min(y2,
+                    y1), (int) Math.abs(x2 - x1), (int) Math.abs(y2 - y1));
         }
 
         setNeedToRegenerate(false);

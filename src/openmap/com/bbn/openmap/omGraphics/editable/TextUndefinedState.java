@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,10 +12,12 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/TextUndefinedState.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/TextUndefinedState.java,v
+// $
 // $RCSfile: TextUndefinedState.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,14 +36,15 @@ public class TextUndefinedState extends GraphicUndefinedState {
         super(eomc);
     }
 
-    public boolean mousePressed(MouseEvent e) { 
-        
+    public boolean mousePressed(MouseEvent e) {
+
         GrabPoint gb = graphic.getGrabPoint(EditableOMText.CENTER_POINT_INDEX);
         gb.set(e.getX(), e.getY());
         graphic.setMovingPoint(gb);
 
         if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
-            graphic.getGrabPoint(EditableOMText.OFFSET_POINT_INDEX).set(e.getX(), e.getY());
+            graphic.getGrabPoint(EditableOMText.OFFSET_POINT_INDEX)
+                    .set(e.getX(), e.getY());
             graphic.getStateMachine().setOffsetNeeded(true);
         }
 
@@ -50,7 +53,8 @@ public class TextUndefinedState extends GraphicUndefinedState {
     }
 
     public boolean mouseMoved(MouseEvent e) {
-        graphic.fireEvent(EOMGCursors.EDIT, "Click to define the text location.");
+        graphic.fireEvent(EOMGCursors.EDIT,
+                "Click to define the text location.");
         return false;
     }
 }

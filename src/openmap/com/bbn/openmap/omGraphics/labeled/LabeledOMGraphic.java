@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,25 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/labeled/LabeledOMGraphic.java,v $
 // $RCSfile: LabeledOMGraphic.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.labeled;
-
-import com.bbn.openmap.omGraphics.*;
 
 import java.awt.Font;
 import java.awt.Point;
 
 /**
  * The LabeledOMGraphic is a simple extension to the OMGraphic where a
- * text string can be set for the graphic on the map.  It provides
- * basic functionality.  If you need more control, try the Location
+ * text string can be set for the graphic on the map. It provides
+ * basic functionality. If you need more control, try the Location
  * object or use a OMText object for your label.
+ * 
  * @see com.bbn.openmap.omGraphics.OMText
  * @see com.bbn.openmap.layer.location.Location
  */
@@ -60,6 +58,7 @@ public interface LabeledOMGraphic {
 
     /**
      * Set the justification setting for the label.
+     * 
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_LEFT
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_CENTER
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_RIGHT
@@ -69,6 +68,7 @@ public interface LabeledOMGraphic {
 
     /**
      * Get the justification setting for the label.
+     * 
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_LEFT
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_CENTER
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_RIGHT
@@ -94,22 +94,22 @@ public interface LabeledOMGraphic {
 
     /**
      * Set the index of the OMGraphic coordinates where the drawing
-     * point of the label should be attached.  The meaning of the
-     * point differs between OMGraphic types.
+     * point of the label should be attached. The meaning of the point
+     * differs between OMGraphic types.
      */
     public void setIndex(int index);
 
     /**
      * Get the index of the OMGraphic where the String will be
-     * rendered.  The meaning of the index differs from OMGraphic type
-     * to OMGraphic type.  
+     * rendered. The meaning of the index differs from OMGraphic type
+     * to OMGraphic type.
      */
     public int getIndex();
 
     /**
      * Set the x, y pixel offsets where the String should be rendered,
      * from the location determined from the index point, or from the
-     * calculated center point.  Point.x is the horizontal offset,
+     * calculated center point. Point.x is the horizontal offset,
      * Point.y is the vertical offset.
      */
     public void setOffset(Point p);
@@ -121,14 +121,16 @@ public interface LabeledOMGraphic {
 
     /**
      * Set the angle by which the text is to rotated.
-     * @param angle the number of radians the text is to be
-     * rotated.  Measured clockwise from horizontal.  Positive numbers
-     * move the positive x axis toward the positive y axis.
+     * 
+     * @param angle the number of radians the text is to be rotated.
+     *        Measured clockwise from horizontal. Positive numbers
+     *        move the positive x axis toward the positive y axis.
      */
     public void setRotationAngle(double angle);
 
     /**
      * Get the current rotation of the text.
+     * 
      * @return the text rotation.
      */
     public double getRotationAngle();

@@ -1,6 +1,6 @@
 // **********************************************************************
 // <copyright>
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/Data.java,v $
-// $Revision: 1.4 $ $Date: 2004/02/09 05:32:05 $ $Author: wjeuerle $
+// $Revision: 1.5 $ $Date: 2004/10/14 18:06:33 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 

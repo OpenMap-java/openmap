@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,18 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/PaintListener.java,v $
 // $RCSfile: PaintListener.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:12:51 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.event;
 
 /**
- * A PaintListener is an object that wants to know when another
- * object is painted();
+ * A PaintListener is an object that wants to know when another object
+ * is painted();
  */
 public interface PaintListener {
 

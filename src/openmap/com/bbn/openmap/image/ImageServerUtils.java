@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServerUtils.java,v $
 // $RCSfile: ImageServerUtils.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/01 20:43:38 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,7 +65,7 @@ public class ImageServerUtils implements ImageServerConstants {
 
         Class projClass = null;
         String projType = props.getProperty(PROJTYPE);
-        
+
         if (projType != null) {
             projClass = ProjectionFactory.getProjClassForName(projType);
         }
@@ -76,11 +76,9 @@ public class ImageServerUtils implements ImageServerConstants {
 
         if (Debug.debugging("imageserver")) {
             Debug.output("ImageServerUtils.createOMProjection: projection "
-                    + projClass.getName()
-                    + ", with HEIGHT = "
-                    + height
-                    + ", WIDTH = "
-                    + width + ", lat = " + latitude + ", lon = " + longitude);
+                    + projClass.getName() + ", with HEIGHT = " + height
+                    + ", WIDTH = " + width + ", lat = " + latitude + ", lon = "
+                    + longitude);
         }
 
         Proj proj = (Proj) ProjectionFactory.makeProjection(projClass,

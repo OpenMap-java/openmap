@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,23 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SComp.java,v $
 // $RCSfile: SComp.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.specialist;
 
 import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.CColorPackage.*;
-import java.io.*;
-import java.util.*;
 
 /**
  * A SComp class is used to provide additional functionality for a
- * graphics object.  It can be used to send a URL to a client, or to
+ * graphics object. It can be used to send a URL to a client, or to
  * tie objects together.
  */
 public class SComp extends _CompStub {
@@ -42,32 +38,43 @@ public class SComp extends _CompStub {
     public SComp() {
         this("");
     }
-    
-    /** Construct ourselves with an ID
-     * @param cID our ID */
+
+    /**
+     * Construct ourselves with an ID
+     * 
+     * @param cID our ID
+     */
     public SComp(String cID) {
         self = new EComp(this, cID);
     }
 
     public com.bbn.openmap.CSpecialist.ActionUnion[] sendGesture(
-                         com.bbn.openmap.CSpecialist.MouseEvent gesture,
-                         java.lang.String uniqueID) {
+                                                                 com.bbn.openmap.CSpecialist.MouseEvent gesture,
+                                                                 java.lang.String uniqueID) {
         return new com.bbn.openmap.CSpecialist.ActionUnion[0];
     }
-    
-    /** Change our ID - not a good idea
-     * @param cID our new ID */
+
+    /**
+     * Change our ID - not a good idea
+     * 
+     * @param cID our new ID
+     */
     public void cID(String cID) {
         self.cID = cID;
     }
-    /** get our ID
-     * @return our ID */
+
+    /**
+     * get our ID
+     * 
+     * @return our ID
+     */
     public String cID() {
         return self.cID;
     }
 
-    /** return a struct containing info about ourselves
-     * <b>modifying this struct will modify the object that created it </b>
+    /**
+     * return a struct containing info about ourselves <b>modifying
+     * this struct will modify the object that created it </b>
      */
     public EComp fill() {
         return self;

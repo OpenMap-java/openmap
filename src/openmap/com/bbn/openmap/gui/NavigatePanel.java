@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigatePanel.java,v $
 // $RCSfile: NavigatePanel.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.8 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
@@ -33,13 +32,12 @@ import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.util.Debug;
 
-
 /**
- * A Navigation Rosette Bean.
- * This bean is a source for PanEvents and CenterEvents.
+ * A Navigation Rosette Bean. This bean is a source for PanEvents and
+ * CenterEvents.
  */
-public class NavigatePanel extends OMToolComponent
-    implements Serializable, ActionListener {
+public class NavigatePanel extends OMToolComponent implements Serializable,
+        ActionListener {
 
     public final static String panNWCmd = "panNW";
     public final static String panNCmd = "panN";
@@ -77,8 +75,8 @@ public class NavigatePanel extends OMToolComponent
     protected boolean useTips = false;
     protected float panFactor = 1f;
 
-//     protected int height = 0; // calculated
-//     protected int width = 0; // calculated
+    //     protected int height = 0; // calculated
+    //     protected int width = 0; // calculated
 
     protected boolean useDefaultCenter = false;
     protected float defaultCenterLat = 0;
@@ -162,20 +160,19 @@ public class NavigatePanel extends OMToolComponent
 
     /**
      * Add the named button to the panel.
-     *
+     * 
      * @param name GIF image name
      * @param info ToolTip text
      * @param command String command name
-     *
+     *  
      */
     protected JButton getButton(String name, String info, String command) {
         URL url = NavigatePanel.class.getResource(name);
         ImageIcon icon = new ImageIcon(url, info);
         JButton b = new JButton(icon);
-        b.setPreferredSize(new Dimension(icon.getIconWidth(), 
-                                         icon.getIconHeight()));
+        b.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
         b.setToolTipText(info);
-        b.setMargin(new Insets(0,0,0,0));
+        b.setMargin(new Insets(0, 0, 0, 0));
         b.setActionCommand(command);
         b.addActionListener(this);
         b.setBorderPainted(Debug.debugging("layout"));
@@ -185,6 +182,7 @@ public class NavigatePanel extends OMToolComponent
 
     /**
      * Add a CenterListener.
+     * 
      * @param listener CenterListener
      */
     public synchronized void addCenterListener(CenterListener listener) {
@@ -193,6 +191,7 @@ public class NavigatePanel extends OMToolComponent
 
     /**
      * Remove a CenterListener
+     * 
      * @param listener CenterListener
      */
     public synchronized void removeCenterListener(CenterListener listener) {
@@ -201,6 +200,7 @@ public class NavigatePanel extends OMToolComponent
 
     /**
      * Add a PanListener.
+     * 
      * @param listener PanListener
      */
     public synchronized void addPanListener(PanListener listener) {
@@ -209,6 +209,7 @@ public class NavigatePanel extends OMToolComponent
 
     /**
      * Remove a PanListener
+     * 
      * @param listener PanListener
      */
     public synchronized void removePanListener(PanListener listener) {
@@ -224,6 +225,7 @@ public class NavigatePanel extends OMToolComponent
 
     /**
      * Fire a PanEvent.
+     * 
      * @param az azimuth east of north
      */
     protected synchronized void firePanEvent(float az) {
@@ -233,8 +235,9 @@ public class NavigatePanel extends OMToolComponent
     /**
      * Get the pan factor.
      * <p>
-     * The panFactor is the amount of screen to shift
-     * when panning in a certain direction: 0=none, 1=half-screen shift.
+     * The panFactor is the amount of screen to shift when panning in
+     * a certain direction: 0=none, 1=half-screen shift.
+     * 
      * @return float panFactor (0.0 &lt;= panFactor &lt;= 1.0)
      */
     public float getPanFactor() {
@@ -244,14 +247,15 @@ public class NavigatePanel extends OMToolComponent
     /**
      * Set the pan factor.
      * <p>
-     * This defaults to 1.0.  The panFactor is the amount of screen to shift
-     * when panning in a certain direction: 0=none, 1=half-screen shift.
+     * This defaults to 1.0. The panFactor is the amount of screen to
+     * shift when panning in a certain direction: 0=none,
+     * 1=half-screen shift.
+     * 
      * @param panFactor (0.0 &lt;= panFactor &lt;= 1.0)
      */
     public void setPanFactor(float panFactor) {
         if ((panFactor < 0f) || (panFactor > 1f)) {
-            throw new IllegalArgumentException(
-                    "should be: (0.0 <= panFactor <= 1.0)");
+            throw new IllegalArgumentException("should be: (0.0 <= panFactor <= 1.0)");
         }
         this.panFactor = panFactor;
     }
@@ -259,10 +263,11 @@ public class NavigatePanel extends OMToolComponent
     /**
      * Use this function to set where you want the map projection to
      * pan to when the user clicks on "center" button on the
-     * navigation panel.  The scale does not change.  When you call
-     * this function, the projection does not change.
-     * @param passedLat float the center latitude (in degrees) 
-     * @param passedLon float the center longitude (in degrees) 
+     * navigation panel. The scale does not change. When you call this
+     * function, the projection does not change.
+     * 
+     * @param passedLat float the center latitude (in degrees)
+     * @param passedLon float the center longitude (in degrees)
      */
     public void setDefaultCenter(float passedLat, float passedLon) {
         useDefaultCenter = true;
@@ -272,14 +277,14 @@ public class NavigatePanel extends OMToolComponent
 
     /**
      * ActionListener Interface.
+     * 
      * @param e ActionEvent
      */
     public void actionPerformed(java.awt.event.ActionEvent e) {
 
         String command = e.getActionCommand();
 
-        Debug.message("navpanel", "NavigatePanel.actionPerformed(): " +
-                      command);
+        Debug.message("navpanel", "NavigatePanel.actionPerformed(): " + command);
         if (command.equals(panNWCmd)) {
             firePanEvent(-45f);
         } else if (command.equals(panNCmd)) {
@@ -313,25 +318,25 @@ public class NavigatePanel extends OMToolComponent
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    ////   OMComponentPanel methods to make the tool work with 
-    ////   the MapHandler to find objects it needs.
+    //// OMComponentPanel methods to make the tool work with
+    //// the MapHandler to find objects it needs.
     ///////////////////////////////////////////////////////////////////////////
 
     public void findAndInit(Object obj) {
         if (obj instanceof PanListener) {
-            addPanListener((PanListener)obj);
+            addPanListener((PanListener) obj);
         }
         if (obj instanceof CenterListener) {
-            addCenterListener((CenterListener)obj);
+            addCenterListener((CenterListener) obj);
         }
     }
 
     public void findAndUndo(Object obj) {
         if (obj instanceof PanListener) {
-            removePanListener((PanListener)obj);
+            removePanListener((PanListener) obj);
         }
         if (obj instanceof CenterListener) {
-            removeCenterListener((CenterListener)obj);
+            removeCenterListener((CenterListener) obj);
         }
     }
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,18 +12,17 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/Visual.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/Visual.java,v
+// $
 // $RCSfile: Visual.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/02/13 17:16:33 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.tools.roads;
-
-import com.bbn.openmap.omGraphics.OMGraphic;
 
 public class Visual {
 
@@ -44,21 +43,21 @@ public class Visual {
      * updated. It has moved or otherwise changed its appearance.
      */
     public void update() {
-	visual = null;
+        visual = null;
     }
 
     public void setVisual(RoadGraphic newVisual) {
-	visual = newVisual;
-	visual.blink(blinkState);
+        visual = newVisual;
+        visual.blink(blinkState);
     }
 
     public RoadGraphic getVisual() {
-	return visual;
+        return visual;
     }
 
     public void blink(boolean newState) {
-	blinkState = newState;
-	if (visual != null)
-	    visual.blink(newState);
+        blinkState = newState;
+        if (visual != null)
+            visual.blink(newState);
     }
 }

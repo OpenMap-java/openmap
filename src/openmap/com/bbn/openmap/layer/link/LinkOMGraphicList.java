@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,13 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkOMGraphicList.java,v $
 // $RCSfile: LinkOMGraphicList.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
-
 
 package com.bbn.openmap.layer.link;
 
@@ -29,38 +27,38 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.Projection;
 
 import java.awt.Graphics;
-import java.io.*;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.ListIterator;
 
 /**
  * This class extends the OMGraphicList by allowing searches on the
- * AppObject contained by the OMGraphics on the list.  The AppObject
- * is where the LinkGraphics store the graphic ID as defined by the
- * server.  It also returns indexes from searches instead of the
- * graphic.  This allows for deletions, replacements and graphic
+ * AppObject contained by the OMGraphics on the list. The AppObject is
+ * where the LinkGraphics store the graphic ID as defined by the
+ * server. It also returns indexes from searches instead of the
+ * graphic. This allows for deletions, replacements and graphic
  * location movement from within the list.
  */
-public class LinkOMGraphicList extends OMGraphicList 
-    implements LinkPropertiesConstants {
+public class LinkOMGraphicList extends OMGraphicList implements
+        LinkPropertiesConstants {
 
-    private HashMap hash = new HashMap(541);  // Why 541?  Hmm, don't know.
+    private HashMap hash = new HashMap(541); // Why 541? Hmm, don't
+                                             // know.
     protected Projection currentProjection = null;
 
     /**
      * Construct an OMGraphicList.
      */
     public LinkOMGraphicList() {
-        super (10);
+        super(10);
     };
-    
+
     /**
-     * Construct an OMGraphicList with an initial capacity. 
-     * @param initialCapacity the initial capacity of the list 
+     * Construct an OMGraphicList with an initial capacity.
+     * 
+     * @param initialCapacity the initial capacity of the list
      */
     public LinkOMGraphicList(int initialCapacity) {
-        super (initialCapacity);
+        super(initialCapacity);
     };
 
     public void setProjection(Projection proj) {
@@ -74,17 +72,17 @@ public class LinkOMGraphicList extends OMGraphicList
     /**
      * Check whether the list needs to be regenerated, considering the
      * projection that the OMGraphics were projected with when the
-     * list was read.  The projection equality projection is lazy,
-     * just checks objects.
+     * list was read. The projection equality projection is lazy, just
+     * checks objects.
      */
     public boolean getNeedToRegenerate(Projection proj) {
         return super.getNeedToRegenerate() || currentProjection != proj;
     }
 
     /**
-     * Add an OMGraphic to the GraphicList.
-     * The OMGraphic must not be null.
-     *
+     * Add an OMGraphic to the GraphicList. The OMGraphic must not be
+     * null.
+     * 
      * @param g the non-null OMGraphic to add
      * @exception IllegalArgumentException if OMGraphic is null
      */
@@ -101,14 +99,14 @@ public class LinkOMGraphicList extends OMGraphicList
 
     /**
      * Remove the graphic at a location in the list.
-     *
+     * 
      * @param location the OMGraphic object to remove.
      * @return true if graphic was on the list, false if otherwise.
      */
     protected synchronized Object _remove(int location) {
         Object ret = super._remove(location);
         if (ret != null) {
-            String id = ((LinkProperties) ((OMGeometry)ret).getAppObject()).getProperty(LPC_GRAPHICID);
+            String id = ((LinkProperties) ((OMGeometry) ret).getAppObject()).getProperty(LPC_GRAPHICID);
             if (id != null) {
                 hash.remove(id.intern());
                 if (Debug.debugging("link")) {
@@ -121,17 +119,17 @@ public class LinkOMGraphicList extends OMGraphicList
     }
 
     /**
-     * Remove the graphic.  If this list is not vague, it will also
-     * ask sub-OMGraphicLists to remove it if the geometry isn't found
-     * on this OMGraphicList.
-     *
+     * Remove the graphic. If this list is not vague, it will also ask
+     * sub-OMGraphicLists to remove it if the geometry isn't found on
+     * this OMGraphicList.
+     * 
      * @param geometry the OMGeometry object to remove.
      * @return true if geometry was on the list, false if otherwise.
      */
     protected synchronized boolean _remove(OMGeometry geometry) {
         boolean ret = super._remove(geometry);
         if (ret != false) {
-            String id = ((LinkProperties)geometry.getAppObject()).getProperty(LPC_GRAPHICID);
+            String id = ((LinkProperties) geometry.getAppObject()).getProperty(LPC_GRAPHICID);
             hash.remove(id.intern());
             if (Debug.debugging("link")) {
                 Debug.output("LinkOMGraphicList: Removing graphic " + id);
@@ -141,27 +139,29 @@ public class LinkOMGraphicList extends OMGraphicList
     }
 
     /**
-     * Set the graphic at the specified location.  The OMGraphic must
+     * Set the graphic at the specified location. The OMGraphic must
      * not be null, the AppObject in the OMGraphic must be null or a
-     * LinkProperties object.  This method is extended from
+     * LinkProperties object. This method is extended from
      * OMGraphicList so the link id is added to the hashtable for
      * faster searching.
-     *
+     * 
      * @param graphic OMGraphic
      * @param index index of the OMGraphic to return
-     * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
+     * @exception ArrayIndexOutOfBoundsException if index is
+     *            out-of-bounds
      */
     public synchronized void setOMGraphicAt(OMGraphic graphic, int index) {
         LinkProperties linkp = null;
 
         try {
-            linkp = (LinkProperties)graphic.getAppObject();
+            linkp = (LinkProperties) graphic.getAppObject();
 
             String id = null;
             if (linkp != null) {
                 id = linkp.getProperty(LPC_GRAPHICID);
                 if (Debug.debugging("link")) {
-                    Debug.output("LinkOMGraphicList.setOMGraphicAt(): Updating graphic " + id + " at " + index);
+                    Debug.output("LinkOMGraphicList.setOMGraphicAt(): Updating graphic "
+                            + id + " at " + index);
                 }
                 if (id != null) {
                     hash.put(id.intern(), graphic);
@@ -176,18 +176,20 @@ public class LinkOMGraphicList extends OMGraphicList
     }
 
     /**
-      * Get the graphic with the graphic ID.
-      * @param gid graphic ID of the wanted graphic.
-      * @return OMGraphic or null if not found
-      */
-     public OMGraphic getOMGraphicWithId(String gid) {
-         return (OMGraphic) hash.get(gid.intern());
-     }
+     * Get the graphic with the graphic ID.
+     * 
+     * @param gid graphic ID of the wanted graphic.
+     * @return OMGraphic or null if not found
+     */
+    public OMGraphic getOMGraphicWithId(String gid) {
+        return (OMGraphic) hash.get(gid.intern());
+    }
 
     /**
      * Get the graphic with the graphic ID. Traverse mode doesn't
      * matter.
-     * @param gid graphic ID of the wanted graphic.  
+     * 
+     * @param gid graphic ID of the wanted graphic.
      * @return OMGraphic index or Link.UNKNOWN if not found
      */
     public int getOMGraphicIndexWithId(String gid) {
@@ -208,12 +210,12 @@ public class LinkOMGraphicList extends OMGraphicList
     }
 
     /**
-     * Renders all the objects in the list a graphics context.  This
-     * is the same as <code>paint()</code> for AWT components.  The
-     * graphics are rendered in the order of traverseMode.  Any
+     * Renders all the objects in the list a graphics context. This is
+     * the same as <code>paint()</code> for AWT components. The
+     * graphics are rendered in the order of traverseMode. Any
      * graphics where <code>isVisible()</code> returns false are not
      * rendered.
-     *
+     * 
      * @param gr the AWT Graphics context
      */
     public synchronized void render(Graphics gr) {
@@ -226,10 +228,11 @@ public class LinkOMGraphicList extends OMGraphicList
                 graphic = (OMGraphic) iterator.previous();
                 if (graphic.isVisible()) {
                     Object obj = graphic.getAppObject();
-                    if (Debug.debugging("linkdetail") &&
-                        obj instanceof LinkProperties) {
-                        String id = ((LinkProperties)obj).getProperty(LPC_GRAPHICID);
-                        Debug.output("LinkOMGraphicList: Rendering graphic " + id);
+                    if (Debug.debugging("linkdetail")
+                            && obj instanceof LinkProperties) {
+                        String id = ((LinkProperties) obj).getProperty(LPC_GRAPHICID);
+                        Debug.output("LinkOMGraphicList: Rendering graphic "
+                                + id);
                     }
                     graphic.render(gr);
                 }
@@ -242,10 +245,11 @@ public class LinkOMGraphicList extends OMGraphicList
                 graphic = (OMGraphic) iterator.next();
                 if (graphic.isVisible()) {
                     Object obj = graphic.getAppObject();
-                    if (Debug.debugging("linkdetail") &&
-                        obj instanceof LinkProperties) {
-                        String id = ((LinkProperties)obj).getProperty(LPC_GRAPHICID);
-                        Debug.output("LinkOMGraphicList: Rendering graphic " + id);
+                    if (Debug.debugging("linkdetail")
+                            && obj instanceof LinkProperties) {
+                        String id = ((LinkProperties) obj).getProperty(LPC_GRAPHICID);
+                        Debug.output("LinkOMGraphicList: Rendering graphic "
+                                + id);
                     }
                     graphic.render(gr);
                 }

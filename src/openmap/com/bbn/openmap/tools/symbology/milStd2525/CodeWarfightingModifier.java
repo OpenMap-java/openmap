@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeWarfightingModifier.java,v $
 // $RCSfile: CodeWarfightingModifier.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.symbology.milStd2525;
 
@@ -29,8 +28,8 @@ import com.bbn.openmap.util.PropUtils;
 
 /**
  * The CodeWarfightingModifier CodePosition defines different
- * modifiers used for symbols in the warfighting scheme.  It is used
- * in position 11 and 12 of the symbol code.
+ * modifiers used for symbols in the warfighting scheme. It is used in
+ * position 11 and 12 of the symbol code.
  */
 public class CodeWarfightingModifier extends CodePosition {
 
@@ -40,7 +39,7 @@ public class CodeWarfightingModifier extends CodePosition {
 
     /**
      * Starts looking for property 1, creates SymbolParts until the
-     * numbers run out.  If there are limits to what properties should
+     * numbers run out. If there are limits to what properties should
      * be read, this method should be overriden.
      */
     public void parsePositions(String prefix, Properties props) {

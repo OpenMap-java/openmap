@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocEntry.java,v $
 // $RCSfile: RpfTocEntry.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 /*
  * The meat of this code is based on source code provided by
@@ -32,23 +31,18 @@
 
 package com.bbn.openmap.layer.rpf;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import com.bbn.openmap.io.*;
-import com.bbn.openmap.util.Debug;
 
 /**
  * Reads and holds an entry in the RPF table of contents file.
  */
-public class RpfTocEntry{
-    
+public class RpfTocEntry {
+
     /** Degrees/pixel. */
     public double vertInterval, horizInterval;
     /** meters/pixel. */
     public double vertResolution, horizResolution;
-    public int  horizFrames, vertFrames;
+    public int horizFrames, vertFrames;
     public RpfFrameEntry[][] frames;
     public char zone; /* DKS new 7/94 */
     public char version; /* 1-9: DKS new 5/3/95 for Dchum */
@@ -57,17 +51,19 @@ public class RpfTocEntry{
     public String producer;
     public String scale;
     public RpfCoverageBox coverage;
-    /** Not determined at readtime.  RpfTocHandler sets this later,
-        when the frames are evaluated for their existance. */
+    /**
+     * Not determined at readtime. RpfTocHandler sets this later, when
+     * the frames are evaluated for their existance.
+     */
     public RpfProductInfo info;
 
-    public RpfTocEntry(BinaryFile binFile, int entryNumber) 
-        throws java.io.EOFException, FormatException {
+    public RpfTocEntry(BinaryFile binFile, int entryNumber)
+            throws java.io.EOFException, FormatException {
         this(binFile, 0, entryNumber);
     }
 
-    public RpfTocEntry(BinaryFile binFile, int TOCNumber, int entryNumber) 
-        throws java.io.EOFException, FormatException {
+    public RpfTocEntry(BinaryFile binFile, int TOCNumber, int entryNumber)
+            throws java.io.EOFException, FormatException {
         coverage = new RpfCoverageBox();
         coverage.tocNumber = TOCNumber;
         coverage.entryNumber = entryNumber;
@@ -76,29 +72,34 @@ public class RpfTocEntry{
         // Figure out the CADRG projection zone for the coverage.
         coverage.zone = com.bbn.openmap.proj.CADRG.getProjZone(zone);
     }
-    
-    public void setInfo(String seriesCode){
-        info = (RpfProductInfo)RpfProductInfo.getCatalog().get(seriesCode);
-        if (info != null){
-            if (info.dataType.equalsIgnoreCase("CIB")) Cib = true;
+
+    public void setInfo(String seriesCode) {
+        info = (RpfProductInfo) RpfProductInfo.getCatalog().get(seriesCode);
+        if (info != null) {
+            if (info.dataType.equalsIgnoreCase("CIB"))
+                Cib = true;
             coverage.chartCode = info.seriesCode;
         } else {
             info = RpfConstants.UK;
         }
     }
 
-    public void read(BinaryFile binFile)
-        throws java.io.EOFException,FormatException {
-        /* e.g. "CADRG" , for type - deduced later, via framename of
-           entry, and using RpfProductInfo.*/
-        String type = binFile.readFixedLengthString(5);  
-        compressionRatio = binFile.readFixedLengthString(5); 
-        /* Same as type - deduced via RpfProductInfo.  There is a
-           float scale inside the info, and a scaleString. */
+    public void read(BinaryFile binFile) throws java.io.EOFException,
+            FormatException {
+        /*
+         * e.g. "CADRG" , for type - deduced later, via framename of
+         * entry, and using RpfProductInfo.
+         */
+        String type = binFile.readFixedLengthString(5);
+        compressionRatio = binFile.readFixedLengthString(5);
+        /*
+         * Same as type - deduced via RpfProductInfo. There is a float
+         * scale inside the info, and a scaleString.
+         */
         scale = binFile.readFixedLengthString(12);
-        zone = binFile.readChar(); /*  char: 1-9 A-J*/
+        zone = binFile.readChar(); /* char: 1-9 A-J */
         producer = binFile.readFixedLengthString(5);
-                
+
         coverage.nw_lat = binFile.readDouble();
         coverage.nw_lon = binFile.readDouble();
         double sw_lat = binFile.readDouble();
@@ -114,26 +115,27 @@ public class RpfTocEntry{
         vertFrames = binFile.readInteger();
         horizFrames = binFile.readInteger();
 
-        coverage.subframeLatInterval = vertInterval*256.0;
-        coverage.subframeLonInterval = horizInterval*256.0;
-                
+        coverage.subframeLatInterval = vertInterval * 256.0;
+        coverage.subframeLonInterval = horizInterval * 256.0;
+
         frames = new RpfFrameEntry[vertFrames][horizFrames];
-                
-        for (int j = 0; j < vertFrames; j++){
-            for (int k = 0; k < horizFrames; k++){
+
+        for (int j = 0; j < vertFrames; j++) {
+            for (int k = 0; k < horizFrames; k++) {
                 frames[j][k] = new RpfFrameEntry();
             }
         }
     }
-    
-    public String toString(){
+
+    public String toString() {
         StringBuffer s = new StringBuffer();
         s.append("RpfTocEntry ##################" + "\n");
-        s.append(" vertInterval " + vertInterval + 
-                 ", horizInterval " + horizInterval + "\n");
-        s.append(" vertResolution " + vertResolution + 
-                 ", horizResolution " +horizResolution + "\n");
-        s.append(" horizFrames " + horizFrames + ", vertFrames " + vertFrames + "\n");
+        s.append(" vertInterval " + vertInterval + ", horizInterval "
+                + horizInterval + "\n");
+        s.append(" vertResolution " + vertResolution + ", horizResolution "
+                + horizResolution + "\n");
+        s.append(" horizFrames " + horizFrames + ", vertFrames " + vertFrames
+                + "\n");
         s.append(" zone " + zone + "\n");
         s.append(" scale " + scale + "\n");
         s.append(" version " + version + "\n");
@@ -144,5 +146,4 @@ public class RpfTocEntry{
         return s.toString();
     }
 }
-
 

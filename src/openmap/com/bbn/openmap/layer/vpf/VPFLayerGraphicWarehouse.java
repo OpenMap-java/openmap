@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,20 +14,18 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayerGraphicWarehouse.java,v $
 // $RCSfile: VPFLayerGraphicWarehouse.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/03/31 21:17:58 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.vpf;
 
-import java.awt.Color;
 import java.util.*;
+
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.io.FormatException;
@@ -37,32 +35,52 @@ import com.bbn.openmap.io.FormatException;
  * 
  * @see com.bbn.openmap.omGraphics.OMGraphic
  */
-public class VPFLayerGraphicWarehouse 
-    extends LayerGraphicWarehouseSupport {
+public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
 
-    /** the properties file string that tells us what area features to draw */
+    /**
+     * the properties file string that tells us what area features to
+     * draw
+     */
     String areaFeatures = null;
     /** one of these columns must be non-null to draw area features */
     int areaSkipFeatures[] = null;
-    /** the properties file string that tells us what edge features to draw */
+    /**
+     * the properties file string that tells us what edge features to
+     * draw
+     */
     String edgeFeatures = null;
     /** one of these columns must be non-null to draw edge features */
     int edgeSkipFeatures[] = null;
-    /** the properties file string that tells us what text features to draw */
+    /**
+     * the properties file string that tells us what text features to
+     * draw
+     */
     String textFeatures = null;
     /** one of these columns must be non-null to draw text features */
     int textSkipFeatures[] = null;
-    /** the properties file string that tells us what entity point features to draw */
+    /**
+     * the properties file string that tells us what entity point
+     * features to draw
+     */
     String epointFeatures = null;
-    /** one of these columns must be non-null to draw entity point features */
+    /**
+     * one of these columns must be non-null to draw entity point
+     * features
+     */
     int epointSkipFeatures[] = null;
-    /** the properties file string that tells us what connected point features to draw */
+    /**
+     * the properties file string that tells us what connected point
+     * features to draw
+     */
     String cpointFeatures = null;
-    /** one of these columns must be non-null to draw connected point features */
+    /**
+     * one of these columns must be non-null to draw connected point
+     * features
+     */
     int cpointSkipFeatures[] = null;
 
     /**
-     *
+     *  
      */
     public VPFLayerGraphicWarehouse() {
         super();
@@ -70,6 +88,7 @@ public class VPFLayerGraphicWarehouse
 
     /**
      * Set properties of the warehouse.
+     * 
      * @param prefix the prefix to use for looking up properties.
      * @param props the properties file to look at.
      */
@@ -84,7 +103,7 @@ public class VPFLayerGraphicWarehouse
         } else {
             areaSkipFeatures = null;
         }
-          
+
         textFeatures = props.getProperty(realPrefix + "text");
         if (textFeatures == null) {
             textSkipFeatures = new int[0];
@@ -129,7 +148,7 @@ public class VPFLayerGraphicWarehouse
             while (t.hasMoreTokens()) {
                 retval.add(t.nextToken());
             }
-        } 
+        }
         if (textFeatures != null) {
             t = new StringTokenizer(textFeatures);
             while (t.hasMoreTokens()) {
@@ -159,11 +178,14 @@ public class VPFLayerGraphicWarehouse
     }
 
     /**
-     * Build an array that lists the columns we require the record to have.
-     * @param featureString the (space-separated) list of required columns
+     * Build an array that lists the columns we require the record to
+     * have.
+     * 
+     * @param featureString the (space-separated) list of required
+     *        columns
      * @param table the table we use to find the column numbers
-     * @param colAppend the (possibly null) string we append to the entries
-     * in featureString to build the real column name
+     * @param colAppend the (possibly null) string we append to the
+     *        entries in featureString to build the real column name
      */
     protected int[] getSkipArray(String featureString, DcwRecordFile table,
                                  String colAppend) {
@@ -182,17 +204,16 @@ public class VPFLayerGraphicWarehouse
             }
         }
 
-        int []retval = new int[tmpvec.size()];
+        int[] retval = new int[tmpvec.size()];
         for (int i = 0; i < retval.length; i++) {
-            retval[i] = ((Integer)tmpvec.get(i)).intValue();
+            retval[i] = ((Integer) tmpvec.get(i)).intValue();
         }
         return retval;
     }
 
     /**
-     * Lets the warehouse know that a different
-     * CoverageAttributeTable will be using it.  The skip arrays need
-     * to be reset.
+     * Lets the warehouse know that a different CoverageAttributeTable
+     * will be using it. The skip arrays need to be reset.
      */
     public void resetForCAT() {
         areaSkipFeatures = null;
@@ -204,12 +225,14 @@ public class VPFLayerGraphicWarehouse
 
     /**
      * Determine if this primitive should be drawn or skipped.
+     * 
      * @param prim the list for the primitive feature object.
      * @param skipArray a list of columns.
-     * @return true if any of the columns listed in skipArray is non-null.
+     * @return true if any of the columns listed in skipArray is
+     *         non-null.
      */
     protected boolean createFeature(List prim, int[] skipArray) {
-        //length==0  --> user wants everything
+        //length==0 --> user wants everything
         if (skipArray.length == 0) {
             return true;
         }
@@ -222,28 +245,22 @@ public class VPFLayerGraphicWarehouse
         return false;
     }
 
-    final transient static java.awt.Color aaronscolor =
-      new java.awt.Color(0xBDDE83);
-                                                        
+    final transient static java.awt.Color aaronscolor = new java.awt.Color(0xBDDE83);
+
     /**
-     *
+     *  
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
-                           List facevec,
-                           LatLonPoint ll1,
-                           LatLonPoint ll2,
-                           float dpplat,
-                           float dpplon)
-    {
+                           List facevec, LatLonPoint ll1, LatLonPoint ll2,
+                           float dpplat, float dpplon) {
         if (areaSkipFeatures == null) {
-            areaSkipFeatures = getSkipArray(areaFeatures, areatable,
-                                            ".aft_id");
+            areaSkipFeatures = getSkipArray(areaFeatures, areatable, ".aft_id");
         }
-        
+
         if (!createFeature(facevec, areaSkipFeatures)) {
             return;
         }
-          
+
         List ipts = new ArrayList();
 
         int totalSize = 0;
@@ -254,25 +271,30 @@ public class VPFLayerGraphicWarehouse
             return;
         }
         if (totalSize == 0) {
-          //System.out.println("No edged: " + descript);
-          return;
+            //System.out.println("No edged: " + descript);
+            return;
         }
 
-        OMPoly py = createAreaOMPoly(ipts, totalSize, ll1, ll2, 
-                                     dpplat, dpplon,
-                                     covtable.doAntarcticaWorkaround);
+        OMPoly py = createAreaOMPoly(ipts,
+                totalSize,
+                ll1,
+                ll2,
+                dpplat,
+                dpplon,
+                covtable.doAntarcticaWorkaround);
 
-//      final MutableInt areatype = new MutableInt(-1);
-//      String descript = covtable.getAreaDescription(facevec, areatype);
-//      if (areatype.value == -1) {
-//          areatype.value = 0;
-//      }
+        //      final MutableInt areatype = new MutableInt(-1);
+        //      String descript = covtable.getAreaDescription(facevec,
+        // areatype);
+        //      if (areatype.value == -1) {
+        //          areatype.value = 0;
+        //      }
 
         drawingAttributes.setTo(py);
 
         // HACK to get tile boundaries to not show up for areas.
-//         py.setLinePaint(py.getFillPaint());
-//         py.setSelectPaint(py.getFillPaint());
+        //         py.setLinePaint(py.getFillPaint());
+        //         py.setSelectPaint(py.getFillPaint());
         py.setLinePaint(OMColor.clear);
         py.setSelectPaint(OMColor.clear);
 
@@ -280,89 +302,66 @@ public class VPFLayerGraphicWarehouse
     }
 
     /**
-     *
+     *  
      */
-    public void createEdge(CoverageTable c, EdgeTable edgetable,
-                           List edgevec,
-                           LatLonPoint ll1,
-                           LatLonPoint ll2,
-                           float dpplat,
-                           float dpplon,
-                           CoordFloatString coords)
-        {
+    public void createEdge(CoverageTable c, EdgeTable edgetable, List edgevec,
+                           LatLonPoint ll1, LatLonPoint ll2, float dpplat,
+                           float dpplon, CoordFloatString coords) {
 
-            if (edgeSkipFeatures == null) {
-                if (Debug.debugging("vpf")) {
-                    Debug.output("Warehouse.createEdge(): edgeFeatures = " +
-                                 edgeFeatures);
+        if (edgeSkipFeatures == null) {
+            if (Debug.debugging("vpf")) {
+                Debug.output("Warehouse.createEdge(): edgeFeatures = "
+                        + edgeFeatures);
 
-                    final MutableInt lineType = new MutableInt(-1);
-                    Debug.output("Warehouse: " + c.getLineDescription(edgevec, lineType));
+                final MutableInt lineType = new MutableInt(-1);
+                Debug.output("Warehouse: "
+                        + c.getLineDescription(edgevec, lineType));
 
-                }
-
-                String columnName = ".lft_id";
-                edgeSkipFeatures = getSkipArray(edgeFeatures, edgetable, columnName);
             }
 
-            // HACK remove crufty dateline.  This HACK may require
-            // additional hackage in FeatureClassInfo.java  In particular,
-            // you may need to initialize the class during construction.
-            /*
-              FeatureClassInfo[] lineinfo = c.lineinfo;
-              int len = lineinfo.length;
-              for (int i=0; i<len; i++) {
-              String ftname = lineinfo[i].getTableName();
-              ftname.trim();
-              if (ftname.equals("polbndl.lft")) {
-              int col = edgetable.whatColumn("polbndl.lft_id");
-              int row = ((Integer)edgevec.get(col)).intValue();
-              if (row == Integer.MIN_VALUE) {
-              continue;
-              }
-              List fvec=null;
-              try {
-              fvec = lineinfo[i].getRow(row);
-              } catch (FormatException f) {
-              f.printStackTrace();
-              continue;
-              }
-              String str = (String)fvec.get(lineinfo[i].whatColumn("f_code"));
-              str.trim();
-              if (str.equals("FA110")) {
-              System.out.println("ignoring dateline");
-              return;
-              }
-              }
-              }
-            */
-
-            if (!createFeature(edgevec, edgeSkipFeatures)) {
-                return;
-            }
-        
-            OMPoly py = createEdgeOMPoly(coords, ll1, ll2, dpplat, dpplon);
-            drawingAttributes.setTo(py);
-            py.setFillPaint(OMColor.clear);
-            py.setIsPolygon(false);
-            addEdge(py);
+            String columnName = ".lft_id";
+            edgeSkipFeatures = getSkipArray(edgeFeatures, edgetable, columnName);
         }
+
+        // HACK remove crufty dateline. This HACK may require
+        // additional hackage in FeatureClassInfo.java In particular,
+        // you may need to initialize the class during construction.
+        /*
+         * FeatureClassInfo[] lineinfo = c.lineinfo; int len =
+         * lineinfo.length; for (int i=0; i <len; i++) { String ftname =
+         * lineinfo[i].getTableName(); ftname.trim(); if
+         * (ftname.equals("polbndl.lft")) { int col =
+         * edgetable.whatColumn("polbndl.lft_id"); int row =
+         * ((Integer)edgevec.get(col)).intValue(); if (row ==
+         * Integer.MIN_VALUE) { continue; } List fvec=null; try { fvec =
+         * lineinfo[i].getRow(row); } catch (FormatException f) {
+         * f.printStackTrace(); continue; } String str =
+         * (String)fvec.get(lineinfo[i].whatColumn("f_code"));
+         * str.trim(); if (str.equals("FA110")) {
+         * System.out.println("ignoring dateline"); return; } } }
+         */
+
+        if (!createFeature(edgevec, edgeSkipFeatures)) {
+            return;
+        }
+
+        OMPoly py = createEdgeOMPoly(coords, ll1, ll2, dpplat, dpplon);
+        drawingAttributes.setTo(py);
+        py.setFillPaint(OMColor.clear);
+        py.setIsPolygon(false);
+        addEdge(py);
+    }
 
     /**
-     *
+     *  
      */
-    public void createText(CoverageTable c, TextTable texttable,
-                           List textvec,
-                           float latitude,
-                           float longitude,
-                           String text)
-    {
+    public void createText(CoverageTable c, TextTable texttable, List textvec,
+                           float latitude, float longitude, String text) {
 
         if (textSkipFeatures == null) {
-            textSkipFeatures = getSkipArray(textFeatures, texttable,
-                                            ".tft_id");
+            textSkipFeatures = getSkipArray(textFeatures, texttable, ".tft_id");
         }
-        
+
         if (!createFeature(textvec, textSkipFeatures)) {
             return;
         }
@@ -374,8 +373,7 @@ public class VPFLayerGraphicWarehouse
     }
 
     public void createNode(CoverageTable c, NodeTable nt, List nodeprim,
-                           float latitude, float longitude,
-                           boolean isEntityNode) {
+                           float latitude, float longitude, boolean isEntityNode) {
         int[] skipFeatures = null;
         if (isEntityNode) {
             if (epointSkipFeatures == null) {
@@ -388,7 +386,7 @@ public class VPFLayerGraphicWarehouse
             }
             skipFeatures = cpointSkipFeatures;
         }
-            
+
         if (!createFeature(nodeprim, skipFeatures)) {
             return;
         }

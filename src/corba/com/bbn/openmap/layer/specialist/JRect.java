@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,34 +14,30 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JRect.java,v $
 // $RCSfile: JRect.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.GraphicPackage.RenderType;
 import com.bbn.openmap.CSpecialist.LLPoint;
 import com.bbn.openmap.CSpecialist.RectanglePackage.ERectangle;
 import com.bbn.openmap.CSpecialist.XYPoint;
 import com.bbn.openmap.omGraphics.*;
-import java.awt.Point;
 import java.io.Serializable;
-import java.util.Vector;
 
 /** JRect - rectangles */
 public class JRect extends OMRect implements Serializable, JObjectHolder {
 
     protected transient com.bbn.openmap.CSpecialist.EComp object = null;
 
-    /** Constructor.*/
+    /** Constructor. */
     public JRect(ERectangle erect) {
         super();
         JGraphic.fillOMGraphicParams(this, erect.egraphic);
-        
+
         x1 = erect.p1.x;
         y1 = erect.p1.y;
         x2 = erect.p2.x;
@@ -60,16 +56,17 @@ public class JRect extends OMRect implements Serializable, JObjectHolder {
         return object;
     }
 
-    public void update(com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
-        JGraphic.update((JObjectHolder)this, update);
+    public void update(
+                       com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
+        JGraphic.update((JObjectHolder) this, update);
     }
 
     public void update(
-           com.bbn.openmap.CSpecialist.RectanglePackage.RF_update update) {
-                // do the updates, but don't rerender just yet
+                       com.bbn.openmap.CSpecialist.RectanglePackage.RF_update update) {
+        // do the updates, but don't rerender just yet
 
         switch (update.discriminator().value()) {
-            // set fixed point
+        // set fixed point
         case com.bbn.openmap.CSpecialist.RectanglePackage.settableFields._RF_ll1:
             LLPoint ll1 = update.ll1();
             lat1 = ll1.lat;
@@ -81,26 +78,28 @@ public class JRect extends OMRect implements Serializable, JObjectHolder {
             XYPoint pt1 = update.p1();
             x1 = pt1.x;
             y1 = pt1.y;
-            if (renderType != RENDERTYPE_LATLON) setNeedToRegenerate(true);
+            if (renderType != RENDERTYPE_LATLON)
+                setNeedToRegenerate(true);
             break;
-            
+
         case com.bbn.openmap.CSpecialist.RectanglePackage.settableFields._RF_ll2:
             LLPoint ll2 = update.ll2();
             lat2 = ll2.lat;
             lon2 = ll2.lon;
-            if (renderType == RENDERTYPE_LATLON) setNeedToRegenerate(true);
+            if (renderType == RENDERTYPE_LATLON)
+                setNeedToRegenerate(true);
             break;
-            
+
         case com.bbn.openmap.CSpecialist.RectanglePackage.settableFields._RF_p2:
             XYPoint pt2 = update.p2();
             x2 = pt2.x;
             y2 = pt2.y;
-            if (renderType != RENDERTYPE_LATLON) setNeedToRegenerate(true);
+            if (renderType != RENDERTYPE_LATLON)
+                setNeedToRegenerate(true);
             break;
-            
+
         default:
-            System.err.println(
-                "JRect.update: invalid rect update");
+            System.err.println("JRect.update: invalid rect update");
             break;
         }
     }

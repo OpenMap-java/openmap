@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,22 +12,20 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/QualityFile.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/QualityFile.java,v
+// $
 // $RCSfile: QualityFile.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/03/04 04:14:29 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:05:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.dataAccess.asrp;
 
 import com.bbn.openmap.dataAccess.iso8211.*;
-
-import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
 
 import java.io.IOException;
 
@@ -64,7 +62,7 @@ public class QualityFile extends GeneralASRPFile {
         if (argv.length < 1) {
             Debug.output("Usage: QualityFile filename");
         }
-        
+
         try {
             QualityFile thf = new QualityFile(argv[0]);
             thf.dumpFields();

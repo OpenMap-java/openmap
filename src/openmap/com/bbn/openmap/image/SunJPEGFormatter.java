@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/SunJPEGFormatter.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/SunJPEGFormatter.java,v
+// $
 // $RCSfile: SunJPEGFormatter.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.image;
 
@@ -35,17 +36,20 @@ public class SunJPEGFormatter extends AbstractImageFormatter {
 
     protected float imageQuality = .8f;
 
-    public SunJPEGFormatter(){}
+    public SunJPEGFormatter() {}
 
     public void setProperties(String prefix, Properties props) {
-        imageQuality = LayerUtils.floatFromProperties(props, (prefix == null?"":prefix) + QualityProperty, imageQuality);
+        imageQuality = LayerUtils.floatFromProperties(props,
+                (prefix == null ? "" : prefix) + QualityProperty,
+                imageQuality);
         if (Debug.debugging("image")) {
-            Debug.output("SunJPEGFormatter setting image quality to: " + imageQuality);
+            Debug.output("SunJPEGFormatter setting image quality to: "
+                    + imageQuality);
         }
     }
 
     public ImageFormatter makeClone() {
-        SunJPEGFormatter formatter =  new SunJPEGFormatter();
+        SunJPEGFormatter formatter = new SunJPEGFormatter();
         formatter.setImageQuality(getImageQuality());
         return formatter;
     }
@@ -69,7 +73,7 @@ public class SunJPEGFormatter extends AbstractImageFormatter {
     }
 
     /**
-     * Get the Image Type created by the ImageFormatter.  These
+     * Get the Image Type created by the ImageFormatter. These
      * responses should adhere to the OGC WMT standard format labels.
      * Some are listed in the WMTConstants interface file.
      */

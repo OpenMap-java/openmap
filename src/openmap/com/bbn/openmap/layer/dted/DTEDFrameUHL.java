@@ -2,7 +2,7 @@
 //
 // <copyright>
 //
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,31 +12,35 @@
 // </copyright>
 // **********************************************************************
 //
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameUHL.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameUHL.java,v
+// $
 // $RCSfile: DTEDFrameUHL.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:54 $
 // $Author: dietrick $
 //
 // **********************************************************************
 package com.bbn.openmap.layer.dted;
 
-import com.bbn.openmap.io.*;
+import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
 
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
 public class DTEDFrameUHL {
-    public int   abs_vert_acc = -1; // in meters
+    public int abs_vert_acc = -1; // in meters
     public float lat_origin; // lower left, in degrees
-    public int   lat_post_interval; // in seconds
+    public int lat_post_interval; // in seconds
 
     //UHL fields in order of appearance - filler has been left out.
     public float lon_origin; // lower left, in degrees
-    public int   lon_post_interval; // in seconds
-    public int    num_lat_points;
-    public int    num_lon_lines;
+    public int lon_post_interval; // in seconds
+    public int num_lat_points;
+    public int num_lon_lines;
     public String sec_code;
     public String u_ref;
 
@@ -49,40 +53,50 @@ public class DTEDFrameUHL {
             lon_origin = DTEDFrameUtil.stringToLon(binFile.readFixedLengthString(8));
             lat_origin = DTEDFrameUtil.stringToLat(binFile.readFixedLengthString(8));
             try {
-                lon_post_interval = Integer.parseInt(binFile.readFixedLengthString(4), 10);
+                lon_post_interval = Integer.parseInt(binFile.readFixedLengthString(4),
+                        10);
             } catch (NumberFormatException pExp) {
-                Debug.message("dted", "DTEDFrameUHL: lon_post_interval number bad, using 0");
+                Debug.message("dted",
+                        "DTEDFrameUHL: lon_post_interval number bad, using 0");
                 lon_post_interval = 0;
             }
             try {
-                lat_post_interval = Integer.parseInt(binFile.readFixedLengthString(4), 10);
+                lat_post_interval = Integer.parseInt(binFile.readFixedLengthString(4),
+                        10);
             } catch (NumberFormatException pExp) {
-                Debug.message("dted", "DTEDFrameUHL: lat_post_interval number bad, using 0");
+                Debug.message("dted",
+                        "DTEDFrameUHL: lat_post_interval number bad, using 0");
                 lat_post_interval = 0;
             }
             String s_abs_vert_acc = binFile.readFixedLengthString(4);
 
             try {
-                if ((s_abs_vert_acc.indexOf("NA") == -1) && (s_abs_vert_acc.indexOf("N/A") == -1)) {
+                if ((s_abs_vert_acc.indexOf("NA") == -1)
+                        && (s_abs_vert_acc.indexOf("N/A") == -1)) {
                     abs_vert_acc = Integer.parseInt(s_abs_vert_acc, 10);
                 }
             } catch (NumberFormatException pExp) {
-                Debug.message("dted", "DTEDFrameUHL: abs_vert_acc number bad, using 0");
+                Debug.message("dted",
+                        "DTEDFrameUHL: abs_vert_acc number bad, using 0");
                 abs_vert_acc = 0;
             }
 
             sec_code = binFile.readFixedLengthString(3);
             u_ref = binFile.readFixedLengthString(12);
             try {
-                num_lon_lines = Integer.parseInt(binFile.readFixedLengthString(4), 10);
+                num_lon_lines = Integer.parseInt(binFile.readFixedLengthString(4),
+                        10);
             } catch (NumberFormatException pExp) {
-                Debug.message("dted", "DTEDFrameUHL: num_lon_lines number bad, using 0");
+                Debug.message("dted",
+                        "DTEDFrameUHL: num_lon_lines number bad, using 0");
                 num_lon_lines = 0;
             }
             try {
-                num_lat_points = Integer.parseInt(binFile.readFixedLengthString(4), 10);
+                num_lat_points = Integer.parseInt(binFile.readFixedLengthString(4),
+                        10);
             } catch (NumberFormatException pExp) {
-                Debug.message("dted", "DTEDFrameUHL: num_lat_points number bad, using 0");
+                Debug.message("dted",
+                        "DTEDFrameUHL: num_lat_points number bad, using 0");
                 num_lat_points = 0;
             }
         } catch (IOException e) {
@@ -135,5 +149,4 @@ public class DTEDFrameUHL {
         }
     }
 }
-
 

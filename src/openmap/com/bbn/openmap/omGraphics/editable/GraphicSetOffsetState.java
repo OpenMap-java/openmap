@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,21 +12,19 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicSetOffsetState.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicSetOffsetState.java,v
+// $
 // $RCSfile: GraphicSetOffsetState.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.editable;
 
-
-import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.layer.util.stateMachine.*;
@@ -41,7 +39,8 @@ public class GraphicSetOffsetState extends State implements EOMGAuxState {
     }
 
     public boolean mouseDragged(MouseEvent e) {
-        Debug.message("eomg", "GraphicStateMachine|set offset state|mouseDragged");
+        Debug.message("eomg",
+                "GraphicStateMachine|set offset state|mouseDragged");
         setGrabPoint(e);
         return getMapMouseListenerResponse();
     }
@@ -53,14 +52,16 @@ public class GraphicSetOffsetState extends State implements EOMGAuxState {
     }
 
     protected void setGrabPoint(MouseEvent e) {
-//      OffsetGrabPoint ogb = (OffsetGrabPoint)graphic.getGrabPoint(EditableOMGraphic.OFFSET_POINT_INDEX);
-//      ogb.set(e.getX(), e.getY());
-//      ogb.updateOffsets();
+    //      OffsetGrabPoint ogb =
+    // (OffsetGrabPoint)graphic.getGrabPoint(EditableOMGraphic.OFFSET_POINT_INDEX);
+    //      ogb.set(e.getX(), e.getY());
+    //      ogb.updateOffsets();
 
-//      graphic.setMovingPoint(graphic.getGrabPoint(EditableOMGraphic.OFFSET_POINT_INDEX));
+    //      graphic.setMovingPoint(graphic.getGrabPoint(EditableOMGraphic.OFFSET_POINT_INDEX));
 
-//      graphic.redraw(e);
-//      graphic.fireEvent(EOMGCursors.PUTNODE, "Click to place offset point for graphic.");
+    //      graphic.redraw(e);
+    //      graphic.fireEvent(EOMGCursors.PUTNODE, "Click to place offset
+    // point for graphic.");
     }
 
     public boolean mouseReleased(MouseEvent e) {
@@ -72,13 +73,4 @@ public class GraphicSetOffsetState extends State implements EOMGAuxState {
         return getMapMouseListenerResponse();
     }
 }
-
-
-
-
-
-
-
-
-
 

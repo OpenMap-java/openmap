@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,24 +12,21 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/ScalingRasterSelectedState.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/ScalingRasterSelectedState.java,v
+// $
 // $RCSfile: ScalingRasterSelectedState.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/09/22 20:49:20 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.editable.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.util.Debug;
 
 public class ScalingRasterSelectedState extends GraphicSelectedState {
@@ -40,25 +37,28 @@ public class ScalingRasterSelectedState extends GraphicSelectedState {
 
     /**
      * In this state, we need to change states only if the graphic, or
-     * anyplace off the graphic is pressed down on.  If the end points
+     * anyplace off the graphic is pressed down on. If the end points
      * are clicked on, then we do nothing except set the moving point
      * and go to edit mode.
      */
     public boolean mousePressed(MouseEvent e) {
-        Debug.message("eomg", "ScalingRasterStateMachine|selected state|mousePressed");
+        Debug.message("eomg",
+                "ScalingRasterStateMachine|selected state|mousePressed");
         // This is added for Rectangles:
-        ((EditableOMScalingRaster)graphic).initRectSize();
+        ((EditableOMScalingRaster) graphic).initRectSize();
         return super.mousePressed(e);
     }
 
     public boolean mouseMoved(MouseEvent e) {
-        Debug.message("eomgdetail", "ScalingStateMachine|selected state|mouseMoved");
+        Debug.message("eomgdetail",
+                "ScalingStateMachine|selected state|mouseMoved");
 
         GrabPoint mp = graphic.getMovingPoint(e);
         if (mp == null) {
             graphic.fireEvent(EOMGCursors.DEFAULT, "");
         } else {
-            graphic.fireEvent(EOMGCursors.EDIT, "Click and Drag to change the graphic.");
+            graphic.fireEvent(EOMGCursors.EDIT,
+                    "Click and Drag to change the graphic.");
         }
         return false;
     }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,24 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/ElevationColors.java,v $
 // $RCSfile: ElevationColors.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/24 03:38:44 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.grid;
 
 import java.awt.Color;
 import com.bbn.openmap.proj.Length;
-import com.bbn.openmap.util.Debug;
 
 /**
  * An interface that the SlopeGenerator uses to get colors for
  * different elevations and slopes.
  */
-public interface ElevationColors { 
+public interface ElevationColors {
 
     /**
      * Get the Color for the given elevation, with the provided units.
@@ -42,7 +40,7 @@ public interface ElevationColors {
 
     /**
      * Get the int argb value for a given elevation, with the provided
-     * units.  The slope of the land, from the northwest to the
+     * units. The slope of the land, from the northwest to the
      * southeast, is provided in case that should matter.
      */
     public int getARGB(int elevation, Length units, double slope);

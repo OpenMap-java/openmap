@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,14 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Gnomonic.java,v $
 // $RCSfile: Gnomonic.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/09/17 18:26:37 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:06:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
-
-
 
 package com.bbn.openmap.proj;
 
@@ -29,7 +26,6 @@ import java.awt.*;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.Debug;
-
 
 /**
  * Implements the Gnomonic projection.
@@ -53,93 +49,96 @@ public class Gnomonic extends Azimuth {
     protected float sinCtrLat;
 
     public final static transient float epsilon = 0.0001f;
-    public final static transient float HEMISPHERE_EDGE=
-        (float)((Math.PI/180d)*80d);//80degrees
-    public final static transient float hPrime =
-        1f/(float)Math.pow(Math.cos(HEMISPHERE_EDGE),2d);
+    public final static transient float HEMISPHERE_EDGE = (float) ((Math.PI / 180d) * 80d);//80degrees
+    public final static transient float hPrime = 1f / (float) Math.pow(Math.cos(HEMISPHERE_EDGE),
+            2d);
 
-
-    protected final static float NORTH_BOUNDARY = NORTH_POLE-epsilon;
+    protected final static float NORTH_BOUNDARY = NORTH_POLE - epsilon;
     protected final static float SOUTH_BOUNDARY = -NORTH_BOUNDARY;
-
 
     /**
      * Construct a Mercator projection.
+     * 
      * @param center LatLonPoint center of projection
      * @param scale float scale of projection
      * @param width width of screen
      * @param height height of screen
-     *
+     *  
      */
-    public Gnomonic(
-        LatLonPoint center, float scale, int width, int height)
-    {
+    public Gnomonic(LatLonPoint center, float scale, int width, int height) {
         super(center, scale, width, height, GnomonicType);
         setMinScale(1000.0f);
     }
 
-
     /**
      * Return stringified description of this projection.
+     * 
      * @return String
      * @see Projection#getProjectionID
-     *
+     *  
      */
     public String toString() {
         return "Gnomonic[" + super.toString();
     }
 
-
     /**
      * Called when some fundamental parameters change.
      * <p>
-     * Each projection will decide how to respond to this change.
-     * For instance, they may need to recalculate "constant" paramters
-     * used in the forward() and inverse() calls.<p>
-     *
+     * Each projection will decide how to respond to this change. For
+     * instance, they may need to recalculate "constant" paramters
+     * used in the forward() and inverse() calls.
+     * <p>
+     *  
      */
     protected void computeParameters() {
         Debug.message("proj", "Gnomonic.computeParameters()");
         super.computeParameters();
 
-        // minscale is the minimum scale allowable (before integer wrapping
+        // minscale is the minimum scale allowable (before integer
+        // wrapping
         // can occur)
-        minscale = (float)Math.ceil((2*hPrime*planetPixelRadius)/(int)Integer.MAX_VALUE);
+        minscale = (float) Math.ceil((2 * hPrime * planetPixelRadius)
+                / (int) Integer.MAX_VALUE);
         if (minscale < 1)
             minscale = 1;
         if (scale < minscale)
             scale = minscale;
 
-        // maxscale = scale at which a world hemisphere fits in the window
-        maxscale = (width < height)
-            ? (float)(planetPixelRadius*2*hPrime)/(float)width
-            : (float)(planetPixelRadius*2*hPrime)/(float)height;
+        // maxscale = scale at which a world hemisphere fits in the
+        // window
+        maxscale = (width < height) ? (float) (planetPixelRadius * 2 * hPrime)
+                / (float) width : (float) (planetPixelRadius * 2 * hPrime)
+                / (float) height;
         if (maxscale < minscale) {
             maxscale = minscale;
         }
         if (scale > maxscale) {
             scale = maxscale;
         }
-        scaled_radius = planetPixelRadius/scale;
+        scaled_radius = planetPixelRadius / scale;
 
-        // width of the world in pixels at current scale.  We see only
+        // width of the world in pixels at current scale. We see only
         // one hemisphere.
-        world.x = (int)((planetPixelRadius*2*hPrime)/scale);
+        world.x = (int) ((planetPixelRadius * 2 * hPrime) / scale);
 
         // calculate cutoff scale for XWindows workaround
-        XSCALE_THRESHOLD = (int)((planetPixelRadius*2*hPrime)/64000);//fudge it a little bit
+        XSCALE_THRESHOLD = (int) ((planetPixelRadius * 2 * hPrime) / 64000);//fudge
+                                                                            // it a
+                                                                            // little
+                                                                            // bit
 
         // do some precomputation of stuff
-        cosCtrLat = (float)Math.cos(ctrLat);
-        sinCtrLat = (float)Math.sin(ctrLat);
-        
+        cosCtrLat = (float) Math.cos(ctrLat);
+        sinCtrLat = (float) Math.sin(ctrLat);
+
         // compute the offsets
-        hy = height/2;
-        wx = width/2;
+        hy = height / 2;
+        wx = width / 2;
     }
 
     /**
      * Draw the background for the projection.
+     * 
      * @param g Graphics2D
      * @param paint java.awt.Paint to use for the background
      */
@@ -157,14 +156,15 @@ public class Gnomonic extends Azimuth {
     }
 
     /**
-     * Sets radian latitude to something sane.  This is an abstract
+     * Sets radian latitude to something sane. This is an abstract
      * function since some projections don't deal well with extreme
-     * latitudes.<p>
-     *
+     * latitudes.
+     * <p>
+     * 
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
      * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
-     *
+     *  
      */
     public float normalize_latitude(float lat) {
         if (lat > NORTH_BOUNDARY) {
@@ -175,78 +175,79 @@ public class Gnomonic extends Azimuth {
         return lat;
     }
 
-
     /**
-     * Get the distance c of the point from the center of the hemisphere.
+     * Get the distance c of the point from the center of the
+     * hemisphere.
+     * 
      * @param phi1 latitude
      * @param lambda0 longitude
      * @param phi latitude
      * @param lambda longitude
      * @return float c angular distance in radians
-     *
+     *  
      */
-    final public static float hemisphere_distance(
-        float phi1, float lambda0, float phi, float lambda)
-    {
-        return GreatCircle.spherical_distance(
-            phi1, lambda0, phi, lambda)/*-epsilon*/;
+    final public static float hemisphere_distance(float phi1, float lambda0,
+                                                  float phi, float lambda) {
+        return GreatCircle.spherical_distance(phi1, lambda0, phi, lambda)/*-epsilon*/;
     }
-
 
     /**
      * Check if a given lat/lon is within the visible hemisphere.
+     * 
      * @param phi1 latitude
      * @param lambda0 longitude
      * @param phi latitude
      * @param lambda longitude
-     * @return boolean true if within the visible hemisphere, false if not
-     *
+     * @return boolean true if within the visible hemisphere, false if
+     *         not
+     *  
      */
-    final public static boolean hemisphere_clip(
-        float phi1, float lambda0, float phi, float lambda)
-    {
-        return (GreatCircle.spherical_distance(
-            phi1, lambda0, phi, lambda)/*-epsilon*/ <= HEMISPHERE_EDGE);
+    final public static boolean hemisphere_clip(float phi1, float lambda0,
+                                                float phi, float lambda) {
+        return (GreatCircle.spherical_distance(phi1, lambda0, phi, lambda)/*-epsilon*/<= HEMISPHERE_EDGE);
     }
 
-
-
     /**
-     * Calculate point along edge of hemisphere (using center point and
-     * current azimuth).
+     * Calculate point along edge of hemisphere (using center point
+     * and current azimuth).
      * <p>
      * This is invoked for points that aren't visible in the current
      * hemisphere.
+     * 
      * @param p Point
      * @return Point p
-     *
+     *  
      */
     private Point edge_point(Point p, float current_azimuth) {
         float c = HEMISPHERE_EDGE;
-        LatLonPoint tmpll = GreatCircle.spherical_between(
-                ctrLat, ctrLon, c/*-epsilon*/, current_azimuth);
+        LatLonPoint tmpll = GreatCircle.spherical_between(ctrLat,
+                ctrLon,
+                c/*-epsilon*/,
+                current_azimuth);
         float phi = tmpll.radlat_;
         float lambda = tmpll.radlon_;
 
-        float kPrime = 1f/(float)Math.cos(c);
-        float cosPhi = (float)Math.cos(phi);
-        float sinPhi = (float)Math.sin(phi);
-        float lambdaMinusCtrLon = (float)(lambda-ctrLon);
-        float cosLambdaMinusCtrLon = (float)Math.cos(lambdaMinusCtrLon);
-        float sinLambdaMinusCtrLon = (float)Math.sin(lambdaMinusCtrLon);
+        float kPrime = 1f / (float) Math.cos(c);
+        float cosPhi = (float) Math.cos(phi);
+        float sinPhi = (float) Math.sin(phi);
+        float lambdaMinusCtrLon = (float) (lambda - ctrLon);
+        float cosLambdaMinusCtrLon = (float) Math.cos(lambdaMinusCtrLon);
+        float sinLambdaMinusCtrLon = (float) Math.sin(lambdaMinusCtrLon);
 
-        p.x = (int)(scaled_radius*kPrime*cosPhi*sinLambdaMinusCtrLon) + wx;
-        p.y = hy - (int)(scaled_radius*kPrime*
-                (cosCtrLat*sinPhi - sinCtrLat*cosPhi*cosLambdaMinusCtrLon));
+        p.x = (int) (scaled_radius * kPrime * cosPhi * sinLambdaMinusCtrLon)
+                + wx;
+        p.y = hy
+                - (int) (scaled_radius * kPrime * (cosCtrLat * sinPhi - sinCtrLat
+                        * cosPhi * cosLambdaMinusCtrLon));
 
         return p;
     }
-
 
     /**
      * Checks if a LatLonPoint is plot-able.
      * <p>
      * A point is plot-able if it is within the visible hemisphere.
+     * 
      * @param lat float latitude in decimal degrees
      * @param lon float longitude in decimal degrees
      * @return boolean
@@ -257,95 +258,94 @@ public class Gnomonic extends Azimuth {
         return hemisphere_clip(ctrLat, ctrLon, lat, lon);
     }
 
-
     /**
-     * Forward project a point.
-     * If the point is not within the viewable hemisphere, return flags in
-     * AzimuthVar variable if specified.
+     * Forward project a point. If the point is not within the
+     * viewable hemisphere, return flags in AzimuthVar variable if
+     * specified.
+     * 
      * @param phi float latitude in radians
      * @param lambda float longitude in radians
      * @param p Point
      * @param azVar AzimuthVar or null
      * @return Point pt
      */
-    protected Point _forward (
-            float phi, float lambda, Point p, AzimuthVar azVar)
-    {
+    protected Point _forward(float phi, float lambda, Point p, AzimuthVar azVar) {
         float c = hemisphere_distance(ctrLat, ctrLon, phi, lambda);
         // normalize invalid point to the edge of the sphere
         if (c > HEMISPHERE_EDGE) {
-            float az =
-                GreatCircle.spherical_azimuth(ctrLat, ctrLon, phi, lambda);
+            float az = GreatCircle.spherical_azimuth(ctrLat,
+                    ctrLon,
+                    phi,
+                    lambda);
             if (azVar != null) {
-                azVar.invalid_forward = true;   // set the invalid flag
-                azVar.current_azimuth = az;     // record azimuth of this point
+                azVar.invalid_forward = true; // set the invalid flag
+                azVar.current_azimuth = az; // record azimuth of this
+                                            // point
             }
             return edge_point(p, az);
         }
 
-        float kPrime = 1f/(float)Math.cos(c);
-        float cosPhi = (float)Math.cos(phi);
-        float sinPhi = (float)Math.sin(phi);
-        float lambdaMinusCtrLon = (float)(lambda-ctrLon);
-        float cosLambdaMinusCtrLon = (float)Math.cos(lambdaMinusCtrLon);
-        float sinLambdaMinusCtrLon = (float)Math.sin(lambdaMinusCtrLon);
+        float kPrime = 1f / (float) Math.cos(c);
+        float cosPhi = (float) Math.cos(phi);
+        float sinPhi = (float) Math.sin(phi);
+        float lambdaMinusCtrLon = (float) (lambda - ctrLon);
+        float cosLambdaMinusCtrLon = (float) Math.cos(lambdaMinusCtrLon);
+        float sinLambdaMinusCtrLon = (float) Math.sin(lambdaMinusCtrLon);
 
-        p.x = (int)(scaled_radius*kPrime*cosPhi*sinLambdaMinusCtrLon) + wx;
-        p.y = hy - (int)(scaled_radius*kPrime*
-                (cosCtrLat*sinPhi - sinCtrLat*cosPhi*cosLambdaMinusCtrLon));
+        p.x = (int) (scaled_radius * kPrime * cosPhi * sinLambdaMinusCtrLon)
+                + wx;
+        p.y = hy
+                - (int) (scaled_radius * kPrime * (cosCtrLat * sinPhi - sinCtrLat
+                        * cosPhi * cosLambdaMinusCtrLon));
 
         return p;
     }
 
-
     /**
      * Inverse project x,y coordinates into a LatLonPoint.
+     * 
      * @param x integer x coordinate
      * @param y integer y coordinate
      * @param llp LatLonPoint
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
-     *
+     *  
      */
     public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
         // convert from screen to world coordinates
         x = x - wx;
         y = hy - y;
 
+        //      Debug.output("Gnomonic.inverse: x,y=" + x + "," + y);
 
-//      Debug.output("Gnomonic.inverse: x,y=" + x + "," + y);
-
-        float rho = (float)Math.sqrt(x*x + y*y);
+        float rho = (float) Math.sqrt(x * x + y * y);
         if (rho == 0f) {
             Debug.message("proj", "Gnomonic.inverse: center!");
-            llp.setLatLon(
-                    ProjMath.radToDeg(ctrLat),
-                    ProjMath.radToDeg(ctrLon));
+            llp.setLatLon(ProjMath.radToDeg(ctrLat), ProjMath.radToDeg(ctrLon));
             return llp;
         }
 
-        float c = (float)Math.atan2(rho, scaled_radius);
-        float cosC = (float)Math.cos(c);
-        float sinC = (float)Math.sin(c);
+        float c = (float) Math.atan2(rho, scaled_radius);
+        float cosC = (float) Math.cos(c);
+        float sinC = (float) Math.sin(c);
 
-        // calculate latitude 
-        float lat = (float)Math.asin(
-            cosC * sinCtrLat + (y * sinC * (cosCtrLat/rho)));
-
+        // calculate latitude
+        float lat = (float) Math.asin(cosC * sinCtrLat
+                + (y * sinC * (cosCtrLat / rho)));
 
         // calculate longitude
-        float lon = ctrLon + (float)Math.atan2(
-                (x*sinC),
-                (rho*cosCtrLat*cosC - y*sinCtrLat*sinC));
-//      Debug.output("Gnomonic.inverse: lat,lon=" +
-//                         ProjMath.radToDeg(lat) + "," +
-//                         ProjMath.radToDeg(lon));
+        float lon = ctrLon
+                + (float) Math.atan2((x * sinC), (rho * cosCtrLat * cosC - y
+                        * sinCtrLat * sinC));
+        //      Debug.output("Gnomonic.inverse: lat,lon=" +
+        //                         ProjMath.radToDeg(lat) + "," +
+        //                         ProjMath.radToDeg(lon));
 
         // check if point in outer space
-//      if (MoreMath.approximately_equal(lat, ctrLat) &&
-//             MoreMath.approximately_equal(lon, ctrLon) &&
-//             (Math.abs(x-(width/2))<2) &&
-//             (Math.abs(y-(height/2))<2))
+        //      if (MoreMath.approximately_equal(lat, ctrLat) &&
+        //             MoreMath.approximately_equal(lon, ctrLon) &&
+        //             (Math.abs(x-(width/2))<2) &&
+        //             (Math.abs(y-(height/2))<2))
 
         if (Float.isNaN(lat) || Float.isNaN(lon)) {
             Debug.message("proj", "Gnomonic.inverse(): outer space!");
@@ -353,34 +353,32 @@ public class Gnomonic extends Azimuth {
             lon = ctrLon;
         }
 
-        llp.setLatLon(ProjMath.radToDeg(lat),
-                      ProjMath.radToDeg(lon));
+        llp.setLatLon(ProjMath.radToDeg(lat), ProjMath.radToDeg(lon));
         return llp;
     }
 
-
     /**
      * Inverse project a Point.
+     * 
      * @param pt x,y Point
      * @param llp resulting LatLonPoint
      * @return LatLonPoint llp
-     *
+     *  
      */
     public LatLonPoint inverse(Point pt, LatLonPoint llp) {
         return inverse(pt.x, pt.y, llp);
     }
 
-
     /**
      * Check if equator is visible on screen.
+     * 
      * @return boolean
      */
-    public boolean overEquator () {
-        LatLonPoint llN = inverse(width/2, 0, new LatLonPoint());
-        LatLonPoint llS = inverse(width/2, height, new LatLonPoint());
+    public boolean overEquator() {
+        LatLonPoint llN = inverse(width / 2, 0, new LatLonPoint());
+        LatLonPoint llS = inverse(width / 2, height, new LatLonPoint());
         return MoreMath.sign(llN.radlat_) != MoreMath.sign(llS.radlat_);
     }
-
 
     /**
      * Get the upper left (northernmost and westernmost) point of the
@@ -389,6 +387,7 @@ public class Gnomonic extends Azimuth {
      * Returns the upper left point (or closest equivalent) of the
      * projection based on the center point and height and width of
      * screen.
+     * 
      * @return LatLonPoint
      */
     public LatLonPoint getUpperLeft() {
@@ -406,7 +405,7 @@ public class Gnomonic extends Azimuth {
             lon = -DATELINE;
             if (overEquator()) {
                 // get top center for latitude
-                tmp = inverse(width/2, 0, tmp);
+                tmp = inverse(width / 2, 0, tmp);
                 lat = tmp.radlat_;
             } else {
                 // get left top corner for latitude
@@ -418,10 +417,10 @@ public class Gnomonic extends Azimuth {
         // view in northern hemisphere
         else if (ctrLat >= 0f) {
             // get left top corner for longitude
-            tmp = inverse(0,0,tmp);
+            tmp = inverse(0, 0, tmp);
             lon = tmp.radlon_;
             // get top center for latitude
-            tmp = inverse(width/2, 0, tmp);
+            tmp = inverse(width / 2, 0, tmp);
             lat = tmp.radlat_;
         }
 
@@ -433,7 +432,7 @@ public class Gnomonic extends Azimuth {
 
             if (overEquator()) {
                 // get top center (for latitude)
-                tmp = inverse(width/2, 0, tmp);
+                tmp = inverse(width / 2, 0, tmp);
                 lat = tmp.radlat_;
             } else {
                 // get left top corner (for latitude)
@@ -442,10 +441,9 @@ public class Gnomonic extends Azimuth {
             }
         }
         tmp.setLatLon(lat, lon, true);
-//      Debug.output("ul="+tmp);
+        //      Debug.output("ul="+tmp);
         return tmp;
     }
-
 
     /**
      * Get the lower right (southeast) point of the projection.
@@ -456,6 +454,7 @@ public class Gnomonic extends Azimuth {
      * <p>
      * This is trivial for most cylindrical projections, but much more
      * complicated for azimuthal projections.
+     * 
      * @return LatLonPoint
      */
     public LatLonPoint getLowerRight() {
@@ -467,7 +466,7 @@ public class Gnomonic extends Azimuth {
             lon = DATELINE;
             if (overEquator()) {
                 // get bottom center for latitude
-                tmp = inverse(width/2, height, tmp);
+                tmp = inverse(width / 2, height, tmp);
                 lat = tmp.radlat_;
             } else {
                 // get bottom right corner for latitude
@@ -490,7 +489,7 @@ public class Gnomonic extends Azimuth {
 
             if (overEquator()) {
                 // get the bottom center (for latitude)
-                tmp = inverse(width/2, height, tmp);
+                tmp = inverse(width / 2, height, tmp);
                 lat = tmp.radlat_;
             } else {
                 // get the right bottom corner (for latitude)
@@ -502,14 +501,14 @@ public class Gnomonic extends Azimuth {
         // view in southern hemisphere
         else {
             // get the right bottom corner for longitude
-            tmp = inverse(width,height,tmp);
+            tmp = inverse(width, height, tmp);
             lon = tmp.radlon_;
             // get bottom center for latitude
-            tmp = inverse(width/2, height, tmp);
+            tmp = inverse(width / 2, height, tmp);
             lat = tmp.radlat_;
         }
         tmp.setLatLon(lat, lon, true);
-//      Debug.output("lr="+tmp);
+        //      Debug.output("lr="+tmp);
         return tmp;
     }
 

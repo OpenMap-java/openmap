@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SinkGenerator.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SinkGenerator.java,v
+// $
 // $RCSfile: SinkGenerator.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/01/24 03:38:44 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.grid;
 
@@ -27,10 +28,9 @@ import com.bbn.openmap.omGraphics.OMGrid;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.SinkGraphic;
 import com.bbn.openmap.proj.Projection;
-import java.awt.Graphics;
 
 public class SinkGenerator implements OMGridGenerator {
-    
+
     public OMGraphic generate(OMGrid grid, Projection proj) {
         return SinkGraphic.getSharedInstance();
     }

@@ -16,8 +16,8 @@
  * **********************************************************************
  * 
  * $Source: /cvs/distapps/openmap/src/svg/com/bbn/openmap/image/SVGFormatter.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/09/23 19:28:40 $
+ * $Revision: 1.6 $
+ * $Date: 2004/10/14 18:06:32 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -39,12 +39,13 @@ import org.w3c.dom.DOMImplementation;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.util.Debug;
 
-/** 
+/**
  * The SVGFormatter lets you create SVG documents from the MapBean and
- * it's layers.  Tested with the Batik-1.1.1 package available at:
+ * it's layers. Tested with the Batik-1.1.1 package available at:
  * http://xml.apache.org/batik/dist/batik-1.1.1.zip
  * <P>
- * Code initially provided by Sebastien Prud'homme, modified by dietrick.
+ * Code initially provided by Sebastien Prud'homme, modified by
+ * dietrick.
  * <P>
  */
 public class SVGFormatter extends AbstractImageFormatter {
@@ -57,43 +58,49 @@ public class SVGFormatter extends AbstractImageFormatter {
     public void setProperties(String prefix, Properties props) {}
 
     /**
-     * Create a new instance of the same type of formatter.  If you
-     * are running in a multi-threaded environment, you'll need to
-     * provide a new instance of the formatter to each thread, since
-     * the image and graphics that are being drawn into for each
-     * thread are contained within.
+     * Create a new instance of the same type of formatter. If you are
+     * running in a multi-threaded environment, you'll need to provide
+     * a new instance of the formatter to each thread, since the image
+     * and graphics that are being drawn into for each thread are
+     * contained within.
+     * 
      * @return a new instance of this type of formatter, with the same
-     * properties set.
+     *         properties set.
      */
     public ImageFormatter makeClone() {
         return new SVGFormatter();
     }
 
     /**
-     * Convert a BufferedImage to a image file format.  Not the same
-     * as other ImageFormatters.  Returns a SVG document which refers
-     * to the image.
-     *
+     * Convert a BufferedImage to a image file format. Not the same as
+     * other ImageFormatters. Returns a SVG document which refers to
+     * the image.
+     * 
      * @param bi BufferedImage
-     * @return null.  The SVGFormatter returns the SVG file containing
-     * information about the image. Probably not what you expected.  
+     * @return null. The SVGFormatter returns the SVG file containing
+     *         information about the image. Probably not what you
+     *         expected.
      */
     public byte[] formatImage(BufferedImage bi) {
         return null;
     }
 
     /**
-     * Take a MapBean, and get the SVG document that represents what's on it.
+     * Take a MapBean, and get the SVG document that represents what's
+     * on it.
+     * 
      * @param map the MapBean.
-     * @return byte[] representing an SVG of the map in it's current state.
+     * @return byte[] representing an SVG of the map in it's current
+     *         state.
      */
     public byte[] getImageFromMapBean(com.bbn.openmap.MapBean map) {
 
-        Proj proj = (Proj)map.getProjection();
-        java.awt.Graphics graphics = getGraphics(proj.getWidth(), proj.getHeight());
+        Proj proj = (Proj) map.getProjection();
+        java.awt.Graphics graphics = getGraphics(proj.getWidth(),
+                proj.getHeight());
 
         // This should actually be getting the layers, and rendering
-        // each one.  It turns out that calling paintChildren() will
+        // each one. It turns out that calling paintChildren() will
         // render a buffered image if the MapBean is buffered, and
         // that's not what we really want here.
         //      map.paintChildren(graphics);
@@ -101,7 +108,7 @@ public class SVGFormatter extends AbstractImageFormatter {
         map.addPropertyChangeListener(this);
 
         // Layers should be set...
-        proj.drawBackground((Graphics2D)graphics, map.getBckgrnd());
+        proj.drawBackground((Graphics2D) graphics, map.getBckgrnd());
 
         if (layers != null) {
             for (int i = layers.length - 1; i >= 0; i--) {
@@ -121,12 +128,13 @@ public class SVGFormatter extends AbstractImageFormatter {
      * Return the applicable Graphics to use to paint the layers into.
      * If the internal BufferedImage hasn't been created yet, or has
      * been set to null, then a new buffered Image is created, set to
-     * the size specified by the height and width given.  The
-     * ImageGenerator extends MapBean.  Remember to dispose of the
+     * the size specified by the height and width given. The
+     * ImageGenerator extends MapBean. Remember to dispose of the
      * graphics object when you are done with it.
+     * 
      * @param width pixel width of Graphics.
      * @param height pixel height of Graphics.
-     * @return java.awt.Graphics object to use.  
+     * @return java.awt.Graphics object to use.
      */
     public Graphics getGraphics(int width, int height) {
         if (svgGenerator == null) {
@@ -140,6 +148,7 @@ public class SVGFormatter extends AbstractImageFormatter {
 
     /**
      * Return the BufferedImage contained within the formatter.
+     * 
      * @return null - there isn't a BufferedImage in this formatter.
      */
     public BufferedImage getBufferedImage() {
@@ -148,26 +157,28 @@ public class SVGFormatter extends AbstractImageFormatter {
 
     /**
      * For ImageFormatters, returns the BufferedImage contained within
-     * the formatter.  Doesn't do anything for the SVGFormatter.
-     * @param bi the BufferedImage to use in this formatter.  
+     * the formatter. Doesn't do anything for the SVGFormatter.
+     * 
+     * @param bi the BufferedImage to use in this formatter.
      */
-    public void setBufferedImage(BufferedImage bi) {
-    }
+    public void setBufferedImage(BufferedImage bi) {}
 
     /**
      * Scale the internal BufferedImage to the pixel dimensions, and
-     * then return it.  Not implemented.
+     * then return it. Not implemented.
+     * 
      * @param scaledWidth the desired pixel width of the image.
      * @param scaledHeight the desired pixel height of the image.
      * @return null.
      */
-    public BufferedImage getScaledBufferedImage(int scaledWidth, 
+    public BufferedImage getScaledBufferedImage(int scaledWidth,
                                                 int scaledHeight) {
         return null;
     }
 
     /**
      * Return the string bytes for the SVG document.
+     * 
      * @return byte[] representing the image.
      */
     public byte[] getImageBytes() {
@@ -177,7 +188,7 @@ public class SVGFormatter extends AbstractImageFormatter {
                 OutputStreamWriter writer = new OutputStreamWriter(stream, SVGGraphics2D.DEFAULT_XML_ENCODING);
                 svgGenerator.stream(writer, false);
                 return stream.toByteArray();
-            } catch (java.io.IOException ioe){
+            } catch (java.io.IOException ioe) {
                 Debug.error("SVGFormatter caught IOException formatting svg!");
             }
         }
@@ -186,22 +197,23 @@ public class SVGFormatter extends AbstractImageFormatter {
 
     /**
      * Scale the internal BufferedImage, then return the image bytes
-     * of the formatted image.  Not implemented.  Unscaled image returned.
+     * of the formatted image. Not implemented. Unscaled image
+     * returned.
+     * 
      * @param scaledWidth the desired pixel width of the image.
      * @param scaledHeight the desired pixel height of the image.
-     * @return byte[] representing the image.  
+     * @return byte[] representing the image.
      */
-    public byte[] getScaledImageBytes(int scaledWidth, 
-                                      int scaledHeight) {
+    public byte[] getScaledImageBytes(int scaledWidth, int scaledHeight) {
         return getImageBytes();
     }
 
     /**
-     * Get the Image Type created by the SVGFormatter.  These
-     * responses should adhere to the OGC WMT standard format labels.
-     * Some are listed in the WMTConstants interface file.
+     * Get the Image Type created by the SVGFormatter. These responses
+     * should adhere to the OGC WMT standard format labels. Some are
+     * listed in the WMTConstants interface file.
      */
     public String getFormatLabel() {
-        return WMTConstants.IMAGEFORMAT_SVG;    
+        return WMTConstants.IMAGEFORMAT_SVG;
     }
 }

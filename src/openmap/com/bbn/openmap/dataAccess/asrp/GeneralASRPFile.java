@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,10 +12,12 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/GeneralASRPFile.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/GeneralASRPFile.java,v
+// $
 // $RCSfile: GeneralASRPFile.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/03/05 02:25:58 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,10 +61,10 @@ public class GeneralASRPFile {
     }
 
     /**
-     * Add a field to the field list.  If a field already exists in
-     * the hashtable, the DDFField is replaced by a list of the fields
-     * with the same name.  Some types of files need this, like the
-     * THF file.  Others don't seem to.
+     * Add a field to the field list. If a field already exists in the
+     * hashtable, the DDFField is replaced by a list of the fields
+     * with the same name. Some types of files need this, like the THF
+     * file. Others don't seem to.
      */
     protected void addField(DDFField ddf) {
 
@@ -77,7 +79,7 @@ public class GeneralASRPFile {
             fields.put(fName, ddf);
         } else {
             if (f instanceof List) {
-                ((List)f).add(ddf);
+                ((List) f).add(ddf);
             } else {
                 Vector subList = new Vector();
                 subList.add(f);
@@ -90,7 +92,7 @@ public class GeneralASRPFile {
     public List getFields(String tag) {
         Object obj = fields.get(tag);
         if (obj instanceof List) {
-            return (List)obj;
+            return (List) obj;
         } else {
             LinkedList ll = new LinkedList();
             ll.add(obj);
@@ -101,15 +103,16 @@ public class GeneralASRPFile {
     public DDFField getField(String tag) {
         Object obj = fields.get(tag);
         if (obj instanceof List) {
-            return (DDFField) ((List)obj).get(0);
+            return (DDFField) ((List) obj).get(0);
         } else {
-            return (DDFField)obj;
+            return (DDFField) obj;
         }
     }
 
-    public void dumpFields() { 
-        for (Iterator it = fields.keySet().iterator(); it.hasNext();
-             Debug.output(fields.get(it.next()).toString())) {}
+    public void dumpFields() {
+        for (Iterator it = fields.keySet().iterator(); it.hasNext(); Debug.output(fields.get(it.next())
+                .toString())) {
+        }
     }
 
     protected DDFModule getInfo() {
@@ -121,7 +124,7 @@ public class GeneralASRPFile {
             info.close();
         }
     }
-    
+
     public void dump() {
         if (info != null) {
             Debug.output(info.dump());

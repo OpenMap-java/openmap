@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/ProjectionChangePolicy.java,v $
 // $RCSfile: ProjectionChangePolicy.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/04 18:15:21 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.policy;
 
@@ -31,7 +30,7 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
  * A ProjectionChangePolicy is a policy object that determines how an
  * OMGraphicHandler layer reacts to a projectionChanged() method call.
  * The OMGraphicHandlerLayer has been written to consult this object
- * to contral that activity.  The reaction could include clearing out
+ * to contral that activity. The reaction could include clearing out
  * the current OMGraphicList or keeping it, or launching a SwingWorker
  * with a doPrepare() call on the layer to have the layer's prepare()
  * method called.
@@ -49,7 +48,7 @@ public interface ProjectionChangePolicy {
     public OMGraphicHandlerLayer getLayer();
 
     /**
-     * The method that is called when the projection changes.  The
+     * The method that is called when the projection changes. The
      * ProjectionChangePolicy should modify the OMGraphicList and do
      * other functions as dictated by the policy, like starting
      * threads to gather data and generating new OMGraphics for the
@@ -59,7 +58,7 @@ public interface ProjectionChangePolicy {
 
     /**
      * The method that gets called when the SwingWorker thread
-     * finishes.  The OMGraphicList is what is getting returned from
+     * finishes. The OMGraphicList is what is getting returned from
      * the prepare() method on the layer, so it's most likely that
      * this list should be set on the layer.
      */

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,22 +12,22 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwRecordFile.java,v $
-// $Revision: 1.4 $ $Date: 2004/01/26 18:18:11 $ $Author: dietrick $
+// $Revision: 1.5 $ $Date: 2004/10/14 18:06:08 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
 import java.io.*;
 import java.util.*;
+
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.*;
-import com.bbn.openmap.util.Debug;
 
 /**
  * Read and encapsulate VPF table files.
  */
 public class DcwRecordFile {
-  
+
     /** input is read from this file */
     protected BinaryFile inputFile = null;
     /** the description of the table [read from the file] */
@@ -35,21 +35,33 @@ public class DcwRecordFile {
     /** the name of another table that describes what this one is for */
     protected String documentationFileName = null;
     /** number of bytes consumed by the table header */
-    private int headerLength = 4; //for the 4 bytes of the headerlength field
-    /** big-endian (<code>true</code>) or little-endian (<code>false</code>) */
+    private int headerLength = 4; //for the 4 bytes of the
+                                  // headerlength field
+    /**
+     * big-endian (<code>true</code>) or little-endian (
+     * <code>false</code>)
+     */
     protected boolean MSBFirst = false;
     /** ordered set of columns (read from table header) */
     protected DcwColumnInfo[] columnInfo = null;
-    /** length of a record (<code>-1</code> indicates variable-length record)*/
+    /**
+     * length of a record (<code>-1</code> indicates
+     * variable-length record)
+     */
     protected int recordLength = 0;
-    /** for tables with variable-length records, the corresponding
-     * variable-length index */
+    /**
+     * for tables with variable-length records, the corresponding
+     * variable-length index
+     */
     protected DcwVariableLengthIndexFile vli = null;
     /** the name of the file */
     final protected String filename;
     /** the name of the table */
     protected String tablename = null;
-    /** remember the byte order for later file openings, true for MSB first */
+    /**
+     * remember the byte order for later file openings, true for MSB
+     * first
+     */
     protected boolean byteorder = true;
     /** the record number that a call to parseRow() will return */
     int cursorRow = -1;
@@ -59,22 +71,24 @@ public class DcwRecordFile {
 
     /**
      * Open a DcwRecordFile and completely initialize it
+     * 
      * @param name the name of the file to use for input
-     * @exception FormatException some problem was encountered dealing with
-     *  the file
+     * @exception FormatException some problem was encountered dealing
+     *            with the file
      */
     public DcwRecordFile(String name) throws FormatException {
         this(name, false);
     }
-    
+
     /**
      * Open a DcwRecordFile
+     * 
      * @param name the name of the file to use for input
-     * @param deferInit if <code>true</code>, don't actually open files and
-     *  initialize the object.  In this state, the only method that
-     *  should be called is finishInitialization.
-     * @exception FormatException some problem was encountered dealing with
-     *  the file
+     * @param deferInit if <code>true</code>, don't actually open
+     *        files and initialize the object. In this state, the only
+     *        method that should be called is finishInitialization.
+     * @exception FormatException some problem was encountered dealing
+     *            with the file
      * @see #finishInitialization()
      */
     public DcwRecordFile(String name, boolean deferInit) throws FormatException {
@@ -85,37 +99,41 @@ public class DcwRecordFile {
     }
 
     /**
-     * Strip the tablename out of the filename.  Strips both path information
-     * and the trailing '.', if it exists.
+     * Strip the tablename out of the filename. Strips both path
+     * information and the trailing '.', if it exists.
      */
-     private void internTableName() {
+    private void internTableName() {
         int strlen = filename.length();
         int firstchar = filename.lastIndexOf('/');
-        int lastchar = filename.endsWith(".")?strlen-1:strlen;
-        tablename = filename.substring(firstchar+1, lastchar).toLowerCase().intern();
+        int lastchar = filename.endsWith(".") ? strlen - 1 : strlen;
+        tablename = filename.substring(firstchar + 1, lastchar)
+                .toLowerCase()
+                .intern();
     }
 
     /**
      * Returns the File this instance is using
+     * 
      * @return the File being read
      */
     public String getTableFile() {
         return filename;
     }
 
-    /** 
+    /**
      * return the name of the table
      */
     public String getTableName() {
-      return tablename;
+        return tablename;
     }
-  
+
     /**
-     * Complete initialization of this object.  This function should only
-     * be called once, and only if the object was constructed with defered
-     * initialization.
-     * @exception FormatException some problem was encountered dealing with
-     *  the file
+     * Complete initialization of this object. This function should
+     * only be called once, and only if the object was constructed
+     * with defered initialization.
+     * 
+     * @exception FormatException some problem was encountered dealing
+     *            with the file
      */
     public synchronized void finishInitialization() throws FormatException {
         internTableName();
@@ -126,17 +144,19 @@ public class DcwRecordFile {
         }
         try {
             byte preHeaderLen[] = inputFile.readBytes(4, false);
-            
+
             char delim = inputFile.readChar();
             switch (delim) {
-            case 'L': case 'l':
+            case 'L':
+            case 'l':
                 delim = inputFile.readChar();
-                //Intentional fall through to set byteorder
+            //Intentional fall through to set byteorder
             case ';': //default is LSB first
                 byteorder = false;
                 inputFile.byteOrder(byteorder);
                 break;
-            case 'M': case 'm': //alternatively, it can be MSB first
+            case 'M':
+            case 'm': //alternatively, it can be MSB first
                 byteorder = true;
                 inputFile.byteOrder(byteorder);
                 delim = inputFile.readChar();
@@ -153,7 +173,7 @@ public class DcwRecordFile {
             if ("-".equals(documentationFileName)) {
                 documentationFileName = null;
             }
-            
+
             ArrayList tmpcols = new ArrayList();
             try {
                 while (true) {
@@ -168,20 +188,20 @@ public class DcwRecordFile {
                 }
             } catch (EOFException e) {
             }
-            
+
             columnInfo = new DcwColumnInfo[tmpcols.size()];
             tmpcols.toArray(columnInfo);
 
             cursorRow = 1;
         } catch (EOFException e) {
-            throw new FormatException("Caught EOFException: " +
-                                      e.getMessage());
+            throw new FormatException("Caught EOFException: " + e.getMessage());
         } catch (NullPointerException npe) {
         }
     }
 
     /**
      * Returns a TilingAdapter for the selected column.
+     * 
      * @param primColumnName the name of the primitive column
      * @return an appropriate TilingAdapter instance or null
      */
@@ -191,6 +211,7 @@ public class DcwRecordFile {
 
     /**
      * Returns a TilingAdapter for the selected column.
+     * 
      * @param primColumnName the name of the primitive column
      * @param tileColumnName the name of the tile_id column
      * @return an appropriate TilingAdapter instance or null
@@ -198,11 +219,12 @@ public class DcwRecordFile {
     public TilingAdapter getTilingAdapter(String tileColumnName,
                                           String primColumnName) {
         return getTilingAdapter(whatColumn(tileColumnName),
-                                whatColumn(primColumnName));
+                whatColumn(primColumnName));
     }
 
     /**
      * Returns a TilingAdapter for the selected column.
+     * 
      * @param primColumn the position of the primitive column
      * @param tileColumn the position of the tile_id column
      * @return an appropriate TilingAdapter instance or null
@@ -226,52 +248,58 @@ public class DcwRecordFile {
                 //error??? duplicate tile data
                 retval = new TilingAdapter.CrossTileAdapter(primColumn);
             } else if ((primFieldType == 'I') || (primFieldType == 'S')) {
-                retval = new TilingAdapter.TiledAdapter(tileColumn,
-                                                        primColumn);
+                retval = new TilingAdapter.TiledAdapter(tileColumn, primColumn);
             }
         }
         return retval;
     }
 
-    /** 
+    /**
      * Get the column number for a set of column names.
+     * 
      * @param names the names of the columns
      * @return an array of column numbers
-     * @exception FormatException the table does not match the specified schema
+     * @exception FormatException the table does not match the
+     *            specified schema
      */
-    public int[] lookupSchema(String[] names,
-                              boolean mustExist) throws FormatException {
+    public int[] lookupSchema(String[] names, boolean mustExist)
+            throws FormatException {
         int retval[] = new int[names.length];
         for (int i = 0; i < retval.length; i++) {
             retval[i] = whatColumn(names[i]);
             if ((retval[i] == -1) && mustExist) {
-                throw new FormatException("Column " + names[i] +
-                                          " doesn't exist");
+                throw new FormatException("Column " + names[i]
+                        + " doesn't exist");
             }
         }
         return retval;
     }
 
-    /** 
+    /**
      * Get the column number for a set of column names.
+     * 
      * @param names the names of the columns
      * @param type in same order as names
-     * @param length in same order as names (-1 for a variable length column)
-     * @param strictlength false means that variable length columns can be
-     *        fixed-length instead
-     * @param mustExist if true and a column doesn't exist, method returns null
+     * @param length in same order as names (-1 for a variable length
+     *        column)
+     * @param strictlength false means that variable length columns
+     *        can be fixed-length instead
+     * @param mustExist if true and a column doesn't exist, method
+     *        returns null
      * @return an array of column numbers
-     * @exception FormatException the table does not match the specified schema
+     * @exception FormatException the table does not match the
+     *            specified schema
      */
-    public int[] lookupSchema(String[] names, boolean mustExist,
-                              char type[], int length[],
-                              boolean strictlength) throws FormatException {
+    public int[] lookupSchema(String[] names, boolean mustExist, char type[],
+                              int length[], boolean strictlength)
+            throws FormatException {
         int retval[] = lookupSchema(names, mustExist);
         if ((type.length == names.length) && (length.length == names.length)) {
             for (int i = 0; i < retval.length; i++) {
                 if (retval[i] != -1) {
-                    columnInfo[retval[i]].assertSchema(type[i], length[i],
-                                                       strictlength);
+                    columnInfo[retval[i]].assertSchema(type[i],
+                            length[i],
+                            strictlength);
                 }
             }
         }
@@ -279,20 +307,22 @@ public class DcwRecordFile {
     }
 
     /**
-     * Good for looking at the contents of a data file, this method dumps
-     * a bunch of rows to System.out.  It parses all the lines of the file.
+     * Good for looking at the contents of a data file, this method
+     * dumps a bunch of rows to System.out. It parses all the lines of
+     * the file.
+     * 
      * @exception FormatException some kind of data format error was
-     *    encountered while parsing the file
+     *            encountered while parsing the file
      */
     public void parseAllRowsAndPrintSome() throws FormatException {
         int row_id_column = whatColumn(ID_COLUMN_NAME);
         String vectorString = null;
         int rowcount = 0;
-        for (List l = new ArrayList(getColumnCount()); parseRow(l); ) {
-            int cnt = ((Number)(l.get(row_id_column))).intValue();
+        for (List l = new ArrayList(getColumnCount()); parseRow(l);) {
+            int cnt = ((Number) (l.get(row_id_column))).intValue();
             if (cnt != ++rowcount) {
-                System.out.println("Non-consecutive row number.  Expected " +
-                                   rowcount + " got " + cnt);
+                System.out.println("Non-consecutive row number.  Expected "
+                        + rowcount + " got " + cnt);
             }
             vectorString = VPFUtil.listToString(l);
             if ((rowcount < 20) || (rowcount % 100 == 0)) {
@@ -305,35 +335,37 @@ public class DcwRecordFile {
 
     /**
      * Good for looking at the contents of a data file, this method
-     * dumps a bunch of rows to System.out.  (Using seekToRow to move between
-     * records
-     *
+     * dumps a bunch of rows to System.out. (Using seekToRow to move
+     * between records
+     * 
      * @exception FormatException some kind of data format error was
-     *   encountered while parsing the file
+     *            encountered while parsing the file
      */
     public void parseSomeRowsAndPrint() throws FormatException {
         int row_id_column = whatColumn(ID_COLUMN_NAME);
         int rowcount = getRecordCount();
-        for (int i=1; i <= rowcount; i++) {
-            if ((i > 10) && ((i%100) != 0) && (i != rowcount)) {
+        for (int i = 1; i <= rowcount; i++) {
+            if ((i > 10) && ((i % 100) != 0) && (i != rowcount)) {
                 continue;
             }
             seekToRow(i);
             List l = parseRow();
-            int cnt = ((Integer)(l.get(row_id_column))).intValue();
+            int cnt = ((Integer) (l.get(row_id_column))).intValue();
             if (cnt != i) {
-                System.out.println("Possible incorrect seek for row number " +
-                                   i + " got " + cnt);
+                System.out.println("Possible incorrect seek for row number "
+                        + i + " got " + cnt);
             }
             System.out.println(VPFUtil.listToString(l));
         }
     }
 
-    /** 
-     * Return a row from the table.  repeatedly calling parseRow gets 
+    /**
+     * Return a row from the table. repeatedly calling parseRow gets
      * consecutive rows.
+     * 
      * @return a List of fields read from the table
-     * @exception FormatException an error was encountered reading the row
+     * @exception FormatException an error was encountered reading the
+     *            row
      */
     public List parseRow() throws FormatException {
         List retval = new ArrayList(getColumnCount());
@@ -341,16 +373,18 @@ public class DcwRecordFile {
     }
 
     /**
-     * Return a row from the table.  repeatedly calling parseRow gets 
+     * Return a row from the table. repeatedly calling parseRow gets
      * consecutive rows.
-     * @param retval append the fields from a row in the table. 
-     * clear() is called before any real work is done.
-     * @return true is we read a row, false if no more rows are available
-     * @exception FormatException an error was encountered reading the row
+     * 
+     * @param retval append the fields from a row in the table.
+     *        clear() is called before any real work is done.
+     * @return true is we read a row, false if no more rows are
+     *         available
+     * @exception FormatException an error was encountered reading the
+     *            row
      * @see java.util.List#clear()
      */
-    public synchronized boolean parseRow(List retval)
-        throws FormatException {
+    public synchronized boolean parseRow(List retval) throws FormatException {
         retval.clear();
         try {
             for (int i = 0; i < columnInfo.length; i++) {
@@ -360,17 +394,19 @@ public class DcwRecordFile {
             cursorRow++;
             return true;
         } catch (FormatException f) {
-            throw new FormatException("DcwRecordFile: parserow on table " + filename + ": " + f.getMessage());
+            throw new FormatException("DcwRecordFile: parserow on table "
+                    + filename + ": " + f.getMessage());
         } catch (EOFException e) {
             if (retval.size() > 0) {
-                throw new FormatException("DcwRecordFile: hit EOF when list = " +
-                                          VPFUtil.listToString(retval));
+                throw new FormatException("DcwRecordFile: hit EOF when list = "
+                        + VPFUtil.listToString(retval));
             }
             try {
                 if (inputFile.available() > 0) {
-                    throw new FormatException("DcwRecordFile: hit EOF with available = " +
-                                              inputFile.available() + " when list = " +
-                                              VPFUtil.listToString(retval));
+                    throw new FormatException("DcwRecordFile: hit EOF with available = "
+                            + inputFile.available()
+                            + " when list = "
+                            + VPFUtil.listToString(retval));
                 }
             } catch (IOException i) {
                 throw new FormatException("IOException calling available()");
@@ -381,6 +417,7 @@ public class DcwRecordFile {
 
     /**
      * Returns the documentation file associated with this table.
+     * 
      * @return the doc file - may be null
      */
     public String getDocumentationFilename() {
@@ -389,39 +426,45 @@ public class DcwRecordFile {
 
     /**
      * Returns the table description for this table.
+     * 
      * @return the table description - may be null
      */
     public String getDescription() {
         return tableDescription;
     }
 
-    /** get the length of a single record
-     * @return -1 indicates a variably sized record */
+    /**
+     * get the length of a single record
+     * 
+     * @return -1 indicates a variably sized record
+     */
     public int getRecordLength() {
         return recordLength;
     }
 
     /**
      * Gets the number of records in the table.
-     *
+     * 
      * @return the number of records
-     * @exception FormatException some problem was encountered dealing with
-     *  the file
+     * @exception FormatException some problem was encountered dealing
+     *            with the file
      */
     public int getRecordCount() throws FormatException {
         try {
             if (recordLength == -1) {
                 return vli().getRecordCount();
             } else {
-                return (int)(inputFile.length() - headerLength) / recordLength;
+                return (int) (inputFile.length() - headerLength) / recordLength;
             }
         } catch (IOException i) {
             System.out.println("RecordCount: io exception " + i.getMessage());
-        } catch (NullPointerException npe) {}
+        } catch (NullPointerException npe) {
+        }
         return -1;
     }
 
-    final private DcwVariableLengthIndexFile vli() throws FormatException, IOException {
+    final private DcwVariableLengthIndexFile vli() throws FormatException,
+            IOException {
         if (vli == null) {
             openVLI();
         }
@@ -430,6 +473,7 @@ public class DcwRecordFile {
 
     /**
      * Opens the associated variable length index for the file
+     * 
      * @exception FormatException an error.
      */
     private void openVLI() throws FormatException, IOException {
@@ -437,10 +481,12 @@ public class DcwRecordFile {
         boolean endwithdot = realfname.endsWith(".");
         String fopen;
         if (endwithdot) {
-            StringBuffer newf = new StringBuffer(realfname.substring(0, realfname.length()-2));
+            StringBuffer newf = new StringBuffer(realfname.substring(0,
+                    realfname.length() - 2));
             fopen = newf.append("x.").toString();
         } else {
-            StringBuffer newf = new StringBuffer(realfname.substring(0, realfname.length()-1));
+            StringBuffer newf = new StringBuffer(realfname.substring(0,
+                    realfname.length() - 1));
             fopen = newf.append("x").toString();
         }
 
@@ -449,9 +495,12 @@ public class DcwRecordFile {
 
     /**
      * Parses the row specified by rownumber
-     * @param rownumber the number of the row to return [1..recordCount]
+     * 
+     * @param rownumber the number of the row to return
+     *        [1..recordCount]
      * @return the values contained in the row
-     * @exception FormatException data format errors */
+     * @exception FormatException data format errors
+     */
     public List getRow(int rownumber) throws FormatException {
         List l = new ArrayList(getColumnCount());
         return getRow(l, rownumber) ? l : null;
@@ -459,13 +508,15 @@ public class DcwRecordFile {
 
     /**
      * Parses the row specified by rownumber
-     * @param rownumber the number of the row to return [1..recordCount]
+     * 
+     * @param rownumber the number of the row to return
+     *        [1..recordCount]
      * @param retval values contained in the row
      * @exception FormatException data format errors
      * @see #parseRow()
      */
     public synchronized boolean getRow(List retval, int rownumber)
-        throws FormatException {
+            throws FormatException {
         if (inputFile == null) {
             reopen(rownumber);
         } else {
@@ -474,18 +525,19 @@ public class DcwRecordFile {
         return parseRow(retval);
     }
 
-    /** moves the input cursor to the specified row [affects subsequent calls
-     * parseRow.]
+    /**
+     * moves the input cursor to the specified row [affects subsequent
+     * calls parseRow.]
+     * 
      * @param recordNumber the number of the row to seek to
      * @exception FormatException data format errors
      * @exception IllegalArgumentException recordNumber less than 1
      */
     public synchronized void seekToRow(int recordNumber) throws FormatException {
         if (recordNumber <= 0) {
-            throw new IllegalArgumentException("DcwRecordFile: seekToRow(" +
-                                               recordNumber + "," +
-                                               getRecordCount() + "," +
-                                               filename+ ")");
+            throw new IllegalArgumentException("DcwRecordFile: seekToRow("
+                    + recordNumber + "," + getRecordCount() + "," + filename
+                    + ")");
         }
         if (recordNumber == cursorRow) {
             return;
@@ -498,18 +550,19 @@ public class DcwRecordFile {
             } else {
                 offset = (recordLength * (recordNumber - 1)) + headerLength;
             }
-            
+
             inputFile.seek(offset);
         } catch (IOException io) {
-            throw new FormatException("SeekToRow IOException " +
-                                      io.getMessage() +
-                                      " offset: " + offset + " " +
-                                      tablename + " " +filename);
+            throw new FormatException("SeekToRow IOException "
+                    + io.getMessage() + " offset: " + offset + " " + tablename
+                    + " " + filename);
         }
     }
 
-    /** 
-     * Returns the index into columnInfo of the column with the specified name
+    /**
+     * Returns the index into columnInfo of the column with the
+     * specified name
+     * 
      * @param columnname the column name to match
      * @return an index into columnInfo (-1 indicates no such column)
      */
@@ -521,30 +574,32 @@ public class DcwRecordFile {
         }
         return -1;
     }
-    
+
     /**
      * Returns the name of a column
+     * 
      * @param index the column to get the name for
-     * @return the columnName */
+     * @return the columnName
+     */
     public String getColumnName(int index) {
         return columnInfo[index].getColumnName();
     }
-    
+
     /**
      * Prints the table information to System.out.
-     * @exception FormatException some problem was encountered dealing with
-     *  the file
+     * 
+     * @exception FormatException some problem was encountered dealing
+     *            with the file
      */
     public void printSchema() throws FormatException {
-        System.out.println("File Name: " + filename +
-                           "\nTable name: " + tablename +
-                           "\nTable Description: " + tableDescription +
-                           "\nDocumentation File Name: " + documentationFileName +
-                           "\nRecord Length: " + recordLength +
-                           " Record Count: " + getRecordCount());
+        System.out.println("File Name: " + filename + "\nTable name: "
+                + tablename + "\nTable Description: " + tableDescription
+                + "\nDocumentation File Name: " + documentationFileName
+                + "\nRecord Length: " + recordLength + " Record Count: "
+                + getRecordCount());
         for (int i = 0; i < columnInfo.length; i++) {
-            System.out.print("Column " + i + " " +
-                             columnInfo[i].toString() + "\n");
+            System.out.print("Column " + i + " " + columnInfo[i].toString()
+                    + "\n");
         }
         System.out.flush();
     }
@@ -562,12 +617,15 @@ public class DcwRecordFile {
         }
     }
 
-    /** Reopen the associated input file.
-     * @param seekRow the row to seek to upon reopening the file.  If seekRow
-     * is invalid (less than 1), then the input stream is in an undefined
-     * location, and seekToRow (or getRow(int)) must be called before parseRow
-     * @exception FormatException some error was encountered in reopening
-     *  file or seeking to the desired row.
+    /**
+     * Reopen the associated input file.
+     * 
+     * @param seekRow the row to seek to upon reopening the file. If
+     *        seekRow is invalid (less than 1), then the input stream
+     *        is in an undefined location, and seekToRow (or
+     *        getRow(int)) must be called before parseRow
+     * @exception FormatException some error was encountered in
+     *            reopening file or seeking to the desired row.
      * @see #parseRow()
      * @see #getRow(int)
      * @see #close()
@@ -592,9 +650,10 @@ public class DcwRecordFile {
     final public int getColumnCount() {
         return columnInfo.length;
     }
-  
+
     /**
-     * Return the column info for this table. <p>
+     * Return the column info for this table.
+     * <p>
      * NOTE: modifying this array is likely to cause problems...
      */
     final public DcwColumnInfo[] getColumnInfo() {
@@ -606,7 +665,9 @@ public class DcwRecordFile {
         close();
     }
 
-    /** An test main for parsing VPF table files. 
+    /**
+     * An test main for parsing VPF table files.
+     * 
      * @param args file names to be read
      */
     public static void main(String args[]) {
@@ -617,7 +678,7 @@ public class DcwRecordFile {
                 foo.printSchema();
                 foo.close();
                 foo.reopen(1);
-                for (List l = new ArrayList() ; foo.parseRow(l); ) {
+                for (List l = new ArrayList(); foo.parseRow(l);) {
                     System.out.println(VPFUtil.listToString(l));
                 }
                 foo.close();

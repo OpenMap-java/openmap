@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,32 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ESRILinkPolygonRecord.java,v $
 // $RCSfile: ESRILinkPolygonRecord.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.link.shape;
 
 import java.io.IOException;
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.layer.link.*;
 import com.bbn.openmap.layer.shape.*;
 
 /**
  */
-public class ESRILinkPolygonRecord extends ESRIPolygonRecord 
-    implements ESRILinkRecord {
+public class ESRILinkPolygonRecord extends ESRIPolygonRecord implements
+        ESRILinkRecord {
 
     public ESRILinkPolygonRecord() {
         super();
     }
 
-    public ESRILinkPolygonRecord(byte b[], int off)
-        throws IOException{
+    public ESRILinkPolygonRecord(byte b[], int off) throws IOException {
         super(b, off);
     }
 
@@ -48,25 +45,28 @@ public class ESRILinkPolygonRecord extends ESRIPolygonRecord
      * <p>
      * Copy the poly points array because the OMPoly converts from
      * degrees to radians in place, trashing the shape.
-     *
+     * 
      * @param lgl the graphics response to write the graphic to.
-     * @param properties the semantic description of how the graphic should be drawn.
+     * @param properties the semantic description of how the graphic
+     *        should be drawn.
      */
-    public void writeLinkGraphics (LinkGraphicList lgl,
-                                   LinkProperties properties) 
-        throws IOException {
+    public void writeLinkGraphics(LinkGraphicList lgl, LinkProperties properties)
+            throws IOException {
         int nPolys = polygons.length;
-        if (nPolys <= 0) return;
-        OMPoly p=null;
+        if (nPolys <= 0)
+            return;
+        OMPoly p = null;
         float[] pts;
         boolean ispolyg = isPolygon();
 
-        for (int i=0, j, k; i<nPolys; i++) {
+        for (int i = 0, j, k; i < nPolys; i++) {
             // these points are already in RADIAN lat,lon order!...
-            pts = ((ESRIPoly.ESRIFloatPoly)polygons[i]).getRadians();
+            pts = ((ESRIPoly.ESRIFloatPoly) polygons[i]).getRadians();
 
-            lgl.addPoly(pts, OMGraphic.RADIANS, 
-                       OMGraphic.LINETYPE_STRAIGHT, properties); 
+            lgl.addPoly(pts,
+                    OMGraphic.RADIANS,
+                    OMGraphic.LINETYPE_STRAIGHT,
+                    properties);
 
         }
     }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,18 +12,19 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v
+// $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/09/17 19:07:27 $
+// $Revision: 1.10 $
+// $Date: 2004/10/14 18:06:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.util;
 
-/*  Java Core  */
+/* Java Core */
 import java.awt.Color;
 import java.awt.Paint;
 import java.io.File;
@@ -47,23 +48,27 @@ public class PropUtils {
 
     /**
      * Parse a list of marker names from a space separated list within
-     * a String.  <p>
+     * a String.
+     * <p>
+     * 
      * @param markerList a string containing a space delimited list of
-     * marker names.
-     * @return Vector of marker names.  
+     *        marker names.
+     * @return Vector of marker names.
      */
     public static Vector parseSpacedMarkers(String markerList) {
         return parseMarkers(markerList, " ");
-    } 
+    }
 
     /**
      * Parse a list of marker names from a space separated list within
-     * a String.  <p>
+     * a String.
+     * <p>
+     * 
      * @param markerList a string containing a space delimited list of
-     * marker names.
+     *        marker names.
      * @param delim the list of tokens to look for which separate the
-     * list elements.
-     * @return Vector of marker names.  
+     *        list elements.
+     * @return Vector of marker names.
      */
     public static Vector parseMarkers(String markerList, String delim) {
         Vector vector = null;
@@ -74,8 +79,8 @@ public class PropUtils {
         }
 
         if (Debug.debugging("propertiesdetail")) {
-            Debug.output("PropertyHandler: parsing marker list |" +
-                         markerList + "|");
+            Debug.output("PropertyHandler: parsing marker list |" + markerList
+                    + "|");
         }
 
         // First, get rid of the quotation marks;
@@ -101,46 +106,49 @@ public class PropUtils {
 
     /**
      * Take a property list, defined in a single string, and return a
-     * Properties object.  The properties, as key-value pairs, are
-     * separated by another type of symbol.  In this method, the
+     * Properties object. The properties, as key-value pairs, are
+     * separated by another type of symbol. In this method, the
      * key-values are assumed to be separated from other key-value
      * pairs by PropUtils.propertySeparators String characters, and
      * each key is separated from its value by any character in the
-     * PropUtils.keyValueSeparators list.  
-     *
+     * PropUtils.keyValueSeparators list.
+     * 
      * @param list the properties list string.
      * @return Properties object containing keys and values.
-     * @throws PropertyStringFormatException if a key doesn't have a value.
+     * @throws PropertyStringFormatException if a key doesn't have a
+     *         value.
      */
-    public static Properties parsePropertyList(String list) 
-        throws PropertyStringFormatException {
+    public static Properties parsePropertyList(String list)
+            throws PropertyStringFormatException {
         return parsePropertyList(list, propertySeparators, keyValueSeparators);
     }
 
     /**
      * Take a property list, defined in a single string, and return a
-     * Properties object.  The properties, as key-value pairs, are
+     * Properties object. The properties, as key-value pairs, are
      * separated by another type of symbol.
-     *
+     * 
      * @param list the properties list string.
      * @return Properties object containing keys and values.
      * @param propertySeparators the key-values are assumed to be
-     * separated from other key-value pairs by any character in this
-     * String.
+     *        separated from other key-value pairs by any character in
+     *        this String.
      * @param keyValueSeparators each key is separated from its value
-     * by any character in this String.
-     * @throws PropertyStringFormatException if a key doesn't have a value.
+     *        by any character in this String.
+     * @throws PropertyStringFormatException if a key doesn't have a
+     *         value.
      */
-    public static Properties parsePropertyList(
-        String list, String propertySeparators, String keyValueSeparators) 
-        throws PropertyStringFormatException {
+    public static Properties parsePropertyList(String list,
+                                               String propertySeparators,
+                                               String keyValueSeparators)
+            throws PropertyStringFormatException {
 
         Properties props = new Properties();
 
         Vector keyValuePairs = parseMarkers(list, propertySeparators);
         for (int i = 0; i < keyValuePairs.size(); i++) {
             // Next, tokenize the space delimited string
-            StringTokenizer tokens = new StringTokenizer((String)keyValuePairs.elementAt(i), keyValueSeparators);
+            StringTokenizer tokens = new StringTokenizer((String) keyValuePairs.elementAt(i), keyValueSeparators);
 
             try {
                 String key = tokens.nextToken().trim();
@@ -155,31 +163,32 @@ public class PropUtils {
 
     /**
      * Copy the contents from one properties object to another.
+     * 
      * @param from the source Properties object.
      * @param to the destination Properties object.
      */
     public static void copyProperties(Properties from, Properties to) {
         Enumeration keys = from.keys();
-        
+
         while (keys.hasMoreElements()) {
-            String key = (String)keys.nextElement();
-            to.put(key, from.getProperty(key) );
+            String key = (String) keys.nextElement();
+            to.put(key, from.getProperty(key));
         }
     }
 
     /**
      * Load the named file from the named directory into the given
-     * <code>Properties</code> instance.  If the file is not found
-     * a warning is issued.  If an IOException occurs, a fatal error
-     * is printed.
-     *
+     * <code>Properties</code> instance. If the file is not found a
+     * warning is issued. If an IOException occurs, a fatal error is
+     * printed.
+     * 
      * @param props the instance to receive the loaded properties
      * @param dir the directory where the properties file resides
      * @param file the name of the file
      * @return true if the properties file exists and was loaded.
      */
-    public static boolean loadProperties(Properties props, 
-                                         String dir, String file) {
+    public static boolean loadProperties(Properties props, String dir,
+                                         String file) {
         File propsFile = new File(dir, file);
 
         try {
@@ -192,12 +201,12 @@ public class PropUtils {
 
         } catch (java.io.FileNotFoundException e) {
             if (Debug.debugging("properties")) {
-                Debug.output("PropUtils: File not found -  \"" +
-                             propsFile + "\"");
+                Debug.output("PropUtils: File not found -  \"" + propsFile
+                        + "\"");
             }
         } catch (java.io.IOException e) {
-            Debug.error("PropUtils: Caught IO Exception reading \""
-                        + propsFile + "\"");
+            Debug.error("PropUtils: Caught IO Exception reading \"" + propsFile
+                    + "\"");
             e.printStackTrace();
         } catch (java.security.AccessControlException ace) {
         }
@@ -205,15 +214,16 @@ public class PropUtils {
     }
 
     /**
-     * Loads properties from a java resource.  This will load the
-     * named resource identifier into the given properties instance.
-     *
-     * @param properties the Properties instance to receive the properties.
+     * Loads properties from a java resource. This will load the named
+     * resource identifier into the given properties instance.
+     * 
+     * @param properties the Properties instance to receive the
+     *        properties.
      * @param propsIn an InputStream to read properties from
      * @return true if the properties file exists and was loaded.
      */
     public static boolean loadProperties(Properties properties,
-                                         InputStream propsIn) { 
+                                         InputStream propsIn) {
         try {
             properties.load(propsIn);
             return true;
@@ -228,8 +238,8 @@ public class PropUtils {
     /**
      * A function that brings up a file chooser window in order to
      * have the user look for a valid Java properties file.
-     *
-     * @return properties object with selected file contents.  
+     * 
+     * @return properties object with selected file contents.
      */
     public static Properties promptUserForProperties() {
         JFileChooser fileChooser = new JFileChooser();
@@ -239,8 +249,7 @@ public class PropUtils {
             return props;
         }
         try {
-            FileInputStream inputStream = 
-                new FileInputStream(fileChooser.getSelectedFile());
+            FileInputStream inputStream = new FileInputStream(fileChooser.getSelectedFile());
             props.load(inputStream);
             return props;
         } catch (Exception ioe) {
@@ -253,22 +262,23 @@ public class PropUtils {
 
     /**
      * It seems like every PropertyConsumer wrestles with having a
-     * prefix or not.  This method lets you just get the prefix with a
+     * prefix or not. This method lets you just get the prefix with a
      * period on the end (for scoping purposes), or just returns an
-     * empty String.  Either way, you get a String you can slap on the
+     * empty String. Either way, you get a String you can slap on the
      * beginning of your defined propery names to get a valid property
      * based on what the prefix is.
      */
-    public static String getScopedPropertyPrefix(com.bbn.openmap.PropertyConsumer pc) {
+    public static String getScopedPropertyPrefix(
+                                                 com.bbn.openmap.PropertyConsumer pc) {
         return getScopedPropertyPrefix(pc.getPropertyPrefix());
     }
 
     /**
-     * Given the string, check if it's null.  If it is, return an
-     * empty string. If it isn't, check to see if it ends with a
-     * period, and do nothing if it does.  If it doesn't end in a
-     * period, add one, and then return that.  The returned string
-     * should be good for prepending to other properties.
+     * Given the string, check if it's null. If it is, return an empty
+     * string. If it isn't, check to see if it ends with a period, and
+     * do nothing if it does. If it doesn't end in a period, add one,
+     * and then return that. The returned string should be good for
+     * prepending to other properties.
      */
     public static String getScopedPropertyPrefix(String pre) {
         if (pre == null) {
@@ -281,9 +291,9 @@ public class PropUtils {
     }
 
     /**
-     * It kills Properties to have null values set.  You can wrap a
+     * It kills Properties to have null values set. You can wrap a
      * property value in this in PropertyConsumer.getProperties() to
-     * not worry about it.  Returns "" if prop == null, else returns
+     * not worry about it. Returns "" if prop == null, else returns
      * what was passed in.
      */
     public static String unnull(String prop) {
@@ -293,33 +303,35 @@ public class PropUtils {
         return prop;
     }
 
-    /**  
+    /**
      * Takes a string of `;' separated paths and returns an array of
-     * parsed strings.
-     * NOTE: this method currently doesn't support appropriate quoting
-     * of the `;' character, although it probably should...
+     * parsed strings. NOTE: this method currently doesn't support
+     * appropriate quoting of the `;' character, although it probably
+     * should...
+     * 
      * @param p properties
      * @param propName the name of the property
      * @return Array of strings representing paths.
      */
-    public static String[] initPathsFromProperties(Properties p, 
-                                                   String propName) {
+    public static String[] initPathsFromProperties(Properties p, String propName) {
         return initPathsFromProperties(p, propName, null);
     }
 
-    /**  
+    /**
      * Takes a string of `;' separated paths and returns an array of
-     * parsed strings.
-     * NOTE: this method currently doesn't support appropriate quoting
-     * of the `;' character, although it probably should...
+     * parsed strings. NOTE: this method currently doesn't support
+     * appropriate quoting of the `;' character, although it probably
+     * should...
+     * 
      * @param p properties
      * @param propName the name of the property
      * @param defaultPaths the value of the paths to set if the
-     * property doesn't exist, or if is doesn't contain anything.
+     *        property doesn't exist, or if is doesn't contain
+     *        anything.
      * @return Array of strings representing paths.
      */
-    public static String[] initPathsFromProperties(Properties p, 
-                                                   String propName, 
+    public static String[] initPathsFromProperties(Properties p,
+                                                   String propName,
                                                    String[] defaultPaths) {
         String[] ret = stringArrayFromProperties(p, propName, ";");
 
@@ -330,19 +342,18 @@ public class PropUtils {
         return ret;
     }
 
-    /** 
-     * Gets an integer out of a properties object.  Returns the
-     * default value if something goes wrong.
-     *
+    /**
+     * Gets an integer out of a properties object. Returns the default
+     * value if something goes wrong.
+     * 
      * @param p properties
      * @param propName name of the property associated with the wanted
-     * value.
+     *        value.
      * @param defaultValue what to return if the property name doesn't
-     * exist, or if the value isn't a numerical value.
+     *        exist, or if the value isn't a numerical value.
      * @return integer value associated with the property.
      */
-    public static int intFromProperties(Properties p, 
-                                        String propName,
+    public static int intFromProperties(Properties p, String propName,
                                         int defaultValue) {
         int ret = defaultValue;
         String intString = p.getProperty(propName);
@@ -357,19 +368,18 @@ public class PropUtils {
         return ret;
     }
 
-    /** 
-     * Gets an float out of a properties object.  Returns the
-     * default value if something goes wrong.
-     *
+    /**
+     * Gets an float out of a properties object. Returns the default
+     * value if something goes wrong.
+     * 
      * @param p properties
      * @param propName name of the property associated with the wanted
-     * value.
+     *        value.
      * @param defaultValue what to return if the property name doesn't
-     * exist, or if the value isn't a numerical value.
+     *        exist, or if the value isn't a numerical value.
      * @return float value associated with the property.
      */
-    public static float floatFromProperties(Properties p, 
-                                            String propName,
+    public static float floatFromProperties(Properties p, String propName,
                                             float defaultValue) {
         float ret = defaultValue;
         String floatString = p.getProperty(propName);
@@ -384,47 +394,48 @@ public class PropUtils {
         return ret;
     }
 
-    /** 
-     * Gets an boolean out of a properties object.  Returns the
-     * default value if something goes wrong.
-     *
+    /**
+     * Gets an boolean out of a properties object. Returns the default
+     * value if something goes wrong.
+     * 
      * @param p properties
      * @param propName name of the property associated with the wanted
-     * value.
+     *        value.
      * @param defaultValue what to return if the property name doesn't
-     * exist, or if the value isn't a numerical value.
+     *        exist, or if the value isn't a numerical value.
      * @return boolean value associated with the property.
      */
-    public static boolean booleanFromProperties(Properties p, 
-                                                String propName,
+    public static boolean booleanFromProperties(Properties p, String propName,
                                                 boolean defaultValue) {
         boolean ret = defaultValue;
         String booleanString = p.getProperty(propName);
         if (booleanString != null) {
             ret = booleanString.trim().toLowerCase().equals("true");
         }
-        
+
         return ret;
     }
 
     /**
-     * Creates an object out of a property name.  If anything fails,
+     * Creates an object out of a property name. If anything fails,
      * return null.
-     *
+     * 
      * @param p properties
      * @param propName name of class to instantiate.
-     * @return null on failure, otherwise, a default constructed instance
-     * of the class named in the property.
+     * @return null on failure, otherwise, a default constructed
+     *         instance of the class named in the property.
      */
-    public static Object objectFromProperties(Properties p, 
-                                              String propName) {
+    public static Object objectFromProperties(Properties p, String propName) {
 
         Object ret = null;
         String objectName = p.getProperty(propName);
         if (objectName != null) {
             try {
-                ret = Class.forName(objectName).newInstance();// Works for applet!
-                //ret = java.beans.Beans.instantiate(null, objectName);
+                ret = Class.forName(objectName).newInstance();// Works
+                                                              // for
+                                                              // applet!
+                //ret = java.beans.Beans.instantiate(null,
+                // objectName);
             } catch (java.lang.InstantiationException e) {
                 ret = null;
             } catch (java.lang.IllegalAccessException e) {
@@ -436,19 +447,19 @@ public class PropUtils {
         return ret;
     }
 
-    /**  
+    /**
      * Takes a string of representing token separated properties and
-     * returns an array of parsed strings.
-     * NOTE: this method currently doesn't support appropriate quoting
-     * of the token, although it probably should...
+     * returns an array of parsed strings. NOTE: this method currently
+     * doesn't support appropriate quoting of the token, although it
+     * probably should...
+     * 
      * @param p properties
      * @param propName the name of the property
      * @param tok the characters separating the strings.
      * @return Array of strings between the tokens.
      */
-    public static String[] stringArrayFromProperties(Properties p, 
-                                                     String propName, 
-                                                     String tok) {
+    public static String[] stringArrayFromProperties(Properties p,
+                                                     String propName, String tok) {
 
         String[] ret = null;
         String raw = p.getProperty(propName);
@@ -458,11 +469,11 @@ public class PropUtils {
             try {
                 StringTokenizer token = new StringTokenizer(raw, tok);
                 int numPaths = token.countTokens();
-                
+
                 ret = new String[numPaths];
                 for (int i = 0; i < numPaths; i++) {
                     ret[i] = token.nextToken();
-                }                   
+                }
                 return ret;
             } catch (java.util.NoSuchElementException e) {
                 e.printStackTrace();
@@ -472,22 +483,22 @@ public class PropUtils {
     }
 
     /**
-     * Gets a double out of a properties object.  Returns the default value
-     * if something goes wrong.
-     *
+     * Gets a double out of a properties object. Returns the default
+     * value if something goes wrong.
+     * 
      * @param p properties
-     * @param propName name of the property associated with the wanted value.
-     * @param defaultValue what to return if the property name doesn't exist,
-     * or if the value isn't a numerical value.
+     * @param propName name of the property associated with the wanted
+     *        value.
+     * @param defaultValue what to return if the property name doesn't
+     *        exist, or if the value isn't a numerical value.
      * @return double value associated with the property.
      */
 
-    public static double doubleFromProperties(Properties p,
-                                              String propName,
+    public static double doubleFromProperties(Properties p, String propName,
                                               double defaultValue) {
         double ret = defaultValue;
         String doubleString = p.getProperty(propName);
-    
+
         if (doubleString != null) {
             try {
                 ret = Double.parseDouble(doubleString.trim());
@@ -499,22 +510,22 @@ public class PropUtils {
     }
 
     /**
-     * Gets a long out of a properties object.  Returns the default value
-     * if something goes wrong.
-     *
+     * Gets a long out of a properties object. Returns the default
+     * value if something goes wrong.
+     * 
      * @param p properties
-     * @param propName name of the property associated with the wanted value.
-     * @param defaultValue what to return if the property name doesn't exist,
-     * or if the value isn't a numerical value.
+     * @param propName name of the property associated with the wanted
+     *        value.
+     * @param defaultValue what to return if the property name doesn't
+     *        exist, or if the value isn't a numerical value.
      * @return long value associated with the property.
      */
 
-    public static long longFromProperties(Properties p,
-                                          String propName,
+    public static long longFromProperties(Properties p, String propName,
                                           long defaultValue) {
         long ret = defaultValue;
         String longString = p.getProperty(propName);
-    
+
         if (longString != null) {
             try {
                 ret = Long.parseLong(longString.trim());
@@ -525,181 +536,200 @@ public class PropUtils {
         return ret;
     }
 
-    /** 
+    /**
      * Take a string from a properties file, representing the 24bit
      * RGB or 32bit ARGB hex values for a color, and convert it to a
      * java.awt.Color.
+     * 
      * @param p properties
      * @param propName the name of the property
      * @param dfault color to use if the property value doesn't work
      * @return java.awt.Color
-     * @exception NumberFormatException if the specified string
-     * cannot be interpreted as a hexidecimal integer
-     * @see ColorFactory#parseColorFromProperties(Properties, String, String, boolean)
+     * @exception NumberFormatException if the specified string cannot
+     *            be interpreted as a hexidecimal integer
+     * @see ColorFactory#parseColorFromProperties(Properties, String,
+     *      String, boolean)
      */
-    public static Color parseColorFromProperties(
-        Properties p, String propName, String dfault)
-        throws NumberFormatException {
+    public static Color parseColorFromProperties(Properties p, String propName,
+                                                 String dfault)
+            throws NumberFormatException {
 
         return ColorFactory.parseColorFromProperties(p, propName, dfault, false);
     }
-    
-    /** 
+
+    /**
      * Take a string from a properties file, representing the 24bit
      * RGB or 32bit ARGB hex values for a color, and convert it to a
      * java.awt.Color.
+     * 
      * @param p properties
      * @param propName the name of the property
      * @param dfault color to use if the property value doesn't work
      * @return java.awt.Color
      * @see ColorFactory#parseColorFromProperties(Properties, String,
-     * String, boolean) 
+     *      String, boolean)
      */
-    public static Paint parseColorFromProperties(
-        Properties p, String propName, Paint dfault) {
+    public static Paint parseColorFromProperties(Properties p, String propName,
+                                                 Paint dfault) {
         return ColorFactory.parseColorFromProperties(p, propName, dfault);
     }
 
     /**
      * Convert a string representing a 24/32bit hex color value into a
-     * Color value.
-     * NOTE:
+     * Color value. NOTE:
      * <ul>
-     * <li>Only 24bit (RGB) java.awt.Color is supported on the JDK 1.1
-     * platform.
-     * <li>Both 24/32bit (ARGB) java.awt.Color is supported on the Java 2
-     * platform.
+     * <li>Only 24bit (RGB) java.awt.Color is supported on the JDK
+     * 1.1 platform.
+     * <li>Both 24/32bit (ARGB) java.awt.Color is supported on the
+     * Java 2 platform.
      * </ul>
+     * 
      * @param colorString the 24/32bit hex string value (ARGB)
      * @return java.awt.Color (24bit RGB on JDK 1.1, 24/32bit ARGB on
-     * JDK1.2)
-     * @exception NumberFormatException if the specified string
-     * cannot be interpreted as a hexidecimal integer
+     *         JDK1.2)
+     * @exception NumberFormatException if the specified string cannot
+     *            be interpreted as a hexidecimal integer
      * @see ColorFactory#parseColor(String, boolean)
      */
     public static Color parseColor(String colorString)
-        throws NumberFormatException {
+            throws NumberFormatException {
 
         return ColorFactory.parseColor(colorString, false);
     }
 
     /**
-     * Converts a properties object to an array of Strings.  The
-     * resulting array will consist of alternating key-value
-     * strings. 
-     *
+     * Converts a properties object to an array of Strings. The
+     * resulting array will consist of alternating key-value strings.
+     * 
      * @param props the properties object to convert.
      * @return an array of Strings representing key-value pairs.
      */
     public static String[] getPropertiesAsStringArray(Properties props) {
 
         int size = props.size();
-        String[] ret = new String[size*2]; // key and value
+        String[] ret = new String[size * 2]; // key and value
         int count = 0;
         Enumeration things = props.propertyNames();
         while (things.hasMoreElements()) {
-            ret[count] = (String)things.nextElement();
-            ret[count+1] = (String)props.getProperty(ret[count]);
-            count+=2;
+            ret[count] = (String) things.nextElement();
+            ret[count + 1] = (String) props.getProperty(ret[count]);
+            count += 2;
         }
         return ret;
     }
 
-    /** 
+    /**
      * Returns a URL that names either a resource, a local file, or an
-     * internet URL.  Resources are checked for in the general classpath.
+     * internet URL. Resources are checked for in the general
+     * classpath.
+     * 
      * @param name name of the resource, file or URL.
      * @throws java.net.MalformedURLException
      * @return URL
      */
     public static URL getResourceOrFileOrURL(String name)
-        throws java.net.MalformedURLException {
+            throws java.net.MalformedURLException {
         return getResourceOrFileOrURL(null, name);
     }
 
-    /** 
+    /**
      * Returns a URL that names either a resource, a local file, or an
      * internet URL.
+     * 
      * @param askingClass the object asking for the URL.
      * @param name name of the resource, file or URL.
      * @throws java.net.MalformedURLException
      * @return URL
      */
     public static URL getResourceOrFileOrURL(Object askingClass, String name)
-        throws java.net.MalformedURLException {
-          
+            throws java.net.MalformedURLException {
+
         return getResourceOrFileOrURL(askingClass.getClass(), name);
     }
 
-    /** 
+    /**
      * Returns a URL that names either a resource, a local file, or an
      * internet URL.
+     * 
      * @param askingClass the class asking for the URL. Can be null.
      * @param name name of the resource, file or URL.
      * @throws java.net.MalformedURLException
      * @return URL
      */
     public static URL getResourceOrFileOrURL(Class askingClass, String name)
-        throws java.net.MalformedURLException {
+            throws java.net.MalformedURLException {
 
         boolean DEBUG = Debug.debugging("proputils");
 
         if (name == null) {
-            if (DEBUG) Debug.output("PropUtils.getROFOU(): null file name");
+            if (DEBUG)
+                Debug.output("PropUtils.getROFOU(): null file name");
             return null;
         }
 
         URL retval = null;
-        if (DEBUG) Debug.output("PropUtils.getROFOU(): looking for " + name);
+        if (DEBUG)
+            Debug.output("PropUtils.getROFOU(): looking for " + name);
 
         if (askingClass != null) {
             // First see if we have a resource by that name
-            if (DEBUG) Debug.output("PropUtils.getROFOU(): checking as resource");
+            if (DEBUG)
+                Debug.output("PropUtils.getROFOU(): checking as resource");
 
             retval = askingClass.getResource(name);
         }
         if (retval == null) {
             // Check the general classpath...
-            if (DEBUG) Debug.output("PropUtils.getROFOU(): checking in general classpath");
-            retval = Thread.currentThread().getContextClassLoader().getResource(name);
+            if (DEBUG)
+                Debug.output("PropUtils.getROFOU(): checking in general classpath");
+            retval = Thread.currentThread()
+                    .getContextClassLoader()
+                    .getResource(name);
         }
         if (retval == null && !Environment.isApplet()) {
             // Check the classpath plus the share directory, which may
             // be in the openmap.jar file or in the development
             // environment.
-            if (DEBUG) Debug.output("PropUtils.getROFOU(): checking with ClassLoader");
+            if (DEBUG)
+                Debug.output("PropUtils.getROFOU(): checking with ClassLoader");
             retval = ClassLoader.getSystemResource("share/" + name);
         }
 
         if (retval == null && Environment.isApplet()) {
-            if (DEBUG) Debug.output("PropUtils.getROFOU(): checking with URLClassLoader");
+            if (DEBUG)
+                Debug.output("PropUtils.getROFOU(): checking with URLClassLoader");
             URL[] cba = new URL[1];
-            cba[0] =  Environment.getApplet().getCodeBase();
+            cba[0] = Environment.getApplet().getCodeBase();
             URLClassLoader ucl = URLClassLoader.newInstance(cba);
             retval = ucl.getResource(name);
         }
 
         // If there was no resource by that name available
         if (retval == null) {
-            if (DEBUG) Debug.output("PropUtils.getROFOU(): not found as resource");
+            if (DEBUG)
+                Debug.output("PropUtils.getROFOU(): not found as resource");
 
             try {
                 java.io.File file = new java.io.File(name);
                 if (file.exists()) {
                     retval = file.toURL();
-                    if (DEBUG) Debug.output("PropUtils.getROFOU(): found as file :)");
+                    if (DEBUG)
+                        Debug.output("PropUtils.getROFOU(): found as file :)");
                 } else {
                     // Otherwise treat it as a raw URL.
-                    if (DEBUG) Debug.output("PropUtils.getROFOU(): Not a file, checking as URL");
+                    if (DEBUG)
+                        Debug.output("PropUtils.getROFOU(): Not a file, checking as URL");
                     retval = new URL(name);
                     java.io.InputStream is = retval.openStream();
                     is.close();
-                    if (DEBUG) Debug.output("PropUtils.getROFOU(): OK as URL :)");
+                    if (DEBUG)
+                        Debug.output("PropUtils.getROFOU(): OK as URL :)");
                 }
             } catch (java.io.IOException ioe) {
                 retval = null;
             } catch (java.security.AccessControlException ace) {
-                Debug.error("PropUtils: AccessControlException trying to access " + name);
+                Debug.error("PropUtils: AccessControlException trying to access "
+                        + name);
                 retval = null;
             } catch (Exception e) {
                 Debug.error("PropUtils: caught exception " + e.getMessage());
@@ -709,9 +739,9 @@ public class PropUtils {
 
         if (DEBUG) {
             if (retval != null) {
-                Debug.output("Resource "+ name + "=" + retval.toString());
+                Debug.output("Resource " + name + "=" + retval.toString());
             } else {
-                Debug.output("Resource " + name + " can't be found..." );
+                Debug.output("Resource " + name + " can't be found...");
             }
         }
 

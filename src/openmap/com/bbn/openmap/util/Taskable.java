@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/Taskable.java,v $
 // $RCSfile: Taskable.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.util;
 
@@ -31,22 +30,23 @@ import java.awt.event.ActionListener;
  * <code>actionPerformed()</code> notifications each time the timer
  * expires.
  * <p>
- * Some OpenMap Layers are Taskables.  These layers expect to refresh
+ * Some OpenMap Layers are Taskables. These layers expect to refresh
  * their graphics at a certain rate.
+ * 
  * @see javax.swing.Timer
  */
 public interface Taskable extends ActionListener {
 
     /**
-     * Get the sleep hint in milliseconds.
-     * The Taskable implementation should determine the sleep (delay)
-     * interval between invocations of its
-     * <code>actionPerformed()</code>.
+     * Get the sleep hint in milliseconds. The Taskable implementation
+     * should determine the sleep (delay) interval between invocations
+     * of its <code>actionPerformed()</code>.
      * <p>
-     * NOTE: this is only a hint for the timer.  It's the Taskable's
+     * NOTE: this is only a hint for the timer. It's the Taskable's
      * responsibility to determine if too little or too much time has
      * elapsed between invocations of <code>actionPerformed()</code>.
+     * 
      * @return int milliseconds of sleep interval
      */
-    public int getSleepHint ();
+    public int getSleepHint();
 }

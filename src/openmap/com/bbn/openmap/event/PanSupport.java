@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/PanSupport.java,v $
 // $RCSfile: PanSupport.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
@@ -27,7 +26,7 @@ import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
- * for handling PanListeners and firing PanEvents.  You can use an
+ * for handling PanListeners and firing PanEvents. You can use an
  * instance of this class as a member field of your bean and delegate
  * work to it.
  */
@@ -35,7 +34,9 @@ public class PanSupport extends ListenerSupport {
 
     /**
      * Construct a PanSupport.
-     * @param sourceBean The bean to be given as the source for any events.
+     * 
+     * @param sourceBean The bean to be given as the source for any
+     *        events.
      */
     public PanSupport(Object sourceBean) {
         super(sourceBean);
@@ -43,6 +44,7 @@ public class PanSupport extends ListenerSupport {
 
     /**
      * Add a PanListener to the listener list.
+     * 
      * @param listener The PanListener to be added
      */
     public void addPanListener(PanListener listener) {
@@ -51,6 +53,7 @@ public class PanSupport extends ListenerSupport {
 
     /**
      * Remove a PanListener from the listener list.
+     * 
      * @param listener The PanListener to be removed
      */
     public void removePanListener(PanListener listener) {
@@ -59,6 +62,7 @@ public class PanSupport extends ListenerSupport {
 
     /**
      * Send a pan event to all registered listeners.
+     * 
      * @param direction PanEvent.NORTH ... PanEvent.NORTH_WEST
      * @see PanEvent
      * @deprecated use firePan(azimuth)
@@ -69,7 +73,7 @@ public class PanSupport extends ListenerSupport {
 
     /**
      * Send a pan event to all registered listeners.
-     *
+     * 
      * @param direction PanEvent.NORTH ... PanEvent.NORTH_WEST
      * @param amount (0.0 &lt;= amount) in decimal degrees.
      * @see PanEvent
@@ -78,9 +82,8 @@ public class PanSupport extends ListenerSupport {
     public void firePan(int direction, float amount) {
 
         if (direction < PanEvent.PAN_FIRST || direction > PanEvent.PAN_LAST) {
-            throw new IllegalArgumentException("Bad value, " + direction +
-                                               " for direction in " +
-                                               "PanSupport.firePan()");
+            throw new IllegalArgumentException("Bad value, " + direction
+                    + " for direction in " + "PanSupport.firePan()");
         }
 
         float az = PanEvent.dir2Az(direction);
@@ -93,14 +96,16 @@ public class PanSupport extends ListenerSupport {
 
     /**
      * Fire a pan event.
+     * 
      * @param az azimuth "east of north" in decimal degrees:
-     * <code>-180 &lt;= Az &lt;= 180</code>
+     *        <code>-180 &lt;= Az &lt;= 180</code>
      * @param c arc distance in decimal degrees.
      */
     public synchronized void firePan(float az, float c) {
         Iterator it = iterator();
 
-        if (size() == 0) return;
+        if (size() == 0)
+            return;
 
         PanEvent evt = new PanEvent(source, az, c);
 
@@ -109,7 +114,4 @@ public class PanSupport extends ListenerSupport {
         }
     }
 }
-
-
-
 

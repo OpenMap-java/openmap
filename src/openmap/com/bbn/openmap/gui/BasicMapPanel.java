@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.16 $
-// $Date: 2004/10/01 20:36:52 $
+// $Revision: 1.17 $
+// $Date: 2004/10/14 18:05:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
@@ -49,20 +48,20 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * The BasicMapPanel is a MapPanel and OMComponentPanel that is the
- * heart of the OpenMap application framework.  It can be used in a
- * application or applet.  The Panel has a BorderLayout, and creates a
- * MapBean for its center area.  It creates a MapHandler to use to
- * hold all of its OpenMap components, and uses the PropertyHandler
- * given to it in its constructor to create and configure all of the
- * application components.  The best way to add components to the
+ * heart of the OpenMap application framework. It can be used in a
+ * application or applet. The Panel has a BorderLayout, and creates a
+ * MapBean for its center area. It creates a MapHandler to use to hold
+ * all of its OpenMap components, and uses the PropertyHandler given
+ * to it in its constructor to create and configure all of the
+ * application components. The best way to add components to the
  * MapPanel is to get the MapHandler from it and add components to
- * that.  The BasicMapPanel also adds itself to its MapHandler, so
- * when the PropertyHandler adds MapPanelChildren components to the
+ * that. The BasicMapPanel also adds itself to its MapHandler, so when
+ * the PropertyHandler adds MapPanelChildren components to the
  * MapHandler, the BasicMapPanel is able to find them via the
- * findAndInit method.  By default, the BasicMapPanel looks for
+ * findAndInit method. By default, the BasicMapPanel looks for
  * MapPanelChildren and asks them for where they would prefer to be
  * located (BorderLayout.NORTH, BorderLayout.SOUTH, BorderLayout.EAST,
- * BorderLayout.WEST).  If you extend this component, though, other
+ * BorderLayout.WEST). If you extend this component, though, other
  * components could be found via that same findAndInit method.
  */
 public class BasicMapPanel extends OMComponentPanel implements MapPanel {
@@ -74,8 +73,8 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
     /**
      * Creates an empty MapPanel that creates its own empty
-     * PropertyHandler.  The MapPanel will contain a MapBean, a
-     * MapHandler, and a PropertyHandler with no properties.  The
+     * PropertyHandler. The MapPanel will contain a MapBean, a
+     * MapHandler, and a PropertyHandler with no properties. The
      * constructor to use to create a blank map framework to add
      * components to.
      */
@@ -84,10 +83,11 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * Create a MapPanel with the option of delaying the search for properties
-     * until the <code>create()</code> call is made.
-     * @param delayCreation true to let the MapPanel know that the artful 
-     * programmer will call <code>create()</code>
+     * Create a MapPanel with the option of delaying the search for
+     * properties until the <code>create()</code> call is made.
+     * 
+     * @param delayCreation true to let the MapPanel know that the
+     *        artful programmer will call <code>create()</code>
      */
     public BasicMapPanel(boolean delayCreation) {
         this(null, delayCreation);
@@ -107,11 +107,11 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * contained in the PropertyHandler provided, and with the option
      * of delaying the search for properties until the
      * <code>create()</code> call is made.
-     * @param delayCreation true to let the MapPanel know that the artful 
-     * programmer will call <code>create()</code>
+     * 
+     * @param delayCreation true to let the MapPanel know that the
+     *        artful programmer will call <code>create()</code>
      */
-    public BasicMapPanel(PropertyHandler propertyHandler, 
-                         boolean delayCreation) {
+    public BasicMapPanel(PropertyHandler propertyHandler, boolean delayCreation) {
         setPropertyHandler(propertyHandler);
         if (!delayCreation) {
             create();
@@ -120,20 +120,20 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
     /**
      * The method that triggers setLayout() and createComponents() to
-     * be called.  If you've told the BasicMapPanel to delay creation,
+     * be called. If you've told the BasicMapPanel to delay creation,
      * you should call this method to trigger the PropertyHandler to
      * create components based on the contents of its properties.
      */
     public void create() {
         setLayout(createLayoutManager());
-        createComponents();     
+        createComponents();
     }
 
     /**
      * The constructor calls this method that sets the LayoutManager
-     * for this MapPanel.  It returns a BorderLayout by default, but
+     * for this MapPanel. It returns a BorderLayout by default, but
      * this method can be overridden to change how the MapPanel places
-     * components.  If you change what this method returns, you should
+     * components. If you change what this method returns, you should
      * also change how components are added in the findAndInit()
      * method.
      */
@@ -142,19 +142,19 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * Position the map bean in this panel according to the layout manger.
-     * Defaults to BorderLayout.CENTER.
+     * Position the map bean in this panel according to the layout
+     * manger. Defaults to BorderLayout.CENTER.
      */
     protected void addMapBeanToPanel(MapBean map) {
-        add(map, BorderLayout.CENTER);  
+        add(map, BorderLayout.CENTER);
     }
 
     /**
      * The constructor calls this method that creates the MapHandler
      * and MapBean, and then tells the PropertyHandler to create the
-     * components described in its properties.  This method calls
-     * getMapHandler() and getMapBean().  If the PropertyHandler is
-     * not null, it will be called to created components based on its
+     * components described in its properties. This method calls
+     * getMapHandler() and getMapBean(). If the PropertyHandler is not
+     * null, it will be called to created components based on its
      * properties, and those components will be added to the
      * MapHandler in this MapPanel.
      */
@@ -170,28 +170,30 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         ph.createComponents(getMapHandler());
 
         // At this point, check the MapHandler to see if a
-        // ProjectionFactory has been added.  If it hasn't, create one
-        // with the default ProjectionLoaders.  We might want to
+        // ProjectionFactory has been added. If it hasn't, create one
+        // with the default ProjectionLoaders. We might want to
         // remove this at some point, but not having it here will
         // catch some people by suprise when 4.6.1 comes out.
         Object obj = mh.get(com.bbn.openmap.proj.ProjectionFactory.class);
         if (obj == null) {
-            Debug.message("basic", "BasicMapPanel adding ProjectionFactory and projections to MapHandler since there are none to be found.");
+            Debug.message("basic",
+                    "BasicMapPanel adding ProjectionFactory and projections to MapHandler since there are none to be found.");
             mh.add(ProjectionFactory.loadDefaultProjections());
         }
 
-        // Environment will only get loaded after the property file is read.
+        // Environment will only get loaded after the property file is
+        // read.
         mb.setProjection(ProjectionFactory.getDefaultProjectionFromEnvironment());
         mb.setBckgrnd(Environment.getCustomBackgroundColor());
     }
 
     /**
-     * MapPanel method.  Get the MapBean used for the MapPanel.  If
-     * the MapBean is null, calls createMapBean() which will create a
+     * MapPanel method. Get the MapBean used for the MapPanel. If the
+     * MapBean is null, calls createMapBean() which will create a
      * BufferedLayerMapBean and add it to the MapHandler via a
-     * setMapBean call.  If you want something different, override
-     * this method.
-     */      
+     * setMapBean call. If you want something different, override this
+     * method.
+     */
     public MapBean getMapBean() {
         if (mapBean == null) {
             setMapBean(BasicMapPanel.createMapBean());
@@ -202,24 +204,25 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     /**
      * Set the map bean used in this map panel, replace the map bean
      * in the MapHandler if there isn't already one, or if the policy
-     * allows replacement.  The MapHandler will be created if it
+     * allows replacement. The MapHandler will be created if it
      * doesn't exist via a getMapHandler() method call.
-     * @throws MultipleSoloMapComponentException if there is already a 
-     * map bean in the map handler and the policy is to reject duplicates 
-     * (since the MapBean is a SoloMapComponent).
+     * 
+     * @throws MultipleSoloMapComponentException if there is already a
+     *         map bean in the map handler and the policy is to reject
+     *         duplicates (since the MapBean is a SoloMapComponent).
      */
     public void setMapBean(MapBean bean) {
-    		if (bean == null && mapBean != null) {
-    			// remove the current MapBean from the application...
-    			getMapHandler().remove(mapBean);
-    		}
-    		
+        if (bean == null && mapBean != null) {
+            // remove the current MapBean from the application...
+            getMapHandler().remove(mapBean);
+        }
+
         mapBean = bean;
-        
-        	if (mapBean != null) {
-        		getMapHandler().add(mapBean);
-        		addMapBeanToPanel(mapBean);
-        	}
+
+        if (mapBean != null) {
+            getMapHandler().add(mapBean);
+            addMapBeanToPanel(mapBean);
+        }
     }
 
     /**
@@ -235,8 +238,8 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
     /**
      * Set the PropertyHandler containing the properties used to
-     * configure this panel.  Adds the PropertyHandler to the
-     * MapHandler.  If the MapHandler isn't set at this point, it will
+     * configure this panel. Adds the PropertyHandler to the
+     * MapHandler. If the MapHandler isn't set at this point, it will
      * be created via a getMapHandler() call.
      */
     public void setPropertyHandler(PropertyHandler handler) {
@@ -247,9 +250,9 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * MapPanel method.  Get the MapHandler used for the MapPanel.
+     * MapPanel method. Get the MapHandler used for the MapPanel.
      * Creates a standard MapHandler if it hasn't been created yet.
-     */      
+     */
     public MapHandler getMapHandler() {
         if (mapHandler == null) {
             mapHandler = new MapHandler();
@@ -258,7 +261,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * MapPanel method.  Get a JMenuBar containing menus created from
+     * MapPanel method. Get a JMenuBar containing menus created from
      * properties.
      */
     public JMenuBar getMapMenuBar() {
@@ -270,7 +273,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * MapPanel method.  Get a JMenu containing sub-menus created from
+     * MapPanel method. Get a JMenu containing sub-menus created from
      * properties.
      */
     public JMenu getMapMenu() {
@@ -285,14 +288,15 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     ////////////////////////
 
     /**
-     * Adds a component to the map bean context.  This makes the
-     * <code>mapComponent</code> available to the map layers and other
-     * components.
+     * Adds a component to the map bean context. This makes the
+     * <code>mapComponent</code> available to the map layers and
+     * other components.
+     * 
      * @param mapComponent a component to be added to the map bean
-     * context
-     * @throws MultipleSoloMapComponentException if mapComponent is a 
-     * SoloMapComponent and another instance already exists and the policy
-     * is a reject policy.
+     *        context
+     * @throws MultipleSoloMapComponentException if mapComponent is a
+     *         SoloMapComponent and another instance already exists
+     *         and the policy is a reject policy.
      */
     public void addMapComponent(Object mapComponent) {
         if (mapComponent != null) {
@@ -302,8 +306,9 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
     /**
      * Remove a component from the map bean context.
+     * 
      * @param mapComponent a component to be removed to the map bean
-     * context
+     *        context
      * @return true if the mapComponent was removed.
      */
     public boolean removeMapComponent(Object mapComponent) {
@@ -314,7 +319,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * Given a Class, find the object in the MapHandler.  If the class
+     * Given a Class, find the object in the MapHandler. If the class
      * is not a SoloMapComponent and there are more than one of them
      * in the MapHandler, you will get the first one found.
      */
@@ -324,7 +329,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
     /**
      * Get all of the mapComponents that are of the given class type.
-     **/
+     */
     public Collection getMapComponentsByType(Class c) {
         return getMapHandler().getAll(c);
     }
@@ -332,7 +337,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     /**
      * Find the object with the given prefix by looking it up in the
      * prefix librarian in the MapHandler.
-     **/
+     */
     public Object getMapComponent(String prefix) {
         return getPropertyHandler().get(prefix);
     }
@@ -344,8 +349,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     public void findAndInit(Object someObj) {
         if (someObj instanceof MapPanelChild && someObj instanceof Component) {
             if (Debug.debugging("basic")) {
-                Debug.output("MapPanel: adding " + 
-                             someObj.getClass().getName());
+                Debug.output("MapPanel: adding " + someObj.getClass().getName());
             }
             MapPanelChild mpc = (MapPanelChild) someObj;
             addMapPanelChild(mpc);
@@ -353,7 +357,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         }
 
         if (someObj instanceof MenuList) {
-            menuList = (MenuList)someObj;
+            menuList = (MenuList) someObj;
         }
     }
 
@@ -361,7 +365,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * Add a child to the MapPanel.
      */
     protected void addMapPanelChild(MapPanelChild mpc) {
-        add((Component)mpc, mpc.getPreferredLocation());
+        add((Component) mpc, mpc.getPreferredLocation());
     }
 
     /**
@@ -371,10 +375,10 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     public void findAndUndo(Object someObj) {
         if (someObj instanceof MapPanelChild && someObj instanceof Component) {
             if (Debug.debugging("basic")) {
-                Debug.output("MapPanel: removing " + 
-                             someObj.getClass().getName());
+                Debug.output("MapPanel: removing "
+                        + someObj.getClass().getName());
             }
-            remove((Component)someObj);
+            remove((Component) someObj);
             invalidate();
         }
 
@@ -388,31 +392,32 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
     /**
      * A static method that creates a MapBean with it's projection set
-     * to the values set in the Environment.  Also creates a
+     * to the values set in the Environment. Also creates a
      * BevelBorder.LOWERED border for the MapBean.
      */
     public static MapBean createMapBean() {
-        int envWidth = Environment.getInteger(Environment.Width, 
-                                              MapBean.DEFAULT_WIDTH);
+        int envWidth = Environment.getInteger(Environment.Width,
+                MapBean.DEFAULT_WIDTH);
         int envHeight = Environment.getInteger(Environment.Height,
-                                               MapBean.DEFAULT_HEIGHT);
+                MapBean.DEFAULT_HEIGHT);
 
         if (envWidth <= 0 || envHeight <= 0) {
             Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
             if (envWidth <= 0) {
-                envWidth = (int)d.getWidth();
+                envWidth = (int) d.getWidth();
             }
             if (envHeight <= 0) {
-                envHeight = (int)d.getHeight();
+                envHeight = (int) d.getHeight();
             }
         }
 
         Projection proj = ProjectionFactory.getDefaultProjectionFromEnvironment();
 
         if (Debug.debugging("mappanel")) {
-            Debug.output("MapPanel: creating MapBean with initial projection " + proj);
+            Debug.output("MapPanel: creating MapBean with initial projection "
+                    + proj);
         }
-        
+
         return createMapBean(proj, new BevelBorder(BevelBorder.LOWERED));
     }
 
@@ -428,10 +433,9 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         return mapBeano;
     }
 
-
     //Property Functions:
     /////////////////////
-        
+
     /**
      * Get the current properties.
      */
@@ -441,21 +445,22 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
     /**
      * Remove an existing property if it exists.
+     * 
      * @return true if a property was actually removed.
      */
     public boolean removeProperty(String property) {
         return getPropertyHandler().removeProperty(property);
     }
 
-    /** 
+    /**
      * Add (or overwrite) a property to the current properties
      */
     public void addProperty(String property, String value) {
         getPropertyHandler().addProperty(property, value);
     }
 
-    /** 
-     * Add in the properties from the given URL.  Any existing
+    /**
+     * Add in the properties from the given URL. Any existing
      * properties will be overwritten except for openmap.components,
      * openmap.layers and openmap.startUpLayers which will be
      * appended.
@@ -464,15 +469,17 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         getPropertyHandler().addProperties(urlToProperties);
     }
 
-    /** 
+    /**
      * Add in the properties from the given source, which can be a
-     * resorce, file or URL.  Any existing properties will be
+     * resorce, file or URL. Any existing properties will be
      * overwritten except for openmap.components, openmap.layers and
      * openmap.startUpLayers which will be appended.
-     * @throws MalformedURLException if propFile doesn't resolve properly.
+     * 
+     * @throws MalformedURLException if propFile doesn't resolve
+     *         properly.
      */
-    public void addProperties(String propFile) 
-        throws java.net.MalformedURLException {
+    public void addProperties(String propFile)
+            throws java.net.MalformedURLException {
         getPropertyHandler().addProperties(propFile);
     }
 
@@ -483,8 +490,8 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         getPropertyHandler().removeMarker(property, marker);
     }
 
-    /** 
-     * Add in the properties from the given Properties object.  Any
+    /**
+     * Add in the properties from the given Properties object. Any
      * existing properties will be overwritten except for
      * openmap.components, openmap.layers and openmap.startUpLayers
      * which will be appended.

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/AboutMenuItem.java,v $
 // $RCSfile: AboutMenuItem.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.menu;
 
@@ -32,8 +31,7 @@ import com.bbn.openmap.*;
 /**
  * This object brings up OpenMap about information.
  */
-public class AboutMenuItem extends JMenuItem
-    implements ActionListener {
+public class AboutMenuItem extends JMenuItem implements ActionListener {
 
     protected JDialog aboutBox = null;
 
@@ -42,34 +40,30 @@ public class AboutMenuItem extends JMenuItem
         setMnemonic('t');
         addActionListener(this);
     }
-  
+
     public void actionPerformed(ActionEvent ae) {
         if (aboutBox == null) {
             aboutBox = createAboutBox();
             aboutBox.getContentPane().setLayout(new BorderLayout());
             aboutBox.getContentPane().add(createCopyrightViewer(),
-                                          BorderLayout.CENTER);
-            aboutBox.getContentPane().add(
-                createAboutControls(aboutBox),
-                BorderLayout.SOUTH
-                );
+                    BorderLayout.CENTER);
+            aboutBox.getContentPane().add(createAboutControls(aboutBox),
+                    BorderLayout.SOUTH);
             aboutBox.pack();
         }
-    
+
         aboutBox.setVisible(true);
     }
 
     protected JComponent createCopyrightViewer() {
-        StringBuffer sb = new StringBuffer(
-            MapBean.getCopyrightMessage()+
-            Environment.get("line.separator")+
-            Environment.get("line.separator")+
-            "Version " + Environment.get(Environment.Version));
+        StringBuffer sb = new StringBuffer(MapBean.getCopyrightMessage()
+                + Environment.get("line.separator")
+                + Environment.get("line.separator") + "Version "
+                + Environment.get(Environment.Version));
 
         String buildDate = Environment.get(Environment.BuildDate);
         if (buildDate != null) {
-            sb.append(Environment.get("line.separator")+
-                      "Build " + buildDate);
+            sb.append(Environment.get("line.separator") + "Build " + buildDate);
         }
 
         JTextArea viewer = new JTextArea(sb.toString());
@@ -81,10 +75,10 @@ public class AboutMenuItem extends JMenuItem
     protected Component createAboutControls(final JDialog window) {
         JButton button = new JButton("OK");
         button.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    window.setVisible(false);
-                }
-            });
+            public void actionPerformed(ActionEvent e) {
+                window.setVisible(false);
+            }
+        });
         Box box = Box.createHorizontalBox();
         box.add(button);
         return box;
@@ -94,8 +88,7 @@ public class AboutMenuItem extends JMenuItem
         java.awt.Container topContainer = getTopLevelAncestor();
         String title = "About " + Environment.get(Environment.Title);
         if (topContainer instanceof Frame) {
-            return new JDialog(
-                (Frame)topContainer, title, true);
+            return new JDialog((Frame) topContainer, title, true);
         } else {
             JDialog d = new JDialog();
             d.setTitle(title);

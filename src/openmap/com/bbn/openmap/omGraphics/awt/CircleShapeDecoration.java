@@ -11,11 +11,12 @@ import java.awt.geom.Point2D;
 public class CircleShapeDecoration extends AbstractShapeDecoration {
 
     /**
-     */ 
+     */
     private boolean filled = true;
 
     /**
      * Constructor.
+     * 
      * @param length number of pixels of segment to draw circle in.
      * @param radius number of pixels for radius of circle.
      */
@@ -25,6 +26,7 @@ public class CircleShapeDecoration extends AbstractShapeDecoration {
 
     /**
      * Constructor.
+     * 
      * @param length number of pixels of segment to draw circle in.
      * @param radius number of pixels for radius of circle.
      * @param paint the Paint to use for the circle.
@@ -35,7 +37,8 @@ public class CircleShapeDecoration extends AbstractShapeDecoration {
     }
 
     /**
-     * @see com.bbn.openmap.omGraphics.awt.ShapeDecoration#draw(Graphics, Point2D[], boolean)
+     * @see com.bbn.openmap.omGraphics.awt.ShapeDecoration#draw(Graphics,
+     *      Point2D[], boolean)
      */
     public void draw(Graphics g, Point2D[] points, boolean complete) {
         Graphics2D g2D = (Graphics2D) g;
@@ -60,17 +63,21 @@ public class CircleShapeDecoration extends AbstractShapeDecoration {
             // Compute vertices
             double r = getLength() / 2.0; // x radius before rotation
             double w = getWidth();
-            // rotate 
+            // rotate
 
             int x = (int) (xcoord1 + r * rcos);
             int y = (int) (ycoord1 + r * rsin);
 
             if (filled) {
-                g.fillOval((int)(x - w/2), (int)(y - w/2), 
-                           (int)(w), (int)(w));
+                g.fillOval((int) (x - w / 2),
+                        (int) (y - w / 2),
+                        (int) (w),
+                        (int) (w));
             } else {
-                g.drawOval((int)(x - w/2), (int)(y - w/2), 
-                           (int)(w), (int)(w));
+                g.drawOval((int) (x - w / 2),
+                        (int) (y - w / 2),
+                        (int) (w),
+                        (int) (w));
             }
         }
 
@@ -79,6 +86,7 @@ public class CircleShapeDecoration extends AbstractShapeDecoration {
 
     /**
      * Returns the filled boolean.
+     * 
      * @return boolean
      */
     public boolean isFilled() {
@@ -87,6 +95,7 @@ public class CircleShapeDecoration extends AbstractShapeDecoration {
 
     /**
      * Sets the filled (draw a half disk or a half circle ?).
+     * 
      * @param filled The filled to set
      */
     public void setFilled(boolean filled) {

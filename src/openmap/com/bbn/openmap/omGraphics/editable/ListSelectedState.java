@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,23 +12,21 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/ListSelectedState.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/ListSelectedState.java,v
+// $
 // $RCSfile: ListSelectedState.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.util.Debug;
 
 public class ListSelectedState extends GraphicSelectedState {
@@ -39,7 +37,7 @@ public class ListSelectedState extends GraphicSelectedState {
 
     /**
      * In this state, we need to change states only if the graphic, or
-     * anyplace off the graphic is pressed down on.  If the end points
+     * anyplace off the graphic is pressed down on. If the end points
      * are clicked on, then we do nothing except set the moving point
      * and go to edit mode.
      */
@@ -48,18 +46,21 @@ public class ListSelectedState extends GraphicSelectedState {
 
         GrabPoint mp = graphic.getMovingPoint(e);
 
-        // If the graphic itself was clicked on, then just go to selected
+        // If the graphic itself was clicked on, then just go to
+        // selected
         // mode.
         if (mp == null) {
             // List is making a GrabPoint with a distance check, so if
             // we get here, we don't have to do anything.
             if (Debug.debugging("eomg")) {
-                float distance = graphic.getGraphic().distance(e.getX(), e.getY());
-                Debug.output("ListStateMachine|selected state|mousePressed - click off list, " + distance + " away");
+                float distance = graphic.getGraphic().distance(e.getX(),
+                        e.getY());
+                Debug.output("ListStateMachine|selected state|mousePressed - click off list, "
+                        + distance + " away");
             }
             graphic.fireEvent(EOMGCursors.DEFAULT, "");
         } else {
-            // else, if the moving point is set, go to edit mode.  If
+            // else, if the moving point is set, go to edit mode. If
             // the mouse is released, we'll consider ourselves
             // unselected agin.
             graphic.getStateMachine().setEdit();
@@ -81,7 +82,8 @@ public class ListSelectedState extends GraphicSelectedState {
             // deactivate with a deactivation event.
             graphic.fireEvent(new com.bbn.openmap.omGraphics.event.EOMGEvent());
         } else {
-            // If the moving point was valid, just stay in selected mode.
+            // If the moving point was valid, just stay in selected
+            // mode.
             graphic.fireEvent(EOMGCursors.EDIT, "", e);
             graphic.redraw(e, true);
         }
@@ -91,22 +93,18 @@ public class ListSelectedState extends GraphicSelectedState {
     }
 
     public boolean mouseMoved(MouseEvent e) {
-        Debug.message("eomgdetail", "ListStateMachine|selected state|mouseMoved");
+        Debug.message("eomgdetail",
+                "ListStateMachine|selected state|mouseMoved");
 
         GrabPoint mp = graphic.getMovingPoint(e);
 
         if (mp == null) {
             graphic.fireEvent(EOMGCursors.DEFAULT, "");
         } else {
-            graphic.fireEvent(EOMGCursors.EDIT, "Click and Drag to change the graphic.");
+            graphic.fireEvent(EOMGCursors.EDIT,
+                    "Click and Drag to change the graphic.");
         }
         return false;
     }
 }
-
-
-
-
-
-
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,51 +14,46 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/shis/SHISPlugIn.java,v $
 // $RCSfile: SHISPlugIn.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.plugin.shis;
 
-import java.awt.Component;
 import java.util.Properties;
 
-import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.image.ImageServerConstants;
-import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.plugin.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.propertyEditor.Inspector;
 
-/** 
- * This class asks for an image from a SimpleHttpImageServer.  It has
+/**
+ * This class asks for an image from a SimpleHttpImageServer. It has
  * some properties that you can set in the openmap.properties file:
  * <P>
  * The query to the SimpleHttpImageServer looks like something you can
  * plug into your browser to test the server:
  * <P>
  * http://hostname:port/path?REQUEST=MAP&PROJTYPE=projection_type_value&SCALE=scale_value&LAT=center_latitude&LON=center_longitude&HEIGHT=map_pixel_height&WIDTH=map_pixel_width&FORMAT=image_format&TRANSPARENT=true|false&BGCOLOR=background_color
- *
- * <P> The projection information will be entered automatically by the
- * plugin based on the projection it receives from the MapBean.  The
+ * 
+ * <P>
+ * The projection information will be entered automatically by the
+ * plugin based on the projection it receives from the MapBean. The
  * other parameters can be entered in the properties for the layer.
- *
+ * 
  * #For the plugin layer
  * pluginlayer.class=com.bbn.openmap.plugin.PlugInLayer
  * pluginlayer.prettyName=Whatever
  * pluginlayer.plugin=com.bbn.openmap.plugin.shis.SHISPlugIn
- * pluginlayer.plugin.host=hostname
- * pluginlayer.plugin.port=port number
- * pluginlayer.plugin.path=query path (default is openmap)
- * pluginlayer.plugin.format=image format (JPEG, GIF from WMTConstants.java)
- * pluginlayer.plugin.transparent=true or false, depends on imageformat
- * pluginlayer.plugin.backgroundColor=RGB hex string (RRGGBB) 
+ * pluginlayer.plugin.host=hostname pluginlayer.plugin.port=port
+ * number pluginlayer.plugin.path=query path (default is openmap)
+ * pluginlayer.plugin.format=image format (JPEG, GIF from
+ * WMTConstants.java) pluginlayer.plugin.transparent=true or false,
+ * depends on imageformat pluginlayer.plugin.backgroundColor=RGB hex
+ * string (RRGGBB)
  */
 public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
 
@@ -85,8 +80,8 @@ public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
      * received back from it.
      * 
      * @param p projection of the screen, holding scale, center
-     * coords, height, width.  
-     * @return an OMGraphicList with an image received from a SHIS.  
+     *        coords, height, width.
+     * @return an OMGraphicList with an image received from a SHIS.
      */
     public String createQueryString(Projection p) {
 
@@ -102,19 +97,16 @@ public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
         buf.append(REQUEST + "=" + MAP + "&");
 
         if (p != null) {
-            buf.append(PROJTYPE + "=" + p.getName() + "&" +
-                       SCALE + "=" + p.getScale() + "&" +
-                       LAT + "=" + p.getCenter().getLatitude() + "&" +
-                       LON + "=" + p.getCenter().getLongitude() + "&" +
-                       HEIGHT + "=" + p.getHeight() + "&" +
-                       WIDTH + "=" + p.getWidth());
+            buf.append(PROJTYPE + "=" + p.getName() + "&" + SCALE + "="
+                    + p.getScale() + "&" + LAT + "="
+                    + p.getCenter().getLatitude() + "&" + LON + "="
+                    + p.getCenter().getLongitude() + "&" + HEIGHT + "="
+                    + p.getHeight() + "&" + WIDTH + "=" + p.getWidth());
         } else {
-            buf.append(PROJTYPE + "=name_undefined&" +
-                       SCALE + "=scale_undefined&" +
-                       LAT + "=center_lat_undefined&" +
-                       LON + "=center_lon_undefined&" +
-                       HEIGHT + "=height_undefined&" +
-                       WIDTH + "=width_undefined");
+            buf.append(PROJTYPE + "=name_undefined&" + SCALE
+                    + "=scale_undefined&" + LAT + "=center_lat_undefined&"
+                    + LON + "=center_lon_undefined&" + HEIGHT
+                    + "=height_undefined&" + WIDTH + "=width_undefined");
         }
 
         if (imageFormat != null) {
@@ -142,7 +134,8 @@ public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
     }
 
     public String getLayerMarkers() {
-        // Not implemented - should be a list that can be set by the user.
+        // Not implemented - should be a list that can be set by the
+        // user.
         return null;
     }
 
@@ -153,7 +146,7 @@ public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
         super.setProperties(prefix, setList);
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
-        
+
         host = setList.getProperty(prefix + HostNameProperty);
         port = setList.getProperty(prefix + PortNumberProperty);
         path = setList.getProperty(prefix + PathProperty);
@@ -171,11 +164,12 @@ public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
             return;
         }
 
-        queryHeader = "http://" + (host == null?"localhost":host) +
-            (port == null?"":(":" + port)) + "/" + path + "?";
+        queryHeader = "http://" + (host == null ? "localhost" : host)
+                + (port == null ? "" : (":" + port)) + "/" + path + "?";
 
-        if (Debug.debugging("plugin")){
-            Debug.output("SHISPlugIn: set up with header \"" + queryHeader + "\"");
+        if (Debug.debugging("plugin")) {
+            Debug.output("SHISPlugIn: set up with header \"" + queryHeader
+                    + "\"");
         }
     }
 
@@ -191,9 +185,10 @@ public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
         getList.put(prefix + PathProperty, PropUtils.unnull(path));
         getList.put(prefix + ImageFormatProperty, PropUtils.unnull(imageFormat));
         getList.put(prefix + TransparentProperty, PropUtils.unnull(transparent));
-        getList.put(prefix + BackgroundColorProperty, PropUtils.unnull(backgroundColor));
+        getList.put(prefix + BackgroundColorProperty,
+                PropUtils.unnull(backgroundColor));
         return getList;
-    }    
+    }
 
     /**
      * PropertyConsumer method.
@@ -201,19 +196,24 @@ public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
 
-        list.put(initPropertiesProperty, HostNameProperty + " " + PortNumberProperty + " " + PathProperty + " " + ImageFormatProperty + " " + TransparentProperty + " " + BackgroundColorProperty);
+        list.put(initPropertiesProperty, HostNameProperty + " "
+                + PortNumberProperty + " " + PathProperty + " "
+                + ImageFormatProperty + " " + TransparentProperty + " "
+                + BackgroundColorProperty);
 
         list.put(HostNameProperty, "This hostname of the server machine.");
-        list.put(PortNumberProperty, "The port number the server is running on.");
+        list.put(PortNumberProperty,
+                "The port number the server is running on.");
         list.put(PathProperty, "The path to the server (openmap is default)");
         list.put(ImageFormatProperty, "Image format (JPEG|GIF|PPM|PNG)");
-        list.put(TransparentProperty, "Whether background of image should be transparent.");
+        list.put(TransparentProperty,
+                "Whether background of image should be transparent.");
         list.put(TransparentProperty + ScopedEditorProperty,
-                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         list.put(BackgroundColorProperty, "Background color for image.");
-        list.put(BackgroundColorProperty + ScopedEditorProperty, 
-                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        list.put(BackgroundColorProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
         return list;
     }
 }

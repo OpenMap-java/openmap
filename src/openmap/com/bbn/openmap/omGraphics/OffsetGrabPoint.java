@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,31 +14,28 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OffsetGrabPoint.java,v $
 // $RCSfile: OffsetGrabPoint.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/28 15:04:24 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:06:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics;
 
 import java.util.Hashtable;
 
-import com.bbn.openmap.util.Debug;
-
-/** 
- * An OffsetGrabPoint is one that manages other grab points.  When it
+/**
+ * An OffsetGrabPoint is one that manages other grab points. When it
  * is moved, the other GrabPoints on its internal list are moved the
- * same amount in pixel space.  
+ * same amount in pixel space.
  */
 public class OffsetGrabPoint extends GrabPoint {
     /** The list of GrabPoints to move when this point moves. */
     protected Hashtable offsetPoints;
 
-    /** 
-     * Create the OffsetGrabPoint at a certain window location. 
-     *
+    /**
+     * Create the OffsetGrabPoint at a certain window location.
+     * 
      * @param x horizontal pixel location from left side of window.
      * @param y vertical pixel location from top side of window.
      */
@@ -46,9 +43,9 @@ public class OffsetGrabPoint extends GrabPoint {
         this(x, y, DEFAULT_RADIUS);
     }
 
-    /** 
-     * Create the OffsetGrabPoint at a certain window location. 
-     *
+    /**
+     * Create the OffsetGrabPoint at a certain window location.
+     * 
      * @param x horizontal pixel location from left side of window.
      * @param y vertical pixel location from top side of window.
      * @param radius the pixel radius of the point.
@@ -71,7 +68,7 @@ public class OffsetGrabPoint extends GrabPoint {
         if (offsetPoints == null) {
             offsetPoints = new Hashtable();
         }
-        return (GrabPoint)offsetPoints.put(gp, new Offset(gp));
+        return (GrabPoint) offsetPoints.put(gp, new Offset(gp));
     }
 
     /**
@@ -79,14 +76,14 @@ public class OffsetGrabPoint extends GrabPoint {
      */
     public GrabPoint removeGrabPoint(GrabPoint rgp) {
         if (offsetPoints != null) {
-            Offset offset = (Offset)offsetPoints.remove(rgp);
+            Offset offset = (Offset) offsetPoints.remove(rgp);
             if (offset != null) {
-                return (GrabPoint)(offset).gp;
+                return (GrabPoint) (offset).gp;
             }
-        } 
+        }
         return null;
     }
- 
+
     /**
      * Called when the position of the OffsetGrabPoint has moved. Does
      * not adjust the offsets.
@@ -97,7 +94,7 @@ public class OffsetGrabPoint extends GrabPoint {
 
     /**
      * Called when the X position of the OffsetGrabPoint has moved.
-     * Does not adjust the offsets.  
+     * Does not adjust the offsets.
      */
     public void setX(int x) {
         super.setX(x);
@@ -105,7 +102,7 @@ public class OffsetGrabPoint extends GrabPoint {
 
     /**
      * Called when the Y position of the OffsetGrabPoint has moved.
-     * Does not adjust the offsets.  
+     * Does not adjust the offsets.
      */
     public void setY(int y) {
         super.setY(y);
@@ -114,7 +111,7 @@ public class OffsetGrabPoint extends GrabPoint {
     /**
      * Called when the other grab points may have moved, and the
      * offset distances should be changed internally for the Offset
-     * objects.  
+     * objects.
      */
     public void set() {
         updateOffsets();
@@ -124,11 +121,11 @@ public class OffsetGrabPoint extends GrabPoint {
      * Flag used as a lock to prevent StackOverflowErrors, in case
      * this OffetGrabPoint is unwittingly a child of itself.
      */
-    protected boolean overflowLock = false; 
+    protected boolean overflowLock = false;
 
     /**
      * Go through all the Offset elements and changes their position
-     * on the map.  Should be called when the OffsetGrabPoint has been
+     * on the map. Should be called when the OffsetGrabPoint has been
      * moved and you want to move all the GrabPoints in its list.
      */
     public synchronized void moveOffsets() {
@@ -136,7 +133,7 @@ public class OffsetGrabPoint extends GrabPoint {
             overflowLock = true;
             java.util.Enumeration elements = offsetPoints.elements();
             while (elements.hasMoreElements()) {
-                Offset offset = (Offset)elements.nextElement();
+                Offset offset = (Offset) elements.nextElement();
                 offset.move();
             }
             overflowLock = false;
@@ -145,7 +142,7 @@ public class OffsetGrabPoint extends GrabPoint {
 
     /**
      * Go through all the Offset elements and update the relative
-     * position to this grab point.  Should be called when you set the
+     * position to this grab point. Should be called when you set the
      * position of the OffsetGrabPoint and you want to set the offset
      * distances of all the GrabPoints in the internal list.
      */
@@ -154,7 +151,7 @@ public class OffsetGrabPoint extends GrabPoint {
             overflowLock = true;
             java.util.Enumeration elements = offsetPoints.elements();
             while (elements.hasMoreElements()) {
-                Offset offset = (Offset)elements.nextElement();
+                Offset offset = (Offset) elements.nextElement();
                 offset.update();
             }
             overflowLock = false;
@@ -164,13 +161,13 @@ public class OffsetGrabPoint extends GrabPoint {
     public void clear() {
         offsetPoints.clear();
     }
-    
+
     public void finalize() {
         offsetPoints.clear();
     }
 
     /**
-     * A wrapper class of the internal GrabPoints.  Contains their
+     * A wrapper class of the internal GrabPoints. Contains their
      * pixel offset distance from the OffsetGrabPoint.
      */
     public class Offset {
@@ -186,13 +183,13 @@ public class OffsetGrabPoint extends GrabPoint {
         /**
          * Update resets the pixel offsets from the OffsetGrabPoint,
          * to the current distances between the GrabPoint and the
-         * OffsetGrabPoint.  
+         * OffsetGrabPoint.
          */
         public void update() {
             offsetX = gp.getX() - getX();
             offsetY = gp.getY() - getY();
             if (gp instanceof OffsetGrabPoint) {
-                ((OffsetGrabPoint)gp).updateOffsets();
+                ((OffsetGrabPoint) gp).updateOffsets();
             }
         }
 
@@ -205,20 +202,20 @@ public class OffsetGrabPoint extends GrabPoint {
             int newY = getY() + offsetY;
 
             if (gp instanceof HorizontalGrabPoint) {
-                ((HorizontalGrabPoint)gp).set(newX, newY, true);
+                ((HorizontalGrabPoint) gp).set(newX, newY, true);
             } else if (gp instanceof VerticalGrabPoint) {
-                ((VerticalGrabPoint)gp).set(newX, newY, true);
+                ((VerticalGrabPoint) gp).set(newX, newY, true);
             } else {
                 gp.set(newX, newY);
             }
 
-//          if (Debug.debugging("eomg")) {
-//              Debug.output("OffsetGrabPoint.offset moving GB to " +
-//                           newX + ", " + newY);
-//          }
+            //          if (Debug.debugging("eomg")) {
+            //              Debug.output("OffsetGrabPoint.offset moving GB to " +
+            //                           newX + ", " + newY);
+            //          }
 
             if (gp instanceof OffsetGrabPoint) {
-                ((OffsetGrabPoint)gp).moveOffsets();
+                ((OffsetGrabPoint) gp).moveOffsets();
             }
 
         }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,38 +14,36 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeFileCrop.java,v $
 // $RCSfile: ShapeFileCrop.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 /* ShapeFileCrop class - written by Eliot T. Lebsack of the MITRE Corp. 10/16/2002. */
 
 package com.bbn.openmap.layer.shape;
 
 import java.io.*;
-import java.util.*;
-
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.io.*;
-import com.bbn.openmap.util.Debug;
 
 /**
  * Class that supports cropping of ESRI Shapefiles with a simple
- * bounding box.  Does not yet update the .shx or .dbf files.
- *
+ * bounding box. Does not yet update the .shx or .dbf files.
+ * 
  * <p>
  * <H2>Usage:</H2>
- * <DT> java com.bbn.openmap.layer.shape.ShapeFileCrop -ul lat,lon -lr lat,lon -i srcShapeFile -o destShapeFile </DT>
- * <DD> Crops the srcShapeFile, dumps the output into destShapeFile.</DD>
- * <DD> Note that this does simple rejection of entities based on their bounding boxes. </DD>
- * <DD> A better scheme (unimplemented) would be to actually crop the line segments. </DD>
+ * <DT>java com.bbn.openmap.layer.shape.ShapeFileCrop -ul lat,lon -lr
+ * lat,lon -i srcShapeFile -o destShapeFile</DT>
+ * <DD>Crops the srcShapeFile, dumps the output into destShapeFile.
+ * </DD>
+ * <DD>Note that this does simple rejection of entities based on
+ * their bounding boxes.</DD>
+ * <DD>A better scheme (unimplemented) would be to actually crop the
+ * line segments.</DD>
  * <p>
- *
+ * 
  * @author Eliot Lebsack <elebsack@mitre.org>
- * @version $Revision: 1.2 $ $Date: 2004/01/26 18:18:11 $
+ * @version $Revision: 1.3 $ $Date: 2004/10/14 18:06:05 $
  */
 public class ShapeFileCrop {
 
@@ -54,13 +52,14 @@ public class ShapeFileCrop {
 
     /** Output ShapeFile object. */
     public ShapeFile sfout = null;
-    
+
     /** Bounding Box Object used for cropping */
     ESRIBoundingBox ebb = null;
 
     /**
-     * Construct a <code>ShapeFileCrop</code> object from a pair of file names.
-     *
+     * Construct a <code>ShapeFileCrop</code> object from a pair of
+     * file names.
+     * 
      * @exception IOException if something goes wrong opening or
      *            reading the file.
      */
@@ -68,13 +67,14 @@ public class ShapeFileCrop {
         sfin = new ShapeFile(namein);
         sfout = new ShapeFile(nameout);
     }
-    
+
     /**
-     * Read the input <code>ShapeFile</code> object, and apply cropping rules
-     * to the read entities. Writes the output <code>ShapeFile</code> object,
-     * and then invokes the <code>ShapeFile</code>.verify method to fix the
-     * output file header. 
-     *
+     * Read the input <code>ShapeFile</code> object, and apply
+     * cropping rules to the read entities. Writes the output
+     * <code>ShapeFile</code> object, and then invokes the
+     * <code>ShapeFile</code> .verify method to fix the output file
+     * header.
+     * 
      * @exception IOException if something goes wrong opening or
      *            reading the file.
      */
@@ -83,9 +83,9 @@ public class ShapeFileCrop {
         ESRIPolygonRecord pr;
         int nRecordNum = 0;
         int nRecords = 0;
-        
+
         sfin.readHeader();
-        
+
         sfout.setShapeType(sfin.fileShapeType);
 
         switch (sfin.fileShapeType) {
@@ -93,20 +93,20 @@ public class ShapeFileCrop {
         case (ShapeUtils.SHAPE_TYPE_POLYGON):
             while ((pr = (ESRIPolygonRecord) sfin.getNextRecord()) != null) {
                 nRecords++;
-                if (overlapBBTest(pr.bounds)!=0) {
-                    pr.recordNumber = nRecordNum+1;
+                if (overlapBBTest(pr.bounds) != 0) {
+                    pr.recordNumber = nRecordNum + 1;
                     sfout.add(pr);
                     nRecordNum++;
                     nRecords++;
                 }
-            }   
+            }
         }
 
-        System.out.println("Number of input records = "+(nRecords+1));
-        System.out.println("Number of candidate records = "+nRecordNum);
+        System.out.println("Number of input records = " + (nRecords + 1));
+        System.out.println("Number of candidate records = " + nRecordNum);
 
-        if (nRecordNum>0)
-            sfout.verify(true,true);
+        if (nRecordNum > 0)
+            sfout.verify(true, true);
 
         sfin.close();
         sfout.close();
@@ -115,10 +115,10 @@ public class ShapeFileCrop {
     private int overlapBBTest(ESRIBoundingBox bb) {
         int result = 0;
 
-        result+=boundaryTest(bb.min.x,bb.min.y);
-        result+=boundaryTest(bb.max.x,bb.min.y);
-        result+=boundaryTest(bb.min.x,bb.max.y);
-        result+=boundaryTest(bb.max.x,bb.max.y);
+        result += boundaryTest(bb.min.x, bb.min.y);
+        result += boundaryTest(bb.max.x, bb.min.y);
+        result += boundaryTest(bb.min.x, bb.max.y);
+        result += boundaryTest(bb.max.x, bb.max.y);
 
         return result;
     }
@@ -132,11 +132,11 @@ public class ShapeFileCrop {
 
         if ((y >= ebb.min.y) && (y < ebb.max.y))
             ns++;
-                                
-        return ns*ew;
+
+        return ns * ew;
     }
 
-    public static void usage () {
+    public static void usage() {
         System.out.println("Usage: java ShapeFileCrop [args] -i <infile.shp> -o <outfile.shp>");
         System.out.println("Arguments:");
         System.out.println("-ul lat,lon     Coordinates of upper-left corner of the bounding box to use for cropping");
@@ -145,71 +145,72 @@ public class ShapeFileCrop {
     }
 
     /**
-     * The driver for the command line interface.  Reads the
-     * command line arguments and executes appropriate calls.
+     * The driver for the command line interface. Reads the command
+     * line arguments and executes appropriate calls.
      * <p>
      * See the file documentation for usage.
-     *
+     * 
      * @param args the command line arguments
      * @exception IOException if something goes wrong reading or
      *            writing the file
      */
 
-    public static void main (String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         int argc = args.length;
         String inpath = "";
         String outpath = "";
         String sllp;
         String[] sllpa;
-        
+
         ShapeFileCrop sfc = null;
 
         ESRIPoint ul = null;
         ESRIPoint lr = null;
         int index = 0;
 
-        for (int i=0;i<args.length;i++) {
+        for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-i")) {
                 inpath = args[++i];
             } else if (args[i].equals("-o")) {
                 outpath = args[++i];
             } else if (args[i].equals("-ul")) {
                 sllp = args[++i];
-//              sllpa = sllp.split(","); // jdk 1.4
+                //              sllpa = sllp.split(","); // jdk 1.4
                 index = sllp.indexOf(",");
 
                 if (index != -1) {
                     sllpa = new String[2];
                     sllpa[0] = sllp.substring(0, index);
                     sllpa[1] = sllp.substring(index + 1);
-                    ul = new ESRIPoint(Double.valueOf(sllpa[1]).doubleValue(),
-                                       Double.valueOf(sllpa[0]).doubleValue());
+                    ul = new ESRIPoint(Double.valueOf(sllpa[1]).doubleValue(), Double.valueOf(sllpa[0])
+                            .doubleValue());
                 }
 
             } else if (args[i].equals("-lr")) {
                 sllp = args[++i];
-//              sllpa = sllp.split(","); // jdk 1.4
+                //              sllpa = sllp.split(","); // jdk 1.4
                 index = sllp.indexOf(",");
                 if (index != -1) {
                     sllpa = new String[2];
                     sllpa[0] = sllp.substring(0, index);
                     sllpa[1] = sllp.substring(index + 1);
-                    lr = new ESRIPoint(Double.valueOf(sllpa[1]).doubleValue(),
-                                       Double.valueOf(sllpa[0]).doubleValue());
+                    lr = new ESRIPoint(Double.valueOf(sllpa[1]).doubleValue(), Double.valueOf(sllpa[0])
+                            .doubleValue());
                 }
 
             } else {
                 usage();
             }
         }
-        
-        if ((ul == null) || (lr == null) || (inpath.equals("")) || (outpath.equals(""))) {
+
+        if ((ul == null) || (lr == null) || (inpath.equals(""))
+                || (outpath.equals(""))) {
             usage();
         } else {
-            sfc = new ShapeFileCrop(inpath,outpath);
+            sfc = new ShapeFileCrop(inpath, outpath);
             sfc.ebb = new ESRIBoundingBox(ul, lr);
         }
-        
+
         sfc.cropShapeFile();
     }
 }

@@ -11,9 +11,8 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * LabeledOMSpline
- * Copied from LabeledOMPoly, 
- * because both OMSpline and LabeledOMPoly inherits from OMPoly
+ * LabeledOMSpline Copied from LabeledOMPoly, because both OMSpline
+ * and LabeledOMPoly inherits from OMPoly
  * 
  * @author Eric LEPICIER
  * @version 15 juil. 2002
@@ -63,23 +62,16 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
     /**
      * Create an x/y LabeledOMSpline at an offset from lat/lon.
      */
-    public LabeledOMSpline(
-        float latPoint,
-        float lonPoint,
-        int[] xypoints,
-        int cMode) {
+    public LabeledOMSpline(float latPoint, float lonPoint, int[] xypoints,
+            int cMode) {
         super(latPoint, lonPoint, xypoints, cMode);
     }
 
     /**
      * Create an x/y LabeledOMSpline at an offset from lat/lon.
      */
-    public LabeledOMSpline(
-        float latPoint,
-        float lonPoint,
-        int[] xPoints,
-        int[] yPoints,
-        int cMode) {
+    public LabeledOMSpline(float latPoint, float lonPoint, int[] xPoints,
+            int[] yPoints, int cMode) {
         super(latPoint, lonPoint, xPoints, yPoints, cMode);
     }
 
@@ -120,6 +112,7 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
 
     /**
      * Set the justification setting for the label.
+     * 
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_LEFT
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_CENTER
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_RIGHT
@@ -130,6 +123,7 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
 
     /**
      * Get the justification setting for the label.
+     * 
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_LEFT
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_CENTER
      * @see com.bbn.openmap.omGraphics.OMText#JUSTIFY_RIGHT
@@ -167,8 +161,8 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
 
     /**
      * Set the index of the OMGraphic coordinates where the drawing
-     * point of the label should be attached.  The meaning of the
-     * point differs between OMGraphic types.
+     * point of the label should be attached. The meaning of the point
+     * differs between OMGraphic types.
      */
     public void setIndex(int index) {
         this.index = index;
@@ -176,8 +170,8 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
 
     /**
      * Get the index of the OMGraphic where the String will be
-     * rendered.  The meaning of the index differs from OMGraphic type
-     * to OMGraphic type.  
+     * rendered. The meaning of the index differs from OMGraphic type
+     * to OMGraphic type.
      */
     public int getIndex() {
         return index;
@@ -186,7 +180,7 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
     /**
      * Set the x, y pixel offsets where the String should be rendered,
      * from the location determined from the index point, or from the
-     * calculated center point.  Point.x is the horizontal offset,
+     * calculated center point. Point.x is the horizontal offset,
      * Point.y is the vertical offset.
      */
     public void setOffset(Point p) {
@@ -205,9 +199,10 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
 
     /**
      * Set the angle by which the text is to rotated.
-     * @param angle the number of radians the text is to be
-     * rotated.  Measured clockwise from horizontal.  Positive numbers
-     * move the positive x axis toward the positive y axis.
+     * 
+     * @param angle the number of radians the text is to be rotated.
+     *        Measured clockwise from horizontal. Positive numbers
+     *        move the positive x axis toward the positive y axis.
      */
     public void setRotationAngle(double angle) {
         getLabel().setRotationAngle(angle);
@@ -215,6 +210,7 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
 
     /**
      * Get the current rotation of the text.
+     * 
      * @return the text rotation.
      */
     public double getRotationAngle() {
@@ -224,7 +220,7 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
     boolean matchPolyPaint = true;
 
     /**
-     * Set the line paint for the polygon.  If the text paint hasn't
+     * Set the line paint for the polygon. If the text paint hasn't
      * been explicitly set, then the text paint will be set to this
      * paint, too.
      */
@@ -237,8 +233,9 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
 
     /**
      * If not set to null, the text will be painted in a different
-     * color.  If set to null, the text paint will match the poly edge
+     * color. If set to null, the text paint will match the poly edge
      * paint.
+     * 
      * @param paint the Paint object for the text
      */
     public void setTextPaint(Paint paint) {
@@ -249,36 +246,39 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
     }
 
     Point handyPoint = new Point();
-    
+
     protected Point getTextPoint(Projection proj) {
         int i;
         int avgx = 0;
-        int avgy = 0;       
+        int avgy = 0;
 
         // Assuming that the rendertype is not unknown...
         if (renderType == RENDERTYPE_LATLON) {
-            int numPoints = rawllpts.length/2;
+            int numPoints = rawllpts.length / 2;
             if (rawllpts.length < 2) {
                 // off screen...
                 handyPoint.setLocation(-10, -10);
                 return handyPoint;
             }
             if (locateAtCenter) {
-                for (i = 0; i < rawllpts.length; i+=2) {
-                    proj.forward(rawllpts[i], rawllpts[i+1], 
-                                 handyPoint, true);
-                    
+                for (i = 0; i < rawllpts.length; i += 2) {
+                    proj.forward(rawllpts[i], rawllpts[i + 1], handyPoint, true);
+
                     avgy += handyPoint.getY();
                     avgx += handyPoint.getX();
                 }
-                avgy = avgy/numPoints;
-                avgx = avgx/numPoints;
+                avgy = avgy / numPoints;
+                avgx = avgx / numPoints;
                 handyPoint.setLocation(avgx, avgy);
             } else {
-                if (index < 0) index = 0;
-                if (index > numPoints) index = numPoints - 1;
-                proj.forward(rawllpts[2*index], rawllpts[2*index+1],
-                             handyPoint, true);
+                if (index < 0)
+                    index = 0;
+                if (index > numPoints)
+                    index = numPoints - 1;
+                proj.forward(rawllpts[2 * index],
+                        rawllpts[2 * index + 1],
+                        handyPoint,
+                        true);
             }
         } else {
             int[][] x = xpoints;
@@ -295,23 +295,24 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
                     avgx += x[0][i];
                     avgy += y[0][i];
                 }
-                handyPoint.setLocation(avgx/x[0].length, avgy/x[0].length);
+                handyPoint.setLocation(avgx / x[0].length, avgy / x[0].length);
             } else {
-                if (index < 0) index = 0;
-                if (index >= x[0].length) index = x[0].length - 1;
+                if (index < 0)
+                    index = 0;
+                if (index >= x[0].length)
+                    index = x[0].length - 1;
                 handyPoint.setLocation(x[0][index], y[0][index]);
             }
         }
         return handyPoint;
     }
-    
 
     public boolean generate(Projection proj) {
         boolean ret = super.generate(proj);
 
         Point p = getTextPoint(proj);
-        label.setX((int)(p.getX() + getOffset().getX()));
-        label.setY((int)(p.getY() + getOffset().getY()));
+        label.setX((int) (p.getX() + getOffset().getX()));
+        label.setY((int) (p.getY() + getOffset().getY()));
 
         if (Debug.debugging("labeled")) {
             Debug.output("Setting label(" + label.getData() + ") to " + p);

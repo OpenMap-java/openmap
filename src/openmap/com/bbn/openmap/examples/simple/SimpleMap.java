@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/simple/SimpleMap.java,v $
 // $RCSfile: SimpleMap.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.examples.simple;
 
@@ -30,7 +29,6 @@ import javax.swing.JFrame;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.layer.shape.ShapeLayer;
-
 
 /**
  * This is a simple application that uses the OpenMap MapBean to show
@@ -56,9 +54,9 @@ public class SimpleMap {
         MapBean mapBean = new MapBean();
 
         // Create a ShapeLayer to show world political boundaries.
-        // Set the properties of the layer.  This assumes that the
+        // Set the properties of the layer. This assumes that the
         // datafiles "dcwpo-browse.shp" and "dcwpo-browse.ssx" are in
-        // a path specified in the CLASSPATH variable.  These files
+        // a path specified in the CLASSPATH variable. These files
         // are distributed with OpenMap and reside in the toplevel
         // "share" subdirectory.
         ShapeLayer shapeLayer = new ShapeLayer();
@@ -77,9 +75,10 @@ public class SimpleMap {
         frame.getContentPane().add(mapBean);
 
         frame.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    System.exit(0);
-                }});
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
 
         // Display the frame
         frame.setVisible(true);

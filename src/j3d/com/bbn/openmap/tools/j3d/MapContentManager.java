@@ -2,7 +2,7 @@
 //
 // <copyright>
 //
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/MapContentManager.java,v $
 // $RCSfile: MapContentManager.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/09 13:33:36 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:38 $
 // $Author: dietrick $
 //
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.j3d;
 
@@ -27,24 +26,17 @@ import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import com.sun.j3d.utils.applet.MainFrame;
-import com.sun.j3d.utils.behaviors.keyboard.*;
-import com.sun.j3d.utils.behaviors.mouse.*;
-import com.sun.j3d.utils.universe.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Enumeration;
 import javax.media.j3d.*;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.vecmath.*;
 
 /**
- * The 3D manager that takes an OpenMap MapHandler, and creates a 3D world from
- * the layers in it. The layer's OMGraphics are converted to 3D objects.
- *
- * @author    dietrick
- * @created   April 25, 2002
+ * The 3D manager that takes an OpenMap MapHandler, and creates a 3D
+ * world from the layers in it. The layer's OMGraphics are converted
+ * to 3D objects.
+ * 
+ * @author dietrick
+ * @created April 25, 2002
  */
 public class MapContentManager extends OM3DManager {
 
@@ -53,53 +45,56 @@ public class MapContentManager extends OM3DManager {
     }
 
     /**
-     * @param mapHandler  the OpenMap MapHandler.
+     * @param mapHandler the OpenMap MapHandler.
      */
     public MapContentManager(MapHandler mapHandler, int contentMask) {
         this(mapHandler, new Background(0f, 0f, 0f), contentMask);
     }
 
-
     /**
-     * @param mapHandler  the OpenMap MapHandler.
-     * @param background  the background object to use for the 3D scene. Use
-     *      this to change the sky color, for instance.
+     * @param mapHandler the OpenMap MapHandler.
+     * @param background the background object to use for the 3D
+     *        scene. Use this to change the sky color, for instance.
      */
-    public MapContentManager(MapHandler mapHandler, Background background, int contentMask) {
+    public MapContentManager(MapHandler mapHandler, Background background,
+            int contentMask) {
         super.init();
         createWorld(mapHandler, background, contentMask);
     }
 
-
-    protected void createWorld(MapHandler mapHandler, Background background, int contentMask) {
+    protected void createWorld(MapHandler mapHandler, Background background,
+                               int contentMask) {
         setSceneBackground(background);
         // objRootBG gets created in super class
         addMapContent(mapHandler, objRootBG, contentMask);
 
-        // Important!!  Compiles the universe
-         ((UniverseManager)universe).makeLive();
+        // Important!! Compiles the universe
+        ((UniverseManager) universe).makeLive();
     }
 
-
     /**
-     * This is the main function that gets called when the MapContentViewer is
-     * created, to create the world objects in the universe. It builds the
-     * objects to put in the J3D world from the objects contained within the
-     * MapHandler. This method calls setCameraLocation(), so you can modify
-     * where the camera is placed there, and then calls createMapContent() to
-     * have a BranchGroup created with 3D objects. You can modify those methods
-     * to adjust how things get created.
-     *
-     * @param mapHandler  The feature to be added to the MapContent attribute
-     * @param worldGroup  The feature to be added to the MapContent attribute
+     * This is the main function that gets called when the
+     * MapContentViewer is created, to create the world objects in the
+     * universe. It builds the objects to put in the J3D world from
+     * the objects contained within the MapHandler. This method calls
+     * setCameraLocation(), so you can modify where the camera is
+     * placed there, and then calls createMapContent() to have a
+     * BranchGroup created with 3D objects. You can modify those
+     * methods to adjust how things get created.
+     * 
+     * @param mapHandler The feature to be added to the MapContent
+     *        attribute
+     * @param worldGroup The feature to be added to the MapContent
+     *        attribute
      */
-    protected void addMapContent(MapHandler mapHandler, BranchGroup worldGroup, int contentMask) {
+    protected void addMapContent(MapHandler mapHandler, BranchGroup worldGroup,
+                                 int contentMask) {
 
         Projection projection = null;
 
         if (mapHandler != null) {
 
-            MapBean mapBean = (MapBean)mapHandler.get("com.bbn.openmap.MapBean");
+            MapBean mapBean = (MapBean) mapHandler.get("com.bbn.openmap.MapBean");
 
             if (mapBean != null) {
                 projection = mapBean.getProjection();
@@ -118,16 +113,18 @@ public class MapContentManager extends OM3DManager {
             background.setApplicationBounds(bs);
 
             mapTransformGroup.addChild(background);
-            
+
             createMapContent(mapTransformGroup, mapHandler, contentMask);
 
-            // Lights up the whole world.  If this isn't added, the land is black
+            // Lights up the whole world. If this isn't added, the
+            // land is black
             AmbientLight ambientLight = new AmbientLight();
             ambientLight.setInfluencingBounds(bs);
             worldGroup.addChild(ambientLight);
 
             /////////
-            Behavior beh = getMotionBehavior((TransformGroup)getCamera().getNode(), projection);
+            Behavior beh = getMotionBehavior((TransformGroup) getCamera().getNode(),
+                    projection);
             beh.setSchedulingBounds(bs);
 
             worldGroup.addChild(beh);
@@ -136,8 +133,8 @@ public class MapContentManager extends OM3DManager {
         }
     }
 
-    protected void createMapContent(TransformGroup mapTransformGroup, MapHandler mapHandler,
-                                    int contentMask) {
+    protected void createMapContent(TransformGroup mapTransformGroup,
+                                    MapHandler mapHandler, int contentMask) {
         if ((contentMask & CONTENT_MASK_OMGRAPHICHANDLERLAYERS) != 0) {
             mapTransformGroup.addChild(createLayerMapContent(mapHandler));
         }
@@ -145,37 +142,35 @@ public class MapContentManager extends OM3DManager {
         mapTransformGroup.addChild(createMapContent(mapHandler, contentMask));
     }
 
-
     /**
-     * Called from addMapContent. Create a BranchGroup, and put your 3D objects
-     * in it. The MapBean in the MapHandler has a projection that can be used to
-     * lay things out, and the layers have objects to render.
-     *
-     * @param mapHandler  Description of the Parameter
-     * @return            Description of the Return Value
+     * Called from addMapContent. Create a BranchGroup, and put your
+     * 3D objects in it. The MapBean in the MapHandler has a
+     * projection that can be used to lay things out, and the layers
+     * have objects to render.
+     * 
+     * @param mapHandler Description of the Parameter
+     * @return Description of the Return Value
      */
     protected Group createLayerMapContent(MapHandler mapHandler) {
         return new LayerMapContent(mapHandler);
     }
 
-
     /**
-     * @param mapHandler  Description of the Parameter
-     * @return            Description of the Return Value
+     * @param mapHandler Description of the Parameter
+     * @return Description of the Return Value
      */
     protected Group createMapContent(MapHandler mapHandler, int contentMask) {
         return new MapContent(mapHandler, contentMask);
     }
 
-
     /**
-     * Called from addMapContent(), to set up the Transforms for motion. The
-     * projection is provided in case you want to locate the camera or map in a
-     * certain geographical location.
-     *
-     * @param cameraTransform  Description of the Parameter
-     * @param projection       Description of the Parameter
-     * @return                 The motionBehavior value
+     * Called from addMapContent(), to set up the Transforms for
+     * motion. The projection is provided in case you want to locate
+     * the camera or map in a certain geographical location.
+     * 
+     * @param cameraTransform Description of the Parameter
+     * @param projection Description of the Parameter
+     * @return The motionBehavior value
      */
     public Behavior getMotionBehavior(TransformGroup cameraTransform,
                                       Projection projection) {
@@ -183,10 +178,9 @@ public class MapContentManager extends OM3DManager {
         return new OMKeyBehavior(cameraTransform, projection);
     }
 
-
     public static JFrame getFrame(String title, int width, int height,
-                                  MapHandler mapHandler,
-                                  Background background, int contentMask) {
+                                  MapHandler mapHandler, Background background,
+                                  int contentMask) {
 
         JFrame frame = new JFrame(title);
         frame.setSize(width, height);

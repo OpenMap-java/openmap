@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,29 +14,27 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/HintsMapBeanRepaintPolicy.java,v $
 // $RCSfile: HintsMapBeanRepaintPolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:05 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap;
 
-import java.awt.RenderingHints;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.util.Iterator;
 import java.util.Properties;
-import java.util.Vector;
 
 import com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy;
-import com.bbn.openmap.util.ComponentFactory;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
 
 /**
+ * The class lets you set RenderingHints on the MapBean, to set
+ * anti-aliasing, etc. This class can be added to the OpenMap
+ * application via the openmap.components property in the
+ * openmap.properties file.
  */
-public class HintsMapBeanRepaintPolicy extends StandardMapBeanRepaintPolicy implements Cloneable {
+public class HintsMapBeanRepaintPolicy extends StandardMapBeanRepaintPolicy
+        implements Cloneable {
 
     protected RenderingHintsRenderPolicy hints;
 
@@ -61,9 +59,9 @@ public class HintsMapBeanRepaintPolicy extends StandardMapBeanRepaintPolicy impl
     /**
      * A hook for the RepaintPolicy to make any adjustments to the
      * java.awt.Graphics object before sending the Graphics object to
-     * the layers for painting.  Gives the policy a chance to make
+     * the layers for painting. Gives the policy a chance to make
      * rendering hint changes on Graphic2D objects, setting
-     * anti-aliasing configurations, etc.  No modifications are made.
+     * anti-aliasing configurations, etc. No modifications are made.
      */
     public Graphics modifyGraphicsForPainting(Graphics graphics) {
         if (hints != null) {

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,35 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/BufferedShapeLayer.java,v $
 // $RCSfile: BufferedShapeLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/05 18:15:08 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.shape;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.*;
-import java.io.File;
 import java.util.*;
+
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.SwingWorker;
 import com.bbn.openmap.io.FormatException;
 
 /**
- * An OpenMap Layer that displays shape files.  This loads the data up
- * front and then just reprojects/repaints when needed.  Note that the
+ * An OpenMap Layer that displays shape files. This loads the data up
+ * front and then just reprojects/repaints when needed. Note that the
  * ESRIRecords have been updated so that the OMGraphics that get
  * created from them are loaded with an Integer object that notes the
- * number of the record as it was read from the .shp file.  This lets
+ * number of the record as it was read from the .shp file. This lets
  * you align the object with the correct attribute data in the .dbf
  * file.
  */
@@ -58,15 +52,17 @@ public class BufferedShapeLayer extends ShapeLayer {
 
     /**
      * Initializes this layer from the given properties.
+     * 
      * @param props the <code>Properties</code> holding settings for
-     * this layer
+     *        this layer
      */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
         try {
             setList(getWholePlanet());
         } catch (FormatException fe) {
-            Debug.error("BufferedShapeLayer.setProperties(): FormatException reading file.\n" + fe.getMessage());
+            Debug.error("BufferedShapeLayer.setProperties(): FormatException reading file.\n"
+                    + fe.getMessage());
             setList(null);
         }
     }
@@ -79,29 +75,31 @@ public class BufferedShapeLayer extends ShapeLayer {
         OMGeometryList masterList = new OMGeometryList();
 
         if (Debug.debugging("shape")) {
-            Debug.output(getName()+
-                    "|BufferedShapeLayer.getWholePlanet(): "+
-                    "fetching all graphics.");
+            Debug.output(getName() + "|BufferedShapeLayer.getWholePlanet(): "
+                    + "fetching all graphics.");
         }
         try {
-            ESRIRecord records[] = spatialIndex.locateRecords(
-                    -180d, -90d, 180d, 90d);
+            ESRIRecord records[] = spatialIndex.locateRecords(-180d,
+                    -90d,
+                    180d,
+                    90d);
             int nRecords = records.length;
 
-            for (int i=0; i < nRecords; i++) {
+            for (int i = 0; i < nRecords; i++) {
                 OMGeometry geom = records[i].addOMGeometry(masterList);
-                geom.setAppObject(new NumAndBox(records[i].getRecordNumber(),
-                                                records[i].getBoundingBox()));
+                geom.setAppObject(new NumAndBox(records[i].getRecordNumber(), records[i].getBoundingBox()));
             }
 
         } catch (java.io.IOException ex) {
             ex.printStackTrace();
         } catch (java.lang.NullPointerException npe) {
-            Debug.error(getName() + "|BufferedShapeLayer spatial index can't access files.");
+            Debug.error(getName()
+                    + "|BufferedShapeLayer spatial index can't access files.");
         }
 
         if (Debug.debugging("shape")) {
-            Debug.output(getName()+ "|BufferedShapeLayer.getWholePlanet(): finished fetch.");
+            Debug.output(getName()
+                    + "|BufferedShapeLayer.getWholePlanet(): finished fetch.");
         }
 
         return masterList;
@@ -111,7 +109,8 @@ public class BufferedShapeLayer extends ShapeLayer {
 
         OMGraphicList masterList = getList();
 
-        if (spatialIndex == null) return new OMGraphicList();
+        if (spatialIndex == null)
+            return new OMGraphicList();
 
         try {
             if (masterList == null) {
@@ -136,21 +135,21 @@ public class BufferedShapeLayer extends ShapeLayer {
 
         // grab local refs
         ESRIPoint min, max;
-        
+
         double xmin = (double) Math.min(ulLon, lrLon);
         double xmax = (double) Math.max(ulLon, lrLon);
         double ymin = (double) Math.min(ulLat, lrLat);
         double ymax = (double) Math.max(ulLat, lrLat);
-        
+
         boolean dateLine = false;
 
-        // check for dateline anomaly on the screen.  we check
+        // check for dateline anomaly on the screen. we check
         // for ulLon >= lrLon, but we need to be careful of
         // the check for equality because of floating point
         // arguments...
 
-        if ((ulLon > lrLon) ||
-            MoreMath.approximately_equal(ulLon, lrLon, .001f)) {
+        if ((ulLon > lrLon)
+                || MoreMath.approximately_equal(ulLon, lrLon, .001f)) {
             if (Debug.debugging("shape")) {
                 Debug.output("Dateline is on screen");
             }
@@ -165,7 +164,7 @@ public class BufferedShapeLayer extends ShapeLayer {
 
             // If you can test for bounding box intersections,
             // then use the check to see if you can eliminate the
-            // object from being drawn.  Otherwise, just draw it
+            // object from being drawn. Otherwise, just draw it
             // and let Java clip it.
             geom.setVisible(true);
 
@@ -175,21 +174,36 @@ public class BufferedShapeLayer extends ShapeLayer {
 
                 if (dateLine) {
 
-                    if (!SpatialIndex.intersects(
-                        ulLon, ymin, 180.0d, ymax,
-                        min.x, min.y, max.x, max.y) &&
+                    if (!SpatialIndex.intersects(ulLon,
+                            ymin,
+                            180.0d,
+                            ymax,
+                            min.x,
+                            min.y,
+                            max.x,
+                            max.y)
+                            &&
 
-                        !SpatialIndex.intersects(
-                            -180.0d, ymin, lrLon, ymax,
-                            min.x, min.y, max.x, max.y)) {
+                            !SpatialIndex.intersects(-180.0d,
+                                    ymin,
+                                    lrLon,
+                                    ymax,
+                                    min.x,
+                                    min.y,
+                                    max.x,
+                                    max.y)) {
 
                         geom.setVisible(false);
                     }
                 } else {
-                    if (!SpatialIndex.intersects(
-                        xmin, ymin, xmax, ymax,
-                        min.x, min.y, max.x, max.y))
-                    {
+                    if (!SpatialIndex.intersects(xmin,
+                            ymin,
+                            xmax,
+                            ymax,
+                            min.x,
+                            min.y,
+                            max.x,
+                            max.y)) {
                         geom.setVisible(false);
                     }
                 }

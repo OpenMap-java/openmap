@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,20 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/CSpecPalette.java,v $
 // $RCSfile: CSpecPalette.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.specialist;
-
 
 /*  AWT & Schwing  */
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -38,40 +35,41 @@ import com.bbn.openmap.CSpecialist.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 
-
 /**
  * The CSpecialist palette
  */
-public class CSpecPalette extends JPanel implements com.bbn.openmap.util.Palette {
+public class CSpecPalette extends JPanel implements
+        com.bbn.openmap.util.Palette {
 
     private String clientID = null;
     private CSpecLayer layer = null;
     private GridBagLayout gridbag = null;
     private GridBagConstraints constraints = null;
 
-    protected CSpecPalette(UWidget[] widgets, String clientID, 
-                           CSpecLayer layer) {
+    protected CSpecPalette(UWidget[] widgets, String clientID, CSpecLayer layer) {
 
         super();
         this.clientID = clientID;
         this.layer = layer;
 
-//      setLayout(new GridLayout(widgets.length, 1));
+        //      setLayout(new GridLayout(widgets.length, 1));
 
         gridbag = new GridBagLayout();
         constraints = new GridBagConstraints();
         setLayout(gridbag);
-        constraints.fill = GridBagConstraints.HORIZONTAL; // fill horizontally
-        constraints.gridwidth = GridBagConstraints.REMAINDER; //another row
-        constraints.anchor = GridBagConstraints.EAST; // tack to the left edge
-//      constraints.weightx = 0.0;
+        constraints.fill = GridBagConstraints.HORIZONTAL; // fill
+                                                          // horizontally
+        constraints.gridwidth = GridBagConstraints.REMAINDER; //another
+                                                              // row
+        constraints.anchor = GridBagConstraints.EAST; // tack to the
+                                                      // left edge
+        //      constraints.weightx = 0.0;
         createPalette(widgets);
         setSize(150, 300);
     }
 
-
     /**
-     *
+     *  
      */
     private void createPalette(UWidget[] widgets) {
 
@@ -82,22 +80,21 @@ public class CSpecPalette extends JPanel implements com.bbn.openmap.util.Palette
                 final CheckButton[] buttons = cb.buttons();
                 final String boxlabel = cb.label();
                 ActionListener al = new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            int index = Integer.parseInt(
-                                e.getActionCommand(), 10);
-                            buttons[index].checked = !buttons[index].checked;
-                            if (Debug.debugging("cspec")) {
-                                Debug.output("Checkbutton " + index +
-                                             " is " + buttons[index].checked);
-                            }
-                            try {
-                                cb.selected(boxlabel, buttons[index], clientID);
-                            } catch (Throwable t) {
-                                layer.forgetPalette();
-                            }
-                            layer.setPaletteIsDirty(true);
+                    public void actionPerformed(ActionEvent e) {
+                        int index = Integer.parseInt(e.getActionCommand(), 10);
+                        buttons[index].checked = !buttons[index].checked;
+                        if (Debug.debugging("cspec")) {
+                            Debug.output("Checkbutton " + index + " is "
+                                    + buttons[index].checked);
                         }
-                    };
+                        try {
+                            cb.selected(boxlabel, buttons[index], clientID);
+                        } catch (Throwable t) {
+                            layer.forgetPalette();
+                        }
+                        layer.setPaletteIsDirty(true);
+                    }
+                };
                 String[] buttonLabels = new String[buttons.length];
                 boolean[] checked = new boolean[buttons.length];
                 for (int j = 0; j < buttons.length; j++) {
@@ -105,9 +102,9 @@ public class CSpecPalette extends JPanel implements com.bbn.openmap.util.Palette
                     checked[j] = buttons[j].checked;
                 }
                 JPanel jp = PaletteHelper.createCheckbox(boxlabel,
-                                                         buttonLabels,
-                                                         checked,
-                                                         al);
+                        buttonLabels,
+                        checked,
+                        al);
                 gridbag.setConstraints(jp, constraints);
                 add(jp);
                 break;
@@ -119,27 +116,26 @@ public class CSpecPalette extends JPanel implements com.bbn.openmap.util.Palette
                 String selected_button = rb.selected_button();
                 JPanel jp = PaletteHelper.createPaletteJPanel(boxlabel);
                 ActionListener al = new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            int index = Integer.parseInt(
-                                e.getActionCommand(), 10);
-                            if (Debug.debugging("cspec")) {
-                                Debug.output("Radiobutton " + index +
-                                             " is selected");
-                            }
-                            try {
-                                rb.selected(boxlabel, buttons[index], clientID);
-                            } catch (Throwable t) {
-                                layer.forgetPalette();
-                            }
-                            layer.setPaletteIsDirty(true);
+                    public void actionPerformed(ActionEvent e) {
+                        int index = Integer.parseInt(e.getActionCommand(), 10);
+                        if (Debug.debugging("cspec")) {
+                            Debug.output("Radiobutton " + index
+                                    + " is selected");
                         }
-                    };
+                        try {
+                            rb.selected(boxlabel, buttons[index], clientID);
+                        } catch (Throwable t) {
+                            layer.forgetPalette();
+                        }
+                        layer.setPaletteIsDirty(true);
+                    }
+                };
                 ButtonGroup group = new ButtonGroup();
                 for (int j = 0; j < buttons.length; j++) {
                     JRadioButton jrb = new JRadioButton(buttons[j]);
                     if (buttons[j].equals(selected_button))
                         jrb.setSelected(true);
-                    jrb.setActionCommand(""+j);//index of checked
+                    jrb.setActionCommand("" + j);//index of checked
                     jrb.addActionListener(al);
                     group.add(jrb);
                     jp.add(jrb);
@@ -156,26 +152,24 @@ public class CSpecPalette extends JPanel implements com.bbn.openmap.util.Palette
                 short value = slide.value();
                 boolean vertical = slide.vertical();
                 JPanel jp = PaletteHelper.createPaletteJPanel(boxlabel);
-                final JSlider jslide = new JSlider(
-                    (vertical) ? JSlider.VERTICAL : JSlider.HORIZONTAL,
-                    start,//min
-                    end,//max
-                    value
-                    );
+                final JSlider jslide = new JSlider((vertical) ? JSlider.VERTICAL
+                        : JSlider.HORIZONTAL, start,//min
+                        end,//max
+                        value);
                 jslide.addChangeListener(new ChangeListener() {
-                        public void stateChanged(ChangeEvent e) {
-                            int val = jslide.getValue();
-                            if (Debug.debugging("cspec")) {
-                                Debug.output("Slider value is " + val);
-                            }
-                            try {
-                                slide.set(boxlabel, (short)val, clientID);
-                            } catch (Throwable t) {
-                                layer.forgetPalette();
-                            }
-                            layer.setPaletteIsDirty(true);
+                    public void stateChanged(ChangeEvent e) {
+                        int val = jslide.getValue();
+                        if (Debug.debugging("cspec")) {
+                            Debug.output("Slider value is " + val);
                         }
-                    });
+                        try {
+                            slide.set(boxlabel, (short) val, clientID);
+                        } catch (Throwable t) {
+                            layer.forgetPalette();
+                        }
+                        layer.setPaletteIsDirty(true);
+                    }
+                });
                 jp.add(jslide);
                 gridbag.setConstraints(jp, constraints);
                 add(jp);
@@ -187,23 +181,22 @@ public class CSpecPalette extends JPanel implements com.bbn.openmap.util.Palette
                 final String boxlabel = bb.label();
                 JPanel jp = PaletteHelper.createPaletteJPanel(boxlabel);
                 ActionListener al = new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            int index = Integer.parseInt(e.getActionCommand(), 10);
-                            if (Debug.debugging("cspec")) {
-                                Debug.output("ButtonBox " + index +
-                                             " pressed");
-                            }
-                            try {
-                                bb.pressed(boxlabel, buttons[index], clientID);
-                            } catch (Throwable t) {
-                                layer.forgetPalette();
-                            }
-                            layer.setPaletteIsDirty(true);
+                    public void actionPerformed(ActionEvent e) {
+                        int index = Integer.parseInt(e.getActionCommand(), 10);
+                        if (Debug.debugging("cspec")) {
+                            Debug.output("ButtonBox " + index + " pressed");
                         }
-                    };
+                        try {
+                            bb.pressed(boxlabel, buttons[index], clientID);
+                        } catch (Throwable t) {
+                            layer.forgetPalette();
+                        }
+                        layer.setPaletteIsDirty(true);
+                    }
+                };
                 for (int j = 0; j < buttons.length; j++) {
                     JButton jb = new JButton(buttons[j]);
-                    jb.setActionCommand(""+j);//index of checked
+                    jb.setActionCommand("" + j);//index of checked
                     jb.addActionListener(al);
                     jp.add(jb);
                 }
@@ -220,27 +213,25 @@ public class CSpecPalette extends JPanel implements com.bbn.openmap.util.Palette
                 final JList jlist = new JList(data);
                 jlist.setPreferredSize(new java.awt.Dimension(150, 150));
                 JScrollPane jsp = new JScrollPane(jlist);
-                jsp.setBorder(
-                    BorderFactory.createTitledBorder(
-                        BorderFactory.createEtchedBorder(),
+                jsp.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                         boxlabel));
 
                 jlist.addListSelectionListener(new ListSelectionListener() {
-                        public void valueChanged(ListSelectionEvent e) {
-                            String sel = (String)(jlist.getSelectedValue());
-                            if (Debug.debugging("cspec")) {
-                                Debug.output("ListBox " + sel + " selected");
-                            }
-                            try {
-                                lb.selected(boxlabel, sel, clientID);
-                            } catch (Throwable t) {
-                                layer.forgetPalette();
-                            }
-                            layer.setPaletteIsDirty(true);
+                    public void valueChanged(ListSelectionEvent e) {
+                        String sel = (String) (jlist.getSelectedValue());
+                        if (Debug.debugging("cspec")) {
+                            Debug.output("ListBox " + sel + " selected");
                         }
-                    });
+                        try {
+                            lb.selected(boxlabel, sel, clientID);
+                        } catch (Throwable t) {
+                            layer.forgetPalette();
+                        }
+                        layer.setPaletteIsDirty(true);
+                    }
+                });
 
-                for (int j=0; j<data.length; j++) {
+                for (int j = 0; j < data.length; j++) {
                     if (selected.equals(data[j])) {
                         jlist.getSelectedIndex();
                         break;
@@ -258,28 +249,25 @@ public class CSpecPalette extends JPanel implements com.bbn.openmap.util.Palette
                 final JTextArea jt = new JTextArea(contents);
                 JScrollPane jsp = new JScrollPane(jt);
                 jsp.setPreferredSize(new java.awt.Dimension(150, 150));
-                jsp.setBorder(
-                    BorderFactory.createTitledBorder(
-                        BorderFactory.createEtchedBorder(),
+                jsp.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                         boxlabel));
 
                 ActionListener al = new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            String cmd = e.getActionCommand();
-                            if (cmd.equals("ok")) {
-                                try {
-                                    Debug.message("cspec", "TextBox pressed.");
-                                    tb.pressed(
-                                        boxlabel, jt.getText(), clientID);
-                                } catch (Throwable t) {
-                                    layer.forgetPalette();
-                                }
-                                layer.setPaletteIsDirty(true);
-                            } else if (cmd.equals("clear")) {
-                                jt.setText("");
+                    public void actionPerformed(ActionEvent e) {
+                        String cmd = e.getActionCommand();
+                        if (cmd.equals("ok")) {
+                            try {
+                                Debug.message("cspec", "TextBox pressed.");
+                                tb.pressed(boxlabel, jt.getText(), clientID);
+                            } catch (Throwable t) {
+                                layer.forgetPalette();
                             }
+                            layer.setPaletteIsDirty(true);
+                        } else if (cmd.equals("clear")) {
+                            jt.setText("");
                         }
-                    };
+                    }
+                };
 
                 JPanel buttonsPanel = new JPanel();
                 JButton clear = new JButton("Clear");
@@ -296,7 +284,7 @@ public class CSpecPalette extends JPanel implements com.bbn.openmap.util.Palette
                 gridbag.setConstraints(buttonsPanel, constraints);
                 add(buttonsPanel);
                 break;
-            } 
+            }
             default:
                 System.err.println("CSpecPalette(): unknown widget!");
                 break;

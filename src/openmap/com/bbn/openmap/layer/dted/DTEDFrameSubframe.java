@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,21 +12,21 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameSubframe.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameSubframe.java,v
+// $
 // $RCSfile: DTEDFrameSubframe.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.dted;
 
 import com.bbn.openmap.omGraphics.OMRaster;
-import com.bbn.openmap.util.Debug;
 
-public class DTEDFrameSubframe{
+public class DTEDFrameSubframe {
     // Types of slope shading
     /** Empty image. */
     public static final int NOSHADING = 0;
@@ -38,8 +38,10 @@ public class DTEDFrameSubframe{
     public static final int FEETSHADING = 3;
     /** Test markings, for the boundary of the subframe. */
     public static final int BOUNDARYSHADING = 4;
-    /** Colorized slope shading.  Color basnds are based on elevation,
-     * and are accented by shaded indications. */
+    /**
+     * Colorized slope shading. Color basnds are based on elevation,
+     * and are accented by shaded indications.
+     */
     public static final int COLOREDSHADING = 5;
     /** DTED LEVEL 0, 1km posts. */
     public static final int LEVEL_0 = 0;
@@ -51,15 +53,15 @@ public class DTEDFrameSubframe{
     public static final int DEFAULT_BANDHEIGHT = 25;
     /** Default contrast setting for slope shading. */
     public static final int DEFAULT_SLOPE_ADJUST = 3;
-    
-    public DTEDFrameSubframeInfo si; 
+
+    public DTEDFrameSubframeInfo si;
     public OMRaster image;
 
-    public DTEDFrameSubframe(DTEDFrameSubframeInfo info){
+    public DTEDFrameSubframe(DTEDFrameSubframeInfo info) {
         si = info.makeClone();
     }
 
-//      public void finalize(){
-//      Debug.message("gc", "  DTEDFrameSubframe: getting GC'd");
-//      }
+    //      public void finalize(){
+    //      Debug.message("gc", " DTEDFrameSubframe: getting GC'd");
+    //      }
 }

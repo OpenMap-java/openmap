@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolyline.java,v $
 // $RCSfile: EsriPolyline.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:05:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.dataAccess.shape;
 
@@ -28,9 +27,9 @@ import com.bbn.openmap.proj.ProjMath;
 
 /**
  * An extension to OMPoly for polylines that typecasts a specific Esri
- * graphic type.  Used to ensure that all OMGraphics added to a
- * EsriGraphicList is of the same type. 
- *
+ * graphic type. Used to ensure that all OMGraphics added to a
+ * EsriGraphicList is of the same type.
+ * 
  * @author Doug Van Auken
  */
 public class EsriPolyline extends OMPoly implements EsriGraphic, Cloneable {
@@ -46,15 +45,15 @@ public class EsriPolyline extends OMPoly implements EsriGraphic, Cloneable {
 
     /**
      * The lat/lon extent of the EsriGraphic, assumed to contain miny,
-     * minx, maxy maxx in order of the array.  
+     * minx, maxy maxx in order of the array.
      */
     public void setExtents(float[] extents) {
         this.extents = extents;
     }
- 
-   /**
+
+    /**
      * The lat/lon extent of the EsriGraphic, returned as miny, minx,
-     * maxy maxx in order of the array.  
+     * maxy maxx in order of the array.
      */
     public float[] getExtents() {
         if (extents == null) {
@@ -70,18 +69,22 @@ public class EsriPolyline extends OMPoly implements EsriGraphic, Cloneable {
 
         // Check both graphic extents in case they are inadvertently
         // switched.
-        for (int i = 0; i < graphicExtents.length; i+=2) {
-            if (ex[0] > graphicExtents[i]) ex[0] = graphicExtents[i];
-            if (ex[1] > graphicExtents[i+1]) ex[1] = graphicExtents[i+1];
-            if (ex[2] < graphicExtents[i]) ex[2] = graphicExtents[i];
-            if (ex[3] < graphicExtents[i+1]) ex[3] = graphicExtents[i+1];
+        for (int i = 0; i < graphicExtents.length; i += 2) {
+            if (ex[0] > graphicExtents[i])
+                ex[0] = graphicExtents[i];
+            if (ex[1] > graphicExtents[i + 1])
+                ex[1] = graphicExtents[i + 1];
+            if (ex[2] < graphicExtents[i])
+                ex[2] = graphicExtents[i];
+            if (ex[3] < graphicExtents[i + 1])
+                ex[3] = graphicExtents[i + 1];
         }
 
-//      System.out.println("extents of Polyline: " +
-//                         ex[1] + ", " +
-//                         ex[0] + ", " +
-//                         ex[3] + ", " +
-//                         ex[2]);
+        //      System.out.println("extents of Polyline: " +
+        //                         ex[1] + ", " +
+        //                         ex[0] + ", " +
+        //                         ex[3] + ", " +
+        //                         ex[2]);
     }
 
     public static EsriPolyline convert(OMPoly ompoly) {

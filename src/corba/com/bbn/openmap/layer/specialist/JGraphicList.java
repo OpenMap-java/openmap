@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,22 +14,15 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JGraphicList.java,v $
 // $RCSfile: JGraphicList.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.CColorPackage.EColor;
-import com.bbn.openmap.CSpecialist.EComp;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
-import com.bbn.openmap.CSpecialist.UGraphic;
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.Projection;
-import java.awt.Color;
-import java.io.Serializable;
 
 /** class JGraphic */
 public class JGraphicList extends OMGraphicList {
@@ -40,32 +33,33 @@ public class JGraphicList extends OMGraphicList {
     public JGraphicList() {
         super();
     };
-    
+
     /**
-     * Construct an OMGraphicList with an initial capacity. 
-     * @param initialCapacity the initial capacity of the list 
+     * Construct an OMGraphicList with an initial capacity.
+     * 
+     * @param initialCapacity the initial capacity of the list
      */
     public JGraphicList(int initialCapacity) {
-        super (initialCapacity, 0);
+        super(initialCapacity);
     };
 
     /**
-     * Construct an OMGraphicList with an initial capacity and
-     * a standard increment value.
-     * @param initialCapacity the initial capacity of the list 
-     * @param capacityIncrement the capacityIncrement for resizing 
+     * Construct an OMGraphicList with an initial capacity and a
+     * standard increment value.
+     * 
+     * @param initialCapacity the initial capacity of the list
+     * @param capacityIncrement the capacityIncrement for resizing
      */
     public JGraphicList(int initialCapacity, int capacityIncrement) {
-        super (initialCapacity, capacityIncrement);
+        super(initialCapacity);
     };
 
     public OMGraphic getOMGraphicWithId(String gID) {
         java.util.Iterator targets = iterator();
         while (targets.hasNext()) {
-            OMGraphic graphic = (OMGraphic)targets.next();
+            OMGraphic graphic = (OMGraphic) targets.next();
             if (graphic instanceof JObjectHolder) {
-                com.bbn.openmap.CSpecialist.EComp ecomp = 
-                    ((JObjectHolder)graphic).getObject();
+                com.bbn.openmap.CSpecialist.EComp ecomp = ((JObjectHolder) graphic).getObject();
                 if (ecomp.cID.equals(gID)) {
                     return graphic;
                 }

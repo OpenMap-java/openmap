@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,26 +14,26 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/AbstractToolLoader.java,v $
 // $RCSfile: AbstractToolLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/04 17:26:04 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.drawing;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
+import com.bbn.openmap.omGraphics.GraphicAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.util.Debug;
 import java.util.HashMap;
-import java.util.Set;
 import javax.swing.ImageIcon;
 
 /**
  * The AbstractToolLoader groups together some of the code that was
- * being duplicated in the different EditToolLoaders.  It uses a
+ * being duplicated in the different EditToolLoaders. It uses a
  * EditClassWrapper to describe how to edit/create/represent graphics,
  * and keeps track of multiple EditClassWrappers in case the
  * EditToolLoader can handle multiple graphic types.
@@ -75,7 +75,7 @@ public abstract class AbstractToolLoader implements EditToolLoader {
             Object[] keys = graphicInfo.keySet().toArray();
             strings = new String[keys.length];
             for (int i = 0; i < keys.length; i++) {
-                strings[i] = (String)keys[i];
+                strings[i] = (String) keys[i];
             }
         }
         return strings;
@@ -89,7 +89,7 @@ public abstract class AbstractToolLoader implements EditToolLoader {
         EditableOMGraphic eomg = null;
 
         if (graphicInfo != null) {
-            EditClassWrapper ecw = (EditClassWrapper)graphicInfo.get(classname.intern());
+            EditClassWrapper ecw = (EditClassWrapper) graphicInfo.get(classname.intern());
             if (ecw != null) {
                 String ecn = ecw.getEditableClassName();
                 try {
@@ -98,11 +98,17 @@ public abstract class AbstractToolLoader implements EditToolLoader {
                         eomg = (EditableOMGraphic) obj;
                     }
                 } catch (ClassNotFoundException cnfe) {
-                    Debug.error("AbstractToolLoader can't get editable graphic for " + classname + "\n    ClassNotFoundException caught.");
+                    Debug.error("AbstractToolLoader can't get editable graphic for "
+                            + classname
+                            + "\n    ClassNotFoundException caught.");
                 } catch (InstantiationException ie) {
-                    Debug.error("AbstractToolLoader can't get editable graphic for " + classname + "\n    InstantiationException caught.");
+                    Debug.error("AbstractToolLoader can't get editable graphic for "
+                            + classname
+                            + "\n    InstantiationException caught.");
                 } catch (IllegalAccessException iae) {
-                    Debug.error("AbstractToolLoader can't get editable graphic for " + classname + "\n    IllegalAccessException caught.");
+                    Debug.error("AbstractToolLoader can't get editable graphic for "
+                            + classname
+                            + "\n    IllegalAccessException caught.");
                 }
             }
         }
@@ -112,22 +118,22 @@ public abstract class AbstractToolLoader implements EditToolLoader {
 
     /**
      * Give the classname of a graphic to create, returning an
-     * EditableOMGraphic for that graphic.  The GraphicAttributes
-     * object lets you set some of the initial parameters of the point,
-     * like point type and rendertype.
+     * EditableOMGraphic for that graphic. The GraphicAttributes
+     * object lets you set some of the initial parameters of the
+     * point, like point type and rendertype.
      */
-    public EditableOMGraphic getEditableGraphic(String classname, 
+    public EditableOMGraphic getEditableGraphic(String classname,
                                                 GraphicAttributes ga) {
         EditableOMGraphic eomg = getEditableGraphic(classname);
         if (eomg != null && ga != null) {
             // This is a little redundant - the graphic is created
             // with the call to getEditableGraphic(classname), but is
             // then destroyed and created again with the
-            // GraphicAttributes settings.  I'm not sure how to get
-            // around this at this point in a generic fashion.  Before
+            // GraphicAttributes settings. I'm not sure how to get
+            // around this at this point in a generic fashion. Before
             // the AbstractToolLoader was created, each EditToolLoader
             // called the EditableOMGraphic constructor with the
-            // GraphicAttributes as an argument.  Hard to do when you
+            // GraphicAttributes as an argument. Hard to do when you
             // only have a editableClassName.
             eomg.createGraphic(ga);
         }
@@ -145,7 +151,7 @@ public abstract class AbstractToolLoader implements EditToolLoader {
      */
     public ImageIcon getIcon(String classname) {
         if (graphicInfo != null) {
-            EditClassWrapper ecw = (EditClassWrapper)graphicInfo.get(classname.intern());
+            EditClassWrapper ecw = (EditClassWrapper) graphicInfo.get(classname.intern());
             if (ecw != null) {
                 return ecw.getIcon();
             }
@@ -158,7 +164,7 @@ public abstract class AbstractToolLoader implements EditToolLoader {
      */
     public String getPrettyName(String classname) {
         if (graphicInfo != null) {
-            EditClassWrapper ecw = (EditClassWrapper)graphicInfo.get(classname.intern());
+            EditClassWrapper ecw = (EditClassWrapper) graphicInfo.get(classname.intern());
             if (ecw != null) {
                 return ecw.getPrettyName();
             }

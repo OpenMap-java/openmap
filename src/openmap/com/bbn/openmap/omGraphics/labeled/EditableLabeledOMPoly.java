@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,35 +14,33 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/labeled/EditableLabeledOMPoly.java,v $
 // $RCSfile: EditableLabeledOMPoly.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.labeled;
 
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.util.Debug;
 
 /**
  * The EditableLabeledOMPoly encompasses an LabeledOMPoly, providing
- * methods for modifying or creating it.  
+ * methods for modifying or creating it.
  */
 public class EditableLabeledOMPoly extends EditableOMPoly {
 
     /**
      * Create the EditableLabeledOMPoly, setting the state machine to
-     * create the poly off of the gestures.  
+     * create the poly off of the gestures.
      */
     public EditableLabeledOMPoly() {
         createGraphic(null);
     }
 
     /**
-     * Create an EditableLabeledOMPoly with the polyType and renderType
-     * parameters in the GraphicAttributes object.
+     * Create an EditableLabeledOMPoly with the polyType and
+     * renderType parameters in the GraphicAttributes object.
      */
     public EditableLabeledOMPoly(GraphicAttributes ga) {
         createGraphic(ga);
@@ -51,15 +49,15 @@ public class EditableLabeledOMPoly extends EditableOMPoly {
     /**
      * Create the EditableLabeledOMPoly with a LabeledOMPoly already
      * defined, ready for editing.
-     *
-     * @param omp LabeledOMPoly that should be edited.  
+     * 
+     * @param omp LabeledOMPoly that should be edited.
      */
     public EditableLabeledOMPoly(LabeledOMPoly omp) {
         setGraphic(omp);
     }
 
     /**
-     *  Extendable method to create specific subclasses of OMPolys.
+     * Extendable method to create specific subclasses of OMPolys.
      */
     public OMGraphic createGraphic(int renderType, int lineType) {
         OMGraphic g = null;
@@ -73,13 +71,14 @@ public class EditableLabeledOMPoly extends EditableOMPoly {
         default:
             g = new LabeledOMPoly(new int[0]);
         }
-        ((LabeledOMPoly)g).setDoShapes(true);
+        ((LabeledOMPoly) g).setDoShapes(true);
         return g;
     }
 
     public java.net.URL getImageURL(String imageName) {
         try {
-            return Class.forName("com.bbn.openmap.omGraphics.EditableOMPoly").getResource(imageName);
+            return Class.forName("com.bbn.openmap.omGraphics.EditableOMPoly")
+                    .getResource(imageName);
         } catch (ClassNotFoundException cnfe) {
         }
         return null;

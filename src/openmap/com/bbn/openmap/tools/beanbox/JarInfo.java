@@ -22,7 +22,6 @@ import java.util.Hashtable;
 /**
  * Utility class for representing a loaded Jar file.
  */
-
 public class JarInfo {
 
     private String[] beanNames;
@@ -33,10 +32,8 @@ public class JarInfo {
     private String jarName;
     private static Hashtable beanToJar = new Hashtable();
 
-    public JarInfo(String jarName,
-                   String[] beanNames,
-                   boolean[] fromPrototype,
-                   MessageHeader[] manifestData) {
+    public JarInfo(String jarName, String[] beanNames, boolean[] fromPrototype,
+            MessageHeader[] manifestData) {
         if (beanNames.length != fromPrototype.length) {
             throw new Error("beanNames and fromPrototype need to have the same length");
         }
@@ -48,7 +45,9 @@ public class JarInfo {
         this.beanInfos = new BeanInfo[beanNames.length];
         this.beanClasses = new Class[beanNames.length];
         for (int i = 0; i < beanNames.length; i++) {
-            beanToJar.put(beanNames[i], jarName); // record where this beanName came from
+            beanToJar.put(beanNames[i], jarName); // record where this
+                                                  // beanName came
+                                                  // from
             if (fromPrototype[i]) {
                 // delay instantiating it
                 continue;
@@ -59,42 +58,43 @@ public class JarInfo {
             try {
                 c = Class.forName(beanNames[i]);
                 beanClasses[i] = c;
-                //System.out.println("    succeeded.");
+                //System.out.println(" succeeded.");
             } catch (Exception ex) {
-                // We don't print an error at this point.  Instead we print
+                // We don't print an error at this point. Instead we
+                // print
                 // an error later, in JarInfo.getInstance.
-                System.err.println("Could not load " + beanNames[i]
-                                   + " from " + jarName);
+                System.err.println("Could not load " + beanNames[i] + " from "
+                        + jarName);
                 continue;
             } catch (Error er) {
                 System.out.println(er);
                 //er.printStackTrace();
-                System.err.println("Could not load " + beanNames[i]
-                                   + " in " + jarName);
+                System.err.println("Could not load " + beanNames[i] + " in "
+                        + jarName);
                 continue;
             }
-    
+
             BeanInfo bi;
             try {
                 //System.out.println("Getting beanInfo for: " + c);
-                bi = (BeanInfo)BeanPanel.findBeanInfo(beanNames[i]);
+                bi = (BeanInfo) BeanPanel.findBeanInfo(beanNames[i]);
             } catch (Exception ex) {
-                System.err.println("JarInfo: couldn't find BeanInfo for "+c+
-                                   "; caught "+ex);
+                System.err.println("JarInfo: couldn't find BeanInfo for " + c
+                        + "; caught " + ex);
                 continue;
             } catch (Error er) {
                 System.out.println(er.getMessage());
                 er.printStackTrace();
-                System.err.println("Could not load beanInfo for " + beanNames[i]
-                                   + " in " + jarName);
+                System.err.println("Could not load beanInfo for "
+                        + beanNames[i] + " in " + jarName);
                 continue;
             }
-    
+
             if (bi != null) {
                 beanInfos[i] = bi;
-                //System.out.println("    succeeded.");
+                //System.out.println(" succeeded.");
             } //else
-            //System.out.println("    failed.");
+            //System.out.println(" failed.");
         }
         //System.out.println("Exit JarInfo");
     }
@@ -105,7 +105,6 @@ public class JarInfo {
     public static String getJarName(String beanName) {
         return (String) beanToJar.get(beanName);
     }
-
 
     /**
      * Get the name of the file containing this jar file
@@ -120,7 +119,6 @@ public class JarInfo {
     public int getCount() {
         return beanNames.length;
     }
-
 
     /**
      * Get the bean class for the ith bean in this file
@@ -143,7 +141,8 @@ public class JarInfo {
                 try {
                     bi = Introspector.getBeanInfo(c);
                 } catch (Exception ex) {
-                    System.err.println("JarInfo: couldn't find BeanInfo for "+c+"; caught "+ex);
+                    System.err.println("JarInfo: couldn't find BeanInfo for "
+                            + c + "; caught " + ex);
                     return null;
                 }
 
@@ -187,7 +186,7 @@ public class JarInfo {
                 th.printStackTrace();
                 if (name.indexOf('\\') >= 0) {
                     System.err.println("    Note that file names in manifests must use forward "
-                                       + "slashes \"/\" \n    rather than back-slashes \"\\\"");
+                            + "slashes \"/\" \n    rather than back-slashes \"\\\"");
                 }
             }
             return null;
@@ -195,7 +194,7 @@ public class JarInfo {
     }
 
     private int indexForName(String name) {
-        for (int i=0; i<beanNames.length ; i++) {
+        for (int i = 0; i < beanNames.length; i++) {
             if (beanNames[i].equals(name)) {
                 return i;
             }

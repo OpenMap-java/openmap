@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,39 +12,43 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationHandler.java,v $
-// $Revision: 1.4 $ $Date: 2004/01/26 18:18:09 $ $Author: dietrick $
+// $Revision: 1.5 $ $Date: 2004/10/14 18:05:59 $ $Author: dietrick $
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.location;
 
 import com.bbn.openmap.PropertyConsumer;
 
 /*  Java Core  */
-import java.util.Properties;
 import java.util.Vector;
 
 /**
- * The LocationHandler is the LocationLayer interface to the data.
- * It is the bearer of knowledge about how the location data is
- * stored, and has the smarts on creating the locations and links to
- * represent the data on the map. It also provides controls for
- * changing the display of the data, provided through the getGUI()
- * method, and therefore controls how the data is displayed at a
- * supervisory level.  Each location handler should have its own set of
- * properties:
+ * The LocationHandler is the LocationLayer interface to the data. It
+ * is the bearer of knowledge about how the location data is stored,
+ * and has the smarts on creating the locations and links to represent
+ * the data on the map. It also provides controls for changing the
+ * display of the data, provided through the getGUI() method, and
+ * therefore controls how the data is displayed at a supervisory
+ * level. Each location handler should have its own set of properties:
+ * 
  * <pre>
- * # Properties for LocationHandler
- * # Show the graphics for all the locations.
- * handler.showLocations=true
- * # Show the labels for all the locations.
- * handler.showNames=true
+ * 
+ *  
+ *   # Properties for LocationHandler
+ *   # Show the graphics for all the locations.
+ *   handler.showLocations=true
+ *   # Show the labels for all the locations.
+ *   handler.showNames=true
+ *   
+ *  
  * </pre>
  */
 public interface LocationHandler extends PropertyConsumer {
 
-    /** A default button name used to trigger more information about a
-     *  location to come up in a web browser. */
+    /**
+     * A default button name used to trigger more information about a
+     * location to come up in a web browser.
+     */
     public final static String showdetails = "Show Details";
     /** A button name used to turn a location label on/off. */
     public final static String showname = "Always Show Name";
@@ -53,7 +57,7 @@ public interface LocationHandler extends PropertyConsumer {
     public static final String ShowNamesProperty = "showNames";
     /** Property to use to change the color for name data. */
     public static final String NameColorProperty = "nameColor";
-    /** The default line color for names.  */
+    /** The default line color for names. */
     public final static String defaultNameColorString = "FF339159"; // greenish
 
     public static final String ForceGlobalProperty = "override";
@@ -62,7 +66,7 @@ public interface LocationHandler extends PropertyConsumer {
     public static final String ShowLocationsProperty = "showLocations";
     /** Property to use to set the color of the location splot */
     public static final String LocationColorProperty = "locationColor";
-    /** The default line color for locations.  */
+    /** The default line color for locations. */
     public final static String defaultLocationColorString = "FFCE4F3F"; // reddish
 
     public final static String showLocationsCommand = "showLocations";
@@ -72,28 +76,30 @@ public interface LocationHandler extends PropertyConsumer {
 
     /**
      * Fill a vector of OMGraphics to represent the data from this
-     * handler. 
-     *
+     * handler.
+     * 
      * @param nwLat NorthWest latitude of area of interest.
      * @param nwLon NorthWest longitude of area of interest.
      * @param seLat SouthEast latitude of area of interest.
      * @param seLon SouthEast longitude of area of interest.
-     * @param graphicList Vector to add Locations to.  If null, the
-     * LocationHandler should create a new Vector to place graphics
-     * into.
-     * @return Either the Vector passed in, or the new onw that was created.
+     * @param graphicList Vector to add Locations to. If null, the
+     *        LocationHandler should create a new Vector to place
+     *        graphics into.
+     * @return Either the Vector passed in, or the new onw that was
+     *         created.
      */
-    public Vector get(float nwLat, float nwLon, float seLat, float seLon, 
+    public Vector get(float nwLat, float nwLon, float seLat, float seLon,
                       Vector graphicList);
+
     /**
      * A trigger function to tell the handler that new data is
-     * available. 
+     * available.
      */
     public void reloadData();
 
     /**
      * The location layer passes a LocationPopupMenu to the handler
-     * when on of its locations has been clicked on.  This is an
+     * when on of its locations has been clicked on. This is an
      * opportunity for the handler to add options to the menu that can
      * bring up further information about the location, or to change
      * the appearance of the location.
@@ -108,11 +114,11 @@ public interface LocationHandler extends PropertyConsumer {
     public LocationLayer getLayer();
 
     /**
-     * Set the layer the handler is responding to.  This is needed in
+     * Set the layer the handler is responding to. This is needed in
      * case the handler has updates that it wants to show, and needs
-     * to trigger a repaint.  It can also be used to communicate with
+     * to trigger a repaint. It can also be used to communicate with
      * the information delegator.
-     *
+     * 
      * @param layer a LocationLayer
      */
     public void setLayer(LocationLayer layer);
@@ -127,9 +133,9 @@ public interface LocationHandler extends PropertyConsumer {
      */
     public void setShowNames(boolean set);
 
-    /** 
+    /**
      * See if the handler is displaying location graphics at a global
-     * level.  
+     * level.
      */
     public boolean isShowLocations();
 
@@ -152,16 +158,16 @@ public interface LocationHandler extends PropertyConsumer {
     /**
      * A set of controls to manipulate and control the display of data
      * from the handler.
-     *
+     * 
      * @return Components used for control.
      */
     public java.awt.Component getGUI();
 
     /**
      * Called by the LocationLayer when the Layer has been removed
-     * from the Map.  The LocationHandler should clear out memory/CPU
+     * from the Map. The LocationHandler should clear out memory/CPU
      * intensive resources.
-     *
+     * 
      * @param cont Container being removed from.
      */
     public void removed(java.awt.Container cont);

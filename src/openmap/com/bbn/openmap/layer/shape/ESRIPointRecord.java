@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPointRecord.java,v $
 // $RCSfile: ESRIPointRecord.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:06:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.shape;
 
@@ -29,10 +28,10 @@ import com.bbn.openmap.omGraphics.*;
 
 /**
  * An ESRI Point record.
- *
+ * 
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.5 $ $Date: 2004/01/26 18:18:11 $
+ * @version $Revision: 1.6 $ $Date: 2004/10/14 18:06:04 $
  */
 public class ESRIPointRecord extends ESRIRecord {
 
@@ -47,7 +46,7 @@ public class ESRIPointRecord extends ESRIRecord {
 
     /**
      * Initializes this point from the given point.
-     *
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      */
@@ -58,21 +57,20 @@ public class ESRIPointRecord extends ESRIRecord {
 
     /**
      * Initialize a point record from the given buffer.
-     *
+     * 
      * @param b the buffer
      * @param off the offset into the buffer where the data starts
      */
     public ESRIPointRecord(byte b[], int off) throws IOException {
         super(b, off);
 
-        int ptr = off+8;
+        int ptr = off + 8;
 
         int shapeType = readLEInt(b, ptr);
         ptr += 4;
         if (shapeType != SHAPE_TYPE_POINT) {
-            throw new IOException("Invalid point record.  Expected shape " +
-                                  "type " + SHAPE_TYPE_POINT +
-                                  " but found " + shapeType);
+            throw new IOException("Invalid point record.  Expected shape "
+                    + "type " + SHAPE_TYPE_POINT + " but found " + shapeType);
         }
 
         x = readLEDouble(b, ptr);
@@ -84,21 +82,21 @@ public class ESRIPointRecord extends ESRIRecord {
 
     /**
      * Initialize a point record from the given buffer.
-     *
+     * 
      * @param b the buffer
      * @param off the offset into the buffer where the data starts
      */
-    public ESRIPointRecord(byte b[], int off, ImageIcon imageIcon) throws IOException {
+    public ESRIPointRecord(byte b[], int off, ImageIcon imageIcon)
+            throws IOException {
         super(b, off);
 
-        int ptr = off+8;
+        int ptr = off + 8;
 
         int shapeType = readLEInt(b, ptr);
         ptr += 4;
         if (shapeType != SHAPE_TYPE_POINT) {
-            throw new IOException("Invalid point record.  Expected shape " +
-                                  "type " + SHAPE_TYPE_POINT +
-                                  " but found " + shapeType);
+            throw new IOException("Invalid point record.  Expected shape "
+                    + "type " + SHAPE_TYPE_POINT + " but found " + shapeType);
         }
 
         x = readLEDouble(b, ptr);
@@ -112,7 +110,7 @@ public class ESRIPointRecord extends ESRIRecord {
 
     /**
      * Gets this record's bounding box.
-     *
+     * 
      * @return a bounding box
      */
     public ESRIBoundingBox getBoundingBox() {
@@ -121,7 +119,7 @@ public class ESRIPointRecord extends ESRIRecord {
 
     /**
      * Yields the length of this record's data portion. Always 20.
-     *
+     * 
      * @return number of bytes equal to the size of this record's data
      */
     public int getRecordLength() {
@@ -130,7 +128,7 @@ public class ESRIPointRecord extends ESRIRecord {
 
     /**
      * Writes this point to the given buffer at the given offset.
-     *
+     * 
      * @param b the buffer
      * @param off the offset
      * @return the number of bytes written
@@ -144,40 +142,39 @@ public class ESRIPointRecord extends ESRIRecord {
     }
 
     /**
-     * Generates Points and adds them to the given list. 
-     *
+     * Generates Points and adds them to the given list.
+     * 
      * @param list the graphics list
      * @param drawingAttributes DrawingAttributes to decribe how to
-     * represent the points, if an ImageIcon is not defined.  
+     *        represent the points, if an ImageIcon is not defined.
      */
     public void addOMGraphics(OMGraphicList list,
-                              DrawingAttributes drawingAttributes){
-        if (ii == null){
-            OMPoint r = new OMPoint((float)y, (float)x);
+                              DrawingAttributes drawingAttributes) {
+        if (ii == null) {
+            OMPoint r = new OMPoint((float) y, (float) x);
             drawingAttributes.setTo(r);
             list.add(r);
-            r.setAppObject(new Integer(getRecordNumber())); //added by DGK
+            r.setAppObject(new Integer(getRecordNumber())); //added
+                                                            // by DGK
         } else {
-            list.add(new OMRaster((float)y, (float)x, 
-                                  -ii.getIconWidth()/2, -ii.getIconHeight()/2,
-                                  ii));
+            list.add(new OMRaster((float) y, (float) x, -ii.getIconWidth() / 2, -ii.getIconHeight() / 2, ii));
         }
-    }       
+    }
 
     /**
-     * Generates Points and adds them to the given list. 
-     *
+     * Generates Points and adds them to the given list.
+     * 
      * @param list the graphics list
      */
-    public OMGeometry addOMGeometry(OMGeometryList list){
+    public OMGeometry addOMGeometry(OMGeometryList list) {
         // Don't have a point geometry yet.
         return null;
-    }       
+    }
 
     /**
-     * Gets this record's shape type as an int.  Shape types
-     * are enumerated on the ShapeUtils class.
-     *
+     * Gets this record's shape type as an int. Shape types are
+     * enumerated on the ShapeUtils class.
+     * 
      * @return the shape type as an int
      */
     public int getShapeType() {

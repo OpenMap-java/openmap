@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,101 +14,183 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/E00Layer.java,v $
 // $RCSfile: E00Layer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/03/04 04:14:30 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.e00;
 
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.event.InfoDisplayEvent;
-import com.bbn.openmap.event.LayerStatusEvent;
-import com.bbn.openmap.event.MapMouseListener;
-import com.bbn.openmap.event.ProjectionEvent;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Paint;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Properties;
+import java.util.Vector;
+
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+
+import com.bbn.openmap.event.SelectMouseMode;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.layer.location.BasicLocation;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.*;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
-
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * Description of the Class an Layer showing data from an .e00 file
  * data is extracted with E00Parser class possibilities to filter arcs
- * according to their types or value. <P>
- *
- * Examples of properties for OpenMap:<P><pre>
- * ### E00 layer
- * e00.class=com.bbn.openmap.layer.e00.E00Layer
- * e00.prettyName=E00 file
- * e00.FileName=data/france/hynet.e00
- * ### E00 layer
- * es00.class=E00.E00Layer
- * es00.prettyName=ES00 file
- * es00.FileName=data/france/rdline.e00
- * es00.ArcColors= FF0000FF ,FFEE5F3C, FFFFCC00,FF339700,FFFFFFFF,FFFFFFFF,FFFFFFFF,FFFFFFFF,FF666666,FFFFFFFF
- * es00.ArcVisible=true
- * es00.LabVisible=false
- * es00.Tx7Visible=true
- * es00.LabFont =Arial 10 ITALIC BOLD
- * ###other properties Tx7Color LabColors SelectTx7Color SelectLabColor SelectArcColor LabTextColor Tx7Font
- *  </pre>
+ * according to their types or value.
+ * <P>
+ * 
+ * Examples of properties for OpenMap:
+ * <P>
+ * 
+ * <pre>
+ * 
+ *  
+ *   
+ *    
+ *     
+ *      
+ *       
+ *        
+ *         ### E00 layer
+ *         e00.class=com.bbn.openmap.layer.e00.E00Layer
+ *         e00.prettyName=E00 file
+ *         e00.FileName=data/france/hynet.e00
+ *         ### E00 layer
+ *         es00.class=E00.E00Layer
+ *         es00.prettyName=ES00 file
+ *         es00.FileName=data/france/rdline.e00
+ *         es00.ArcColors= FF0000FF,FFEE5F3C,FFFFCC00,FF339700,FFFFFFFF,FFFFFFFF,FFFFFFFF,FFFFFFFF,FF666666,FFFFFFFF
+ *         es00.ArcVisible=true
+ *         es00.LabVisible=false
+ *         es00.Tx7Visible=true
+ *         es00.LabFont =Arial 10 ITALIC BOLD
+ *         ###other properties Tx7Color LabColors SelectTx7Color SelectLabColor SelectArcColor LabTextColor Tx7Font
+ *          
+ *        
+ *       
+ *      
+ *     
+ *    
+ *   
+ *  
+ * </pre>
+ * 
  * @since OpenMap 4.5.5
  * @author Thomas Paricaud
  */
-public class E00Layer extends Layer implements MapMouseListener, ActionListener {
+public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
 
-    protected OMGraphicList graphics, arcs, labs, tx7;
-    protected boolean ArcVisible = true, LabVisible = true, Tx7Visible = true;
-    protected boolean cancelled = false;
+    protected OMGraphicList arcs;
+    protected OMGraphicList labs;
+    protected OMGraphicList tx7;
+    protected boolean ArcVisible = true;
+    protected boolean LabVisible = true;
+    protected boolean Tx7Visible = true;
     protected JPanel gui;
     protected JLabel label;
 
-    Paint[] ArcColors, LabColors;
-    Paint Tx7Color;
-    Paint SelectTx7Color, SelectLabColor, SelectArcColor, LabTextColor;
-    OMGraphic LabMarker;
-    Font LabFont, Tx7Font;
-    int filtreValeur = Integer.MIN_VALUE;
-    int filtreType = Integer.MIN_VALUE;
-    JFileChooser fileChooser;
-    File E00File;
-    E00Worker currentWorker;
-
-    private Projection projection;
+    protected Paint[] ArcColors, LabColors;
+    protected Paint Tx7Color;
+    protected Paint SelectTx7Color;
+    protected Paint SelectLabColor;
+    protected Paint SelectArcColor;
+    protected Paint LabTextColor;
+    protected OMGraphic LabMarker;
+    protected Font LabFont, Tx7Font;
+    protected int filtreValeur = Integer.MIN_VALUE;
+    protected int filtreType = Integer.MIN_VALUE;
+    protected JFileChooser fileChooser;
+    protected File E00File;
 
     public E00Layer() {
         super();
+        setMouseModeIDsForEvents(new String[] { SelectMouseMode.modeID });
     }
 
+    /**
+     * OMGraphicHandlerLayer method, get the OMGraphics from the data
+     * in the file.
+     */
+    public OMGraphicList prepare() {
+        OMGraphicList g = getList();
+
+        if (g == null) {
+            try {
+                E00Parser parser = new E00Parser(E00File);
+                parser.setPaints(ArcColors,
+                        LabColors,
+                        Tx7Color,
+                        SelectTx7Color,
+                        SelectLabColor,
+                        SelectArcColor,
+                        LabTextColor);
+                parser.setLabMarker(LabMarker);
+                parser.setFonts(LabFont, Tx7Font);
+
+                g = parser.getOMGraphics();
+                arcs = parser.getArcList();
+                labs = parser.getLabList();
+                tx7 = parser.getTx7List();
+
+                setListVisibility();
+
+            } catch (Exception ex) {
+                ex.printStackTrace(System.out);
+                Debug.error("E00Layer|" + getName() + ".prepare(): "
+                        + ex.getMessage());
+            }
+        }
+
+        Projection proj = getProjection();
+        if (proj != null && g != null) {
+            g.generate(proj);
+        }
+
+        return g;
+    }
 
     /**
-     * Sets the properties for the <code>Layer</code>.  This allows
-     * <code>Layer</code>s to get a richer set of parameters than the
-     * <code>setArgs</code> method.
-     *
-     * @param  prefix  the token to prefix the property names
-     * @param  props   the <code>Properties</code> object
+     * Sets the properties for the <code>Layer</code>. This allows
+     * <code>Layer</code> s to get a richer set of parameters than
+     * the <code>setArgs</code> method.
+     * 
+     * @param prefix the token to prefix the property names
+     * @param props the <code>Properties</code> object
      * @since
      */
     public void setProperties(String prefix, java.util.Properties props) {
         super.setProperties(prefix, props);
         String E00FileName = props.getProperty(prefix + ".FileName");
-        ArcVisible = LayerUtils.booleanFromProperties(props, prefix + ".ArcVisible", ArcVisible);
-        LabVisible = LayerUtils.booleanFromProperties(props, prefix + ".LabVisible", LabVisible);
-        Tx7Visible = LayerUtils.booleanFromProperties(props, prefix + ".Tx7Visible", Tx7Visible);
+        ArcVisible = PropUtils.booleanFromProperties(props, prefix
+                + ".ArcVisible", ArcVisible);
+        LabVisible = PropUtils.booleanFromProperties(props, prefix
+                + ".LabVisible", LabVisible);
+        Tx7Visible = PropUtils.booleanFromProperties(props, prefix
+                + ".Tx7Visible", Tx7Visible);
 
         Paint dfault = null;
         OMGraphic LabMarker;
@@ -121,6 +203,7 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
         LabTextColor = parseColor(props, prefix, "LabTextColor", null);
         LabFont = parseFont(props, prefix, "LabFont", null);
         Tx7Font = parseFont(props, prefix, "tx7Font", null);
+
         try {
             openFile(new File(E00FileName));
         } catch (Exception ex) {
@@ -131,167 +214,94 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
         }
     }
 
-
     /**
-     *  Sets the Cancelled attribute of the E00Layer object
-     *
-     * @param  set  The new Cancelled value
-     * @since
-     */
-    public synchronized void setCancelled(boolean set) {
-        cancelled = set;
-    }
-
-
-    /**
-     *  Gets the Cancelled attribute of the E00Layer object
-     *
-     * @return    The Cancelled value
-     * @since
-     */
-    public synchronized boolean isCancelled() {
-        return cancelled;
-    }
-
-
-    /**
-     *  Gets the GUI attribute of the E00Layer object
-     *
-     * @return    The GUI value
+     * Gets the GUI attribute of the E00Layer object
+     * 
+     * @return The GUI value
      * @since
      */
     public Component getGUI() {
         if (gui == null) {
             gui = PaletteHelper.createPaletteJPanel("E00");
-            label = new JLabel((E00File != null) ? E00File.getName() : "       ");
+            label = new JLabel((E00File != null) ? E00File.getName()
+                    : "       ");
             gui.add(label);
-            addGui(new JButton("OPEN"), "OPEN");
-            addGui(new JCheckBox("Arcs", ArcVisible), "ARCS");
-            addGui(new JCheckBox("Labs", LabVisible), "LABS");
-            addGui(new JCheckBox("Tx7", Tx7Visible), "TX7");
+            addToGUI(gui, new JCheckBox("Arcs", ArcVisible), "ARCS");
+            addToGUI(gui, new JCheckBox("Points", LabVisible), "LABS");
+            addToGUI(gui, new JCheckBox("Tx7", Tx7Visible), "TX7");
             gui.add(new JLabel("Filter"));
             gui.add(new JLabel(" By Value"));
-            addGui(new JTextField(10), "VALEUR");
+            addToGUI(gui, new JTextField(10), "VALEUR");
             gui.add(new JLabel(" By Type"));
-            addGui(new JTextField(10), "TYPE");
-            addGui(new JButton("ExpArcs"), "ExpArcs");
-            addGui(new JButton("ExpPoints"), "ExpPoints");
+            addToGUI(gui, new JTextField(10), "TYPE");
+            gui.add(new JSeparator());
+            addToGUI(gui, new JButton("Open File"), "OPEN");
+            addToGUI(gui, new JButton("Export Arcs"), "ExpArcs");
+            addToGUI(gui, new JButton("Export Points"), "ExpPoints");
         }
         return gui;
     }
 
-
-
     /**
-     *  Gets the MapMouseListener attribute of the E00Layer object
-     *
-     * @return    The MapMouseListener value
+     * Adds a feature to the GUI attribute of the E00Layer object
+     * 
+     * @param b The feature to be added to the GUI attribute
+     * @param cmd The feature to be added to the GUI attribute
      * @since
      */
-    public MapMouseListener getMapMouseListener() {
-        return this;
+    protected void addToGUI(JPanel gui, AbstractButton b, String cmd) {
+        b.setActionCommand(cmd);
+        b.addActionListener(this);
+        gui.add(b);
     }
 
-
-    //----------------------------------------------------------------------
-    // MapMouseListener interface implementation
-    //----------------------------------------------------------------------
-
-
     /**
-     *  Gets the MouseModeServiceList attribute of the E00Layer object
-     *
-     * @return    The MouseModeServiceList value
+     * Adds a feature to the Gui attribute of the E00Layer object
+     * 
+     * @param b The feature to be added to the Gui attribute
+     * @param cmd The feature to be added to the Gui attribute
      * @since
      */
-    public String[] getMouseModeServiceList() {
-        String[] ret = new String[1];
-        ret[0] = "Gestures";
-        return ret;
+    protected void addToGUI(JPanel gui, JTextField b, String cmd) {
+        b.setActionCommand(cmd);
+        b.addActionListener(this);
+        gui.add(b);
     }
 
-
     /**
-     * Invoked when the projection has changed or this Layer has been
-     * added to the MapBean.
-     *
-     * @param  e  ProjectionEvent
-     * @since
-     */
-    public void projectionChanged(ProjectionEvent e) {
-        //System.out.print("E00: Projection change");
-        projection = e.getProjection();
-        if (graphics != null)
-            graphics.generate(projection);
-        repaint();
-
-        if (projection == null && Debug.debugging("e00")) {
-            Debug.output("E00Layer.projectionChanged(): projection null");
-        }
-
-    }
-
-
-    /**
-     * Paints the layer.
-     *
-     * @param  g  the Graphics context for painting
-     * @since
-     */
-    public void paint(Graphics g) {
-        if (graphics != null)
-            graphics.render(g);
-    }
-
-
-    /**
-     *  Description of the Method
-     *
-     * @param  cont  Description of Parameter
-     * @since
-     */
-    public void added(Container cont) {
-        fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-    }
-
-
-    /**
-     *  Description of the Method
-     *
-     * @param  e  Description of Parameter
+     * Description of the Method
+     * 
+     * @param e Description of Parameter
      * @since
      */
     public void actionPerformed(ActionEvent e) {
         String Action = e.getActionCommand();
-        if ("OPEN".equals(Action))
+        if ("OPEN".equals(Action)) {
             openFile(chooseFile(0));
-        else if ("ExpArcs".equals(Action))
+            doPrepare();
+        } else if ("ExpArcs".equals(Action)) {
             exportArcs1();
-        else if ("ExpPoints".equals(Action))
+        } else if ("ExpPoints".equals(Action)) {
             exportPoints();
-        else if ("VALEUR".equals(Action)) {
+        } else if ("VALEUR".equals(Action)) {
             filtreValeur = getVal(e);
             filtre();
-        }
-        else if ("TYPE".equals(Action)) {
+        } else if ("TYPE".equals(Action)) {
             filtreType = getVal(e);
             filtre();
-        }
-        else if ("ARCS".equals(Action)) {
+        } else if ("ARCS".equals(Action)) {
             JCheckBox cb = (JCheckBox) e.getSource();
             ArcVisible = cb.isSelected();
             if (arcs != null)
                 arcs.setVisible(ArcVisible);
             repaint();
-        }
-        else if ("LABS".equals(Action)) {
+        } else if ("LABS".equals(Action)) {
             JCheckBox cb = (JCheckBox) e.getSource();
             LabVisible = cb.isSelected();
             if (labs != null)
                 labs.setVisible(LabVisible);
             repaint();
-        }
-        else if ("TX7".equals(Action)) {
+        } else if ("TX7".equals(Action)) {
             JCheckBox cb = (JCheckBox) e.getSource();
             Tx7Visible = cb.isSelected();
             if (tx7 != null)
@@ -300,202 +310,57 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
         }
     }
 
-
-    /**
-     *  Description of the Method
-     *
-     * @param  e  Description of Parameter
-     * @return    Description of the Returned Value
-     * @since
-     */
-    public boolean mousePressed(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-        OMGraphic g = null;
-        String t;
-
-//      if (e.getButton() == MouseEvent.BUTTON1) { // jdk 1.4
-        if ((e.getModifiers() & InputEvent.BUTTON1_MASK) > 0) {
-            if (arcs != null)
-                g = arcs.findClosest(x, y, 10f);
-            t = "arc";
-        }
-        else {
-            if (labs != null)
-                g = labs.findClosest(x, y, 5f);
+    public String getInfoText(OMGraphic omg) {
+        String t = "";
+        if (arcs != null && arcs.contains(omg)) {
+            t = "arcs";
+        } else if (labs != null && labs.contains(omg)) {
             t = "point";
         }
-        if (g != null) {
-            g.setSelected(!g.isSelected());
-            E00Data d = (E00Data) g.getAppObject();
-            if (d != null)
-                fireRequestInfoLine(t + d);
-            else
-                fireRequestInfoLine("");
-            repaint();
-            return true;
-        }
-        fireRequestInfoLine("");
-        return false;
+
+        E00Data d = (E00Data) omg.getAppObject();
+        return t + d;
     }
 
-
     /**
-     *  Description of the Method
-     *
-     * @param  e  Description of Parameter
-     * @return    Description of the Returned Value
-     * @since
-     */
-    public boolean mouseReleased(MouseEvent e) {
-        return false;
-    }
-
-
-    /**
-     *  Description of the Method
-     *
-     * @param  e  Description of Parameter
-     * @return    Description of the Returned Value
-     * @since
-     */
-    public boolean mouseClicked(MouseEvent e) {
-        return false;
-    }
-
-
-    /**
-     *  Description of the Method
-     *
-     * @param  e  Description of Parameter
-     * @since
-     */
-    public void mouseEntered(MouseEvent e) {
-    }
-
-
-    /**
-     *  Description of the Method
-     *
-     * @param  e  Description of Parameter
-     * @since
-     */
-    public void mouseExited(MouseEvent e) {
-    }
-
-
-    /**
-     *  Description of the Method
-     *
-     * @param  e  Description of Parameter
-     * @return    Description of the Returned Value
-     * @since
-     */
-    public boolean mouseDragged(MouseEvent e) {
-        return false;
-    }
-
-
-    /**
-     *  Description of the Method
-     *
-     * @since
-     */
-    public void mouseMoved() {
-    }
-
-
-    /**
-     *  Description of the Method
-     *
-     * @param  e  Description of Parameter
-     * @return    Description of the Returned Value
-     * @since
-     */
-    public boolean mouseMoved(MouseEvent e) {
-        return false;
-    }
-
-
-    /**
-     *  Gets the Frame attribute of the E00Layer object
-     *
-     * @return    The Frame value
+     * Gets the Frame attribute of the E00Layer object
+     * 
+     * @return The Frame value
      * @since
      */
     protected Frame getFrame() {
-        if (gui == null)
+        if (gui == null) {
             return null;
-        for (Container p = gui.getParent(); p != null; p = p.getParent())
-            if (p instanceof Frame)
+        }
+
+        for (Container p = gui.getParent(); p != null; p = p.getParent()) {
+            if (p instanceof Frame) {
                 return (Frame) p;
+            }
+        }
 
         return null;
     }
 
-
     /**
-     *  Description of the Method
-     *
-     * @param  worker  Description of Parameter
-     * @since
-     */
-    protected synchronized void workerComplete(E00Worker worker) {
-        if (!isCancelled()) {
-            currentWorker = null;
-            graphics = (OMGraphicList) worker.get();
-            if (projection != null)
-                graphics.generate(projection);
-            repaint();
-            //System.out.print("E00 worker complete");
-            OMGraphic og = graphics.getOMGraphicWithAppObject("ARCS");
-            if (og != null) {
-                arcs = (OMGraphicList) og;
-                arcs.setVisible(ArcVisible);
-            }
-            else
-                arcs = null;
-            og = graphics.getOMGraphicWithAppObject("LABS");
-            if (og != null) {
-                labs = (OMGraphicList) og;
-                labs.setVisible(LabVisible);
-            }
-            else
-                labs = null;
-            og = graphics.getOMGraphicWithAppObject("TX7");
-            if (og != null) {
-                tx7 = (OMGraphicList) og;
-                tx7.setVisible(Tx7Visible);
-            }
-            else
-                tx7 = null;
-        }
-        else {
-            setCancelled(false);
-            currentWorker = new E00Worker(E00File);
-            currentWorker.execute();
-        }
-    }
-
-
-    /**
-     *  Sets the LineColor attribute of the E00Layer object
-     *
-     * @param  C  The new LineColor value
+     * Sets the LineColor attribute of the E00Layer object
+     * 
+     * @param C The new LineColor value
      * @since
      */
     void setLineColor(Color C) {
-        if (graphics != null)
+        OMGraphicList graphics = getList();
+        if (graphics != null) {
             graphics.setLinePaint(C);
+        }
         repaint();
     }
 
-
     /**
-     *  Gets the Val attribute of the E00Layer object
-     *
-     * @param  e  Description of Parameter
-     * @return    The Val value
+     * Gets the Val attribute of the E00Layer object
+     * 
+     * @param e Description of Parameter
+     * @return The Val value
      * @since
      */
     int getVal(ActionEvent e) {
@@ -509,98 +374,54 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
         return val;
     }
 
+    public void setListVisibility() {
 
-    /**
-     *  Description of the Method
-     *
-     * @param  f  Description of Parameter
-     * @return    Description of the Returned Value
-     * @since
-     */
-    OMGraphicList prepare(File f) {
-        OMGraphicList g = null;
-        try {
-            if (isCancelled())
-                return null;
-            E00Parser SP = new E00Parser(E00File);
-            SP.setPaints(ArcColors, LabColors, Tx7Color,
-                         SelectTx7Color, SelectLabColor, SelectArcColor,
-                         LabTextColor);
-            SP.setLabMarker(LabMarker);
-            SP.setFonts(LabFont, Tx7Font);
-            g = SP.getOMGraphics();
-            if (isCancelled())
-                return null;
-        } catch (Exception ex) {
-            ex.printStackTrace(System.out);
-            Debug.error("E00Layer: " + ex.getMessage());
+        if (arcs != null) {
+            arcs.setVisible(ArcVisible);
         }
-        return g;
+
+        if (labs != null) {
+            labs.setVisible(LabVisible);
+        }
+
+        if (tx7 != null) {
+            tx7.setVisible(Tx7Visible);
+        }
+
     }
 
-
     /**
-     *  Description of the Method
-     *
-     * @param  f  Description of Parameter
+     * Description of the Method
+     * 
+     * @param f Description of Parameter
      * @since
      */
-    void openFile(File f) {
-        if (f == null)
+    protected void openFile(File f) {
+
+        if (f == null) {
             return;
+        }
+
         if (!f.exists()) {
-            Debug.output("E00: missing file");
+            Debug.output("E00|" + getName() + ": missing file");
             return;
         }
+
         E00File = f;
-        if (gui != null)
+
+        if (gui != null) {
             label.setText(E00File.getName());
-        if (currentWorker == null) {
-            fireStatusUpdate(LayerStatusEvent.START_WORKING);
-            currentWorker = new E00Worker(f);
-            currentWorker.execute();
         }
-        else
-            setCancelled(true);
     }
 
-
     /**
-     *  Adds a feature to the Gui attribute of the E00Layer object
-     *
-     * @param  b    The feature to be added to the Gui attribute
-     * @param  cmd  The feature to be added to the Gui attribute
+     * Description of the Method
+     * 
+     * @param type Description of Parameter
+     * @return Description of the Returned Value
      * @since
      */
-    void addGui(AbstractButton b, String cmd) {
-        b.setActionCommand(cmd);
-        b.addActionListener(this);
-        gui.add(b);
-    }
-
-
-    /**
-     *  Adds a feature to the Gui attribute of the E00Layer object
-     *
-     * @param  b    The feature to be added to the Gui attribute
-     * @param  cmd  The feature to be added to the Gui attribute
-     * @since
-     */
-    void addGui(JTextField b, String cmd) {
-        b.setActionCommand(cmd);
-        b.addActionListener(this);
-        gui.add(b);
-    }
-
-
-    /**
-     *  Description of the Method
-     *
-     * @param  type  Description of Parameter
-     * @return       Description of the Returned Value
-     * @since
-     */
-    File chooseFile(int type) {
+    protected File chooseFile(int type) {
         Frame frame = getFrame();
         File f = null;
         if (fileChooser == null)
@@ -618,25 +439,25 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
         return f;
     }
 
-
     /**
-     *  Description of the Method
-     *
+     * Description of the Method
+     * 
      * @since
      */
-    void filtre() {
-        System.out.print("E00: filter type=" + filtreType + "  value=" + filtreValeur);
+    protected void filtre() {
+        System.out.print("E00: filter type=" + filtreType + "  value="
+                + filtreValeur);
         OMGraphic og;
         Object O;
         int count = 0;
         OMGraphicList g = arcs;
         int n = arcs.size();
-        if ((filtreType == Integer.MIN_VALUE) && (filtreValeur == Integer.MIN_VALUE)) {
+        if ((filtreType == Integer.MIN_VALUE)
+                && (filtreValeur == Integer.MIN_VALUE)) {
             for (int i = 0; i < n; i++)
                 g.getOMGraphicAt(i).setVisible(true);
             count = n;
-        }
-        else
+        } else
             for (int i = 0; i < n; i++) {
                 og = g.getOMGraphicAt(i);
                 O = og.getAppObject();
@@ -659,13 +480,12 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
         repaint();
     }
 
-
     /**
-     *  Description of the Method
-     *
+     * Description of the Method
+     * 
      * @since
      */
-    void exportArcs() {
+    protected void exportArcs() {
         if (arcs == null)
             return;
         OMGraphic og;
@@ -675,14 +495,10 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
         float ll[];
         int llsize;
         double lnmax = Double.MIN_VALUE;
-        double
-            lnmin = Double.MAX_VALUE;
-        double
-            ltmin = lnmin;
-        double
-            ltmax = lnmax;
-        double
-            lt;
+        double lnmin = Double.MAX_VALUE;
+        double ltmin = lnmin;
+        double ltmax = lnmax;
+        double lt;
         double ln;
         for (int i = 0; i < n; i++) {
             OMPoly oj = (OMPoly) arcs.getOMGraphicAt(i);
@@ -696,7 +512,8 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
             boolean closed = true;
             if ((ll[0] != ll[llsize - 2]) || (ll[1] != ll[llsize - 1])) {
                 // contour non clos;
-                float[] coords = new float[]{ll[0], ll[1], ll[llsize - 2], ll[llsize - 1]};
+                float[] coords = new float[] { ll[0], ll[1], ll[llsize - 2],
+                        ll[llsize - 1] };
                 ArcData dn = new ArcData(data);
                 dn.coords = coords;
                 oj.setAppObject(dn);
@@ -716,7 +533,8 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
                     lnmin = ln;
             }
         }
-        System.out.println("#minmax " + lnmin + " " + lnmax + " " + ltmin + " " + ltmax);
+        System.out.println("#minmax " + lnmin + " " + lnmax + " " + ltmin + " "
+                + ltmax);
         int unClosedCount = V.size();
         ArcData[] unClosed = (ArcData[]) V.toArray(new ArcData[unClosedCount]);
 
@@ -750,16 +568,14 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
                 if ((lt1 == d1.coords[0]) && (lg1 == d1.coords[1])) {
                     d1.setC(d0);
                     d0.setC(d1);
-                }
-                else if ((lt1 == d1.coords[2]) && (lg1 == d1.coords[3])) {
+                } else if ((lt1 == d1.coords[2]) && (lg1 == d1.coords[3])) {
                     d1.setF(d0);
                     d0.setC(d1);
                 }
                 if ((lt2 == d1.coords[0]) && (lg2 == d1.coords[1])) {
                     d1.setC(d0);
                     d0.setF(d1);
-                }
-                else if ((lt2 == d1.coords[2]) && (lg2 == d1.coords[3])) {
+                } else if ((lt2 == d1.coords[2]) && (lg2 == d1.coords[3])) {
                     d1.setF(d0);
                     d0.setF(d1);
                 }
@@ -828,13 +644,12 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
 
     }
 
-
     /**
-     *  Description of the Method
-     *
+     * Description of the Method
+     * 
      * @since
      */
-    void exportArcs1() {
+    protected void exportArcs1() {
         OMGraphic og;
         PrintStream out = null;
         double lt;
@@ -888,13 +703,12 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
 
     }
 
-
     /**
-     *  Description of the Method
-     *
+     * Description of the Method
+     * 
      * @since
      */
-    void exportPoints() {
+    protected void exportPoints() {
         if (labs == null)
             return;
         //OMGraphic oj ;
@@ -919,47 +733,51 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
 
     }
 
-
     /**
-     *  Description of the Method
-     *
-     * @param  props   Description of Parameter
-     * @param  prefix  Description of Parameter
-     * @param  prop    Description of Parameter
-     * @param  dfault  Description of Parameter
-     * @return         Description of the Returned Value
+     * Description of the Method
+     * 
+     * @param props Description of Parameter
+     * @param prefix Description of Parameter
+     * @param prop Description of Parameter
+     * @param dfault Description of Parameter
+     * @return Description of the Returned Value
      * @since
      */
-    private Paint parseColor(Properties props, String prefix, String prop, Paint dfault) {
+    protected Paint parseColor(Properties props, String prefix, String prop,
+                               Paint dfault) {
         try {
-            return LayerUtils.parseColorFromProperties(props, prefix + "." + prop, dfault);
+            return PropUtils.parseColorFromProperties(props, prefix + "."
+                    + prop, dfault);
         } catch (NumberFormatException exc) {
             System.out.println("Color Error " + prefix + "." + prop);
         }
         return dfault;
     }
 
-
     /**
-     *  Description of the Method
-     *
-     * @param  props   Description of Parameter
-     * @param  prefix  Description of Parameter
-     * @param  prop    Description of Parameter
-     * @param  err     Description of Parameter
-     * @return         Description of the Returned Value
+     * Description of the Method
+     * 
+     * @param props Description of Parameter
+     * @param prefix Description of Parameter
+     * @param prop Description of Parameter
+     * @param err Description of Parameter
+     * @return Description of the Returned Value
      * @since
      */
-    private Paint[] parseColors(Properties props, String prefix, String prop, Paint err) {
+    protected Paint[] parseColors(Properties props, String prefix, String prop,
+                                  Paint err) {
         Paint[] colors = null;
-        String[] colorStrings = LayerUtils.stringArrayFromProperties(props, prefix + "." + prop, " ,");
+        String[] colorStrings = PropUtils.stringArrayFromProperties(props,
+                prefix + "." + prop,
+                " ,");
         if (colorStrings != null) {
             colors = new Color[colorStrings.length];
             for (int i = 0; i < colorStrings.length; i++)
                 try {
-                    colors[i] = LayerUtils.parseColor(colorStrings[i]);
+                    colors[i] = PropUtils.parseColor(colorStrings[i]);
                 } catch (NumberFormatException exc) {
-                    System.out.println("Colors Error " + prefix + "." + prop + " " + i);
+                    System.out.println("Colors Error " + prefix + "." + prop
+                            + " " + i);
                     colors[i] = err;
                 }
 
@@ -967,19 +785,20 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
         return colors;
     }
 
-
     /**
-     *  Description of the Method
-     *
-     * @param  props   Description of Parameter
-     * @param  prefix  Description of Parameter
-     * @param  prop    Description of Parameter
-     * @param  dfault  Description of Parameter
-     * @return         Description of the Returned Value
+     * Description of the Method
+     * 
+     * @param props Description of Parameter
+     * @param prefix Description of Parameter
+     * @param prop Description of Parameter
+     * @param dfault Description of Parameter
+     * @return Description of the Returned Value
      * @since
      */
-    private Font parseFont(Properties props, String prefix, String prop, Font dfault) {
-        String[] fontItems = LayerUtils.stringArrayFromProperties(props, prefix + "." + prop, " ,");
+    protected Font parseFont(Properties props, String prefix, String prop,
+                             Font dfault) {
+        String[] fontItems = PropUtils.stringArrayFromProperties(props, prefix
+                + "." + prop, " ,");
         int style = 0;
         int size = 10;
         if (fontItems == null || fontItems.length == 0)
@@ -988,6 +807,7 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
             size = Integer.parseInt(fontItems[1]);
         } catch (Exception e) {
         }
+
         for (int i = 2; i < fontItems.length; i++) {
             String S = fontItems[i];
             if ("BOLD".equals(S))
@@ -998,62 +818,6 @@ public class E00Layer extends Layer implements MapMouseListener, ActionListener 
                 style |= Font.PLAIN;
         }
         return new Font(fontItems[0], style, size);
-    }
-
-
-    /**
-     *  Description of the Class
-     *
-     * @author     tparicau
-     * @created    19 décembre 2002
-     */
-    class E00Worker extends SwingWorker {
-        File file;
-
-
-        /**
-         * Constructor used to create a worker thread.
-         *
-         * @param  f  Description of Parameter
-         * @since
-         */
-        public E00Worker(File f) {
-            super();
-            file = f;
-        }
-
-
-        /**
-         * Compute the value to be returned by the <code>get</code> method.
-         *
-         * @return    Description of the Returned Value
-         * @since
-         */
-        public Object construct() {
-            Debug.message("e00", getName() + "|E00Worker.construct()");
-            fireStatusUpdate(LayerStatusEvent.START_WORKING);
-            try {
-                return prepare(file);
-            } catch (OutOfMemoryError e) {
-                String msg = getName() + "|E00Layer.E00Worker.construct(): " + e;
-                Debug.error(msg);
-                fireRequestMessage(new InfoDisplayEvent(this, msg));
-                fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-                return null;
-            }
-        }
-
-
-        /**
-         * Called on the event dispatching thread (not on the worker thread)
-         * after the <code>construct</code> method has returned.
-         *
-         * @since
-         */
-        public void finished() {
-            workerComplete(this);
-            fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-        }
     }
 
 }

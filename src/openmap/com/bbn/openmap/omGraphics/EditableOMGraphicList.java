@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,26 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMGraphicList.java,v $
 // $RCSfile: EditableOMGraphicList.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.*;
 
-import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
@@ -48,7 +41,7 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     /**
      * For grabing the list objects and moving them.
      */
-    protected OffsetGrabPoint gpm; 
+    protected OffsetGrabPoint gpm;
 
     /**
      * The list of OMGraphics being selected and moved.
@@ -71,7 +64,7 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     /**
      * Create the EditableOMGraphicList with an OMGraphicList already
      * defined, ready for editing.
-     *
+     * 
      * @param oml OMGraphicList that should be handled.
      */
     public EditableOMGraphicList(OMGraphicList oml) {
@@ -88,7 +81,7 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     /**
      * Create and initialize the state machine that interprets the
      * modifying gestures/commands, as well as ititialize the grab
-     * points.  Also allocates the grab point array needed by the
+     * points. Also allocates the grab point array needed by the
      * EditableOMGraphicList.
      */
     public void init() {
@@ -98,20 +91,23 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     }
 
     /**
-     * Must be called on a EditableOMGraphicList that is created
-     * from an OMGraphicList containing OMGraphics.
-     * @param drawingTool OMDrawingTool used to create EditableOMGraphics for
-     * other OMGraphics on the list, which will in turn be managed by
-     * this EditableOMGraphicList.  If this is null, nothing will get
-     * done.  If this drawing tool doesn't know how to create an
-     * EditableOMGraphic for anything on the list, those things will
-     * not be managed.
+     * Must be called on a EditableOMGraphicList that is created from
+     * an OMGraphicList containing OMGraphics.
+     * 
+     * @param drawingTool OMDrawingTool used to create
+     *        EditableOMGraphics for other OMGraphics on the list,
+     *        which will in turn be managed by this
+     *        EditableOMGraphicList. If this is null, nothing will get
+     *        done. If this drawing tool doesn't know how to create an
+     *        EditableOMGraphic for anything on the list, those things
+     *        will not be managed.
      */
     public void init(OMDrawingTool drawingTool) {
         if (list != null) {
-            for (Iterator it = list.iterator();it.hasNext();) {
-                OMGraphic omg = (OMGraphic)it.next();
-                // Do we need to handle OMGraphicLists in a special way?
+            for (Iterator it = list.iterator(); it.hasNext();) {
+                OMGraphic omg = (OMGraphic) it.next();
+                // Do we need to handle OMGraphicLists in a special
+                // way?
                 if (omg.isVisible()) {
                     add(omg, drawingTool);
                 }
@@ -120,19 +116,18 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     }
 
     public GrabPoint[] getGrabPoints() {
-        return new GrabPoint[] {gpm};
+        return new GrabPoint[] { gpm };
     }
 
     /**
-     * Set the graphic within the state machine.  If the graphic
-     * is null, then one shall be created, and located off screen
-     * until the gestures driving the state machine place it on the
-     * map.  
+     * Set the graphic within the state machine. If the graphic is
+     * null, then one shall be created, and located off screen until
+     * the gestures driving the state machine place it on the map.
      */
     public void setGraphic(OMGraphic graphic) {
         init();
         if (graphic instanceof OMGraphicList) {
-            list = (OMGraphicList)graphic;
+            list = (OMGraphicList) graphic;
             list.setProcessAllGeometries(true);
             stateMachine.setSelected();
             gpm = new OffsetGrabPoint(-10, -10);
@@ -142,8 +137,8 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     }
 
     /**
-     * Create and set the graphic within the state machine.  The
-     * GraphicAttributes describe the type of line to create. 
+     * Create and set the graphic within the state machine. The
+     * GraphicAttributes describe the type of line to create.
      */
     public void createGraphic(GraphicAttributes ga) {
         init();
@@ -159,7 +154,8 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     }
 
     /**
-     * Get the OMGraphic being created/modified by the EditableOMGraphicList.  
+     * Get the OMGraphic being created/modified by the
+     * EditableOMGraphicList.
      */
     public OMGraphic getGraphic() {
         return list;
@@ -167,22 +163,23 @@ public class EditableOMGraphicList extends EditableOMGraphic {
 
     public void add(OMGraphicList list, OMDrawingTool drawingTool) {
         for (Iterator it = list.iterator(); it.hasNext();) {
-            add((OMGraphic)it.next(), drawingTool);
+            add((OMGraphic) it.next(), drawingTool);
         }
     }
 
     /**
      * Create an EditableOMGraphic and add it to the list.
+     * 
      * @param omg OMGraphic to add.
      * @param drawingTool to use to figure out what EditableOMGraphic
-     * to use for the OMGraphic.
+     *        to use for the OMGraphic.
      * @return EditableOMGraphic if successful, null if not.
      */
     public EditableOMGraphic add(OMGraphic omg, OMDrawingTool drawingTool) {
         EditableOMGraphic editable = null;
 
         if (omg instanceof OMGraphicList) {
-            add((OMGraphicList)omg, drawingTool);
+            add((OMGraphicList) omg, drawingTool);
             return editable;
         }
 
@@ -194,7 +191,8 @@ public class EditableOMGraphicList extends EditableOMGraphic {
                 add(editable);
             } else {
                 if (Debug.debugging("eomg")) {
-                    Debug.output("EditableOMGraphicList can't handle " + omg.getClass().getName());
+                    Debug.output("EditableOMGraphicList can't handle "
+                            + omg.getClass().getName());
                 }
             }
         } else {
@@ -218,8 +216,8 @@ public class EditableOMGraphicList extends EditableOMGraphic {
         }
 
         if (Debug.debugging("eomg")) {
-            Debug.output("EditableOMGraphicList adding " + 
-                         editable.getClass().getName() + " " + editable);
+            Debug.output("EditableOMGraphicList adding "
+                    + editable.getClass().getName() + " " + editable);
         }
 
         OMGraphic graphic = editable.getGraphic();
@@ -233,9 +231,9 @@ public class EditableOMGraphicList extends EditableOMGraphic {
             editable.attachToMovingGrabPoint(gpm);
         } else {
             if (Debug.debugging("eomg")) {
-                Debug.output("EditableOMGraphicList.add(" + 
-                             editable.getClass().getName() +
-                             ") not added, duplicate");
+                Debug.output("EditableOMGraphicList.add("
+                        + editable.getClass().getName()
+                        + ") not added, duplicate");
             }
         }
     }
@@ -245,7 +243,7 @@ public class EditableOMGraphicList extends EditableOMGraphic {
      */
     public void remove(OMGraphic omg) {
         for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            EditableOMGraphic eomg = (EditableOMGraphic)it.next();
+            EditableOMGraphic eomg = (EditableOMGraphic) it.next();
             if (eomg.getGraphic() == omg) {
                 remove(eomg);
                 list.remove(omg);
@@ -265,8 +263,8 @@ public class EditableOMGraphicList extends EditableOMGraphic {
         }
 
         if (Debug.debugging("eomg")) {
-            Debug.output("EditableOMGraphicList removing " + 
-                         editable.getClass().getName());
+            Debug.output("EditableOMGraphicList removing "
+                    + editable.getClass().getName());
         }
 
         editable.setProjection(null);
@@ -279,9 +277,9 @@ public class EditableOMGraphicList extends EditableOMGraphic {
      * Remove all EditableOMGraphics and clear out.
      */
     public void clear() {
-//      list.processAllGeometries(false);
-//      list.clear();
-//      list = null;
+        //      list.processAllGeometries(false);
+        //      list.clear();
+        //      list = null;
         getEditables().clear();
         gpm.clear();
     }
@@ -295,22 +293,23 @@ public class EditableOMGraphicList extends EditableOMGraphic {
         }
         super.setProjection(proj);
         for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            ((EditableOMGraphic)it.next()).setProjection(proj);
+            ((EditableOMGraphic) it.next()).setProjection(proj);
         }
     }
 
     /**
      * Take the current location of the GrabPoints, and modify the
-     * location parameters of the OMLine with them.  Called when you
+     * location parameters of the OMLine with them. Called when you
      * want the graphic to change according to the grab points.
      */
     public void setGrabPoints() {
         for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            EditableOMGraphic editable = (EditableOMGraphic)it.next();
+            EditableOMGraphic editable = (EditableOMGraphic) it.next();
             editable.setGrabPoints();
-//          if (Debug.debugging("eomg")) {
-//              Debug.output("  -- setting GrabPoints on " + editable.getClass().getName());
-//          }
+            //          if (Debug.debugging("eomg")) {
+            //              Debug.output(" -- setting GrabPoints on " +
+            // editable.getClass().getName());
+            //          }
         }
     }
 
@@ -324,17 +323,19 @@ public class EditableOMGraphicList extends EditableOMGraphic {
                 // will set movingPoint
                 move(me);
             } else {
-//              int count = 0;
-//              for (Iterator it = list.iterator(); it.hasNext();) {
-//                  OMGraphic omg = (OMGraphic)it.next();
-//                  Debug.output("  graphic " + (count++) + " distance(" + 
-//                               omg.distance(me.getX(), me.getY()) + ") ntbr: " + 
-//                               omg.getNeedToRegenerate());
-//              }
+                //              int count = 0;
+                //              for (Iterator it = list.iterator(); it.hasNext();)
+                // {
+                //                  OMGraphic omg = (OMGraphic)it.next();
+                //                  Debug.output(" graphic " + (count++) + " distance("
+                // +
+                //                               omg.distance(me.getX(), me.getY()) + ") ntbr: " +
+                //                               omg.getNeedToRegenerate());
+                //              }
                 movingPoint = null;
             }
         } else {
-//          Debug.output("EOMGL.getMovingPoint() null list");
+            //          Debug.output("EOMGL.getMovingPoint() null list");
             movingPoint = null;
         }
 
@@ -344,12 +345,12 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     /**
      * Called to set the OffsetGrabPoint to the current mouse
      * location, and update the OffsetGrabPoint with all the other
-     * GrabPoint locations, so everything can shift smoothly.  Should
-     * also set the OffsetGrabPoint to the movingPoint.  Should be
+     * GrabPoint locations, so everything can shift smoothly. Should
+     * also set the OffsetGrabPoint to the movingPoint. Should be
      * called only once at the beginning of the general movement, in
-     * order to set the movingPoint.  After that, redraw(e) should
-     * just be called, and the movingPoint will make the adjustments
-     * to the graphic that are needed.
+     * order to set the movingPoint. After that, redraw(e) should just
+     * be called, and the movingPoint will make the adjustments to the
+     * graphic that are needed.
      */
     public void move(MouseEvent e) {
         if (gpm != null) {
@@ -362,19 +363,20 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     /**
      * Use the current projection to place the graphics on the screen.
      * Has to be called to at least assure the graphics that they are
-     * ready for rendering.  Called when the graphic position changes.
-     *
+     * ready for rendering. Called when the graphic position changes.
+     * 
      * @param proj com.bbn.openmap.proj.Projection
-     * @return true 
+     * @return true
      */
     public boolean generate(Projection proj) {
         Debug.message("eomg", "EditableOMGraphicList.generate()");
 
         for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            ((EditableOMGraphic)it.next()).generate(proj);
+            ((EditableOMGraphic) it.next()).generate(proj);
         }
 
-        if (gpm != null) gpm.generate(proj);
+        if (gpm != null)
+            gpm.generate(proj);
 
         return true;
     }
@@ -388,22 +390,23 @@ public class EditableOMGraphicList extends EditableOMGraphic {
         Debug.message("eomg", "EditableOMGraphicList.regenerate()");
 
         for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            ((EditableOMGraphic)it.next()).regenerate(proj);
+            ((EditableOMGraphic) it.next()).regenerate(proj);
         }
 
-        if (gpm != null) gpm.generate(proj);
+        if (gpm != null)
+            gpm.generate(proj);
     }
 
     /**
      * Draw the EditableOMGraphicList parts into the java.awt.Graphics
-     * object.  The grab points are only rendered if the line machine
+     * object. The grab points are only rendered if the line machine
      * state is LineSelectedState.LINE_SELECTED.
-     *
+     * 
      * @param graphics java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
         for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            ((EditableOMGraphic)it.next()).render(graphics);
+            ((EditableOMGraphic) it.next()).render(graphics);
         }
     }
 }

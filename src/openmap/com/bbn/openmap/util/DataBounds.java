@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/DataBounds.java,v $
 // $RCSfile: DataBounds.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/03/05 02:25:58 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,8 +55,9 @@ public class DataBounds {
             double miny = min.getY();
             double maxx = max.getX();
             double maxy = max.getY();
-            return new Point2D.Double((minx + maxx)/2, (miny + maxy)/2);
-        } else return null;
+            return new Point2D.Double((minx + maxx) / 2, (miny + maxy) / 2);
+        } else
+            return null;
     }
 
     public String toString() {
@@ -102,6 +103,6 @@ public class DataBounds {
     }
 
     public void add(Point2D point) {
-        add((double)point.getX(), (double)point.getY());
+        add((double) point.getX(), (double) point.getY());
     }
 }

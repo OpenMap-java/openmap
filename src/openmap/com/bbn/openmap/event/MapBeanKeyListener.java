@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapBeanKeyListener.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapBeanKeyListener.java,v
+// $
 // $RCSfile: MapBeanKeyListener.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
@@ -28,7 +29,6 @@ import java.awt.event.KeyListener;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.OMComponent;
-import com.bbn.openmap.util.Debug;
 
 public class MapBeanKeyListener extends OMComponent implements KeyListener {
 
@@ -37,7 +37,9 @@ public class MapBeanKeyListener extends OMComponent implements KeyListener {
     public MapBeanKeyListener() {}
 
     public void keyPressed(KeyEvent e) {}
+
     public void keyReleased(KeyEvent e) {}
+
     public void keyTyped(KeyEvent e) {}
 
     public void setMapBean(MapBean map) {
@@ -48,7 +50,7 @@ public class MapBeanKeyListener extends OMComponent implements KeyListener {
         mapBean = map;
 
         if (mapBean != null) {
-            ((MapBean)map).addKeyListener(this);
+            ((MapBean) map).addKeyListener(this);
         }
     }
 
@@ -58,7 +60,7 @@ public class MapBeanKeyListener extends OMComponent implements KeyListener {
 
     public void findAndInit(Object someObj) {
         if (someObj instanceof MapBean) {
-            setMapBean((MapBean)someObj);
+            setMapBean((MapBean) someObj);
         }
     }
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,35 +14,44 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/TX7.java,v $
 // $RCSfile: TX7.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.e00;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.font.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
+import java.awt.font.LineMetrics;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
-import com.bbn.openmap.util.*;
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.*;
+import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.Planet;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Description of the Class that displays a String along a polygon or
  * a polyline defined by lat lon points.
- *
- * @author     paricaud
- * @created    18 décembre 2002
+ * 
+ * @author paricaud
+ * @created 18 décembre 2002
  */
 public class TX7 extends OMGraphic {
     double w = 1, angle = 0;
     LatLonPoint llp1 = new LatLonPoint(), llp2 = new LatLonPoint();
-    java.awt.Point pt1 = new Point(), pt2 = new Point();
+    Point pt1 = new Point(), pt2 = new Point();
     AffineTransform at = new AffineTransform();
     float llpoints[];
     String str;
@@ -53,27 +62,25 @@ public class TX7 extends OMGraphic {
     boolean badprojection;
     final static Font defaultFont = new Font("Arial", Font.PLAIN, 10);
 
-
     /**
-     *  Constructor for the TX7 object
-     *
-     * @param  llpoints  array on lat lon lat lon ...
-     * @param  str       Text
-     * @param  isRadian  true if lat lons given in radians
+     * Constructor for the TX7 object
+     * 
+     * @param llpoints array on lat lon lat lon ...
+     * @param str Text
+     * @param isRadian true if lat lons given in radians
      * @since
      */
     public TX7(float llpoints[], String str, boolean isRadian) {
         this(llpoints, str, isRadian, null);
     }
 
-
     /**
-     *Constructor for the TX7 object
-     *
-     * @param  llpoints  array on lat lon lat lon ...
-     * @param  str       Text
-     * @param  isRadian  true if lat lons given in radians
-     * @param  font      font used to draw text 
+     * Constructor for the TX7 object
+     * 
+     * @param llpoints array on lat lon lat lon ...
+     * @param str Text
+     * @param isRadian true if lat lons given in radians
+     * @param font font used to draw text
      * @since
      */
     public TX7(float llpoints[], String str, boolean isRadian, Font font) {
@@ -88,22 +95,21 @@ public class TX7 extends OMGraphic {
         setLocation(llpoints, isRadian);
     }
 
-
     /**
-     *Constructor for the TX7 object
-     *
-     * @param  llpoints  array on lat lon lat lon ...
-     * @param  str       Text          * @since
+     * Constructor for the TX7 object
+     * 
+     * @param llpoints array on lat lon lat lon ...
+     * @param str Text *
+     * @since
      */
     public TX7(float llpoints[], String str) {
         this(llpoints, str, true, null);
     }
 
-
     /**
-     *  Sets the text attribute of the TX7 object
-     *
-     * @param  S  The new text value
+     * Sets the text attribute of the TX7 object
+     * 
+     * @param S The new text value
      * @since
      */
     public void setText(String S) {
@@ -111,11 +117,10 @@ public class TX7 extends OMGraphic {
         compute();
     }
 
-
     /**
-     *  Sets the font attribute of the TX7 object
-     *
-     * @param  f  The new font value
+     * Sets the font attribute of the TX7 object
+     * 
+     * @param f The new font value
      * @since
      */
     public void setFont(Font f) {
@@ -123,12 +128,11 @@ public class TX7 extends OMGraphic {
         compute();
     }
 
-
     /**
-     *  Sets the location attribute of the TX7 object
-     *
-     * @param  llpoints  array on lat lon lat lon ...
-     * @param  isRadian  true if lat lons given in radians
+     * Sets the location attribute of the TX7 object
+     * 
+     * @param llpoints array on lat lon lat lon ...
+     * @param isRadian true if lat lons given in radians
      * @since
      */
     public void setLocation(float[] llpoints, boolean isRadian) {
@@ -141,45 +145,41 @@ public class TX7 extends OMGraphic {
         compute();
     }
 
-
     /**
-     *  Gets the font attribute of the TX7 object
-     *
-     * @return    The font value
+     * Gets the font attribute of the TX7 object
+     * 
+     * @return The font value
      * @since
      */
     public Font getFont() {
         return font;
     }
 
-
     /**
-     *  Gets the text attribute of the TX7 object
-     *
-     * @return    The text value
+     * Gets the text attribute of the TX7 object
+     * 
+     * @return The text value
      * @since
      */
     public String getText() {
         return str;
     }
 
-
     /**
-     *  Gets the location attribute of the TX7 object
-     *
-     * @return    array on lat lon lat lon ... in radians
+     * Gets the location attribute of the TX7 object
+     * 
+     * @return array on lat lon lat lon ... in radians
      * @since
      */
     public float[] getLocation() {
         return llpoints;
     }
 
-
     /**
-     *  generate with a new projection
-     *
-     * @param  proj  new Projection
-     * @return       Description of the Returned Value
+     * generate with a new projection
+     * 
+     * @param proj new Projection
+     * @return Description of the Returned Value
      * @since
      */
     public boolean generate(Projection proj) {
@@ -200,11 +200,10 @@ public class TX7 extends OMGraphic {
         return true;
     }
 
-
     /**
-     *  render 
-     *
-     * @param  g  Graphics
+     * render
+     * 
+     * @param g Graphics
      * @since
      */
     public void render(Graphics g) {
@@ -225,21 +224,17 @@ public class TX7 extends OMGraphic {
         g2d.drawGlyphVector(gv, 0, 0);
         g.setColor(Color.blue);
         /*
-         *  if (path != null) {
-         *  Stroke st = g2d.getStroke();
-         *  g2d.setStroke(new BasicStroke(.3f));
-         *  g2d.draw(path);
-         *  g2d.setStroke(st);
-         *  }
+         * if (path != null) { Stroke st = g2d.getStroke();
+         * g2d.setStroke(new BasicStroke(.3f)); g2d.draw(path);
+         * g2d.setStroke(st); }
          */
         // Restore original transform
         g2d.setTransform(saveAT);
     }
 
-
     /**
-     *  compute the glyphVector 
-     *
+     * compute the glyphVector
+     * 
      * @since
      */
     void compute() {
@@ -259,8 +254,8 @@ public class TX7 extends OMGraphic {
         lt2 = llpoints[2 * nseg];
         ln2 = llpoints[2 * nseg + 1];
         llp2.setLatLon(lt2, ln2, true);
-        distance = GreatCircle.spherical_distance(lt1, ln1, lt2, ln2) * Planet.wgs84_earthEquatorialRadiusMeters
-            ;
+        distance = GreatCircle.spherical_distance(lt1, ln1, lt2, ln2)
+                * Planet.wgs84_earthEquatorialRadiusMeters;
         //System.out.println(nseg+" "+llp1+" "+llp2);
         setNeedToRegenerate(true);
         visible = false;
@@ -274,15 +269,15 @@ public class TX7 extends OMGraphic {
         float dz;
         float az0 = 0;
         for (int i = 0; i < nseg; i++) {
-            //if(j>llpoints.length-2){System.out.println(j+" "+i+" "+nseg);nseg=1;break;}
+            //if(j>llpoints.length-2){System.out.println(j+" "+i+"
+            // "+nseg);nseg=1;break;}
             lt2 = (float) llpoints[j++];
             ln2 = (float) llpoints[j++];
             if (lt2 == lt1 && ln2 == ln1) {
                 // suppress null segments
                 i--;
                 nseg--;
-            }
-            else {
+            } else {
                 s += GreatCircle.spherical_distance(lt1, ln1, lt2, ln2);
                 ds[i] = s;
                 az[i] = GreatCircle.spherical_azimuth(lt1, ln1, lt2, ln2);
@@ -310,7 +305,8 @@ public class TX7 extends OMGraphic {
             return;
         }
         float h = (float) lm.getAscent();
-        //System.out.println("ascent:" + h + "  w:" + w + "  s:" + s + "  corr:" + corr + "  wc:" + (w - corr * h) + "   " + str);
+        //System.out.println("ascent:" + h + " w:" + w + " s:" + s +
+        // " corr:" + corr + " wc:" + (w - corr * h) + " " + str);
         corr = 0f;
         w -= corr * h;
         float sc = (float) (w / s);
@@ -354,8 +350,7 @@ public class TX7 extends OMGraphic {
                 ya = y;
                 x += ps * cos1;
                 y += ps * sin1;
-            }
-            else {
+            } else {
                 theta2 = az[j + 1];
                 cos2 = Math.cos(theta2);
                 sin2 = Math.sin(theta2);
@@ -370,8 +365,7 @@ public class TX7 extends OMGraphic {
                 if (ch == 0) {
                     xa = x;
                     ya = y;
-                }
-                else {
+                } else {
                     dx += ch * cos1 + ch * cos2;
                     dy += ch * sin1 + ch * sin2;
                     xa = x + h * sin1 - h * Math.sin(thetai);
@@ -392,17 +386,13 @@ public class TX7 extends OMGraphic {
             }
             s0 = s;
             /*
-             *  path.moveTo((float) xa, (float) ya);
-             *  xa += ps * Math.cos(theta);
-             *  ya += ps * Math.sin(theta);
-             *  path.lineTo((float) xa, (float) ya);
-             *  xa += h * Math.sin(theta);
-             *  ya -= h * Math.cos(theta);
-             *  path.lineTo((float) xa, (float) ya);
-             *  xa -= ps * Math.cos(theta);
-             *  ya -= ps * Math.sin(theta);
-             *  path.lineTo((float) xa, (float) ya);
-             *  path.closePath();
+             * path.moveTo((float) xa, (float) ya); xa += ps *
+             * Math.cos(theta); ya += ps * Math.sin(theta);
+             * path.lineTo((float) xa, (float) ya); xa += h *
+             * Math.sin(theta); ya -= h * Math.cos(theta);
+             * path.lineTo((float) xa, (float) ya); xa -= ps *
+             * Math.cos(theta); ya -= ps * Math.sin(theta);
+             * path.lineTo((float) xa, (float) ya); path.closePath();
              */
         }
         angle = Math.atan2(y, x);

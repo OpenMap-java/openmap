@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/ShxInputStream.java,v $
 // $RCSfile: ShxInputStream.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.dataAccess.shape.input;
 
@@ -27,19 +26,23 @@ import java.io.*;
 
 /**
  * Reads index data from a .shx file
+ * 
  * @author Doug Van Auken
  */
 public class ShxInputStream {
 
     /**
      * An integer specifying the type of layer, as defined by Esri's
-     * shape file format specifications 
+     * shape file format specifications
      */
     private int _type = -1;
-    
-    /** An input stream to process primitives in Little Endian or Big Endian */
+
+    /**
+     * An input stream to process primitives in Little Endian or Big
+     * Endian
+     */
     private LittleEndianInputStream _leis = null;
-    
+
     /**
      * Chains an input stream with a Little EndianInputStream
      */
@@ -47,14 +50,14 @@ public class ShxInputStream {
         BufferedInputStream bis = new BufferedInputStream(is);
         _leis = new LittleEndianInputStream(bis);
     }
-    
+
     /**
-     * Processes the SHX file to obtain a list of offsets, which classes
-     * derived from AbstractSupport will use to iterate through the
-     * associated SHP file
-     *
-     * @return an array of offsets, which will be passed into the
-     * open method of classes which extend AbstractSupport.  
+     * Processes the SHX file to obtain a list of offsets, which
+     * classes derived from AbstractSupport will use to iterate
+     * through the associated SHP file
+     * 
+     * @return an array of offsets, which will be passed into the open
+     *         method of classes which extend AbstractSupport.
      */
     public int[][] getIndex() {
         int[][] indexData = null;
@@ -73,15 +76,14 @@ public class ShxInputStream {
                 indexData[0][i] = _leis.readInt();
                 indexData[1][i] = _leis.readInt();
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
         return indexData;
     }
-    
-    public void close() throws IOException{
+
+    public void close() throws IOException {
         _leis.close();
     }
 }

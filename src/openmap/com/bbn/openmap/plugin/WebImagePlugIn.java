@@ -1,7 +1,7 @@
 /* **********************************************************************
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/WebImagePlugIn.java,v $
- * $Revision: 1.4 $ 
- * $Date: 2004/02/06 00:05:52 $ 
+ * $Revision: 1.5 $ 
+ * $Date: 2004/10/14 18:06:20 $ 
  * $Author: dietrick $
  *
  * Code provided by Raj Singh from Syncline, rs@syncline.com
@@ -19,28 +19,25 @@ import java.util.*;
 import javax.swing.*;
 
 import com.bbn.openmap.Layer;
-import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.image.ImageServerConstants;
-import com.bbn.openmap.image.WMTConstants;
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.plugin.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * This class asks for an image from a web server.  How it asks for
+ * This class asks for an image from a web server. How it asks for
  * that image is what is abstract.
  */
-public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServerConstants {
+public abstract class WebImagePlugIn extends AbstractPlugIn implements
+        ImageServerConstants {
 
     /** For convenience. */
     protected PlugInLayer layer = null;
 
     /** The last projection object received. */
     protected Projection currentProjection = null;
-    
+
     /**
      * Create the query to be sent to the server, based on current
      * settings.
@@ -51,19 +48,20 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
      * The getRectangle call is the main call into the PlugIn module.
      * The module is expected to fill the graphics list with objects
      * that are within the screen parameters passed.
-     *
+     * 
      * @param p projection of the screen, holding scale, center
-     * coords, height, width.
+     *        coords, height, width.
      */
     public OMGraphicList getRectangle(Projection p) {
         OMGraphicList list = new OMGraphicList();
-        
+
         currentProjection = p;
 
         String urlString = createQueryString(p);
 
         if (Debug.debugging("plugin")) {
-            Debug.output("WebImagePlugIn.getRectangle() with \"" + urlString + "\"");
+            Debug.output("WebImagePlugIn.getRectangle() with \"" + urlString
+                    + "\"");
         }
 
         if (urlString == null) {
@@ -74,49 +72,52 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
 
         try {
             url = new java.net.URL(urlString);
-            java.net.HttpURLConnection urlc =
-            (java.net.HttpURLConnection)url.openConnection();
+            java.net.HttpURLConnection urlc = (java.net.HttpURLConnection) url.openConnection();
 
             if (Debug.debugging("plugin")) {
-                Debug.output("url content type: "+ urlc.getContentType());
+                Debug.output("url content type: " + urlc.getContentType());
             }
 
             if (urlc == null || urlc.getContentType() == null) {
                 if (layer != null) {
-                    layer.fireRequestMessage(getName() + ": unable to connect to " + getServerName());
+                    layer.fireRequestMessage(getName()
+                            + ": unable to connect to " + getServerName());
                 } else {
-                    Debug.error(getName() + ": unable to connect to " + getServerName());
+                    Debug.error(getName() + ": unable to connect to "
+                            + getServerName());
                 }
                 return list;
             }
 
             // text
             if (urlc.getContentType().startsWith("text")) {
-                java.io.BufferedReader bin = new java.io.BufferedReader(
-                    new java.io.InputStreamReader(urlc.getInputStream())
-                );
+                java.io.BufferedReader bin = new java.io.BufferedReader(new java.io.InputStreamReader(urlc.getInputStream()));
                 String st;
                 String message = "";
-                while ((st=bin.readLine()) != null) {
+                while ((st = bin.readLine()) != null) {
                     message += st;
                 }
 
-//                  Debug.error(message);
-                // How about we toss the message out to the user instead?
+                //                  Debug.error(message);
+                // How about we toss the message out to the user
+                // instead?
                 if (layer != null) {
                     layer.fireRequestMessage(message);
                 }
 
-            // image
+                // image
             } else if (urlc.getContentType().startsWith("image")) {
-                // disconnect and reconnect in ImageIcon is very expensive
-                // urlc.disconnect();				
+                // disconnect and reconnect in ImageIcon is very
+                // expensive
+                // urlc.disconnect();
                 // ImageIcon ii = new ImageIcon(url);
 
-                // this doesn't work always			
-                // ImageIcon ii = new ImageIcon((Image) urlc.getContent());
+                // this doesn't work always
+                // ImageIcon ii = new ImageIcon((Image)
+                // urlc.getContent());
 
-                // the best way, no reconnect, but can be an additional 'in memory' image 
+                // the best way, no reconnect, but can be an
+                // additional 'in memory' image
                 InputStream in = urlc.getInputStream();
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 int buflen = 2048; // 2k blocks
@@ -128,14 +129,18 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
                 out.flush();
                 out.close();
                 ImageIcon ii = new ImageIcon(out.toByteArray());
-                OMRaster image = new OMRaster((int)0, (int)0, ii);
+                OMRaster image = new OMRaster((int) 0, (int) 0, ii);
                 list.add(image);
             } // end if image
         } catch (java.net.MalformedURLException murle) {
-            Debug.error("WebImagePlugIn: URL \"" + urlString +
-                        "\" is malformed.");
+            Debug.error("WebImagePlugIn: URL \"" + urlString
+                    + "\" is malformed.");
         } catch (java.io.IOException ioe) {
-            messageWindow.showMessageDialog(null, getName() + ":\n\n   Couldn't connect to " + getServerName(), "Connection Problem", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    getName() + ":\n\n   Couldn't connect to "
+                            + getServerName(),
+                    "Connection Problem",
+                    JOptionPane.INFORMATION_MESSAGE);
 
         }
 
@@ -156,32 +161,35 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
 
         JButton viewQueryButton = new JButton("View Current Query");
         viewQueryButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    if (layer != null) {
-                        String query = createQueryString(currentProjection);
-                        Vector queryStrings = PropUtils.parseMarkers(query, "&");
-                        StringBuffer updatedQuery = new StringBuffer();
-                        Iterator it = queryStrings.iterator();
-                        if (it.hasNext()) {
-                            updatedQuery.append((String)it.next());
-                        }
-                        while (it.hasNext()) {
-                            updatedQuery.append("&\n   ");
-                            updatedQuery.append((String) it.next());
-                        }
-
-                        messageWindow.showMessageDialog(null, updatedQuery.toString(), "Current Query for " + getName(), JOptionPane.INFORMATION_MESSAGE);
+            public void actionPerformed(ActionEvent ae) {
+                if (layer != null) {
+                    String query = createQueryString(currentProjection);
+                    Vector queryStrings = PropUtils.parseMarkers(query, "&");
+                    StringBuffer updatedQuery = new StringBuffer();
+                    Iterator it = queryStrings.iterator();
+                    if (it.hasNext()) {
+                        updatedQuery.append((String) it.next());
                     }
+                    while (it.hasNext()) {
+                        updatedQuery.append("&\n   ");
+                        updatedQuery.append((String) it.next());
+                    }
+
+                    JOptionPane.showMessageDialog(null,
+                            updatedQuery.toString(),
+                            "Current Query for " + getName(),
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
-            });
+            }
+        });
 
         redrawButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    if (layer != null) {
-                        layer.doPrepare();
-                    }
+            public void actionPerformed(ActionEvent ae) {
+                if (layer != null) {
+                    layer.doPrepare();
                 }
-            });
+            }
+        });
 
         redrawButton.setEnabled(layer != null);
 
@@ -194,8 +202,8 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
     protected JButton redrawButton = new JButton("Query Server");
     protected JOptionPane messageWindow = new JOptionPane();
 
-    /** 
-     * Set the component that this PlugIn uses as a grip to the map.  
+    /**
+     * Set the component that this PlugIn uses as a grip to the map.
      */
     public void setComponent(Component comp) {
         super.setComponent(comp);

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,20 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/MouseModeMenu.java,v $
 // $RCSfile: MouseModeMenu.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.gui.menu;
 
-import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
 import java.beans.beancontext.*;
-import java.util.*;
 import javax.swing.*;
 
 import com.bbn.openmap.*;
@@ -36,29 +33,31 @@ import com.bbn.openmap.gui.AbstractOpenMapMenu;
 import com.bbn.openmap.util.Debug;
 
 /**
- * It provides GUI based on Mouse modes available from MouseDelegator object
+ * It provides GUI based on Mouse modes available from MouseDelegator
+ * object
  */
-public class MouseModeMenu extends AbstractOpenMapMenu
-    implements PropertyChangeListener, ActionListener {
+public class MouseModeMenu extends AbstractOpenMapMenu implements
+        PropertyChangeListener, ActionListener {
 
     public static final String defaultText = "Mouse Mode";
     public final static transient String mouseModeCmd = "setMouseMode";
-  
-    protected transient MouseDelegator mouseDelegator=null;
+
+    protected transient MouseDelegator mouseDelegator = null;
     // mouse mode widgets
-    protected transient JRadioButtonMenuItem[] mouseModeButtons =
-    new JRadioButtonMenuItem[0];
-    protected transient ButtonGroup group2 = null; 
+    protected transient JRadioButtonMenuItem[] mouseModeButtons = new JRadioButtonMenuItem[0];
+    protected transient ButtonGroup group2 = null;
     protected I18n i18n = Environment.getI18n();
     protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
+
     public MouseModeMenu() {
         super();
-        setText(i18n.get(this, "mouseModeMenu",defaultText) );
+        setText(i18n.get(this, "mouseModeMenu", defaultText));
         addActionListener(this);
     }
 
     /**
      * Sets up the MouseModes submenu.
+     * 
      * @param md MouseDelegator
      */
     public void setMouseDelegator(MouseDelegator md) {
@@ -67,8 +66,10 @@ public class MouseModeMenu extends AbstractOpenMapMenu
             mouseDelegator.addPropertyChangeListener(this);
             MapMouseMode[] modes = mouseDelegator.getMouseModes();
             String activeMode = mouseDelegator.getActiveMouseModeID();
-            Debug.message("mousemodemenuitem","MouseModeMenuItem.setMouseDelegator MouseDelegator has " + modes.length + " modes");
-            setUpItems(modes,activeMode);               
+            Debug.message("mousemodemenuitem",
+                    "MouseModeMenuItem.setMouseDelegator MouseDelegator has "
+                            + modes.length + " modes");
+            setUpItems(modes, activeMode);
         }
     }
 
@@ -77,7 +78,7 @@ public class MouseModeMenu extends AbstractOpenMapMenu
             mouseDelegator.removePropertyChangeListener(this);
 
             if (mouseModeButtons != null) {
-                for (int mms = 0; mms < mouseModeButtons.length; mms++){
+                for (int mms = 0; mms < mouseModeButtons.length; mms++) {
                     mouseModeButtons[mms].removeActionListener(this);
                     group2.remove(mouseModeButtons[mms]);
                 }
@@ -89,15 +90,15 @@ public class MouseModeMenu extends AbstractOpenMapMenu
     }
 
     protected void setUpItems(MapMouseMode[] modes, String activeMode) {
-        if (group2==null) {
+        if (group2 == null) {
             group2 = new ButtonGroup();
         }
         mouseModeButtons = new JRadioButtonMenuItem[modes.length];
-    
-        for (int mms = 0; mms < modes.length; mms++){
-            Debug.message("mousemodemenuitem","MouseModeMenuItem.setUpItems adding "+ modes[mms].getID());
-            mouseModeButtons[mms] = 
-		(JRadioButtonMenuItem) this.add(new JRadioButtonMenuItem(modes[mms].getPrettyName()));
+
+        for (int mms = 0; mms < modes.length; mms++) {
+            Debug.message("mousemodemenuitem",
+                    "MouseModeMenuItem.setUpItems adding " + modes[mms].getID());
+            mouseModeButtons[mms] = (JRadioButtonMenuItem) this.add(new JRadioButtonMenuItem(modes[mms].getPrettyName()));
 
             mouseModeButtons[mms].setActionCommand(mouseModeCmd);
             mouseModeButtons[mms].setName(modes[mms].getID());
@@ -105,84 +106,90 @@ public class MouseModeMenu extends AbstractOpenMapMenu
             mouseModeButtons[mms].setVisible(modes[mms].isVisible());
             group2.add(mouseModeButtons[mms]);
 
-            if ((activeMode != null) &&
-                activeMode.equals(modes[mms].getID())) {
+            if ((activeMode != null) && activeMode.equals(modes[mms].getID())) {
                 mouseModeButtons[mms].setSelected(true);
             }
         }
     }
-  
+
     /**
      * ActionListener interface.
+     * 
      * @param e ActionEvent
      */
-    public void actionPerformed(java.awt.event.ActionEvent e) {    
+    public void actionPerformed(java.awt.event.ActionEvent e) {
         String command = e.getActionCommand();
-       
+
         if (command.equals(mouseModeCmd)) {
-            JRadioButtonMenuItem rb = (JRadioButtonMenuItem)(e.getSource());        
+            JRadioButtonMenuItem rb = (JRadioButtonMenuItem) (e.getSource());
             mouseDelegator.setActiveMouseModeWithID(rb.getName());
         }
     }
 
     /**
-     * This method gets called when a bound property is changed.<p>
-     *
+     * This method gets called when a bound property is changed.
+     * <p>
+     * 
      * @param evt A PropertyChangeEvent object describing the event
-     * source and the property that has changed.  
+     *        source and the property that has changed.
      */
     public void propertyChange(PropertyChangeEvent evt) {
         Debug.message("mousemodemenuitem", "MouseModeMenuItem.propertyChange()");
-      
+
         if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
-            // Mark the radio button representing the new mode as active
-            String mmID = ((MapMouseMode)evt.getNewValue()).getID();
-            for (int i=0; i < mouseModeButtons.length; i++) {
-                //System.out.println(mmID + " " +mouseModeButtons[i].getName());
+            // Mark the radio button representing the new mode as
+            // active
+            String mmID = ((MapMouseMode) evt.getNewValue()).getID();
+            for (int i = 0; i < mouseModeButtons.length; i++) {
+                //System.out.println(mmID + " "
+                // +mouseModeButtons[i].getName());
                 if (mouseModeButtons[i].getName().equals(mmID)) {
                     mouseModeButtons[i].setSelected(true);
-                    //System.out.println("MouseModeMenu: New Active Mode " + mmID);
+                    //System.out.println("MouseModeMenu: New Active
+                    // Mode " + mmID);
                     break;
                 }
             }
         }
-      
-        else if (evt.getPropertyName() == MouseDelegator.MouseModesProperty) {      
+
+        else if (evt.getPropertyName() == MouseDelegator.MouseModesProperty) {
             // Redo the whole submenu
-            for (int i=0; i < mouseModeButtons.length; i++) {
+            for (int i = 0; i < mouseModeButtons.length; i++) {
                 remove(mouseModeButtons[i]);
             }
             MapMouseMode[] modes = mouseDelegator.getMouseModes();
             String activeMode = mouseDelegator.getActiveMouseModeID();
-            setUpItems(modes,activeMode);         
+            setUpItems(modes, activeMode);
         }
     }
 
     /**
      * Called when a component that is needed, and not available with
-     * an appropriate iterator from the BeanContext.  This lets this
-     * object hook up with what it needs.  
+     * an appropriate iterator from the BeanContext. This lets this
+     * object hook up with what it needs.
      */
     public void findAndInit(Object someObj) {
         if (someObj instanceof MouseDelegator) {
             // do the initializing that need to be done here
-            Debug.message("mousemodemenuitem","MouseModeMenuItem found a MouseDelegator.");
-            setMouseDelegator((MouseDelegator)someObj);
+            Debug.message("mousemodemenuitem",
+                    "MouseModeMenuItem found a MouseDelegator.");
+            setMouseDelegator((MouseDelegator) someObj);
         }
     }
 
-    /** 
-     * AbstractOpenMapMenu method.  Called when an objects have been
-     * removed from the parent BeanContext. 
+    /**
+     * AbstractOpenMapMenu method. Called when an objects have been
+     * removed from the parent BeanContext.
      */
     public void findAndUnInit(Object someObj) {
         if (someObj instanceof MouseDelegator) {
             // do the initializing that need to be done here
-            Debug.message("mousemodemenuitem","MouseModeMenuItem removing MouseDelegator.");
+            Debug.message("mousemodemenuitem",
+                    "MouseModeMenuItem removing MouseDelegator.");
             setMouseDelegator(null);
         }
     }
-  
+
     /** Method for BeanContextChild interface. */
     public void addPropertyChangeListener(String propertyName,
                                           PropertyChangeListener in_pcl) {
@@ -190,9 +197,10 @@ public class MouseModeMenu extends AbstractOpenMapMenu
     }
 
     /** Method for BeanContextChild interface. */
-    public void removePropertyChangeListener(String propertyName, 
+    public void removePropertyChangeListener(String propertyName,
                                              PropertyChangeListener in_pcl) {
-        beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
+        beanContextChildSupport.removePropertyChangeListener(propertyName,
+                in_pcl);
     }
-  
+
 }

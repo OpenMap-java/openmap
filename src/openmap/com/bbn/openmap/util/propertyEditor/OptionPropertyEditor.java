@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,42 +14,45 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/OptionPropertyEditor.java,v $
 // $RCSfile: OptionPropertyEditor.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/05/25 02:29:06 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.util.propertyEditor;
 
-import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
-import java.beans.PropertyEditorSupport;
 import java.util.Properties;
 import java.util.Vector;
 
 /**
  * The base class for property editors that support a list of options
- * being presented in the GUI.  When defining the properties that the
+ * being presented in the GUI. When defining the properties that the
  * property editor will use for a PropertyConsumer in the
  * getPropertyInfo method, just use the name of the property that the
- * options are being used for:<pre>
- *
- * BigNameOptionProperty.options=option1 option2 option3
- * BigNameOptionProperty.option1=Big Name 1
- * BigNameOptionProperty.option2=Big Name 2
- * BigNameOptionProperty.option3=Big Name 3
- *
- * </pre> Don't use the property prefix for the PropertyConsumer being
+ * options are being used for:
+ * 
+ * <pre>
+ * 
+ * 
+ *  BigNameOptionProperty.options=option1 option2 option3
+ *  BigNameOptionProperty.option1=Big Name 1
+ *  BigNameOptionProperty.option2=Big Name 2
+ *  BigNameOptionProperty.option3=Big Name 3
+ * 
+ *  
+ * </pre>
+ * 
+ * Don't use the property prefix for the PropertyConsumer being
  * defined, only the property.
  */
-public abstract class OptionPropertyEditor extends PropertyConsumerPropertyEditor {
+public abstract class OptionPropertyEditor extends
+        PropertyConsumerPropertyEditor {
 
     public final static String OptionsProperty = "options";
     public final static String ScopedOptionsProperty = ".options";
@@ -67,10 +70,10 @@ public abstract class OptionPropertyEditor extends PropertyConsumerPropertyEdito
     }
 
     /** Returns the editor GUI. */
-    public  Component getCustomEditor() {
+    public Component getCustomEditor() {
         return customEditor;
     }
-    
+
     public abstract void setOptions(String[] options);
 
     /** Sets option based on string. */
@@ -80,7 +83,10 @@ public abstract class OptionPropertyEditor extends PropertyConsumerPropertyEdito
     public abstract String getAsText();
 
     public void focusGained(FocusEvent e) {}
-    public void focusLost(FocusEvent e) { firePropertyChange(); }
+
+    public void focusLost(FocusEvent e) {
+        firePropertyChange();
+    }
 
     /**
      * @param prefix the token to prefix the property names
@@ -97,13 +103,15 @@ public abstract class OptionPropertyEditor extends PropertyConsumerPropertyEdito
             Vector optionVector = PropUtils.parseSpacedMarkers(optionListProperty);
             options = new String[optionVector.size()];
             for (int i = 0; i < options.length; i++) {
-                options[i] = props.getProperty(prefix + (String)optionVector.elementAt(i));
+                options[i] = props.getProperty(prefix
+                        + (String) optionVector.elementAt(i));
             }
 
             setOptions(options);
 
         } else {
-            Debug.error("OptionPropertyEditor for " + prefix + " not given options");
+            Debug.error("OptionPropertyEditor for " + prefix
+                    + " not given options");
         }
     }
 

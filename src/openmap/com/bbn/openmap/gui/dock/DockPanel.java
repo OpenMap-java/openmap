@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,33 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/DockPanel.java,v $
 // $RCSfile: DockPanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.gui.dock;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.BorderLayout;
 import javax.swing.*;
-import java.util.*;
 
 /**
  * An interface onto a component that has a background component and
  * docking children.
+ * 
  * @author Ben Lubin
- * @version $Revision: 1.4 $ on $Date: 2004/01/26 18:18:08 $
+ * @version $Revision: 1.5 $ on $Date: 2004/10/14 18:05:49 $
  * @since 12/5/02
  */
 public interface DockPanel {
 
     /** Constraint for the background component */
-    public static final String BACKGROUND =
-        BorderLayout.CENTER;
+    public static final String BACKGROUND = BorderLayout.CENTER;
 
     //Background Methods:
     /////////////////////
@@ -73,7 +69,6 @@ public interface DockPanel {
      */
     public void removeConstraint(JComponent child);
 
-
     //Constraint Setup Functions:
     /////////////////////////////
 
@@ -89,8 +84,8 @@ public interface DockPanel {
 
     /**
      * Set that the given child can sit in front of the background
-     * component, without forcing the background component to be resized
-     * to make room.
+     * component, without forcing the background component to be
+     * resized to make room.
      */
     public void setCanOcclude(JComponent child, boolean b);
 
@@ -105,14 +100,14 @@ public interface DockPanel {
     public void setCanResize(JComponent child, boolean b);
 
     /**
-     * Set that the child component can be tabbed up, if docked
-     * in the same location as othe tab-able components.
+     * Set that the child component can be tabbed up, if docked in the
+     * same location as othe tab-able components.
      */
     public void setCanTab(JComponent child, boolean b);
 
     /**
-     * Set the name of the tab to use when the component is tabbed 
-     * (if it can tab).  If unspecified, defaults to Component.getName()
+     * Set the name of the tab to use when the component is tabbed (if
+     * it can tab). If unspecified, defaults to Component.getName()
      */
     public void setTabName(JComponent child, String tabName);
 
@@ -179,7 +174,7 @@ public interface DockPanel {
     public void dockSouth(JComponent child, int idx);
 
     //EAST:
-    
+
     /**
      * Dock child on the DockPanel.
      */
@@ -210,16 +205,15 @@ public interface DockPanel {
     public void dockSomewhere(JComponent child);
 
     //DOCK onto existing child:
-    
+
     /**
-     * Dock the given child onto the given parent, which is itself a 
+     * Dock the given child onto the given parent, which is itself a
      * child.
      */
     public void dock(JComponent outter, JComponent inner);
 
-
     /**
-     * Dock the given child onto the given parent, which is itself a 
+     * Dock the given child onto the given parent, which is itself a
      * child.
      */
     public void dock(JComponent outter, JComponent inner, int idx);

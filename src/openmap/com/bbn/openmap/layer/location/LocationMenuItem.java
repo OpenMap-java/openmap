@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,27 +14,24 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationMenuItem.java,v $
 // $RCSfile: LocationMenuItem.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.location;
 
 import java.awt.event.*;
 
-import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.Layer;
 
-/** 
- * This is an item that sits on the popup menu.  It knows how to
- * get information it needs from the menu, and recenters the map, or
- * brings up more information about the locaiton. 
+/**
+ * This is an item that sits on the popup menu. It knows how to get
+ * information it needs from the menu, and recenters the map, or
+ * brings up more information about the locaiton.
  */
 public class LocationMenuItem extends JMenuItem implements ActionListener {
     /** the location popup menu for the item */
@@ -45,20 +42,21 @@ public class LocationMenuItem extends JMenuItem implements ActionListener {
     /**
      * Construct an empty item
      */
-    public LocationMenuItem() {
-    }
-    
+    public LocationMenuItem() {}
+
     /**
      * Construct a menuitem with a label
+     * 
      * @param text the text for the item
      */
     public LocationMenuItem(String text) {
         super(text);
         this.addActionListener(this);
     }
-    
+
     /**
      * Construct a menuitem with a label and mnemonic
+     * 
      * @param text the text for the item
      * @param mnemonic the mnemonic key for the item
      */
@@ -67,41 +65,40 @@ public class LocationMenuItem extends JMenuItem implements ActionListener {
         this.addActionListener(this);
     }
 
-    public LocationMenuItem(String text, LocationPopupMenu aCLP, 
-                            LocationLayer aLayer) {
+    public LocationMenuItem(String text, LocationPopupMenu aCLP,
+            LocationLayer aLayer) {
         this(text);
         setLocationPopupMenu(aCLP);
         setLayer(aLayer);
     }
 
-    public void setLocationPopupMenu(LocationPopupMenu aCLP){
+    public void setLocationPopupMenu(LocationPopupMenu aCLP) {
         clp = aCLP;
     }
 
-    public LocationPopupMenu getLocationPopupMenu(){
+    public LocationPopupMenu getLocationPopupMenu() {
         return clp;
     }
 
-    public void setLayer(LocationLayer aLayer){
+    public void setLayer(LocationLayer aLayer) {
         layer = aLayer;
     }
 
-    public LocationLayer getLayer(){
+    public LocationLayer getLayer() {
         return layer;
     }
 
     public void actionPerformed(java.awt.event.ActionEvent e) {
-//          Debug.output("Action: " + e);
+        //          Debug.output("Action: " + e);
         String command = e.getActionCommand();
-            
-        if (layer != null && e.getSource().equals(this)){
-            if (command == LocationLayer.recenter){
+
+        if (layer != null && e.getSource().equals(this)) {
+            if (command == LocationLayer.recenter) {
                 MouseEvent evt = clp.getEvent();
-                LatLonPoint llp = layer.getProjection().inverse(evt.getX(), 
-                                                                evt.getY());
+                LatLonPoint llp = layer.getProjection().inverse(evt.getX(),
+                        evt.getY());
                 clp.getMap().setCenter(llp.getLatitude(), llp.getLongitude());
-            }
-            else if (command.equals(LocationHandler.showdetails)){
+            } else if (command.equals(LocationHandler.showdetails)) {
                 clp.getLoc().showDetails(layer);
             }
         }

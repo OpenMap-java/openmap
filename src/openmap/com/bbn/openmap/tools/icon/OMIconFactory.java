@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/OMIconFactory.java,v $
 // $RCSfile: OMIconFactory.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.icon;
 
@@ -37,9 +36,9 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 public class OMIconFactory {
 
     /**
-     * Create an ImageIcon that is a certain pixel height and
-     * width. This will return an empty ImageIcon, and you'd have to do
-     * the rendering into its image.
+     * Create an ImageIcon that is a certain pixel height and width.
+     * This will return an empty ImageIcon, and you'd have to do the
+     * rendering into its image.
      */
     public static ImageIcon createImageIcon(int width, int height) {
         return createImageIcon(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -47,7 +46,7 @@ public class OMIconFactory {
 
     /**
      * Create an ImageIcon that is a certain pixel height and width,
-     * with a specified image type (ARGB, RGB, etc).  This will return
+     * with a specified image type (ARGB, RGB, etc). This will return
      * an empty ImageIcon, and you'd have to do the rendering into its
      * image.
      */
@@ -57,7 +56,7 @@ public class OMIconFactory {
 
     /**
      * Create an ImageIcon that is a certain pixel height and width
-     * created with a certain IconPart geometry.  The geometry will be
+     * created with a certain IconPart geometry. The geometry will be
      * drawing with default DrawingAttributes.
      */
     public static ImageIcon getIcon(int width, int height, IconPart geometry) {
@@ -66,15 +65,16 @@ public class OMIconFactory {
 
     /**
      * Create an ImageIcon that is a certain pixel height and width
-     * created with a certain IconPart geometry.  Also, the
+     * created with a certain IconPart geometry. Also, the
      * DrawingAttributes can be used to add color/texture to the
      * IconPart geometries.
      */
-    public static ImageIcon getIcon(int width, int height, IconPart geometry, 
+    public static ImageIcon getIcon(int width, int height, IconPart geometry,
                                     DrawingAttributes appDA) {
         ImageIcon icon = createImageIcon(width, height);
         Graphics2D g = (Graphics2D) icon.getImage().getGraphics();
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
 
         geometry.render(g, width, height, appDA);
         return icon;

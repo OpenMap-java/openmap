@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,39 +14,37 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/FeatureClassInfo.java,v $
 // $RCSfile: FeatureClassInfo.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/01 21:21:59 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
 import java.util.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.io.BinaryFile;
 
 /**
  * This class wraps a feature type file (potext.tft, polbndl.lft, etc)
- * from VPF.  It maintains sufficient information about the table it
- * is indexed from so that it can take a List of values, rather than
- * a single value.  It also knows about its containing CoverageTable
- * so it can look up information in int.vdt and char.vdt.  
+ * from VPF. It maintains sufficient information about the table it is
+ * indexed from so that it can take a List of values, rather than a
+ * single value. It also knows about its containing CoverageTable so
+ * it can look up information in int.vdt and char.vdt.
  */
-public class FeatureClassInfo extends DcwRecordFile
-    implements TerminatingRunnable, com.bbn.openmap.io.Closable {
+public class FeatureClassInfo extends DcwRecordFile implements
+        TerminatingRunnable, com.bbn.openmap.io.Closable {
 
     /** the table to look up .vdt info from */
     final private CoverageTable ctable;
-    /** 
-     * The name of our column from the primitive table
-     * (e.g. potext.tft_id).  This is the name of the column that will
-     * let you know, in the primitive file (like edg), what type of
-     * primitive (featurewise) is being reprensented on that row.
-     * This field does not always exist! If it doesn't, all the
-     * features in the file are rendered.
+    /**
+     * The name of our column from the primitive table (e.g.
+     * potext.tft_id). This is the name of the column that will let
+     * you know, in the primitive file (like edg), what type of
+     * primitive (featurewise) is being reprensented on that row. This
+     * field does not always exist! If it doesn't, all the features in
+     * the file are rendered.
      */
     final private String columnname;
 
@@ -54,14 +52,14 @@ public class FeatureClassInfo extends DcwRecordFile
     private int mycolumn = -1;
     /** true means the object has run(), false otherwise */
     private boolean fullInit = false;
-    
+
     /** things constructed with deferred initialization get queued here */
     final private static RunQueue tq = new RunQueue(true, Thread.MIN_PRIORITY, true);
 
     /** temporary list for use in getDescription() */
     final private List tmpVec = new ArrayList();
 
-    // Feature Classes cross reference each other.  For any feature
+    // Feature Classes cross reference each other. For any feature
     // class name, you can have:
     //
     // 1) a DcwRecordFile (EdgeTable, NodeTable, AreaTable,
@@ -79,28 +77,26 @@ public class FeatureClassInfo extends DcwRecordFile
     //
     // The DcwRecordFile contains the actual data for the primitive,
     // and each DceRecordFile contains like feature primitives (edges,
-    // areas, text, points).  Each line in the DcwRecordFile contains
+    // areas, text, points). Each line in the DcwRecordFile contains
     // the ID number of the primitive,
 
-    /** 
+    /**
      * Construct a FeatureClassInfo.
-     *
+     * 
      * @param cthis the CoverageTable to use for vdt lookups
      * @param colname the column name from the primitive table
      * @param tablepath the directory of the feature table
      * @param ftname the name of the feature type
-     * @exception FormatException some error was encountered 
+     * @exception FormatException some error was encountered
      */
     public FeatureClassInfo(CoverageTable cthis, String colname,
-                            String tablepath, String ftname)
-        throws FormatException {
+            String tablepath, String ftname) throws FormatException {
         super(tablepath + ftname, true); //defer initialization
 
         if (Debug.debugging("vpf.fci")) {
-            Debug.output("FCI set to peruse (" + filename + 
-                         ") created with colname (" + colname + 
-                         ") , tablepath (" + tablepath + 
-                         ") and ftname (" + ftname + ")");
+            Debug.output("FCI set to peruse (" + filename
+                    + ") created with colname (" + colname + ") , tablepath ("
+                    + tablepath + ") and ftname (" + ftname + ")");
         }
 
         ctable = cthis;
@@ -115,21 +111,23 @@ public class FeatureClassInfo extends DcwRecordFile
     protected char featureType;
 
     /**
-     * Construct a FeatureClassInfo that can be used for feature search
+     * Construct a FeatureClassInfo that can be used for feature
+     * search
+     * 
      * @param cthis the CoverageTable to use for vdt lookups
      * @param colname the column name from the primitive table
      * @param tablepath the directory of the feature table
      * @param ftname the name of the feature type
      * @param tileDirFile the name of the primitive file
      * @param tileDirFileColName the name of the primitive id column
-     * @exception FormatException some error was encountered 
+     * @exception FormatException some error was encountered
      */
     public FeatureClassInfo(CoverageTable cthis, String colname,
-                            String tablepath, String ftname, 
-                            String tileDirFile, String tileDirFileColName)
-        throws FormatException {
+            String tablepath, String ftname, String tileDirFile,
+            String tileDirFileColName) throws FormatException {
 
-        super(tablepath + ftname, false); //don't defer initialization
+        super(tablepath + ftname, false); //don't defer
+                                          // initialization
         fullInit = true;
 
         ctable = cthis;
@@ -153,15 +151,17 @@ public class FeatureClassInfo extends DcwRecordFile
         }
 
         if (Debug.debugging("vpf.fci")) {
-            Debug.output("FCI: set to peruse (" + filename + ") and column (" + colname + ")");
-            Debug.output("  setting tile directory file (" + tileDirFile + 
-                         "), tile id column (" + tileDirFileColName + ")");
+            Debug.output("FCI: set to peruse (" + filename + ") and column ("
+                    + colname + ")");
+            Debug.output("  setting tile directory file (" + tileDirFile
+                    + "), tile id column (" + tileDirFileColName + ")");
         }
     }
 
     /**
-     * Returns a TilingAdapter suitable for retrieving primitive ids from
-     * records in this feature table.
+     * Returns a TilingAdapter suitable for retrieving primitive ids
+     * from records in this feature table.
+     * 
      * @return a tilingadapter or null
      */
     public TilingAdapter getTilingAdapter() {
@@ -172,8 +172,8 @@ public class FeatureClassInfo extends DcwRecordFile
     public final static String TILE_ID_COLUMN_NAME = "tile_id";
 
     /**
-     * Returns the file name (no path info) of the thematic index for the
-     * tile_id column.
+     * Returns the file name (no path info) of the thematic index for
+     * the tile_id column.
      */
     public String getTileThematicFileName() {
         if (columnInfo != null) {
@@ -189,25 +189,28 @@ public class FeatureClassInfo extends DcwRecordFile
     protected DcwThematicIndex thematicIndex = null;
 
     /**
-     * Causes the thematic index for the tile_id column to be initilized.
+     * Causes the thematic index for the tile_id column to be
+     * initilized.
+     * 
      * @param path the path to the directory where the index lives
      * @return true if a thematic index is available, false if not
      */
     public synchronized boolean initThematicIndex(String path) {
         try {
             if (thematicIndex == null) {
-                // See if we can use the thematic index to see which tiles
+                // See if we can use the thematic index to see which
+                // tiles
                 // have the features we want.
                 String thematicIndexName = getTileThematicFileName();
                 if (thematicIndexName != null) {
-                    thematicIndex = new DcwThematicIndex(path + thematicIndexName,
-                                                         byteorder);
+                    thematicIndex = new DcwThematicIndex(path
+                            + thematicIndexName, byteorder);
                 }
             }
         } catch (FormatException fe) {
             if (Debug.debugging("vpf.FormatException")) {
-                Debug.output("FeatureClassInfo.initTI: " + 
-                             fe.getClass() + " " + fe.getMessage());
+                Debug.output("FeatureClassInfo.initTI: " + fe.getClass() + " "
+                        + fe.getMessage());
             }
             return false;
         }
@@ -215,8 +218,9 @@ public class FeatureClassInfo extends DcwRecordFile
     }
 
     /**
-     * Returns the thematic index for the tile_id column, if it has been
-     * initialized.
+     * Returns the thematic index for the tile_id column, if it has
+     * been initialized.
+     * 
      * @return null or a themaitc index for the column
      */
     public DcwThematicIndex getThematicIndex() {
@@ -225,6 +229,7 @@ public class FeatureClassInfo extends DcwRecordFile
 
     /**
      * Returns the column position of the tile_id column.
+     * 
      * @see DcwRecordFile#whatColumn(String)
      */
     public int getTileIdIndex() {
@@ -233,6 +238,7 @@ public class FeatureClassInfo extends DcwRecordFile
 
     /**
      * Returns the column position of the f_code column.
+     * 
      * @see DcwRecordFile#whatColumn(String)
      */
     public int getFaccIndex() {
@@ -241,6 +247,7 @@ public class FeatureClassInfo extends DcwRecordFile
 
     /**
      * Returns the column position of the primitive id column.
+     * 
      * @see DcwRecordFile#whatColumn(String)
      */
     public int getTilePrimitiveIdColIndex() {
@@ -248,8 +255,9 @@ public class FeatureClassInfo extends DcwRecordFile
     }
 
     /**
-     * Return the type of feature this table is for.  Returns one of the
-     * featuretype codes in CoverageTable.
+     * Return the type of feature this table is for. Returns one of
+     * the featuretype codes in CoverageTable.
+     * 
      * @see CoverageTable#AREA_FEATURETYPE
      */
     public char getFeatureType() {
@@ -257,29 +265,30 @@ public class FeatureClassInfo extends DcwRecordFile
     }
 
     /**
-     * Complete the initialization of the FeatureClassInfo.  This function
-     * can be called more than once.
+     * Complete the initialization of the FeatureClassInfo. This
+     * function can be called more than once.
      */
     public synchronized void run() {
-        if (fullInit == true) {//run already ran, or the file didn't exist
+        if (fullInit == true) {//run already ran, or the file didn't
+                               // exist
             return;
         }
-        
+
         try {
             fullInit = true;
             finishInitialization(); //finish initialization of table
 
             // The list isn't be closed as it's supposed to, and this
-            // is causing a leak.  We'll just avoid the list for now
+            // is causing a leak. We'll just avoid the list for now
             // and just close the files after we've read them.
 
-//          BinaryFile.addClosable(this);
+            //          BinaryFile.addClosable(this);
         } catch (FormatException f) {
-//          close(); //invalidate some stuff
+            //          close(); //invalidate some stuff
         }
         close();
     }
-      
+
     /**
      * Implement the Closable interface
      */
@@ -296,26 +305,28 @@ public class FeatureClassInfo extends DcwRecordFile
     }
 
     /**
-     * Probe the DcwRecordFile looking for what column we are in. (Info
-     * needed later to getDescription with the data list.)
+     * Probe the DcwRecordFile looking for what column we are in.
+     * (Info needed later to getDescription with the data list.)
+     * 
      * @param rf the primitive data table we'll get rows from
      */
     public void findYourself(DcwRecordFile rf) {
         mycolumn = rf.whatColumn(columnname);
     }
-    
+
     /**
      * Given a row from the primitive table, this function returns a
      * full string description of the row
+     * 
      * @param l the record list from the primitive table
      * @param type the first integral type
      * @return the description string for the list
      */
     public synchronized String getDescription(List l, MutableInt type) {
-        if (fullInit == false){
+        if (fullInit == false) {
             if (Debug.debugging("vpf")) {
-                Debug.output("getDescription forcing init "
-                             + columnname + " " + tablename);
+                Debug.output("getDescription forcing init " + columnname + " "
+                        + tablename);
             }
             run();
         }
@@ -328,15 +339,16 @@ public class FeatureClassInfo extends DcwRecordFile
         }
         return getDescription(i, type);
     }
-    
-    /** 
+
+    /**
      * Given an primary key (row id) for the feature table, return the
-     * string description.  If made public, this function would need to
-     * be synchronized and check for proper initialization.  But since it
-     * is always called from a method that does that, its okay.
+     * string description. If made public, this function would need to
+     * be synchronized and check for proper initialization. But since
+     * it is always called from a method that does that, its okay.
+     * 
      * @param ftid the row id for our feature table
      * @param type the first integral type
-     * @return the description string for the list 
+     * @return the description string for the list
      */
     private synchronized String getDescription(int ftid, MutableInt type) {
         StringBuffer retval = null;
@@ -345,7 +357,7 @@ public class FeatureClassInfo extends DcwRecordFile
                 return null;
             }
             boolean haveivdtindex = false;
-            for (int i=0; i < columnInfo.length; i++) {
+            for (int i = 0; i < columnInfo.length; i++) {
                 DcwColumnInfo dci = columnInfo[i];
                 String s = null;
                 String dciVDT = dci.getVDT();
@@ -355,18 +367,20 @@ public class FeatureClassInfo extends DcwRecordFile
                         continue;
                     }
                     if (!haveivdtindex) {
-                        type.value = (short)val;
+                        type.value = (short) val;
                         haveivdtindex = true;
                     }
                     s = ctable.getDescription(tablename,
-                                              dci.getColumnName(), val);
+                            dci.getColumnName(),
+                            val);
                     if (s == null) {
                         s = "[" + val + "]";
                     }
                 } else if (dciVDT == Constants.charVDTTableName) {
-                    String val = (String)tmpVec.get(i);
-                    s =ctable.getDescription(tablename,
-                                             dci.getColumnName(), val);
+                    String val = (String) tmpVec.get(i);
+                    s = ctable.getDescription(tablename,
+                            dci.getColumnName(),
+                            val);
                     if (s == null) {
                         s = "[" + val + "]";
                     }
@@ -382,10 +396,10 @@ public class FeatureClassInfo extends DcwRecordFile
                 }
             }
         } catch (FormatException e) {
-            if (Debug.debugging("vpf")){
+            if (Debug.debugging("vpf")) {
                 e.printStackTrace();
             }
         }
-        return((retval==null)?null:retval.toString());
+        return ((retval == null) ? null : retval.toString());
     }
 }

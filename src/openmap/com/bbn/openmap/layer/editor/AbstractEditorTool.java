@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,10 +12,12 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/AbstractEditorTool.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/AbstractEditorTool.java,v
+// $
 // $RCSfile: AbstractEditorTool.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,9 +30,9 @@ import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.event.StandardMapMouseInterpreter;
-import com.bbn.openmap.util.Debug;
 
-public class AbstractEditorTool extends StandardMapMouseInterpreter implements EditorTool {
+public class AbstractEditorTool extends StandardMapMouseInterpreter implements
+        EditorTool {
 
     /**
      * Flag to let it's layer know when it wants control over mouse
@@ -38,14 +40,15 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements E
      */
     protected boolean wantsEvents = false;
     /**
-     * Used as a placeholder if face is null. 
+     * Used as a placeholder if face is null.
      */
     protected boolean visible = false; // until we are told otherwise.
+
     /**
      * Make sure you set the EditorLayer at some point.
      */
-    protected AbstractEditorTool() {    
-        // Set the layer later.
+    protected AbstractEditorTool() {
+    // Set the layer later.
     }
 
     /**
@@ -58,7 +61,7 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements E
     public void setLayer(OMGraphicHandlerLayer eLayer) {
         super.setLayer(eLayer);
         if (eLayer != null && eLayer instanceof EditorLayer) {
-            ((EditorLayer)eLayer).setMouseEventInterpreter(this);
+            ((EditorLayer) eLayer).setMouseEventInterpreter(this);
         }
     }
 
@@ -86,7 +89,8 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements E
     /**
      * Part of the interface where the EditorLayer can provide
      * components that are available via the MapHandler/BeanContext.
-     * The object is something that has been removed from the MapHandler.
+     * The object is something that has been removed from the
+     * MapHandler.
      */
     public void findAndUndo(Object obj) {}
 
@@ -116,7 +120,7 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements E
         if (face != null) {
             return face.isVisible();
         } else {
-            return visible;  // they should be the same...
+            return visible; // they should be the same...
         }
     }
 
@@ -126,10 +130,9 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements E
 
     protected Container face = null;
 
-    /** 
-     * The tool's interface. This is added to the
-     * tool bar.
-     *
+    /**
+     * The tool's interface. This is added to the tool bar.
+     * 
      * @return String The key for this tool.
      */
     public Container getFace() {

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,16 +14,13 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JObjectHolder.java,v $
 // $RCSfile: JObjectHolder.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:05:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.specialist;
-
-import com.bbn.openmap.CSpecialist.EComp;
 
 /** class JGraphic */
 public interface JObjectHolder {
@@ -32,5 +29,6 @@ public interface JObjectHolder {
 
     public com.bbn.openmap.CSpecialist.EComp getObject();
 
-    public void update(com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update);
+    public void update(
+                       com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update);
 }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,16 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/03/17 23:11:21 $
+// $Revision: 1.9 $
+// $Date: 2004/10/14 18:05:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer;
 
-import java.awt.Container;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
@@ -37,42 +35,42 @@ import javax.swing.*;
 
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
-import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
  * An OpenMap Layer that encapsulates other layers and acts as a scale
- * filter.  It will delegate responsibility to one of several layers
+ * filter. It will delegate responsibility to one of several layers
  * depending on the scale.
  * <p>
  * To use this layer, list it as a layer in the openmap.properties
  * file in the openmap.layers properties, as you would add any other
- * layer. Then, add these properties to the openmap.properties
- * file. The layers added to the ScaleFilterLayer do not get added to
- * the openmap.layers property, but instead get added to the
- * scaledFilterLayer.layers property listed here.  Then, the
- * properties for these layers are added to the openmap.properties
- * file like any other layer.
- * <BR>
- * The properties for this layer look like this:<BR>
+ * layer. Then, add these properties to the openmap.properties file.
+ * The layers added to the ScaleFilterLayer do not get added to the
+ * openmap.layers property, but instead get added to the
+ * scaledFilterLayer.layers property listed here. Then, the properties
+ * for these layers are added to the openmap.properties file like any
+ * other layer. <BR>
+ * The properties for this layer look like this: <BR>
  * <BR>
  * <code><pre>
- * #######################################
- * # Properties for ScaleFilterLayer
- * #######################################
- * scaledFilterLayer.class=com.bbn.openmap.layer.ScaleFilterLayer
- * scaledFilterLayer.prettyName=&ltPretty name used on menu&ge
- * # List 2 or more layers, larger scale layers first
- * scaledFilterLayer.layers=layer_1 layer_2 layer_3 ...
- * # List the transition scales to switch between layers
- * scaledFilterLayer.transitionScales= (transition scale from layer 1 to 2) (transition scale from layer 2 to 3) (...)
- * #######################################
+ * 
+ *  #######################################
+ *  # Properties for ScaleFilterLayer
+ *  #######################################
+ *  scaledFilterLayer.class=com.bbn.openmap.layer.ScaleFilterLayer
+ *  scaledFilterLayer.prettyName=&amp;ltPretty name used on menu&amp;ge
+ *  # List 2 or more layers, larger scale layers first
+ *  scaledFilterLayer.layers=layer_1 layer_2 layer_3 ...
+ *  # List the transition scales to switch between layers
+ *  scaledFilterLayer.transitionScales= (transition scale from layer 1 to 2) (transition scale from layer 2 to 3) (...)
+ *  #######################################
+ *  
  * </pre></code>
  */
-public class ScaleFilterLayer extends Layer
-    implements InfoDisplayListener, LayerStatusListener, PropertyChangeListener, MapMouseListener {
+public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
+        LayerStatusListener, PropertyChangeListener, MapMouseListener {
 
     /**
      * The layers property.
@@ -115,7 +113,7 @@ public class ScaleFilterLayer extends Layer
     }
 
     /**
-     * Get the Vector holding the Layers.  If it hasn't been asked for
+     * Get the Vector holding the Layers. If it hasn't been asked for
      * yet, a new, empty Vector will be returned, one that will be
      * used internally.
      */
@@ -134,14 +132,15 @@ public class ScaleFilterLayer extends Layer
     }
 
     /**
-     * Programmatic way to set layers and scales.  There should be one
+     * Programmatic way to set layers and scales. There should be one
      * more layer on the list than there is scale in the float array.
      * Layers that should be displayed for larger scale numbers
      * (smaller scale) should be at the front of the Vector list, and
-     * larger numbers should be at the front of the scale array.  For
+     * larger numbers should be at the front of the scale array. For
      * scale numbers larger than the first number in the array, the
-     * first layer will be displayed.  As the scale number decreases,
+     * first layer will be displayed. As the scale number decreases,
      * other layers will be displayed.
+     * 
      * @param list Vector of layers
      * @param scales Array of transition scales.
      */
@@ -152,8 +151,9 @@ public class ScaleFilterLayer extends Layer
 
     /**
      * Initializes this layer from the given properties.
-     *
-     * @param props the <code>Properties</code> holding settings for this layer
+     * 
+     * @param props the <code>Properties</code> holding settings for
+     *        this layer
      */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
@@ -177,22 +177,22 @@ public class ScaleFilterLayer extends Layer
 
         StringBuffer layerBuffer = new StringBuffer();
         for (Iterator it = getLayers().iterator(); it.hasNext();) {
-            Layer layer = (Layer)it.next();
+            Layer layer = (Layer) it.next();
             layerBuffer.append(layer.getPropertyPrefix() + " ");
             layer.getProperties(props);
         }
         props.put(prefix + layersProperty, layerBuffer.toString());
-        
+
         return props;
     }
 
     /**
-     * Get the layer that's appropriate at the current scale.  The
-     * targetedIndex needs to be set before this is called.  The
+     * Get the layer that's appropriate at the current scale. The
+     * targetedIndex needs to be set before this is called. The
      * targetedIndex is the index to the layers array representing the
      * current layer.
-     *
-     * @return Layer 
+     * 
+     * @return Layer
      */
     protected Layer getAppropriateLayer() {
         Vector target = getLayers();
@@ -204,12 +204,13 @@ public class ScaleFilterLayer extends Layer
             return SinkLayer.getSharedInstance();
         }
 
-        Layer l = (Layer)target.elementAt(targetIndex);
+        Layer l = (Layer) target.elementAt(targetIndex);
         return l;
     }
 
     /**
      * Create the Layers from a property value string.
+     * 
      * @param prefix String
      * @param props Properties
      */
@@ -227,10 +228,10 @@ public class ScaleFilterLayer extends Layer
             String classProperty = layerName + ".class";
             String className = props.getProperty(classProperty);
             if (className == null) {
-                Debug.error("ScaleFilterLayer.parseLayers(): Failed to locate property \"" + 
-                            classProperty + "\"");
-                Debug.error("ScaleFilterLayer.parseLayers(): Skipping layer \"" + 
-                            layerName + "\"");
+                Debug.error("ScaleFilterLayer.parseLayers(): Failed to locate property \""
+                        + classProperty + "\"");
+                Debug.error("ScaleFilterLayer.parseLayers(): Skipping layer \""
+                        + layerName + "\"");
                 className = SinkLayer.class.getName();
             }
 
@@ -241,11 +242,12 @@ public class ScaleFilterLayer extends Layer
                     obj = Class.forName(className).newInstance();
                 }
                 if (Debug.debugging("ScaleFilterLayer")) {
-                    Debug.output("ScaleFilterLayer.parseLayers(): Instantiated " + className);
+                    Debug.output("ScaleFilterLayer.parseLayers(): Instantiated "
+                            + className);
                 }
             } catch (Exception e) {
-                Debug.error("ScaleFilterLayer.parseLayers(): Failed to instantiate \"" +
-                            className + "\": " + e);
+                Debug.error("ScaleFilterLayer.parseLayers(): Failed to instantiate \""
+                        + className + "\": " + e);
                 obj = SinkLayer.getSharedInstance();
             }
 
@@ -261,8 +263,9 @@ public class ScaleFilterLayer extends Layer
     }
 
     /**
-     * Create the transition scales from a property value string.  If
+     * Create the transition scales from a property value string. If
      * there are N layers, there should be N-1 transition scales.
+     * 
      * @param prefix String
      * @param props Properties
      */
@@ -277,43 +280,42 @@ public class ScaleFilterLayer extends Layer
 
         String scales = props.getProperty(prefix + transitionScalesProperty);
         if (scales == null) {
-            Debug.error("ScaleFilterLayer.parseScales(): Failed to locate property \"" + 
-                        transitionScalesProperty + "\"");
+            Debug.error("ScaleFilterLayer.parseScales(): Failed to locate property \""
+                    + transitionScalesProperty + "\"");
             if (transitionScales.length > 0) {
                 transitionScales[0] = defaultTransitionScale;
             }
-            for (int i=1; i<transitionScales.length; i++) {
-                transitionScales[i] = transitionScales[i-1]/3;
+            for (int i = 1; i < transitionScales.length; i++) {
+                transitionScales[i] = transitionScales[i - 1] / 3;
             }
             return;
         }
 
         try {
             tok = new StringTokenizer(scales);
-            transitionScales[0] = (tok.hasMoreTokens())
-                ? new Float(tok.nextToken()).floatValue()
-                : defaultTransitionScale;
+            transitionScales[0] = (tok.hasMoreTokens()) ? new Float(tok.nextToken()).floatValue()
+                    : defaultTransitionScale;
         } catch (NumberFormatException e) {
             Debug.error("ScaleFilterLayer.parseScales()1: " + e);
             transitionScales[0] = defaultTransitionScale;
         }
 
-        for (int i=1; i<transitionScales.length; i++) {
+        for (int i = 1; i < transitionScales.length; i++) {
             try {
-                transitionScales[i] = (tok.hasMoreTokens())
-                    ? new Float(tok.nextToken()).floatValue()
-                    : transitionScales[i-1]/3;
+                transitionScales[i] = (tok.hasMoreTokens()) ? new Float(tok.nextToken()).floatValue()
+                        : transitionScales[i - 1] / 3;
             } catch (NumberFormatException e) {
                 Debug.error("ScaleFilterLayer.parseScales()2: " + e);
-                transitionScales[i] = transitionScales[i-1]/3;
+                transitionScales[i] = transitionScales[i - 1] / 3;
             }
         }
     }
 
-    /** 
+    /**
      * Implementing the ProjectionPainter interface.
      */
-    public synchronized void renderDataForProjection(Projection proj, java.awt.Graphics g) {
+    public synchronized void renderDataForProjection(Projection proj,
+                                                     java.awt.Graphics g) {
         if (proj == null) {
             Debug.error("ScaleFilterLayer.renderDataForProjection: null projection!");
             return;
@@ -325,12 +327,13 @@ public class ScaleFilterLayer extends Layer
     }
 
     /**
-     * Calculate the index of the target layer.  If there are N
-     * layers, there are N-1 transitionScales.  The ith layer is
-     * chosen if the scale is greater than the ith transitionScale.
+     * Calculate the index of the target layer. If there are N layers,
+     * there are N-1 transitionScales. The ith layer is chosen if the
+     * scale is greater than the ith transitionScale.
+     * 
      * @param scale the current map scale
      * @return true if the targetIndex has changed as a result of the
-     * new scale.  
+     *         new scale.
      */
     public boolean setTargetIndex(float scale) {
         boolean changed = false;
@@ -338,7 +341,7 @@ public class ScaleFilterLayer extends Layer
 
         int i = 0;
         if (target != null) {
-            for (i=0; i < target.length; i++) {
+            for (i = 0; i < target.length; i++) {
                 if (scale > target[i]) {
                     break;
                 }
@@ -351,20 +354,20 @@ public class ScaleFilterLayer extends Layer
         targetIndex = i;
 
         if (Debug.debugging("scalefilterlayer")) {
-            Debug.output("ScaleFilterLayer(" + getName() + 
-                         ") targetIndex: " + targetIndex + 
-                         ", changed: " + changed);
+            Debug.output("ScaleFilterLayer(" + getName() + ") targetIndex: "
+                    + targetIndex + ", changed: " + changed);
         }
 
         return changed;
     }
 
     /**
-     * Handles projection change notification events.  Throws out
-     * old graphics, and requests new graphics from the spatial index
-     * based on the bounding rectangle of the new <code>Projection</code>.
-     *
-     * @param ev the new projection event 
+     * Handles projection change notification events. Throws out old
+     * graphics, and requests new graphics from the spatial index
+     * based on the bounding rectangle of the new
+     * <code>Projection</code>.
+     * 
+     * @param ev the new projection event
      */
     public void projectionChanged(ProjectionEvent ev) {
         Projection proj = ev.getProjection();
@@ -378,7 +381,8 @@ public class ScaleFilterLayer extends Layer
             setPaletteTab(targetIndex);
             remove(currentLayer);
 
-            // This will handle the repaint() requests from the layer...
+            // This will handle the repaint() requests from the
+            // layer...
             add(layer);
             layer.addNotify();
             checkMouseMode();
@@ -390,7 +394,7 @@ public class ScaleFilterLayer extends Layer
 
     /**
      * Renders the scale-appropriate layer on the map.
-     *
+     * 
      * @param g a graphics context
      */
     public void paint(Graphics g) {
@@ -403,6 +407,7 @@ public class ScaleFilterLayer extends Layer
      * May not always work, depending on what thread sends/receives
      * this event - usually in the Swing thread, and the GUI can't
      * always be updated as expected.
+     * 
      * @param evt LayerStatusEvent
      */
     public void updateLayerStatus(LayerStatusEvent evt) {
@@ -414,7 +419,7 @@ public class ScaleFilterLayer extends Layer
     protected JTabbedPane tabs = null;
 
     /**
-     * Get the GUI (palettes) for the layers.  The BufferedLayer
+     * Get the GUI (palettes) for the layers. The BufferedLayer
      * actually creates a JTabbedPane holding the palettes for all of
      * its layers, and also has a pane for itself that provides
      * visibility control for the group layers.
@@ -426,7 +431,7 @@ public class ScaleFilterLayer extends Layer
             panel = new JPanel();
             tabs = new JTabbedPane();
 
-            // bfPanel still needs controls for controlling scales, 
+            // bfPanel still needs controls for controlling scales,
             // etc, showing which one is showing, etc., as well as
             // some indication as which layer is currently active.
 
@@ -439,10 +444,10 @@ public class ScaleFilterLayer extends Layer
 
             JButton gotoButton = new JButton("Go to Active Layer Tab");
             gotoButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        setPaletteTab(targetIndex);
-                    }
-                });
+                public void actionPerformed(ActionEvent ae) {
+                    setPaletteTab(targetIndex);
+                }
+            });
 
             c.gridy = 0;
             gridbag.setConstraints(gotoButton, c);
@@ -473,7 +478,7 @@ public class ScaleFilterLayer extends Layer
         JLabel label = new JLabel("No properties available for");
         JLabel label2 = new JLabel("the " + layer.getName() + ".");
 
-        c.gridwidth=GridBagConstraints.REMAINDER;
+        c.gridwidth = GridBagConstraints.REMAINDER;
         gridbag.setConstraints(label, c);
         gridbag.setConstraints(label2, c);
         panel.add(label);
@@ -483,7 +488,8 @@ public class ScaleFilterLayer extends Layer
 
     protected void setPaletteTab(int layerIndex) {
         Vector layers = getLayers();
-        if (layers.size() > layerIndex && tabs != null && layerIndex < tabs.getTabCount()) {
+        if (layers.size() > layerIndex && tabs != null
+                && layerIndex < tabs.getTabCount()) {
             // +1 because the first tab is the ScaleFilterLayer tab
             tabs.setSelectedIndex(layerIndex + 1);
         }
@@ -495,32 +501,35 @@ public class ScaleFilterLayer extends Layer
 
     /**
      * Request to have a URL displayed in a Browser.
+     * 
      * @param event InfoDisplayEvent
      */
     public void requestURL(InfoDisplayEvent event) {
         fireRequestURL(new InfoDisplayEvent(this, event.getInformation()));
     }
 
-    /** 
+    /**
      * Request to have a message displayed in a dialog window.
+     * 
      * @param event InfoDisplayEvent
      */
     public void requestMessage(InfoDisplayEvent event) {
         fireRequestMessage(new InfoDisplayEvent(this, event.getInformation()));
     }
-    
-    /** 
-     * Request to have an information line displayed in an
-     * application status window.
+
+    /**
+     * Request to have an information line displayed in an application
+     * status window.
+     * 
      * @param event InfoDisplayEvent
      */
     public void requestInfoLine(InfoDisplayEvent event) {
         fireRequestInfoLine(new InfoDisplayEvent(this, event.getInformation()));
     }
 
-    /** 
-     * Request that plain text or html text be displayed in a
-     * browser.
+    /**
+     * Request that plain text or html text be displayed in a browser.
+     * 
      * @param event InfoDisplayEvent
      */
     public void requestBrowserContent(InfoDisplayEvent event) {
@@ -529,6 +538,7 @@ public class ScaleFilterLayer extends Layer
 
     /**
      * Request that the MapBean cursor be set to a certain type.
+     * 
      * @param cursor java.awt.Cursor to set over the MapBean.
      */
     public void requestCursor(java.awt.Cursor cursor) {
@@ -537,9 +547,9 @@ public class ScaleFilterLayer extends Layer
 
     /**
      * Request a tool tip be shown.
-     *
+     * 
      * @param event The InfoDisplayEvent containing the text and
-     * requestor.  
+     *        requestor.
      */
     public void requestShowToolTip(InfoDisplayEvent event) {
         fireRequestToolTip(new InfoDisplayEvent(this, event.getInformation()));
@@ -558,18 +568,20 @@ public class ScaleFilterLayer extends Layer
     public synchronized MapMouseListener getMapMouseListener() {
         return this;
     }
-    
+
     /** The current active mouse mode ID. */
     protected String mmID = null;
     /**
      * Flag to specify that the current layer wants events from the
-     * current active mouse mode. 
+     * current active mouse mode.
      */
     protected boolean coolMM = false;
     /**
-     * The current MapMouseListener from the currently appropriate layer.
+     * The current MapMouseListener from the currently appropriate
+     * layer.
      */
-    protected MapMouseListener clmml = null; // current layer map mouse listener
+    protected MapMouseListener clmml = null; // current layer map
+                                             // mouse listener
 
     /**
      * Set the coolMM flag, whenever the scale-appropriate layer
@@ -603,7 +615,7 @@ public class ScaleFilterLayer extends Layer
 
     /**
      * Get the MapMouseListener to received events if the current
-     * layer wants them.  May be null, but coolMM should be false in
+     * layer wants them. May be null, but coolMM should be false in
      * that case.
      */
     public MapMouseListener getCurrentLayerMapMouseListener() {
@@ -611,28 +623,25 @@ public class ScaleFilterLayer extends Layer
     }
 
     /**
-     *  Listen for changes to the active mouse mode and for any changes
-     *  to the list of available mouse modes
+     * Listen for changes to the active mouse mode and for any changes
+     * to the list of available mouse modes
      */
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
-            mmID = ((MapMouseMode)evt.getNewValue()).getID().intern();
+            mmID = ((MapMouseMode) evt.getNewValue()).getID().intern();
             checkMouseMode();
         }
     }
 
     /**
      * Return a list of the modes that are interesting to the
-     * MapMouseListener.  The source MouseEvents will only get sent to
+     * MapMouseListener. The source MouseEvents will only get sent to
      * the MapMouseListener if the mode is set to one that the
-     * listener is interested in.
-     * Layers interested in receiving events should register for
-     * receiving events in "select" mode:
+     * listener is interested in. Layers interested in receiving
+     * events should register for receiving events in "select" mode:
      * <code>
      * <pre>
-     *  return new String[] {
-     *      SelectMouseMode.modeID
-     *  };
+     * return new String[] { SelectMouseMode.modeID };
      * </pre>
      * <code>
      * @return String[] of modeID's
@@ -644,7 +653,7 @@ public class ScaleFilterLayer extends Layer
         HashSet mmsl = new HashSet();
         Iterator it = getLayers().iterator();
         while (it.hasNext()) {
-            Layer l = (Layer)it.next();
+            Layer l = (Layer) it.next();
             MapMouseListener mml = l.getMapMouseListener();
             if (mml != null) {
                 String[] llist = mml.getMouseModeServiceList();
@@ -667,6 +676,7 @@ public class ScaleFilterLayer extends Layer
 
     /**
      * Invoked when a mouse button has been pressed on a component.
+     * 
      * @param e MouseEvent
      * @return true if the listener was able to process the event.
      */
@@ -677,9 +687,10 @@ public class ScaleFilterLayer extends Layer
             return false;
         }
     }
- 
+
     /**
      * Invoked when a mouse button has been released on a component.
+     * 
      * @param e MouseEvent
      * @return true if the listener was able to process the event.
      */
@@ -692,14 +703,15 @@ public class ScaleFilterLayer extends Layer
     }
 
     /**
-     * Invoked when the mouse has been clicked on a component.
-     * The listener will receive this event if it successfully
-     * processed <code>mousePressed()</code>, or if no other listener
-     * processes the event.  If the listener successfully processes
+     * Invoked when the mouse has been clicked on a component. The
+     * listener will receive this event if it successfully processed
+     * <code>mousePressed()</code>, or if no other listener
+     * processes the event. If the listener successfully processes
      * <code>mouseClicked()</code>, then it will receive the next
      * <code>mouseClicked()</code> notifications that have a click
      * count greater than one.
      * <p>
+     * 
      * @param e MouseEvent
      * @return true if the listener was able to process the event.
      */
@@ -714,6 +726,7 @@ public class ScaleFilterLayer extends Layer
 
     /**
      * Invoked when the mouse enters a component.
+     * 
      * @param e MouseEvent
      */
     public void mouseEntered(MouseEvent e) {
@@ -722,9 +735,10 @@ public class ScaleFilterLayer extends Layer
         }
 
     }
- 
+
     /**
      * Invoked when the mouse exits a component.
+     * 
      * @param e MouseEvent
      */
     public void mouseExited(MouseEvent e) {
@@ -737,10 +751,11 @@ public class ScaleFilterLayer extends Layer
     ///////////////////////////////
 
     /**
-     * Invoked when a mouse button is pressed on a component and then 
-     * dragged.  The listener will receive these events if it
+     * Invoked when a mouse button is pressed on a component and then
+     * dragged. The listener will receive these events if it
      * successfully processes mousePressed(), or if no other listener
      * processes the event.
+     * 
      * @param e MouseEvent
      * @return true if the listener was able to process the event.
      */
@@ -755,6 +770,7 @@ public class ScaleFilterLayer extends Layer
     /**
      * Invoked when the mouse button has been moved on a component
      * (with no buttons down).
+     * 
      * @param e MouseEvent
      * @return true if the listener was able to process the event.
      */
@@ -771,7 +787,7 @@ public class ScaleFilterLayer extends Layer
      * Handle a mouse cursor moving without the button being pressed.
      * This event is intended to tell the listener that there was a
      * mouse movement, but that the event was consumed by another
-     * layer.  This will allow a mouse listener to clean up actions
+     * layer. This will allow a mouse listener to clean up actions
      * that might have happened because of another motion event
      * response.
      */
@@ -782,11 +798,9 @@ public class ScaleFilterLayer extends Layer
     }
 
     /** Method for BeanContextChild interface. */
-    public void setBeanContext(BeanContext in_bc) 
-        throws PropertyVetoException {
+    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
 
-        for (Iterator it = getLayers().iterator(); it.hasNext();
-             ((Layer)it.next()).connectToBeanContext(in_bc)) {
+        for (Iterator it = getLayers().iterator(); it.hasNext(); ((Layer) it.next()).connectToBeanContext(in_bc)) {
             // You don't actually want to add the layer to the
             // BeanContext, because then the LayerHandler will pick it
             // up and add it to the main list of layers.
@@ -796,27 +810,29 @@ public class ScaleFilterLayer extends Layer
     }
 
     /**
-     * MapHandler child methods, passing found objects to child layers.
+     * MapHandler child methods, passing found objects to child
+     * layers.
      */
     public void findAndInit(Object obj) {
         if (obj instanceof MouseDelegator) {
-            ((MouseDelegator)obj).addPropertyChangeListener(this);
+            ((MouseDelegator) obj).addPropertyChangeListener(this);
         }
 
-        for (Iterator it = getLayers().iterator(); it.hasNext();
-             ((Layer)it.next()).findAndInit(obj)) {}
+        for (Iterator it = getLayers().iterator(); it.hasNext(); ((Layer) it.next()).findAndInit(obj)) {
+        }
     }
 
     /**
-     * MapHandler child methods, passing removed objects to child layers.
+     * MapHandler child methods, passing removed objects to child
+     * layers.
      */
     public void findAndUndo(Object obj) {
         if (obj instanceof MouseDelegator) {
-            ((MouseDelegator)obj).removePropertyChangeListener(this);
+            ((MouseDelegator) obj).removePropertyChangeListener(this);
         }
 
-        for (Iterator it = getLayers().iterator(); it.hasNext();
-             ((Layer)it.next()).findAndUndo(obj)) {}
+        for (Iterator it = getLayers().iterator(); it.hasNext(); ((Layer) it.next()).findAndUndo(obj)) {
+        }
     }
 
 }

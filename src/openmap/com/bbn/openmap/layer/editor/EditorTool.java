@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorTool.java,v $
 // $RCSfile: EditorTool.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/25 18:59:14 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,14 +25,13 @@ package com.bbn.openmap.layer.editor;
 import java.awt.Container;
 
 import com.bbn.openmap.LightMapHandlerChild;
-import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
 
 /**
  * An EditorTool is a component that provides specific functionality
- * to the EditorLayer.  The EditorTool is reponsible for modifying or
+ * to the EditorLayer. The EditorTool is reponsible for modifying or
  * creating a set of OMGraphics in a certain way, where the OMGraphics
  * actually represent a specific set of objects on the map, and the
  * actions on the OMGraphics need to be controlled.
@@ -54,7 +53,7 @@ public interface EditorTool extends MapMouseInterpreter, LightMapHandlerChild {
 
     /**
      * A method that lets the EditorTool know whether its interface
-     * should be visible.  Usually, called when the layer is turned on
+     * should be visible. Usually, called when the layer is turned on
      * or off.
      */
     public void setVisible(boolean value);

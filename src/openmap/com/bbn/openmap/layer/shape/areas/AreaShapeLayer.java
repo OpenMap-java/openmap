@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,37 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaShapeLayer.java,v $
 // $RCSfile: AreaShapeLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/03/04 04:14:30 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:06:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.shape.areas;
 
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.MapMouseListener;
-import com.bbn.openmap.layer.*;
 import com.bbn.openmap.layer.shape.*;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
 
-import java.awt.Color;
 import java.awt.event.MouseEvent;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.util.Enumeration; 
-import java.util.Hashtable;
-import java.util.Properties; 
-import java.util.StringTokenizer;
-import java.util.Vector; 
+import java.util.Properties;
+import java.util.Vector;
 
 /**
  * A Layer to use an AreaHandler to display geographic regions on
- * OpenMap.  See the AreaHandler for more information on how to set
+ * OpenMap. See the AreaHandler for more information on how to set
  * this layer up.
+ * 
  * @see com.bbn.openmap.layer.shape.areas.AreaHandler
  */
 public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
@@ -53,21 +45,21 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
 
     /**
      */
-    public AreaShapeLayer() { 
-        super();        
+    public AreaShapeLayer() {
+        super();
     }
-    
-    /** 
+
+    /**
      * Initializes this layer from the given properties.
-     *
-     * @param props the <code>Properties</code> holding settings for this layer
+     * 
+     * @param props the <code>Properties</code> holding settings for
+     *        this layer
      */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
         areas = new AreaHandler(spatialIndex, drawingAttributes);
         areas.setProperties(prefix, props);
     }
-
 
     /**
      * Set the AreaHandler.
@@ -82,9 +74,10 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
     public AreaHandler getAreas() {
         return areas;
     }
-           
+
     /**
      * Gets the layer graphics.
+     * 
      * @return OMGraphicList
      */
     public synchronized OMGraphicList prepare() {
@@ -110,25 +103,27 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
         return areas.getDrawingAttributes();
     }
 
-    /** 
-     * Find a PoliticalArea named by the abbreviation 
+    /**
+     * Find a PoliticalArea named by the abbreviation
      */
     public PoliticalArea findPoliticalArea(String area_abbrev) {
         return areas.findPoliticalArea(area_abbrev);
     }
 
     //----------------------------------------------------------------------
-    // MapMouseListener interface 
+    // MapMouseListener interface
     //----------------------------------------------------------------------
     private OMGraphic selectedGraphic;
 
     public boolean mouseMoved(MouseEvent e) {
-        OMGraphicList omgraphics = (OMGraphicList)getList();
-        if (omgraphics == null) return false;
+        OMGraphicList omgraphics = (OMGraphicList) getList();
+        if (omgraphics == null)
+            return false;
 
-        OMGraphic newSelectedGraphic = 
-            omgraphics.selectClosest(e.getX(), e.getY(), 2.0f);
-        
+        OMGraphic newSelectedGraphic = omgraphics.selectClosest(e.getX(),
+                e.getY(),
+                2.0f);
+
         if (newSelectedGraphic != selectedGraphic) {
             if (selectedGraphic != null) {
                 selectedGraphic.deselect();
@@ -139,17 +134,17 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
                 newSelectedGraphic.select();
                 Object obj = newSelectedGraphic.getAppObject();
                 if (obj instanceof String) {
-                    fireRequestInfoLine((String)obj);
+                    fireRequestInfoLine((String) obj);
                 } else if (obj instanceof Vector) {
-                    fireRequestInfoLine(areas.getName((Vector)obj));
+                    fireRequestInfoLine(areas.getName((Vector) obj));
                 } else if (obj instanceof Integer) {
-                    fireRequestInfoLine(areas.getName((Integer)obj));
+                    fireRequestInfoLine(areas.getName((Integer) obj));
                 } else {
                     fireRequestInfoLine("");
                 }
             } else {
                 fireRequestInfoLine("");
-            }           
+            }
             repaint();
             return true;
         }
@@ -167,7 +162,7 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
 
     /**
      * Return a list of the modes that are interesting to the
-     * MapMouseListener.  You MUST override this with the modes you're
+     * MapMouseListener. You MUST override this with the modes you're
      * interested in.
      */
     public String[] getMouseModeServiceList() {
@@ -182,15 +177,17 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
 
     /**
      * Invoked when a mouse button has been pressed on a component.
+     * 
      * @param e MouseEvent
      * @return false
      */
-    public boolean mousePressed(MouseEvent e) { 
+    public boolean mousePressed(MouseEvent e) {
         return false; // did not handle the event
     }
 
     /**
      * Invoked when a mouse button has been released on a component.
+     * 
      * @param e MouseEvent
      * @return false
      */
@@ -200,6 +197,7 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
 
     /**
      * Invoked when the mouse has been clicked on a component.
+     * 
      * @param e MouseEvent
      * @return false
      */
@@ -209,24 +207,25 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
 
     /**
      * Invoked when the mouse enters a component.
+     * 
      * @param e MouseEvent
      */
-    public void mouseEntered(MouseEvent e) {
-    }
+    public void mouseEntered(MouseEvent e) {}
 
     /**
      * Invoked when the mouse exits a component.
+     * 
      * @param e MouseEvent
      */
-    public void mouseExited(MouseEvent e) {
-    }
+    public void mouseExited(MouseEvent e) {}
 
     // Mouse Motion Listener events
     ///////////////////////////////
 
     /**
-     * Invoked when a mouse button is pressed on a component and then 
-     * dragged.  The listener will receive these events if it
+     * Invoked when a mouse button is pressed on a component and then
+     * dragged. The listener will receive these events if it
+     * 
      * @param e MouseEvent
      * @return false
      */
@@ -241,10 +240,4 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
     public void mouseMoved() {}
 
 }
-
-
-
-
-
-
 

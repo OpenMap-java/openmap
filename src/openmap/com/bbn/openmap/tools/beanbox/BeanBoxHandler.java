@@ -18,19 +18,19 @@ package com.bbn.openmap.tools.beanbox;
 
 /**
  * The BeanBoxHandler interface should be implemented by an openmap
- * layer that needs to interact with the 
- * {@link com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher} via the 
- * {@link com.bbn.openmap.tools.beanbox.BeanBox} instance associated with 
- * the layer. The BeanBoxDnDCatcher class uses the getBeanBox() method 
- * declared on this interface to obtain access to the 
- * {@link com.bbn.openmap.tools.beanbox.BeanBox} object 
- * associated with the layer.
+ * layer that needs to interact with the
+ * {@link com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher}via the
+ * {@link com.bbn.openmap.tools.beanbox.BeanBox}instance associated
+ * with the layer. The BeanBoxDnDCatcher class uses the getBeanBox()
+ * method declared on this interface to obtain access to the
+ * {@link com.bbn.openmap.tools.beanbox.BeanBox}object associated
+ * with the layer.
  */
 public interface BeanBoxHandler {
 
-  /**
-   * returns a layer specific implementation of the 
-   * {@link com.bbn.openmap.tools.beanbox.BeanBox} class instance.
-   */
-  public BeanBox getBeanBox();
+    /**
+     * returns a layer specific implementation of the
+     * {@link com.bbn.openmap.tools.beanbox.BeanBox}class instance.
+     */
+    public BeanBox getBeanBox();
 }

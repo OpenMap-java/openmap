@@ -12,7 +12,7 @@
  * 24.02.2002 Don Dietrick <dietrick@bbn.com>
  * version 1.1 updated to work with OpenMap 4.5, added to OpenMap package.
  *
- * $Id: GenerateVPFProperties.java,v 1.4 2004/01/26 18:18:12 dietrick Exp $
+ * $Id: GenerateVPFProperties.java,v 1.5 2004/10/14 18:06:08 dietrick Exp $
  * **********************************************************************
  */
 
@@ -27,26 +27,32 @@ import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
 
 /**
- * This class will print out some basic information about a VPF database,
- * suitable for inclusion into the openmap.properties file.
+ * This class will print out some basic information about a VPF
+ * database, suitable for inclusion into the openmap.properties file.
+ * 
  * <pre>
- * Usage:
- * java com.bbn.openmap.layer.vpf.GenerateVPFproperties /path/to/vpf/database
+ * 
+ *  Usage:
+ *  java com.bbn.openmap.layer.vpf.GenerateVPFproperties /path/to/vpf/database
+ *  
  * </pre>
- * It will then print out VPFlayer descriptions which you can use
- * to view the VPF layers with the openmap application, to the standard output.
- * There is no GUI.
  * 
- * If you add the output to the openmap.properties files, pay attention
- * to the Summary: lines. They make it easy to add all the layernames 
- * to the recognised ones.
+ * It will then print out VPFlayer descriptions which you can use to
+ * view the VPF layers with the openmap application, to the standard
+ * output. There is no GUI.
  * 
+ * If you add the output to the openmap.properties files, pay
+ * attention to the Summary: lines. They make it easy to add all the
+ * layernames to the recognised ones.
+ *  
  */
 public class GenerateVPFProperties extends DescribeDB {
     static String rootpath;
 
     /**
-     * The main program.  Takes path arguments, and prints the DB it finds
+     * The main program. Takes path arguments, and prints the DB it
+     * finds
+     * 
      * @param args the paths to print
      */
     public static void main(String[] args) throws FormatException {
@@ -77,20 +83,21 @@ public class GenerateVPFProperties extends DescribeDB {
                 println("");
             }
             for (int i = 0; i < libraries.length; i++) {
-                String prefix = lst.getDatabaseName()+"_" + libraries[i];
-                println("# Library: " + prefix );
+                String prefix = lst.getDatabaseName() + "_" + libraries[i];
+                println("# Library: " + prefix);
                 printLibrary(prefix, lst.getCAT(libraries[i]));
                 println("");
             }
         }
     }
-  
+
     /**
      * Prints a VPF Library
+     * 
      * @param prefix lines get printed with this prefix
      * @param cat the CoverageAttributeTable (Library) to print
      */
-    public static void printLibrary(String prefix, CoverageAttributeTable cat){
+    public static void printLibrary(String prefix, CoverageAttributeTable cat) {
         StringBuffer printedlayers = new StringBuffer();
         String printedlayername = null;
 
@@ -100,35 +107,40 @@ public class GenerateVPFProperties extends DescribeDB {
         }
         String[] coverages = cat.getCoverageNames();
         if (Debug.debugging("vpf")) {
-            Debug.output(prefix + "uses " + (cat.isTiledData() ? "tiled" : "untiled") + " data");
+            Debug.output(prefix + "uses "
+                    + (cat.isTiledData() ? "tiled" : "untiled") + " data");
         }
         for (int i = 0; i < coverages.length; i++) {
-            printedlayername=printCoverageProperties(prefix, cat, coverages[i]);
-            if (printedlayername!=null) {
-                printedlayers.append(" "+printedlayername);
-            } 
+            printedlayername = printCoverageProperties(prefix,
+                    cat,
+                    coverages[i]);
+            if (printedlayername != null) {
+                printedlayers.append(" " + printedlayername);
+            }
         }
-        println("# Summary:"+printedlayers);
+        println("# Summary:" + printedlayers);
     }
-  
+
     /**
      * Prints a VPF Coverage
-     * @param prefix this will be the prefix of the generated layer name
+     * 
+     * @param prefix this will be the prefix of the generated layer
+     *        name
      * @param covname the name of the coverage to print
      * @param cat the CoverageAttributeTable to get the Coverage from
      */
     public static String printCoverageProperties(String prefix,
-           CoverageAttributeTable cat, String covname){
-        String layername=prefix + "_" + covname;
-        List text_features=new ArrayList();
-        List edge_features=new ArrayList();
-        List area_features=new ArrayList();
-        List point_features=new ArrayList();
-    
-    
+                                                 CoverageAttributeTable cat,
+                                                 String covname) {
+        String layername = prefix + "_" + covname;
+        List text_features = new ArrayList();
+        List edge_features = new ArrayList();
+        List area_features = new ArrayList();
+        List point_features = new ArrayList();
+
         //add topology level
         CoverageTable ct = cat.getCoverageTable(covname);
-    
+
         String path = ct.getDataPath();
         String fcaPath = path + "/fca";
 
@@ -148,9 +160,9 @@ public class GenerateVPFProperties extends DescribeDB {
             int descr = fcadesc.whatColumn("descr");
             List v = new ArrayList();
             while (fcadesc.parseRow(v)) {
-                String name = (String)v.get(fclass);
-                String t = (String)v.get(type);
-                String desc = (String)v.get(descr);
+                String name = (String) v.get(fclass);
+                String t = (String) v.get(type);
+                String desc = (String) v.get(descr);
                 //String tstring = "[unknown] ";
                 if (t.equals("T")) {
                     text_features.add(name);
@@ -167,21 +179,21 @@ public class GenerateVPFProperties extends DescribeDB {
         }
 
         // only print something, if we really found features
-        if(!(text_features.isEmpty()&& edge_features.isEmpty()&&
-             area_features.isEmpty()&& point_features.isEmpty())) {
+        if (!(text_features.isEmpty() && edge_features.isEmpty()
+                && area_features.isEmpty() && point_features.isEmpty())) {
 
-            println("### VPF "+ cat.getCoverageDescription(covname)+" Layer" );
-            println(layername +".class=com.bbn.openmap.layer.vpf.VPFLayer");
-            println(layername + ".prettyName=" 
-                    + "VPF "+ cat.getCoverageDescription(covname)+" "+prefix);
+            println("### VPF " + cat.getCoverageDescription(covname) + " Layer");
+            println(layername + ".class=com.bbn.openmap.layer.vpf.VPFLayer");
+            println(layername + ".prettyName=" + "VPF "
+                    + cat.getCoverageDescription(covname) + " " + prefix);
             println(layername + ".vpfPath=" + rootpath);
             println(layername + ".coverageType=" + covname);
             println(layername + ".featureTypes=" + "area edge text point");
-    
-            printFeatures("text",text_features,layername);
-            printFeatures("edge",edge_features,layername);
-            printFeatures("area",area_features,layername);
-            printFeatures("point",point_features,layername);
+
+            printFeatures("text", text_features, layername);
+            printFeatures("edge", edge_features, layername);
+            printFeatures("area", area_features, layername);
+            printFeatures("point", point_features, layername);
             println("");
 
         } else {
@@ -191,13 +203,14 @@ public class GenerateVPFProperties extends DescribeDB {
         return layername;
 
     }
+
     /**
-     * Print some featureclass names 
+     * Print some featureclass names
      */
-    public static void printFeatures(
-        String fname, List features, String layername) {
-        if(!features.isEmpty()) {
-            print(layername+"."+fname+"=");
+    public static void printFeatures(String fname, List features,
+                                     String layername) {
+        if (!features.isEmpty()) {
+            print(layername + "." + fname + "=");
             for (Iterator i = features.iterator(); i.hasNext();) {
                 print(i.next() + " ");
             }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,15 +14,13 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/OMDTEDGrid.java,v $
 // $RCSfile: OMDTEDGrid.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.dataAccess.dted;
-
 
 import com.bbn.openmap.omGraphics.OMGrid;
 import com.bbn.openmap.omGraphics.grid.*;
@@ -35,35 +33,32 @@ import com.bbn.openmap.omGraphics.grid.*;
 public class OMDTEDGrid extends OMGrid {
 
     /**
-     * The starting latitude point of the grid.  Only relevant when
+     * The starting latitude point of the grid. Only relevant when the
+     * data points are laid out in a lat/lon grid, or when an x/y grid
+     * is anchored to a lat/lon location. DOES NOT follow the OpenMap
+     * convention where area object locations are defined by the upper
+     * left location - the location of the grid is noted by the lower
+     * left corner, because grid data is usually defined by the lower
+     * left location. Makes it easier to deal with overlap rows and
+     * columns, and to calculate the locations of the rows and
+     * columns.
+     */
+    protected float latitude1;
+    /**
+     * The starting longitude point of the grid. Only relevant when
      * the data points are laid out in a lat/lon grid, or when an x/y
      * grid is anchored to a lat/lon location. DOES NOT follow the
      * OpenMap convention where area object locations are defined by
      * the upper left location - the location of the grid is noted by
      * the lower left corner, because grid data is usually defined by
-     * the lower left location.  Makes it easier to deal with overlap
-     * rows and columns, and to calculate the locations of the rows
-     * and columns.
-     */
-    protected float latitude1;
-    /**
-     * The starting longitude point of the grid.  Only relevant when
-     * the data points are laid out in a lat/lon grid, or when an x/y
-     * grid is anchored to a lat/lon location.  DOES NOT follow the
-     * OpenMap convention where area object locations are defined by
-     * the upper left location - the location of the grid is noted by
-     * the lower left corner, because grid data is usually defined by
-     * the lower left location.  Makes it easier to deal with overlap
+     * the lower left location. Makes it easier to deal with overlap
      * rows and columns, and to calculate the locations of the rows
      * and columns.
      */
     protected float longitude1;
 
-
-    public OMDTEDGrid(float lllat, float lllon,
-                      float urlat, float urlon,
-                      float vResolution, float hResolution,
-                      GridData.Short data) {
+    public OMDTEDGrid(float lllat, float lllon, float urlat, float urlon,
+            float vResolution, float hResolution, GridData.Short data) {
         super(lllat, lllon, vResolution, hResolution, data);
         latitude1 = urlat;
         longitude1 = urlon;
@@ -71,8 +66,8 @@ public class OMDTEDGrid extends OMGrid {
 
     /**
      * Change the upper latitude attribute.
-     *
-     * @param value latitude in decimal degrees.  
+     * 
+     * @param value latitude in decimal degrees.
      */
     public void setLowerLat(float value) {
         setLatitude(value);
@@ -80,7 +75,7 @@ public class OMDTEDGrid extends OMGrid {
 
     /**
      * Get the upper latitude.
-     *
+     * 
      * @return the latitude in decimal degrees.
      */
     public float getLowerLat() {
@@ -89,8 +84,8 @@ public class OMDTEDGrid extends OMGrid {
 
     /**
      * Change the western longitude attribute.
-     *
-     * @param value the longitude in decimal degrees.  
+     * 
+     * @param value the longitude in decimal degrees.
      */
     public void setLeftLon(float value) {
         setLongitude(value);
@@ -98,7 +93,7 @@ public class OMDTEDGrid extends OMGrid {
 
     /**
      * Get the western longitude.
-     *
+     * 
      * @return longitude in decimal degrees.
      */
     public float getLeftLon() {
@@ -107,18 +102,19 @@ public class OMDTEDGrid extends OMGrid {
 
     /**
      * Change the southern latitude attribute.
-     *
-     * @param value latitude in decimal degrees.  
+     * 
+     * @param value latitude in decimal degrees.
      */
     public void setUpperLat(float value) {
-        if (latitude1 == value) return;
+        if (latitude1 == value)
+            return;
         latitude1 = value;
         setNeedToRegenerate(true);
     }
 
     /**
      * Get the southern latitude.
-     *
+     * 
      * @return the latitude in decimal degrees.
      */
     public float getUpperLat() {
@@ -127,18 +123,19 @@ public class OMDTEDGrid extends OMGrid {
 
     /**
      * Change the eastern longitude attribute.
-     *
-     * @param value the longitude in decimal degrees.  
+     * 
+     * @param value the longitude in decimal degrees.
      */
     public void setRightLon(float value) {
-        if (longitude1 == value) return;
+        if (longitude1 == value)
+            return;
         longitude1 = value;
         setNeedToRegenerate(true);
     }
 
     /**
      * Get the eastern longitude.
-     *
+     * 
      * @return longitude in decimal degrees.
      */
     public float getRightLon() {

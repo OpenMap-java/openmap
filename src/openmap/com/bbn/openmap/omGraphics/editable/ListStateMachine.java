@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,25 +12,21 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/ListStateMachine.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/ListStateMachine.java,v
+// $
 // $RCSfile: ListStateMachine.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.net.URL;
 import java.util.*;
-import javax.swing.ImageIcon;
 
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.util.Debug;
 
@@ -58,12 +54,13 @@ public class ListStateMachine extends EOMGStateMachine {
     public void setState(int state) {
         super.setState(state);
         if (Debug.debugging("eomg")) {
-            Debug.output("ListStateMachine.setState: Setting state to " + 
-                         states.elementAt(state).getClass().getName());
+            Debug.output("ListStateMachine.setState: Setting state to "
+                    + states.elementAt(state).getClass().getName());
         }
-        for (Iterator it = ((EditableOMGraphicList)graphic).getEditables().iterator(); it.hasNext();) {
+        for (Iterator it = ((EditableOMGraphicList) graphic).getEditables()
+                .iterator(); it.hasNext();) {
             try {
-                EditableOMGraphic editable = (EditableOMGraphic)it.next();
+                EditableOMGraphic editable = (EditableOMGraphic) it.next();
                 editable.getStateMachine().setState(state);
 
                 if (Debug.debugging("eomg")) {

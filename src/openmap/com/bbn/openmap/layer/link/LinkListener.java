@@ -2,7 +2,7 @@
 //
 // <copyright>
 //
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,40 +14,26 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkListener.java,v $
 // $RCSfile: LinkListener.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:56 $
 // $Author: dietrick $
 //
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.link;
 
-
 /*  Java Core  */
-import java.awt.event.*;
-import java.awt.Container;
-import java.util.*;
 import java.io.*;
-import java.net.*;
 
 /*  OpenMap  */
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.SwingWorker;
 import com.bbn.openmap.layer.link.LinkLayer;
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.omGraphics.grid.*;
-import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
 
 /**
  * The Link Listener is the object listening from input from the link
- * server, asynchronously.  It is launched within its own thread to
+ * server, asynchronously. It is launched within its own thread to
  * handle a specific link layer.
  */
 public class LinkListener extends Thread implements LinkPropertiesConstants {
@@ -58,9 +44,11 @@ public class LinkListener extends Thread implements LinkPropertiesConstants {
     /** The generator to use with LinkGrid objects. */
     protected OMGridGenerator currentGenerator = null;
     /**
-     * Used by outsiders to find out if the listener should be started.
+     * Used by outsiders to find out if the listener should be
+     * started.
      */
     protected boolean listening = false;
+
     /**
      * Default Constructor should not be used.
      */
@@ -68,13 +56,13 @@ public class LinkListener extends Thread implements LinkPropertiesConstants {
 
     /**
      * Create child thread that will handle the client.
-     *
+     * 
      * @param linkManager the LinkManager to communicate over.
      * @param layer the LinkLayer to do the work.
      * @param generator the OMGridGenerator.
      */
-    public LinkListener(LinkManager linkManager,
-                        LinkLayer layer, OMGridGenerator generator) {
+    public LinkListener(LinkManager linkManager, LinkLayer layer,
+            OMGridGenerator generator) {
 
         this.linkManager = linkManager;
         this.layer = layer;
@@ -83,7 +71,7 @@ public class LinkListener extends Thread implements LinkPropertiesConstants {
 
     /**
      * A method used by outsiders to figure out if the LinkListener is
-     * listening to the server.  If false, start() may need to be
+     * listening to the server. If false, start() may need to be
      * called to get the listener listening.
      */
     public synchronized boolean isListening() {
@@ -99,31 +87,31 @@ public class LinkListener extends Thread implements LinkPropertiesConstants {
     }
 
     /**
-     * Use a SwingWorker to launch the listener.  Calls start() on the
+     * Use a SwingWorker to launch the listener. Calls start() on the
      * LinkListener from a new thread.
      */
     public void startUp() {
         // Have to use a swing worker so that the calling thread
         // doesn't get hung up on launching the runnable.
         SwingWorker sw = new SwingWorker() {
-                public Object construct() {
-                    if (Debug.debugging("link")) {
-                        Debug.output("LinkListener self-starting...");
-                    }
-                    getListener().start(); 
-                    return null;
+            public Object construct() {
+                if (Debug.debugging("link")) {
+                    Debug.output("LinkListener self-starting...");
                 }
-            };
+                getListener().start();
+                return null;
+            }
+        };
         sw.execute();
     }
 
-    /** From the Runnable interface.  The thread starts here... */
+    /** From the Runnable interface. The thread starts here... */
     public void run() {
         try {
-            Debug.message("link","*** LinkListener starting up ***");
+            Debug.message("link", "*** LinkListener starting up ***");
             setListening(true);
             listen();
-            Debug.message("link","...done listening");
+            Debug.message("link", "...done listening");
         } catch (java.io.IOException ioe) {
             if (Debug.debugging("link")) {
                 Debug.error(ioe.getMessage());
@@ -134,23 +122,23 @@ public class LinkListener extends Thread implements LinkPropertiesConstants {
     }
 
     /**
-     * listen is a method that listens to the server
-     * and responds to requests that are made.
-     *
+     * listen is a method that listens to the server and responds to
+     * requests that are made.
+     * 
      * @throws IOException
      */
     public void listen() throws IOException {
 
-        Debug.message("link","LinkListener: Asynchronously listening...");
+        Debug.message("link", "LinkListener: Asynchronously listening...");
 
         ClientLink link = linkManager.getLink(this);
 
         Debug.message("link", "LinkListener got link...");
 
         while (link != null) {
-            Debug.message("link","LinkListener: listening...");
+            Debug.message("link", "LinkListener: listening...");
             link.readAndParse(null, currentGenerator, layer);
-            Debug.message("link","LinkListener: received content from server");
+            Debug.message("link", "LinkListener: received content from server");
 
             layer.handleLinkGraphicList(link.getGraphicList());
             layer.handleLinkActionRequest(link.getActionRequest());

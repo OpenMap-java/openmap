@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/DataBoundsProvider.java,v $
 // $RCSfile: DataBoundsProvider.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/21 22:28:28 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.util;
 
@@ -39,5 +38,5 @@ public interface DataBoundsProvider {
      * A pretty name for the boundary, suitable for a GUI.
      */
     public String getName();
-    
+
 }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerControlButtonPanel.java,v $
 // $RCSfile: LayerControlButtonPanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/09/30 22:36:17 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,19 +57,21 @@ import com.bbn.openmap.util.propertyEditor.*;
  * <pre>
  * 
  *  
- *   # Direction buttons are laid out,  vertical or horizontal (vertical is default).
- *   orientation=vertical
- *   # Flag on whether to insert buttons onto LayersPanel (true by default).
- *   embedded=true
- *   # Configuration setting when embedding into LayersPanel (WEST,
- *   # NORTH, EAST, SOUTH, NORTH_SOUTH) NORTH_SOUTH puts up button above
- *   # list, down button below list.
- *   configuration=WEST
- *   # Flag to put button that lets the user delete layers (true by default).
- *   delete=true
- *   # Flag to put button that lets the user add layers, if the
- *   # LayersAddPanel is discovered in the MapHandler (true by default)
- *   add=true
+ *   
+ *    # Direction buttons are laid out,  vertical or horizontal (vertical is default).
+ *    orientation=vertical
+ *    # Flag on whether to insert buttons onto LayersPanel (true by default).
+ *    embedded=true
+ *    # Configuration setting when embedding into LayersPanel (WEST,
+ *    # NORTH, EAST, SOUTH, NORTH_SOUTH) NORTH_SOUTH puts up button above
+ *    # list, down button below list.
+ *    configuration=WEST
+ *    # Flag to put button that lets the user delete layers (true by default).
+ *    delete=true
+ *    # Flag to put button that lets the user add layers, if the
+ *    # LayersAddPanel is discovered in the MapHandler (true by default)
+ *    add=true
+ *    
  *   
  *  
  * </pre>
@@ -344,14 +346,14 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
                 || command == LayersPanel.LayerRemoveCmd) {
             if (selected != null) {
                 if (Debug.debugging("layercontrol")) {
-                    Debug.output("LayerControlButtonPanel: button firing " + command
-                            + " event for " + selected.getName());
+                    Debug.output("LayerControlButtonPanel: button firing "
+                            + command + " event for " + selected.getName());
                 }
                 firePropertyChange(command, null, selected);
             } else {
                 if (Debug.debugging("layercontrol")) {
-                    Debug.output("LayerControlButtonPanel: button firing " + command
-                            + " event with no layer selected");
+                    Debug.output("LayerControlButtonPanel: button firing "
+                            + command + " event with no layer selected");
                 }
             }
         } else if (command.equals(LayersPanel.LayerAddCmd)) {
@@ -378,9 +380,8 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
             delete.setEnabled(selected.isRemoveable());
 
             if (Debug.debugging("layercontrol")) {
-                Debug
-                        .output("LayerControlButtonPanel: got notification that layer is selected: "
-                                + selected.getName());
+                Debug.output("LayerControlButtonPanel: got notification that layer is selected: "
+                        + selected.getName());
             }
         } else if (command == LayersPanel.LayerDeselectedCmd && selected == obj) {
             selected = null;
@@ -420,9 +421,8 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
             configuration = DefaultConfiguration;
         }
 
-        embedded = LayerUtils.booleanFromProperties(props,
-                                                    prefix + EmbeddedProperty,
-                                                    embedded);
+        embedded = LayerUtils.booleanFromProperties(props, prefix
+                + EmbeddedProperty, embedded);
         deleteLayers = LayerUtils.booleanFromProperties(props, prefix
                 + DeleteLayersProperty, deleteLayers);
         addLayers = LayerUtils.booleanFromProperties(props, prefix
@@ -430,8 +430,7 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
 
         String orient = props.getProperty(prefix + OrientationProperty);
         if (orient != null
-                && (orient.equalsIgnoreCase(HORIZONTAL_CONFIG) || (orient
-                        .equalsIgnoreCase("false")))) {
+                && (orient.equalsIgnoreCase(HORIZONTAL_CONFIG) || (orient.equalsIgnoreCase("false")))) {
             orientation = BoxLayout.X_AXIS;
         }
     }
@@ -442,11 +441,11 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
 
         props.put(prefix + ConfigurationProperty, configuration);
         props.put(prefix + OrientationProperty,
-                  (orientation == BoxLayout.X_AXIS ? HORIZONTAL_CONFIG
-                          : VERTICAL_CONFIG));
+                (orientation == BoxLayout.X_AXIS ? HORIZONTAL_CONFIG
+                        : VERTICAL_CONFIG));
         props.put(prefix + EmbeddedProperty, new Boolean(embedded).toString());
-        props.put(prefix + DeleteLayersProperty, new Boolean(deleteLayers)
-                .toString());
+        props.put(prefix + DeleteLayersProperty,
+                new Boolean(deleteLayers).toString());
         props.put(prefix + AddLayersProperty, new Boolean(addLayers).toString());
         return props;
     }
@@ -454,21 +453,20 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
 
-        props
-                .put(ConfigurationProperty,
-                     "Pre-Defined Configuration String (WEST, EAST, NORTH, SOUTH, NORTH_SOUTH).");
+        props.put(ConfigurationProperty,
+                "Pre-Defined Configuration String (WEST, EAST, NORTH, SOUTH, NORTH_SOUTH).");
         props.put(OrientationProperty, "Horizontal or Vertical.");
         props.put(OrientationProperty + ScopedEditorProperty,
-                  "com.bbn.openmap.util.propertyEditor.OrientationPropertyEditor");
+                "com.bbn.openmap.util.propertyEditor.OrientationPropertyEditor");
         props.put(EmbeddedProperty, "Insert itself into LayersPanel.");
         props.put(EmbeddedProperty + ScopedEditorProperty,
-                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
         props.put(DeleteLayersProperty, "Include button to delete layers.");
         props.put(DeleteLayersProperty + ScopedEditorProperty,
-                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
         props.put(AddLayersProperty, "Include button to add layers.");
         props.put(AddLayersProperty + ScopedEditorProperty,
-                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return props;
     }

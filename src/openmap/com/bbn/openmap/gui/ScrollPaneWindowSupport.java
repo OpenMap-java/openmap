@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,32 +14,26 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ScrollPaneWindowSupport.java,v $
 // $RCSfile: ScrollPaneWindowSupport.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/02/02 22:52:25 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.gui;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Iterator;
 import javax.swing.*;
-
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.ListenerSupport;
-import com.bbn.openmap.util.Debug;
 
 /**
  * The ScrollPaneWindowSupport class does the same thing as
- * WindowSupport, it just wraps content in a JScrollPane. 
+ * WindowSupport, it just wraps content in a JScrollPane.
  */
 public class ScrollPaneWindowSupport extends WindowSupport {
 
     /**
      * Create the window support.
+     * 
      * @param content the content to display in the window.
      * @param windowTitle the title of the window.
      */

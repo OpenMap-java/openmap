@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/PilotLoaderPlugIn.java,v $
 // $RCSfile: PilotLoaderPlugIn.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/09 13:33:36 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,21 +26,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.beancontext.BeanContext;
 import java.beans.PropertyVetoException;
-import javax.swing.*;
 
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.MapHandler;
-import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.plugin.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
 
 /**
  * The PilotLoaderPlugIn receives OMGraphics from the PilotLoader and
- * displays them.  It just waits and listens, and redraws when
+ * displays them. It just waits and listens, and redraws when
  * necessary.
  */
 public class PilotLoaderPlugIn extends OMGraphicHandlerPlugIn {
@@ -62,9 +57,9 @@ public class PilotLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * The getRectangle call is the main call into the PlugIn module.
      * The module is expected to fill the graphics list with objects
      * that are within the screen parameters passed.
-     *
+     * 
      * @param p projection of the screen, holding scale, center
-     * coords, height, width.
+     *        coords, height, width.
      */
     public OMGraphicList getRectangle(Projection p) {
         if (loader != null) {
@@ -74,8 +69,8 @@ public class PilotLoaderPlugIn extends OMGraphicHandlerPlugIn {
         list.generate(p);
 
         if (Debug.debugging("pilotloader")) {
-            Debug.output("GraphicLoaderPlugIn returning list of " + list.size() +
-                         " objects.");
+            Debug.output("GraphicLoaderPlugIn returning list of " + list.size()
+                    + " objects.");
         }
 
         return list;
@@ -101,7 +96,8 @@ public class PilotLoaderPlugIn extends OMGraphicHandlerPlugIn {
 
         try {
             loader.setBeanContext(getBeanContext());
-        } catch (PropertyVetoException pve) {}
+        } catch (PropertyVetoException pve) {
+        }
     }
 
     /**
@@ -110,7 +106,7 @@ public class PilotLoaderPlugIn extends OMGraphicHandlerPlugIn {
     public PilotLoader getPilotLoader() {
         return loader;
     }
-    
+
     public Component getGUI() {
         if (loader != null) {
             return loader.getGUI();
@@ -120,33 +116,35 @@ public class PilotLoaderPlugIn extends OMGraphicHandlerPlugIn {
     }
 
     /**
-     * Invoked when the mouse has been clicked on a component.
-     * The listener will receive this event if it successfully
-     * processed <code>mousePressed()</code>, or if no other listener
-     * processes the event.  If the listener successfully processes
+     * Invoked when the mouse has been clicked on a component. The
+     * listener will receive this event if it successfully processed
+     * <code>mousePressed()</code>, or if no other listener
+     * processes the event. If the listener successfully processes
      * <code>mouseClicked()</code>, then it will receive the next
      * <code>mouseClicked()</code> notifications that have a click
      * count greater than one.
      * <p>
      * NOTE: We have noticed that this method can sometimes be
-     * erroneously invoked.  It seems to occur when a light-weight AWT
+     * erroneously invoked. It seems to occur when a light-weight AWT
      * component (like an internal window or menu) closes (removes
-     * itself from the window hierarchy).  A specific OpenMap example
+     * itself from the window hierarchy). A specific OpenMap example
      * is when you make a menu selection when the MenuItem you select
-     * is above the MapBean canvas.  After making the selection, the
+     * is above the MapBean canvas. After making the selection, the
      * mouseClicked() gets invoked on the MouseDelegator, which passes
-     * it to the appropriate listeners depending on the MouseMode.
-     * The best way to avoid this problem is to not implement anything
-     * crucial in this method.  Use a combination of
+     * it to the appropriate listeners depending on the MouseMode. The
+     * best way to avoid this problem is to not implement anything
+     * crucial in this method. Use a combination of
      * <code>mousePressed()</code> and <code>mouseReleased()</code>
      * instead.
+     * 
      * @param e MouseEvent
      * @return true if the listener was able to process the event.
      */
     public boolean mouseClicked(MouseEvent e) {
 
         if (list != null) {
-            OMGraphic graphic = list.getOMGraphicThatContains(e.getX(), e.getY());
+            OMGraphic graphic = list.getOMGraphicThatContains(e.getX(),
+                    e.getY());
             if (graphic instanceof Pilot) {
                 Pilot mp = (Pilot) graphic;
                 mp.showPalette();
@@ -160,10 +158,9 @@ public class PilotLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * Method for BeanContextChild interface. Adds this object as a
      * BeanContextMembership listener, set the BeanContext in this
      * objects BeanContextSupport, and receives the initial list of
-     * objects currently contained in the BeanContext.  
+     * objects currently contained in the BeanContext.
      */
-    public void setBeanContext(BeanContext in_bc) 
-        throws PropertyVetoException {
+    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
         super.setBeanContext(in_bc);
         if (loader != null) {
             loader.setBeanContext(in_bc);
@@ -171,8 +168,4 @@ public class PilotLoaderPlugIn extends OMGraphicHandlerPlugIn {
     }
 
 } //end GraphicLoaderPlugin
-
-
-
-
 

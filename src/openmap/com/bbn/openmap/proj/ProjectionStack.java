@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionStack.java,v $
 // $RCSfile: ProjectionStack.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/05/15 02:21:47 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,15 +23,17 @@
 
 package com.bbn.openmap.proj;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.beans.beancontext.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.Container;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Stack;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.OMComponent;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.util.Debug;
 
 /**

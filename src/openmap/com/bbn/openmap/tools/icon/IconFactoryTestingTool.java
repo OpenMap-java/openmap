@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconFactoryTestingTool.java,v $
 // $RCSfile: IconFactoryTestingTool.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.icon;
 
@@ -30,7 +29,6 @@ import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import javax.swing.JButton;
@@ -42,17 +40,16 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 
 /**
  * An example class and example for how to use the OMIconFactory and
- * IconParts to create Icons.  Can be run as a class, or can be used
- * as an OpenMap Tool to show up on the OpenMap ToolPanel.
+ * IconParts to create Icons. Can be run as a class, or can be used as
+ * an OpenMap Tool to show up on the OpenMap ToolPanel.
  */
 public class IconFactoryTestingTool implements Tool {
 
     public IconFactoryTestingTool() {};
 
-    /** 
-     * The retrieval tool's interface. This is added to the
-     * tool bar.
-     *
+    /**
+     * The retrieval tool's interface. This is added to the tool bar.
+     * 
      * @return String The key for this tool.
      */
     public Container getFace() {
@@ -68,8 +65,8 @@ public class IconFactoryTestingTool implements Tool {
         da2.setLinePaint(Color.lightGray);
         da2.setStroke(new BasicStroke(2));
 
-        int[] xpoints = new int[] {15, 15, 50, 50, 90, 50, 50, 15};
-        int[] ypoints = new int[] {30, 70, 70, 90, 50, 10, 30, 30};
+        int[] xpoints = new int[] { 15, 15, 50, 50, 90, 50, 50, 15 };
+        int[] ypoints = new int[] { 30, 70, 70, 90, 50, 10, 30, 30 };
         Shape shape = new Polygon(xpoints, ypoints, xpoints.length);
 
         BasicIconPart testPart = new BasicIconPart(shape);
@@ -85,7 +82,9 @@ public class IconFactoryTestingTool implements Tool {
         parts.add(testPart2);
         parts.add(testPart);
 
-        BasicIconPart testPart3 = new BasicIconPart(shape, AffineTransform.getRotateInstance(Math.PI/4, 50, 50));
+        BasicIconPart testPart3 = new BasicIconPart(shape, AffineTransform.getRotateInstance(Math.PI / 4,
+                50,
+                50));
         testPart3.setRenderingAttributes(da);
         testPart3.setGradient(true);
 
@@ -101,19 +100,19 @@ public class IconFactoryTestingTool implements Tool {
 
         return jtb;
     }
-    
-    /** 
+
+    /**
      * The retrieval key for this tool
-     *
+     * 
      * @return String The key for this tool.
-     **/
+     */
     public String getKey() {
         return "IconFactoryTestingTool";
     }
-    
-    /** 
+
+    /**
      * Set the retrieval key for this tool
-     *
+     * 
      * @param aKey The key for this tool.
      */
     public void setKey(String aKey) {}
@@ -123,12 +122,12 @@ public class IconFactoryTestingTool implements Tool {
         frame.getContentPane().add(new IconFactoryTestingTool().getFace());
         frame.pack();
         frame.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    // need a shutdown event to notify other gui beans and
-                    // then exit.
-                    System.exit(0);
-                }
-            });
+            public void windowClosing(WindowEvent e) {
+                // need a shutdown event to notify other gui beans and
+                // then exit.
+                System.exit(0);
+            }
+        });
 
         frame.show();
     }

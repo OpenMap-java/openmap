@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,15 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoordFloatString.java,v $
 // $RCSfile: CoordFloatString.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.vpf;
+
 import java.io.EOFException;
+
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.io.BinaryFile;
 
@@ -40,14 +41,16 @@ public class CoordFloatString {
 
     /**
      * Construct a CoordFloatString from a file input
-     *
-     * @param tuplecount the number of tuples to read from the input stream
+     * 
+     * @param tuplecount the number of tuples to read from the input
+     *        stream
      * @param tuplesize the number of floats in the tuple
      * @param input the input stream to read everything from
-     * @exception FormatException if we have IO errors or premature end-of-file
+     * @exception FormatException if we have IO errors or premature
+     *            end-of-file
      */
     public CoordFloatString(int tuplecount, int tuplesize, BinaryFile input)
-        throws FormatException {
+            throws FormatException {
         tcount = tuplecount;
         tsize = tuplesize;
         int totallen = tcount * tsize;
@@ -59,80 +62,104 @@ public class CoordFloatString {
         }
     }
 
-    /** The maximum indexable tuple value
-     * @return the maximum valid tuple index */
+    /**
+     * The maximum indexable tuple value
+     * 
+     * @return the maximum valid tuple index
+     */
     public int maxIndex() {
         return tcount;
     }
 
-    /** A pretty formatter for the floatstring
-     * @return a pretty string of the tuple */
+    /**
+     * A pretty formatter for the floatstring
+     * 
+     * @return a pretty string of the tuple
+     */
     public String toString() {
         boolean singleCoord = (vals.length == tsize);
         StringBuffer retval = new StringBuffer(singleCoord ? "" : "CFS:");
-        if (!singleCoord) { 
-          retval.append(tcount).append("[");
+        if (!singleCoord) {
+            retval.append(tcount).append("[");
         }
 
         if (vals.length > 0) {
             retval.append("(").append(vals[0]);
-            for (int j=1; j < tsize; j++) {
+            for (int j = 1; j < tsize; j++) {
                 retval.append(", ").append(vals[j]);
             }
             retval.append(")");
         }
         if (vals.length > tsize) {
-            retval.append(" ... (").append(vals[vals.length-tsize]);
-            for (int j=tsize-1; j > 0; j--) {
-                retval.append(", ").append(vals[vals.length-j]);
+            retval.append(" ... (").append(vals[vals.length - tsize]);
+            for (int j = tsize - 1; j > 0; j--) {
+                retval.append(", ").append(vals[vals.length - j]);
             }
             retval.append(")");
         }
 
         if (!singleCoord) {
-          retval.append("]");
+            retval.append("]");
         }
         return retval.toString();
     }
- 
-    /** Get the first value of a tuple
+
+    /**
+     * Get the first value of a tuple
+     * 
      * @param tuple the index of the tuple
-     * @return the first value of the tuple given by <code>tuple</code> */
+     * @return the first value of the tuple given by
+     *         <code>tuple</code>
+     */
     public float getXasFloat(int tuple) {
-        return vals[tuple*tsize];
+        return vals[tuple * tsize];
     }
 
-    /** Get the second value of a tuple
+    /**
+     * Get the second value of a tuple
+     * 
      * @param tuple the index of the tuple
-     * @return the second value of the tuple given by <code>tuple</code> */
+     * @return the second value of the tuple given by
+     *         <code>tuple</code>
+     */
     public float getYasFloat(int tuple) {
-        return vals[tuple*tsize+1];
-    }
-  
-    /** Get the third value of a tuple
-     * @param tuple the index of the tuple
-     * @return the third value of the tuple given by <code>tuple</code> */
-    public float getZasFloat(int tuple) {
-        return vals[tuple*tsize+2];
+        return vals[tuple * tsize + 1];
     }
 
-    /** Get a tuple
+    /**
+     * Get the third value of a tuple
+     * 
      * @param tuple the index of the tuple
-     * @return the tuple given by <code>tuple</code> */
+     * @return the third value of the tuple given by
+     *         <code>tuple</code>
+     */
+    public float getZasFloat(int tuple) {
+        return vals[tuple * tsize + 2];
+    }
+
+    /**
+     * Get a tuple
+     * 
+     * @param tuple the index of the tuple
+     * @return the tuple given by <code>tuple</code>
+     */
     public float[] getasFloatV(int tuple) {
         float rv[] = new float[tsize];
-        for (int i = 0 ; i < tsize; i++) {
+        for (int i = 0; i < tsize; i++) {
             rv[i] = vals[tsize * tuple + i];
         }
         return rv;
     }
 
-    /** Get a value in a tuple
+    /**
+     * Get a value in a tuple
+     * 
      * @param tuple the index of the tuple
      * @param val the index of the value
-     * @return the tuple given by <code>tuple</code> */
+     * @return the tuple given by <code>tuple</code>
+     */
     public float getasFloat(int tuple, int val) {
-        return vals[tuple*tsize + val];
+        return vals[tuple * tsize + val];
     }
 
 }

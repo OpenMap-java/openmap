@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,22 +12,17 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/EOMGStateMachine.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/EOMGStateMachine.java,v
+// $
 // $RCSfile: EOMGStateMachine.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.editable;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.net.URL;
-import java.util.*;
-import javax.swing.ImageIcon;
 
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.omGraphics.event.EOMGEvent;
@@ -41,15 +36,22 @@ public class EOMGStateMachine extends StateMachine {
 
     /** The state when a graphic is not there yet, about to be drawn. */
     public final static int GRAPHIC_UNDEFINED = EOMGEvent.EOMG_UNDEFINED; // 0
-    /** The state when an existing graphic is present, but has not been
-     *  selected. At this point, the point nodes should not be
-     *  visible, but the graphic is. */
+    /**
+     * The state when an existing graphic is present, but has not been
+     * selected. At this point, the point nodes should not be visible,
+     * but the graphic is.
+     */
     public final static int GRAPHIC_UNSELECTED = EOMGEvent.EOMG_DEFINED; // 1
-    /** The state when an existing graphic is selected, ready for change
-     *  given the correct input.  The point nodes and the graphic are
-     *  visible. */
+    /**
+     * The state when an existing graphic is selected, ready for
+     * change given the correct input. The point nodes and the graphic
+     * are visible.
+     */
     public final static int GRAPHIC_SELECTED = EOMGEvent.EOMG_SELECTED; // 2
-    /** The state when the graphic points are in the process of changing. */
+    /**
+     * The state when the graphic points are in the process of
+     * changing.
+     */
     public final static int GRAPHIC_EDIT = EOMGEvent.EOMG_EDIT; // 3
     /** The state where an offset point needs to be defined. */
     public final static int GRAPHIC_SETOFFSET = EOMGEvent.EOMG_AUX; // 4
@@ -58,7 +60,7 @@ public class EOMGStateMachine extends StateMachine {
 
     public int NUMBER_STATES = DEFAULT_NUMBER_STATES;
 
-    public EOMGStateMachine(EditableOMGraphic graphic){
+    public EOMGStateMachine(EditableOMGraphic graphic) {
         this.graphic = graphic;
         setStates(init());
 
@@ -70,8 +72,7 @@ public class EOMGStateMachine extends StateMachine {
         Debug.message("eomg", "EOMGStateMachine created");
     }
 
-
-    protected State[] init(){
+    protected State[] init() {
         Debug.message("eomg", "EOMGStateMachine.init()");
         State[] states = new State[NUMBER_STATES];
 
@@ -83,7 +84,6 @@ public class EOMGStateMachine extends StateMachine {
         return states;
     }
 
-
     /**
      * Check to see if the graphic offset point needs to be defined.
      */
@@ -93,10 +93,10 @@ public class EOMGStateMachine extends StateMachine {
 
     /**
      * The state machine, from the edit mode, tests this to see if an
-     * offset point needs to be defined.  This is set to true when the
-     * OMGraphic (offset rendertype) is undefined.  Can't be set every
+     * offset point needs to be defined. This is set to true when the
+     * OMGraphic (offset rendertype) is undefined. Can't be set every
      * time the state machine gets in edit mode, because we may be
-     * just moving the graphic.  Set to true if you want to define the
+     * just moving the graphic. Set to true if you want to define the
      * offset point after defining the actual graphic, which should be
      * done only for offset graphics.
      */

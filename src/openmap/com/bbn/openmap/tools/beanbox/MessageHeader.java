@@ -20,12 +20,12 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 
 /**
- * An RFC 844 or MIME message header.  Includes methods for parsing
+ * An RFC 844 or MIME message header. Includes methods for parsing
  * headers from incoming streams, fetching values, setting values, and
- * printing headers.  Key values of null are legal: they indicate
- * lines in the header that don't have a valid key, but do have a
- * value (this isn't legal according to the standard, but lines like
- * this are everywhere). 
+ * printing headers. Key values of null are legal: they indicate lines
+ * in the header that don't have a valid key, but do have a value
+ * (this isn't legal according to the standard, but lines like this
+ * are everywhere).
  */
 public class MessageHeader {
     private String keys[];
@@ -41,8 +41,9 @@ public class MessageHeader {
     }
 
     /**
-     * Find the value that corresponds to this key.
-     * It finds only the first occurrence of the key.
+     * Find the value that corresponds to this key. It finds only the
+     * first occurrence of the key.
+     * 
      * @param k the key to find.
      * @return null if not found.
      */
@@ -60,24 +61,29 @@ public class MessageHeader {
     }
 
     public String getKey(int n) {
-        if (n < 0 || n >= nkeys) return null;
+        if (n < 0 || n >= nkeys)
+            return null;
         return keys[n];
     }
 
     public String getValue(int n) {
-        if (n < 0 || n >= nkeys) return null;
+        if (n < 0 || n >= nkeys)
+            return null;
         return values[n];
     }
 
     /**
-     * Find the next value that corresponds to this key.
-     * It finds the first value that follows v. To iterate
-     * over all the values of a key use:
-     *  <pre>
-     *          for(String v=h.findValue(k); v!=null; v=h.findNextValue(k, v)) {
-     *              ...
-     *          }
-     *  </pre>
+     * Find the next value that corresponds to this key. It finds the
+     * first value that follows v. To iterate over all the values of a
+     * key use:
+     * 
+     * <pre>
+     * 
+     *           for(String v=h.findValue(k); v!=null; v=h.findNextValue(k, v)) {
+     *               ...
+     *           }
+     *   
+     * </pre>
      */
     public String findNextValue(String k, String v) {
         boolean foundV = false;
@@ -99,22 +105,22 @@ public class MessageHeader {
     }
 
     /**
-     * Prints the key-value pairs represented by this
-     * header.  Also prints the RFC required blank line
-     * at the end. Omits pairs with a null key. 
+     * Prints the key-value pairs represented by this header. Also
+     * prints the RFC required blank line at the end. Omits pairs with
+     * a null key.
      */
     public void print(PrintWriter p) {
         for (int i = 0; i < nkeys; i++)
             if (keys[i] != null)
-                p.print(keys[i] + 
-                    (values[i] != null ? ": "+values[i]: "") + "\r\n");
+                p.print(keys[i] + (values[i] != null ? ": " + values[i] : "")
+                        + "\r\n");
         p.print("\r\n");
         p.flush();
     }
 
     /**
-     * Adds a key value pair to the end of the
-     * header.  Duplicates are allowed.
+     * Adds a key value pair to the end of the header. Duplicates are
+     * allowed.
      */
     public void add(String k, String v) {
         grow();
@@ -124,14 +130,14 @@ public class MessageHeader {
     }
 
     /**
-     * Prepends a key value pair to the beginning of the
-     * header.  Duplicates are allowed.
+     * Prepends a key value pair to the beginning of the header.
+     * Duplicates are allowed.
      */
     public void prepend(String k, String v) {
         grow();
         for (int i = nkeys; i > 0; i--) {
-            keys[i] = keys[i-1];
-            values[i] = values[i-1];
+            keys[i] = keys[i - 1];
+            values[i] = values[i - 1];
         }
         keys[0] = k;
         values[0] = v;
@@ -139,9 +145,9 @@ public class MessageHeader {
     }
 
     /**
-     * Overwrite the previous key/val pair at location 'i'
-     * with the new k/v.  If the index didn't exist before
-     * the key/val is simply tacked onto the end.
+     * Overwrite the previous key/val pair at location 'i' with the
+     * new k/v. If the index didn't exist before the key/val is simply
+     * tacked onto the end.
      */
     public void set(int i, String k, String v) {
         grow();
@@ -154,10 +160,9 @@ public class MessageHeader {
             values[i] = v;
         }
     }
-            
 
-    /** 
-     * Grow the key/value arrays as needed 
+    /**
+     * Grow the key/value arrays as needed
      */
     private void grow() {
         if (keys == null || nkeys >= keys.length) {
@@ -173,9 +178,9 @@ public class MessageHeader {
     }
 
     /**
-     * Sets the value of a key.  If the key already exists in the
-     * header, it's value will be changed.  Otherwise a new key/value
-     * pair will be added to the end of the header. 
+     * Sets the value of a key. If the key already exists in the
+     * header, it's value will be changed. Otherwise a new key/value
+     * pair will be added to the end of the header.
      */
     public void set(String k, String v) {
         for (int i = nkeys; --i >= 0;)
@@ -188,7 +193,7 @@ public class MessageHeader {
 
     /**
      * Convert a message-id string to canonical form (strips off
-     * leading and trailing <>s) 
+     * leading and trailing <>s)
      */
     public static String canonicalID(String id) {
         if (id == null)
@@ -197,13 +202,11 @@ public class MessageHeader {
         int len = id.length();
         boolean substr = false;
         int c;
-        while (st < len && ((c = id.charAt(st)) == '<' ||
-                            c <= ' ')) {
+        while (st < len && ((c = id.charAt(st)) == '<' || c <= ' ')) {
             st++;
             substr = true;
         }
-        while (st < len && ((c = id.charAt(len - 1)) == '>' ||
-                            c <= ' ')) {
+        while (st < len && ((c = id.charAt(len - 1)) == '>' || c <= ' ')) {
             len--;
             substr = true;
         }
@@ -223,8 +226,8 @@ public class MessageHeader {
             int c;
             boolean inKey = firstc > ' ';
             s[len++] = (char) firstc;
-        parseloop:{
-            parseloop2: while ((c = is.read()) >= 0) {
+            parseloop: {
+                parseloop2: while ((c = is.read()) >= 0) {
                     switch (c) {
                     case ':':
                         if (inKey && len > 0)
@@ -283,7 +286,7 @@ public class MessageHeader {
     public String toString() {
         String result = super.toString();
         for (int i = 0; i < keys.length; i++) {
-            result += "{"+keys[i]+": "+values[i]+"}";
+            result += "{" + keys[i] + ": " + values[i] + "}";
         }
         return result;
     }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfConstants.java,v $
 // $RCSfile: RpfConstants.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/29 17:20:04 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:03 $
+// $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.rpf;
 
@@ -28,40 +27,59 @@ package com.bbn.openmap.layer.rpf;
  */
 public interface RpfConstants {
 
-    /** Property to use for images or rectangles (when java supports
-        it). "opaque" */
+    /**
+     * Property to use for images or rectangles (when java supports
+     * it). "opaque"
+     */
     public static final String OpaquenessProperty = "opaque";
-    /** Property to use to fill rectangles. "fill"*/
+    /** Property to use to fill rectangles. "fill" */
     public static final String FillProperty = "fill";
     /** Paths to the A.TOC properties. "paths" */
     public static final String RpfPathsProperty = "paths";
-    /** Number of colors to use in images.  "numberColors"*/
+    /** Number of colors to use in images. "numberColors" */
     public static final String NumColorsProperty = "numberColors";
-    /** Show the images.  "showMaps"*/
+    /** Show the images. "showMaps" */
     public static final String ShowMapsProperty = "showMaps";
-    /** Show the attribute information for the RPF data.  "showInfo"*/
+    /** Show the attribute information for the RPF data. "showInfo" */
     public static final String ShowInfoProperty = "showInfo";
-    /** Scale toe images to match the map scale.  "scaleImages"*/
+    /** Scale toe images to match the map scale. "scaleImages" */
     public static final String ScaleImagesProperty = "scaleImages";
-    /** Delete the cache is the layer is removed from the map. "killCache" */
+    /**
+     * Delete the cache is the layer is removed from the map.
+     * "killCache"
+     */
     public static final String KillCacheProperty = "killCache";
-    /** Set a limit on which chart types are displayed.  "chartSeries"*/
+    /** Set a limit on which chart types are displayed. "chartSeries" */
     public static final String ChartSeriesProperty = "chartSeries";
-    /** Tell the RpfLayer you want the coverage tool available. "coverage" */
+    /**
+     * Tell the RpfLayer you want the coverage tool available.
+     * "coverage"
+     */
     public static final String CoverageProperty = "coverage";
-    /** Tell the RpfLayer which colormodel to use (INDEXED or DIRECT (default)). "colormodel" */
+    /**
+     * Tell the RpfLayer which colormodel to use (INDEXED or DIRECT
+     * (default)). "colormodel"
+     */
     public static final String ColormodelProperty = "colormodel";
-    /** Tell the RpfLayer how big to make the subframe
-     *  cache.. "subframeCacheSize" */
+    /**
+     * Tell the RpfLayer how big to make the subframe cache..
+     * "subframeCacheSize"
+     */
     public static final String CacheSizeProperty = "subframeCacheSize";
-    /** Tell the RpfLayer how big to make the subframe
-     *  cache.. "auxSubframeCacheSize" */
+    /**
+     * Tell the RpfLayer how big to make the subframe cache..
+     * "auxSubframeCacheSize"
+     */
     public static final String AuxCacheSizeProperty = "auxSubframeCacheSize";
-    /** Tell the RpfLayer to get the detailed subframe attributes for
-     *  each subframe. */
+    /**
+     * Tell the RpfLayer to get the detailed subframe attributes for
+     * each subframe.
+     */
     public static final String AutoFetchAttributeProperty = "autofetchAttributes";
-    /** The amount of scaling to allow on images.  Default is 4x,
-     *  which also means 1/4th */
+    /**
+     * The amount of scaling to allow on images. Default is 4x, which
+     * also means 1/4th
+     */
     public static final String ImageScaleFactorProperty = "imageScaleFactor";
 
     // GUI button commands
@@ -83,64 +101,84 @@ public interface RpfConstants {
     public final static String unlockedButtonTitle = "Limit Chart Selection";
     public final static String lockedButtonTitle = "Displaying Only";
 
-    /** Property setting to show this data on startup.  "CG.showcov"*/
+    /** Property setting to show this data on startup. "CG.showcov" */
     public static final String ShowCGProperty = "CG.showcov";
-    /** Property to use to change the color for coverage of this data.
-     *  "CG.color"*/
+    /**
+     * Property to use to change the color for coverage of this data.
+     * "CG.color"
+     */
     public static final String CGColorProperty = "CG.color";
 
     /** Property setting to show this data on startup. "TLM.showcov" */
     public static final String ShowTLMProperty = "TLM.showcov";
-    /** Property to use to change the color for coverage of this data.
-     * "TLM.color"*/
+    /**
+     * Property to use to change the color for coverage of this data.
+     * "TLM.color"
+     */
     public static final String TLMColorProperty = "TLM.color";
 
     /** Property setting to show this data on startup. "JOG.showcov" */
     public static final String ShowJOGProperty = "JOG.showcov";
-    /** Property to use to change the color for coverage of this data.
-     *  "JOG.color"*/
+    /**
+     * Property to use to change the color for coverage of this data.
+     * "JOG.color"
+     */
     public static final String JOGColorProperty = "JOG.color";
 
-    /** Property setting to show this data on startup.  "TPC.showcov"*/
+    /** Property setting to show this data on startup. "TPC.showcov" */
     public static final String ShowTPCProperty = "TPC.showcov";
-    /** Property to use to change the color for coverage of this data.
-     *  "TPC.color"*/
+    /**
+     * Property to use to change the color for coverage of this data.
+     * "TPC.color"
+     */
     public static final String TPCColorProperty = "TPC.color";
 
     /** Property setting to show this data on startup. "ONC.showcov" */
     public static final String ShowONCProperty = "ONC.showcov";
-    /** Property to use to change the color for coverage of this
-        data. "ONC.color" */
+    /**
+     * Property to use to change the color for coverage of this data.
+     * "ONC.color"
+     */
     public static final String ONCColorProperty = "ONC.color";
 
-    /** Property setting to show this data on startup.  "JNC.showcov"*/
+    /** Property setting to show this data on startup. "JNC.showcov" */
     public static final String ShowJNCProperty = "JNC.showcov";
-    /** Property to use to change the color for coverage of this data.
-        "JNC.color"*/
+    /**
+     * Property to use to change the color for coverage of this data.
+     * "JNC.color"
+     */
     public static final String JNCColorProperty = "JNC.color";
 
-    /** Property setting to show this data on startup.  "GNC.showcov"*/
+    /** Property setting to show this data on startup. "GNC.showcov" */
     public static final String ShowGNCProperty = "GNC.showcov";
-    /** Property to use to change the color for coverage of this
-        data. "GNC.color" */
+    /**
+     * Property to use to change the color for coverage of this data.
+     * "GNC.color"
+     */
     public static final String GNCColorProperty = "GNC.color";
 
-    /** Property setting to show this data on startup.  "CIB10.showcov"*/
+    /** Property setting to show this data on startup. "CIB10.showcov" */
     public static final String ShowCIB10Property = "CIB10.showcov";
-    /** Property to use to change the color for coverage of this data.
-        "CIB10.color"*/
+    /**
+     * Property to use to change the color for coverage of this data.
+     * "CIB10.color"
+     */
     public static final String CIB10ColorProperty = "CIB10.color";
 
-    /** Property setting to show this data on startup.  "CIB5.showcov"*/
+    /** Property setting to show this data on startup. "CIB5.showcov" */
     public static final String ShowCIB5Property = "CIB5.showcov";
-    /** Property to use to change the color for coverage of this
-        data. "CIB5.color" */
+    /**
+     * Property to use to change the color for coverage of this data.
+     * "CIB5.color"
+     */
     public static final String CIB5ColorProperty = "CIB5.color";
 
-    /** Property setting to show this data on startup.  "MISC.showcov"*/
+    /** Property setting to show this data on startup. "MISC.showcov" */
     public static final String ShowMISCProperty = "MISC.showcov";
-    /** Property to use to change the color for coverage of this data.
-        "MISC.color"*/
+    /**
+     * Property to use to change the color for coverage of this data.
+     * "MISC.color"
+     */
     public static final String MISCColorProperty = "MISC.color";
 
     public static final String DefaultRPFCoveragePrefix = "rpfcov";
@@ -160,7 +198,7 @@ public interface RpfConstants {
     public final static RpfProductInfo TP = new RpfProductInfo("TP", "TPC", "1:500,000", 500000f, "Tactical Pilotage Chart", CADRG);
     public final static RpfProductInfo LF = new RpfProductInfo("LF", "LFC", "1:500,000", 500000f, "Low Flying Chart (UK)", CADRG);
     public final static RpfProductInfo JG = new RpfProductInfo("JG", "JOG", "1:250,000", 250000f, "Joint Operations Graphic", CADRG);
-    public final static RpfProductInfo JA = new RpfProductInfo("JA", "JOG-A", "1:250,000", 250000f , "Joint Operations Graphic - Air", CADRG);
+    public final static RpfProductInfo JA = new RpfProductInfo("JA", "JOG-A", "1:250,000", 250000f, "Joint Operations Graphic - Air", CADRG);
     public final static RpfProductInfo JR = new RpfProductInfo("JR", "JOG-R", "1:250,000", 250000f, "Joint Operations Graphic - Radar", CADRG);
     public final static RpfProductInfo TF = new RpfProductInfo("TF", "TFC", "1:250,000", 250000f, "Transit Flying Chart (UK)", CADRG);
     public final static RpfProductInfo AT = new RpfProductInfo("AT", "ATC", "1:200,000", 200000f, "Series 200 Air Target Chart", CADRG);
@@ -215,6 +253,5 @@ public interface RpfConstants {
     public final static RpfProductInfo LG = new RpfProductInfo("LG", "Legend", VARIOUS, Various, "Legend Data", CADRG);
     public final static RpfProductInfo UK = new RpfProductInfo("UK", "Unknown", VARIOUS, Various, "Unknown", CADRG);
     public final static RpfProductInfo DT = new RpfProductInfo("DT", "CDTED", "100M", 666666f, "Compressed DTED", CDTED);
-
 
 }

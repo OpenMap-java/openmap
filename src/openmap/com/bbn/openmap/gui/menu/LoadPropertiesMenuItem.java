@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,19 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/LoadPropertiesMenuItem.java,v $
 // $RCSfile: LoadPropertiesMenuItem.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.gui.menu;
 
-import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
-import java.beans.beancontext.*;
 import java.util.*;
 import java.io.*;
 
@@ -34,16 +31,17 @@ import com.bbn.openmap.*;
 import com.bbn.openmap.util.Debug;
 
 /**
- * This is a menu item that loads a file.  This file should be a valid
+ * This is a menu item that loads a file. This file should be a valid
  * openmap properties file, with openmap.layers set and projection
- * properties set.  The components list is ignored, since it is pretty
+ * properties set. The components list is ignored, since it is pretty
  * dependent on order, and it's hard to write a good properties file
- * automatically with a valid components list.  <P> If you want to
- * change the components in an application, launch OpenMap with the
- * properties file you want.
+ * automatically with a valid components list.
+ * <P>
+ * If you want to change the components in an application, launch
+ * OpenMap with the properties file you want.
  */
-public class LoadPropertiesMenuItem extends MapHandlerMenuItem 
-    implements ActionListener {
+public class LoadPropertiesMenuItem extends MapHandlerMenuItem implements
+        ActionListener {
 
     public LoadPropertiesMenuItem() {
         super("Load Map Properties");
@@ -71,7 +69,6 @@ public class LoadPropertiesMenuItem extends MapHandlerMenuItem
             return;
         }
 
-
         FileDialog fd = new FileDialog(new Frame(), "Loading the map from a Properties file...", FileDialog.LOAD);
         fd.show();
 
@@ -80,13 +77,12 @@ public class LoadPropertiesMenuItem extends MapHandlerMenuItem
 
         if (fileName == null) {
             Debug.message("loadpropertiesmenuitem",
-                          "User did not select any file");
+                    "User did not select any file");
             return;
         }
 
-        Debug.message("loadpropertiesmenuitem",
-                      "User selected file " + dirName + File.separator +
-                      fileName);
+        Debug.message("loadpropertiesmenuitem", "User selected file " + dirName
+                + File.separator + fileName);
 
         File file = new File(new File(dirName), fileName);
 
@@ -96,22 +92,25 @@ public class LoadPropertiesMenuItem extends MapHandlerMenuItem
 
             newProps.load(fis);
 
-            String test = newProps.getProperty("openmap." + LayerHandler.layersProperty);
+            String test = newProps.getProperty("openmap."
+                    + LayerHandler.layersProperty);
             if (test == null) {
                 throw new IOException("Doesn't seem like a valid properties file");
             }
 
-            // Just reset the projection and layers, not the components.
+            // Just reset the projection and layers, not the
+            // components.
             ph.loadProjectionAndLayers(mapHandler, newProps);
 
         } catch (FileNotFoundException fnfe) {
             Debug.error(fnfe.getMessage());
         } catch (IOException ioe) {
-            InformationDelegator id = (InformationDelegator)mapHandler.get("com.bbn.openmap.InformationDelegator");
+            InformationDelegator id = (InformationDelegator) mapHandler.get("com.bbn.openmap.InformationDelegator");
 
             if (id != null) {
                 id.displayMessage("Error loading file...",
-                                  "Error occured loading " + file.getAbsolutePath() + "\n" + ioe.getMessage());
+                        "Error occured loading " + file.getAbsolutePath()
+                                + "\n" + ioe.getMessage());
             }
             Debug.error("Error occured loading " + file.getAbsolutePath());
         }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,33 +12,35 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkUtil.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkUtil.java,v
+// $
 // $RCSfile: LinkUtil.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.link;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
 
 public class LinkUtil {
 
-    /** 
+    /**
      * readString reads an expected number of characters off a
      * DataInput and creates a String from it.
-     *
-     * @param length the number of characters to be read.. 
+     * 
+     * @param length the number of characters to be read..
      */
     protected static String readString(DataInput dis, int length)
-        throws IOException, ArrayIndexOutOfBoundsException {
+            throws IOException, ArrayIndexOutOfBoundsException {
         String ret = null;
         char[] chars = new char[length];
 
-        for (int i = 0; i < length; i++){
+        for (int i = 0; i < length; i++) {
             chars[i] = dis.readChar();
         }
         ret = new String(chars);
@@ -46,18 +48,18 @@ public class LinkUtil {
     }
 
     /** Provided as a readability convenience. */
-    public static int setMask(int value, int mask){
+    public static int setMask(int value, int mask) {
         return (value | mask);
     }
 
     /** Provided as a readability convenience. */
-    public static int unsetMask(int value, int mask){
+    public static int unsetMask(int value, int mask) {
         return (value & ~mask);
     }
 
     /** Provided as a readability convenience. */
-    public static boolean isMask(int value, int mask){
-        if ((value & mask) == 0){
+    public static boolean isMask(int value, int mask) {
+        if ((value & mask) == 0) {
             return false;
         }
         return true;

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,13 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfProductInfo.java,v $
 // $RCSfile: RpfProductInfo.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
-
 
 /*
  * The meat of this code is based on source code provided by The MITRE
@@ -36,10 +34,10 @@ package com.bbn.openmap.layer.rpf;
 import java.util.Hashtable;
 
 /**
- *  Contains basic information about the different map and imagery
- *  types supported by the RPF format.  This information is based on
- *  the specification released by NIMA and contains the conventions
- *  they have listed in the RPF specification.
+ * Contains basic information about the different map and imagery
+ * types supported by the RPF format. This information is based on the
+ * specification released by NIMA and contains the conventions they
+ * have listed in the RPF specification.
  */
 public class RpfProductInfo {
 
@@ -47,17 +45,19 @@ public class RpfProductInfo {
     public String seriesCode;
     /** The three-letter common abbreviation for the map type. */
     public String abbr;
-    /** A String scale representation of the map type.*/
+    /** A String scale representation of the map type. */
     public String scaleString;
-    /** The float number representation of the map type - 1:XXX .*/
+    /** The float number representation of the map type - 1:XXX . */
     public float scale;
     /** A Descriptive name for the map type. */
     public String name;
     /** The category of the map type - CADRG/CIB/DTED. */
     public String dataType;
 
-    /** A hashtable that stores all the known map types, with the
-     *  two-letter code as the key for retrieval. */
+    /**
+     * A hashtable that stores all the known map types, with the
+     * two-letter code as the key for retrieval.
+     */
     private static java.util.Hashtable CATALOG;
 
     public RpfProductInfo() {
@@ -69,9 +69,9 @@ public class RpfProductInfo {
         dataType = RpfConstants.BLANK;
     }
 
-    /** 
+    /**
      * Create a RpfProductInfo object.
-     *
+     * 
      * @param sc the two-letter series code.
      * @param a the three letter acroynm.
      * @param ss the scale string.
@@ -79,8 +79,8 @@ public class RpfProductInfo {
      * @param n descriptive name of the map.
      * @param dt data type - CADRG-CIB-DTED.
      */
-    public RpfProductInfo(String sc, String a, String ss, 
-                          float s, String n, String dt) {
+    public RpfProductInfo(String sc, String a, String ss, float s, String n,
+            String dt) {
         seriesCode = sc;
         abbr = a;
         scaleString = ss;
@@ -103,30 +103,30 @@ public class RpfProductInfo {
         return sb.toString();
     }
 
-    /** 
-     * Returns the RpfProductInfo that has the given two-letter
-     * series code.  If the code passed in is not recognized by the
-     * catalog, the UNKNOWN RpfProductInfo is returned. 
+    /**
+     * Returns the RpfProductInfo that has the given two-letter series
+     * code. If the code passed in is not recognized by the catalog,
+     * the UNKNOWN RpfProductInfo is returned.
      */
     public static RpfProductInfo get(String seriesCode) {
         Hashtable cat = getCatalog();
-        if (seriesCode == null) 
+        if (seriesCode == null)
             return RpfConstants.UK;
         RpfProductInfo rpi = (RpfProductInfo) cat.get(seriesCode);
-        if (rpi == null) 
+        if (rpi == null)
             return RpfConstants.UK;
         return rpi;
     }
 
-    /** 
-     * Returns the catalog of supported chart types.  If it doesn't
+    /**
+     * Returns the catalog of supported chart types. If it doesn't
      * exist yet (It's held as a static hashtable) it is created and
      * loaded.
-     *
-     * @return Hashtable of product information.  
+     * 
+     * @return Hashtable of product information.
      */
     public static java.util.Hashtable getCatalog() {
-        if (CATALOG == null){
+        if (CATALOG == null) {
             CATALOG = new java.util.Hashtable(60);
             CATALOG.put(RpfConstants.GN.seriesCode, RpfConstants.GN);
             CATALOG.put(RpfConstants.JN.seriesCode, RpfConstants.JN);
@@ -202,7 +202,7 @@ public class RpfProductInfo {
         System.out.println("RPF Catalog:\n\n");
         while (it.hasMoreElements()) {
             System.out.println("----------------------");
-            System.out.println((RpfProductInfo)it.nextElement());
+            System.out.println((RpfProductInfo) it.nextElement());
         }
     }
 }

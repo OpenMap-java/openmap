@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionStackSupport.java,v $
 // $RCSfile: ProjectionStackSupport.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.proj;
 
@@ -29,7 +28,7 @@ import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
- * for handling ProjectionListeners and firing ProjectionEvents.  You
+ * for handling ProjectionListeners and firing ProjectionEvents. You
  * can use an instance of this class as a member field of your bean
  * and delegate work to it.
  */
@@ -40,10 +39,11 @@ public class ProjectionStackSupport implements java.io.Serializable {
     /**
      * Construct a ProjectionStackSupport.
      */
-    public ProjectionStackSupport () { }
+    public ProjectionStackSupport() {}
 
     /**
      * Add a ProjectionStackTrigger.
+     * 
      * @param pt ProjectionStackTrigger
      */
     public synchronized void add(ProjectionStackTrigger pt) {
@@ -56,9 +56,9 @@ public class ProjectionStackSupport implements java.io.Serializable {
         }
     }
 
-
     /**
      * Remove a ProjectionStackTrigger.
+     * 
      * @param pt ProjectionStackTrigger
      */
     public synchronized void remove(ProjectionStackTrigger pt) {
@@ -70,10 +70,11 @@ public class ProjectionStackSupport implements java.io.Serializable {
 
     /**
      * Return a cloned list of Triggers.
+     * 
      * @return Vector of triggers, null if none have been added.
      */
-    public synchronized ArrayList getTriggers(){
-        if (triggers == null){
+    public synchronized ArrayList getTriggers() {
+        if (triggers == null) {
             return null;
         }
 
@@ -84,14 +85,14 @@ public class ProjectionStackSupport implements java.io.Serializable {
         return triggers.size();
     }
 
-
     /**
      * Send a status to all registered triggers.
+     * 
      * @param enableBackProjections there is at least one past
-     * projection in the back cache.  
+     *        projection in the back cache.
      * @param enableForwardProjections there is at least one future
-     * projection in the forward cache.  Used when a past projection
-     * is being used. 
+     *        projection in the forward cache. Used when a past
+     *        projection is being used.
      */
     public void fireStackStatus(boolean enableBackProjections,
                                 boolean enableForwardProjections) {
@@ -106,14 +107,14 @@ public class ProjectionStackSupport implements java.io.Serializable {
         Iterator iterator = targets.iterator();
 
         while (iterator.hasNext()) {
-            target = (ProjectionStackTrigger)iterator.next();
+            target = (ProjectionStackTrigger) iterator.next();
             if (Debug.debugging("projectionstack")) {
-                Debug.output("ProjectionStackSupport.fireStackStatus(): target is: " +
-                             target);
+                Debug.output("ProjectionStackSupport.fireStackStatus(): target is: "
+                        + target);
             }
 
             target.updateProjectionStackStatus(enableBackProjections,
-                                               enableForwardProjections);
+                    enableForwardProjections);
         }
     }
 }

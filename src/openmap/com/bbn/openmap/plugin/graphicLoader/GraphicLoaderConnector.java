@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,15 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/GraphicLoaderConnector.java,v $
 // $RCSfile: GraphicLoaderConnector.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.plugin.graphicLoader;
 
-import java.beans.beancontext.BeanContext;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
@@ -38,24 +37,26 @@ import com.bbn.openmap.util.PropUtils;
 
 /**
  * The GraphicLoaderConnector is a MapHandler membership listener,
- * looking for GraphicLoaders without receivers.  This class uses the
+ * looking for GraphicLoaders without receivers. This class uses the
  * MapHandler to find GraphicLoaders, and requires the LayerHandler to
- * be added to the MapHandler, also. <P>
- *
+ * be added to the MapHandler, also.
+ * <P>
+ * 
  * If the GraphicLoaderCOnnector finds a GraphicLoader that is not
  * hooked up to a recevier, it creates a GraphicLoaderPlugIn and
- * PlugInLayer, and adds the PlugInLayer to the LayerHandler.  This
- * causes the LayerHandler to add the layer to the application.  If
- * the GraphicLoaderConnector doesn't have a handle to the
- * LayerHandler when it finds a GraphicLoader, it adds the
- * PlugInLayer it created to an internal list to add to the
- * LayerHandler when the connector finds one.
+ * PlugInLayer, and adds the PlugInLayer to the LayerHandler. This
+ * causes the LayerHandler to add the layer to the application. If the
+ * GraphicLoaderConnector doesn't have a handle to the LayerHandler
+ * when it finds a GraphicLoader, it adds the PlugInLayer it created
+ * to an internal list to add to the LayerHandler when the connector
+ * finds one.
  */
 public class GraphicLoaderConnector extends OMComponent {
 
     protected LayerHandler layerHandler = null;
     protected int newLayerIndex = 0; // On Top by default
-    protected boolean newLayerVisible = true; // Make new PlugInLayers visible.
+    protected boolean newLayerVisible = true; // Make new PlugInLayers
+                                              // visible.
     protected List orphanGraphicLoaderPlugIns = null;
     public final static String NewLayerIndexProperty = "newLayerIndex";
     public final static String NewLayerVisibleProperty = "newLayerVisible";
@@ -64,8 +65,7 @@ public class GraphicLoaderConnector extends OMComponent {
 
     /**
      * Set the index of any new layers to be added to the
-     * LayerHandler.  Negative numbers put the layer on top of the
-     * map.
+     * LayerHandler. Negative numbers put the layer on top of the map.
      */
     public void setNewLayerIndex(int i) {
         newLayerIndex = i;
@@ -99,7 +99,7 @@ public class GraphicLoaderConnector extends OMComponent {
             }
             Iterator it = orphanGraphicLoaderPlugIns.iterator();
             while (it.hasNext()) {
-                layerHandler.addLayer((PlugInLayer)it.next(), newLayerIndex);
+                layerHandler.addLayer((PlugInLayer) it.next(), newLayerIndex);
             }
             orphanGraphicLoaderPlugIns = null;
         }
@@ -111,7 +111,7 @@ public class GraphicLoaderConnector extends OMComponent {
 
     /**
      * Check to see if the GraphicLoader already has a receiver set
-     * inside it.  If it doesn't call hookUpGraphicLoaderWithLayer();
+     * inside it. If it doesn't call hookUpGraphicLoaderWithLayer();
      */
     public void checkGraphicLoader(GraphicLoader gl) {
         if (gl.getReceiver() == null) {
@@ -122,7 +122,7 @@ public class GraphicLoaderConnector extends OMComponent {
     /**
      * Assumes that the GraphicLoader doesn't already have a receiver.
      * Creates a GraphicLoaderPlugIn, and a PlugInLayer, and hooks
-     * everything up.  Then hands the PlugInLayer to the LayerHandler
+     * everything up. Then hands the PlugInLayer to the LayerHandler
      * to get set on the map.
      */
     public void hookUpGraphicLoaderWithLayer(GraphicLoader gl) {
@@ -138,7 +138,7 @@ public class GraphicLoaderConnector extends OMComponent {
             if (lh != null) {
                 lh.addLayer(pl, newLayerIndex);
             } else {
-                // If we haven't seen the LayerHandler yet, add the 
+                // If we haven't seen the LayerHandler yet, add the
                 // PlugInLayer to a list that we can use later when
                 // the LayerHandler is found.
                 if (orphanGraphicLoaderPlugIns == null) {
@@ -154,20 +154,22 @@ public class GraphicLoaderConnector extends OMComponent {
      */
     public void findAndInit(Object obj) {
         if (obj instanceof GraphicLoader) {
-            checkGraphicLoader((GraphicLoader)obj);
+            checkGraphicLoader((GraphicLoader) obj);
         }
 
         if (obj instanceof LayerHandler) {
-            Debug.message("graphicLoader","GraphicLoaderConnector found a LayerHandler.");
-            setLayerHandler((LayerHandler)obj);
+            Debug.message("graphicLoader",
+                    "GraphicLoaderConnector found a LayerHandler.");
+            setLayerHandler((LayerHandler) obj);
         }
     }
 
     public void findAndUndo(Object obj) {
         if (obj instanceof LayerHandler) {
-            Debug.message("graphicLoader","GraphicLoaderConnector removing a LayerHandler.");
+            Debug.message("graphicLoader",
+                    "GraphicLoaderConnector removing a LayerHandler.");
             LayerHandler lh = getLayerHandler();
-            if (lh != null && lh == (LayerHandler)obj) {
+            if (lh != null && lh == (LayerHandler) obj) {
                 setLayerHandler(null);
             }
         }
@@ -178,10 +180,12 @@ public class GraphicLoaderConnector extends OMComponent {
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        newLayerIndex = LayerUtils.intFromProperties(props, prefix + NewLayerIndexProperty, newLayerIndex);
-        
-        newLayerVisible = LayerUtils.booleanFromProperties(props, prefix + NewLayerVisibleProperty, newLayerVisible);
-            
+        newLayerIndex = LayerUtils.intFromProperties(props, prefix
+                + NewLayerIndexProperty, newLayerIndex);
+
+        newLayerVisible = LayerUtils.booleanFromProperties(props, prefix
+                + NewLayerVisibleProperty, newLayerVisible);
+
     }
 
     public Properties getProperties(Properties props) {
@@ -189,8 +193,10 @@ public class GraphicLoaderConnector extends OMComponent {
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        props.put(prefix + NewLayerIndexProperty, Integer.toString(newLayerIndex));
-        props.put(prefix + NewLayerVisibleProperty, new Boolean(newLayerVisible).toString());
+        props.put(prefix + NewLayerIndexProperty,
+                Integer.toString(newLayerIndex));
+        props.put(prefix + NewLayerVisibleProperty,
+                new Boolean(newLayerVisible).toString());
         return props;
     }
 
@@ -199,10 +205,12 @@ public class GraphicLoaderConnector extends OMComponent {
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        list.put(NewLayerIndexProperty, "The new layer index, where it should be added to the map. (0 on top)");
-        list.put(NewLayerVisibleProperty, "Whether a new layer should initially be visible");
-        list.put(NewLayerVisibleProperty + ScopedEditorProperty, 
-                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(NewLayerIndexProperty,
+                "The new layer index, where it should be added to the map. (0 on top)");
+        list.put(NewLayerVisibleProperty,
+                "Whether a new layer should initially be visible");
+        list.put(NewLayerVisibleProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return list;
     }

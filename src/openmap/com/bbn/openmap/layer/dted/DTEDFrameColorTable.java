@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,16 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameColorTable.java,v $
 // $RCSfile: DTEDFrameColorTable.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/09/30 22:39:29 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.dted;
 
+import java.awt.Color;
+
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.omGraphics.OMColor;
 
 /**
  * Creates the colors used for displaying the DTED images. The default
@@ -35,11 +36,11 @@ public class DTEDFrameColorTable {
     public final static int NUM_ELEVATION_COLORS = 16;
     public final static int DEFAULT_OPAQUENESS = 255;
     /** the colors in use right now. */
-    public OMColor[] colors;
+    public Color[] colors;
     /** The colored colortable. */
-    protected OMColor[] ccolors = null;
+    protected Color[] ccolors = null;
     /** The greyscale colortable. */
-    protected OMColor[] gcolors = null;
+    protected Color[] gcolors = null;
     /** opaqueness should be a value between 0 (clear) and 255 (opaque) */
     protected int opaqueness = 255;
     /** Flag to indicate which colortable to use - color or greys. */
@@ -110,19 +111,26 @@ public class DTEDFrameColorTable {
     public void setOpaqueness(int opaque) {
         int i;
         opaqueness = opaque;
-        if (ccolors != null)
-            for (i = 0; i < ccolors.length; i++)
-                ccolors[i].setAlpha(opaqueness);
-        if (gcolors != null)
-            for (i = 0; i < gcolors.length; i++)
-                gcolors[i].setAlpha(opaqueness);
+        Color tc; // tmp color
+        if (ccolors != null) {
+            for (i = 0; i < ccolors.length; i++) {
+                tc = ccolors[i];
+                ccolors[i] = new Color(tc.getRed(), tc.getGreen(), tc.getBlue(), opaqueness);
+            }
+        }
+        if (gcolors != null) {
+            for (i = 0; i < gcolors.length; i++) {
+                tc = gcolors[i];
+                gcolors[i] = new Color(tc.getRed(), tc.getGreen(), tc.getBlue(), opaqueness);
+            }
+        }
     }
 
-    public OMColor[] getCColors() {
+    public Color[] getCColors() {
         return ccolors;
     }
 
-    public OMColor[] getGColors() {
+    public Color[] getGColors() {
         return gcolors;
     }
 
@@ -150,32 +158,32 @@ public class DTEDFrameColorTable {
             return -1;
     }
 
-    protected OMColor[] createGreyScaleColors(int num_colors) {
+    protected Color[] createGreyScaleColors(int num_colors) {
         if (num_colors == 0) {
             num_colors = 216;
         }
-        OMColor[] tempColors = new OMColor[num_colors];
+        Color[] tempColors = new Color[num_colors];
 
         int grey_interval = 256 / num_colors;
 
         for (int i = 0; i < num_colors; i++) {
 
             if (i == 0)
-                tempColors[i] = new OMColor(0, 191, 239, 255);
+                tempColors[i] = new Color(191, 239, 255, 0);
 
             else {
                 int color = (i * grey_interval) + (grey_interval / 2);
-                tempColors[i] = new OMColor(opaqueness, color, color, color);
+                tempColors[i] = new Color(color, color, color, opaqueness);
             }
         }
         return tempColors;
     }
 
-    protected OMColor[] createColors(int num_colors, int adjustment) {
+    protected Color[] createColors(int num_colors, int adjustment) {
         if (num_colors == 0) {
             num_colors = 216;
         }
-        OMColor[] tempColors = new OMColor[num_colors];
+        Color[] tempColors = new Color[num_colors];
         int ncolors = NUM_ELEVATION_COLORS;
         // How many versions of each color to make up, for sloping
         int num_loops = 1;
@@ -192,7 +200,7 @@ public class DTEDFrameColorTable {
             num_loops = 2;
         }
 
-        tempColors = new OMColor[ncolors];
+        tempColors = new Color[ncolors];
 
         if (Debug.debugging("dteddetail"))
             Debug.output("DTEDFrameColortable: Setting number of colors to "
@@ -202,8 +210,7 @@ public class DTEDFrameColorTable {
             if (Debug.debugging("dteddetail"))
                 Debug.output("dted_raster: Setting round " + j + " of colors.");
             // Color the 0 index (and the multiples) to be clear water
-            tempColors[(NUM_ELEVATION_COLORS * j)] = new OMColor(0, 191, 239,
-                    255);
+            tempColors[(NUM_ELEVATION_COLORS * j)] = new Color(191, 239, 255, 0);
 
             for (int i = 1; i < NUM_ELEVATION_COLORS; i++) {
                 switch (j) {
@@ -211,21 +218,19 @@ public class DTEDFrameColorTable {
                     red = reds[i] - (20 - modifier) / 2;
                     green = greens[i] - (20 - modifier) / 2;
                     blue = blues[i] - (20 - modifier) / 2;
-                    tempColors[i] = new OMColor(opaqueness, red, green, blue);
+                    tempColors[i] = new Color(red, green, blue, opaqueness);
                     break;
                 case 1:
                     red = reds[i] - (20 - modifier);
                     green = greens[i] - (20 - modifier);
                     blue = blues[i] - (20 - modifier);
-                    tempColors[i + NUM_ELEVATION_COLORS] = new OMColor(
-                            opaqueness, red, green, blue);
+                    tempColors[i + NUM_ELEVATION_COLORS] = new Color(red, green, blue, opaqueness);
                     break;
                 case 2:
                     red = reds[i];
                     green = greens[i];
                     blue = blues[i];
-                    tempColors[i + (NUM_ELEVATION_COLORS * 2)] = new OMColor(
-                            opaqueness, red, green, blue);
+                    tempColors[i + (NUM_ELEVATION_COLORS * 2)] = new Color(red, green, blue, opaqueness);
                     break;
 
                 //  These settings are the original ones, where flat

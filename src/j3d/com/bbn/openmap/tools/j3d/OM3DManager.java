@@ -2,7 +2,7 @@
 //
 // <copyright>
 //
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,39 +14,25 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OM3DManager.java,v $
 // $RCSfile: OM3DManager.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/02/09 13:33:36 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:38 $
 // $Author: dietrick $
 //
 // **********************************************************************
 
-
 package com.bbn.openmap.tools.j3d;
 
-import com.bbn.openmap.MapBean;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
-import com.sun.j3d.utils.applet.MainFrame;
-import com.sun.j3d.utils.behaviors.keyboard.*;
-import com.sun.j3d.utils.behaviors.mouse.*;
-import com.sun.j3d.utils.geometry.ColorCube;
-import com.sun.j3d.utils.universe.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Enumeration;
 import javax.media.j3d.*;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.vecmath.*;
 
 /**
- * An abstract 3D manager object, containing content,
- * canvas, camera and the universe. The canvase is the thing
- * you add to the GUI to see the 3D world.
- *
- * @author    dietrick
- * @created   April 25, 2002
+ * An abstract 3D manager object, containing content, canvas, camera
+ * and the universe. The canvase is the thing you add to the GUI to
+ * see the 3D world.
+ * 
+ * @author dietrick
+ * @created April 25, 2002
  */
 public abstract class OM3DManager implements OM3DConstants {
 
@@ -81,11 +67,9 @@ public abstract class OM3DManager implements OM3DConstants {
      */
     protected Canvas3D canvas = null;
 
-
     protected OM3DManager() {
         init();
     }
-
 
     /**
      * Set up the canvas and the universe.
@@ -107,12 +91,10 @@ public abstract class OM3DManager implements OM3DConstants {
         constructWorld(objRootBG);
     }
 
-
     /**
-     * Construct everything that we want in the basic test
-     * world
-     *
-     * @param worldBranchGroup  Description of the Parameter
+     * Construct everything that we want in the basic test world
+     * 
+     * @param worldBranchGroup Description of the Parameter
      */
     protected void constructWorld(BranchGroup worldBranchGroup) {
         // create the basic universe
@@ -128,63 +110,52 @@ public abstract class OM3DManager implements OM3DConstants {
         universe = univ;
     }
 
-
     /**
-     * Get the Camera, which is controlling the viewer's
-     * perspective.
-     *
-     * @return   The camera value
+     * Get the Camera, which is controlling the viewer's perspective.
+     * 
+     * @return The camera value
      */
     public Camera getCamera() {
         return cam;
     }
 
-
     public Canvas3D getCanvas() {
         return canvas;
     }
 
-
     /**
-     * Get the BranchGroup that represents the head of the
-     * world object tree.
-     *
-     * @return   The world value
+     * Get the BranchGroup that represents the head of the world
+     * object tree.
+     * 
+     * @return The world value
      */
     public BranchGroup getWorld() {
         return objRootBG;
     }
 
-
     public void setScaleFactor(float sf) {
         scaleFactor = sf;
     }
-
 
     public float getScaleFactor() {
         return scaleFactor;
     }
 
-
     public void setBoundsDimension(double bd) {
         boundsDimension = bd;
     }
-
 
     public double getBoundsDimension() {
         return boundsDimension;
     }
 
-
     public VirtualUniverse getUniverse() {
         return universe;
     }
 
-
     public void setSceneBackground(Background background) {
         this.background = background;
     }
-
 
     public Background getSceneBackground() {
         return background;

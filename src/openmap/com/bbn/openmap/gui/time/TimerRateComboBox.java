@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimerRateComboBox.java,v $
 // $RCSfile: TimerRateComboBox.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.time;
 
@@ -34,14 +33,14 @@ import javax.swing.*;
 
 /**
  * The TimerRateComboBox is a general pace selector for a
- * RealTimeHandler.  It provides a JComboBox interface (pop-up menu)
+ * RealTimeHandler. It provides a JComboBox interface (pop-up menu)
  * that shows discrete choices of rates for timer/scenario settings.
  * The RealTimeHandler can set these choices, with the GUI display
  * name of the choice, the timer interval and the scenario pace that
  * the interval represents.
  */
-public class TimerRateComboBox extends JComboBox 
-    implements ActionListener, PropertyConsumer {
+public class TimerRateComboBox extends JComboBox implements ActionListener,
+        PropertyConsumer {
 
     /**
      * The RealTimeHandler to be updated.
@@ -66,7 +65,8 @@ public class TimerRateComboBox extends JComboBox
     }
 
     /**
-     * The preferred way to add choices, since it creates the TimerRateHolder for you.
+     * The preferred way to add choices, since it creates the
+     * TimerRateHolder for you.
      */
     public void add(String string, int interval, int pace) {
         super.addItem(new TimerRateHolder(string, interval, pace));
@@ -81,13 +81,14 @@ public class TimerRateComboBox extends JComboBox
     }
 
     /**
-     * When a choice is made, the TimerRateComboBox updates the RealTimeHandler.
+     * When a choice is made, the TimerRateComboBox updates the
+     * RealTimeHandler.
      */
     public void actionPerformed(ActionEvent ae) {
         Object obj = ae.getSource();
 
         if (obj == this) {
-            TimerRateHolder trh = (TimerRateHolder)getSelectedItem();
+            TimerRateHolder trh = (TimerRateHolder) getSelectedItem();
             trh.modifyTimer(getTimeHandler());
         }
     }

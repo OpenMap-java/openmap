@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,37 +14,36 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/GraphicList.java,v $
 // $RCSfile: GraphicList.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.specialist;
 
-import java.io.*;
 import java.util.*;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.CSpecialist.*;
 
 /**
- * This class implements a basic GraphicList class that [OpenMap] Specialists
- * can utilize.  It maintains a list of SGraphics and UGraphics, and
- * can return an array of UGraphics that corresponds to its contained list 
+ * This class implements a basic GraphicList class that [OpenMap]
+ * Specialists can utilize. It maintains a list of SGraphics and
+ * UGraphics, and can return an array of UGraphics that corresponds to
+ * its contained list
  */
 public class GraphicList implements com.bbn.openmap.util.GraphicList {
     /** our list of graphics */
     protected Vector graphics = new Vector();
-    
+
     /**
-     * Create a new empty GraphicList 
+     * Create a new empty GraphicList
      */
     public GraphicList() {}
 
     /**
      * Add a new SGraphic to the GraphicList
-     * @param g the SGraphic to add 
+     * 
+     * @param g the SGraphic to add
      */
     public void addSGraphic(SGraphic g) {
         graphics.addElement(g);
@@ -52,7 +51,8 @@ public class GraphicList implements com.bbn.openmap.util.GraphicList {
 
     /**
      * Add a new UGraphic to the GraphicList
-     * @param ug the UGraphic to add 
+     * 
+     * @param ug the UGraphic to add
      */
     public void addUGraphic(UGraphic ug) {
         graphics.addElement(ug);
@@ -60,15 +60,16 @@ public class GraphicList implements com.bbn.openmap.util.GraphicList {
 
     /**
      * Add a new UGraphic to the GraphicList
+     * 
      * @param sg add sg.ufill() to the graphic list
-     * @see SGraphic#ufill() 
+     * @see SGraphic#ufill()
      */
     public void addUGraphic(SGraphic sg) {
         graphics.addElement(sg.ufill());
     }
 
     /**
-     * Remove all elements from the graphic list 
+     * Remove all elements from the graphic list
      */
     public void clear() {
         graphics.removeAllElements();
@@ -76,16 +77,17 @@ public class GraphicList implements com.bbn.openmap.util.GraphicList {
 
     /**
      * pack() the graphics into a UGraphic[]
-     * @return the packed graphic list 
+     * 
+     * @return the packed graphic list
      */
     public UGraphic[] packGraphics() {
         UGraphic retval[] = new UGraphic[graphics.size()];
         for (int i = 0; i < graphics.size(); i++) {
             Object o = graphics.elementAt(i);
             if (o instanceof SGraphic) {
-                retval[i] = ((SGraphic)o).ufill();
+                retval[i] = ((SGraphic) o).ufill();
             } else {
-                retval[i] = (UGraphic)o;
+                retval[i] = (UGraphic) o;
             }
         }
         return retval;
@@ -93,7 +95,8 @@ public class GraphicList implements com.bbn.openmap.util.GraphicList {
 
     /**
      * pack() the graphics into a UGraphic[]
-     * @return the packed graphic list 
+     * 
+     * @return the packed graphic list
      */
     public Comp[] getComps() {
         int len = graphics.size();
@@ -101,7 +104,7 @@ public class GraphicList implements com.bbn.openmap.util.GraphicList {
         for (int i = 0; i < len; i++) {
             Object o = graphics.elementAt(i);
             if (o instanceof SGraphic) {
-                retval[i] = ((SGraphic)o).object();
+                retval[i] = ((SGraphic) o).object();
             }
         }
         return retval;

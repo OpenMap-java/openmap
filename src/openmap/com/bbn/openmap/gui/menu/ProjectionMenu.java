@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/ProjectionMenu.java,v $
 // $RCSfile: ProjectionMenu.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/05/15 02:27:19 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.menu;
 
@@ -44,16 +43,16 @@ import com.bbn.openmap.proj.ProjectionLoader;
 import com.bbn.openmap.util.Debug;
 
 /**
- *  Provides ProjectionMenu items for selecting Projection type.
+ * Provides ProjectionMenu items for selecting Projection type.
  */
-public class ProjectionMenu extends AbstractOpenMapMenu 
-    implements ActionListener, ProjectionListener, PropertyChangeListener {
+public class ProjectionMenu extends AbstractOpenMapMenu implements
+        ActionListener, ProjectionListener, PropertyChangeListener {
 
     protected transient ProjectionSupport projectionSupport = new ProjectionSupport(this);
     protected transient Projection projection;
     protected transient Component projComponent;
     public final static transient String projCmd = "setProj";
-    
+
     /**
      * Create the projection submenu.
      */
@@ -70,7 +69,7 @@ public class ProjectionMenu extends AbstractOpenMapMenu
         for (Iterator it = loaders.iterator(); it.hasNext();) {
             Object obj = it.next();
             if (obj instanceof ProjectionLoader) {
-                ProjectionLoader pl = (ProjectionLoader)obj;
+                ProjectionLoader pl = (ProjectionLoader) obj;
 
                 rb = new JRadioButtonMenuItem(pl.getPrettyName());
                 rb.setActionCommand(projCmd);
@@ -85,18 +84,21 @@ public class ProjectionMenu extends AbstractOpenMapMenu
 
         setProjection(projection);
     }
-    
+
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
-        
-        Debug.message("projectionmenu", "ProjectionMenu.actionPerformed(): " + command);
-        
+
+        Debug.message("projectionmenu", "ProjectionMenu.actionPerformed(): "
+                + command);
+
         if (command == projCmd) {
-            JRadioButtonMenuItem rb = (JRadioButtonMenuItem)(ae.getSource());
+            JRadioButtonMenuItem rb = (JRadioButtonMenuItem) (ae.getSource());
             String projclassname = rb.getName();
-            Debug.message("projectionmenu", "ProjectionMenu new proj name: " + projclassname);
+            Debug.message("projectionmenu", "ProjectionMenu new proj name: "
+                    + projclassname);
             try {
-                Projection newProj = ProjectionFactory.makeProjection(projclassname, projection);
+                Projection newProj = ProjectionFactory.makeProjection(projclassname,
+                        projection);
                 fireProjectionChanged(newProj);
             } catch (ProjectionException pe) {
                 rb.setEnabled(false);
@@ -106,17 +108,18 @@ public class ProjectionMenu extends AbstractOpenMapMenu
 
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName() == ProjectionFactory.AvailableProjectionProperty) {
-            configure((Vector)pce.getNewValue());
+            configure((Vector) pce.getNewValue());
         }
     }
-    
+
     //------------------------------------------------------------
     // ProjectionListener interface
     //------------------------------------------------------------
-    
+
     /**
      * The Map projection has changed, in order to baseline new
      * changes as a result of menu options being selected.
+     * 
      * @param e ProjectionEvent
      */
     public void projectionChanged(ProjectionEvent e) {
@@ -125,18 +128,19 @@ public class ProjectionMenu extends AbstractOpenMapMenu
         }
 
         Projection newProj = e.getProjection();
-        if (projection == null ||  (! projection.equals(newProj))) {
+        if (projection == null || (!projection.equals(newProj))) {
             setProjection((Projection) newProj.makeClone());
             Object source = e.getSource();
             if (source instanceof Component) {
-                projComponent = (Component)source;
+                projComponent = (Component) source;
             }
         }
     }
-    
+
     /**
-     * Set the projection.
-     * This changes the setting of the projection radio button menu.
+     * Set the projection. This changes the setting of the projection
+     * radio button menu.
+     * 
      * @param aProjection Projection
      */
     protected synchronized void setProjection(Projection aProjection) {
@@ -145,39 +149,40 @@ public class ProjectionMenu extends AbstractOpenMapMenu
         if (projection == null) {
             return;
         }
-        
+
         String newProjClassName = projection.getClass().getName();
-        
+
         // Change the selected projection type menu item
         for (int i = 0; i < getItemCount(); i++) {
             JMenuItem item = getItem(i);
             if (newProjClassName.equals(item.getName())) {
                 if (Debug.debugging("projectionmenu")) {
-                    Debug.output("ProjectionMenu | setting " + item.getName() + " as active");
+                    Debug.output("ProjectionMenu | setting " + item.getName()
+                            + " as active");
                 }
                 item.setSelected(true);
                 return;
             }
         }
     }
-    
-    /** 
-     *  Convenience function for setting up listeners
+
+    /**
+     * Convenience function for setting up listeners
      */
-    public void setupListeners(MapBean map) {  
-        Debug.message("projectionmenu","ProjectionMenu | setupListeners");
-        addProjectionListener(map);   
-        map.addProjectionListener(this);    
+    public void setupListeners(MapBean map) {
+        Debug.message("projectionmenu", "ProjectionMenu | setupListeners");
+        addProjectionListener(map);
+        map.addProjectionListener(this);
     }
-    
-    /** 
-     *  Convenience function for undoing set up listeners
+
+    /**
+     * Convenience function for undoing set up listeners
      */
     public void undoListeners(MapBean map) {
-        removeProjectionListener(map);   
-        map.removeProjectionListener(this);   
+        removeProjectionListener(map);
+        map.removeProjectionListener(this);
     }
-    
+
     /*----------------------------------------------------------------------
      * Projection Support - for broadcasting projection changed events
      *----------------------------------------------------------------------*/
@@ -187,37 +192,37 @@ public class ProjectionMenu extends AbstractOpenMapMenu
     protected synchronized void addProjectionListener(ProjectionListener l) {
         projectionSupport.addProjectionListener(l);
     }
-    
+
     /**
      * Remove a ProjectionListener from this menu and its components.
      */
     protected synchronized void removeProjectionListener(ProjectionListener l) {
         projectionSupport.removeProjectionListener(l);
     }
-        
+
     /**
      * Fire the changed projection from the support.
      */
     public void fireProjectionChanged(Projection p) {
         projectionSupport.fireProjectionChanged(p);
     }
-    
+
     public void findAndInit(Object someObj) {
         if (someObj instanceof MapBean) {
-            setupListeners((MapBean)someObj);
+            setupListeners((MapBean) someObj);
         }
         if (someObj instanceof ProjectionFactory) {
-            ((ProjectionFactory)someObj).addPropertyChangeListener(this);
+            ((ProjectionFactory) someObj).addPropertyChangeListener(this);
         }
     }
-    
+
     public void findAndUndo(Object someObj) {
         if (someObj instanceof MapBean) {
-            undoListeners((MapBean)someObj);
+            undoListeners((MapBean) someObj);
         }
 
         if (someObj instanceof ProjectionFactory) {
-            ((ProjectionFactory)someObj).removePropertyChangeListener(this);
+            ((ProjectionFactory) someObj).removePropertyChangeListener(this);
         }
     }
 }

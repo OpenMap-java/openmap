@@ -1,3 +1,25 @@
+//**********************************************************************
+//
+//<copyright>
+//
+//BBN Technologies
+//10 Moulton Street
+//Cambridge, MA 02138
+//(617) 873-8000
+//
+//Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
+//</copyright>
+//**********************************************************************
+//
+//$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/meteo/HotFrontShapeDecoration.java,v $
+//$RCSfile: HotFrontShapeDecoration.java,v $
+//$Revision: 1.5 $
+//$Date: 2004/10/14 18:06:19 $
+//$Author: dietrick $
+//
+//**********************************************************************
+
 package com.bbn.openmap.omGraphics.meteo;
 
 import java.awt.Color;
@@ -18,13 +40,15 @@ public class HotFrontShapeDecoration extends AbstractShapeDecoration {
     /** We use to draw them red ! */
     public static Color COLOR = Color.red;
 
-    /** Filled half circles for surface fronts, 
-     * empty ones for altitude fronts
-     */ 
+    /**
+     * Filled half circles for surface fronts, empty ones for altitude
+     * fronts
+     */
     private boolean filled = true;
 
     /**
      * Constructor.
+     * 
      * @param length
      * @param width
      * @param orientation
@@ -35,7 +59,8 @@ public class HotFrontShapeDecoration extends AbstractShapeDecoration {
     }
 
     /**
-     * @see com.bbn.openmap.omGraphics.awt.ShapeDecoration#draw(Graphics, Point2D[], boolean)
+     * @see com.bbn.openmap.omGraphics.awt.ShapeDecoration#draw(Graphics,
+     *      Point2D[], boolean)
      */
     public void draw(Graphics g, Point2D[] points, boolean complete) {
         Graphics2D g2D = (Graphics2D) g;
@@ -62,26 +87,26 @@ public class HotFrontShapeDecoration extends AbstractShapeDecoration {
 
             // Compute vertices (6 lines to approximate)
             double ll = getLength(); // en x avant rotation
-            double ww = orient * getWidth(); // en y avant rotation                     
+            double ww = orient * getWidth(); // en y avant rotation
             double l, w;
             l = 0.9330127 * ll; // i.e. (2 + sqrt(3))/4
-            w = 0.5 * ww;                       
+            w = 0.5 * ww;
             xcoord[nbpts] = (int) (points[0].getX() + l * rcos - w * rsin);
             ycoord[nbpts++] = (int) (points[0].getY() + l * rsin + w * rcos);
             l = 0.85355339 * ll; // i.e. (2 + sqrt(2))/4
-            w = 0.70710678 * ww;                        
+            w = 0.70710678 * ww;
             xcoord[nbpts] = (int) (points[0].getX() + l * rcos - w * rsin);
             ycoord[nbpts++] = (int) (points[0].getY() + l * rsin + w * rcos);
             l = 0.5 * ll;
-            w = ww;                     
+            w = ww;
             xcoord[nbpts] = (int) (points[0].getX() + l * rcos - w * rsin);
             ycoord[nbpts++] = (int) (points[0].getY() + l * rsin + w * rcos);
             l = 0.14644661 * ll; // i.e. (2 - sqrt(2))/4
-            w = 0.70710678 * ww;                        
+            w = 0.70710678 * ww;
             xcoord[nbpts] = (int) (points[0].getX() + l * rcos - w * rsin);
             ycoord[nbpts++] = (int) (points[0].getY() + l * rsin + w * rcos);
             l = 0.066987298 * ll; // i.e. (2 - sqrt(3))/4
-            w = 0.5 * ww;                       
+            w = 0.5 * ww;
             xcoord[nbpts] = (int) (points[0].getX() + l * rcos - w * rsin);
             ycoord[nbpts++] = (int) (points[0].getY() + l * rsin + w * rcos);
 
@@ -96,9 +121,9 @@ public class HotFrontShapeDecoration extends AbstractShapeDecoration {
         restoreGraphics(g);
     }
 
-
     /**
      * Returns the filled boolean.
+     * 
      * @return boolean
      */
     public boolean isFilled() {
@@ -107,6 +132,7 @@ public class HotFrontShapeDecoration extends AbstractShapeDecoration {
 
     /**
      * Sets the filled (draw a half disk or a half circle ?).
+     * 
      * @param filled The filled to set
      */
     public void setFilled(boolean filled) {

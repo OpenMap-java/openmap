@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,49 +14,46 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwSpatialIndex.java,v $
 // $RCSfile: DcwSpatialIndex.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.vpf;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.EOFException;
 import java.util.BitSet;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.*;
 import com.bbn.openmap.util.Debug;
 
-/** Read a VPF spatial index file.  (VPF *.?si files) */
+/** Read a VPF spatial index file. (VPF *.?si files) */
 public class DcwSpatialIndex {
     /** the vpf file with the data */
     private BinaryFile inputFile = null;
-    /** the number of primitive features that are indexed*/
+    /** the number of primitive features that are indexed */
     final private int numberOfPrimitives;
     /** the boundaries of the spatial index */
-    final private float boundingRectx1, boundingRecty1,
-      boundingRectx2, boundingRecty2;
+    final private float boundingRectx1, boundingRecty1, boundingRectx2,
+            boundingRecty2;
     /** the number of splits in the spatial index */
     final private int nodesInTree;
     /** node info */
     int nodeinfo[][];
 
     /**
-     * Construct an index for a filename.  Prints a bunch of information 
-     * about what it read.
+     * Construct an index for a filename. Prints a bunch of
+     * information about what it read.
      */
     public DcwSpatialIndex(String filename, boolean border)
-        throws FormatException {
+            throws FormatException {
         try {
             inputFile = new BinaryBufferedFile(filename);
         } catch (IOException e) {
-            throw new FormatException("Can't open file " + filename + ": " +
-                                      e.getMessage());
+            throw new FormatException("Can't open file " + filename + ": "
+                    + e.getMessage());
         }
         inputFile.byteOrder(border);
 
@@ -70,19 +67,17 @@ public class DcwSpatialIndex {
 
             if (Debug.debugging("vpfserver")) {
                 System.out.println("NumberOfPrimitives = " + numberOfPrimitives);
-                System.out.println("Bounding Rect = (" + boundingRectx1 +
-                                   ", " +    boundingRecty1 +
-                                   ") - (" + boundingRectx2 +
-                                   ", " +    boundingRecty2 + ")");
+                System.out.println("Bounding Rect = (" + boundingRectx1 + ", "
+                        + boundingRecty1 + ") - (" + boundingRectx2 + ", "
+                        + boundingRecty2 + ")");
                 System.out.println("Nodes in Tree = " + nodesInTree);
             }
-            
+
             nodeinfo = new int[nodesInTree][2]; //offset, count
-      
+
             for (int i = 0; i < nodesInTree; i++) {
                 inputFile.readIntegerArray(nodeinfo[i], 0, 2);
             }
-
 
             if (Debug.debugging("vpfserver")) {
                 int baseOffset = 24 + nodesInTree * 8;
@@ -93,7 +88,7 @@ public class DcwSpatialIndex {
                     if ((baseOffset + nodeinfo[i][0]) != inputFile.getFilePointer()) {
                         throw new FormatException("SI Input appears to be out-of-sync");
                     }
-                    StringBuffer pr = new StringBuffer("i=" + (i+1));
+                    StringBuffer pr = new StringBuffer("i=" + (i + 1));
                     pr.append(" offset=" + nodeinfo[i][0]);
                     pr.append(" count=" + nodeinfo[i][1]);
                     for (int j = 0; j < nodeinfo[i][1]; j++) {
@@ -102,11 +97,11 @@ public class DcwSpatialIndex {
                         pr.append("\n\t").append(prim.toString());
                     }
                     if (nodeinfo[i][1] != 0) {
-                        if ((i < 15) || ((i+1) == nodesInTree)) {
+                        if ((i < 15) || ((i + 1) == nodesInTree)) {
                             System.out.println(pr);
                         }
-                        b.set(i+1);
-                        if (!b.get((i+1)/2)) {
+                        b.set(i + 1);
+                        if (!b.get((i + 1) / 2)) {
                             throw new FormatException("condition failed");
                         }
                     }
@@ -117,18 +112,21 @@ public class DcwSpatialIndex {
                     System.out.println("!!Got the wrong number of primitives");
                 }
                 if (inputFile.available() != 0) {
-                    throw new FormatException("Bytes left at end of file " + inputFile.available());
+                    throw new FormatException("Bytes left at end of file "
+                            + inputFile.available());
                 }
             }
         } catch (EOFException e) {
             throw new FormatException("Hit Premature EOF in thematic index");
         } catch (IOException i) {
-            throw new FormatException("Encountered IO Exception: " + i.getMessage());
+            throw new FormatException("Encountered IO Exception: "
+                    + i.getMessage());
         }
     }
 
     /**
      * Returns the number of primitives included in the spatial index
+     * 
      * @return the number of primitives included in the spatial index
      */
     public int getNumberOfPrimitives() {
@@ -137,6 +135,7 @@ public class DcwSpatialIndex {
 
     /**
      * Returns the west boundary
+     * 
      * @return the west boundary
      */
     public float getBoundingX1() {
@@ -145,6 +144,7 @@ public class DcwSpatialIndex {
 
     /**
      * Returns the east boundary
+     * 
      * @return the east boundary
      */
     public float getBoundingX2() {
@@ -153,6 +153,7 @@ public class DcwSpatialIndex {
 
     /**
      * Returns the south boundary
+     * 
      * @return the south boundary
      */
     public float getBoundingY1() {
@@ -161,6 +162,7 @@ public class DcwSpatialIndex {
 
     /**
      * Returns the north boundary
+     * 
      * @return the north boundary
      */
     public float getBoundingY2() {
@@ -169,6 +171,7 @@ public class DcwSpatialIndex {
 
     /**
      * Returns the number of nodes in the spatial index
+     * 
      * @return the number of nodes in the spatial index
      */
     public int getNodesInTree() {
@@ -177,6 +180,7 @@ public class DcwSpatialIndex {
 
     /**
      * Returns the number of primitives listed in the node
+     * 
      * @param node the node index
      * @return the number of primitives listed in the node
      */
@@ -185,8 +189,9 @@ public class DcwSpatialIndex {
     }
 
     /**
-     * Returns the relative byte offset of the node primitive list from
-     * the header
+     * Returns the relative byte offset of the node primitive list
+     * from the header
+     * 
      * @param node the node index
      * @return the byte offset of the record in the file
      */
@@ -196,11 +201,14 @@ public class DcwSpatialIndex {
 
     /**
      * Returns an array of primitive records
+     * 
      * @param node the node index
-     * @exception FormatException an error was encountered reading the file
+     * @exception FormatException an error was encountered reading the
+     *            file
      * @return the array of primitive records
      */
-    public PrimitiveRecord[] getPrimitiveRecords(int node) throws FormatException{
+    public PrimitiveRecord[] getPrimitiveRecords(int node)
+            throws FormatException {
         int count = getPrimitiveCount(node);
         int offset = getPrimitiveOffset(node);
         PrimitiveRecord[] ret = new PrimitiveRecord[count];
@@ -215,7 +223,7 @@ public class DcwSpatialIndex {
         }
         return ret;
     }
-        
+
     /**
      * A class that wraps an entry in the spatial index.
      */
@@ -224,28 +232,34 @@ public class DcwSpatialIndex {
         final public short x1, y1, x2, y2;
         /** the id of the primitive this record is for */
         final public int primId;
+
         /**
          * construct a new primitive record
+         * 
          * @param inputFile the file to read the record from
-         * @exception FormatException an error was encountered reading the record
-         * @exception EOFException an error was encountered reading the record
+         * @exception FormatException an error was encountered reading
+         *            the record
+         * @exception EOFException an error was encountered reading
+         *            the record
          */
-        public PrimitiveRecord(BinaryFile inputFile)
-            throws FormatException, EOFException {
-            x1 = (short)(inputFile.readChar() & 0xff);
-            y1 = (short)(inputFile.readChar() & 0xff);
-            x2 = (short)(inputFile.readChar() & 0xff);
-            y2 = (short)(inputFile.readChar() & 0xff);
+        public PrimitiveRecord(BinaryFile inputFile) throws FormatException,
+                EOFException {
+            x1 = (short) (inputFile.readChar() & 0xff);
+            y1 = (short) (inputFile.readChar() & 0xff);
+            x2 = (short) (inputFile.readChar() & 0xff);
+            y2 = (short) (inputFile.readChar() & 0xff);
             //foo[] = inputFile.readBytes(4, false); //x1 y1 x2 y2
             primId = inputFile.readInteger();
         }
+
         /**
          * Returns a pretty string representation of the record
+         * 
          * @return a string version of the record
          */
         public String toString() {
-            return ("(" + primId +
-                    ": \t" + x1 + " \t" + x2 + " \t" + y1 + " \t" + y2 + ")");
+            return ("(" + primId + ": \t" + x1 + " \t" + x2 + " \t" + y1
+                    + " \t" + y2 + ")");
         }
     }
 
@@ -256,7 +270,8 @@ public class DcwSpatialIndex {
         try {
             inputFile.close();
         } catch (IOException i) {
-            System.out.println("Caught ioexception " + i.getClass() + " " + i.getMessage());
+            System.out.println("Caught ioexception " + i.getClass() + " "
+                    + i.getMessage());
         }
     }
 }

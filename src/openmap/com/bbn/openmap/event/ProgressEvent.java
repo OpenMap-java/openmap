@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProgressEvent.java,v $
 // $RCSfile: ProgressEvent.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
@@ -48,12 +47,13 @@ public class ProgressEvent extends java.util.EventObject {
 
     /**
      * Construct a ProgressEvent.
+     * 
      * @param source Object
      * @param finishValue the ending value
      * @param currentValue the current value
      */
-    public ProgressEvent(Object source, int type, String taskDescription, 
-                         float finishValue, float currentValue) {
+    public ProgressEvent(Object source, int type, String taskDescription,
+            float finishValue, float currentValue) {
         super(source);
         this.finishedValue = finishValue;
         this.currentValue = currentValue;
@@ -63,6 +63,7 @@ public class ProgressEvent extends java.util.EventObject {
 
     /**
      * Get the value that current will have to get to to be finished.
+     * 
      * @return finished.
      */
     public float getFinishedValue() {
@@ -83,14 +84,15 @@ public class ProgressEvent extends java.util.EventObject {
         return taskDescription;
     }
 
-    /** 
+    /**
      * Provide a percentage of progress completed, or -1 if no
      * finished value has been provided.
      */
     public int getPercentComplete() {
         if (finishedValue != 0) {
-            int ret = (int) (currentValue/finishedValue * 100f);
-//          com.bbn.openmap.util.Debug.output("pe.percentComplete: " + currentValue + "/" + finishedValue + " = " + ret);
+            int ret = (int) (currentValue / finishedValue * 100f);
+            //          com.bbn.openmap.util.Debug.output("pe.percentComplete:
+            // " + currentValue + "/" + finishedValue + " = " + ret);
             return ret;
         } else {
             return -1;

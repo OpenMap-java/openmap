@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFLoader.java,v $
 // $RCSfile: MIFLoader.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,7 +47,7 @@ import com.bbn.openmap.util.Debug;
  * 
  * 27th January 2004 - added some support for TEXT and POINT options
  * 
- * @author Colin Mummery, modified January 2004 by Simon Bowen 
+ * @author Colin Mummery, modified January 2004 by Simon Bowen
  */
 public class MIFLoader {
     final static int PROCESS_HEADER = 0;
@@ -59,7 +59,7 @@ public class MIFLoader {
     final static int PROCESS_REGION_HEADER = 6;
     final static int PROCESS_POST_REGION = 7;
     final static int PROCESS_POST_LINE = 8;
-    
+
     final static String DATA_WORD = "Data";
     final static String VERSION_WORD = "Version";
     final static String DELIMITER_WORD = "Delimiter";
@@ -74,33 +74,36 @@ public class MIFLoader {
     final static String CENTER_WORD = "Center";
     final static String POINT_WORD = "Point";
     final static String TEXT_WORD = "Text";
-    
+
     BufferedReader br;
     OMGraphicList list;
-    
+
     //if true we do a much faster line only rendering of the regions
-    boolean accurate; 
+    boolean accurate;
 
     //MIF CoordSys value for a Latitude Longitude coodinate system
     private static final String LATLONG_COORDSYS_DEF = "Earth Projection 1";
-	    
+
     private float pointVisible = -1; //default is -1
     private float textVisible = -1; //default is -1
 
     /**
      * Loads a MIF file from the Reader and placing the appropriate
      * OMGraphics on the OMGraphicList * Parsing is done by a simple
-     * loop and switch statements 
+     * loop and switch statements
      * 
      * @param br BufferedReader to read the MIF file
-     * @param accurate if true we do a much faster line only rendering of the regions
-     * @param textVisible the scale at which TEXT primitives should be rendered
-     * @param pointVisible the scale at which POINT primitives should be rendered
+     * @param accurate if true we do a much faster line only rendering
+     *        of the regions
+     * @param textVisible the scale at which TEXT primitives should be
+     *        rendered
+     * @param pointVisible the scale at which POINT primitives should
+     *        be rendered
      */
-    public MIFLoader(BufferedReader br, boolean accurate, 
-                     float textVisible, float pointVisible) {
-        super(); 
-        this.br = br; 
+    public MIFLoader(BufferedReader br, boolean accurate, float textVisible,
+            float pointVisible) {
+        super();
+        this.br = br;
         this.accurate = accurate;
         this.pointVisible = pointVisible;
         this.textVisible = textVisible;
@@ -109,7 +112,7 @@ public class MIFLoader {
     public boolean isLoaded() {
         return list != null;
     }
-    
+
     /**
      * Get the OMGraphicList from the loader, creating it from the
      * file if it hasn't been created yet.
@@ -125,20 +128,21 @@ public class MIFLoader {
     public OMGraphicList getList(boolean reloadList) {
         try {
             if (reloadList || !isLoaded()) {
-                if (isLoaded()) list.clear();
+                if (isLoaded())
+                    list.clear();
                 list = loadFile();
             }
             return list;
-        } catch(IOException ioe) {
+        } catch (IOException ioe) {
             list = null;
-//         } catch(MIFException mex) {
-//             list = null;
-//             Debug.error(mex.getMessage());
-//             mex.printStackTrace();
+            //         } catch(MIFException mex) {
+            //             list = null;
+            //             Debug.error(mex.getMessage());
+            //             mex.printStackTrace();
         }
         return null;
     }
- 
+
     public OMGraphicList loadFile() throws IOException, MIFException {
         float[] ptarray = null;
 
@@ -157,11 +161,12 @@ public class MIFLoader {
         boolean pushback;
         String empty = "";
         StringTokenizer st = null;
-        String tok = null; 
-        pushback = false; int idx;
+        String tok = null;
+        pushback = false;
+        int idx;
         OMPoly omp = null;
         OMLine oml = null;
-        MIFPoint ompoint= null;
+        MIFPoint ompoint = null;
         OMText omtext = null;
         boolean ismultiple = false;
 
@@ -171,8 +176,7 @@ public class MIFLoader {
         // deleting
         Vector omgs = new Vector();
 
-        MAIN_LOOP:
-        while (true) {
+        MAIN_LOOP: while (true) {
 
             if (!pushback) {
                 //if it's null then there's no more
@@ -181,39 +185,46 @@ public class MIFLoader {
 
                 tok = st.nextToken();
             } else {
-                pushback = false; //pushback was true so make it false so it doesn't happen twice
+                pushback = false; //pushback was true so make it
+                                  // false so it doesn't happen twice
             }
 
-            SWITCH:
-            switch (action) {
+            SWITCH: switch (action) {
 
             case PROCESS_HEADER:
-                if (isSame(tok, DATA_WORD)) { action = PROCESS_DATA; }
-                else if (isSame(tok, VERSION_WORD)) { }
-                else if (isSame(tok, DELIMITER_WORD)) { }
-                else if (isSame(tok, COORDSYS_WORD)) {
-                    //check the CoordSys header, OpenMap only directly
+                if (isSame(tok, DATA_WORD)) {
+                    action = PROCESS_DATA;
+                } else if (isSame(tok, VERSION_WORD)) {
+                } else if (isSame(tok, DELIMITER_WORD)) {
+                } else if (isSame(tok, COORDSYS_WORD)) {
+                    //check the CoordSys header, OpenMap only
+                    // directly
                     //supports LatLong type of coordsys
                     String coordSysLine = COORDSYS_WORD;
-                    while(st.hasMoreElements()) {
-                        coordSysLine += " "+st.nextElement();
+                    while (st.hasMoreElements()) {
+                        coordSysLine += " " + st.nextElement();
                     }
 
-                    String goodCoordSys = COORDSYS_WORD+" "+LATLONG_COORDSYS_DEF;
+                    String goodCoordSys = COORDSYS_WORD + " "
+                            + LATLONG_COORDSYS_DEF;
                     if (goodCoordSys.length() < coordSysLine.length()) {
-                        coordSysLine = coordSysLine.substring(0, goodCoordSys.length());
+                        coordSysLine = coordSysLine.substring(0,
+                                goodCoordSys.length());
                     } else {
-                        goodCoordSys = goodCoordSys.substring(0, coordSysLine.length());
+                        goodCoordSys = goodCoordSys.substring(0,
+                                coordSysLine.length());
                     }
 
                     //check that the CoordSys header matches the MIF
                     //specification for LatLong type
-                    if(!isSame(coordSysLine, goodCoordSys)) {
-                        Debug.error("MIFLoader file has coordinate system: " + coordSysLine + ", requires " + goodCoordSys);
-                        //raise error, as the coordsys header was invalid
+                    if (!isSame(coordSysLine, goodCoordSys)) {
+                        Debug.error("MIFLoader file has coordinate system: "
+                                + coordSysLine + ", requires " + goodCoordSys);
+                        //raise error, as the coordsys header was
+                        // invalid
                         throw new MIFException("File appears to contain objects with an incompatible coordinate system (Must be Lat/Lon).");
                     }
-                    	 
+
                 }
                 break SWITCH;
 
@@ -236,82 +247,83 @@ public class MIFLoader {
                     multiple = Integer.parseInt(st.nextToken());
                     multicnt = 0;
                     action = PROCESS_REGION_HEADER;
-                } else if ( isSame( tok, LINE_WORD)) {
-                    float lon1  =  Float.parseFloat( st.nextToken());
-                    float lat1  =  Float.parseFloat( st.nextToken());
-                    float lon2  =  Float.parseFloat( st.nextToken());
-                    float lat2  =  Float.parseFloat( st.nextToken());
+                } else if (isSame(tok, LINE_WORD)) {
+                    float lon1 = Float.parseFloat(st.nextToken());
+                    float lat1 = Float.parseFloat(st.nextToken());
+                    float lon2 = Float.parseFloat(st.nextToken());
+                    float lat2 = Float.parseFloat(st.nextToken());
 
-                    oml  =  new OMLine(lat1, lon1, lat2, lon2, 
-                                       OMGraphicConstants.LINETYPE_STRAIGHT);
+                    oml = new OMLine(lat1, lon1, lat2, lon2, OMGraphicConstants.LINETYPE_STRAIGHT);
 
-                    action  =  PROCESS_POST_LINE;	
-                } else if(isSame( tok, POINT_WORD)) //handle a MIF POINT primitive
-                    {
-                        //get the coordinates
-                        float lon1 = Float.parseFloat( st.nextToken());
-                        float lat1 = Float.parseFloat( st.nextToken());
-                    	
-                        //construct the OM graphic
-                        ompoint = new MIFPoint(lat1, lon1, pointVisible);
-                        st = getTokens(br);
-                    	
-                        //set the graphics attributes
-                        this.processSymbolWord(st, ompoint);
-						
-                        //add to the graphic list for this layer
-                        aList.add(ompoint);
-                        action = PROCESS_DATA;
-                    } else if(isSame( tok, TEXT_WORD)) //handle a MIF TEXT primitive
-                    {                    	
-                        String textString = "";
+                    action = PROCESS_POST_LINE;
+                } else if (isSame(tok, POINT_WORD)) //handle a MIF
+                                                    // POINT primitive
+                {
+                    //get the coordinates
+                    float lon1 = Float.parseFloat(st.nextToken());
+                    float lat1 = Float.parseFloat(st.nextToken());
 
-                        //if the actual text is not on the same line as the primitive declaration
-                        if(st.countTokens() < 1) {
-                            //get the next line
-                            st = getTokens(br);
-                        }
-                        //build up the display text string,
-                        while(st.hasMoreTokens()) {
-                            textString += st.nextToken();
-                        }
-                    	
-                        if(textString.length()>=1) {
-                            //remove any surrounding " characters
-                            textString = textString.substring(1, textString.length()-1);
-                        }
-                        //get the next line, it contains the coordinates
+                    //construct the OM graphic
+                    ompoint = new MIFPoint(lat1, lon1, pointVisible);
+                    st = getTokens(br);
+
+                    //set the graphics attributes
+                    this.processSymbolWord(st, ompoint);
+
+                    //add to the graphic list for this layer
+                    aList.add(ompoint);
+                    action = PROCESS_DATA;
+                } else if (isSame(tok, TEXT_WORD)) //handle a MIF
+                                                   // TEXT primitive
+                {
+                    String textString = "";
+
+                    //if the actual text is not on the same line as
+                    // the primitive declaration
+                    if (st.countTokens() < 1) {
+                        //get the next line
                         st = getTokens(br);
-                    	
-                        float lon1 = Float.parseFloat( st.nextToken());
-                        float lat1 = Float.parseFloat( st.nextToken());
-                        float lon2 = Float.parseFloat( st.nextToken());
-                        float lat2 = Float.parseFloat( st.nextToken());
-                        //create the OMGraphic for the text object			
-                        omtext = new MIFText(lat1, lon1, textString, OMText.JUSTIFY_CENTER, textVisible);
-						
-                        //the next line contains the text attributes
-                        st = getTokens(br);
-                        //set the attributes agains the omgraphic
-                        this.processFontWord(st, omtext);
-                        //add to the layers graphic list
-                        aList.add(omtext);
-						
-                        action = PROCESS_DATA;
                     }
+                    //build up the display text string,
+                    while (st.hasMoreTokens()) {
+                        textString += st.nextToken();
+                    }
+
+                    if (textString.length() >= 1) {
+                        //remove any surrounding " characters
+                        textString = textString.substring(1,
+                                textString.length() - 1);
+                    }
+                    //get the next line, it contains the coordinates
+                    st = getTokens(br);
+
+                    float lon1 = Float.parseFloat(st.nextToken());
+                    float lat1 = Float.parseFloat(st.nextToken());
+                    float lon2 = Float.parseFloat(st.nextToken());
+                    float lat2 = Float.parseFloat(st.nextToken());
+                    //create the OMGraphic for the text object
+                    omtext = new MIFText(lat1, lon1, textString, OMText.JUSTIFY_CENTER, textVisible);
+
+                    //the next line contains the text attributes
+                    st = getTokens(br);
+                    //set the attributes agains the omgraphic
+                    this.processFontWord(st, omtext);
+                    //add to the layers graphic list
+                    aList.add(omtext);
+
+                    action = PROCESS_DATA;
+                }
                 break SWITCH;
-			        
-                //We have a line, tok is the first coord and the next
-                //token is the second
+
+            //We have a line, tok is the first coord and the next
+            //token is the second
             case PROCESS_PLINE:
                 idx = count + count;
                 ptarray[idx + 1] = Float.parseFloat(tok);
                 ptarray[idx] = Float.parseFloat(st.nextToken());
                 count++;
                 if (count == number) {
-                    omp  =  new OMPoly(ptarray,
-                                       OMGraphic.DECIMAL_DEGREES,
-                                       OMGraphic.LINETYPE_STRAIGHT);
+                    omp = new OMPoly(ptarray, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
 
                     aList.add(omp);
                     if (!ismultiple) {
@@ -325,7 +337,8 @@ public class MIFLoader {
 
             case PROCESS_MULTIPLE:
                 multicnt++;
-                if (multicnt > multiple) { //No more multiples so we can pushback
+                if (multicnt > multiple) { //No more multiples so we
+                                           // can pushback
                     pushback = true;
                     multiple = 0;
                     action = PROCESS_POST_PLINE;
@@ -344,8 +357,7 @@ public class MIFLoader {
                     } else {
                         processPenWord(st, omp);
                     }
-                }
-                else if (isSame(tok, SMOOTH_WORD)) {
+                } else if (isSame(tok, SMOOTH_WORD)) {
                     //Smooth unimplemented
                 } else {
                     ismultiple = false;
@@ -354,7 +366,7 @@ public class MIFLoader {
                 }
                 break SWITCH;
 
-                // SCN to support lines
+            // SCN to support lines
             case PROCESS_POST_LINE:
                 if (isSame(tok, PEN_WORD)) {
                     processPenWord(st, oml);
@@ -365,19 +377,21 @@ public class MIFLoader {
                     action = PROCESS_DATA;
                 }
                 break SWITCH;
-                   
 
-            case PROCESS_REGION_HEADER: //This processes the number at the top of each region sub-block
+            case PROCESS_REGION_HEADER: //This processes the number
+                                        // at the top of each region
+                                        // sub-block
                 multicnt++;
                 if (multicnt > multiple) {
                     multiple = 0;
                     action = PROCESS_POST_REGION;
 
-                    //Add this point the region is finished so add the
+                    //Add this point the region is finished so add
+                    // the
                     //vector contents to list
                     int len = omgs.size();
                     for (int i = 0; i < len; i++) {
-                        aList.add((OMGraphic)omgs.elementAt(i));
+                        aList.add((OMGraphic) omgs.elementAt(i));
                     }
                     break SWITCH;
                 }
@@ -395,23 +409,23 @@ public class MIFLoader {
                 latpts[count] = ptarray[idx] = Float.parseFloat(st.nextToken());
                 count++;
                 if (count == number) {
-                    // This polygon is complete so add it and process the next
+                    // This polygon is complete so add it and process
+                    // the next
 
-                    //Use this code if we just want polygons which is much
+                    //Use this code if we just want polygons which is
+                    // much
                     //faster
                     if (accurate) {
-                        omgs.add(new OMSubtraction(latpts,lonpts));
+                        omgs.add(new OMSubtraction(latpts, lonpts));
 
                     } else {
-                        // Produces accurate MapInfo type rendering but very
+                        // Produces accurate MapInfo type rendering
+                        // but very
                         // slow with complex regions like streets
                         int end = latpts.length - 1;
 
                         for (int i = 0; i < end; i++) {
-                            omgs.add(new OMLine(latpts[i],
-                                                lonpts[i],
-                                                latpts[i+1],lonpts[i+1],
-                                                OMGraphic.LINETYPE_STRAIGHT));
+                            omgs.add(new OMLine(latpts[i], lonpts[i], latpts[i + 1], lonpts[i + 1], OMGraphic.LINETYPE_STRAIGHT));
                         }
                         omgs.add(new OMLine(latpts[end], lonpts[end], latpts[0], lonpts[0], OMGraphic.LINETYPE_STRAIGHT));
                     }
@@ -419,8 +433,8 @@ public class MIFLoader {
                 }
                 break SWITCH;
 
-                // There is one pen,brush,center block at the end of a
-                // region
+            // There is one pen,brush,center block at the end of a
+            // region
             case PROCESS_POST_REGION:
                 if (isSame(tok, PEN_WORD)) {
                     processPenWord(st, omgs);
@@ -435,18 +449,19 @@ public class MIFLoader {
 
             } // end of switch
         } //end of while loop
-        
+
         br.close();
 
         return aList;
     }
 
     /*
-     *  Processes an instance of the Pen directive for a single
-     *  OMGraphic
+     * Processes an instance of the Pen directive for a single
+     * OMGraphic
      */
     private void processPenWord(StringTokenizer st, OMGraphic omg) {
-        if (omg == null) return;
+        if (omg == null)
+            return;
         int width = Integer.parseInt(st.nextToken());
         omg.setStroke(new BasicStroke(width));
         int pattern = Integer.parseInt(st.nextToken());
@@ -455,8 +470,8 @@ public class MIFLoader {
     }
 
     /*
-     *  Processes an instance of the Pen directive for a vector of
-     *  OMGraphics
+     * Processes an instance of the Pen directive for a vector of
+     * OMGraphics
      */
     private void processPenWord(StringTokenizer st, Vector vals) {
         int width = Integer.parseInt(st.nextToken());
@@ -465,7 +480,7 @@ public class MIFLoader {
         int len = vals.size();
         OMGraphic omg = null;
         for (int i = 0; i < len; i++) {
-            omg = (OMGraphic)vals.elementAt(i);
+            omg = (OMGraphic) vals.elementAt(i);
             omg.setLinePaint(col);
             omg.setStroke(new BasicStroke(width));
         }
@@ -480,13 +495,15 @@ public class MIFLoader {
         Color foreground = convertColor(Integer.parseInt(st.nextToken()));
         Color background = null;
 
-        //background appears to be ignored by MapInfo but I grab it anyway
+        //background appears to be ignored by MapInfo but I grab it
+        // anyway
         if (st.hasMoreTokens()) {
             background = convertColor(Integer.parseInt(st.nextToken()));
         }
-        int len = vals.size(); OMGraphic omg;
+        int len = vals.size();
+        OMGraphic omg;
         for (int i = 0; i < len; i++) {
-            omg = (OMGraphic)vals.elementAt(i);
+            omg = (OMGraphic) vals.elementAt(i);
             omg.setLinePaint(foreground);
 
             switch (pattern) {
@@ -498,16 +515,14 @@ public class MIFLoader {
             }
         }
     }
-    
+
     /**
      * process the MIF SYMBOL element.
      * 
-     * The MIF format for SYMBOL element is
-     * <code>
+     * The MIF format for SYMBOL element is <code>
      *  SYMBOL (shape, color, size, fontname, fontstyle, rotation)
      * </code>
-     * or
-     * <code>
+     * or <code>
      *  SYMBOL (filename, color, size, customstyle)
      * </code>
      * 
@@ -515,66 +530,60 @@ public class MIFLoader {
      * OMPoint symbol and size is adopted.
      * 
      * @param st tokenizer containing the "SYMBOL" MIF elements
-     * @param omg the OMGraphic object to attribute with the setting from the MIF line
+     * @param omg the OMGraphic object to attribute with the setting
+     *        from the MIF line
      */
     private void processSymbolWord(StringTokenizer st, OMPoint omg) {
-    	String symbolStr = st.nextToken(); // should be "SYMBOL"
-    	
-    	int symbol = Integer.parseInt(st.nextToken());
-    	Color color = convertColor(Integer.parseInt(st.nextToken()));
-    	
-    	int size = Integer.parseInt(st.nextToken());
-    	
-    	omg.setFillPaint(color);
+        String symbolStr = st.nextToken(); // should be "SYMBOL"
+
+        int symbol = Integer.parseInt(st.nextToken());
+        Color color = convertColor(Integer.parseInt(st.nextToken()));
+
+        int size = Integer.parseInt(st.nextToken());
+
+        omg.setFillPaint(color);
     }
-    
+
     /**
-     * process the MIF FONT element.
-     * currently only PLAIN (0), BOLD(1), ITALIC (2) and BOLD ITALIC(3) are supported.
-     * Font size is hardcoded to 10, and backcolor is ignored.
+     * process the MIF FONT element. currently only PLAIN (0),
+     * BOLD(1), ITALIC (2) and BOLD ITALIC(3) are supported. Font size
+     * is hardcoded to 10, and backcolor is ignored.
      * 
-     * The MIF format for FONT is
-     * <code>
+     * The MIF format for FONT is <code>
      *  FONT ("fontname", style, size, forecolor [, backcolor] )
      * </code>
      * 
-     * Within a MIF file size will always be 0, it's up to the renderer to determine the size.
-     * Background color is optional
+     * Within a MIF file size will always be 0, it's up to the
+     * renderer to determine the size. Background color is optional
      * 
-     * style is detemined as follows, to specify 2 or more style attributes, add the values from each style,
-     * e.g. BOLD ALLCAPS = 513
+     * style is detemined as follows, to specify 2 or more style
+     * attributes, add the values from each style, e.g. BOLD ALLCAPS =
+     * 513
      * 
-     * value		style
-     * ===================
-     * 0		 	PLAIN
-     * 1			BOLD
-     * 2			ITALIC
-     * 4			UNDERLINE
-     * 16			OUTLINE
-     * 32			SHADOW
-     * 256			HALO
-     * 512			ALL CAPS
-     * 1024			Expanded
+     * value style =================== 0 PLAIN 1 BOLD 2 ITALIC 4
+     * UNDERLINE 16 OUTLINE 32 SHADOW 256 HALO 512 ALL CAPS 1024
+     * Expanded
      * 
-     *  
+     * 
      * @param st tokenizer containing the "FONT" MIF elements
-     * @param omTxt the OMGraphic object to attribute with the setting from the MIF line
+     * @param omTxt the OMGraphic object to attribute with the setting
+     *        from the MIF line
      */
     private void processFontWord(StringTokenizer st, OMText omTxt) {
-    	String fontStr = st.nextToken(); //should be "FONT"
-    	String fontName = st.nextToken();
-    	int style = Integer.parseInt(st.nextToken());
-    	int size = Integer.parseInt(st.nextToken());
-    	Color foreColor = convertColor(Integer.parseInt(st.nextToken()));
-    	Color bgColor = null;
-    	
-    	if(st.hasMoreTokens()) {
+        String fontStr = st.nextToken(); //should be "FONT"
+        String fontName = st.nextToken();
+        int style = Integer.parseInt(st.nextToken());
+        int size = Integer.parseInt(st.nextToken());
+        Color foreColor = convertColor(Integer.parseInt(st.nextToken()));
+        Color bgColor = null;
+
+        if (st.hasMoreTokens()) {
             //last token is optional background color
             bgColor = convertColor(Integer.parseInt(st.nextToken()));
         }
-    	
-    	int fontStyle = Font.PLAIN;
-    	switch(style) {
+
+        int fontStyle = Font.PLAIN;
+        switch (style) {
         case 0:
             fontStyle = Font.PLAIN;
             break;
@@ -585,12 +594,12 @@ public class MIFLoader {
             fontStyle = Font.ITALIC;
             break;
         case 3:
-            fontStyle = Font.BOLD&Font.ITALIC;
+            fontStyle = Font.BOLD & Font.ITALIC;
             break;
         }
-    	
-    	omTxt.setFillPaint(foreColor);
-    	omTxt.setFont(new Font(fontName.substring(1, fontName.length()-1),fontStyle, 10));
+
+        omTxt.setFillPaint(foreColor);
+        omTxt.setFont(new Font(fontName.substring(1, fontName.length() - 1), fontStyle, 10));
     }
 
     /*
@@ -598,17 +607,16 @@ public class MIFLoader {
      */
     private StringTokenizer getTokens(BufferedReader br) throws IOException {
         String line;
-        WHILE:
-        while ((line = br.readLine()) != null) {
+        WHILE: while ((line = br.readLine()) != null) {
 
-            if (line.equals("")) continue WHILE; //skip blank lines
+            if (line.equals(""))
+                continue WHILE; //skip blank lines
 
             //should return the tokenizer as soon as we have a line
             return new StringTokenizer(line, " \t\n\r\f,()");
         }
         return null;
     }
-
 
     /*
      * Utility for doing case independant string comparisons... it's
@@ -633,12 +641,13 @@ public class MIFLoader {
         if (rem >= 65536) {
             red = rem / 65536;
             rem = rem - red * 65536;
-        } 
+        }
         if (rem >= 255) {
             green = rem / 256;
             rem = rem - green * 256;
         }
-        if (rem > 0) blue = rem;
+        if (rem > 0)
+            blue = rem;
 
         return new Color(red, green, blue);
     }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProjectionSupport.java,v $
 // $RCSfile: ProjectionSupport.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
@@ -30,7 +29,7 @@ import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
- * for handling ProjectionListeners and firing ProjectionEvents.  You
+ * for handling ProjectionListeners and firing ProjectionEvents. You
  * can use an instance of this class as a member field of your bean
  * and delegate work to it.
  */
@@ -45,6 +44,7 @@ public class ProjectionSupport extends ListenerSupport {
 
     /**
      * Construct a ProjectionSupport.
+     * 
      * @param aSource source Object
      */
     public ProjectionSupport(Object aSource) {
@@ -53,15 +53,16 @@ public class ProjectionSupport extends ListenerSupport {
 
     /**
      * Add a ProjectionListener.
+     * 
      * @param l ProjectionListener
      */
     public void addProjectionListener(ProjectionListener l) {
         addListener(l);
     }
 
-
     /**
      * Remove a ProjectionListener.
+     * 
      * @param l ProjectionListener
      */
     public void removeProjectionListener(ProjectionListener l) {
@@ -70,21 +71,23 @@ public class ProjectionSupport extends ListenerSupport {
 
     /**
      * Send a center event to all registered listeners.
+     * 
      * @param proj Projection
      */
     public void fireProjectionChanged(Projection proj) {
         ProjectionListener target;
 
-        if (size() == 0) return;
+        if (size() == 0)
+            return;
 
         ProjectionEvent evt = new ProjectionEvent(getSource(), proj);
 
         Iterator it = iterator();
         while (it.hasNext()) {
-            target = (ProjectionListener)it.next();
+            target = (ProjectionListener) it.next();
             if (Debug.debugging("mapbean")) {
-                Debug.output("ProjectionSupport.fireProjectionChanged(): " +
-                             "target is: " + target);
+                Debug.output("ProjectionSupport.fireProjectionChanged(): "
+                        + "target is: " + target);
             }
             target.projectionChanged(evt);
         }

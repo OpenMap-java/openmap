@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeOptions.java,v $
 // $RCSfile: CodeOptions.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.symbology.milStd2525;
 
@@ -28,7 +27,7 @@ import java.util.List;
 
 /**
  * CodeOptions represent a set of CodePositions that can be chosen for
- * a particular SymbolPart.  This class is a holder for affiliations,
+ * a particular SymbolPart. This class is a holder for affiliations,
  * order of battle, modifier settings, etc.
  */
 public class CodeOptions {
@@ -37,12 +36,12 @@ public class CodeOptions {
     public CodeOptions(List opts) {
         options = opts;
     }
-    
+
     public String toString() {
         StringBuffer sb = new StringBuffer("CodeOptions:\n");
         if (options != null) {
             for (Iterator it = options.iterator(); it.hasNext();) {
-                sb.append(((CodePosition)it.next()).toString() + "\n");
+                sb.append(((CodePosition) it.next()).toString() + "\n");
             }
         }
         return sb.toString();

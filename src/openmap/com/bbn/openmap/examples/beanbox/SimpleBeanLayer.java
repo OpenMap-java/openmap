@@ -32,251 +32,246 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.tools.beanbox.BeanBoxHandler;
 import com.bbn.openmap.tools.beanbox.BeanBox;
 
-
-/** An OpenMap Layer for displaying 
- * {@link com.bbn.openmap.examples.beanbox.SimpleBeanObject} beans. 
- * This class an example of an openmap layer that contains an instance of
- * the {@link com.bbn.openmap.tools.beanbox.BeanBox} class. This layer
- * maintains a reference to an instance of 
- * {@link com.bbn.openmap.examples.beanbox.SimpleBeanBox} class which is 
- * a sample implementation of the 
- * {@link com.bbn.openmap.tools.beanbox.BeanBox} class.
- * The {@link com.bbn.openmap.examples.beanbox.SimpleBeanBox} class manages
- * the set of {@link com.bbn.openmap.examples.beanbox.SimpleBeanObject}
- * beans that are displayed by this layer.
+/**
+ * An OpenMap Layer for displaying
+ * {@link com.bbn.openmap.examples.beanbox.SimpleBeanObject}beans.
+ * This class an example of an openmap layer that contains an instance
+ * of the {@link com.bbn.openmap.tools.beanbox.BeanBox}class. This
+ * layer maintains a reference to an instance of
+ * {@link com.bbn.openmap.examples.beanbox.SimpleBeanBox}class which
+ * is a sample implementation of the
+ * {@link com.bbn.openmap.tools.beanbox.BeanBox}class. The
+ * {@link com.bbn.openmap.examples.beanbox.SimpleBeanBox}class
+ * manages the set of
+ * {@link com.bbn.openmap.examples.beanbox.SimpleBeanObject}beans
+ * that are displayed by this layer.
  */
-public class SimpleBeanLayer
-  extends Layer implements BeanBoxHandler {
+public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
 
-  protected HashMap beans = new HashMap();
-  protected HashMap graphics = new HashMap();
+    protected HashMap beans = new HashMap();
+    protected HashMap graphics = new HashMap();
 
-  protected Projection projection;
+    protected Projection projection;
 
-  protected SimpleBeanBox beanBox;
+    protected SimpleBeanBox beanBox;
 
-  private static SimpleBeanLayer thisLayer;
+    private static SimpleBeanLayer thisLayer;
 
-  public SimpleBeanLayer () {
-    super();
-    
-    setName("Simple Bean Layer");
+    public SimpleBeanLayer() {
+        super();
 
-    addToBeanContext = true;
+        setName("Simple Bean Layer");
 
-    thisLayer = this;
- 
-    beanBox = new SimpleBeanBox(this);
-  }
+        addToBeanContext = true;
 
-  /** Gets a reference to this layer object. */
-  public static SimpleBeanLayer getLayer () {
-    return thisLayer;
-  }
+        thisLayer = this;
 
-  /** @return the instance of
-   * {@link com.bbn.openmap.examples.beanbox.SimpleBeanBox} that is maintained by
-   * this layer. */
-  public BeanBox getBeanBox () {
-    return beanBox;
-  }
-
-  /** Gets the current projection */
-  public Projection getProjection () {
-    return projection;
-  }
-
-  /** @return an instance of
-   * {@link com.bbn.openmap.examples.beanbox.SimpleBeanBox},
-   * which implements the MapMouseListener interface. */
-  public MapMouseListener getMapMouseListener () {
-    return (MapMouseListener)beanBox;
-  }
-
-  /** Implement ProjectionListener method inherited from Layer. */
-  public void projectionChanged (ProjectionEvent event)
-  {
-     projection = event.getProjection();
-
-     Collection values = graphics.values();
-     Iterator iter = values.iterator();
-     while (iter.hasNext())
-       ((OMGraphic)iter.next()).generate(projection);
-  }
-
-  /** override Component method */
-  public void paint (Graphics g) {
-
-    Collection values = graphics.values();
-    Iterator iter = values.iterator();
-    while (iter.hasNext()) {
-      OMGraphic graphic = (OMGraphic)iter.next();
-      graphic.render(g);
+        beanBox = new SimpleBeanBox(this);
     }
-  }
 
-  /** 
-   * Update all OMGraphic objects maintained by this layer
-   * using the information stored in corresponding SimpleBeanObject beans.
-   */
-  public void updateGraphics() {
-
-    Set keys = beans.keySet();
-
-    Iterator iter = keys.iterator();
-
-    while (iter.hasNext()) {
-
-      Long id = (Long)iter.next();
-
-      SimpleBeanObject bean = (SimpleBeanObject)beans.get(id);      
-
-      OMGraphic graphic = (OMGraphic)graphics.get(id);
-
-
-      if ((graphic instanceof CustomGraphic)) {
-        ((CustomGraphic)graphic).updateGraphic(bean);
-      } else
-      if (graphic instanceof OMRasterObject) {
-        ((OMRasterObject)graphic).setLat(bean.getLatitude());
-        ((OMRasterObject)graphic).setLon(bean.getLongitude());
-        ((OMRasterObject)graphic).
-          setRotationAngle(bean.getBearingInDeg()*Math.PI/180);
-
-      }
-
-      graphic.setNeedToRegenerate(true);
-
-      if (projection != null)
-        graphic.generate(projection);
-
+    /** Gets a reference to this layer object. */
+    public static SimpleBeanLayer getLayer() {
+        return thisLayer;
     }
-      
-    repaint();
 
-  }
+    /**
+     * @return the instance of
+     *         {@link com.bbn.openmap.examples.beanbox.SimpleBeanBox}
+     *         that is maintained by this layer.
+     */
+    public BeanBox getBeanBox() {
+        return beanBox;
+    }
 
-  /** 
-   * Adds a bean to this layer.
-   */
-  public void addObject (SimpleBeanObject object) {
+    /** Gets the current projection */
+    public Projection getProjection() {
+        return projection;
+    }
 
-    beans.put(new Long(object.getId()), object);
-    String customGraphicClassName = object.getCustomGraphicClassName();
+    /**
+     * @return an instance of
+     *         {@link com.bbn.openmap.examples.beanbox.SimpleBeanBox},
+     *         which implements the MapMouseListener interface.
+     */
+    public MapMouseListener getMapMouseListener() {
+        return (MapMouseListener) beanBox;
+    }
 
-    OMGraphic graphic = null;
+    /** Implement ProjectionListener method inherited from Layer. */
+    public void projectionChanged(ProjectionEvent event) {
+        projection = event.getProjection();
 
-    if (customGraphicClassName == null) {
+        Collection values = graphics.values();
+        Iterator iter = values.iterator();
+        while (iter.hasNext())
+            ((OMGraphic) iter.next()).generate(projection);
+    }
 
-      ImageIcon icon = new ImageIcon(object.getGraphicImage());
-      int width = icon.getIconWidth();
-      int height = icon.getIconHeight();
-          graphic = new OMRaster
-            (object.getLatitude(), object.getLongitude(), 
-         -width/2, -height/2, icon);
+    /** override Component method */
+    public void paint(Graphics g) {
 
-      ((OMRaster)graphic).
-         setRotationAngle(object.getBearingInDeg()*Math.PI/180);
+        Collection values = graphics.values();
+        Iterator iter = values.iterator();
+        while (iter.hasNext()) {
+            OMGraphic graphic = (OMGraphic) iter.next();
+            graphic.render(g);
+        }
+    }
 
-      graphic.setRenderType(OMGraphicConstants.RENDERTYPE_OFFSET);
+    /**
+     * Update all OMGraphic objects maintained by this layer using the
+     * information stored in corresponding SimpleBeanObject beans.
+     */
+    public void updateGraphics() {
 
-      graphic.setAppObject(new Long(object.getId()));
+        Set keys = beans.keySet();
 
-    } else {
+        Iterator iter = keys.iterator();
 
-      try
-      {
+        while (iter.hasNext()) {
 
-        Class graphicClass = Class.forName(customGraphicClassName);
+            Long id = (Long) iter.next();
 
-        Class parentClass = graphicClass;
-        while (parentClass != null) {
-          if (parentClass == CustomGraphic.class) {
-            break;
-          } else
-            parentClass = parentClass.getSuperclass();
+            SimpleBeanObject bean = (SimpleBeanObject) beans.get(id);
+
+            OMGraphic graphic = (OMGraphic) graphics.get(id);
+
+            if ((graphic instanceof CustomGraphic)) {
+                ((CustomGraphic) graphic).updateGraphic(bean);
+            } else if (graphic instanceof OMRasterObject) {
+                ((OMRasterObject) graphic).setLat(bean.getLatitude());
+                ((OMRasterObject) graphic).setLon(bean.getLongitude());
+                ((OMRasterObject) graphic).setRotationAngle(bean.getBearingInDeg()
+                        * Math.PI / 180);
+
+            }
+
+            graphic.setNeedToRegenerate(true);
+
+            if (projection != null)
+                graphic.generate(projection);
+
         }
 
-        if (parentClass != null) {
-          Constructor constructor = 
-            graphicClass.getConstructor(new Class[] {SimpleBeanObject.class});
-          graphic = 
-            (CustomGraphic)constructor.newInstance(new Object[] {object});
+        repaint();
+
+    }
+
+    /**
+     * Adds a bean to this layer.
+     */
+    public void addObject(SimpleBeanObject object) {
+
+        beans.put(new Long(object.getId()), object);
+        String customGraphicClassName = object.getCustomGraphicClassName();
+
+        OMGraphic graphic = null;
+
+        if (customGraphicClassName == null) {
+
+            ImageIcon icon = new ImageIcon(object.getGraphicImage());
+            int width = icon.getIconWidth();
+            int height = icon.getIconHeight();
+            graphic = new OMRaster(object.getLatitude(), object.getLongitude(), -width / 2, -height / 2, icon);
+
+            ((OMRaster) graphic).setRotationAngle(object.getBearingInDeg()
+                    * Math.PI / 180);
+
+            graphic.setRenderType(OMGraphicConstants.RENDERTYPE_OFFSET);
+
+            graphic.setAppObject(new Long(object.getId()));
+
+        } else {
+
+            try {
+
+                Class graphicClass = Class.forName(customGraphicClassName);
+
+                Class parentClass = graphicClass;
+                while (parentClass != null) {
+                    if (parentClass == CustomGraphic.class) {
+                        break;
+                    } else
+                        parentClass = parentClass.getSuperclass();
+                }
+
+                if (parentClass != null) {
+                    Constructor constructor = graphicClass.getConstructor(new Class[] { SimpleBeanObject.class });
+                    graphic = (CustomGraphic) constructor.newInstance(new Object[] { object });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-      }
-      catch (Exception e) {
-        e.printStackTrace();
-      }
+
+        if (graphic != null) {
+
+            graphic.setNeedToRegenerate(true);
+
+            graphics.put(new Long(object.getId()), graphic);
+
+            if (projection != null)
+                graphic.generate(projection);
+
+            repaint();
+        }
+
     }
 
-    if (graphic != null) {
-
-      graphic.setNeedToRegenerate(true);
-
-      graphics.put(new Long(object.getId()), graphic);
-
-      if (projection != null)
-        graphic.generate(projection);
-
-      repaint();
+    /**
+     * Removes a bean from this layer.
+     */
+    public void removeObject(Long id) {
+        beans.remove(id);
+        graphics.remove(id);
     }
 
-  }
- 
-  /** 
-   * Removes a bean from this layer.
-   */
-  public void removeObject (Long id) {
-    beans.remove(id);
-    graphics.remove(id);
-  }
+    public void removeObject(long id) {
+        removeObject(new Long(id));
+    }
 
-  public void removeObject (long id) {
-    removeObject(new Long(id));
-  }
+    /**
+     * returns a bean with the specified id.
+     */
+    public SimpleBeanObject getObject(Long id) {
+        return (SimpleBeanObject) beans.get(id);
+    }
 
-  /** 
-   * returns a bean with the specified id.
-   */
-  public SimpleBeanObject getObject (Long id) {
-    return (SimpleBeanObject)beans.get(id);
-  }
+    public SimpleBeanObject getObject(long id) {
+        return (SimpleBeanObject) beans.get(new Long(id));
+    }
 
-  public SimpleBeanObject getObject (long id) {
-    return (SimpleBeanObject)beans.get(new Long(id));
-  }
+    /**
+     * return all SimpleBeanObject beans maintained by this layer.
+     */
+    public Vector getObjects() {
+        return new Vector(beans.values());
+    }
 
-  /** 
-   * return all SimpleBeanObject beans maintained by this layer.
-   */
-  public Vector getObjects () {
-    return new Vector(beans.values());
-  }
+    /**
+     * return the OMGraphic object associated with the
+     * SimpleBeanObject with the specified id.
+     */
+    public OMGraphic getGraphic(Long id) {
+        return (OMGraphic) graphics.get(id);
+    }
 
-  /** 
-   * return the OMGraphic object associated with the SimpleBeanObject 
-   * with the specified id.
-   */
-  public OMGraphic getGraphic (Long id) {
-    return (OMGraphic)graphics.get(id);
-  }
+    public OMGraphic getGraphic(long id) {
+        return (OMGraphic) graphics.get(new Long(id));
+    }
 
-  public OMGraphic getGraphic (long id) {
-    return (OMGraphic)graphics.get(new Long(id));
-  }
+    /**
+     * Update the specified SimpleBeanObject object that may be
+     * maintained by this layer.
+     */
+    public void updateObject(SimpleBeanObject object) {
 
-  /** 
-   * Update the specified SimpleBeanObject object that may be maintained
-   * by this layer.
-   */
-  public void updateObject(SimpleBeanObject object) {
+        // not yet added to layer. ignore
+        if (getObject(object.getId()) == null)
+            return;
 
-    // not yet added to layer. ignore
-    if (getObject(object.getId()) == null)
-      return;
-
-    removeObject(object.getId());
-    addObject(object);
-  }
+        removeObject(object.getId());
+        addObject(object);
+    }
 
 }

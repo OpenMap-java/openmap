@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,21 +12,19 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicEditState.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicEditState.java,v
+// $
 // $RCSfile: GraphicEditState.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.editable;
 
-
-import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.layer.util.stateMachine.*;
@@ -72,13 +70,4 @@ public class GraphicEditState extends State implements EOMGEditState {
         return getMapMouseListenerResponse();
     }
 }
-
-
-
-
-
-
-
-
-
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,9 +12,8 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/TextTable.java,v $
-// $Revision: 1.4 $ $Date: 2004/02/02 05:43:20 $ $Author: wjeuerle $
+// $Revision: 1.5 $ $Date: 2004/10/14 18:06:09 $ $Author: dietrick $
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
@@ -35,45 +34,51 @@ public class TextTable extends PrimitiveTable {
 
     /**
      * Construct a TextTable for reading VPF text features.
+     * 
      * @param cov the CoverageTable for the tile
      * @param tile the tile to parse
-     * @exception FormatException if something goes wrong reading the text
+     * @exception FormatException if something goes wrong reading the
+     *            text
      */
-    public TextTable(CoverageTable cov,
-                     TileDirectory tile) throws FormatException {
+    public TextTable(CoverageTable cov, TileDirectory tile)
+            throws FormatException {
         super(cov, tile, "txt");
         if ((coordColumn = whatColumn("shape_line")) == -1) {
             throw new FormatException("texttable couldn't get "
-                                      + "shape_line column");
-        } 
+                    + "shape_line column");
+        }
         if ((textColumn = whatColumn("string")) == -1) {
             throw new FormatException("texttable couldn't get "
-                                      + "string column"); 
+                    + "string column");
         }
     }
-    
+
     /**
      * Returns the coordinate string for the text primitive
+     * 
      * @param textprim the text primitive
      */
     public CoordFloatString getCoordinates(List textprim) {
-	return (CoordFloatString)textprim.get(coordColumn);
+        return (CoordFloatString) textprim.get(coordColumn);
     }
-	
+
     /**
-     * Parse the text records for this tile, calling warehouse.createText
-     * once for each record in the selection region.
-     * @param warehouse the warehouse used for createText calls (must not be
-     * null)
-     * @param dpplat threshold for latitude thinning (passed to warehouse)
-     * @param dpplon threshold for longitude thinngin (passed to warehouse)
+     * Parse the text records for this tile, calling
+     * warehouse.createText once for each record in the selection
+     * region.
+     * 
+     * @param warehouse the warehouse used for createText calls (must
+     *        not be null)
+     * @param dpplat threshold for latitude thinning (passed to
+     *        warehouse)
+     * @param dpplon threshold for longitude thinngin (passed to
+     *        warehouse)
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
      * @see VPFGraphicWarehouse#createText
      */
-    public void drawTile(VPFGraphicWarehouse warehouse,
-                         float dpplat, float dpplon,
-                         LatLonPoint ll1, LatLonPoint ll2) {
+    public void drawTile(VPFGraphicWarehouse warehouse, float dpplat,
+                         float dpplon, LatLonPoint ll1, LatLonPoint ll2) {
 
         float ll1lat = ll1.getLatitude();
         float ll1lon = ll1.getLongitude();
@@ -81,39 +86,48 @@ public class TextTable extends PrimitiveTable {
         float ll2lon = ll2.getLongitude();
 
         try {
-            for (List text = new ArrayList(); parseRow(text); ) {
-                String textval = (String)text.get(textColumn);
-                CoordFloatString coords = (CoordFloatString)text.get(coordColumn);
+            for (List text = new ArrayList(); parseRow(text);) {
+                String textval = (String) text.get(textColumn);
+                CoordFloatString coords = (CoordFloatString) text.get(coordColumn);
                 float lat = coords.getYasFloat(0);
                 float lon = coords.getXasFloat(0);
 
-                if ((lat > ll2lat) && (lat < ll1lat) &&
-                    (lon > ll1lon) && (lon < ll2lon)) {
-                    warehouse.createText(covtable, this, text,
-                                         lat, lon, textval);
+                if ((lat > ll2lat) && (lat < ll1lat) && (lon > ll1lon)
+                        && (lon < ll2lon)) {
+                    warehouse.createText(covtable,
+                            this,
+                            text,
+                            lat,
+                            lon,
+                            textval);
                 }
             }
         } catch (FormatException f) {
-            System.out.println("Exception: " + f.getClass() + " " + f.getMessage());
+            System.out.println("Exception: " + f.getClass() + " "
+                    + f.getMessage());
         }
     }
 
     /**
-     * Use the warehouse to create a graphic from a feature in the TextTable.
-     * @param warehouse the warehouse used for createText calls (must not be
-     * null)
-     * @param dpplat threshold for latitude thinning (passed to warehouse)
-     * @param dpplon threshold for longitude thinngin (passed to warehouse)
+     * Use the warehouse to create a graphic from a feature in the
+     * TextTable.
+     * 
+     * @param warehouse the warehouse used for createText calls (must
+     *        not be null)
+     * @param dpplat threshold for latitude thinning (passed to
+     *        warehouse)
+     * @param dpplon threshold for longitude thinngin (passed to
+     *        warehouse)
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
      * @param text a list with the TextTable row contents.
      * @param featureType the string representing the feature type, in
-     * case the warehouse wants to do some intelligent rendering.
-     * @see VPFGraphicWarehouse#createText 
+     *        case the warehouse wants to do some intelligent
+     *        rendering.
+     * @see VPFGraphicWarehouse#createText
      */
-    public void drawFeature(VPFFeatureWarehouse warehouse,
-                            float dpplat, float dpplon,
-                            LatLonPoint ll1, LatLonPoint ll2,
+    public void drawFeature(VPFFeatureWarehouse warehouse, float dpplat,
+                            float dpplon, LatLonPoint ll1, LatLonPoint ll2,
                             List text, String featureType) {
 
         if (warehouse == null) {
@@ -125,15 +139,20 @@ public class TextTable extends PrimitiveTable {
         float ll2lat = ll2.getLatitude();
         float ll2lon = ll2.getLongitude();
 
-        String textval = (String)text.get(textColumn);
-        CoordFloatString coords = (CoordFloatString)text.get(coordColumn);
+        String textval = (String) text.get(textColumn);
+        CoordFloatString coords = (CoordFloatString) text.get(coordColumn);
 
         float lat = coords.getYasFloat(0);
         float lon = coords.getXasFloat(0);
-        if ((lat > ll2lat) && (lat < ll1lat) &&
-            (lon > ll1lon) && (lon < ll2lon)) {
-            warehouse.createText(covtable, this, text,
-                                 lat, lon, textval, featureType);
+        if ((lat > ll2lat) && (lat < ll1lat) && (lon > ll1lon)
+                && (lon < ll2lon)) {
+            warehouse.createText(covtable,
+                    this,
+                    text,
+                    lat,
+                    lon,
+                    textval,
+                    featureType);
         }
     }
 }

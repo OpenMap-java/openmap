@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,16 +14,15 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseMode.java,v $
 // $RCSfile: MapMouseMode.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 20:47:45 $
-// $Author: wjeuerle $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:45 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.event;
+
 import java.awt.Cursor;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
@@ -31,21 +30,24 @@ import javax.swing.Icon;
 
 /**
  * Interface for handling mouse behavior while the mouse is operating
- * over the MapBean.  A "MouseMode" object exists to interpret the
- * meaning of mouse events.  For instance, you could have a mode where
+ * over the MapBean. A "MouseMode" object exists to interpret the
+ * meaning of mouse events. For instance, you could have a mode where
  * mouse events (click, drag-select) are interpreted as navigation
- * commands, (recenter, zoom-and-recenter).  There may be other modes
+ * commands, (recenter, zoom-and-recenter). There may be other modes
  * depending on how your application wants to interpret MouseEvents.
+ * 
  * @see AbstractMouseMode
  * @see NavMouseMode
  * @see SelectMouseMode
  * @see NullMouseMode
  */
-public interface MapMouseMode extends MouseListener, MouseMotionListener, PaintListener {
+public interface MapMouseMode extends MouseListener, MouseMotionListener,
+        PaintListener {
 
     /**
-     * Returns the id (MapMouseMode name).
-     * This name should be unique for each MapMouseMode.
+     * Returns the id (MapMouseMode name). This name should be unique
+     * for each MapMouseMode.
+     * 
      * @return String ID
      */
     public String getID();
@@ -58,8 +60,9 @@ public interface MapMouseMode extends MouseListener, MouseMotionListener, PaintL
     /**
      * Gets the mouse cursor recommended for use when this mouse mode
      * is active.
+     * 
      * @return Cursor the mouse cursor recommended for use when this
-     * mouse mode is active.
+     *         mouse mode is active.
      */
     public Cursor getModeCursor();
 
@@ -70,12 +73,14 @@ public interface MapMouseMode extends MouseListener, MouseMotionListener, PaintL
 
     /**
      * Add a MapMouseListener to the MouseMode.
+     * 
      * @param l the MapMouseListener to add.
      */
     public void addMapMouseListener(MapMouseListener l);
 
     /**
      * Remove a MapMouseListener from the MouseMode.
+     * 
      * @param l the MapMouseListener to remove.
      */
     public void removeMapMouseListener(MapMouseListener l);
@@ -86,11 +91,11 @@ public interface MapMouseMode extends MouseListener, MouseMotionListener, PaintL
     public void removeAllMapMouseListeners();
 
     /**
-     * Let the MapMouseMode know if it is active or not.  Called by
-     * the MouseDelegator.
-     *
+     * Let the MapMouseMode know if it is active or not. Called by the
+     * MouseDelegator.
+     * 
      * @param active true if the MapMouseMode has been made the active
-     * one, false if it has been set inactive.  
+     *        one, false if it has been set inactive.
      */
     public void setActive(boolean active);
 
@@ -103,30 +108,30 @@ public interface MapMouseMode extends MouseListener, MouseMotionListener, PaintL
 
     /**
      * Request to have the MapMouseMode act as a proxy for a
-     * MapMouseMode that wants to remain hidden.  Can be useful for
-     * directing events to one object.  With this call, no events will
+     * MapMouseMode that wants to remain hidden. Can be useful for
+     * directing events to one object. With this call, no events will
      * be forwared to the proxy's target.
-     *
+     * 
      * @param mmm the hidden MapMouseMode for this MapMouseMode to
-     * send events to.
+     *        send events to.
      * @return true if the proxy setup (essentially a lock) is
-     * successful, false if the proxy is already set up for another
-     * listener.
+     *         successful, false if the proxy is already set up for
+     *         another listener.
      */
     public boolean actAsProxyFor(MapMouseMode mmm);
 
     /**
      * Request to have the MapMouseMode act as a proxy for a
-     * MapMouseMode that wants to remain hidden.  Can be useful for
+     * MapMouseMode that wants to remain hidden. Can be useful for
      * directing events to one object.
-     *
+     * 
      * @param mmm the hidden MapMouseMode for this MapMouseMode to
-     * send events to.
+     *        send events to.
      * @param pdm the proxy distribution mask to use, which lets this
-     * proxy notify its targets of events.
+     *        proxy notify its targets of events.
      * @return true if the proxy setup (essentially a lock) is
-     * successful, false if the proxy is already set up for another
-     * listener.
+     *         successful, false if the proxy is already set up for
+     *         another listener.
      */
     public boolean actAsProxyFor(MapMouseMode mmm, int pdm);
 
@@ -145,6 +150,7 @@ public interface MapMouseMode extends MouseListener, MouseMotionListener, PaintL
      * Set the mask that dictates which events get sent to this
      * support object's targets even if the parent mouse mode is
      * acting as a proxy.
+     * 
      * @see MapMouseSupport for definitions of mask bits.
      */
     public void setProxyDistributionMask(int mask);
@@ -153,6 +159,7 @@ public interface MapMouseMode extends MouseListener, MouseMotionListener, PaintL
      * Get the mask that dictates which events get sent to this
      * support object's targets even if the parent mouse mode is
      * acting as a proxy.
+     * 
      * @see MapMouseSupport for definitions of mask bits.
      */
     public int getProxyDistributionMask();

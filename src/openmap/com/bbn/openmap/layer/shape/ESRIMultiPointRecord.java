@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,50 +14,46 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIMultiPointRecord.java,v $
 // $RCSfile: ESRIMultiPointRecord.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.shape;
-
-import java.io.IOException;
 
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.util.Debug;
 
 /**
- * This is a skeleton of the MultiPoint record type.  No methods
- * are implemented.
- *
+ * This is a skeleton of the MultiPoint record type. No methods are
+ * implemented.
+ * 
  * <H2>To Do</H2>
  * <UL>
- * <LI> Implement the methods of this class.</LI>
+ * <LI>Implement the methods of this class.</LI>
  * </UL>
- *
+ * 
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.2 $ $Date: 2004/01/26 18:18:11 $
+ * @version $Revision: 1.3 $ $Date: 2004/10/14 18:06:04 $
  */
 public class ESRIMultiPointRecord extends ESRIRecord {
 
     /**
      * Constructor skeleton.
-     *
+     * 
      * @param b the buffer
      * @param off the offset
      */
-    public ESRIMultiPointRecord(byte b[], int off) {
-    }
+    public ESRIMultiPointRecord(byte b[], int off) {}
 
     /**
-     * Generates 2D OMGraphics and adds them to the given list.  If
-     * you are using jdk1.1.X, you'll have to comment out this method,
+     * Generates 2D OMGraphics and adds them to the given list. If you
+     * are using jdk1.1.X, you'll have to comment out this method,
      * because jdk1.1.X doesn't know about the java.awt.Stroke and
      * java.awt.Paint interfaces.
-     *
+     * 
      * @param list the graphics list
      * @param drawingAttributes Attributes for rendering.
      */
@@ -68,15 +64,16 @@ public class ESRIMultiPointRecord extends ESRIRecord {
 
     /**
      * Generates OMGeometry and adds it to the list.
+     * 
      * @param list the graphics list
      */
-    public OMGeometry addOMGeometry(OMGeometryList list){
+    public OMGeometry addOMGeometry(OMGeometryList list) {
         return null;
     }
 
     /**
      * Gets this record's bounding box.
-     *
+     * 
      * @return a bounding box
      */
     public ESRIBoundingBox getBoundingBox() {
@@ -84,9 +81,9 @@ public class ESRIMultiPointRecord extends ESRIRecord {
     }
 
     /**
-     * Gets this record's shape type as an int.  Shape types
-     * are enumerated on the ShapeUtils class.
-     *
+     * Gets this record's shape type as an int. Shape types are
+     * enumerated on the ShapeUtils class.
+     * 
      * @return the shape type as an int
      */
     public int getShapeType() {
@@ -95,7 +92,7 @@ public class ESRIMultiPointRecord extends ESRIRecord {
 
     /**
      * Yields the length of this record's data portion.
-     *
+     * 
      * @return number of bytes equal to the size of this record's data
      */
     public int getRecordLength() {
@@ -104,8 +101,9 @@ public class ESRIMultiPointRecord extends ESRIRecord {
     }
 
     /**
-     * Writes this multipoint record to the given buffer at the given offset.
-     *
+     * Writes this multipoint record to the given buffer at the given
+     * offset.
+     * 
      * @param b the buffer
      * @param off the offset
      * @return the number of bytes written

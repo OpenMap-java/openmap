@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MouseModePanel.java,v $
 // $RCSfile: MouseModePanel.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/04 22:36:33 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,10 +26,7 @@ package com.bbn.openmap.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
-import java.beans.beancontext.*;
 import java.io.Serializable;
-import java.util.*;
-import javax.accessibility.*;
 import javax.swing.*;
 import javax.swing.border.*;
 

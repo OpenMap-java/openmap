@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,27 +14,27 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwCrossTileID.java,v $
 // $RCSfile: DcwCrossTileID.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.vpf;
 
-import com.bbn.openmap.MoreMath;
 import java.io.EOFException;
 import java.io.IOException;
+
+import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.io.BinaryFile;
 
 /**
- * Encapsulate the VPF Cross-Tile identifier primitive datatype.  The
+ * Encapsulate the VPF Cross-Tile identifier primitive datatype. The
  * cross-tile identifier relates map features that cross multiple
- * tiles.<br>
- * Note: Mil-Std-2407 cross tile ids have a fourth, unused field.
- * This class will read that field, but does not use it.
+ * tiles. <br>
+ * Note: Mil-Std-2407 cross tile ids have a fourth, unused field. This
+ * class will read that field, but does not use it.
  */
 public class DcwCrossTileID {
     /** the 1-byte length specifier for the rest of the values... */
@@ -45,17 +45,17 @@ public class DcwCrossTileID {
     final public int nextTileID;
     /** the key in the adjoining tile */
     final public int nextTileKey;
+
     /** unused value in VPF... */
     //private int unusedDcwKey = -1;
-
     /**
      * Construct a DcwCrossTileID
+     * 
      * @param currentTileKey primitive ID in current tile
-     * @param nextTileID tile ID 
+     * @param nextTileID tile ID
      * @param nextTileKey primitive ID in nextTileID
      */
-    public DcwCrossTileID(int currentTileKey, int nextTileID,
-                          int nextTileKey) {
+    public DcwCrossTileID(int currentTileKey, int nextTileID, int nextTileKey) {
         this.currentTileKey = currentTileKey;
         this.nextTileID = nextTileID;
         this.nextTileKey = nextTileKey;
@@ -63,13 +63,14 @@ public class DcwCrossTileID {
 
     /**
      * Construct a DcwCrossTileID from the specified input stream.
+     * 
      * @param in the filestream to construct from
-     * @exception FormatException some error was detected while reading
-     * the info for the column.
-     * @exception EOFException EOF was encountered before reading any data
+     * @exception FormatException some error was detected while
+     *            reading the info for the column.
+     * @exception EOFException EOF was encountered before reading any
+     *            data
      */
-    public DcwCrossTileID(BinaryFile in) 
-        throws FormatException, EOFException {
+    public DcwCrossTileID(BinaryFile in) throws FormatException, EOFException {
         int format;
         try {
             format = in.read();
@@ -79,28 +80,30 @@ public class DcwCrossTileID {
         if (format == -1) {
             throw new EOFException();
         }
-                                             
+
         try {
             currentTileKey = readIntegerByKey(in, format >> 6);
             nextTileID = readIntegerByKey(in, format >> 4);
             nextTileKey = readIntegerByKey(in, format >> 2);
             int unusedDcwKey = readIntegerByKey(in, format);
         } catch (EOFException e) {
-            throw new FormatException("DcwCrossTileID: unexpected EOD " + e.getMessage());
+            throw new FormatException("DcwCrossTileID: unexpected EOD "
+                    + e.getMessage());
         }
     }
 
     /**
      * Reads an integer from the input stream
+     * 
      * @param in the stream to read from
-     * @param key specifies the number of bytes to read (based on bottom 2
-     * bits)
-     * @return the integer read.  (-1 for a zero-length field)
+     * @param key specifies the number of bytes to read (based on
+     *        bottom 2 bits)
+     * @return the integer read. (-1 for a zero-length field)
      * @exception FormatException internal consistency failure
      * @exception EOFException hit end-of-file while reading data
      */
-    private int readIntegerByKey(BinaryFile in, int key) 
-        throws FormatException, EOFException {
+    private int readIntegerByKey(BinaryFile in, int key)
+            throws FormatException, EOFException {
         switch (key & 0x3) {
         case 0:
             return -1;
@@ -123,9 +126,10 @@ public class DcwCrossTileID {
         }
         throw new FormatException("This can't happen");
     }
-      
+
     /**
      * produce a nice printed version of all our contained information
+     * 
      * @return a nice little string
      */
     public String toString() {

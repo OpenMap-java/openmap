@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,16 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/Attic/AcmeJPEGFormatter.java,v $
 // $RCSfile: AcmeJPEGFormatter.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.image;
 
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -31,15 +29,18 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 
 /**
- * This formatter requires the Acme.JPM.Encoders package.  That code
- * can be found at <a href="http://www.acme.com/java">http://www.acme.com/java</a>.
+ * This formatter requires the Acme.JPM.Encoders package. That code
+ * can be found at <a
+ * href="http://www.acme.com/java">http://www.acme.com/java </a>.
  */
 public class AcmeJPEGFormatter extends AbstractImageFormatter {
     public static final String QualityProperty = "imagequality";
     public static final int DEFAULT_IMAGE_QUALITY = 80;
 
-    /** The quality number is between 1-100. Quality degrades,
-     *  compression improves with lower numbers. */
+    /**
+     * The quality number is between 1-100. Quality degrades,
+     * compression improves with lower numbers.
+     */
     protected int imageQuality;
 
     public AcmeJPEGFormatter() {
@@ -47,7 +48,7 @@ public class AcmeJPEGFormatter extends AbstractImageFormatter {
     }
 
     public ImageFormatter makeClone() {
-        AcmeJPEGFormatter formatter =  new AcmeJPEGFormatter();
+        AcmeJPEGFormatter formatter = new AcmeJPEGFormatter();
         formatter.setImageQuality(getImageQuality());
         return formatter;
     }
@@ -56,11 +57,12 @@ public class AcmeJPEGFormatter extends AbstractImageFormatter {
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        imageQuality = LayerUtils.intFromProperties(props, prefix + QualityProperty, imageQuality);
+        imageQuality = PropUtils.intFromProperties(props, prefix
+                + QualityProperty, imageQuality);
 
-        if (Debug.debugging("image")){
-            Debug.output("AcmeJPEGFormatter setting image quality to: " +
-                         imageQuality);
+        if (Debug.debugging("image")) {
+            Debug.output("AcmeJPEGFormatter setting image quality to: "
+                    + imageQuality);
         }
     }
 
@@ -68,13 +70,16 @@ public class AcmeJPEGFormatter extends AbstractImageFormatter {
         return imageQuality;
     }
 
-    /** For this formatter, image quality is a number in the 1-100 range. */
+    /**
+     * For this formatter, image quality is a number in the 1-100
+     * range.
+     */
     public void setImageQuality(int quality) {
         imageQuality = quality;
     }
 
     public byte[] formatImage(BufferedImage bi) {
-        try{
+        try {
             return AcmeJPEGHelper.encodeJPEG(bi, imageQuality);
         } catch (java.io.IOException ioe) {
             Debug.error("AcmeJPEGFormatter caught IOException formatting image!");
@@ -83,7 +88,7 @@ public class AcmeJPEGFormatter extends AbstractImageFormatter {
     }
 
     /**
-     * Get the Image Type created by the ImageFormatter.  These
+     * Get the Image Type created by the ImageFormatter. These
      * responses should adhere to the OGC WMT standard format labels.
      * Some are listed in the WMTConstants interface file.
      */
@@ -91,5 +96,4 @@ public class AcmeJPEGFormatter extends AbstractImageFormatter {
         return WMTConstants.IMAGEFORMAT_JPEG;
     }
 }
-
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseEvent.java,v $
 // $RCSfile: MapMouseEvent.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/05/10 20:40:02 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,29 +46,36 @@ public class MapMouseEvent extends MouseEvent {
      * component, most likely a MapBean.
      */
     public MapMouseEvent(MapMouseMode mode, MouseEvent me) {
-        super((Component)me.getSource(), me.getID(), me.getWhen(), me.getModifiers(),
-              me.getX(), me.getY(), me.getClickCount(), me.isPopupTrigger());
+        super((Component) me.getSource(),
+              me.getID(),
+              me.getWhen(),
+              me.getModifiers(),
+              me.getX(),
+              me.getY(),
+              me.getClickCount(),
+              me.isPopupTrigger());
         if (me.getSource() instanceof MapBean) {
             map = (MapBean) me.getSource();
         }
         mapMouseMode = mode;
     }
-        
+
     /**
      * Get the Lat/Lon for the x/y point, in the current projection of
-     * the MapBean that sent the MouseEvent.  Could be null if the
+     * the MapBean that sent the MouseEvent. Could be null if the
      * MouseEvent did not originate from a MapBean.
      */
     public LatLonPoint getLatLon() {
         if (map != null) {
             return map.getCoordinates(this);
-        } else return null;
+        } else
+            return null;
     }
 
     /**
-     * Get the MapMouseMode that sent this event.  This is different
+     * Get the MapMouseMode that sent this event. This is different
      * than the source of the Event - the MapMouseMode is simply
-     * controlling the distribution of the events.  May be null if
+     * controlling the distribution of the events. May be null if
      * there isn't a MapMouseMode delivering the MapMouseMode.
      */
     public MapMouseMode getMapMouseMode() {
@@ -81,6 +88,5 @@ public class MapMouseEvent extends MouseEvent {
     public String paramString() {
         return super.paramString() + " " + getLatLon();
     }
-
 
 }

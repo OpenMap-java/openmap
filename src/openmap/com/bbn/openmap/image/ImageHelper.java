@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageHelper.java,v $
 // $RCSfile: ImageHelper.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.image;
 
@@ -28,13 +27,14 @@ import java.awt.image.*;
 import com.bbn.openmap.util.Debug;
 
 /**
- * A class that holds static functions that do things we tend to do
- * to images a lot.  
+ * A class that holds static functions that do things we tend to do to
+ * images a lot.
  */
 public class ImageHelper {
 
     /**
      * Take a PixelGrabber and get the pixels out of it.
+     * 
      * @param pg PixelGrabber
      * @return int[] of pixels, null if anything bad happens.
      */
@@ -44,7 +44,7 @@ public class ImageHelper {
         // Use a pixel grabber to get the right pixels.
         try {
             pg.startGrabbing();
-            
+
             boolean grabbed = pg.grabPixels();
 
             if (!grabbed) {
@@ -55,17 +55,17 @@ public class ImageHelper {
             int framebitCount = 0;
             while (true) {
                 int status = pg.getStatus();
-                
+
                 if (Debug.debugging("image")) {
-                    Debug.output("ImageHelper.grabPixels(): status = " + 
-                                 status);
+                    Debug.output("ImageHelper.grabPixels(): status = " + status);
                 }
-                
+
                 if ((status & ImageObserver.ALLBITS) != 0) {
                     break;
                 }
                 if ((status & ImageObserver.FRAMEBITS) != 0) {
-                    // Give some cycles to be sure - some times it seems
+                    // Give some cycles to be sure - some times it
+                    // seems
                     // to not really be ready,
                     if (framebitCount < 20) {
                         framebitCount++;
@@ -78,8 +78,8 @@ public class ImageHelper {
                 }
                 Thread.sleep(100);
             }
-            return (int[])pg.getPixels();
-            
+            return (int[]) pg.getPixels();
+
         } catch (InterruptedException ie) {
             return null;
         }

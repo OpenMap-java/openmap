@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,19 +12,23 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameDSI.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameDSI.java,v
+// $
 // $RCSfile: DTEDFrameDSI.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.dted;
 
 import java.io.IOException;
-import com.bbn.openmap.io.*;
+
+import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
 
 public class DTEDFrameDSI {
@@ -69,9 +73,9 @@ public class DTEDFrameDSI {
     public int num_lon_points;
     public int part_cell;
 
-    public DTEDFrameDSI(BinaryFile binFile){
+    public DTEDFrameDSI(BinaryFile binFile) {
 
-        try{
+        try {
             binFile.seek(DTEDFrame.UHL_SIZE);
 
             //  For now, this is not error checking, just marking space
@@ -85,12 +89,14 @@ public class DTEDFrameDSI {
             ser_ref_num = binFile.readFixedLengthString(15);
             ser_res = binFile.readFixedLengthString(8);
             String test;
-//          data_ed = Integer.parseInt(binFile.readFixedLengthString(2), 10);
+            //          data_ed =
+            // Integer.parseInt(binFile.readFixedLengthString(2), 10);
             try {
                 test = binFile.readFixedLengthString(2);
                 data_ed = Integer.parseInt(test, 10);
             } catch (NumberFormatException nfe) {
-                Debug.message("dted", "DTEDFrameDSI: Data Edition number bad, using 0");
+                Debug.message("dted",
+                        "DTEDFrameDSI: Data Edition number bad, using 0");
                 data_ed = 0;
             }
 
@@ -102,12 +108,14 @@ public class DTEDFrameDSI {
             prod_res = binFile.readFixedLengthString(16);
             spec = binFile.readFixedLengthString(9);
 
-//              spec_amen = Integer.parseInt(binFile.readFixedLengthString(2), 10);
+            //              spec_amen =
+            // Integer.parseInt(binFile.readFixedLengthString(2), 10);
             try {
                 test = binFile.readFixedLengthString(2);
                 spec_amen = Integer.parseInt(test, 10);
             } catch (NumberFormatException nfe) {
-                Debug.message("dted", "DTEDFrameDSI: Spec Amednment number bad, using 0");
+                Debug.message("dted",
+                        "DTEDFrameDSI: Spec Amednment number bad, using 0");
                 spec_amen = 0;
             }
 
@@ -128,31 +136,39 @@ public class DTEDFrameDSI {
             se_lat = DTEDFrameUtil.stringToLat(binFile.readFixedLengthString(7));
             se_lon = DTEDFrameUtil.stringToLon(binFile.readFixedLengthString(8));
 
-//              orient_ang = Float.valueOf(binFile.readFixedLengthString(9)).floatValue();
+            //              orient_ang =
+            // Float.valueOf(binFile.readFixedLengthString(9)).floatValue();
             try {
                 test = binFile.readFixedLengthString(9);
                 orient_ang = Float.valueOf(test).floatValue();
             } catch (NumberFormatException nfe) {
-                Debug.message("dted", "DTEDFrameDSI: orient angle number bad, using 0");
+                Debug.message("dted",
+                        "DTEDFrameDSI: orient angle number bad, using 0");
                 orient_ang = 0f;
             }
 
-            lat_post_interval = Integer.parseInt(binFile.readFixedLengthString(4), 10);
-            lon_post_interval = Integer.parseInt(binFile.readFixedLengthString(4), 10);
-            num_lat_lines = Integer.parseInt(binFile.readFixedLengthString(4), 10);
-            num_lon_points = Integer.parseInt(binFile.readFixedLengthString(4), 10);
+            lat_post_interval = Integer.parseInt(binFile.readFixedLengthString(4),
+                    10);
+            lon_post_interval = Integer.parseInt(binFile.readFixedLengthString(4),
+                    10);
+            num_lat_lines = Integer.parseInt(binFile.readFixedLengthString(4),
+                    10);
+            num_lon_points = Integer.parseInt(binFile.readFixedLengthString(4),
+                    10);
 
-//              part_cell = Integer.parseInt(binFile.readFixedLengthString(2), 10);
+            //              part_cell =
+            // Integer.parseInt(binFile.readFixedLengthString(2), 10);
             try {
                 test = binFile.readFixedLengthString(2);
                 part_cell = Integer.parseInt(test, 10);
             } catch (NumberFormatException nfe) {
-                Debug.message("dted", "DTEDFrameDSI: partial cell number bad, using 0");
+                Debug.message("dted",
+                        "DTEDFrameDSI: partial cell number bad, using 0");
                 part_cell = 0;
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             Debug.error("DTEDFrameDSI: File IO Error!\n" + e.toString());
-        } catch (FormatException f){
+        } catch (FormatException f) {
             Debug.error("DTEDFrameDSI: File IO Format error!\n" + f.toString());
         } catch (NumberFormatException nfe) {
             // If we catch a number format exception here, too bad.
@@ -209,7 +225,7 @@ public class DTEDFrameDSI {
 
     public static void main(String args[]) {
         Debug.init();
-        if (args.length < 1){
+        if (args.length < 1) {
             Debug.output("dtedframe_dsi:  Need a path/filename");
             System.exit(0);
         }
@@ -221,19 +237,16 @@ public class DTEDFrameDSI {
         try {
 
             BinaryFile binFile = new BinaryBufferedFile(file);
-//          BinaryFile binFile = new BinaryFile(file);
+            //          BinaryFile binFile = new BinaryFile(file);
             DTEDFrameDSI dfd = new DTEDFrameDSI(binFile);
             Debug.output(dfd.toString());
 
         } catch (java.io.FileNotFoundException e) {
-            Debug.error("DTEDFrameDSI: file "+args[0]+" not found");
+            Debug.error("DTEDFrameDSI: file " + args[0] + " not found");
             System.exit(-1);
-        } catch (IOException e){
+        } catch (IOException e) {
             Debug.error("DTEDFrameDSI: File IO Error!\n" + e.toString());
         }
     }
 }
-
-
-
 

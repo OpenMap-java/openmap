@@ -1,7 +1,29 @@
+//**********************************************************************
+//
+//<copyright>
+//
+//BBN Technologies
+//10 Moulton Street
+//Cambridge, MA 02138
+//(617) 873-8000
+//
+//Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
+//</copyright>
+//**********************************************************************
+//
+//$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/Cubic.java,v $
+//$RCSfile: Cubic.java,v $
+//$Revision: 1.3 $
+//$Date: 2004/10/14 18:06:10 $
+//$Author: dietrick $
+//
+//**********************************************************************
+
 package com.bbn.openmap.omGraphics;
 
-/** 
- * A cubic polynomial 
+/**
+ * A cubic polynomial
  */
 public class Cubic {
 
@@ -9,6 +31,7 @@ public class Cubic {
 
     /**
      * Constructor.
+     * 
      * @param a
      * @param b
      * @param c
@@ -23,6 +46,7 @@ public class Cubic {
 
     /**
      * evaluate cubic for this value.
+     * 
      * @param u
      * @return float
      */

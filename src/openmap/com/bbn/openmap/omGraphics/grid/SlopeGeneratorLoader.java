@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,20 +12,20 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SlopeGeneratorLoader.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SlopeGeneratorLoader.java,v
+// $
 // $RCSfile: SlopeGeneratorLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.grid;
 
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
-import java.util.Hashtable;
 import java.util.Properties;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -58,7 +58,8 @@ public class SlopeGeneratorLoader extends GeneratorLoader {
     public ElevationColors getColors() {
         if (colors == null) {
             try {
-                colors = (ElevationColors)Class.forName(DEFAULT_COLORS_CLASS).newInstance();
+                colors = (ElevationColors) Class.forName(DEFAULT_COLORS_CLASS)
+                        .newInstance();
             } catch (InstantiationException ie) {
             } catch (IllegalAccessException iae) {
             } catch (ClassNotFoundException cnfe) {
@@ -71,7 +72,9 @@ public class SlopeGeneratorLoader extends GeneratorLoader {
         int oldValue = contrast;
         contrast = cont;
         if (oldValue != contrast) {
-            firePropertyChange(CONTRAST_PROPERTY, new Integer(oldValue), new Integer(contrast));
+            firePropertyChange(CONTRAST_PROPERTY,
+                    new Integer(oldValue),
+                    new Integer(contrast));
         }
     }
 
@@ -83,7 +86,7 @@ public class SlopeGeneratorLoader extends GeneratorLoader {
         JPanel panel = new JPanel();
         // The DTED Contrast Adjuster
         JPanel contrastPanel = PaletteHelper.createPaletteJPanel("Contrast Adjustment");
-        JSlider contrastSlide = new JSlider(JSlider.HORIZONTAL, 1/*min*/, 10/*max*/, getContrast()/*inital*/);
+        JSlider contrastSlide = new JSlider(JSlider.HORIZONTAL, 1/* min */, 10/* max */, getContrast()/* inital */);
         java.util.Hashtable dict = new java.util.Hashtable();
         dict.put(new Integer(1), new JLabel("min"));
         dict.put(new Integer(10), new JLabel("max"));
@@ -93,13 +96,13 @@ public class SlopeGeneratorLoader extends GeneratorLoader {
         contrastSlide.setPaintTicks(true);
         contrastSlide.setSnapToTicks(true);
         contrastSlide.addChangeListener(new ChangeListener() {
-                public void stateChanged(ChangeEvent ce) {
-                    JSlider slider = (JSlider) ce.getSource();
-                    if (slider.getValueIsAdjusting()) {
-                        setContrast(slider.getValue());
-                    }
+            public void stateChanged(ChangeEvent ce) {
+                JSlider slider = (JSlider) ce.getSource();
+                if (slider.getValueIsAdjusting()) {
+                    setContrast(slider.getValue());
                 }
-            });
+            }
+        });
         contrastPanel.add(contrastSlide);
         panel.add(contrastPanel);
 
@@ -116,16 +119,17 @@ public class SlopeGeneratorLoader extends GeneratorLoader {
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
-        String colorsClassProperty = props.getProperty(prefix + ColorsClassProperty);
+        String colorsClassProperty = props.getProperty(prefix
+                + ColorsClassProperty);
         if (colorsClassProperty != null) {
             try {
-                setColors((ElevationColors)ComponentFactory.create(colorsClassProperty));
+                setColors((ElevationColors) ComponentFactory.create(colorsClassProperty));
             } catch (ClassCastException cce) {
-                Debug.output("SlopeGeneratorLoader created a " + colorsClassProperty +
-                             ", but it's not a ElevationColors object");
+                Debug.output("SlopeGeneratorLoader created a "
+                        + colorsClassProperty
+                        + ", but it's not a ElevationColors object");
             }
         }
-
 
     }
 

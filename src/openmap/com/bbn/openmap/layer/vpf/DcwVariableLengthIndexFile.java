@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,19 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwVariableLengthIndexFile.java,v $
 // $RCSfile: DcwVariableLengthIndexFile.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.vpf;
 
 import java.io.IOException;
-import java.io.EOFException;
-import java.io.File;
-import com.bbn.openmap.MoreMath;
+
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.BinaryBufferedFile;
@@ -45,25 +42,27 @@ public class DcwVariableLengthIndexFile {
 
     /**
      * Construct a new index file.
+     * 
      * @param filename the name of the file to read in.
      * @param msbfirst the byte order of the file to be read.
-     * @exception FormatException some error was encountered in trying to
-     * read the file.
+     * @exception FormatException some error was encountered in trying
+     *            to read the file.
      */
-    public DcwVariableLengthIndexFile(String filename, boolean msbfirst) 
-        throws FormatException, IOException {
+    public DcwVariableLengthIndexFile(String filename, boolean msbfirst)
+            throws FormatException, IOException {
         this(new BinaryBufferedFile(filename), msbfirst);
     }
 
-
     /**
      * Construct a new index file.
+     * 
      * @param inputstream BinaryBufferedFile handle.
      * @param msbfirst the byte order of the file to be read.
-     * @exception FormatException some error was encountered in trying to
-     * read the file.
+     * @exception FormatException some error was encountered in trying
+     *            to read the file.
      */
-    public DcwVariableLengthIndexFile(BinaryFile inputstream, boolean msbfirst) throws FormatException {
+    public DcwVariableLengthIndexFile(BinaryFile inputstream, boolean msbfirst)
+            throws FormatException {
 
         try {
             inputstream.byteOrder(msbfirst);
@@ -72,36 +71,41 @@ public class DcwVariableLengthIndexFile {
             int HeaderLength = inputstream.readInteger();
             offsettable = new int[recordCount * 2];
             inputstream.readIntegerArray(offsettable, 0, recordCount * 2);
-            endOfFileOffset = offsettable[offsettable.length - 2] + 
-                offsettable[offsettable.length - 1];
+            endOfFileOffset = offsettable[offsettable.length - 2]
+                    + offsettable[offsettable.length - 1];
             inputstream.close();
-//          com.bbn.openmap.util.Debug.output("VLI.init(): number of entries(" + recordCount + 
-//                                            ") HeaderLength(" + HeaderLength + ")");
+            //          com.bbn.openmap.util.Debug.output("VLI.init(): number
+            // of entries(" + recordCount +
+            //                                            ") HeaderLength(" + HeaderLength + ")");
 
         } catch (IOException i) {
-            throw new FormatException("IOException with " + inputstream.getName() + ": " +
-                                      i.getMessage());
+            throw new FormatException("IOException with "
+                    + inputstream.getName() + ": " + i.getMessage());
         }
     }
 
-    /** 
-     * get the offset byte offset of the record in the associated table file.
-     * If recordNumber is greater than the number of records, this
-     * returns the offset of the end-of-file.
+    /**
+     * get the offset byte offset of the record in the associated
+     * table file. If recordNumber is greater than the number of
+     * records, this returns the offset of the end-of-file.
+     * 
      * @param recordNumber the record to retrieve the offset for
      */
     public int recordOffset(int recordNumber) {
-        return (recordCount < recordNumber) ? endOfFileOffset :
-            offsettable[(recordNumber-1) * 2];
+        return (recordCount < recordNumber) ? endOfFileOffset
+                : offsettable[(recordNumber - 1) * 2];
     }
 
-    /** get the size of the record in the associated table file
-     * If recordNumber is greater than the number of records, this
+    /**
+     * get the size of the record in the associated table file If
+     * recordNumber is greater than the number of records, this
      * returns a record size of 0.
-     * @param recordNumber the record to retrieve the offset for */
+     * 
+     * @param recordNumber the record to retrieve the offset for
+     */
     public int recordSize(int recordNumber) {
-        return (recordCount < recordNumber) ? 0 :
-            offsettable[(recordNumber-1) * 2 + 1];
+        return (recordCount < recordNumber) ? 0
+                : offsettable[(recordNumber - 1) * 2 + 1];
     }
 
     /** get the number of records in the index file */
@@ -110,6 +114,5 @@ public class DcwVariableLengthIndexFile {
     }
 
     /** close the associated input file */
-    public void close() {
-    }
+    public void close() {}
 }

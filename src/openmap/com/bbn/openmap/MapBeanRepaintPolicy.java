@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBeanRepaintPolicy.java,v $
 // $RCSfile: MapBeanRepaintPolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/04 18:12:50 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,9 +26,9 @@ import java.awt.Graphics;
 
 /**
  * A MapBeanRepaintPolicy is a policy object that makes decisions on
- * how a MapBean handles repaint requests from a layer.  It can
- * forward them on to the Swing thread by calling MapBean.repaint(),
- * or ignore them until conditions that it considers valuable are met.
+ * how a MapBean handles repaint requests from a layer. It can forward
+ * them on to the Swing thread by calling MapBean.repaint(), or ignore
+ * them until conditions that it considers valuable are met.
  */
 public interface MapBeanRepaintPolicy extends Cloneable {
 
@@ -46,7 +46,7 @@ public interface MapBeanRepaintPolicy extends Cloneable {
     /**
      * A hook for the RepaintPolicy to make any adjustments to the
      * java.awt.Graphics object before sending the Graphics object to
-     * the layers for painting.  Gives the policy a chance to make
+     * the layers for painting. Gives the policy a chance to make
      * rendering hint changes on Graphic2D objects, setting
      * anti-aliasing configurations, etc.
      */

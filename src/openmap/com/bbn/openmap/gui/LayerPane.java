@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,52 +14,43 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerPane.java,v $
 // $RCSfile: LayerPane.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.*;
 import java.io.Serializable;
 import java.net.URL;
-import java.util.*;
 
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.accessibility.*;
 
 import com.bbn.openmap.*;
-import com.bbn.openmap.event.LayerEvent;
-import com.bbn.openmap.event.LayerListener;
-import com.bbn.openmap.event.LayerSupport;
-import com.bbn.openmap.util.Assert;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PaletteHelper;
 
-/** 
+/**
  * A LayerPane is a single instance of how a layer represented in the
  * LayersPanel. It contains three widgets: an on/off button; a palette
- * button; and a toggle button with the layer name. <P>
+ * button; and a toggle button with the layer name.
+ * <P>
  */
-public class LayerPane extends JPanel 
-    implements Serializable, ActionListener, ComponentListener {
+public class LayerPane extends JPanel implements Serializable, ActionListener,
+        ComponentListener {
 
     protected transient JCheckBox onoffButton;
 
     // Next line uncommented for toggle button
-//      protected transient JCheckBox paletteButton;
+    //      protected transient JCheckBox paletteButton;
     // Comment next line out for toggle button
     protected transient JButton paletteButton;
     protected transient JToggleButton layerName;
     protected transient boolean selected;
     protected transient Layer layer;
-    
+
     protected transient LayerHandler layerHandler;
 
     // the icons
@@ -92,10 +83,10 @@ public class LayerPane extends JPanel
     }
 
     /**
-     *  @param layer the layer to be represented by the pane.
-     *  @param bg the buttongroup for the layer
-     *  @param layerHandler the LayerHandler that contains information
-     *  about the Layers. 
+     * @param layer the layer to be represented by the pane.
+     * @param bg the buttongroup for the layer
+     * @param layerHandler the LayerHandler that contains information
+     *        about the Layers.
      */
     public LayerPane(Layer layer, LayerHandler layerHandler, ButtonGroup bg) {
         super();
@@ -116,25 +107,25 @@ public class LayerPane extends JPanel
         onoffButton.addActionListener(this);
         onoffButton.setToolTipText("Turn " + layer.getName() + " layer on/off");
 
-        // Determine if this layer has already been activated 
+        // Determine if this layer has already been activated
         onoffButton.setSelected(layer.isVisible());
 
         // add the palette show/hide checkbutton
-//      paletteButton = new JCheckBox(paletteIcon);
-//      paletteButton.setSelected(false);
-//      paletteButton.setSelectedIcon(paletteOnIcon);
-//      paletteButton.setToolTipText("Display/Hide tools for " 
-//                                   + layer.getName() + " layer");
+        //      paletteButton = new JCheckBox(paletteIcon);
+        //      paletteButton.setSelected(false);
+        //      paletteButton.setSelectedIcon(paletteOnIcon);
+        //      paletteButton.setToolTipText("Display/Hide tools for "
+        //                                   + layer.getName() + " layer");
 
         paletteButton = new JButton(paletteIcon);
         paletteButton.setBorderPainted(false);
         if (layer.getGUI() == null) {
             paletteButton.setEnabled(false);
-            paletteButton.setToolTipText("No tools available for " 
-                                         + layer.getName() + " layer");
+            paletteButton.setToolTipText("No tools available for "
+                    + layer.getName() + " layer");
         } else {
-            paletteButton.setToolTipText("Display tools for " 
-                                         + layer.getName() + " layer");
+            paletteButton.setToolTipText("Display tools for " + layer.getName()
+                    + " layer");
         }
 
         paletteButton.setActionCommand(showPaletteCmd);
@@ -183,7 +174,7 @@ public class LayerPane extends JPanel
         gridbag.setConstraints(sep, c);
         add(sep);
     }
-  
+
     public void setLayerHandler(LayerHandler in_layerHandler) {
         layerHandler = in_layerHandler;
     }
@@ -227,24 +218,26 @@ public class LayerPane extends JPanel
     }
 
     /**
-     *  @return whether the layer is on
-     */ 
+     * @return whether the layer is on
+     */
     public boolean isLayerOn() {
         return onoffButton.isSelected();
     }
+
     /**
-     *  Turns the button on or off
+     * Turns the button on or off
      */
     public void setLayerOn(boolean value) {
         onoffButton.setSelected(value);
     }
 
     /**
-     *  @return whether the palette for this layer is on
-     */ 
+     * @return whether the palette for this layer is on
+     */
     public boolean isPaletteOn() {
         return paletteButton.isSelected();
     }
+
     /**
      * Turns the palette button on or off
      */
@@ -253,28 +246,29 @@ public class LayerPane extends JPanel
     }
 
     /**
-     *  @return the status of the layerName toggle button
+     * @return the status of the layerName toggle button
      */
-    public boolean isSelected() { 
-        return layerName.isSelected(); 
+    public boolean isSelected() {
+        return layerName.isSelected();
     }
 
     /**
-     *  Highlights/unhighlights the layerName toggle button
+     * Highlights/unhighlights the layerName toggle button
      */
     public void setSelected(boolean select) {
         layerName.setSelected(select);
 
-        String command = select?LayersPanel.LayerSelectedCmd:LayersPanel.LayerDeselectedCmd;
+        String command = select ? LayersPanel.LayerSelectedCmd
+                : LayersPanel.LayerDeselectedCmd;
 
         if (Debug.debugging("layercontrol")) {
-            Debug.output("LayerPane for " + getLayer().getName() +
-                         " " + command + ", firing event");
+            Debug.output("LayerPane for " + getLayer().getName() + " "
+                    + command + ", firing event");
         }
 
         firePropertyChange(command, null, getLayer());
     }
-    
+
     /**
      * @return the layer represented by this LayerPane
      */
@@ -288,9 +282,9 @@ public class LayerPane extends JPanel
         }
     }
 
-    /** 
+    /**
      * Tell the pane to check with the layer to get the current layer
-     * name for it's label.  
+     * name for it's label.
      */
     public void updateLayerLabel() {
         layerName.setText(getLayer().getName());
@@ -299,19 +293,19 @@ public class LayerPane extends JPanel
     protected void showPalette() {
         layer.showPalette();
     }
-    
-    
+
     protected void hidePalette() {
         layer.hidePalette();
     }
-    
+
     /**
      * ActionListener interface.
+     * 
      * @param e ActionEvent
      */
     public void actionPerformed(java.awt.event.ActionEvent e) {
 
-        if (e.getSource().equals(paletteButton)){
+        if (e.getSource().equals(paletteButton)) {
             setSelected(true);
 
             // This for a JButton control
@@ -322,13 +316,16 @@ public class LayerPane extends JPanel
             setSelected(true);
             // layer is selected, add it to or remove it from map
             if (layerHandler != null) {
-                Debug.message("layerspanel","LayerPane|actionPerformed calling layerHandler.turnLayerOn()");
+                Debug.message("layerspanel",
+                        "LayerPane|actionPerformed calling layerHandler.turnLayerOn()");
                 layerHandler.turnLayerOn(onoffButton.isSelected(), layer);
             }
 
-            if (Debug.debugging("layerspanel")){
-                Debug.output("LayerPane: Layer " + layer.getName() + 
-                             (layer.isVisible()?" is visible.":" is NOT visible"));
+            if (Debug.debugging("layerspanel")) {
+                Debug.output("LayerPane: Layer "
+                        + layer.getName()
+                        + (layer.isVisible() ? " is visible."
+                                : " is NOT visible"));
             }
         } else if (e.getSource().equals(layerName)) {
             setSelected(true);
@@ -342,31 +339,31 @@ public class LayerPane extends JPanel
 
     /**
      * Invoked when component has been moved.
-     */    
+     */
     public void componentMoved(ComponentEvent e) {}
 
     /**
      * Invoked when component has been shown.
      */
     public void componentShown(ComponentEvent e) {
-        if (Debug.debugging("layerspanel")){
-            Debug.output("LayerPane: layer pane for " + layer.getName() +
-                         " receiving componentShown event");
+        if (Debug.debugging("layerspanel")) {
+            Debug.output("LayerPane: layer pane for " + layer.getName()
+                    + " receiving componentShown event");
         }
 
-                Component comp = e.getComponent();
+        Component comp = e.getComponent();
         if (comp == null) {
-        } else if (comp == layer){
+        } else if (comp == layer) {
             if (isLayerOn() != true) {
                 setLayerOn(true);
-                if (Debug.debugging("layerspanel")){
-                    Debug.output("LayerPane: layer " + layer.getName() +
-                                 " is now visible.");
+                if (Debug.debugging("layerspanel")) {
+                    Debug.output("LayerPane: layer " + layer.getName()
+                            + " is now visible.");
                 }
             }
         } else if (comp == layer.getPalette()) {
             // Next line uncommented for toggle button
-//          paletteButton.setSelected(true);
+            //          paletteButton.setSelected(true);
             // Comment next line out for toggle button
             paletteButton.setIcon(paletteOnIcon);
         }
@@ -376,29 +373,29 @@ public class LayerPane extends JPanel
      * Invoked when component has been hidden.
      */
     public void componentHidden(ComponentEvent e) {
-        if (Debug.debugging("layerspanel")){
-            Debug.output("LayerPane: layer pane for " + layer.getName() +
-                         " receiving componentHidden event");
+        if (Debug.debugging("layerspanel")) {
+            Debug.output("LayerPane: layer pane for " + layer.getName()
+                    + " receiving componentHidden event");
         }
         Component comp = e.getComponent();
 
         if (comp == layer) {
-            if (isLayerOn() != false){
+            if (isLayerOn() != false) {
                 setLayerOn(false);
-                if (Debug.debugging("layerspanel")){
-                    Debug.output("LayerPane: layer " + layer.getName() +
-                                 " is now hidden.");
+                if (Debug.debugging("layerspanel")) {
+                    Debug.output("LayerPane: layer " + layer.getName()
+                            + " is now hidden.");
                 }
             }
         } else if (comp == layer.getPalette()) {
             // Next line uncommented for toggle button action
-//          paletteButton.setSelected(false);
+            //          paletteButton.setSelected(false);
             // Comment next line out for toggle button action
             paletteButton.setIcon(paletteIcon);
         } else if (comp == null) {
-            if (Debug.debugging("layerspanel")){
-                Debug.output("LayerPane: layer " + layer.getName() +
-                             " is now hidden.");
+            if (Debug.debugging("layerspanel")) {
+                Debug.output("LayerPane: layer " + layer.getName()
+                        + " is now hidden.");
             }
         }
     }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,24 +12,21 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PointEditState.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PointEditState.java,v
+// $
 // $RCSfile: PointEditState.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.editable;
 
-
-import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.util.Debug;
 
 public class PointEditState extends GraphicEditState implements EOMGEditState {
@@ -40,17 +37,9 @@ public class PointEditState extends GraphicEditState implements EOMGEditState {
 
     public boolean mouseReleased(MouseEvent e) {
         Debug.message("eomg", "PointStateMachine|edit state|mouseReleased");
-        graphic.setGrabPoints(); // Needed for OMPoints that are point and clicked for placement.
+        graphic.setGrabPoints(); // Needed for OMPoints that are point
+                                 // and clicked for placement.
         return super.mouseReleased(e);
     }
 }
-
-
-
-
-
-
-
-
-
 

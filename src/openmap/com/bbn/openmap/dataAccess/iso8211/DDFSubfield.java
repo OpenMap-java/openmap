@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/iso8211/DDFSubfield.java,v $
 // $RCSfile: DDFSubfield.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/03/05 02:25:58 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.dataAccess.iso8211;
 
@@ -56,23 +55,29 @@ public class DDFSubfield {
 
     /**
      * Create a subfield with a definition and the bytes containing
-     * the information for the value.  The definition parameters will
+     * the information for the value. The definition parameters will
      * tell the DDFSubfield what kind of object to create for the
      * data.
      */
-    public DDFSubfield(DDFSubfieldDefinition poSFDefn,
-                       byte[] pachFieldData,
-                       int nBytesRemaining) {
+    public DDFSubfield(DDFSubfieldDefinition poSFDefn, byte[] pachFieldData,
+            int nBytesRemaining) {
         defn = poSFDefn;
         MutableInt nBytesConsumed = new MutableInt();
         DDFDataType ddfdt = poSFDefn.getType();
 
         if (ddfdt == DDFDataType.DDFInt) {
-            setValue(new Integer(defn.extractIntData(pachFieldData, nBytesRemaining, nBytesConsumed)));
+            setValue(new Integer(defn.extractIntData(pachFieldData,
+                    nBytesRemaining,
+                    nBytesConsumed)));
         } else if (ddfdt == DDFDataType.DDFFloat) {
-            setValue(new Double(defn.extractFloatData(pachFieldData, nBytesRemaining, nBytesConsumed)));
-        } else if (ddfdt == DDFDataType.DDFString || ddfdt == DDFDataType.DDFBinaryString) {
-            setValue(defn.extractStringData(pachFieldData, nBytesRemaining, nBytesConsumed));
+            setValue(new Double(defn.extractFloatData(pachFieldData,
+                    nBytesRemaining,
+                    nBytesConsumed)));
+        } else if (ddfdt == DDFDataType.DDFString
+                || ddfdt == DDFDataType.DDFBinaryString) {
+            setValue(defn.extractStringData(pachFieldData,
+                    nBytesRemaining,
+                    nBytesConsumed));
         }
 
         byteSize = nBytesConsumed.value;
@@ -105,25 +110,25 @@ public class DDFSubfield {
     }
 
     /**
-     * Get the value of the subfield as an int.  Returns 0 if the
-     * value is 0 or isn't a number.
+     * Get the value of the subfield as an int. Returns 0 if the value
+     * is 0 or isn't a number.
      */
     public int intValue() {
         Object obj = getValue();
         if (obj instanceof Number) {
-            return ((Number)obj).intValue();
+            return ((Number) obj).intValue();
         }
         return 0;
     }
 
     /**
-     * Get the value of the subfield as a float.  Returns 0f if the
+     * Get the value of the subfield as a float. Returns 0f if the
      * value is 0 or isn't a number.
      */
     public float floatValue() {
         Object obj = getValue();
         if (obj instanceof Number) {
-            return ((Number)obj).floatValue();
+            return ((Number) obj).floatValue();
         }
         return 0f;
     }

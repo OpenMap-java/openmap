@@ -17,8 +17,8 @@
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiRoadLayer.java,v $
  * $RCSfile: MultiRoadLayer.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/13 17:17:37 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/14 18:06:05 $
  * $Author: dietrick $
  *
  * **********************************************************************
@@ -41,39 +41,42 @@ import java.util.logging.Level;
 
 /**
  * Imposes a road layer on the multi shape layer.
- *
+ * 
  * The important method here is getPathOnRoad(implemented for the
  * RoadServices interface) which returns a list of points on the road
  * found between a start and an end point.
- *
+ * 
  * You can see more about what the road layer is doing by setting
  * drawIntersections to true, which will reveal what the road finder
  * thinks are roads on the road layer, and drawResults to true, which
  * will show each road path request and its result. The results shown
  * accumulate over time.
- *
+ * 
  * @see com.bbn.openmap.tools.road.RoadServices
  */
-public class MultiRoadLayer extends MultiShapeLayer 
-    implements RoadServices, ProjectionListener, LayerView {
+public class MultiRoadLayer extends MultiShapeLayer implements RoadServices,
+        ProjectionListener, LayerView {
 
     Logger logger = Logger.getLogger(this.getClass().getName());
     RoadFinder helper;
 
-    /** list of extra OMGraphics that represent intersections or results */
+    /**
+     * list of extra OMGraphics that represent intersections or
+     * results
+     */
     List toDraw = new ArrayList();
     boolean drawIntersections = false;
     boolean drawResults = false;
 
     /**
-     * Property 'drawIntersections' will display the intersections on the road layer
-     * False by default.
+     * Property 'drawIntersections' will display the intersections on
+     * the road layer False by default.
      */
     public static final String DrawIntersectionsProperty = "drawIntersections";
 
     /**
-     * Property 'drawResults' will display the results of each road request on the road layer
-     * False by default.
+     * Property 'drawResults' will display the results of each road
+     * request on the road layer False by default.
      */
     public static final String DrawResultsProperty = "drawResults";
 
@@ -81,13 +84,20 @@ public class MultiRoadLayer extends MultiShapeLayer
         super.setProperties(prefix, props);
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        setDrawIntersections(PropUtils.booleanFromProperties(props, realPrefix + DrawIntersectionsProperty, drawIntersections));
-        setDrawResults(PropUtils.booleanFromProperties(props, realPrefix + DrawResultsProperty, drawResults));
+        setDrawIntersections(PropUtils.booleanFromProperties(props, realPrefix
+                + DrawIntersectionsProperty, drawIntersections));
+        setDrawResults(PropUtils.booleanFromProperties(props, realPrefix
+                + DrawResultsProperty, drawResults));
         setHelper();
     }
 
-    protected void setDrawIntersections(boolean val) { drawIntersections = val; }
-    protected void setDrawResults(boolean val) { drawResults = val; }
+    protected void setDrawIntersections(boolean val) {
+        drawIntersections = val;
+    }
+
+    protected void setDrawResults(boolean val) {
+        drawResults = val;
+    }
 
     protected void setHelper() {
         logger.info("draw inter " + drawIntersections);
@@ -96,11 +106,11 @@ public class MultiRoadLayer extends MultiShapeLayer
 
     /**
      * Get points on the road between start and end
-     *
+     * 
      * Implemented for the RoadService interface
-     *
+     * 
      * @param start from here
-     * @param end  to there
+     * @param end to there
      * @param segments populated with road segments
      * @return list of points on path
      */
@@ -108,8 +118,8 @@ public class MultiRoadLayer extends MultiShapeLayer
         return helper.getPathOnRoad(start, end, segments);
     }
 
-    /** 
-     * Implemented for ProjectionListener 
+    /**
+     * Implemented for ProjectionListener
      */
     public void projectionChanged(ProjectionEvent e) {
         super.projectionChanged(e);
@@ -123,15 +133,17 @@ public class MultiRoadLayer extends MultiShapeLayer
     }
 
     /**
-     * Flattens nested OMGraphicLists of lists into one level list of OMGraphic items.
-     * Gets the original list of graphics items from getList.
-     *
-     * @return List of OMGraphic items that will be used to create roads
+     * Flattens nested OMGraphicLists of lists into one level list of
+     * OMGraphic items. Gets the original list of graphics items from
+     * getList.
+     * 
+     * @return List of OMGraphic items that will be used to create
+     *         roads
      */
     public List getGraphicList() {
         OMGraphicList list = getList();
         List out = new ArrayList();
-    
+
         Set seen = new HashSet();
 
         if (list != null) {
@@ -150,15 +162,17 @@ public class MultiRoadLayer extends MultiShapeLayer
 
                 if (graphic instanceof OMGraphicList) {
                     if (logger.isLoggable(Level.INFO))
-                        logger.info("size of " + graphic + " is " + ((OMGraphicList) graphic).size());
+                        logger.info("size of " + graphic + " is "
+                                + ((OMGraphicList) graphic).size());
 
-                    for (Iterator iter = ((OMGraphicList)graphic).iterator(); iter.hasNext(); ) {
+                    for (Iterator iter = ((OMGraphicList) graphic).iterator(); iter.hasNext();) {
                         Object inner = iter.next();
                         if (inner instanceof OMGraphicList) {
                             if (logger.isLoggable(Level.INFO))
-                                logger.info("size of " + inner + " is " + ((OMGraphicList) inner).size());
+                                logger.info("size of " + inner + " is "
+                                        + ((OMGraphicList) inner).size());
 
-                            for (Iterator iter2 = ((OMGraphicList)inner).iterator(); iter2.hasNext(); ) {
+                            for (Iterator iter2 = ((OMGraphicList) inner).iterator(); iter2.hasNext();) {
                                 Object inner2 = iter2.next();
 
                                 if (logger.isLoggable(Level.INFO))
@@ -166,16 +180,14 @@ public class MultiRoadLayer extends MultiShapeLayer
 
                                 out.add(inner2);
                             }
-                        }
-                        else {
+                        } else {
                             if (logger.isLoggable(Level.INFO))
                                 logger.info("2) adding - " + inner);
 
                             out.add(inner);
                         }
                     }
-                }
-                else {
+                } else {
                     if (logger.isLoggable(Level.INFO))
                         logger.info("3) adding " + graphic);
 
@@ -188,7 +200,8 @@ public class MultiRoadLayer extends MultiShapeLayer
     }
 
     /**
-     * Called from RoadFinder to tell it what extra to render (e.g. intersections, roads).
+     * Called from RoadFinder to tell it what extra to render (e.g.
+     * intersections, roads).
      */
     public void setExtraGraphics(List toDraw) {
         if (logger.isLoggable(Level.INFO)) {
@@ -199,15 +212,17 @@ public class MultiRoadLayer extends MultiShapeLayer
     }
 
     /**
-     * If drawIntersections or drawResults is true, will add intersection markers or 
-     * returned road lines to what is rendered.
+     * If drawIntersections or drawResults is true, will add
+     * intersection markers or returned road lines to what is
+     * rendered.
      */
     public void paint(Graphics g) {
         super.paint(g);
         if (drawIntersections || drawResults) {
             OMGraphicList graphics;
             graphics = new OMGraphicList(toDraw);
-            graphics.generate(getProjection(), true);//all new graphics
+            graphics.generate(getProjection(), true);//all new
+                                                     // graphics
             if (logger.isLoggable(Level.INFO)) {
                 logger.info("rendering toDraw " + toDraw.size() + " items");
             }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,28 +14,26 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwThematicIndex.java,v $
 // $RCSfile: DcwThematicIndex.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
 import java.io.IOException;
 import java.io.EOFException;
-import java.io.File;
 import java.util.*;
 
 import com.bbn.openmap.io.*;
 import com.bbn.openmap.util.Debug;
 
-/** Read a VPF thematic index file.  (VPF *.?ti files) */
+/** Read a VPF thematic index file. (VPF *.?ti files) */
 public class DcwThematicIndex {
     /** the file we read from */
     private BinaryFile inputFile = null;
-    /** read from file - length of header*/
+    /** read from file - length of header */
     final private int headerSize;
     /** read from file - number of indexes (codes) */
     final private int numberOfCodes;
@@ -58,12 +56,12 @@ public class DcwThematicIndex {
     /** the list of index records */
     private IndexRecord[] indexData;
     /** the name of the file being read */
-//     final protected File filename;
+    //     final protected File filename;
     final protected String filename;
     /** the byte order of the file */
     protected boolean byteOrder;
 
-    /** 
+    /**
      * A utility class used to record index records.
      */
     public static class IndexRecord implements Comparable {
@@ -73,8 +71,10 @@ public class DcwThematicIndex {
         final int offset;
         /** the number of values - 0 means the offset is the only value */
         final int numvals;
+
         /**
          * Construct an index record
+         * 
          * @param index the index object
          * @param offset the offset of the data
          * @param numvals the number of values
@@ -86,33 +86,35 @@ public class DcwThematicIndex {
         }
 
         public int compareTo(Object obj) {
-            Object realobj = (obj instanceof IndexRecord) ?
-              ((IndexRecord)obj).index : obj;
-            return ((Comparable)index).compareTo(realobj);
+            Object realobj = (obj instanceof IndexRecord) ? ((IndexRecord) obj).index
+                    : obj;
+            return ((Comparable) index).compareTo(realobj);
         }
     }
 
     /**
      * Construct an index, assumes this is pre-VPF2407 format.
+     * 
      * @param filename the file to oped
      * @param border the byteorder
      */
     public DcwThematicIndex(String filename, boolean border)
-        throws FormatException {
+            throws FormatException {
         this(filename, border, false);
     }
 
-
     /**
      * Construct an index, assumes this is pre-VPF2407 format.
+     * 
      * @param filename the file to oped
      * @param border the byteorder
-     * @param vpf2407 true for MILSTD-2407 format thematic index. false
-     * will properly read a VPF2407 format index, but will ignore one
-     * header field (sorted).  true will improperly read old-style data.
+     * @param vpf2407 true for MILSTD-2407 format thematic index.
+     *        false will properly read a VPF2407 format index, but
+     *        will ignore one header field (sorted). true will
+     *        improperly read old-style data.
      */
     public DcwThematicIndex(String filename, boolean border, boolean vpf2407)
-        throws FormatException {
+            throws FormatException {
 
         this.filename = filename;
         byteOrder = border;
@@ -137,16 +139,18 @@ public class DcwThematicIndex {
             inputFile.seek(60); //skips 3 unused bytes
 
             indexData = new IndexRecord[numberOfCodes];
-    
+
             if (Debug.debugging("vpfserver")) {
                 System.out.println("HeaderSize = " + headerSize);
                 System.out.println("Number of Codes = " + numberOfCodes);
                 System.out.println("Number of Rows = " + numberOfRows);
                 System.out.println("Type of Index = " + typeOfIndex);
-//              if (typeOfIndex != 'T') 
-//                  System.out.println(" *** Strange - dcw spec says it will be T ***");
+                //              if (typeOfIndex != 'T')
+                //                  System.out.println(" *** Strange - dcw spec says it
+                // will be T ***");
                 System.out.println("Field Type of Index = " + fieldTypeOfIndex);
-                System.out.println("Number of Data Element = " + numberOfDataElement);
+                System.out.println("Number of Data Element = "
+                        + numberOfDataElement);
                 System.out.println("Data Type Specifier = " + dataTypeSpecifier);
                 System.out.println("Table Indexed  = " + tableIndexed);
                 System.out.println("Column Indexed = " + columnIndexed);
@@ -155,9 +159,8 @@ public class DcwThematicIndex {
 
             StringBuffer pr = new StringBuffer();
             for (int i = 0; i < numberOfCodes; i++) {
-                indexData[i] = new IndexRecord(readIndexField(fieldTypeOfIndex, numberOfDataElement),
-                                               inputFile.readInteger(),
-                                               inputFile.readInteger());
+                indexData[i] = new IndexRecord(readIndexField(fieldTypeOfIndex,
+                        numberOfDataElement), inputFile.readInteger(), inputFile.readInteger());
 
                 if (Debug.debugging("vpfserver")) {
                     pr = new StringBuffer("i = " + i);
@@ -169,7 +172,7 @@ public class DcwThematicIndex {
                     }
                 }
             }
-            
+
             if (!sorted) {
                 Arrays.sort(indexData);
             }
@@ -191,21 +194,24 @@ public class DcwThematicIndex {
 
                 Object[] indexes = getValueIndexes();
                 // We just know that these values are tile IDs.
-                for (int j = 0; j < indexes.length; j++ ) {
+                for (int j = 0; j < indexes.length; j++) {
                     int[] row = get(indexes[j]);
-                    // If you want to do some scary printout, code it up here.
+                    // If you want to do some scary printout, code it
+                    // up here.
                 }
             }
             close();
         } catch (EOFException e) {
             throw new FormatException("Hit Premature EOF in thematic index");
         } catch (IOException i) {
-            throw new FormatException("Encountered IO Exception: " + i.getMessage());
+            throw new FormatException("Encountered IO Exception: "
+                    + i.getMessage());
         }
     }
 
     /**
      * Returns the set of values indexed by this thematic index.
+     * 
      * @return the set of values indexed
      */
     public Object[] getValueIndexes() {
@@ -223,6 +229,7 @@ public class DcwThematicIndex {
 
     /**
      * Returns the list of rows listed for this index
+     * 
      * @return an array of rows
      * @param valueIndex the value to look up
      */
@@ -235,7 +242,7 @@ public class DcwThematicIndex {
                 IndexRecord ir = indexData[index];
                 int offset = ir.offset;
                 int numvals = ir.numvals;
-                        
+
                 if ((typeOfIndex == 'T') || (typeOfIndex == 'I')) {
                     if (numvals == 0) {
                         values = new int[1];
@@ -243,25 +250,27 @@ public class DcwThematicIndex {
                     } else {
                         values = new int[numvals];
                         reopen(offset);
-                        
+
                         for (int j = 0; j < numvals; j++) {
                             values[j] = readIndexWithFieldType(dataTypeSpecifier);
                         }
                     }
-                            
+
                     return values;
 
                 } else if ((typeOfIndex == 'B') || (typeOfIndex == 'G')) {
-                    // Don't really do anything with this type of index...
+                    // Don't really do anything with this type of
+                    // index...
 
                     int shortread = numberOfRows / 16;
                     if ((numberOfRows % 16) != 0) {
                         shortread++;
                     }
                     if (Debug.debugging("vpfserver")) {
-                        System.out.println("Reading a bunch of shorts: " + shortread);
-                        System.out.println("Starting at offset: " + 
-                                           inputFile.getFilePointer());
+                        System.out.println("Reading a bunch of shorts: "
+                                + shortread);
+                        System.out.println("Starting at offset: "
+                                + inputFile.getFilePointer());
                     }
 
                     BitSet bits = new BitSet(numberOfRows);
@@ -292,7 +301,8 @@ public class DcwThematicIndex {
         } catch (EOFException e) {
             throw new FormatException("Hit Premature EOF in thematic index");
         } catch (IOException i) {
-            throw new FormatException("Encountered IO Exception: " + i.getMessage());
+            throw new FormatException("Encountered IO Exception: "
+                    + i.getMessage());
         }
 
         return values;
@@ -300,22 +310,23 @@ public class DcwThematicIndex {
 
     /**
      * Utility method to read rows.
+     * 
      * @param ft the field type
      * @returns the value read from the file
      */
-    private int readIndexWithFieldType(char ft)
-        throws EOFException, FormatException {
+    private int readIndexWithFieldType(char ft) throws EOFException,
+            FormatException {
         switch (ft) {
         case 'S':
-            return (int)inputFile.readShort();
+            return (int) inputFile.readShort();
         case 'I':
             return inputFile.readInteger();
         }
         throw new FormatException("Unrecognized FieldTypeOfIndex");
     }
 
-    private Object readIndexField(char dts, int textlen)
-        throws EOFException, FormatException {
+    private Object readIndexField(char dts, int textlen) throws EOFException,
+            FormatException {
         switch (dts) {
         case 'I':
             return new Integer(inputFile.readInteger());
@@ -345,6 +356,7 @@ public class DcwThematicIndex {
 
     /**
      * Returns the number of distinct indexed values
+     * 
      * @return the number of distinct indexed values
      */
     public int getNumberOfCodes() {
@@ -353,6 +365,7 @@ public class DcwThematicIndex {
 
     /**
      * Returns the number of rows indexed
+     * 
      * @return the number of rows indexed
      */
     public int getNumberOfRows() {
@@ -361,6 +374,7 @@ public class DcwThematicIndex {
 
     /**
      * Returns the type of index (refer to VPF spec for valid values)
+     * 
      * @return the type of index (refer to VPF spec for valid values)
      */
     public char getTypeOfIndex() {
@@ -369,6 +383,7 @@ public class DcwThematicIndex {
 
     /**
      * Returns the type of the field being indexed
+     * 
      * @return the type of the field being indexed
      */
     public char getFieldTypeOfIndex() {
@@ -377,6 +392,7 @@ public class DcwThematicIndex {
 
     /**
      * Returns the number of elements in the index field
+     * 
      * @return the number of elements in the index field
      */
     public int getNumberOfDataElements() {
@@ -385,6 +401,7 @@ public class DcwThematicIndex {
 
     /**
      * Returns the datatype specifier
+     * 
      * @return the datatype specifier
      */
     public char getDataTypeSpecifier() {
@@ -393,6 +410,7 @@ public class DcwThematicIndex {
 
     /**
      * Returns the name of the table being indexed
+     * 
      * @return the name of the table being indexed
      */
     public String getTableIndexed() {
@@ -401,6 +419,7 @@ public class DcwThematicIndex {
 
     /**
      * Returns the name of the column being indexed
+     * 
      * @return the name of the column being indexed
      */
     public String getColumnIndexed() {
@@ -419,18 +438,19 @@ public class DcwThematicIndex {
             }
             inputFile = null;
         } catch (IOException i) {
-            throw new FormatException("DcwThematicIndex: Can't close file " + 
-                                      filename + ": " + i.getMessage());
+            throw new FormatException("DcwThematicIndex: Can't close file "
+                    + filename + ": " + i.getMessage());
         }
     }
 
     /**
      * Reopen the associated input file.
-     * @param offset the byte offset to seek to upon reopening the file.
-     * If offset is invalid (less than 1), then the input stream is in an
-     * undefined location.
-     * @exception FormatException some error was encountered in reopening
-     *  file or seeking to the desired row.
+     * 
+     * @param offset the byte offset to seek to upon reopening the
+     *        file. If offset is invalid (less than 1), then the input
+     *        stream is in an undefined location.
+     * @exception FormatException some error was encountered in
+     *            reopening file or seeking to the desired row.
      * @see #close()
      */
     public synchronized void reopen(int offset) throws FormatException {
@@ -443,8 +463,8 @@ public class DcwThematicIndex {
                 inputFile.seek(offset);
             }
         } catch (IOException i) {
-            throw new FormatException("DcwThematicIndex: Can't open file " + 
-                                      filename + ": " + i.getMessage());
+            throw new FormatException("DcwThematicIndex: Can't open file "
+                    + filename + ": " + i.getMessage());
         }
     }
 

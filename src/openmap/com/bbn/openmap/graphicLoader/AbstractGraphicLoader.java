@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/AbstractGraphicLoader.java,v $
 // $RCSfile: AbstractGraphicLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.graphicLoader;
 
@@ -29,36 +28,35 @@ import java.awt.event.ActionListener;
 import java.util.Properties;
 import javax.swing.Timer;
 
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
  * The abstract AbstractGraphicLoader class is an OMGraphic managing
- * object.  It can talk to any source it wants to for configuring its
+ * object. It can talk to any source it wants to for configuring its
  * OMGraphicList, and then notifies its OMGraphicHandler with the
  * changes. The AbstractGraphicLoader comes with a built-in timer, in
  * case you want to check back with the graphic source within certain
- * intervals in order to update the graphics in an animated
- * fashion. This class also extends MapHandlerChild so if you want to
- * add it to the MapHandler to find other objects, you can override
- * the findAndInit() method.<P>
- *
+ * intervals in order to update the graphics in an animated fashion.
+ * This class also extends MapHandlerChild so if you want to add it to
+ * the MapHandler to find other objects, you can override the
+ * findAndInit() method.
+ * <P>
+ * 
  * This object is really intended to be used with the
- * GraphicLoaderPlugIn, but it doesn't really have to be.  If you have
+ * GraphicLoaderPlugIn, but it doesn't really have to be. If you have
  * a GraphicLoaderConnector in the MapHandler and then add a
  * GraphicLoader to the MapHandler, the GraphicLoaderConnector will
- * check to see if the GraphicLoader has a receiver.  If there isn't a
+ * check to see if the GraphicLoader has a receiver. If there isn't a
  * receiver, the GraphicLoaderConnetor will create a
  * GraphicLoaderPlugIn for you, connect the GraphicLoader to it, and
- * then add the GraphicLoaderPlugIn to the LayerHandler.  Then, the
- * GraphicLoader will have its graphics on the map.  
+ * then add the GraphicLoaderPlugIn to the LayerHandler. Then, the
+ * GraphicLoader will have its graphics on the map.
  */
-public abstract class AbstractGraphicLoader extends OMComponent 
-    implements GraphicLoader, ActionListener {
+public abstract class AbstractGraphicLoader extends OMComponent implements
+        GraphicLoader, ActionListener {
 
     protected Timer timer;
     protected int DO_NOT_UPDATE_TIMER = -1;
@@ -81,15 +79,16 @@ public abstract class AbstractGraphicLoader extends OMComponent
 
     /**
      * The method where the AbstractGraphicLoader is expected to tell
-     * the receiver what the OMGraphics are.  This gets called by
+     * the receiver what the OMGraphics are. This gets called by
      * default by the actionPerformed() method, which is called by
      * default by the built-in timer when it is running.
+     * 
      * @see com.bbn.openmap.omGraphics.OMGraphicHandler#setList(OMGraphicList)
      */
     public abstract void manageGraphics();
 
     /**
-     * Provide a GUI for controlling the GraphicLoader.  It's OK if
+     * Provide a GUI for controlling the GraphicLoader. It's OK if
      * it's null.
      */
     public Component getGUI() {
@@ -103,7 +102,7 @@ public abstract class AbstractGraphicLoader extends OMComponent
         if (!p.equals(getProjection())) {
             proj = p;
             manageGraphics();
-        } 
+        }
     }
 
     public Projection getProjection() {
@@ -119,7 +118,7 @@ public abstract class AbstractGraphicLoader extends OMComponent
     }
 
     /**
-     * Get the timer being used for automatic updates.  May be null if
+     * Get the timer being used for automatic updates. May be null if
      * a timer is not set.
      */
     public Timer getTimer() {
@@ -128,10 +127,10 @@ public abstract class AbstractGraphicLoader extends OMComponent
 
     /**
      * If you want the layer to update itself at certain intervals,
-     * you can set the timer to do that.  Set it to null to disable
-     * it.  If the current timer is not null, the graphic loader is
-     * removed as an ActionListener.  If the new one is not null, the
-     * graphic loader is added as an ActionListener.
+     * you can set the timer to do that. Set it to null to disable it.
+     * If the current timer is not null, the graphic loader is removed
+     * as an ActionListener. If the new one is not null, the graphic
+     * loader is added as an ActionListener.
      */
     public void setTimer(Timer t) {
         if (timer != null) {
@@ -175,9 +174,9 @@ public abstract class AbstractGraphicLoader extends OMComponent
     }
 
     /**
-     * Method gets called by the timer if it's running.  Will also get
+     * Method gets called by the timer if it's running. Will also get
      * called if any other component is using this class as an
-     * ActionListener.  By default, calls manageGraphics();
+     * ActionListener. By default, calls manageGraphics();
      */
     public void actionPerformed(ActionEvent ae) {
         manageGraphics();
@@ -216,7 +215,8 @@ public abstract class AbstractGraphicLoader extends OMComponent
         list = super.getPropertyInfo(list);
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-        list.put(NameProperty, "A short name description for what this GraphicLoader does.");
+        list.put(NameProperty,
+                "A short name description for what this GraphicLoader does.");
 
         return list;
     }

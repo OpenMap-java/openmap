@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCacheManager.java,v $
 // $RCSfile: DTEDCacheManager.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/12 17:13:43 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -237,7 +237,7 @@ public class DTEDCacheManager {
 
         if (lon[0] > 0 && lon[2] < 0) {
             lon[1] = -179.999f; // put a little breather on the
-                                // dateline
+            // dateline
             lon_minus = 1;
         }
         if (lat[0] > 0 && lat[2] < 0) {
@@ -316,7 +316,7 @@ public class DTEDCacheManager {
             }
 
             caches[3].setProjection(proj, lat[0], lon[0], -1f * lat[1],//  flip
-                                                                       // breather
+                    // breather
                     -1f * lon[1]);// -1 to make it 180, not -180
         } else
             caches[3] = null;

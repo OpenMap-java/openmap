@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDLayer.java,v $
 // $RCSfile: DTEDLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/10/12 17:13:44 $
+// $Revision: 1.11 $
+// $Date: 2004/10/14 18:05:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,21 +26,34 @@ package com.bbn.openmap.layer.dted;
 import java.awt.event.*;
 import java.io.*;
 
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+
 /*  OpenMap  */
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.event.InfoDisplayEvent;
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.MapMouseListener;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.proj.EqualArc;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.SwingWorker;
-
-import javax.swing.*;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 
 /**
  * The DTEDLayer fills the screen with DTED data. To view the DTED
@@ -72,52 +85,54 @@ import javax.swing.event.ChangeEvent;
  * 
  *  
  *   
- *    #------------------------------
- *    # Properties for DTEDLayer
- *    #------------------------------
- *    # This property should reflect the paths to the dted level 0, 1 and newer 2 (file extension .dt2) data directories, separated by a semicolon.
- *    dted.paths=/usr/local/matt/data/dted;/cdrom/cdrom0/dted
  *    
- *    # This property should reflect the paths to old dted level 2 data directories (file extension .dt1)
- *    dted.level2.paths=/usr/local/matt/data/dted_level2
- *    
- *    # Number between 0-255: 0 is transparent, 255 is opaque
- *    dted.opaque=255
- *    
- *    # Number of colors to use on the maps - 16, 32, 216
- *    dted.number.colors=216
- *    
- *    # Level of DTED data to use 0, 1, 2
- *    dted.level=0
- *    
- *    # Type of display for the data
- *    # 0 = no shading at all
- *    # 1 = greyscale slope shading
- *    # 2 = band shading, in meters
- *    # 3 = band shading, in feet
- *    # 4 = subframe testing
- *    # 5 = elevation, colored
- *    dted.view.type=5
- *    
- *    # Contrast setting, 1-5
- *    dted.contrast=3
- *    
- *    # height (meters or feet) between color changes in band shading
- *    dted.band.height=25
- *    
- *    # Minumum scale to display images. Larger numbers mean smaller scale, 
- *    # and are more zoomed out.
- *    dted.min.scale=20000000
- *    
- *    # Delete the cache if the layer is removed from the map.
- *    dted.kill.cache=true
- *    # Number of frames to hold in the cache. The default is 
- *    # DTEDFrameCache.FRAME_CACHE_SIZE, which is 15 to help smaller systems.  Better
- *    # caching happens, the larger the number.
- *    dted.cacheSize=40
- *    #-------------------------------------
- *    # End of properties for DTEDLayer
- *    #-------------------------------------
+ *     #------------------------------
+ *     # Properties for DTEDLayer
+ *     #------------------------------
+ *     # This property should reflect the paths to the dted level 0, 1 and newer 2 (file extension .dt2) data directories, separated by a semicolon.
+ *     dted.paths=/usr/local/matt/data/dted;/cdrom/cdrom0/dted
+ *     
+ *     # This property should reflect the paths to old dted level 2 data directories (file extension .dt1)
+ *     dted.level2.paths=/usr/local/matt/data/dted_level2
+ *     
+ *     # Number between 0-255: 0 is transparent, 255 is opaque
+ *     dted.opaque=255
+ *     
+ *     # Number of colors to use on the maps - 16, 32, 216
+ *     dted.number.colors=216
+ *     
+ *     # Level of DTED data to use 0, 1, 2
+ *     dted.level=0
+ *     
+ *     # Type of display for the data
+ *     # 0 = no shading at all
+ *     # 1 = greyscale slope shading
+ *     # 2 = band shading, in meters
+ *     # 3 = band shading, in feet
+ *     # 4 = subframe testing
+ *     # 5 = elevation, colored
+ *     dted.view.type=5
+ *     
+ *     # Contrast setting, 1-5
+ *     dted.contrast=3
+ *     
+ *     # height (meters or feet) between color changes in band shading
+ *     dted.band.height=25
+ *     
+ *     # Minumum scale to display images. Larger numbers mean smaller scale, 
+ *     # and are more zoomed out.
+ *     dted.min.scale=20000000
+ *     
+ *     # Delete the cache if the layer is removed from the map.
+ *     dted.kill.cache=true
+ *     # Number of frames to hold in the cache. The default is 
+ *     # DTEDFrameCache.FRAME_CACHE_SIZE, which is 15 to help smaller systems.  Better
+ *     # caching happens, the larger the number.
+ *     dted.cacheSize=40
+ *     #-------------------------------------
+ *     # End of properties for DTEDLayer
+ *     #-------------------------------------
+ *     
  *    
  *   
  *  
@@ -642,11 +657,13 @@ public class DTEDLayer extends Layer implements ActionListener,
      * 
      *  
      *   
-     *    0: DTEDFrameSubframe.NOSHADING
-     *    1: DTEDFrameSubframe.SLOPESHADING
-     *    2: DTEDFrameSubframe.COLOREDSHADING
-     *    3: DTEDFrameSubframe.METERSHADING
-     *    4: DTEDFrameSubframe.FEETSHADING
+     *    
+     *     0: DTEDFrameSubframe.NOSHADING
+     *     1: DTEDFrameSubframe.SLOPESHADING
+     *     2: DTEDFrameSubframe.COLOREDSHADING
+     *     3: DTEDFrameSubframe.METERSHADING
+     *     4: DTEDFrameSubframe.FEETSHADING
+     *     
      *    
      *   
      *  

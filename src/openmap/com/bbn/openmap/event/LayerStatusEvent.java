@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/LayerStatusEvent.java,v $
 // $RCSfile: LayerStatusEvent.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
@@ -43,30 +42,31 @@ public class LayerStatusEvent extends java.util.EventObject {
 
     /**
      * Construct a LayerStatusEvent with a status.
+     * 
      * @param source Source Object
      * @param status the working status
-     *
+     *  
      */
     public LayerStatusEvent(Layer source, int status) {
         super(source);
         this.status = status;
     }
 
-
     /**
      * Get the status of the layer.
+     * 
      * @return int status
      */
     public int getStatus() {
         return status;
     }
 
-
     /**
      * Get the associated Layer.
+     * 
      * @return Layer
      */
     public Layer getLayer() {
-        return (Layer)getSource();
+        return (Layer) getSource();
     }
 }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,15 +14,13 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/BasicStrokeEditor.java,v $
 // $RCSfile: BasicStrokeEditor.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:06:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics;
-
 
 /*  Java Core  */
 import java.awt.*;
@@ -35,13 +33,13 @@ import javax.swing.*;
 /* OpenMap */
 import com.bbn.openmap.util.*;
 
-/** 
+/**
  * The BasicStrokeEditor provides a GUI to adjust BasicStroke
- * parameters.  It can provide a default button to launch itself, or a
- * button can be set.  This class is being replaced by the BasicStrokeEditorMenu.
+ * parameters. It can provide a default button to launch itself, or a
+ * button can be set. This class is being replaced by the
+ * BasicStrokeEditorMenu.
  */
-public class BasicStrokeEditor extends JDialog
-    implements ActionListener {
+public class BasicStrokeEditor extends JDialog implements ActionListener {
 
     protected BasicStroke basicStroke = null;
     protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -82,7 +80,8 @@ public class BasicStrokeEditor extends JDialog
     protected void widgetsToSettings() {
         try {
             float w = new Float(widthField.getText()).floatValue();
-            if (w < 0) w = 0;
+            if (w < 0)
+                w = 0;
             width = w;
         } catch (NumberFormatException nfe) {
             width = 1f;
@@ -93,12 +92,13 @@ public class BasicStrokeEditor extends JDialog
         } catch (NumberFormatException nfe) {
             setMiterLimit(10f);
         }
-        
+
         dash = stringToDashArray(dashField.getText());
 
         try {
             float dp = new Float(dashPhaseField.getText()).floatValue();
-            if (dp < 0f) dp = 0f;
+            if (dp < 0f)
+                dp = 0f;
             dashPhase = dp;
         } catch (NumberFormatException nfe) {
             dashPhase = 0f;
@@ -108,7 +108,8 @@ public class BasicStrokeEditor extends JDialog
         lineJoins = joinBox.getSelectedIndex();
     }
 
-    protected transient JTextField widthField, miterLimitField, dashField, dashPhaseField;
+    protected transient JTextField widthField, miterLimitField, dashField,
+            dashPhaseField;
     protected transient JPanel palette = null;
     protected transient JButton closebutton;
     protected transient JButton applybutton;
@@ -131,7 +132,7 @@ public class BasicStrokeEditor extends JDialog
 
             JPanel joinPanel = PaletteHelper.createPaletteJPanel("Line Joint Decoration");
 
-            String[] joinStrings = {"Miter", "Round", "Bevel"};
+            String[] joinStrings = { "Miter", "Round", "Bevel" };
             joinBox = new JComboBox(joinStrings);
             joinBox.addActionListener(this);
             joinPanel.add(joinBox);
@@ -266,14 +267,17 @@ public class BasicStrokeEditor extends JDialog
     public BasicStroke getBasicStroke() {
         return basicStroke;
     }
-    
+
     public void setBasicStroke(BasicStroke bs) {
         basicStroke = bs;
         if (launchButton != null) {
-//          float buttonHeight = (bs == null?11:bs.getLineWidth() + 10f);
+            //          float buttonHeight = (bs == null?11:bs.getLineWidth() +
+            // 10f);
             float buttonHeight = 20;
-            launchButton.setIcon(createIcon(getBasicStroke(), 40, 
-                                            (int)buttonHeight, true));
+            launchButton.setIcon(createIcon(getBasicStroke(),
+                    40,
+                    (int) buttonHeight,
+                    true));
         }
     }
 
@@ -286,10 +290,13 @@ public class BasicStrokeEditor extends JDialog
     public JButton getLaunchButton() {
         if (launchButton == null) {
             BasicStroke bs = getBasicStroke();
-//          float buttonHeight = (bs == null?11:bs.getLineWidth() + 10f);
+            //          float buttonHeight = (bs == null?11:bs.getLineWidth() +
+            // 10f);
             float buttonHeight = 20;
-            ImageIcon icon = createIcon(getBasicStroke(), 40, 
-                                        (int)buttonHeight, true);
+            ImageIcon icon = createIcon(getBasicStroke(),
+                    40,
+                    (int) buttonHeight,
+                    true);
             launchButton = new JButton(icon);
             launchButton.setToolTipText("Modify Line Stroke");
             launchButton.addActionListener(this);
@@ -298,7 +305,8 @@ public class BasicStrokeEditor extends JDialog
         return launchButton;
     }
 
-    public void setPropertyChangeSupport(PropertyChangeSupport propertyChangeSupport) {
+    public void setPropertyChangeSupport(
+                                         PropertyChangeSupport propertyChangeSupport) {
         pcs = propertyChangeSupport;
     }
 
@@ -306,22 +314,20 @@ public class BasicStrokeEditor extends JDialog
         return pcs;
     }
 
-    /** 
+    /**
      * Given a BasicStroke, create an ImageIcon that shows it.
-     *
+     * 
      * @param stroke the BasicStroke to draw on the Icon.
      * @param width the width of the icon.
      * @param height the height of the icon.
      * @param horizontalOrientation if true, draw line on the icon
-     * horizontally, else draw it vertically. 
+     *        horizontally, else draw it vertically.
      */
-    public static ImageIcon createIcon(BasicStroke stroke, 
-                                       int width, int height, 
-                                       boolean horizontalOrientation) {
+    public static ImageIcon createIcon(BasicStroke stroke, int width,
+                                       int height, boolean horizontalOrientation) {
 
-        BufferedImage bigImage = new BufferedImage(width, height,
-                                                   BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = (Graphics2D)bigImage.getGraphics();
+        BufferedImage bigImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = (Graphics2D) bigImage.getGraphics();
 
         g.setBackground(OMColor.clear);
         g.setPaint(OMColor.clear);
@@ -329,16 +335,17 @@ public class BasicStrokeEditor extends JDialog
         g.setPaint(Color.black);
         g.setStroke(stroke);
         if (horizontalOrientation) {
-            g.drawLine(0, height/2, width, height/2);
+            g.drawLine(0, height / 2, width, height / 2);
         } else {
-            g.drawLine(width/2, 0, width/2, height);
+            g.drawLine(width / 2, 0, width / 2, height);
         }
 
         return new ImageIcon(bigImage);
     }
 
     public void setStrokeWidth(float w) {
-        if (w < 1) w = 1;
+        if (w < 1)
+            w = 1;
         width = w;
     }
 
@@ -347,8 +354,10 @@ public class BasicStrokeEditor extends JDialog
     }
 
     public void setMiterLimit(float ml) {
-        if (ml < 1f) miterLimit = 10f;
-        else miterLimit = ml;
+        if (ml < 1f)
+            miterLimit = 10f;
+        else
+            miterLimit = ml;
     }
 
     public float getMiterLimit() {

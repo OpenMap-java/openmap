@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,19 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMEllipse.java,v $
 // $RCSfile: OMEllipse.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/02/06 19:01:20 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics;
 
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
-import java.util.Vector;
-
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.GreatCircle;
@@ -36,10 +33,10 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * The OMEllipse is a lat/lon ellipse, made up of a center lat/lon
- * point, and some length described for the x and y axis.  If you want
- * to create ellipses in X/Y space, use OMCircle.  Ellipse arcs are
- * not available yet, and this class doesn't really work with the
- * EditableOMCircle.  You can use EditableOMCircles to move and delete
+ * point, and some length described for the x and y axis. If you want
+ * to create ellipses in X/Y space, use OMCircle. Ellipse arcs are not
+ * available yet, and this class doesn't really work with the
+ * EditableOMCircle. You can use EditableOMCircles to move and delete
  * OMEllipses, but you can't change the axis dimensions.
  */
 public class OMEllipse extends OMCircle {
@@ -48,11 +45,8 @@ public class OMEllipse extends OMCircle {
     protected double minorAxisSpan;
     protected float[] rawllpts;
 
-    public OMEllipse(LatLonPoint centerPoint, 
-                     double majorAxisSpan, 
-                     double minorAxisSpan, 
-                     Length units,
-                     double rotateAngle) {
+    public OMEllipse(LatLonPoint centerPoint, double majorAxisSpan,
+            double minorAxisSpan, Length units, double rotateAngle) {
         setRenderType(RENDERTYPE_LATLON);
         setLineType(LINETYPE_GREATCIRCLE);
 
@@ -63,11 +57,11 @@ public class OMEllipse extends OMCircle {
 
     /**
      * Set the axis lengths of the ellipse.
-     *
+     * 
      * @param majorAxis x direction of ellipse.
      * @param minorAxis y direction of ellipse.
      * @param units com.bbn.openmap.proj.Length object describing
-     * units of axis values.
+     *        units of axis values.
      */
     public void setAxis(double majorAxis, double minorAxis, Length units) {
         if (units == null) {
@@ -100,9 +94,9 @@ public class OMEllipse extends OMCircle {
     }
 
     /**
-     * Get the float[] of points that make up the ellipse.  In
-     * radians, lat, lon, lat, lon, etc.  May be null if generate
-     * hasn't been called.
+     * Get the float[] of points that make up the ellipse. In radians,
+     * lat, lon, lat, lon, etc. May be null if generate hasn't been
+     * called.
      */
     public float[] getLatLonPoints() {
         return rawllpts;
@@ -113,51 +107,64 @@ public class OMEllipse extends OMCircle {
      * new lat/lon points all around the ellipse from the center.
      */
     public float[] createLatLonPoints() {
-        // First, need to calculate the lat/lon points for the ellipse.
-        int      i;
-        int      nMax=72;
-        double   angle=-Math.PI;
-        double   angleInc=2.0*Math.PI/nMax;
-        double   []distance=new double[nMax+1];
-        double   x;
-        double   y;
-        double   a;
-        double   b;
-        float    []azimuth=new float[nMax+1];
-        float    []llPoints=new float[2*(nMax+1)];
+        // First, need to calculate the lat/lon points for the
+        // ellipse.
+        int i;
+        int nMax = 72;
+        double angle = -Math.PI;
+        double angleInc = 2.0 * Math.PI / nMax;
+        double[] distance = new double[nMax + 1];
+        double x;
+        double y;
+        double a;
+        double b;
+        float[] azimuth = new float[nMax + 1];
+        float[] llPoints = new float[2 * (nMax + 1)];
 
-        a = majorAxisSpan/2.0;
-        b = minorAxisSpan/2.0;
+        a = majorAxisSpan / 2.0;
+        b = minorAxisSpan / 2.0;
 
-        for (i=0;i<nMax;i++) {
+        for (i = 0; i < nMax; i++) {
 
-            x = Math.sqrt((a*a*b*b)/((b*b) + ((a*a)*Math.pow(Math.tan(angle), 2))));
-            double yt = (x*x)/(a*a);
+            x = Math.sqrt((a * a * b * b)
+                    / ((b * b) + ((a * a) * Math.pow(Math.tan(angle), 2))));
+            double yt = (x * x) / (a * a);
             if (yt > 1.0) {
                 yt = 1.0;
             }
-            y = Math.sqrt((1.0 - yt)*(b*b));
+            y = Math.sqrt((1.0 - yt) * (b * b));
 
-            distance[i]=Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
-            azimuth[i]=(float)angle + com.bbn.openmap.MoreMath.HALF_PI + (float)getRotationAngle();
+            distance[i] = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+            azimuth[i] = (float) angle + com.bbn.openmap.MoreMath.HALF_PI
+                    + (float) getRotationAngle();
 
             if (Debug.debugging("ellipse")) {
-                Debug.output(" " + i +" "+ (azimuth[i]*180/Math.PI) +
-                             " ( " + distance[i] + " ) " + (Debug.debugging("ellipsedetail")?("[from x:" + x + ", y:" + y + ", a:" + a + ", b:" + b + "]"):""));
+                Debug.output(" "
+                        + i
+                        + " "
+                        + (azimuth[i] * 180 / Math.PI)
+                        + " ( "
+                        + distance[i]
+                        + " ) "
+                        + (Debug.debugging("ellipsedetail") ? ("[from x:" + x
+                                + ", y:" + y + ", a:" + a + ", b:" + b + "]")
+                                : ""));
             }
-            angle+=angleInc;
+            angle += angleInc;
         }
 
-        distance[nMax]=distance[0];
-        azimuth[nMax]=azimuth[0];
-        int nCounter=0;
+        distance[nMax] = distance[0];
+        azimuth[nMax] = azimuth[0];
+        int nCounter = 0;
 
-        for (i=0;i<nMax+1;i++) {
+        for (i = 0; i < nMax + 1; i++) {
 
-            LatLonPoint llPt = GreatCircle.spherical_between(center.radlat_, center.radlon_,
-                                                             (float)distance[i],azimuth[i]);
-            llPoints[nCounter++]=llPt.radlat_;
-            llPoints[nCounter++]=llPt.radlon_;
+            LatLonPoint llPt = GreatCircle.spherical_between(center.radlat_,
+                    center.radlon_,
+                    (float) distance[i],
+                    azimuth[i]);
+            llPoints[nCounter++] = llPt.radlat_;
+            llPoints[nCounter++] = llPt.radlon_;
         }
 
         return llPoints;
@@ -166,7 +173,8 @@ public class OMEllipse extends OMCircle {
     public boolean generate(Projection proj) {
 
         if (proj == null) {
-            Debug.message("omgraphic", "OMEllipse: null projection in generate!");
+            Debug.message("omgraphic",
+                    "OMEllipse: null projection in generate!");
             return false;
         }
 
@@ -177,7 +185,7 @@ public class OMEllipse extends OMCircle {
         }
 
         ArrayList vector = null;
-        
+
         // polygon/polyline project the polygon/polyline.
         // Vertices should already be in radians.
         vector = proj.forwardPoly(rawllpts, getLineType(), -1, true);
@@ -185,15 +193,15 @@ public class OMEllipse extends OMCircle {
 
         // We could call create shape, but this is more efficient.
         int i, j;
-        for (i=0, j=0; i<size; i+=2, j++) {
-            GeneralPath gp = createShape((int[])vector.get(i), 
-                                         (int[])vector.get(i+1),
-                                         true);
+        for (i = 0, j = 0; i < size; i += 2, j++) {
+            GeneralPath gp = createShape((int[]) vector.get(i),
+                    (int[]) vector.get(i + 1),
+                    true);
 
             if (shape == null) {
                 shape = gp;
             } else {
-                ((GeneralPath)shape).append(gp, false);
+                ((GeneralPath) shape).append(gp, false);
             }
         }
 

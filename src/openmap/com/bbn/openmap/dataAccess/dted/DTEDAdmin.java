@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDAdmin.java,v $
 // $RCSfile: DTEDAdmin.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/06/01 17:27:25 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,20 +32,25 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.LinkedList;
 import java.util.Iterator;
+
 /**
  * DTEDAdmin is a utility class that finds DTED frame files in order
- * to copy or delete them.  You can specify coordinate boundaries and
- * DTED level as filters.  Usage: <P>
+ * to copy or delete them. You can specify coordinate boundaries and
+ * DTED level as filters. Usage:
+ * <P>
+ * 
  * <pre>
- *  -help       Print usage statement, with arguments. (0 arguments expected)
- *  -boundary   upper lat, left lon, lower lat, right lon (4 arguments expected)
- *  -copy       Copy files to DTED directory. (1 argument expected)
- *  -level      DTED level to consider (0, 1, 2). (1 argument expected)
- *  -outside    Use files outside boundary. (0 arguments expected)
- *  -query      Print out files that meet parameters. (0 arguments expected)
- *  -remove     Delete DTED files. (0 arguments expected)
- *  -source     The source DTED directory path. (1 argument expected)
- *  -verbose    Print out progress. (0 arguments expected)
+ * 
+ *   -help       Print usage statement, with arguments. (0 arguments expected)
+ *   -boundary   upper lat, left lon, lower lat, right lon (4 arguments expected)
+ *   -copy       Copy files to DTED directory. (1 argument expected)
+ *   -level      DTED level to consider (0, 1, 2). (1 argument expected)
+ *   -outside    Use files outside boundary. (0 arguments expected)
+ *   -query      Print out files that meet parameters. (0 arguments expected)
+ *   -remove     Delete DTED files. (0 arguments expected)
+ *   -source     The source DTED directory path. (1 argument expected)
+ *   -verbose    Print out progress. (0 arguments expected)
+ *  
  * </pre>
  */
 public class DTEDAdmin {
@@ -69,55 +74,63 @@ public class DTEDAdmin {
     public final static int DTED_EQUAL_LEVELS = 3;
 
     /**
-     * Create a DTEDAdmin object, with file filter parameters to be specified later.
+     * Create a DTEDAdmin object, with file filter parameters to be
+     * specified later.
      */
     public DTEDAdmin() {}
 
     /**
      * Create a DTEDAdmin with the following parameters.
+     * 
      * @param dtedDir the source dted directory
      * @param ullat the upper latitude of the boundary box to use.
-     * @param ullon the western latitude of the boundary box to use, greater than -180.
+     * @param ullon the western latitude of the boundary box to use,
+     *        greater than -180.
      * @param lrlat the lower latitude of the boundary box to use.
-     * @param lrlon the eastern latitude of the boundary box to use, less than 180.
+     * @param lrlon the eastern latitude of the boundary box to use,
+     *        less than 180.
      * @param level the dted level to consider.
      * @param inside if true, files inside the boundary box will be
-     * considered.  If false, files outside the box will be.
+     *        considered. If false, files outside the box will be.
      * @param equal filter for the level - Possible values are
-     * DTED_LARGER_LEVELS (any file with a level greater than the one
-     * specified) , DTED_SMALLER_LEVELS (any file with a level less
-     * than the one specified), DTED_NOTEQUAL_LEVELS (any file with a
-     * level not equal to the one specified), and DTED_EQUAL_LEVELS
-     * (any file with the level specified).
+     *        DTED_LARGER_LEVELS (any file with a level greater than
+     *        the one specified) , DTED_SMALLER_LEVELS (any file with
+     *        a level less than the one specified),
+     *        DTED_NOTEQUAL_LEVELS (any file with a level not equal to
+     *        the one specified), and DTED_EQUAL_LEVELS (any file with
+     *        the level specified).
      */
-    public DTEDAdmin(String dtedDir,
-                     double ullat, double ullon, 
-                     double lrlat, double lrlon,
-                     int level, boolean inside, int equal) {
+    public DTEDAdmin(String dtedDir, double ullat, double ullon, double lrlat,
+            double lrlon, int level, boolean inside, int equal) {
         setFrameList(dtedDir, ullat, ullon, lrlat, lrlon, level, inside, equal);
     }
 
     /**
-     * Create the internal list of frame files based on the following parameters.
+     * Create the internal list of frame files based on the following
+     * parameters.
+     * 
      * @param dtedDir the source dted directory
      * @param ullat the upper latitude of the boundary box to use.
-     * @param ullon the western latitude of the boundary box to use, greater than -180.
+     * @param ullon the western latitude of the boundary box to use,
+     *        greater than -180.
      * @param lrlat the lower latitude of the boundary box to use.
-     * @param lrlon the eastern latitude of the boundary box to use, less than 180.
+     * @param lrlon the eastern latitude of the boundary box to use,
+     *        less than 180.
      * @param level the dted level to consider.
      * @param inside if true, files inside the boundary box will be
-     * considered.  If false, files outside the box will be.
+     *        considered. If false, files outside the box will be.
      * @param equal filter for the level - Possible values are
-     * DTED_LARGER_LEVELS (any file with a level greater than the one
-     * specified) , DTED_SMALLER_LEVELS (any file with a level less
-     * than the one specified), DTED_NOTEQUAL_LEVELS (any file with a
-     * level not equal to the one specified), and DTED_EQUAL_LEVELS
-     * (any file with the level specified).
+     *        DTED_LARGER_LEVELS (any file with a level greater than
+     *        the one specified) , DTED_SMALLER_LEVELS (any file with
+     *        a level less than the one specified),
+     *        DTED_NOTEQUAL_LEVELS (any file with a level not equal to
+     *        the one specified), and DTED_EQUAL_LEVELS (any file with
+     *        the level specified).
      */
-    protected LinkedList organizeFrames(String dtedDir, 
-                                        double ullat, double ullon,
-                                        double lrlat, double lrlon,
-                                        int level, boolean inside, int equal) {
+    protected LinkedList organizeFrames(String dtedDir, double ullat,
+                                        double ullon, double lrlat,
+                                        double lrlon, int level,
+                                        boolean inside, int equal) {
 
         framesPrepped = false;
 
@@ -127,7 +140,7 @@ public class DTEDAdmin {
 
         LinkedList frames = null;
 
-        if (true/* (new File(dtedDir)).exists()*/) { // not
+        if (true/* (new File(dtedDir)).exists() */) { // not
             level_ = level;
             ullat_ = ullat;
             ullon_ = ullon;
@@ -144,28 +157,38 @@ public class DTEDAdmin {
     }
 
     /**
-     * Create the internal list of frame files based on the following parameters.
+     * Create the internal list of frame files based on the following
+     * parameters.
+     * 
      * @param dtedDir the source dted directory
      * @param ullat the upper latitude of the boundary box to use.
-     * @param ullon the western latitude of the boundary box to use, greater than -180.
+     * @param ullon the western latitude of the boundary box to use,
+     *        greater than -180.
      * @param lrlat the lower latitude of the boundary box to use.
-     * @param lrlon the eastern latitude of the boundary box to use, less than 180.
+     * @param lrlon the eastern latitude of the boundary box to use,
+     *        less than 180.
      * @param level the dted level to consider.
      * @param inside if true, files inside the boundary box will be
-     * considered.  If false, files outside the box will be.
+     *        considered. If false, files outside the box will be.
      * @param equal filter for the level - Possible values are
-     * DTED_LARGER_LEVELS (any file with a level greater than the one
-     * specified) , DTED_SMALLER_LEVELS (any file with a level less
-     * than the one specified), DTED_NOTEQUAL_LEVELS (any file with a
-     * level not equal to the one specified), and DTED_EQUAL_LEVELS
-     * (any file with the level specified).
+     *        DTED_LARGER_LEVELS (any file with a level greater than
+     *        the one specified) , DTED_SMALLER_LEVELS (any file with
+     *        a level less than the one specified),
+     *        DTED_NOTEQUAL_LEVELS (any file with a level not equal to
+     *        the one specified), and DTED_EQUAL_LEVELS (any file with
+     *        the level specified).
      */
-    public void setFrameList(String dtedDir, 
-                             double ullat, double ullon,
-                             double lrlat, double lrlon,
-                             int level, boolean inside, int equal) {
-        setFrameList(organizeFrames(dtedDir, ullat, ullon, lrlat, lrlon,
-                                    level, inside, equal));
+    public void setFrameList(String dtedDir, double ullat, double ullon,
+                             double lrlat, double lrlon, int level,
+                             boolean inside, int equal) {
+        setFrameList(organizeFrames(dtedDir,
+                ullat,
+                ullon,
+                lrlat,
+                lrlon,
+                level,
+                inside,
+                equal));
     }
 
     /**
@@ -193,33 +216,37 @@ public class DTEDAdmin {
         String testname;
         int lev;
         boolean dothisone;
-        int leftx = (int)Math.floor(ullon_);
-        int rightx = (int)Math.ceil(lrlon_);
-        int bottomy = (int)Math.floor(lrlat_);
-        int topy = (int)Math.ceil(ullat_);
+        int leftx = (int) Math.floor(ullon_);
+        int rightx = (int) Math.ceil(lrlon_);
+        int bottomy = (int) Math.floor(lrlat_);
+        int topy = (int) Math.ceil(ullat_);
 
         LinkedList frames = new LinkedList();
 
         locator = new DTEDLocator(dtedDir);
         locator.organize();
-  
+
         for (int hor = leftx; hor < rightx; hor++) {
             for (int ver = bottomy; ver < topy; ver++) {
                 for (lev = 0; lev < MAXLEVELS; lev++) {
                     dothisone = false;
                     switch (equal_) {
                     case DTED_LARGER_LEVELS:
-                        if (lev > level_) dothisone = true;
+                        if (lev > level_)
+                            dothisone = true;
                         break;
                     case DTED_SMALLER_LEVELS:
-                        if (lev < level_) dothisone = true;
+                        if (lev < level_)
+                            dothisone = true;
                         break;
                     case DTED_NOTEQUAL_LEVELS:
-                        if (lev != level_) dothisone = true;
+                        if (lev != level_)
+                            dothisone = true;
                         break;
                     case DTED_EQUAL_LEVELS:
                     default:
-                        if (lev == level_) dothisone = true;
+                        if (lev == level_)
+                            dothisone = true;
                         break;
                     }
 
@@ -228,8 +255,8 @@ public class DTEDAdmin {
 
                         if (file != null) {
                             if (Debug.debugging("dted")) {
-                                Debug.output("DTEDAdmin adding " + 
-                                             file.getAbsolutePath() + " to list");
+                                Debug.output("DTEDAdmin adding "
+                                        + file.getAbsolutePath() + " to list");
                             }
                             frames.add(file);
                         }
@@ -244,8 +271,9 @@ public class DTEDAdmin {
     /**
      * Get the internal frame list and copy those frames to the given
      * directory.
+     * 
      * @return true if everything went OK, false if not enough
-     * information is available to create a source file list.
+     *         information is available to create a source file list.
      */
     public boolean copyTo(String todteddir) {
         return copyTo(getFrameList(), todteddir);
@@ -254,10 +282,11 @@ public class DTEDAdmin {
     /**
      * Get the internal frame list and copy those frames to the given
      * directory.
+     * 
      * @param files a LinkedList of Files to copy.
      * @param todteddir a dted directory to copy files into.
      * @return true if everything went OK, false if not enough
-     * information is available to create a source file list.
+     *         information is available to create a source file list.
      */
     protected boolean copyTo(LinkedList files, String todteddir) {
         if (files == null) {
@@ -277,7 +306,7 @@ public class DTEDAdmin {
 
                 String dsd = dnt.getSubDirs();
                 if (dsd != null && dsd.length() > 0) {
-                    dsd = "/"+ dsd;
+                    dsd = "/" + dsd;
                 }
 
                 File toDir = new File(todteddir + dsd);
@@ -288,8 +317,8 @@ public class DTEDAdmin {
                 File outputFile = new File(toDir, dnt.getFileName());
 
                 if (Debug.debugging("dted")) {
-                    Debug.output("DTEDAdmin copying " + file.getAbsolutePath() +
-                                 " to " + outputFile.getAbsolutePath());
+                    Debug.output("DTEDAdmin copying " + file.getAbsolutePath()
+                            + " to " + outputFile.getAbsolutePath());
                 }
 
                 BinaryBufferedFile input = new BinaryBufferedFile(file);
@@ -312,22 +341,26 @@ public class DTEDAdmin {
         }
         return true;
     }
-  
+
     /**
-     * Delete the DTED files that meet the internal file list parameters.
+     * Delete the DTED files that meet the internal file list
+     * parameters.
+     * 
      * @return true if everything went OK, false if not enough
-     * information is available to create a source file list.
+     *         information is available to create a source file list.
      */
     public boolean remove() {
         return remove(getFrameList());
     }
 
     /**
-     * Delete the DTED files that meet the internal file list parameters.
+     * Delete the DTED files that meet the internal file list
+     * parameters.
+     * 
      * @param files the LinkedList of File objects representing DTED
-     * frame files.
+     *        frame files.
      * @return true if everything went OK, false if not enough
-     * information is available to create a source file list.
+     *         information is available to create a source file list.
      */
     protected boolean remove(LinkedList files) {
         if (files == null) {
@@ -366,7 +399,7 @@ public class DTEDAdmin {
         while (it.hasNext()) {
             File file = (File) it.next();
             Debug.output("  " + file.getAbsolutePath());
-        }       
+        }
         return true;
     }
 
@@ -379,7 +412,9 @@ public class DTEDAdmin {
         ArgParser ap = new ArgParser("DTEDAdmin");
         ap.add("boundary", "upper lat, left lon, lower lat, right lon", 4, true);
         ap.add("copy", "Copy files to DTED directory.", 1);
-        ap.add("level", "DTED level to consider (0, 1, 2), 0 is default.  Needs to be set for other levels.", 1);
+        ap.add("level",
+                "DTED level to consider (0, 1, 2), 0 is default.  Needs to be set for other levels.",
+                1);
         ap.add("outside", "Use files outside boundary.");
         ap.add("query", "Print out files that meet parameters.");
         ap.add("remove", "Delete DTED files.");
@@ -390,7 +425,7 @@ public class DTEDAdmin {
             ap.printUsage();
             System.exit(0);
         }
-        
+
         String arg[];
         String sourceDir = null;
 
@@ -434,19 +469,15 @@ public class DTEDAdmin {
                 lrlat = Double.parseDouble(arg[2]);
                 lrlon = Double.parseDouble(arg[3]);
             } catch (NumberFormatException nfe1) {
-                Debug.error("DTEDAdmin: boundary coordinates not valid:\n" +
-                            "  " + arg[0] + 
-                            "\n  " + arg[1] + 
-                            "\n  " + arg[2] + 
-                            "\n  " + arg[3]);
+                Debug.error("DTEDAdmin: boundary coordinates not valid:\n"
+                        + "  " + arg[0] + "\n  " + arg[1] + "\n  " + arg[2]
+                        + "\n  " + arg[3]);
                 System.exit(0);
             }
         }
 
         if (sourceDir != null) {
-            admin = new DTEDAdmin(sourceDir,
-                                  ullat, ullon, lrlat, lrlon,
-                                  level, inside, DTEDAdmin.DTED_EQUAL_LEVELS);
+            admin = new DTEDAdmin(sourceDir, ullat, ullon, lrlat, lrlon, level, inside, DTEDAdmin.DTED_EQUAL_LEVELS);
         }
 
         arg = ap.getArgValues("copy");
@@ -476,7 +507,7 @@ public class DTEDAdmin {
                 Debug.output("These files will be deleted:");
                 admin.query();
                 Debug.output("Are you sure you want to delete them? [y/N]");
-                int answer= 'n';
+                int answer = 'n';
                 try {
                     answer = System.in.read();
                 } catch (IOException ioe) {
@@ -491,7 +522,7 @@ public class DTEDAdmin {
                 Debug.error("DTEDAdmin:  frame parameters not set for copy.  Need source directory");
                 System.exit(0);
             }
-            
+
         }
 
     }

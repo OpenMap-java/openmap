@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,59 +14,37 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/CSpecLayer.java,v $
 // $RCSfile: CSpecLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/02/06 00:12:35 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:05:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.specialist;
 
-
 /*  Java Core  */
-import java.applet.Applet;
 import java.awt.Component;
-import java.awt.Point;
 import java.awt.event.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.*;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
 /*  CORBA  */
 import org.omg.CORBA.BooleanHolder;
-import org.omg.CORBA.ORB;
 import org.omg.CORBA.ShortHolder;
 import org.omg.CORBA.StringHolder;
-import org.omg.CosNaming.*;
 
-import com.bbn.openmap.CSpecialist.BitmapPackage.*;
 import com.bbn.openmap.CSpecialist.CProjection;
-import com.bbn.openmap.CSpecialist.CirclePackage.*;
 import com.bbn.openmap.CSpecialist.GraphicChange;
 import com.bbn.openmap.CSpecialist.GraphicPackage.*;
 import com.bbn.openmap.CSpecialist.LLPoint;
-import com.bbn.openmap.CSpecialist.LinePackage.*;
-import com.bbn.openmap.CSpecialist.PolyPackage.*;
-import com.bbn.openmap.CSpecialist.RasterPackage.*;
-import com.bbn.openmap.CSpecialist.RectanglePackage.*;
 import com.bbn.openmap.CSpecialist.Server;
 import com.bbn.openmap.CSpecialist.ServerHelper;
-import com.bbn.openmap.CSpecialist.TextPackage.*;
-import com.bbn.openmap.CSpecialist.U2525SymbolPackage.*;
 import com.bbn.openmap.CSpecialist.UGraphic;
 import com.bbn.openmap.CSpecialist.UWidget;
-import com.bbn.openmap.CSpecialist.UnitSymbolPackage.*;
 
 /*  OpenMap  */
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.Layer;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -74,29 +52,30 @@ import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.SwingWorker;
 
 /**
  * CSpecLayer is a Layer which communicates to CORBA Specialists.
  * <P>
  * Properties:
- * <P><pre>
- * # If you have an ior for the server:
- * cspeclayermarker.ior= URL to ior
- * # If you are using the Naming Service:
- * cspeclayermarker.name= SERVER NAME
- * # Static Arguments for the server, to be sent on every map request:
- * cspeclayermarker.staticArgs= space separated arguments
- * # If the network setup allows the server to contact the client (no firewall)
- * cspeclayermarker.allowServerUpdates=true/false (false is default)
+ * <P>
+ * 
+ * <pre>
+ * 
+ *  # If you have an ior for the server:
+ *  cspeclayermarker.ior= URL to ior
+ *  # If you are using the Naming Service:
+ *  cspeclayermarker.name= SERVER NAME
+ *  # Static Arguments for the server, to be sent on every map request:
+ *  cspeclayermarker.staticArgs= space separated arguments
+ *  # If the network setup allows the server to contact the client (no firewall)
+ *  cspeclayermarker.allowServerUpdates=true/false (false is default)
+ *  
  * </pre>
  */
-public class CSpecLayer extends OMGraphicHandlerLayer
-    implements MapMouseListener {
+public class CSpecLayer extends OMGraphicHandlerLayer implements
+        MapMouseListener {
 
-    private final static String[] debugTokens = {
-        "debug.cspec"
-    };
+    private final static String[] debugTokens = { "debug.cspec" };
 
     /** The property specifying the IOR URL. */
     public static final String iorUrlProperty = "ior";
@@ -107,12 +86,12 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     /**
      * The property to use for specifying whether the GraphicChange
-     * object should be sent to the server.  The server can use the
+     * object should be sent to the server. The server can use the
      * GraphicChange object to contact the client to notify it that
-     * updates are available.  This should only be true if the network
-     * setup allows it to be.  Running the client behind a firewall,
+     * updates are available. This should only be true if the network
+     * setup allows it to be. Running the client behind a firewall,
      * taking with the server through a Gatekeeper, will not allow the
-     * GraphicChange object to be set.  You get a BOA instantiation
+     * GraphicChange object to be set. You get a BOA instantiation
      * error.
      */
     public static final String serverUpdateProperty = "allowServerUpdates";
@@ -124,9 +103,9 @@ public class CSpecLayer extends OMGraphicHandlerLayer
     /** Arguments passed in from the OverlayTable/properties file. */
     protected String staticArgs = null;
 
-    /** 
+    /**
      * Arguments modified by the Layer, or set by the Bean, at
-     * runtime.  Historical, should use Properties instead.
+     * runtime. Historical, should use Properties instead.
      */
     protected String dynamicArgs = null;
     protected String clientID = Environment.generateUniqueString();
@@ -145,9 +124,9 @@ public class CSpecLayer extends OMGraphicHandlerLayer
      * listen to mouse events, or not.
      */
     protected boolean acceptingEvents = false;
-    /** 
+    /**
      * Used to track if a info line was sent, so that a clearing
-     * message can be sent when it is no longer relevant. 
+     * message can be sent when it is no longer relevant.
      */
     protected boolean sentInfoLine = false;
 
@@ -159,8 +138,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
     public final transient static int DIRTYMASK = 0xFFFFFFFF;
 
     // new slots
-    protected boolean showDialogs = 
-        Environment.getBoolean("com.bbn.openmap.ShowLayerMessages");
+    protected boolean showDialogs = Environment.getBoolean("com.bbn.openmap.ShowLayerMessages");
 
     /**
      * Default constructor, that sets the MapMouseListener for this
@@ -173,13 +151,13 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     /**
      * Sets whether the notifyOnChange object will actually be set to
-     * anything.  This object can be used to tell the CSpecLayer to go
+     * anything. This object can be used to tell the CSpecLayer to go
      * to the specialist with a getRectangle. The Layer handles the
-     * creation of the object if this is set to true.  If you are
+     * creation of the object if this is set to true. If you are
      * working through a firewall, this might not be allowed,
      * especially if the client is behind the firewall.
-     *
-     * @param setting if the object should be created or not.  
+     * 
+     * @param setting if the object should be created or not.
      */
     public void handleGraphicChangeRequests(boolean setting) {
         if (setting) {
@@ -192,20 +170,20 @@ public class CSpecLayer extends OMGraphicHandlerLayer
     }
 
     /**
-     *
+     *  
      */
     public void finalize() {
         if (Debug.debugging("cspec")) {
-            Debug.output(getName()+"|CSpecLayer.finalize(): calling shutdown");
+            Debug.output(getName() + "|CSpecLayer.finalize(): calling shutdown");
         }
         try {
             if (specialist != null)
                 specialist.signoff(clientID);
             specialist = null;
         } catch (org.omg.CORBA.SystemException e) {
-            System.err.println(getName()+"|CSpecLayer.finalize(): " + e);
+            System.err.println(getName() + "|CSpecLayer.finalize(): " + e);
         } catch (Throwable t) {
-            System.err.println(getName()+"|CSpecLayer.finalize(): " + t);
+            System.err.println(getName() + "|CSpecLayer.finalize(): " + t);
         }
     }
 
@@ -222,7 +200,8 @@ public class CSpecLayer extends OMGraphicHandlerLayer
             try {
                 setIorUrl(LayerUtils.getResourceOrFileOrURL(null, url));
             } catch (MalformedURLException e) {
-                throw new IllegalArgumentException("\"" + url + "\" is malformed.");
+                throw new IllegalArgumentException("\"" + url
+                        + "\" is malformed.");
             }
         }
 
@@ -232,12 +211,14 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         String staticArgValue = props.getProperty(prefix + staticArgsProperty);
         setStaticArgs(staticArgValue);
 
-        handleGraphicChangeRequests(LayerUtils.booleanFromProperties(props, prefix + serverUpdateProperty, notifyOnChange != null));
+        handleGraphicChangeRequests(LayerUtils.booleanFromProperties(props,
+                prefix + serverUpdateProperty,
+                notifyOnChange != null));
     }
 
     /**
      * Gets the argv for the layer from the pseudo-overlay-table.
-     * Expecting <URL> &rest args.
+     * Expecting <URL>&rest args.
      */
     public void setArgs(String argv[]) {
         int argc = argv.length;
@@ -258,11 +239,11 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                 argBuf.append(" ").append(argv[i]);
             }
         }
-        //dbg   Debug.output("----------------------------------------------");
-        //dbg   Debug.output("CSpecLayer " + getName() + ":");
-        //dbg   Debug.output("\tURL: " + url);
-        //dbg   Debug.output("\targs: " + argBuf);
-
+        //dbg
+        // Debug.output("----------------------------------------------");
+        //dbg Debug.output("CSpecLayer " + getName() + ":");
+        //dbg Debug.output("\tURL: " + url);
+        //dbg Debug.output("\targs: " + argBuf);
 
         try {
             setIorUrl(new URL(url));
@@ -271,7 +252,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
             }
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("\"" + url + "\""
-                                               + " is not a well formed URL");
+                    + " is not a well formed URL");
         }
 
         setStaticArgs(argBuf.toString());
@@ -279,7 +260,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     /**
      * get the specialist proxy.
-     *
+     * 
      * @return Server specialist server or null if error.
      */
     public Server getSpecialist() {
@@ -296,15 +277,16 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         String ior = null;
         org.omg.CORBA.Object object = null;
 
-        com.bbn.openmap.util.corba.CORBASupport cs = 
-            new com.bbn.openmap.util.corba.CORBASupport();
+        com.bbn.openmap.util.corba.CORBASupport cs = new com.bbn.openmap.util.corba.CORBASupport();
 
         try {
             object = cs.readIOR(iorURL);
             specialist = ServerHelper.narrow(object);
         } catch (IOException ioe) {
             if (Debug.debugging("cspec")) {
-                Debug.output(getName() + "(CSpecLayer).initSpecialist() IO Exception with ior: " + iorURL);
+                Debug.output(getName()
+                        + "(CSpecLayer).initSpecialist() IO Exception with ior: "
+                        + iorURL);
             }
             specialist = null;
             return;
@@ -312,21 +294,22 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
         if (specialist == null) {
             object = cs.resolveName(naming);
-            
+
             if (object != null) {
                 specialist = ServerHelper.narrow(object);
                 if (Debug.debugging("cspec")) {
-                    Debug.output("Have a specialist:" );
-                    Debug.output("*** Specialist Server: is a " + 
-                                 specialist.getClass().getName() + "\n" + 
-                                 specialist);
+                    Debug.output("Have a specialist:");
+                    Debug.output("*** Specialist Server: is a "
+                            + specialist.getClass().getName() + "\n"
+                            + specialist);
                 }
-            } 
+            }
         }
 
         if (specialist == null) {
             if (Debug.debugging("cspec")) {
-                System.err.println("CSpecLayer.initSpecialist: null specialist!\n  IOR=" + ior + "\n  Name = " + naming);
+                System.err.println("CSpecLayer.initSpecialist: null specialist!\n  IOR="
+                        + ior + "\n  Name = " + naming);
             }
         }
     }
@@ -346,6 +329,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     /**
      * Interface Layer method to get the dynamic args.
+     * 
      * @return String args
      */
     public String getArgs() {
@@ -354,6 +338,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     /**
      * Method to set the dynamic args.
+     * 
      * @param args String
      */
     public void setArgs(String args) {
@@ -362,7 +347,8 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     /**
      * Interface Layer method to get the static args, which are
-     * usually set via the openmap.properties file, or setProperties(). 
+     * usually set via the openmap.properties file, or
+     * setProperties().
      */
     public String getStaticArgs() {
         return staticArgs;
@@ -370,7 +356,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     /**
      * Interface Layer method to set the static args, which are
-     * usually set via the openmap.properties file. 
+     * usually set via the openmap.properties file.
      */
     public void setStaticArgs(String args) {
         staticArgs = args;
@@ -379,13 +365,14 @@ public class CSpecLayer extends OMGraphicHandlerLayer
     public URL getIorUrl() {
         return iorURL;
     }
+
     public void setIorUrl(URL url) {
         iorURL = url;
     }
 
     /**
      * Perform the getRectangle() call on the specialist.
-     *
+     * 
      * @param p Projection
      * @return UGraphic[] graphic list or null if error
      */
@@ -396,15 +383,10 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         UGraphic[] graphics = null;
         Server spec = getSpecialist();
         if (Debug.debugging("cspec"))
-            Debug.output(getName() +
-                         "|CSpecLayer.getSpecGraphics()");
+            Debug.output(getName() + "|CSpecLayer.getSpecGraphics()");
 
-        cproj = new CProjection ((short)(p.getProjectionType()),
-                                 new LLPoint(p.getCenter().getLatitude(),
-                                             p.getCenter().getLongitude()),
-                                 (short)p.getHeight(),
-                                 (short)p.getWidth(),
-                                 (int)p.getScale());
+        cproj = new CProjection((short) (p.getProjectionType()), new LLPoint(p.getCenter()
+                .getLatitude(), p.getCenter().getLongitude()), (short) p.getHeight(), (short) p.getWidth(), (int) p.getScale());
 
         // lat-lon "box", (depends on the projection)
         LatLonPoint ul = p.getUpperLeft();
@@ -417,15 +399,15 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         if (isCancelled()) {
             dirtybits |= PREMATURE_FINISH;
             if (Debug.debugging("cspec"))
-                Debug.output(getName() + 
-                             "|CSpecLayer.getSpecGraphics(): aborted.");
+                Debug.output(getName()
+                        + "|CSpecLayer.getSpecGraphics(): aborted.");
             return null;
         }
         // check for null specialist
         if (spec == null) {
             if (Debug.debugging("cspec")) {
-                System.err.println(getName() + 
-                                   "|CSpecLayer.getSpecGraphics(): null specialist!");
+                System.err.println(getName()
+                        + "|CSpecLayer.getSpecGraphics(): null specialist!");
             }
             return null;
         }
@@ -450,57 +432,58 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
             // call getRectangle();
             if (Debug.debugging("cspec")) {
-                Debug.output(getName() +
-                             "|CSpecLayer.getSpecGraphics():" +
-                             " calling getRectangle with projection: " + p +
-                             " ul=" + ul + " lr=" + lr +
-                             " staticArgs=\"" + staticArguments + "\"" +
-                             " dynamicArgs=\"" + dynamicArgsHolder.value + "\"" +
-                             " notifyOnChange=\"" + notifyOnChange + "\"" +
-                             " clientID=" + clientID); 
+                Debug.output(getName() + "|CSpecLayer.getSpecGraphics():"
+                        + " calling getRectangle with projection: " + p
+                        + " ul=" + ul + " lr=" + lr + " staticArgs=\""
+                        + staticArguments + "\"" + " dynamicArgs=\""
+                        + dynamicArgsHolder.value + "\"" + " notifyOnChange=\""
+                        + notifyOnChange + "\"" + " clientID=" + clientID);
             }
             long start = System.currentTimeMillis();
 
             if (Debug.debugging("cspecdetail")) {
-                Debug.output("*** Specialist Server: is a " + 
-                             spec.getClass().getName() + "\n" + spec);
+                Debug.output("*** Specialist Server: is a "
+                        + spec.getClass().getName() + "\n" + spec);
             }
 
             graphics = spec.getRectangle(cproj,
-                                         ll1, ll2,
-                                         staticArguments,
-                                         dynamicArgsHolder,
-                                         selectDist,
-                                         wantAreaEvents,
-                                         notifyOnChange,
-                                         clientID);
+                    ll1,
+                    ll2,
+                    staticArguments,
+                    dynamicArgsHolder,
+                    selectDist,
+                    wantAreaEvents,
+                    notifyOnChange,
+                    clientID);
             long stop = System.currentTimeMillis();
 
             if (Debug.debugging("cspec")) {
-                Debug.output(getName()+"|CSpecLayer.getSpecGraphics(): got " +
-                             graphics.length + " graphics in " + ((stop-start)/1000d) +
-                             " seconds.");
+                Debug.output(getName() + "|CSpecLayer.getSpecGraphics(): got "
+                        + graphics.length + " graphics in "
+                        + ((stop - start) / 1000d) + " seconds.");
             }
         } catch (org.omg.CORBA.SystemException e) {
             dirtybits |= EXCEPTION;
             // don't freak out if we were only interrupted...
             if (e.toString().indexOf("InterruptedIOException") != -1) {
-                System.err.println(getName()+"|CSpecLayer.getSpecGraphics(): " +
-                                   "getRectangle() call interrupted!");
+                System.err.println(getName()
+                        + "|CSpecLayer.getSpecGraphics(): "
+                        + "getRectangle() call interrupted!");
             } else {
-                System.err.println(getName()+"|CSpecLayer.getSpecGraphics(): " +
-                                   "Caught CORBA exception: " + e);
-                System.err.println(getName()+"|CSpecLayer.getSpecGraphics(): " +
-                                   "Exception class: " + e.getClass().getName());
+                System.err.println(getName()
+                        + "|CSpecLayer.getSpecGraphics(): "
+                        + "Caught CORBA exception: " + e);
+                System.err.println(getName()
+                        + "|CSpecLayer.getSpecGraphics(): "
+                        + "Exception class: " + e.getClass().getName());
                 e.printStackTrace();
             }
 
             // dontcha just love CORBA? reinit later
             setSpecialist(null);
             if (showDialogs)
-                postCORBAErrorMsg(
-                    "CORBA Exception while getting graphics from\n" +
-                    getName() + " specialist:\n" + e.getClass().getName());
+                postCORBAErrorMsg("CORBA Exception while getting graphics from\n"
+                        + getName() + " specialist:\n" + e.getClass().getName());
         }
         return graphics;
     }
@@ -508,11 +491,11 @@ public class CSpecLayer extends OMGraphicHandlerLayer
     /**
      * Prepares the graphics for the layer.
      * <p>
-     * Occasionally it is necessary to abort a prepare call.  When
-     * this happens, the doPrepare() call will set the cancel bit on
-     * the SwingWorker.  The worker will get restarted after it
-     * finishes doing its cleanup.
-     *
+     * Occasionally it is necessary to abort a prepare call. When this
+     * happens, the doPrepare() call will set the cancel bit on the
+     * SwingWorker. The worker will get restarted after it finishes
+     * doing its cleanup.
+     * 
      * @return a JGraphicList from the server.
      */
     public synchronized OMGraphicList prepare() {
@@ -526,12 +509,12 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         }
 
         if (Debug.debugging("basic")) {
-            Debug.output(getName()+"|CSpecLayer.prepare(): doing it");
+            Debug.output(getName() + "|CSpecLayer.prepare(): doing it");
         }
 
         dirtybits = 0;//reset the dirty bits
 
-        // Now we're going to shut off event processing.  The only
+        // Now we're going to shut off event processing. The only
         // thing that turns them on again is finishing successfully.
         setAcceptingEvents(false);
 
@@ -542,8 +525,8 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         if (isCancelled()) {
             dirtybits |= PREMATURE_FINISH;
             if (Debug.debugging("basic"))
-                Debug.output(getName() + "|CSpecLayer.prepare(): " +
-                             "aborted during/after getRectangle().");
+                Debug.output(getName() + "|CSpecLayer.prepare(): "
+                        + "aborted during/after getRectangle().");
             return emptyList;
         }
 
@@ -556,24 +539,25 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         JGraphicList graphics = createGraphicsList(specGraphics, projection);
         long stop = System.currentTimeMillis();
         if (Debug.debugging("cspec")) {
-            Debug.output(getName()+ "|CSpecLayer.prepare(): generated " + 
-                         specGraphics.length + " graphics in " + 
-                         ((stop-start)/1000d) + " seconds.");
+            Debug.output(getName() + "|CSpecLayer.prepare(): generated "
+                    + specGraphics.length + " graphics in "
+                    + ((stop - start) / 1000d) + " seconds.");
         }
 
         if (isCancelled()) {
             dirtybits |= PREMATURE_FINISH;
             if (Debug.debugging("basic")) {
-                Debug.output(getName() + "|CSpecLayer.prepare(): " +
-                             "aborted while generating graphics.");
+                Debug.output(getName() + "|CSpecLayer.prepare(): "
+                        + "aborted while generating graphics.");
             }
             return emptyList;
         }
 
         // safe quit
         if (Debug.debugging("basic")) {
-            Debug.output(getName()+"|CSpecLayer.prepare(): finished preparing " + 
-                         graphics.size() + " graphics");
+            Debug.output(getName()
+                    + "|CSpecLayer.prepare(): finished preparing "
+                    + graphics.size() + " graphics");
         }
         setAcceptingEvents(true);
         return graphics;
@@ -584,19 +568,21 @@ public class CSpecLayer extends OMGraphicHandlerLayer
      * <p>
      * This is public static to enable out-of-package delegation.
      * <p>
+     * 
      * @param uGraphics UGraphic[]
      * @param proj Projection
      * @return JGraphicList
      */
-    public static JGraphicList createGraphicsList(UGraphic[] uGraphics, 
+    public static JGraphicList createGraphicsList(UGraphic[] uGraphics,
                                                   Projection proj) {
 
         int nGraphics = uGraphics.length;
         JGraphicList graphics = new JGraphicList(nGraphics);
         graphics.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
 
-        // generate a JGraphic for each CSpecialist graphic and store it
-        for (int i=0; i<nGraphics; i++) {
+        // generate a JGraphic for each CSpecialist graphic and store
+        // it
+        for (int i = 0; i < nGraphics; i++) {
             switch (uGraphics[i].discriminator().value()) {
             case GraphicType._GT_Poly:
                 JPoly jpoly = new JPoly(uGraphics[i].epoly());
@@ -646,17 +632,18 @@ public class CSpecLayer extends OMGraphicHandlerLayer
             case GraphicType._GT_NewGraphic:
             case GraphicType._GT_ReorderGraphic:
             default:
-                System.err.println("JGraphic.generateGraphics: " +
-                                   "ignoring invalid type");
+                System.err.println("JGraphic.generateGraphics: "
+                        + "ignoring invalid type");
                 break;
             }
         }
         return graphics;
     }
 
-    /** 
-     * Gets the palette associated with the layer.<p>
-     *
+    /**
+     * Gets the palette associated with the layer.
+     * <p>
+     * 
      * @return Component or null
      */
     public Component getGUI() {
@@ -664,15 +651,15 @@ public class CSpecLayer extends OMGraphicHandlerLayer
             initSpecialist();
         if (specialist == null) {
             if (Debug.debugging("cspec"))
-                Debug.output(getName()+ "|CSpecLayer.getGUI(): initSpecialist() unsuccessful!");
+                Debug.output(getName()
+                        + "|CSpecLayer.getGUI(): initSpecialist() unsuccessful!");
             return null;
         }
 
         try {
             if (widgets == null) {
-                org.omg.CORBA.StringHolder paletteDynamicArgs =
-                    new org.omg.CORBA.StringHolder(getArgs());
-            
+                org.omg.CORBA.StringHolder paletteDynamicArgs = new org.omg.CORBA.StringHolder(getArgs());
+
                 if (paletteDynamicArgs.value == null) {
                     paletteDynamicArgs.value = "";
                 }
@@ -685,23 +672,28 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                 }
 
                 if (Debug.debugging("cspec")) {
-                    Debug.output(getName()+"|CSpecLayer.getGUI(): calling getPaletteConfig(" + staticArguments + "," + paletteDynamicArgs.value + "," + clientID + ")");
+                    Debug.output(getName()
+                            + "|CSpecLayer.getGUI(): calling getPaletteConfig("
+                            + staticArguments + "," + paletteDynamicArgs.value
+                            + "," + clientID + ")");
                 }
 
                 try {
 
-                    widgets = specialist.getPaletteConfig(null/*widgetChange*/, 
-                                                          staticArguments,
-                                                          paletteDynamicArgs,
-                                                          clientID);
+                    widgets = specialist.getPaletteConfig(null/* widgetChange */,
+                            staticArguments,
+                            paletteDynamicArgs,
+                            clientID);
 
                 } catch (org.omg.CORBA.SystemException e) {
                     System.err.println(getName() + "|CSpecLayer.getGUI(): " + e);
                     e.printStackTrace();
                     setSpecialist(null);
                     if (showDialogs) {
-                        postCORBAErrorMsg("CORBA Exception while getting palette from\n" +
-                                          getName() + " specialist:\n" + e.getClass().getName());
+                        postCORBAErrorMsg("CORBA Exception while getting palette from\n"
+                                + getName()
+                                + " specialist:\n"
+                                + e.getClass().getName());
                     }
                 }
                 if (widgets == null || widgets.length == 0) {
@@ -714,17 +706,16 @@ public class CSpecLayer extends OMGraphicHandlerLayer
             setSpecialist(null);
             System.err.println(getName() + "|CSpecLayer.getGUI(): " + e);
             if (showDialogs) {
-                postMemoryErrorMsg("OutOfMemory while getting palette from\n" +
-                                   getName() + " specialist.");
+                postMemoryErrorMsg("OutOfMemory while getting palette from\n"
+                        + getName() + " specialist.");
             }
         } catch (Throwable t) {
             setSpecialist(null);
             System.err.println(getName() + "|CSpecLayer.getGUI(): " + t);
             t.printStackTrace();
             if (showDialogs) {
-                postException("Exception while getting palette from\n" +
-                              getName() + " specialist:\n" + 
-                              t.getClass().getName());
+                postException("Exception while getting palette from\n"
+                        + getName() + " specialist:\n" + t.getClass().getName());
             }
         }
 
@@ -732,9 +723,9 @@ public class CSpecLayer extends OMGraphicHandlerLayer
     }
 
     /**
-     * A palette button has changed (we should indeed prepare when we get the
-     * call).
-     *
+     * A palette button has changed (we should indeed prepare when we
+     * get the call).
+     * 
      * @param paletteIsDirty true or false
      */
     protected void setPaletteIsDirty(boolean paletteIsDirty) {
@@ -754,9 +745,9 @@ public class CSpecLayer extends OMGraphicHandlerLayer
     /**
      * Used to set whether the MapMouseListener is listening for
      * events or ignoring them.
-     *
+     * 
      * @param listening true if the listener should process mouse
-     * events.
+     *        events.
      */
     public void setAcceptingEvents(boolean listening) {
         acceptingEvents = listening;
@@ -765,9 +756,9 @@ public class CSpecLayer extends OMGraphicHandlerLayer
     /**
      * Used to tell if the listener is accepting mouse events for
      * processing.
-     *
+     * 
      * @return true if the listener is processing mouse events.
-     */    
+     */
     public boolean isAcceptingEvents() {
         return acceptingEvents;
     }
@@ -778,6 +769,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
     /**
      * Returns the MapMouseListener object (this object) that handles
      * the mouse events.
+     * 
      * @return MapMouseListener this
      */
     public MapMouseListener getMapMouseListener() {
@@ -792,7 +784,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     /**
      * Handle a mouse button being pressed.
-     *
+     * 
      * @param e MouseListener MouseEvent to handle.
      * @return true if the listener was able to process the event.
      */
@@ -802,10 +794,10 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         }
         return false;
     }
-  
-    /** 
+
+    /**
      * Handle a mouse button being released.
-     *
+     * 
      * @param e MouseListener MouseEvent to handle.
      * @return true if the listener was able to process the event.
      */
@@ -815,10 +807,10 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         }
         return false;
     }
-   
-    /** 
+
+    /**
      * Handle a mouse button being clicked - pressed and released.
-     *
+     * 
      * @param e MouseListener MouseEvent to handle.
      * @return true if the listener was able to process the event.
      */
@@ -829,9 +821,9 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         return false;
     }
 
-    /** 
+    /**
      * Handle a mouse cursor entering a window or area.
-     *
+     * 
      * @param e MouseListener MouseEvent to handle.
      */
     public void mouseEntered(MouseEvent e) {
@@ -839,10 +831,10 @@ public class CSpecLayer extends OMGraphicHandlerLayer
             handleGesture(e, MapGesture.motionEvent, false);
         }
     }
-  
-    /** 
+
+    /**
      * Handle a mouse cursor leaving a window or area.
-     *
+     * 
      * @param e MouseListener MouseEvent to handle.
      */
     public void mouseExited(MouseEvent e) {
@@ -850,14 +842,14 @@ public class CSpecLayer extends OMGraphicHandlerLayer
             handleGesture(e, MapGesture.motionEvent, false);
         }
     }
-    
+
     // Mouse Motion Listener events
     ///////////////////////////////
 
     /**
      * Handle a mouse button being pressed while the mouse cursor is
      * moving.
-     *
+     * 
      * @param e MouseMotionListener MouseEvent to handle.
      * @return true if the listener was able to process the event.
      */
@@ -870,7 +862,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     /**
      * Handle a mouse cursor moving without the button being pressed.
-     *
+     * 
      * @param e MouseListener MouseEvent to handle.
      * @return true if the listener was able to process the event.
      */
@@ -881,7 +873,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         return false;
     }
 
-    /** 
+    /**
      * Handle a mouse cursor moving without the button being pressed,
      * for events that have been used by something else.
      */
@@ -893,14 +885,15 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     /**
      * Relays user gestures to the specialist or to the mousable
-     * objects of the CSpecLayer.  The function finds the closest
-     * object and then its comp object all by itself.<p>
-     *
+     * objects of the CSpecLayer. The function finds the closest
+     * object and then its comp object all by itself.
+     * <p>
+     * 
      * @param evt MouseEvent
      * @param MouseDown true if the mouse button is down
      * @return true if gesture was consumed, false if not.
      */
-    public boolean handleGesture(MouseEvent evt, int eventType, 
+    public boolean handleGesture(MouseEvent evt, int eventType,
                                  boolean MouseDown) {
 
         boolean got_info = false;
@@ -927,32 +920,37 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         // reset...
         if (evt == null) {
             if (Debug.debugging("cspec")) {
-                Debug.output(getName()+"|CSpecLayer.handleGesture(): null evt!");
+                Debug.output(getName()
+                        + "|CSpecLayer.handleGesture(): null evt!");
             }
             return false;//didn't consume gesture
         }
 
         try {
             mapGesture.setMouseEvent(evt, eventType, MouseDown);
-            moused = jjGraphics.findClosest(evt.getX(), evt.getY(),
-                                            selectDist.value);
-            
+            moused = jjGraphics.findClosest(evt.getX(),
+                    evt.getY(),
+                    selectDist.value);
+
             com.bbn.openmap.CSpecialist.ActionUnion[] action = null;
-            
+
             switch (mapGesture.getMode()) {
             case (short) MapGesture.Raw:
-                // send the gesture to the comp object or the specialist
+                // send the gesture to the comp object or the
+                // specialist
                 // if it wants area events.
-                if (moused != null && ((JObjectHolder)moused).getObject().comp != null) {
-                    action = ((JObjectHolder)moused).getObject().comp.
-                        sendGesture(JGraphic.constructGesture(mapGesture), clientID);
+                if (moused != null
+                        && ((JObjectHolder) moused).getObject().comp != null) {
+                    action = ((JObjectHolder) moused).getObject().comp.sendGesture(JGraphic.constructGesture(mapGesture),
+                            clientID);
                 } else if (specialist != null) {
-                    action = wantAreaEvents.value
-                        ? specialist.sendGesture(JGraphic.constructGesture(mapGesture), clientID)
-                        : null;
+                    action = wantAreaEvents.value ? specialist.sendGesture(JGraphic.constructGesture(mapGesture),
+                            clientID)
+                            : null;
                     if (action == null) {
                         if (Debug.debugging("cspec"))
-                            Debug.output(getName()+"|CSpecLayer.handleGesture(): null action!");
+                            Debug.output(getName()
+                                    + "|CSpecLayer.handleGesture(): null action!");
                         return false; //didn't consume gesture
                     }
                     if (action.length == 0) {
@@ -961,23 +959,25 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                 }
                 if (action == null) {
                     if (Debug.debugging("cspec")) {
-                        System.err.println(getName()+"|CSpecLayer.handleGesture(): null action!");
+                        System.err.println(getName()
+                                + "|CSpecLayer.handleGesture(): null action!");
                     }
                     return false; //didn't consume gesture
                 }
                 break;
-            case (short) MapGesture.Cooked: 
+            case (short) MapGesture.Cooked:
             default:
-                System.err.println("CSpecLayer|"+getName()+
-                                   "|handleGesture() - cooked modes not supported");
+                System.err.println("CSpecLayer|" + getName()
+                        + "|handleGesture() - cooked modes not supported");
                 break;
             }
 
-            // parse the action sequence, ignore duplicate action directives
+            // parse the action sequence, ignore duplicate action
+            // directives
             mapGesture.actionType = new int[action.length];
             for (int i = 0; i < action.length; i++) {
                 switch (action[i].discriminator().value()) {
-                    
+
                 case MapGesture.NoAction:
                     break;
                 case MapGesture.UpdateGraphics:
@@ -986,11 +986,11 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                     updateGraphics(action[i].ginfo());
                     break;
                 case MapGesture.InfoText:
-                    if (!got_info) {    // can only have one instance
+                    if (!got_info) { // can only have one instance
                         if (Debug.debugging("cspec")) {
-                            Debug.output("CSpecLayer|"+getName()+
-                                         "|handleGesture(): Requesting Info Text " + 
-                                         action[i].itext());
+                            Debug.output("CSpecLayer|" + getName()
+                                    + "|handleGesture(): Requesting Info Text "
+                                    + action[i].itext());
                         }
                         fireRequestInfoLine(action[i].itext());
                         sentInfoLine = true;
@@ -1000,9 +1000,10 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                 case MapGesture.PlainText:
                     if (!got_the_stuff) {
                         if (Debug.debugging("cspec")) {
-                            Debug.output("CSpecLayer|"+getName()+
-                                         "|handleGesture(): Requesting Plain Text " + 
-                                         action[i].ptext());
+                            Debug.output("CSpecLayer|"
+                                    + getName()
+                                    + "|handleGesture(): Requesting Plain Text "
+                                    + action[i].ptext());
                         }
                         fireRequestBrowserContent(action[i].ptext());
                         got_the_stuff = true;
@@ -1011,9 +1012,9 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                 case MapGesture.HTMLText:
                     if (!got_the_stuff) {
                         if (Debug.debugging("cspec")) {
-                            Debug.output("CSpecLayer|"+getName()+
-                                         "|handleGesture(): Requesting HTML Text " + 
-                                         action[i].htext());
+                            Debug.output("CSpecLayer|" + getName()
+                                    + "|handleGesture(): Requesting HTML Text "
+                                    + action[i].htext());
                         }
                         fireRequestBrowserContent(action[i].htext());
                         got_the_stuff = true;
@@ -1022,9 +1023,9 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                 case MapGesture.URL:
                     if (!got_the_stuff) {
                         if (Debug.debugging("cspec")) {
-                            Debug.output("CSpecLayer|"+getName()+
-                                         "|handleGesture(): Requesting URL " + 
-                                         action[i].url());
+                            Debug.output("CSpecLayer|" + getName()
+                                    + "|handleGesture(): Requesting URL "
+                                    + action[i].url());
                         }
                         fireRequestURL(action[i].url());
                         got_the_stuff = true;
@@ -1032,30 +1033,29 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                     break;
                 case MapGesture.UpdatePalette:
                 default:
-                    System.err.println(
-                        "CSpecLayer|"+getName()+
-                        "|handleGesture(): invalid ActionSeq");
+                    System.err.println("CSpecLayer|" + getName()
+                            + "|handleGesture(): invalid ActionSeq");
                     break;
                 }
             }
         } catch (org.omg.CORBA.SystemException e) {
-            System.err.println(getName()+"|CSpecLayer.handleGesture(): " + e);
+            System.err.println(getName() + "|CSpecLayer.handleGesture(): " + e);
             if (showDialogs) {
-                postCORBAErrorMsg("CORBA Exception while gesturing on\n" +
-                                  getName() + " specialist:\n" + e.getClass().getName());
+                postCORBAErrorMsg("CORBA Exception while gesturing on\n"
+                        + getName() + " specialist:\n" + e.getClass().getName());
             }
             return false;
         } catch (OutOfMemoryError e) {
             setSpecialist(null);
             if (showDialogs) {
-                postMemoryErrorMsg("OutOfMemory while gesturing on\n" +
-                                   getName() + " specialist.");
+                postMemoryErrorMsg("OutOfMemory while gesturing on\n"
+                        + getName() + " specialist.");
             }
             return false;
         } catch (Throwable t) {
             if (showDialogs) {
-                postException("Exception while gesturing on\n" +
-                              getName() + " specialist:\n" + t.getClass().getName());
+                postException("Exception while gesturing on\n" + getName()
+                        + " specialist:\n" + t.getClass().getName());
             }
             t.printStackTrace();
             return false;
@@ -1067,24 +1067,26 @@ public class CSpecLayer extends OMGraphicHandlerLayer
         return true;//consumed the gesture
     }
 
-    /** 
+    /**
      * Changes attributes of existing graphics, or adds new graphics,
-     * or reorders graphics.<p>
-     *
+     * or reorders graphics.
+     * <p>
+     * 
      * @param updateRec com.bbn.openmap.CSpecialist.UpdateRecord[]
      */
-    protected void updateGraphics(com.bbn.openmap.CSpecialist.UpdateRecord[] updateRec) {
+    protected void updateGraphics(
+                                  com.bbn.openmap.CSpecialist.UpdateRecord[] updateRec) {
 
-        JGraphicList jGraphics = (JGraphicList)getList();
+        JGraphicList jGraphics = (JGraphicList) getList();
         Projection projection = getProjection();
 
         com.bbn.openmap.CSpecialist.UpdateGraphic upgraphic = null;
         // parse updateRec (an array of UpdateRecord)
-        for (int i = 0; i < updateRec.length; i++ ) {
-            String gID = updateRec[i].gID;      // get the graphic ID
-            
+        for (int i = 0; i < updateRec.length; i++) {
+            String gID = updateRec[i].gID; // get the graphic ID
+
             // parse the sequence of updates to perform on the
-            // graphic.  You need to do this because the types of
+            // graphic. You need to do this because the types of
             // changes that can be made to each object can be part of
             // the specific object, like _GT_Bitmap (location, bits,
             // height/width), or part of the _GT_Graphic
@@ -1092,18 +1094,18 @@ public class CSpecLayer extends OMGraphicHandlerLayer
             // whatever.
             for (int j = 0; j < updateRec[i].objectUpdates.length; j++) {
                 upgraphic = updateRec[i].objectUpdates[j];
-                
+
                 // determine the type of graphic update
                 switch (upgraphic.discriminator().value()) {
-                    
+
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Graphic:
                     JObjectHolder graphic = (JObjectHolder) jGraphics.getOMGraphicWithId(gID);
                     if (graphic != null) {
                         graphic.update(upgraphic.gf_update());
-                        ((OMGraphic)graphic).regenerate(projection);
+                        ((OMGraphic) graphic).regenerate(projection);
                     }
                     break;
-                    
+
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Bitmap:
                     JBitmap bitmap = (JBitmap) jGraphics.getOMGraphicWithId(gID);
                     if (bitmap != null) {
@@ -1111,7 +1113,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                         bitmap.regenerate(projection);
                     }
                     break;
-                    
+
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Text:
                     JText text = (JText) jGraphics.getOMGraphicWithId(gID);
                     if (text != null) {
@@ -1119,23 +1121,23 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                         text.regenerate(projection);
                     }
                     break;
-                    
+
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Poly:
-                    JPoly poly = (JPoly)jGraphics.getOMGraphicWithId(gID);
+                    JPoly poly = (JPoly) jGraphics.getOMGraphicWithId(gID);
                     if (poly != null) {
                         poly.update(upgraphic.pf_update());
                         poly.regenerate(projection);
                     }
                     break;
-                    
+
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Line:
                     JLine line = (JLine) jGraphics.getOMGraphicWithId(gID);
                     if (line != null) {
                         line.update(upgraphic.lf_update());
                         line.regenerate(projection);
-                    }                   
+                    }
                     break;
-                    
+
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Rectangle:
                     JRect rect = (JRect) jGraphics.getOMGraphicWithId(gID);
                     if (rect != null) {
@@ -1143,7 +1145,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                         rect.regenerate(projection);
                     }
                     break;
-                    
+
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Raster:
                     JRaster raster = (JRaster) jGraphics.getOMGraphicWithId(gID);
                     if (raster != null) {
@@ -1151,7 +1153,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                         raster.regenerate(projection);
                     }
                     break;
-                    
+
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Circle:
                     JCircle circ = (JCircle) jGraphics.getOMGraphicWithId(gID);
                     if (circ != null) {
@@ -1159,7 +1161,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                         circ.regenerate(projection);
                     }
                     break;
-                    
+
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_UnitSymbol:
                     JUnit unitsymbol = (JUnit) jGraphics.getOMGraphicWithId(gID);
                     if (unitsymbol != null) {
@@ -1167,21 +1169,22 @@ public class CSpecLayer extends OMGraphicHandlerLayer
                         unitsymbol.regenerate(projection);
                     }
                     break;
-                    
-                    // Uncomment when implemented!!!!
-                    
+
+                // Uncomment when implemented!!!!
+
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_2525Symbol:
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_ForceArrow:
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_NewGraphic:
                 case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_ReorderGraphic:
-                    System.err.println("CSpecLayer|"+getName()+
-                                       "|updateGraphics: Graphics Update Type not implemented.");
+                    System.err.println("CSpecLayer|"
+                            + getName()
+                            + "|updateGraphics: Graphics Update Type not implemented.");
                     break;//HACK - unimplemented
-                    
-                    // unknown update
+
+                // unknown update
                 default:
-                    System.err.println("CSpecLayer|"+getName()+
-                                       "|updateGraphics: ignoring weird update");
+                    System.err.println("CSpecLayer|" + getName()
+                            + "|updateGraphics: ignoring weird update");
                     break;
                 }
             }
@@ -1190,7 +1193,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     /**
      * Check if layer will show error dialogs.
-     *
+     * 
      * @return boolean
      */
     public boolean getShowDialogs() {
@@ -1199,7 +1202,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     /**
      * Set showDialogs behavior.
-     *
+     * 
      * @param show show dialog popups?
      */
     public void setShowDialogs(boolean show) {
@@ -1207,34 +1210,34 @@ public class CSpecLayer extends OMGraphicHandlerLayer
     }
 
     /**
-     *
+     *  
      */
     protected void postMemoryErrorMsg(String msg) {
         fireRequestMessage(new InfoDisplayEvent(this, msg));
     }
 
     /**
-     *
+     *  
      */
     protected void postCORBAErrorMsg(String msg) {
         fireRequestMessage(new InfoDisplayEvent(this, msg));
     }
 
     /**
-     *
+     *  
      */
     protected void postException(String msg) {
         fireRequestMessage(new InfoDisplayEvent(this, msg));
     }
 
     /**
-     *  Free up memory after being removed from the Map
+     * Free up memory after being removed from the Map
      */
     public void removed(java.awt.Container cont) {
 
         if (Debug.debugging("cspec")) {
-            Debug.output(getName()+
-                         "CSpecLayer.removed(): Nullifying graphics");
+            Debug.output(getName()
+                    + "CSpecLayer.removed(): Nullifying graphics");
         }
 
         if (specialist != null) {

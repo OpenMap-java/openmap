@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,21 +12,17 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/Server.java,v $
-// $Revision: 1.3 $ $Date: 2004/01/26 18:18:12 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2004/10/14 18:06:09 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.*;
 import com.bbn.openmap.util.Debug;
 
-/** 
+/**
  * Poorly named, this class just parses VPF format files and dumps
- * them to System.out().  If you want output to come from the
+ * them to System.out(). If you want output to come from the
  * applicable objects that parse the format files, and you only want
  * that output to come when this Server is run, use the Debug flag
  * "vpfserver" in those object classes.
@@ -35,10 +31,10 @@ public class Server {
 
     /**
      * Just a test main to parse vpf datafiles
-     *
+     * 
      * @param args files to parse, plus other command line flags
      */
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         Debug.init(System.getProperties());
         boolean schemaonly = false;
         boolean printall = false;
@@ -52,7 +48,7 @@ public class Server {
         if (Debug.debugging("vpf")) {
             Debug.output("This file doesn't have debugging info.");
         }
-    
+
         for (int i = 0; i < args.length; i++) {
             System.out.println(args[i]);
             if (args[i].equals("-schemaOnly")) {
@@ -81,18 +77,21 @@ public class Server {
                     ff.close();
                 } else if (args[i].endsWith(".doc")) {
                     DcwRecordFile foo = new DcwRecordFile(f);
-                    String colname[] = {"text"};
-                    char tschema[] = {'T'};
-                    int lschema[] = {-1};
+                    String colname[] = { "text" };
+                    char tschema[] = { 'T' };
+                    int lschema[] = { -1 };
                     int cols[];
                     try {
-                        cols = foo.lookupSchema(colname, true, tschema,
-                                                lschema, false);
+                        cols = foo.lookupSchema(colname,
+                                true,
+                                tschema,
+                                lschema,
+                                false);
                     } catch (com.bbn.openmap.io.FormatException e) {
                         foo.printSchema();
                         throw e;
                     }
-                    
+
                     for (List l = new ArrayList(); foo.parseRow(l);) {
                         System.out.println(l.get(cols[0]));
                     }
@@ -103,8 +102,8 @@ public class Server {
                     foo.printSchema();
                     if (!schemaonly) {
                         if (printall) {
-                            
-                            for (List l = new ArrayList(); foo.parseRow(l); ) {
+
+                            for (List l = new ArrayList(); foo.parseRow(l);) {
                                 System.out.println(VPFUtil.listToString(l));
                             }
                         } else if (parseall) {

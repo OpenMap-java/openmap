@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,10 +12,12 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MiniBrowser.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MiniBrowser.java,v
+// $
 // $RCSfile: MiniBrowser.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,7 +52,7 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
 
     public final static String BackCmd = "back";
     public final static String LaunchBrowserCmd = "browser";
-    
+
     public MiniBrowser(String content) {
         this("text/html", content);
     }
@@ -93,30 +95,30 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
         jep = new JEditorPane();
         jep.setEditable(false);
         jep.addHyperlinkListener(new HyperlinkListener() {
-                public void hyperlinkUpdate(HyperlinkEvent e) {
-                    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                        JEditorPane pane = (JEditorPane) e.getSource();
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    JEditorPane pane = (JEditorPane) e.getSource();
 
-                        if (e instanceof HTMLFrameHyperlinkEvent) {
-                            Debug.message("minibrowser", "processing HTMLFrameHyperlinkEvent");
-                            HTMLFrameHyperlinkEvent  evt = (HTMLFrameHyperlinkEvent)e;
-                            HTMLDocument doc = (HTMLDocument)pane.getDocument();
-                            doc.processHTMLFrameHyperlinkEvent(evt);
-                        } else {
-                            Debug.message("minibrowser", "processing HyperlinkEvent");
-                            try {
-                                push(e.getURL());
-                            } catch (Throwable t) {
-                                t.printStackTrace();
-                            }
+                    if (e instanceof HTMLFrameHyperlinkEvent) {
+                        Debug.message("minibrowser",
+                                "processing HTMLFrameHyperlinkEvent");
+                        HTMLFrameHyperlinkEvent evt = (HTMLFrameHyperlinkEvent) e;
+                        HTMLDocument doc = (HTMLDocument) pane.getDocument();
+                        doc.processHTMLFrameHyperlinkEvent(evt);
+                    } else {
+                        Debug.message("minibrowser",
+                                "processing HyperlinkEvent");
+                        try {
+                            push(e.getURL());
+                        } catch (Throwable t) {
+                            t.printStackTrace();
                         }
                     }
                 }
-            });
+            }
+        });
 
-        JScrollPane jsp = new JScrollPane(jep,
-                                          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
-                                          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane jsp = new JScrollPane(jep, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         c.gridwidth = GridBagConstraints.REMAINDER;
         c.fill = GridBagConstraints.BOTH;
@@ -132,7 +134,7 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
         GridBagConstraints c2 = new GridBagConstraints();
         buttonPanel.setLayout(gridbag2);
 
-        c2.fill= GridBagConstraints.NONE;
+        c2.fill = GridBagConstraints.NONE;
         c2.anchor = GridBagConstraints.WEST;
         c2.weightx = 0;
         c2.weighty = 0;
@@ -148,7 +150,7 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
         browserLaunch.setVisible(false);
         gridbag2.setConstraints(browserLaunch, c2);
         buttonPanel.add(browserLaunch);
-        
+
         WindowSupport ws = new WindowSupport(this, "");
 
         c2.anchor = GridBagConstraints.EAST;
@@ -160,7 +162,7 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
 
         ////////////
 
-        c.fill= GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
         c.weightx = 1;
         c.weighty = 0;
@@ -179,12 +181,12 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
         try {
             if (command == BackCmd) {
                 stack.pop();
-                ((MiniBrowserPage)stack.peek()).loadInto(jep);
+                ((MiniBrowserPage) stack.peek()).loadInto(jep);
                 if (stack.size() <= 1) {
                     backButton.setEnabled(false);
                 }
             } else if (command == LaunchBrowserCmd) {
-                ((MiniBrowserPage)stack.peek()).launchInBrowser();
+                ((MiniBrowserPage) stack.peek()).launchInBrowser();
             }
         } catch (EmptyStackException ese) {
             backButton.setEnabled(false);
@@ -285,10 +287,11 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
 
         public void launchInBrowser() {
             try {
-                if (isURL()) 
+                if (isURL())
                     edu.stanford.ejalbert.BrowserLauncher.openURL(url.toString());
             } catch (IOException ioe) {
-                Debug.error("MiniBrowser caught IOException loading webpage (" + url.toString() + ")\n" + ioe.getMessage());
+                Debug.error("MiniBrowser caught IOException loading webpage ("
+                        + url.toString() + ")\n" + ioe.getMessage());
             }
         }
 

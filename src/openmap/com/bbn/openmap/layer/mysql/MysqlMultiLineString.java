@@ -12,32 +12,32 @@
  */
 package com.bbn.openmap.layer.mysql;
 
-import java.util.Vector;
-
 /**
  * This class represents the encapsulation of a MySQL MultiLineString.
  * Coordinate values are stored as values of double precision in
  * arrays as a sequence of Latitude/Longitude pairs. This differs from
  * the database where values are stored as X/Y or Easting/Northing
- * pairs.  <p> 
- *
- * Copyright 2003 by the Author<br> <p>
- *
- * @author Uwe Baier  uwe.baier@gmx.net<br>
- * @version 1.0<br>
+ * pairs.
+ * <p>
+ * 
+ * Copyright 2003 by the Author <br>
+ * <p>
+ * 
+ * @author Uwe Baier uwe.baier@gmx.net <br>
+ * @version 1.0 <br>
  */
 public class MysqlMultiLineString extends MysqlMulti {
 
     public MysqlMultiLineString() {
         super();
-        this.setType(this.MULTILINESTRINGTYPE);
+        this.setType(MysqlGeometry.MULTILINESTRINGTYPE);
     }
 
     /**
      * @see com.bbn.openmap.layer.mysql.MysqlMulti#addElement(MysqlGeometry)
      */
     public void addElement(MysqlGeometry l) {
-        if (l.getType().equals(l.LINESTRINGTYPE)) {
+        if (l.getType().equals(MysqlGeometry.LINESTRINGTYPE)) {
             super.elements.add((MysqlLine) l);
         }
     }

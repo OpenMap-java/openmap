@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDLocator.java,v $
 // $RCSfile: DTEDLocator.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,11 +31,15 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.wanderer.Wanderer;
 import com.bbn.openmap.util.wanderer.WandererCallback;
 
-/** 
+/**
  * DTEDLocator finds DTED frame files, and organizes them by level,
- * longitude and latitude.<P>
+ * longitude and latitude.
+ * <P>
+ * 
  * <pre>
- * Usage: java com.bbn.openmap.dataAccess.dted.DTEDLocator (dir path) ...
+ * 
+ *  Usage: java com.bbn.openmap.dataAccess.dted.DTEDLocator (dir path) ...
+ *  
  * </pre>
  */
 public class DTEDLocator extends Wanderer implements WandererCallback {
@@ -90,7 +94,8 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
      */
     public void handleDirectory(File directory) {
         if (DEBUG) {
-            Debug.output("DTEDLocator: skipping: " + directory.getAbsolutePath());
+            Debug.output("DTEDLocator: skipping: "
+                    + directory.getAbsolutePath());
         }
         // Do nothing to directories
     }
@@ -100,7 +105,8 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
      */
     public void handleFile(File file) {
         if (DEBUG) {
-            Debug.output("DTEDLocator: searching finds: " + file.getAbsolutePath());
+            Debug.output("DTEDLocator: searching finds: "
+                    + file.getAbsolutePath());
         }
         filenames.add(file);
     }
@@ -136,20 +142,20 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
         initFileHolder();
         Iterator it = filenames.iterator();
         DTEDNameTranslator dnt = getTranslator();
-        
+
         while (it.hasNext()) {
             File file = (File) it.next();
             String filename = file.getAbsolutePath();
             try {
                 dnt.set(filename);
-                
+
                 int l = dnt.getLevel();
-                int lt = (int)(dnt.getLat() + 90);
-                int ln = (int)(dnt.getLon() + 180);
+                int lt = (int) (dnt.getLat() + 90);
+                int ln = (int) (dnt.getLon() + 180);
 
                 if (DEBUG) {
-                    Debug.output("  placing " + filename + " at files[" + l +
-                                 "][" + lt + "][" + ln + "]");
+                    Debug.output("  placing " + filename + " at files[" + l
+                            + "][" + lt + "][" + ln + "]");
                 }
 
                 files[l][lt][ln] = file;
@@ -169,12 +175,12 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
         // Need to offset lat/lon to indexes.
 
         try {
-            return files[level][(int)(lat + 90)][(int)(lon + 180)];
+            return files[level][(int) (lat + 90)][(int) (lon + 180)];
         } catch (NullPointerException npe) {
             organize();
             return get(lat, lon, level);
         } catch (ArrayIndexOutOfBoundsException aioobe) {
-            
+
         }
         return null;
     }
@@ -183,8 +189,9 @@ public class DTEDLocator extends Wanderer implements WandererCallback {
      * Given a set of files or directories, parade through them to
      * find files that end with '`', or files that start with '.#',
      * and delete them.
+     * 
      * @param argv paths to files or directories, use -h to get a
-     * usage statement.  
+     *        usage statement.
      */
     public static void main(String[] argv) {
         Debug.init();

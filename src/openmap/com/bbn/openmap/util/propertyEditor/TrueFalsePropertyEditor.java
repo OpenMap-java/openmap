@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,35 +14,40 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/TrueFalsePropertyEditor.java,v $
 // $RCSfile: TrueFalsePropertyEditor.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.util.propertyEditor;
 
-import java.beans.*;
-import javax.swing.*;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.beans.PropertyEditorSupport;
 
-/** 
- * A PropertyEditor that displays an either/or option.  The widget
+import javax.swing.ButtonGroup;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
+/**
+ * A PropertyEditor that displays an either/or option. The widget
  * returns true or false as a string when queried, or the button's
- * action commands if set differently in subclasses.  If you extend
+ * action commands if set differently in subclasses. If you extend
  * this class and override the constructor, you can change the two
- * choices presented, like "enabled/disabled, on/off", etc.  The
+ * choices presented, like "enabled/disabled, on/off", etc. The
  * responses will be true and false, unless the action commands for
  * the trueButton and falseButton are set to something else and
  * useAltCommandStrings is set to true.
  */
-public class TrueFalsePropertyEditor extends PropertyEditorSupport
-    implements ActionListener, FocusListener {
-    
+public class TrueFalsePropertyEditor extends PropertyEditorSupport implements
+        ActionListener, FocusListener {
+
     protected ButtonGroup buttonGroup = new ButtonGroup();
     protected boolean option = true;
     protected JRadioButton trueButton;
@@ -56,11 +61,11 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport
         trueButton = new JRadioButton(TrueString);
         falseButton = new JRadioButton(FalseString);
     }
-    
+
     public boolean supportsCustomEditor() {
         return true;
     }
-    
+
     public void setUseAltCommandStrings(boolean value) {
         useAltCommandStrings = value;
     }
@@ -83,7 +88,7 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport
         }
         trueButton.addActionListener(this);
         falseButton.addActionListener(this);
-        
+
         buttonGroup.add(trueButton);
         buttonGroup.add(falseButton);
 
@@ -93,14 +98,14 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport
         gridbag.setConstraints(falseButton, c);
         panel.add(trueButton);
         panel.add(falseButton);
-        
+
         return panel;
     }
-    
+
     public void actionPerformed(ActionEvent e) {
         String ac = e.getActionCommand();
         setSelected(ac.equalsIgnoreCase(trueButton.getActionCommand()));
-        
+
         //System.out.println("value changed");
         firePropertyChange();
     }
@@ -112,15 +117,18 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport
     }
 
     public void focusGained(FocusEvent e) {}
-    public void focusLost(FocusEvent e) { firePropertyChange(); }
-    
+
+    public void focusLost(FocusEvent e) {
+        firePropertyChange();
+    }
+
     /** Sets String in JTextField. */
     public void setValue(Object string) {
-        if(!(string instanceof String)) {
+        if (!(string instanceof String)) {
             return;
         }
 
-        setSelected(((String)string).equalsIgnoreCase(trueButton.getActionCommand()));
+        setSelected(((String) string).equalsIgnoreCase(trueButton.getActionCommand()));
     }
 
     /** Returns String from ButtonGroup. */

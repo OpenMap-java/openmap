@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/SelectionSupport.java,v $
 // $RCSfile: SelectionSupport.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.event;
 
@@ -42,8 +41,8 @@ public class SelectionSupport {
 
     /**
      * Add a SelectionListener to the listener list.
-     *
-     * @param listener  The SelectionListener to be added
+     * 
+     * @param listener The SelectionListener to be added
      */
     public synchronized void addSelectionListener(SelectionListener listener) {
         if (listeners == null) {
@@ -54,8 +53,8 @@ public class SelectionSupport {
 
     /**
      * Remove a SelectionListener from the listener list.
-     *
-     * @param listener  The SelectionListener to be removed
+     * 
+     * @param listener The SelectionListener to be removed
      */
     public synchronized void removeSelectionListener(SelectionListener listener) {
         if (listeners != null) {
@@ -74,12 +73,14 @@ public class SelectionSupport {
 
     /**
      * Send a selection event to all registered listeners.
+     * 
      * @param omg the graphic in the selection event
      * @param dtr the drawingtoolrequestor in the selection event
      * @param isSelected the selection state in the selection event
      * @see SelectionEvent
      */
-    public void fireSelection(OMGraphic omg, DrawingToolRequestor dtr, boolean isSelected) {
+    public void fireSelection(OMGraphic omg, DrawingToolRequestor dtr,
+                              boolean isSelected) {
 
         Vector targets;
         synchronized (this) {
@@ -92,7 +93,7 @@ public class SelectionSupport {
         SelectionEvent evt = new SelectionEvent(source, omg, dtr, isSelected);
 
         for (int i = 0; i < targets.size(); i++) {
-            SelectionListener target = (SelectionListener)targets.elementAt(i);
+            SelectionListener target = (SelectionListener) targets.elementAt(i);
             target.selectionNotification(evt);
         }
     }

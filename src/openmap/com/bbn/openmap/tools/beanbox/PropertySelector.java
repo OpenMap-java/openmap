@@ -47,5 +47,5 @@ public class PropertySelector extends Choice implements ItemListener {
         select(editor.getAsText());
     }
 
-    PropertyEditor editor;    
+    PropertyEditor editor;
 }

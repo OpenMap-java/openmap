@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.8 $
+// $Date: 2004/10/14 18:06:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics;
 
@@ -30,10 +29,7 @@ import com.bbn.openmap.omGraphics.editable.*;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Insets;
-import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -45,7 +41,7 @@ public class EditableOMPoint extends EditableOMGraphic {
 
     protected GrabPoint gpc;
     protected OffsetGrabPoint gpo; // offset
-    
+
     protected OMPoint point;
 
     public final static String OffsetResetCmd = "OffsetResetCmd";
@@ -54,7 +50,7 @@ public class EditableOMPoint extends EditableOMGraphic {
 
     /**
      * Create the EditableOMPoint, setting the state machine to create
-     * the point off of the gestures.  
+     * the point off of the gestures.
      */
     public EditableOMPoint() {
         createGraphic(null);
@@ -69,9 +65,9 @@ public class EditableOMPoint extends EditableOMGraphic {
     }
 
     /**
-     * Create the EditableOMPoint with an OMPoint already defined, ready
-     * for editing.
-     *
+     * Create the EditableOMPoint with an OMPoint already defined,
+     * ready for editing.
+     * 
      * @param omc OMPoint that should be edited.
      */
     public EditableOMPoint(OMPoint omc) {
@@ -81,7 +77,7 @@ public class EditableOMPoint extends EditableOMGraphic {
     /**
      * Create and initialize the state machine that interprets the
      * modifying gestures/commands, as well as ititialize the grab
-     * points.  Also allocates the grab point array needed by the
+     * points. Also allocates the grab point array needed by the
      * EditableOMPoint.
      */
     public void init() {
@@ -92,15 +88,14 @@ public class EditableOMPoint extends EditableOMGraphic {
     }
 
     /**
-     * Set the graphic within the state machine.  If the graphic
-     * is null, then one shall be created, and located off screen
-     * until the gestures driving the state machine place it on the
-     * map.  
+     * Set the graphic within the state machine. If the graphic is
+     * null, then one shall be created, and located off screen until
+     * the gestures driving the state machine place it on the map.
      */
     public void setGraphic(OMGraphic graphic) {
         init();
         if (graphic instanceof OMPoint) {
-            point = (OMPoint)graphic;
+            point = (OMPoint) graphic;
             stateMachine.setSelected();
             setGrabPoints(point);
         } else {
@@ -109,8 +104,8 @@ public class EditableOMPoint extends EditableOMGraphic {
     }
 
     /**
-     * Create and set the graphic within the state machine.  The
-     * GraphicAttributes describe the type of point to create. 
+     * Create and set the graphic within the state machine. The
+     * GraphicAttributes describe the type of point to create.
      */
     public void createGraphic(GraphicAttributes ga) {
         init();
@@ -122,8 +117,8 @@ public class EditableOMPoint extends EditableOMGraphic {
         }
 
         if (Debug.debugging("eomg")) {
-            Debug.output("EditableOMPoint.createGraphic(): rendertype = " +
-                         renderType);
+            Debug.output("EditableOMPoint.createGraphic(): rendertype = "
+                    + renderType);
         }
 
         switch (renderType) {
@@ -145,7 +140,8 @@ public class EditableOMPoint extends EditableOMGraphic {
     }
 
     /**
-     * Get the OMGraphic being created/modified by the EditableOMPoint.  
+     * Get the OMGraphic being created/modified by the
+     * EditableOMPoint.
      */
     public OMGraphic getGraphic() {
         return point;
@@ -162,10 +158,10 @@ public class EditableOMPoint extends EditableOMGraphic {
     /**
      * Given a MouseEvent, find a GrabPoint that it is touching, and
      * set the moving point to that GrabPoint.
-     *
+     * 
      * @param e MouseEvent
      * @return GrabPoint that is touched by the MouseEvent, null if
-     * none are.  
+     *         none are.
      */
     public GrabPoint getMovingPoint(MouseEvent e) {
 
@@ -174,10 +170,9 @@ public class EditableOMPoint extends EditableOMGraphic {
         int x = e.getX();
         int y = e.getY();
 
-        for (int i = gb.length - 1; i >=0; i--) {
+        for (int i = gb.length - 1; i >= 0; i--) {
 
-            if (gb[i] != null && 
-                gb[i].distance(x, y) == 0) {
+            if (gb[i] != null && gb[i].distance(x, y) == 0) {
 
                 setMovingPoint(gb[i]);
                 // in case the points are on top of each other, the
@@ -190,7 +185,7 @@ public class EditableOMPoint extends EditableOMGraphic {
 
     /**
      * Attach to the Moving OffsetGrabPoint so if it moves, it will
-     * move this EditableOMGraphic with it.  EditableOMGraphic version
+     * move this EditableOMGraphic with it. EditableOMGraphic version
      * doesn't do anything, each subclass has to decide which of its
      * OffsetGrabPoints should be attached to it.
      */
@@ -199,7 +194,7 @@ public class EditableOMPoint extends EditableOMGraphic {
     }
 
     /**
-     * Detach from a Moving OffsetGrabPoint.  The EditableOMGraphic
+     * Detach from a Moving OffsetGrabPoint. The EditableOMGraphic
      * version doesn't do anything, each subclass should remove
      * whatever GrabPoint it would have attached to an
      * OffsetGrabPoint.
@@ -211,8 +206,8 @@ public class EditableOMPoint extends EditableOMGraphic {
     protected int lastRenderType = -1;
 
     /**
-     * Check to make sure the grab points are not null.  If they are,
-     * allocate them, and them assign them to the array. 
+     * Check to make sure the grab points are not null. If they are,
+     * allocate them, and them assign them to the array.
      */
     public void assertGrabPoints() {
         int rt = getGraphic().getRenderType();
@@ -244,7 +239,7 @@ public class EditableOMPoint extends EditableOMGraphic {
 
     /**
      * Set the grab points for the graphic provided, setting them on
-     * the extents of the graphic.  Called when you want to set the
+     * the extents of the graphic. Called when you want to set the
      * grab points off the location of the graphic.
      */
     public void setGrabPoints(OMGraphic graphic) {
@@ -272,9 +267,9 @@ public class EditableOMPoint extends EditableOMGraphic {
 
         if (ntr == false) {
 
-            if (renderType == OMGraphic.RENDERTYPE_LATLON || 
-                renderType == OMGraphic.RENDERTYPE_OFFSET) {
-                
+            if (renderType == OMGraphic.RENDERTYPE_LATLON
+                    || renderType == OMGraphic.RENDERTYPE_OFFSET) {
+
                 if (projection != null) {
                     float lon = point.getLon();
                     float lat = point.getLat();
@@ -283,16 +278,15 @@ public class EditableOMPoint extends EditableOMGraphic {
                     java.awt.Point p = projection.forward(llp);
                     if (renderType == OMGraphic.RENDERTYPE_LATLON) {
                         doStraight = false;
-                        gpc.set((int)p.getX(), (int)p.getY());
+                        gpc.set((int) p.getX(), (int) p.getY());
                     } else {
-                        latoffset = (int)p.getY();
-                        lonoffset = (int)p.getX();
+                        latoffset = (int) p.getY();
+                        lonoffset = (int) p.getX();
                         gpo.set(lonoffset, latoffset);
                     }
                 }
             }
 
-                
             if (doStraight) {
                 gpc.set(lonoffset + point.getX(), latoffset + point.getY());
             }
@@ -302,13 +296,14 @@ public class EditableOMPoint extends EditableOMGraphic {
             }
 
         } else {
-            Debug.message("eomg", "EditableOMPoint.setGrabPoints: graphic needs to be regenerated");
+            Debug.message("eomg",
+                    "EditableOMPoint.setGrabPoints: graphic needs to be regenerated");
         }
     }
 
     /**
      * Take the current location of the GrabPoints, and modify the
-     * location parameters of the OMPoint with them.  Called when you
+     * location parameters of the OMPoint with them. Called when you
      * want the graphic to change according to the grab points.
      */
     public void setGrabPoints() {
@@ -329,7 +324,8 @@ public class EditableOMPoint extends EditableOMGraphic {
             }
         }
 
-        boolean settingOffset = getStateMachine().getState() instanceof GraphicSetOffsetState && movingPoint == gpo;
+        boolean settingOffset = getStateMachine().getState() instanceof GraphicSetOffsetState
+                && movingPoint == gpo;
 
         // If the center point is moving, the offset distance changes
         if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
@@ -340,7 +336,8 @@ public class EditableOMPoint extends EditableOMGraphic {
             point.setLon(llp1.getLongitude());
 
             if (settingOffset || movingPoint == gpc) {
-                // Don't call point.setLocation because we only want to
+                // Don't call point.setLocation because we only want
+                // to
                 // setNeedToRegenerate if !settingOffset.
                 point.setX(gpc.getX() - gpo.getX());
                 point.setY(gpc.getY() - gpo.getY());
@@ -348,8 +345,7 @@ public class EditableOMPoint extends EditableOMGraphic {
 
             if (!settingOffset) {
                 Debug.message("eomg", "EditableOMPoint: updating offset point");
-                point.set(gpc.getX() - gpo.getX(),
-                          gpc.getY() - gpo.getY());
+                point.set(gpc.getX() - gpo.getX(), gpc.getY() - gpo.getY());
             }
 
             // Set Location has reset the rendertype, but provides
@@ -358,7 +354,8 @@ public class EditableOMPoint extends EditableOMGraphic {
             point.setRenderType(OMGraphic.RENDERTYPE_OFFSET);
         }
 
-        // Do the point height and width for XY and OFFSET render types.
+        // Do the point height and width for XY and OFFSET render
+        // types.
         if (renderType == OMGraphic.RENDERTYPE_XY) {
             Debug.message("eomg", "EditableOMPoint: updating x/y point");
 
@@ -380,31 +377,30 @@ public class EditableOMPoint extends EditableOMGraphic {
         return false;
     }
 
-
     /**
      * Called to set the OffsetGrabPoint to the current mouse
      * location, and update the OffsetGrabPoint with all the other
-     * GrabPoint locations, so everything can shift smoothly.  Should
-     * also set the OffsetGrabPoint to the movingPoint.  Should be
+     * GrabPoint locations, so everything can shift smoothly. Should
+     * also set the OffsetGrabPoint to the movingPoint. Should be
      * called only once at the beginning of the general movement, in
-     * order to set the movingPoint.  After that, redraw(e) should
-     * just be called, and the movingPoint will make the adjustments
-     * to the graphic that are needed.
+     * order to set the movingPoint. After that, redraw(e) should just
+     * be called, and the movingPoint will make the adjustments to the
+     * graphic that are needed.
      */
-    public void move(java.awt.event.MouseEvent e) {
-    }
+    public void move(java.awt.event.MouseEvent e) {}
 
     /**
      * Use the current projection to place the graphics on the screen.
      * Has to be called to at least assure the graphics that they are
-     * ready for rendering.  Called when the graphic position changes.
-     *
+     * ready for rendering. Called when the graphic position changes.
+     * 
      * @param proj com.bbn.openmap.proj.Projection
-     * @return true 
+     * @return true
      */
     public boolean generate(Projection proj) {
         Debug.message("eomgdetail", "EditableOMPoint.generate()");
-        if (point != null) point.regenerate(proj);
+        if (point != null)
+            point.regenerate(proj);
 
         for (int i = 0; i < gPoints.length; i++) {
             GrabPoint gp = gPoints[i];
@@ -422,7 +418,8 @@ public class EditableOMPoint extends EditableOMGraphic {
      */
     public void regenerate(Projection proj) {
         Debug.message("eomg", "EditableOMPoint.regenerate()");
-        if (point != null) point.regenerate(proj);
+        if (point != null)
+            point.regenerate(proj);
 
         setGrabPoints(point);
         generate(proj);
@@ -430,9 +427,9 @@ public class EditableOMPoint extends EditableOMGraphic {
 
     /**
      * Draw the EditableOMPoint parts into the java.awt.Graphics
-     * object.  The grab points are only rendered if the point machine
+     * object. The grab points are only rendered if the point machine
      * state is PointSelectedState.POINT_SELECTED.
-     *
+     * 
      * @param graphics java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
@@ -448,26 +445,23 @@ public class EditableOMPoint extends EditableOMGraphic {
             } else {
                 Debug.message("eomg", "EditableOMPoint.render: null point.");
             }
-        
+
             int renderType = point.getRenderType();
 
-            if (state instanceof GraphicSelectedState ||
-                state instanceof GraphicEditState) {
+            if (state instanceof GraphicSelectedState
+                    || state instanceof GraphicEditState) {
 
                 for (int i = 0; i < gPoints.length; i++) {
 
                     GrabPoint gp = gPoints[i];
                     if (gp != null) {
-                        if ((i == OFFSET_POINT_INDEX &&
-                             renderType == OMGraphic.RENDERTYPE_OFFSET &&
-                             movingPoint == gpo) || 
-                        
-                            (state instanceof GraphicSelectedState && 
-                             ((i != OFFSET_POINT_INDEX && 
-                               renderType != OMGraphic.RENDERTYPE_OFFSET) || 
-                              (renderType == OMGraphic.RENDERTYPE_OFFSET)))
-                        
-                            ) {
+                        if ((i == OFFSET_POINT_INDEX
+                                && renderType == OMGraphic.RENDERTYPE_OFFSET && movingPoint == gpo)
+                                ||
+
+                                (state instanceof GraphicSelectedState && ((i != OFFSET_POINT_INDEX && renderType != OMGraphic.RENDERTYPE_OFFSET) || (renderType == OMGraphic.RENDERTYPE_OFFSET)))
+
+                        ) {
 
                             gp.setVisible(true);
                             gp.render(graphics);
@@ -482,9 +476,12 @@ public class EditableOMPoint extends EditableOMGraphic {
     /**
      * Modifies the gui to not include line type adjustments, and adds
      * widgets to control point settings.
+     * 
      * @param graphicAttributes the GraphicAttributes to use to get
-     * the GUI widget from to control those parameters for this EOMG.
-     * @return java.awt.Component to use to control parameters for this EOMG.
+     *        the GUI widget from to control those parameters for this
+     *        EOMG.
+     * @return java.awt.Component to use to control parameters for
+     *         this EOMG.
      */
     public Component getGUI(GraphicAttributes graphicAttributes) {
         Debug.message("eomg", "EditableOMPoint.getGUI");
@@ -503,9 +500,9 @@ public class EditableOMPoint extends EditableOMGraphic {
         if (pToolBar == null) {
             pToolBar = new GridBagToolBar();
             // Add buttons to toggle oval/rect, radius of point.
-        } 
+        }
 
         return pToolBar;
-    }    
+    }
 }
 

@@ -21,11 +21,11 @@ import java.awt.event.*;
 import java.beans.*;
 
 /**
- * A class that provides support for a PropertyEditor that 
- * displays a text property.
+ * A class that provides support for a PropertyEditor that displays a
+ * text property.
  */
-public class PropertyText extends TextField implements KeyListener, 
-                            FocusListener {
+public class PropertyText extends TextField implements KeyListener,
+        FocusListener {
 
     public PropertyText(PropertyEditor pe) {
         super(pe.getAsText());
@@ -45,17 +45,16 @@ public class PropertyText extends TextField implements KeyListener,
             // Quietly ignore.
         }
     }
-    
+
     //----------------------------------------------------------------------
     // Focus listener methods.
 
-    public void focusGained(FocusEvent e) {
-    }
+    public void focusGained(FocusEvent e) {}
 
     public void focusLost(FocusEvent e) {
         updateEditor();
     }
-    
+
     //----------------------------------------------------------------------
     // Keyboard listener methods.
 
@@ -65,11 +64,9 @@ public class PropertyText extends TextField implements KeyListener,
         }
     }
 
-    public void keyPressed(KeyEvent e) {
-    }
+    public void keyPressed(KeyEvent e) {}
 
-    public void keyTyped(KeyEvent e) {
-    }
+    public void keyTyped(KeyEvent e) {}
 
     //----------------------------------------------------------------------
     private PropertyEditor editor;

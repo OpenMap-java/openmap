@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/MapGesture.java,v $
 // $RCSfile: MapGesture.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.specialist;
 
@@ -33,35 +32,29 @@ public class MapGesture {
 
     /** selectionDistance - default selectionDistance. */
     public static final int selectionDistance = 4;
-    /** projection to use for point - lat/lon translation. Set and
-     * used as a read only. */
+    /**
+     * projection to use for point - lat/lon translation. Set and used
+     * as a read only.
+     */
     protected Projection projection = null;
 
     // The OM version of ActionTypes is set here.
     public static final int NoAction = -1;
-    public static final int UpdateGraphics =
-        com.bbn.openmap.CSpecialist.ActionType._UpdateGraphics;
-    public static final int UpdatePalette =
-        com.bbn.openmap.CSpecialist.ActionType._UpdatePalette;
-    public static final int InfoText =
-        com.bbn.openmap.CSpecialist.ActionType._InfoText;
-    public static final int PlainText =
-        com.bbn.openmap.CSpecialist.ActionType._PlainText;
-    public static final int HTMLText =
-        com.bbn.openmap.CSpecialist.ActionType._HTMLText;
-    public static final int URL =
-        com.bbn.openmap.CSpecialist.ActionType._URL;
+    public static final int UpdateGraphics = com.bbn.openmap.CSpecialist.ActionType._UpdateGraphics;
+    public static final int UpdatePalette = com.bbn.openmap.CSpecialist.ActionType._UpdatePalette;
+    public static final int InfoText = com.bbn.openmap.CSpecialist.ActionType._InfoText;
+    public static final int PlainText = com.bbn.openmap.CSpecialist.ActionType._PlainText;
+    public static final int HTMLText = com.bbn.openmap.CSpecialist.ActionType._HTMLText;
+    public static final int URL = com.bbn.openmap.CSpecialist.ActionType._URL;
 
-    public static final int clickEvent = 
-        com.bbn.openmap.CSpecialist.MouseType._ClickEvent;
-    public static final int motionEvent = 
-        com.bbn.openmap.CSpecialist.MouseType._MotionEvent;
-    public static final int keyEvent = 
-        com.bbn.openmap.CSpecialist.MouseType._KeyEvent;
+    public static final int clickEvent = com.bbn.openmap.CSpecialist.MouseType._ClickEvent;
+    public static final int motionEvent = com.bbn.openmap.CSpecialist.MouseType._MotionEvent;
+    public static final int keyEvent = com.bbn.openmap.CSpecialist.MouseType._KeyEvent;
 
     // gesture modes
     public static final short Raw = 1;
-    public static final short Cooked = 2;// HACK: cooked modes unimplemented
+    public static final short Cooked = 2;// HACK: cooked modes
+                                         // unimplemented
     public static final short Burnt = 3;
     public static final short Charcoal = 4;
     private short mode = Raw;
@@ -79,15 +72,15 @@ public class MapGesture {
     public int event_type = -1;
 
     // incoming gesture information (sent from specialist)
-    public int[] actionType = null;     // matches CSpecialist.ActionType
+    public int[] actionType = null; // matches CSpecialist.ActionType
     public String text = null;
     public String info = null;
     public String url = null;
 
-
     public short getMode() {
         return mode;
     }
+
     public void setMode(short m) {
         mode = Raw;//HACK
     }
@@ -100,8 +93,7 @@ public class MapGesture {
         return projection;
     }
 
-    public MapGesture() {
-    }
+    public MapGesture() {}
 
     public void setMouseEvent(MouseEvent me, int eventType, boolean MouseDown) {
         if (me != null) {
@@ -111,9 +103,9 @@ public class MapGesture {
             meta = me.isMetaDown();
             alt = me.isAltDown();
 
-            if (projection != null) 
+            if (projection != null)
                 llpoint = projection.inverse(point);
-            else 
+            else
                 llpoint = new LatLonPoint(0f, 0f);
         }
 
@@ -121,16 +113,20 @@ public class MapGesture {
         event_type = eventType;
     }
 
-    /** determineGesture() - determines what type of cooked mode
-        gesture occurred for specialist layer(s). */
+    /**
+     * determineGesture() - determines what type of cooked mode
+     * gesture occurred for specialist layer(s).
+     */
     public static void determineGesture(MouseEvent event) {}
 }
 
-/** GestureRecord - we may want to be smart about sending gestures to
-    the specialist in the future.  In particular we should implement
-    all the high-level gesture handling on the OpenMap side of things
-    instead of the specialist/libCspec side of things.  Which means
-    changes to the IDL. */
+/**
+ * GestureRecord - we may want to be smart about sending gestures to
+ * the specialist in the future. In particular we should implement all
+ * the high-level gesture handling on the OpenMap side of things
+ * instead of the specialist/libCspec side of things. Which means
+ * changes to the IDL.
+ */
 
 // class GestureRecord {
 // }

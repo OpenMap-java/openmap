@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,21 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeAffiliation.java,v $
 // $RCSfile: CodeAffiliation.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:06:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.tools.symbology.milStd2525;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The CodeAffiliation CodePosition presents options for symbols,
- * noting that the symbol represents a friend, foe or unknown.  This
+ * noting that the symbol represents a friend, foe or unknown. This
  * notation is made in the second character of some symbol code
  * strings (those that allow affilications).
  */

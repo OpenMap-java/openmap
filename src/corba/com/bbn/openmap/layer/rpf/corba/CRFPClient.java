@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CRFPClient.java,v $
 // $RCSfile: CRFPClient.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.rpf.corba;
 
@@ -28,7 +27,6 @@ import java.awt.image.*;
 import java.io.*;
 import java.net.*;
 import java.util.Vector;
-import javax.swing.ImageIcon;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.layer.rpf.*;
@@ -36,32 +34,32 @@ import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.*;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.CADRG;
-import com.bbn.openmap.util.corba.CORBASupport;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 import com.sun.image.codec.jpeg.*;
 
-/** 
+/**
  * An implementation of the RpfFrameProvider interface that uses CORBA
- * to get the subframe data via a server.  The image data is
- * transmitted in jpeg format.  This class requires the sunw package
- * that handles jpeg encoding/decoding.<P>
- *
- * The client can connect to the server in two different ways.  The
+ * to get the subframe data via a server. The image data is
+ * transmitted in jpeg format. This class requires the sunw package
+ * that handles jpeg encoding/decoding.
+ * <P>
+ * 
+ * The client can connect to the server in two different ways. The
  * client can locate the server using an IOR file that the server has
- * written.  This IOR file is read using an URL.  The server can also
- * be located using the CORBA naming service.  The name should be in a
- * three part fomat <ROOT name>/<PART2>/<PART3>.  The root name has to
- * be known by the nameserver and the entire string has to be used by
- * the server on startup.  If both the IOR and name string are set,
+ * written. This IOR file is read using an URL. The server can also be
+ * located using the CORBA naming service. The name should be in a
+ * three part fomat <ROOT name>/ <PART2>/ <PART3>. The root name has
+ * to be known by the nameserver and the entire string has to be used
+ * by the server on startup. If both the IOR and name string are set,
  * the IOR is the thing that gets used.
  */
 public class CRFPClient implements RpfFrameProvider {
 
     /** The property specifying the IOR URL. */
     public static final String iorUrlProperty = "ior";
-    /** The name of the server, using the name service.*/
+    /** The name of the server, using the name service. */
     public static final String nameProperty = "name";
     /** The property specifying the initial JPEG quality. */
     public static final String JPEGQualityProperty = "jpegQuality";
@@ -73,21 +71,22 @@ public class CRFPClient implements RpfFrameProvider {
     protected URL iorURL = null;
     private String clientID = Environment.generateUniqueString();
     /**
-     * The compression quality of the images. Lower quality images
-     * are smaller. 
+     * The compression quality of the images. Lower quality images are
+     * smaller.
      */
     public float jpegQuality = .8f;
 
-    /**  
-     * We'll set up the connection to the server when it's needed,
-     * but not here. 
+    /**
+     * We'll set up the connection to the server when it's needed, but
+     * not here.
      */
     public CRFPClient() {}
 
     /**
      * Set the JPEG quality parameter for subframe transfer.
+     * 
      * @param jq number between 0 and 1, should be between .4 and .8.
-     * Anything else is a waste.  
+     *        Anything else is a waste.
      */
     public void setJpegQuality(float jq) {
         jpegQuality = jq;
@@ -95,6 +94,7 @@ public class CRFPClient implements RpfFrameProvider {
 
     /**
      * Get the quality setting for JPEG subframe retrieval.
+     * 
      * @return float reflecting JPEG quality.
      */
     public float getJpegQuality() {
@@ -117,7 +117,7 @@ public class CRFPClient implements RpfFrameProvider {
 
     /**
      * If you want to connect to the server using an ior, set the URL
-     * where it is located.  
+     * where it is located.
      */
     public void setIorURL(URL iorurl) {
         iorURL = iorurl;
@@ -130,9 +130,9 @@ public class CRFPClient implements RpfFrameProvider {
         return iorURL;
     }
 
-    /** 
+    /**
      * Get the clientID string that is used by the server to keep
-     * track of clients.  This string in internally generated.  
+     * track of clients. This string in internally generated.
      */
     public String getClientID() {
         return clientID;
@@ -145,9 +145,8 @@ public class CRFPClient implements RpfFrameProvider {
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        jpegQuality = LayerUtils.floatFromProperties(properties,
-                                                     prefix + JPEGQualityProperty,
-                                                     .8f);
+        jpegQuality = LayerUtils.floatFromProperties(properties, prefix
+                + JPEGQualityProperty, .8f);
 
         String url = properties.getProperty(prefix + iorUrlProperty);
         if (url != null) {
@@ -155,7 +154,7 @@ public class CRFPClient implements RpfFrameProvider {
                 iorURL = LayerUtils.getResourceOrFileOrURL(url);
             } catch (MalformedURLException e) {
                 throw new IllegalArgumentException("\"" + url + "\""
-                                                   + " is malformed.");
+                        + " is malformed.");
             }
         }
 
@@ -163,8 +162,8 @@ public class CRFPClient implements RpfFrameProvider {
     }
 
     /**
-     * When the client is deleted, it should sign off from the
-     * server, so that it can free up it's cache for it.
+     * When the client is deleted, it should sign off from the server,
+     * so that it can free up it's cache for it.
      */
     protected void finalize() {
         if (Debug.debugging("crfp")) {
@@ -182,17 +181,18 @@ public class CRFPClient implements RpfFrameProvider {
         }
     }
 
-    /** 
+    /**
      * Returns true because the view attributes should be set if they
-     * change at the RpfCacheHandler/RpfCacheManager.  
+     * change at the RpfCacheHandler/RpfCacheManager.
      */
     public boolean needViewAttributeUpdates() {
         return true;
     }
-    
+
     /**
      * Set the RpfViewAttribute object parameters, which describes
-     * alot about what you'll be asking for later.  
+     * alot about what you'll be asking for later.
+     * 
      * @param rva the view attributes.
      */
     public void setViewAttributes(RpfViewAttributes rva) {
@@ -202,56 +202,48 @@ public class CRFPClient implements RpfFrameProvider {
         }
 
         try {
-            serv.setViewAttributes(new CRFPViewAttributes((short)rva.numberOfColors,
-                                                          (short)rva.opaqueness,
-                                                          rva.scaleImages,
-                                                          rva.imageScaleFactor,
-                                                          rva.chartSeries), clientID);
+            serv.setViewAttributes(new CRFPViewAttributes((short) rva.numberOfColors, (short) rva.opaqueness, rva.scaleImages, rva.imageScaleFactor, rva.chartSeries),
+                    clientID);
             Debug.message("crfp", "CRFPClient: setting attributes.");
         } catch (org.omg.CORBA.SystemException e) {
             handleCORBAError(e);
         }
     }
 
-    /** 
+    /**
      * Given a projection that describes a map or geographical area,
      * return RpfCoverageBoxes that let you know how to locate and ask
      * for RpfSubframes.
-     *
+     * 
      * @param ullat NW latitude.
      * @param ullon NW longitude
      * @param lrlat SE latitude
      * @param lrlon SE longitude
      * @param p a CADRG projection
      */
-    public Vector getCoverage(float ullat, float ullon,
-                              float lrlat, float lrlon, 
-                              CADRG p) {
+    public Vector getCoverage(float ullat, float ullon, float lrlat,
+                              float lrlon, CADRG p) {
 
         CRFPCoverageBox[] boxes;
         Server serv = getServer();
 
-        if (serv == null) return new Vector();
+        if (serv == null)
+            return new Vector();
 
-        LLPoint llpoint = new LLPoint(p.getCenter().getLatitude(),
-                                      p.getCenter().getLongitude());
+        LLPoint llpoint = new LLPoint(p.getCenter().getLatitude(), p.getCenter()
+                .getLongitude());
 
-        CRFPCADRGProjection proj = new CRFPCADRGProjection(llpoint,
-                                                           (short)p.getHeight(),
-                                                           (short)p.getWidth(),
-                                                           p.getScale(),
-                                                           (short)p.getZone());
+        CRFPCADRGProjection proj = new CRFPCADRGProjection(llpoint, (short) p.getHeight(), (short) p.getWidth(), p.getScale(), (short) p.getZone());
 
         Debug.message("crfp", "CRFPClient: getting coverage from server.");
 
         try {
-            boxes = serv.getCoverage(ullat, ullon, lrlat, lrlon,
-                                     proj, clientID);
+            boxes = serv.getCoverage(ullat, ullon, lrlat, lrlon, proj, clientID);
             return translateCRFPCoverageBoxes(boxes);
         } catch (org.omg.CORBA.SystemException e) {
             handleCORBAError(e);
         }
-        
+
         return new Vector();
     }
 
@@ -259,34 +251,37 @@ public class CRFPClient implements RpfFrameProvider {
      * Given a projection that describes a map or geographical area,
      * return RpfCoverageBoxes that let you know what bounding boxes
      * of data are available.
-     *
+     * 
      * @param ullat NW latitude.
      * @param ullon NW longitude
      * @param lrlat SE latitude
      * @param lrlon SE longitude
      * @param p a CADRG projection
      */
-    public Vector getCatalogCoverage(float ullat, float ullon,
-                                     float lrlat, float lrlon,
-                                     CADRG p, String chartSeriesCode) {
+    public Vector getCatalogCoverage(float ullat, float ullon, float lrlat,
+                                     float lrlon, CADRG p,
+                                     String chartSeriesCode) {
         CRFPCoverageBox[] boxes;
         Server serv = getServer();
 
-        if (serv == null) return new Vector();
+        if (serv == null)
+            return new Vector();
 
-        LLPoint llpoint = new LLPoint(p.getCenter().getLatitude(),
-                                      p.getCenter().getLongitude());
+        LLPoint llpoint = new LLPoint(p.getCenter().getLatitude(), p.getCenter()
+                .getLongitude());
 
-        CRFPCADRGProjection proj = new CRFPCADRGProjection(llpoint,
-                                                           (short)p.getHeight(),
-                                                           (short)p.getWidth(),
-                                                           p.getScale(),
-                                                           (short)p.getZone());
+        CRFPCADRGProjection proj = new CRFPCADRGProjection(llpoint, (short) p.getHeight(), (short) p.getWidth(), p.getScale(), (short) p.getZone());
 
-        Debug.message("crfp", "CRFPClient: getting catalog coverage from server.");
+        Debug.message("crfp",
+                "CRFPClient: getting catalog coverage from server.");
         try {
-            boxes = serv.getCatalogCoverage(ullat, ullon, lrlat, lrlon,
-                                            proj, chartSeriesCode, clientID);
+            boxes = serv.getCatalogCoverage(ullat,
+                    ullon,
+                    lrlat,
+                    lrlon,
+                    proj,
+                    chartSeriesCode,
+                    clientID);
             return translateCRFPCoverageBoxes(boxes);
         } catch (org.omg.CORBA.SystemException e) {
             handleCORBAError(e);
@@ -295,22 +290,27 @@ public class CRFPClient implements RpfFrameProvider {
         return new Vector();
     }
 
-   /**
+    /**
      * Given an area and a two-letter chart series code, find the
      * percentage of coverage on the map that that chart series can
-     * offer.  If you want specific coverage information, use the
+     * offer. If you want specific coverage information, use the
      * getCatalogCoverage call.
-     * @see #getCatalogCoverage(float ullat, float ullon, float lrlat, float lrlon, CADRG p, String chartSeriesCode)
+     * 
+     * @see #getCatalogCoverage(float ullat, float ullon, float lrlat,
+     *      float lrlon, CADRG p, String chartSeriesCode)
      */
-    public float getCalculatedCoverage(float ullat, float ullon,
-                                       float lrlat, float lrlon,
-                                       CADRG p, String chartSeries) {
+    public float getCalculatedCoverage(float ullat, float ullon, float lrlat,
+                                       float lrlon, CADRG p, String chartSeries) {
         if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)) {
             return 0f;
         }
 
-        Vector results = getCatalogCoverage(ullat, ullon, lrlat, lrlon,
-                                            p, chartSeries);
+        Vector results = getCatalogCoverage(ullat,
+                ullon,
+                lrlat,
+                lrlon,
+                p,
+                chartSeries);
 
         int size = results.size();
 
@@ -319,19 +319,19 @@ public class CRFPClient implements RpfFrameProvider {
         }
 
         // Now interpret the results and figure out the real total
-        // percentage coverage for the chartSeries.  First need to
-        // figure out the current size of the subframes.  Then create
+        // percentage coverage for the chartSeries. First need to
+        // figure out the current size of the subframes. Then create
         // a boolean matrix of those subframes that let you figure out
-        // how many of them are available.  Calculate the percentage
+        // how many of them are available. Calculate the percentage
         // off that.
         int pZone = p.getZone();
         int i, x, y;
-        
+
         double frameLatInterval = Double.MAX_VALUE;
         double frameLonInterval = Double.MAX_VALUE;
         RpfCoverageBox rcb;
         for (i = 0; i < size; i++) {
-            rcb = (RpfCoverageBox)results.elementAt(i);
+            rcb = (RpfCoverageBox) results.elementAt(i);
             if (rcb.subframeLatInterval < frameLatInterval) {
                 frameLatInterval = rcb.subframeLatInterval;
             }
@@ -340,18 +340,18 @@ public class CRFPClient implements RpfFrameProvider {
             }
         }
 
-        if (frameLatInterval == Double.MAX_VALUE || 
-            frameLonInterval == Double.MAX_VALUE) {
+        if (frameLatInterval == Double.MAX_VALUE
+                || frameLonInterval == Double.MAX_VALUE) {
             return 0.0f;
         }
 
-        int numHFrames = (int) Math.ceil((lrlon - ullon)/frameLonInterval);
-        int numVFrames = (int) Math.ceil((ullat- lrlat)/frameLatInterval);
+        int numHFrames = (int) Math.ceil((lrlon - ullon) / frameLonInterval);
+        int numVFrames = (int) Math.ceil((ullat - lrlat) / frameLatInterval);
 
         boolean[][] coverage = new boolean[numHFrames][numVFrames];
         for (i = 0; i < size; i++) {
 
-            rcb = (RpfCoverageBox)results.elementAt(i);
+            rcb = (RpfCoverageBox) results.elementAt(i);
             if (rcb.percentCoverage == 100) {
                 return 1.0f;
             }
@@ -359,8 +359,8 @@ public class CRFPClient implements RpfFrameProvider {
             for (y = 0; y < numVFrames; y++) {
                 for (x = 0; x < numHFrames; x++) {
                     // degree location of indexs
-                    float yFrameLoc = (float)(lrlat + (y*frameLatInterval));
-                    float xFrameLoc = (float)(ullon + (x*frameLonInterval));
+                    float yFrameLoc = (float) (lrlat + (y * frameLatInterval));
+                    float xFrameLoc = (float) (ullon + (x * frameLonInterval));
                     if (coverage[x][y] == false) {
                         if (rcb.within(yFrameLoc, xFrameLoc)) {
                             coverage[x][y] = true;
@@ -369,26 +369,27 @@ public class CRFPClient implements RpfFrameProvider {
                 }
             }
         }
-        
+
         float count = 0;
 
         for (y = 0; y < numVFrames; y++) {
             for (x = 0; x < numHFrames; x++) {
                 if (coverage[x][y] == true) {
-//                  System.out.print("X");
+                    //                  System.out.print("X");
                     count++;
                 } else {
-//                  System.out.print(".");
+                    //                  System.out.print(".");
                 }
             }
-//          Debug.output("");
-        }       
-        
-        return count/(float)(numHFrames*numVFrames);
+            //          Debug.output("");
+        }
+
+        return count / (float) (numHFrames * numVFrames);
     }
 
     /**
      * Convert CRFPCoverageBox[] to vector of RpfCoverageBox.
+     * 
      * @param boxes CRFPCoverageBox[].
      * @return java.util.Vector
      */
@@ -420,42 +421,47 @@ public class CRFPClient implements RpfFrameProvider {
     /**
      * Given the indexes to a certain RpfTocEntry within a certain
      * A.TOC, find the frame/subframe data, decompress it, and return
-     * image pixels.  The tocNumber and entryNumber are given within
-     * the RpfCoverageBox received from a getCoverage call.  With the
+     * image pixels. The tocNumber and entryNumber are given within
+     * the RpfCoverageBox received from a getCoverage call. With the
      * CORBA implementation, we are assuming that the byte array is an
      * encoded jpeg image.
-     *
+     * 
      * @param tocNumber the toc id for a RpfTocHandler for a
-     * particular frame provider.
+     *        particular frame provider.
      * @param entryNumber the RpfTocEntry id for a RpfTocHandler for a
-     * particular frame provider.
+     *        particular frame provider.
      * @param x the horizontal subframe index, from the left side of a
-     * boundary rectangle of the entry.
+     *        boundary rectangle of the entry.
      * @param y the vertical subframe index, from the top side of a
-     * boundary rectangle of the entry.
-     * @see #getCoverage(float ullat, float ullon, float lrlat, float lrlon, CADRG p) 
-     * @return integer pixel data.  
+     *        boundary rectangle of the entry.
+     * @see #getCoverage(float ullat, float ullon, float lrlat, float
+     *      lrlon, CADRG p)
+     * @return integer pixel data.
      */
     public int[] getSubframeData(int tocNumber, int entryNumber, int x, int y) {
         Server serv = getServer();
-        if (serv == null) return null;
+        if (serv == null)
+            return null;
         byte[] jpegData;
         Debug.message("crfp", "CRFPClient: getting subframe data from server.");
 
         try {
             jpegData = serv.getSubframeData((short) tocNumber,
-                                            (short) entryNumber,
-                                            (short) x, (short) y, 
-                                            jpegQuality, clientID);
+                    (short) entryNumber,
+                    (short) x,
+                    (short) y,
+                    jpegQuality,
+                    clientID);
             if (Debug.debugging("crfpdetail")) {
-                Debug.output("CRFPClient: got subframe data length " + 
-                             jpegData.length);
+                Debug.output("CRFPClient: got subframe data length "
+                        + jpegData.length);
             }
 
             // Need to check for the corba rendition of an allowable
             // null image (length 0)
-            if (jpegData.length == 0) return null;
-            
+            if (jpegData.length == 0)
+                return null;
+
             ByteArrayInputStream bais = new ByteArrayInputStream(jpegData);
             JPEGImageDecoder jid = JPEGCodec.createJPEGDecoder(bais);
 
@@ -471,20 +477,23 @@ public class CRFPClient implements RpfFrameProvider {
         }
         return null;
     }
-    
-    public RpfIndexedImageData getRawSubframeData(int tocNumber, int entryNumber, 
-                                                  int x, int y) {
+
+    public RpfIndexedImageData getRawSubframeData(int tocNumber,
+                                                  int entryNumber, int x, int y) {
         Server serv = getServer();
-        if (serv == null) return null;
-        
-        Debug.message("crfp", "CRFPClient: getting raw subframe data from server.");
+        if (serv == null)
+            return null;
+
+        Debug.message("crfp",
+                "CRFPClient: getting raw subframe data from server.");
 
         try {
-            RawImage ri = serv.getRawSubframeData((short)tocNumber,
-                                                  (short) entryNumber,
-                                                  (short) x, (short)y,
-                                                  clientID);
-            
+            RawImage ri = serv.getRawSubframeData((short) tocNumber,
+                    (short) entryNumber,
+                    (short) x,
+                    (short) y,
+                    clientID);
+
             // Need to check for the corba rendition of an allowable
             // null image (length 0)
             if (ri.imagedata.length == 0 || ri.colortable.length == 0) {
@@ -506,49 +515,54 @@ public class CRFPClient implements RpfFrameProvider {
         }
     }
 
-   /**
+    /**
      * Given the indexes to a certain RpfTocEntry within a certain
-     * A.TOC, find the frame and return the attribute information.
-     * The tocNumber and entryNumber are given within the
-     * RpfCoverageBox received from a getCoverage call.
-     *
+     * A.TOC, find the frame and return the attribute information. The
+     * tocNumber and entryNumber are given within the RpfCoverageBox
+     * received from a getCoverage call.
+     * 
      * @param tocNumber the toc id for a RpfTocHandler for a
-     * particular frame provider.
+     *        particular frame provider.
      * @param entryNumber the RpfTocEntry id for a RpfTocHandler for a
-     * particular frame provider.
+     *        particular frame provider.
      * @param x the horizontal subframe index, from the left side of a
-     * boundary rectangle of the entry.
+     *        boundary rectangle of the entry.
      * @param y the vertical subframe index, from the top side of a
-     * boundary rectangle of the entry.
-     * @see #getCoverage(float ullat, float ullon, float lrlat, float lrlon, CADRG p)
-     * @return string.  
+     *        boundary rectangle of the entry.
+     * @see #getCoverage(float ullat, float ullon, float lrlat, float
+     *      lrlon, CADRG p)
+     * @return string.
      */
-    public String getSubframeAttributes(int tocNumber, int entryNumber, 
-                                        int x, int y) {
+    public String getSubframeAttributes(int tocNumber, int entryNumber, int x,
+                                        int y) {
 
         Server serv = getServer();
-        if (serv == null) return "";
-        
-        Debug.message("crfp", "CRFPClient: getting subframe attributes from server.");
+        if (serv == null)
+            return "";
+
+        Debug.message("crfp",
+                "CRFPClient: getting subframe attributes from server.");
         try {
-            return serv.getSubframeAttributes((short)tocNumber,(short) entryNumber,
-                                              (short) x, (short)y, clientID);
+            return serv.getSubframeAttributes((short) tocNumber,
+                    (short) entryNumber,
+                    (short) x,
+                    (short) y,
+                    clientID);
         } catch (org.omg.CORBA.SystemException e) {
             handleCORBAError(e);
         }
         return "";
     }
 
-
-    ////////////////  Corba management
+    //////////////// Corba management
 
     /**
      * get the server proxy.
-     *
+     * 
      * @return Server server or null if error.
-     *
+     *  
      */
-    public Server getServer () {
+    public Server getServer() {
         if (server == null)
             initServer();
         return server;
@@ -556,21 +570,21 @@ public class CRFPClient implements RpfFrameProvider {
 
     /**
      * bind to the server.
-     *
+     *  
      */
     private void initServer() {
         String ior = null;
         org.omg.CORBA.Object object = null;
 
-        com.bbn.openmap.util.corba.CORBASupport cs = 
-            new com.bbn.openmap.util.corba.CORBASupport();
+        com.bbn.openmap.util.corba.CORBASupport cs = new com.bbn.openmap.util.corba.CORBASupport();
 
         try {
             object = cs.readIOR(iorURL);
             server = ServerHelper.narrow(object);
         } catch (IOException ioe) {
             if (Debug.debugging("crfp")) {
-                Debug.output("CRFPClient.initServer() IO Exception with ior: " + iorURL);
+                Debug.output("CRFPClient.initServer() IO Exception with ior: "
+                        + iorURL);
             }
             server = null;
             return;
@@ -578,36 +592,35 @@ public class CRFPClient implements RpfFrameProvider {
 
         if (server == null) {
             object = cs.resolveName(naming);
-            
+
             if (object != null) {
                 server = ServerHelper.narrow(object);
                 if (Debug.debugging("crfp")) {
-                    Debug.output("Have a RPF server:" );
-                    Debug.output("*** Server: is a " + 
-                                 server.getClass().getName() + "\n" + 
-                                 server);
+                    Debug.output("Have a RPF server:");
+                    Debug.output("*** Server: is a "
+                            + server.getClass().getName() + "\n" + server);
                 }
-            } 
+            }
         }
 
         if (Debug.debugging("crfp")) {
             if (server == null) {
-                Debug.error("CRFPClient.initServer: null server!\n  IOR=" + ior + "\n  Name = " + naming);
+                Debug.error("CRFPClient.initServer: null server!\n  IOR=" + ior
+                        + "\n  Name = " + naming);
             } else {
                 Debug.output("CRFPClient: server is golden.");
             }
         }
     }
-    
+
     protected void handleCORBAError(org.omg.CORBA.SystemException e) {
         // don't freak out if we were only interrupted...
         if (e.toString().indexOf("InterruptedIOException") != -1) {
             Debug.error("CRFPClient server communication interrupted!");
         } else {
-            Debug.error("CRFPClient caught CORBA exception: " + e + "\n" +
-                        "CRFPClient Exception class: " + 
-                        e.getClass().getName() + "\n" +
-                        e.getMessage());
+            Debug.error("CRFPClient caught CORBA exception: " + e + "\n"
+                    + "CRFPClient Exception class: " + e.getClass().getName()
+                    + "\n" + e.getMessage());
             e.printStackTrace();
         }
 

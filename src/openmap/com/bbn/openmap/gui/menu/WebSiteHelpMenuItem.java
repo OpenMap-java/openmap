@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,18 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/WebSiteHelpMenuItem.java,v $
 // $RCSfile: WebSiteHelpMenuItem.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.menu;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.awt.*;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.InformationDelegator;
@@ -34,8 +32,8 @@ import com.bbn.openmap.LightMapHandlerChild;
 /**
  * This object tells a browser to bring up the OpenMap Website help.
  */
-public class WebSiteHelpMenuItem extends JMenuItem
-    implements ActionListener, LightMapHandlerChild {
+public class WebSiteHelpMenuItem extends JMenuItem implements ActionListener,
+        LightMapHandlerChild {
 
     protected InformationDelegator informationDelegator = null;
 
@@ -45,37 +43,39 @@ public class WebSiteHelpMenuItem extends JMenuItem
         addActionListener(this);
         setEnabled(false); // enabled when InformationDelegator found.
     }
-  
+
     /**
      * @param in_informationDelegator
      */
-    public void setInformationDelegator(InformationDelegator in_informationDelegator) {
+    public void setInformationDelegator(
+                                        InformationDelegator in_informationDelegator) {
         informationDelegator = in_informationDelegator;
         setEnabled(informationDelegator != null);
     }
-  
+
     /**
      * Return current value of InformationDelegator.
      */
     protected InformationDelegator getInformationDelegator() {
         return informationDelegator;
     }
-  
+
     public void actionPerformed(ActionEvent ae) {
         if (informationDelegator != null) {
-            informationDelegator.displayURL(Environment.get(Environment.HelpURL, "http://openmap.bbn.com/doc/user-guide.html"));
+            informationDelegator.displayURL(Environment.get(Environment.HelpURL,
+                    "http://openmap.bbn.com/doc/user-guide.html"));
         }
     }
 
     public void findAndInit(Object someObj) {
         if (someObj instanceof InformationDelegator) {
-            setInformationDelegator((InformationDelegator)someObj);
+            setInformationDelegator((InformationDelegator) someObj);
         }
     }
 
     public void findAndUndo(Object someObj) {
-        if (someObj instanceof InformationDelegator &&
-            getInformationDelegator() == (InformationDelegator)someObj) {
+        if (someObj instanceof InformationDelegator
+                && getInformationDelegator() == (InformationDelegator) someObj) {
             setInformationDelegator(null);
         }
     }

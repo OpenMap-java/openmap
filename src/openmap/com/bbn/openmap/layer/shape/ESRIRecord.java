@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,27 +14,24 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIRecord.java,v $
 // $RCSfile: ESRIRecord.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.shape;
-
-import java.io.IOException;
 
 import com.bbn.openmap.omGraphics.*;
 
 /**
- * This is the base class for all shape record classes.
- * It stores the record number and content length of a record,
- * also known as the record header.
- *
+ * This is the base class for all shape record classes. It stores the
+ * record number and content length of a record, also known as the
+ * record header.
+ * 
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.2 $ $Date: 2004/01/26 18:18:11 $
+ * @version $Revision: 1.3 $ $Date: 2004/10/14 18:06:05 $
  */
 public abstract class ESRIRecord extends ShapeUtils {
 
@@ -45,8 +42,8 @@ public abstract class ESRIRecord extends ShapeUtils {
     public int contentLength;
 
     /**
-     * Initialize an empty record.  Used when constructing
-     * a record to be written to a shape file.
+     * Initialize an empty record. Used when constructing a record to
+     * be written to a shape file.
      */
     public ESRIRecord() {
         recordNumber = 0;
@@ -54,9 +51,9 @@ public abstract class ESRIRecord extends ShapeUtils {
     }
 
     /**
-     * Initialize a record from a buffer.  Reads the record
-     * header fields from the given buffer at the given offset.
-     *
+     * Initialize a record from a buffer. Reads the record header
+     * fields from the given buffer at the given offset.
+     * 
      * @param b the buffer
      * @param off the offset
      */
@@ -66,45 +63,44 @@ public abstract class ESRIRecord extends ShapeUtils {
     }
 
     /**
-     * Generates 2D OMGraphics and adds them to the given list.  If
-     * you are using jdk1.1.X, you'll have to comment out this method,
+     * Generates 2D OMGraphics and adds them to the given list. If you
+     * are using jdk1.1.X, you'll have to comment out this method,
      * because jdk1.1.X doesn't know about the java.awt.Stroke and
      * java.awt.Paint interfaces.
-     *
+     * 
      * @param list the graphics list
      * @param drawingAttributes Attributes that describe how to render
-     * the graphics.
+     *        the graphics.
      */
-    public abstract void addOMGraphics(
-        OMGraphicList list,
-        DrawingAttributes drawingAttributes);
+    public abstract void addOMGraphics(OMGraphicList list,
+                                       DrawingAttributes drawingAttributes);
 
     /**
-     * Generates OMGeometry and adds them to the given list.  The list
+     * Generates OMGeometry and adds them to the given list. The list
      * takes care of DrawingAttributes.
-     *
+     * 
      * @param list the geometry list
      */
     public abstract OMGeometry addOMGeometry(OMGeometryList list);
 
     /**
      * Gets this record's bounding box.
-     *
+     * 
      * @return a bounding box
      */
     public abstract ESRIBoundingBox getBoundingBox();
 
     /**
-     * Gets this record's shape type as an int.  Shape types
-     * are enumerated on the ShapeUtils class.
-     *
+     * Gets this record's shape type as an int. Shape types are
+     * enumerated on the ShapeUtils class.
+     * 
      * @return the shape type as an int
      */
     public abstract int getShapeType();
 
     /**
      * Yields the length of this record's data portion.
-     *
+     * 
      * @return number of bytes equal to the size of this record's data
      */
     public abstract int getRecordLength();
@@ -112,7 +108,7 @@ public abstract class ESRIRecord extends ShapeUtils {
     /**
      * Returns the number of bytes needed to store the record header
      * and record data.
-     *
+     * 
      * @return number of bytes equal to the size of this record
      */
     public int getBinaryStoreSize() {
@@ -121,7 +117,7 @@ public abstract class ESRIRecord extends ShapeUtils {
 
     /**
      * Writes this record to the given buffer at the given offset.
-     *
+     * 
      * @param b the buffer
      * @param off the offset
      * @return the number of bytes written
@@ -132,17 +128,17 @@ public abstract class ESRIRecord extends ShapeUtils {
         return nBytes;
     }
 
-//     public ESRIArcRecord getArcShape() {
-//      if (getShapeType() == SHAPE_TYPE_ARC) {
-//          return (ESRIArcRecord) this;
-//      } else {
-//          return null;
-//      }
-//     }
+    //     public ESRIArcRecord getArcShape() {
+    //      if (getShapeType() == SHAPE_TYPE_ARC) {
+    //          return (ESRIArcRecord) this;
+    //      } else {
+    //          return null;
+    //      }
+    //     }
 
     /**
      * Accessor for record number field.
-     *
+     * 
      * @return the ordinal of this record in the file
      */
     public int getRecordNumber() {
@@ -150,9 +146,9 @@ public abstract class ESRIRecord extends ShapeUtils {
     }
 
     /**
-     * Accessor for the content length of this record.  That's the
-     * size of this record in 16 bit words.
-     *
+     * Accessor for the content length of this record. That's the size
+     * of this record in 16 bit words.
+     * 
      * @return the number of 16 bit words that this record takes up
      */
     public int getContentLength() {

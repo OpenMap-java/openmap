@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,24 +12,25 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/OMGridGenerator.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/OMGridGenerator.java,v
+// $
 // $RCSfile: OMGridGenerator.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.grid;
 
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
-import java.awt.Graphics;
 
 public interface OMGridGenerator {
-    
-    public OMGraphic generate(OMGrid grid, Projection proj); 
+
+    public OMGraphic generate(OMGrid grid, Projection proj);
+
     public boolean needGenerateToRender();
 }
 

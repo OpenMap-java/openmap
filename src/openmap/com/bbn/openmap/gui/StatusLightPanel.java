@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,16 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/StatusLightPanel.java,v $
 // $RCSfile: StatusLightPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.gui;
 
-import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.beans.*;
@@ -31,20 +29,17 @@ import java.net.URL;
 import java.util.*;
 
 import javax.swing.*;
-import javax.accessibility.*;
 
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.propertyEditor.*;
 
 /**
  */
-public class StatusLightPanel extends OMComponentPanel
-    implements LayerStatusListener, PropertyChangeListener, PropertyConsumer
-{
+public class StatusLightPanel extends OMComponentPanel implements
+        LayerStatusListener, PropertyChangeListener, PropertyConsumer {
 
     protected int numlayers = 0;
     protected MapBean map;
@@ -52,20 +47,14 @@ public class StatusLightPanel extends OMComponentPanel
     protected Hashtable statusLights = new Hashtable();
     protected JToolBar container = null;
 
-    protected final static transient URL greyURL = 
-        StatusLightPanel.class.getResource("grey.gif");
-    public final static transient ImageIcon greyIcon =
-        new ImageIcon(greyURL, "unknown");
+    protected final static transient URL greyURL = StatusLightPanel.class.getResource("grey.gif");
+    public final static transient ImageIcon greyIcon = new ImageIcon(greyURL, "unknown");
 
-    protected final static transient URL redURL = 
-        StatusLightPanel.class.getResource("red.gif");
-    public final static transient ImageIcon redIcon =
-        new ImageIcon(redURL, "working");
+    protected final static transient URL redURL = StatusLightPanel.class.getResource("red.gif");
+    public final static transient ImageIcon redIcon = new ImageIcon(redURL, "working");
 
-    protected final static transient URL greenURL = 
-        StatusLightPanel.class.getResource("green.gif");
-    public final static transient ImageIcon greenIcon =
-        new ImageIcon(greenURL, "stable");
+    protected final static transient URL greenURL = StatusLightPanel.class.getResource("green.gif");
+    public final static transient ImageIcon greenIcon = new ImageIcon(greenURL, "stable");
 
     protected boolean waitingForLayers = false;
     protected boolean showWaitCursor = false;
@@ -103,20 +92,20 @@ public class StatusLightPanel extends OMComponentPanel
     }
 
     /**
-     *  Listen for the layer changes within the MapBean, to
-     *  display the status lights for each layer.
+     * Listen for the layer changes within the MapBean, to display the
+     * status lights for each layer.
      */
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName() == MapBean.LayersProperty) {
-            listenToLayers((Layer[])evt.getNewValue());
+            listenToLayers((Layer[]) evt.getNewValue());
         }
     }
 
     /**
-     * Method to add the StatusLightPanel as an Information
-     * Display Event listener to a list of layers.  Should not be
-     * called directly, because it is called as a result of the
-     * property change (layers) of the MapBean.
+     * Method to add the StatusLightPanel as an Information Display
+     * Event listener to a list of layers. Should not be called
+     * directly, because it is called as a result of the property
+     * change (layers) of the MapBean.
      */
     protected void listenToLayers(Layer[] newLayers) {
         int i;
@@ -133,7 +122,7 @@ public class StatusLightPanel extends OMComponentPanel
                         }
                     }
                     if (!stillOnMap) {
-                        JButton light = (JButton)statusLights.get(layers[i]);
+                        JButton light = (JButton) statusLights.get(layers[i]);
                         light.removeActionListener(layers[i]);
                         statusLights.remove(layers[i]);
                     }
@@ -151,7 +140,8 @@ public class StatusLightPanel extends OMComponentPanel
                     newLayers[i].addLayerStatusListener(this);
                     getStatusLightForLayer(newLayers[i]);
                 } else {
-                    Debug.message("statuslights", "StatusLightPanel: null layer in new layer array");
+                    Debug.message("statuslights",
+                            "StatusLightPanel: null layer in new layer array");
                 }
             }
             layers = newLayers;
@@ -160,11 +150,11 @@ public class StatusLightPanel extends OMComponentPanel
     }
 
     /**
-     * This method is really a get and set.  The JLabel status gif is
-     * returned out of the HashTable for the layer.  If the layer
-     * isn't in the HashTable, the new light is created, and a tooltip
-     * for it is set.
-     *
+     * This method is really a get and set. The JLabel status gif is
+     * returned out of the HashTable for the layer. If the layer isn't
+     * in the HashTable, the new light is created, and a tooltip for
+     * it is set.
+     * 
      * @param layer the layer for the needed light.
      * @return JLabel representing the status of the layer.
      */
@@ -176,7 +166,7 @@ public class StatusLightPanel extends OMComponentPanel
         JButton newLight = (JButton) statusLights.get(layer);
 
         if (newLight == null) {
-//          newLight = new JButton(greyIcon);
+            //          newLight = new JButton(greyIcon);
             newLight = new JButton(greenIcon);
             newLight.setToolTipText(layer.getName());
             newLight.setMargin(new Insets(2, 1, 2, 1));
@@ -194,8 +184,8 @@ public class StatusLightPanel extends OMComponentPanel
     }
 
     /**
-     * The method that updates the StatusLight display
-     * with the correct layer status representation.
+     * The method that updates the StatusLight display with the
+     * correct layer status representation.
      */
     public void reset() {
         removeAll();
@@ -214,7 +204,7 @@ public class StatusLightPanel extends OMComponentPanel
         }
 
         if (layers != null) {
-            for (int i=0; i < layers.length; i++) {
+            for (int i = 0; i < layers.length; i++) {
                 JButton statusgif = getStatusLightForLayer(layers[i]);
                 if (statusgif != null) {
                     if (lightTriggers) {
@@ -226,14 +216,14 @@ public class StatusLightPanel extends OMComponentPanel
             }
         }
         revalidate();
-    }   
+    }
 
     /**
-     * Set the light in the window to be a certain color, depending
-     * on the working status.  If the layer light isn't stored, the
-     * whole thing is blown off.  If the icon is red, then the watch
-     * cursor is requested, if allowed by showWaitCursor.
-     *
+     * Set the light in the window to be a certain color, depending on
+     * the working status. If the layer light isn't stored, the whole
+     * thing is blown off. If the icon is red, then the watch cursor
+     * is requested, if allowed by showWaitCursor.
+     * 
      * @param layer the layer to update.
      * @param icon the icon light representing the status.
      */
@@ -244,25 +234,25 @@ public class StatusLightPanel extends OMComponentPanel
 
             if (this.map != null) {
                 if (icon == redIcon && showWaitCursor) {
-//                  this.map.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    //                  this.map.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     waitingForLayers = true;
                 } else if (icon == greenIcon) {
                     Enumeration lights = statusLights.elements();
                     waitingForLayers = false;
                     while (lights.hasMoreElements()) {
-                        JButton light = (JButton)lights.nextElement();
+                        JButton light = (JButton) lights.nextElement();
                         if (light.getIcon() == redIcon) {
                             waitingForLayers = true;
                         }
                     }
 
-//                  if (!waitingForLayers) {
-//                      if (currentMapBeanCursor != null) {
-//                          this.map.setCursor(currentMapBeanCursor);
-//                      } else {
-//                          resetCursor();
-//                      }                           
-//                  }
+                    //                  if (!waitingForLayers) {
+                    //                      if (currentMapBeanCursor != null) {
+                    //                          this.map.setCursor(currentMapBeanCursor);
+                    //                      } else {
+                    //                          resetCursor();
+                    //                      }
+                    //                  }
                 }
             }
         }
@@ -273,36 +263,37 @@ public class StatusLightPanel extends OMComponentPanel
 
     /**
      * Update the Layer status.
-     * @param evt LayerStatusEvent 
+     * 
+     * @param evt LayerStatusEvent
      */
     public void updateLayerStatus(LayerStatusEvent evt) {
         switch (evt.getStatus()) {
-            // these need to be coordinated correctly by the Layer, otherwise
-            // we'll get phantom status ticks or maybe an ArrayOutOfBounds
-            // negative...
-            case LayerStatusEvent.START_WORKING:
-                setLayerStatus((Layer) evt.getSource(), redIcon);
-                break;
-            case LayerStatusEvent.STATUS_UPDATE:
-                break;
-            case LayerStatusEvent.FINISH_WORKING:
-                setLayerStatus((Layer) evt.getSource(), greenIcon);
-                break;
-            default:
-                System.err.println(
-                        "InformationDelegator.updateLayerStatus(): " +
-                        "unknown status: " + evt.getStatus());
-                break;
+        // these need to be coordinated correctly by the Layer,
+        // otherwise
+        // we'll get phantom status ticks or maybe an ArrayOutOfBounds
+        // negative...
+        case LayerStatusEvent.START_WORKING:
+            setLayerStatus((Layer) evt.getSource(), redIcon);
+            break;
+        case LayerStatusEvent.STATUS_UPDATE:
+            break;
+        case LayerStatusEvent.FINISH_WORKING:
+            setLayerStatus((Layer) evt.getSource(), greenIcon);
+            break;
+        default:
+            System.err.println("InformationDelegator.updateLayerStatus(): "
+                    + "unknown status: " + evt.getStatus());
+            break;
         }
     }
 
     /**
-     * Called when an object has been added to the BeanContext.  The
+     * Called when an object has been added to the BeanContext. The
      * InformationDelegator will look for certain objects it needs.
      */
     public void findAndInit(Object someObj) {
         if (someObj instanceof MapBean) {
-            setMap((MapBean)someObj);
+            setMap((MapBean) someObj);
         }
     }
 
@@ -321,7 +312,8 @@ public class StatusLightPanel extends OMComponentPanel
         setPropertyPrefix(prefix);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        setLightTriggers(LayerUtils.booleanFromProperties(props, prefix + LightTriggersProperty, lightTriggers));
+        setLightTriggers(LayerUtils.booleanFromProperties(props, prefix
+                + LightTriggersProperty, lightTriggers));
     }
 
     public void setLightTriggers(boolean set) {
@@ -340,7 +332,8 @@ public class StatusLightPanel extends OMComponentPanel
         }
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-        props.put(prefix + LightTriggersProperty, new Boolean(lightTriggers).toString());
+        props.put(prefix + LightTriggersProperty,
+                new Boolean(lightTriggers).toString());
         return props;
     }
 
@@ -350,7 +343,8 @@ public class StatusLightPanel extends OMComponentPanel
         }
 
         props.put(LightTriggersProperty, "Lights should launch layer palettes");
-        props.put(LightTriggersProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(LightTriggersProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
         return props;
     }
 }

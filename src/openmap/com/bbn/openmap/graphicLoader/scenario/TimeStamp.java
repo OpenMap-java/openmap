@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/TimeStamp.java,v $
 // $RCSfile: TimeStamp.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.graphicLoader.scenario;
 
@@ -28,8 +27,8 @@ import java.util.Comparator;
 import com.bbn.openmap.LatLonPoint;
 
 /**
- * A TimeStamp is a latitude and longitude associated with a time.
- * The time is relative.
+ * A TimeStamp is a latitude and longitude associated with a time. The
+ * time is relative.
  */
 public class TimeStamp implements Comparator {
 
@@ -53,7 +52,8 @@ public class TimeStamp implements Comparator {
     }
 
     public String toString() {
-        return "TimeStamp [ lat=" + latitude + " lon=" + longitude + " time=" + time + " ]";
+        return "TimeStamp [ lat=" + latitude + " lon=" + longitude + " time="
+                + time + " ]";
     }
 
     public void setTime(long t) {
@@ -83,15 +83,15 @@ public class TimeStamp implements Comparator {
     }
 
     /**
-     * Compares its two arguments for order.  Returns a negative
+     * Compares its two arguments for order. Returns a negative
      * integer, zero, or a positive integer as the first argument is
-     * less than, equal to, or greater than the second.  Assumes that
-     * the objects are TimeStamps.  Make the comparison based on time
+     * less than, equal to, or greater than the second. Assumes that
+     * the objects are TimeStamps. Make the comparison based on time
      * fields.
      */
     public int compare(Object obj1, Object obj2) {
-        long time1 = ((TimeStamp)obj1).time;
-        long time2 = ((TimeStamp)obj2).time;
+        long time1 = ((TimeStamp) obj1).time;
+        long time2 = ((TimeStamp) obj2).time;
         if (time1 < time2) {
             return -1;
         } else if (time1 > time2) {
@@ -103,11 +103,11 @@ public class TimeStamp implements Comparator {
 
     /**
      * Indicates whether some other object is "equal to" this
-     * Comparator.  Assumes that the other object is a TimeStamp
-     * object.  Compares time fields.
+     * Comparator. Assumes that the other object is a TimeStamp
+     * object. Compares time fields.
      */
     public boolean equals(Object obj) {
-        return (((TimeStamp)obj).time == time);
+        return (((TimeStamp) obj).time == time);
     }
 
 }

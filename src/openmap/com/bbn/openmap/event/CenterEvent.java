@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CenterEvent.java,v $
 // $RCSfile: CenterEvent.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
@@ -34,11 +33,12 @@ public class CenterEvent extends java.util.EventObject {
 
     /**
      * Construct a CenterEvent.
+     * 
      * @param source the source bean
      * @param lat float latitude in decimal degrees
      * @param lon float longitude in decimal degrees
      */
-    public CenterEvent (Object source, float lat, float lon) {
+    public CenterEvent(Object source, float lat, float lon) {
         super(source);
         latitude = lat;
         longitude = lon;
@@ -46,6 +46,7 @@ public class CenterEvent extends java.util.EventObject {
 
     /**
      * Get the latitude of the center.
+     * 
      * @return float latitude in decimal degrees
      */
     public float getLatitude() {
@@ -54,6 +55,7 @@ public class CenterEvent extends java.util.EventObject {
 
     /**
      * Get the latitude of the center.
+     * 
      * @return float latitude in decimal degrees
      */
     public float getLongitude() {

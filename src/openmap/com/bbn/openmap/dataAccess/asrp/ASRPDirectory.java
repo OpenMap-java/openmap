@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/ASRPDirectory.java,v $
 // $RCSfile: ASRPDirectory.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/03/23 18:51:16 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.dataAccess.asrp;
 
@@ -42,16 +41,17 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * An ASRP directory contains information needed to view images.  It
+ * An ASRP directory contains information needed to view images. It
  * contains multiple files, each containing complementary information
- * about the image.  The GeneralInformationFile (GEN) contains
- * information about the image such as coverage and location.  The
- * QualityFile (QAL) contains accuracy and color information.  The
+ * about the image. The GeneralInformationFile (GEN) contains
+ * information about the image such as coverage and location. The
+ * QualityFile (QAL) contains accuracy and color information. The
  * GeoReferenceFile (GER) contains projection information, the
  * SourceFile (SOU) contains information about the map that was used
- * to create the images.  The RasterGeoDataFile (IMG) contains the
- * actual pixel information. <P>
- *
+ * to create the images. The RasterGeoDataFile (IMG) contains the
+ * actual pixel information.
+ * <P>
+ * 
  * This class knows how to use all of these files to create images,
  * which are made up of subframe tiles called blocks.
  */
@@ -74,28 +74,36 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
     /** Number of vertical pixels per block. */
     protected int numVerPixels_P;
     /**
-     * When reading image bytes, the number of bits that represent
-     * the number of pixels the next color index stands for. 
+     * When reading image bytes, the number of bits that represent the
+     * number of pixels the next color index stands for.
      */
     protected int pixelCountBits;
     /**
-     * When reading image bytes, the number of bits that represent
-     * the color index.
+     * When reading image bytes, the number of bits that represent the
+     * color index.
      */
     protected int pixelValueBits;
-   
+
     /* Bounding coordinates for coverage. */
-    protected float swo, nea, neo, swa; // west lon, north lat, east lon, south lat
+    protected float swo, nea, neo, swa; // west lon, north lat, east
+                                        // lon, south lat
     /* Upper left latitude/longitude for top left tile. */
-    protected float lso, pso; // padded longitude, latitude of upper left image corner
+    protected float lso, pso; // padded longitude, latitude of upper
+                              // left image corner
     /** Number of pixels 360 degrees east - west. */
     protected int arv;
     /** Number of pixels 360 degrees north - south. */
     protected int brv;
-    /** Calculated number of degrees per block in the horizontal direction. */
-    protected float degPerHorBlock; 
-    /** Calculated number of degrees per block in the vertical direction. */
-    protected float degPerVerBlock; 
+    /**
+     * Calculated number of degrees per block in the horizontal
+     * direction.
+     */
+    protected float degPerHorBlock;
+    /**
+     * Calculated number of degrees per block in the vertical
+     * direction.
+     */
+    protected float degPerVerBlock;
     /** Byte offset into the IMG file where tile data starts. */
     protected int tileDataOffset;
     /** The colors from the QAL file. */
@@ -113,7 +121,7 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
     protected double scaleFactor = 4;
 
     /**
-     * Create a new ASRP directory for the given path.  Calls
+     * Create a new ASRP directory for the given path. Calls
      * initialize() which will read in the different files to find out
      * the attribute information about the data.
      */
@@ -147,10 +155,8 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
      */
     public OMRect getBounds() {
         if (bounds == null) {
-            bounds = new OMRect(pso, lso, 
-                                pso - degPerVerBlock*numVerBlocks_M, 
-                                lso + degPerHorBlock*numHorBlocks_N, 
-                                OMGraphic.LINETYPE_GREATCIRCLE);
+            bounds = new OMRect(pso, lso, pso - degPerVerBlock * numVerBlocks_M, lso
+                    + degPerHorBlock * numHorBlocks_N, OMGraphic.LINETYPE_GREATCIRCLE);
         }
 
         return bounds;
@@ -176,15 +182,15 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
 
     public boolean validScale(Projection proj) {
         if (proj instanceof EqualArc) {
-            EqualArc ea = (EqualArc)proj;
+            EqualArc ea = (EqualArc) proj;
             double xPixConstant = ea.getXPixConstant();
 
-            double scale = xPixConstant/arv;
+            double scale = xPixConstant / arv;
 
-            boolean result = (scale < scaleFactor) && (scale > 1/scaleFactor);
+            boolean result = (scale < scaleFactor) && (scale > 1 / scaleFactor);
             if (Debug.debugging("asrp")) {
-                Debug.output("Scale comparing arv = " + arv + ", " + xPixConstant + 
-                             ", result: " + result);
+                Debug.output("Scale comparing arv = " + arv + ", "
+                        + xPixConstant + ", result: " + result);
             }
             return result;
         }
@@ -195,7 +201,8 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
      * Get an OMGraphicList of files that cover the projection.
      * Returns an empty list if the coverage isn't over the map.
      */
-    public OMGraphicList checkProjAndGetTiledImages(Projection proj) throws IOException {
+    public OMGraphicList checkProjAndGetTiledImages(Projection proj)
+            throws IOException {
 
         if (!isOnMap(proj) || !validScale(proj)) {
             // off the map
@@ -209,7 +216,7 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
      * Assumes that the projection checks have occured, have passed,
      * and just fetches the image tiles.
      */
-    public OMGraphicList getTiledImages(Projection proj)  throws IOException {
+    public OMGraphicList getTiledImages(Projection proj) throws IOException {
 
         float ullat = pso;
         float ullon = lso;
@@ -219,29 +226,44 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
         LatLonPoint llp1 = proj.getUpperLeft();
         LatLonPoint llp2 = proj.getLowerRight();
 
-        int startX = (int) Math.floor((llp1.getLongitude() - ullon) / degPerHorBlock);
-        int startY = (int) Math.floor((ullat - llp1.getLatitude()) / degPerVerBlock);
-        
-        int endX = numHorBlocks_N - (int) Math.floor((lrlon - llp2.getLongitude()) / degPerHorBlock);
-        int endY = numVerBlocks_M - (int) Math.floor((llp2.getLatitude() - lrlat) / degPerVerBlock);
+        int startX = (int) Math.floor((llp1.getLongitude() - ullon)
+                / degPerHorBlock);
+        int startY = (int) Math.floor((ullat - llp1.getLatitude())
+                / degPerVerBlock);
 
-        if (startX < 0) startX = 0;
-        if (startY < 0) startY = 0;
+        int endX = numHorBlocks_N
+                - (int) Math.floor((lrlon - llp2.getLongitude())
+                        / degPerHorBlock);
+        int endY = numVerBlocks_M
+                - (int) Math.floor((llp2.getLatitude() - lrlat)
+                        / degPerVerBlock);
 
-        if (endX > numHorBlocks_N) endX = numHorBlocks_N;
-        if (endY > numVerBlocks_M) endY = numVerBlocks_M;
+        if (startX < 0)
+            startX = 0;
+        if (startY < 0)
+            startY = 0;
 
-        return getTiledImages(new Rectangle(startX, startY, endX - startX, endY - startY), proj);
+        if (endX > numHorBlocks_N)
+            endX = numHorBlocks_N;
+        if (endY > numVerBlocks_M)
+            endY = numVerBlocks_M;
+
+        return getTiledImages(new Rectangle(startX, startY, endX - startX, endY
+                - startY), proj);
     }
 
     /**
-     * Provide an OMGraphicList containing the tile blocks described by the rectangle.
-     * @param rect rectangle defining the tile blocks to get.  rect.x
-     * and rect.y describe the starting upper left block to get,
-     * rect.getWidth and rect.getHeight describe the number of tiles to the
-     * right and down from the first block to collect.
+     * Provide an OMGraphicList containing the tile blocks described
+     * by the rectangle.
+     * 
+     * @param rect rectangle defining the tile blocks to get. rect.x
+     *        and rect.y describe the starting upper left block to
+     *        get, rect.getWidth and rect.getHeight describe the
+     *        number of tiles to the right and down from the first
+     *        block to collect.
      */
-    protected OMGraphicList getTiledImages(Rectangle rect, Projection proj) throws IOException {
+    protected OMGraphicList getTiledImages(Rectangle rect, Projection proj)
+            throws IOException {
 
         if (Debug.debugging("asrp")) {
             Debug.output("ASRPDirectory: fielding request for " + rect);
@@ -249,14 +271,14 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
 
         OMGraphicList list = new OMGraphicList();
 
-        int startX = (int)rect.getX();
-        int startY = (int)rect.getY();
-        int endX = startX + (int)rect.getWidth();
-        int endY = startY + (int)rect.getHeight();
+        int startX = (int) rect.getX();
+        int startY = (int) rect.getY();
+        int endX = startX + (int) rect.getWidth();
+        int endY = startY + (int) rect.getHeight();
 
         for (int x = startX; x < endX; x++) {
             for (int y = startY; y < endY; y++) {
-                OMGraphic omg = (OMGraphic)get(new String(x + "," + y).intern());
+                OMGraphic omg = (OMGraphic) get(new String(x + "," + y).intern());
                 if (omg != null) {
                     omg.generate(proj);
                     list.add(omg);
@@ -266,14 +288,13 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
 
         return list;
     }
- 
 
     /**
      * Fetch the subframe tile block from the IMG file.
      */
     public OMScalingRaster getBlock(int x, int y) throws IOException {
-        float ullat = pso - y*degPerVerBlock;
-        float ullon = lso + x*degPerHorBlock;
+        float ullat = pso - y * degPerVerBlock;
+        float ullon = lso + x * degPerHorBlock;
         float lrlat = ullat - degPerVerBlock;
         float lrlon = ullon + degPerHorBlock;
 
@@ -289,11 +310,11 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
 
             // Subtracting one because the values look like they start
             // with 1.
-            int blockOffset = ((DDFSubfield)tsi.get(index)).intValue() - 1;
+            int blockOffset = ((DDFSubfield) tsi.get(index)).intValue() - 1;
 
             if (Debug.debugging("asrp")) {
-                Debug.output("ASRPDirectory.getBlock: index of (" + 
-                             x + ", " + y + ") is " + blockOffset);
+                Debug.output("ASRPDirectory.getBlock: index of (" + x + ", "
+                        + y + ") is " + blockOffset);
             }
 
             if (blockOffset < 0) {
@@ -308,11 +329,13 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
             DDFModule mod = img.getInfo();
             mod.seek(tileDataOffset + blockOffset);
 
-            int byteCount = 0;  // Which data byte is being set
+            int byteCount = 0; // Which data byte is being set
             int numBlockPixels = numHorPixels_Q * numVerPixels_P;
             byte[] data = new byte[numBlockPixels]; // image byte data
 
-            int rowCount = 0; // the per row count, should equal 128 ( numHorPixels_Q) at the end of every row
+            int rowCount = 0; // the per row count, should equal 128 (
+                              // numHorPixels_Q) at the end of every
+                              // row
             int numRow = 0;
             int cpc = 0; // current pixel count for file pointer
             int cpv = 0; // current pixel value for file pointer
@@ -323,7 +346,8 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
                     break;
                 case 4:
                     cpc = mod.read() >> 4;
-                    // need to back pointer up 4 bits before reading cpv??
+                    // need to back pointer up 4 bits before reading
+                    // cpv??
                     Debug.output("CAUTION:  4 bit count");
                     break;
                 default:
@@ -331,8 +355,9 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
                 }
 
                 cpv = mod.read();
-                
-                // OK, cpv has value, cpc says how many pixels that goes in.
+
+                // OK, cpv has value, cpc says how many pixels that
+                // goes in.
 
                 try {
                     for (int c = 0; c < cpc; c++) {
@@ -346,15 +371,18 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
                     }
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
                     if (Debug.debugging("asrp")) {
-                        Debug.output("ASRPDirectory.getBlock(): bad index for setting byte value: " + 
-                                     aioobe.getMessage());
+                        Debug.output("ASRPDirectory.getBlock(): bad index for setting byte value: "
+                                + aioobe.getMessage());
                     }
                     // This try/catch block is really for the data[]
                     // array indexing.
 
-                    // if byteCount + x was greater than numBlockPixels,
-                    // we should be at the end of the image bytes, so we
-                    // shouldn't have to worry about rowCount not being
+                    // if byteCount + x was greater than
+                    // numBlockPixels,
+                    // we should be at the end of the image bytes, so
+                    // we
+                    // shouldn't have to worry about rowCount not
+                    // being
                     // properly updated.
                 }
 
@@ -365,14 +393,11 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
             }
 
             if (Debug.debugging("asrpdetail")) {
-                Debug.output("ASRPDirectory creating image covering (" +
-                             ullat + ", " +  ullon + 
-                             "), (" + lrlat + ", " + lrlon + ")");
+                Debug.output("ASRPDirectory creating image covering (" + ullat
+                        + ", " + ullon + "), (" + lrlat + ", " + lrlon + ")");
             }
 
-            return new OMScalingRaster(ullat, ullon, lrlat, lrlon,
-                                       numHorPixels_Q, numVerPixels_P,
-                                       data, getColors(), 255);
+            return new OMScalingRaster(ullat, ullon, lrlat, lrlon, numHorPixels_Q, numVerPixels_P, data, getColors(), 255);
         }
 
         return null;
@@ -393,27 +418,31 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
             colors = new Color[numColors];
 
             for (int count = 0; count < numColors; count++) {
-                int red = ((DDFSubfield)reds.get(count)).intValue();
-                int green = ((DDFSubfield)greens.get(count)).intValue();
-                int blue = ((DDFSubfield)blues.get(count)).intValue();
-//                 Debug.output("Created color " + count + " with " + red + ", " + green + ", " + blue);
+                int red = ((DDFSubfield) reds.get(count)).intValue();
+                int green = ((DDFSubfield) greens.get(count)).intValue();
+                int blue = ((DDFSubfield) blues.get(count)).intValue();
+                //                 Debug.output("Created color " + count + " with " +
+                // red + ", " + green + ", " + blue);
                 // The zero color is supposed to tbe null color, and
-                // clear.  Doesn't seem to be working.
-                colors[count] = new Color(red, green, blue, (count == 0?0:255));
+                // clear. Doesn't seem to be working.
+                colors[count] = new Color(red, green, blue, (count == 0 ? 0
+                        : 255));
             }
 
         }
         return colors;
     }
- 
+
     /**
      * Read in the attribute information about the data.
+     * 
      * @param dirPath path to the ASRP directory.
      * @param root name of all of the files, usually the same as the
-     * ASRP directory itself.
+     *        ASRP directory itself.
      * @param DD the occurance number, usually '01' of the files.
      */
-    protected void initialize(String dirPath, String root, String DD) throws IOException {
+    protected void initialize(String dirPath, String root, String DD)
+            throws IOException {
         String rootPath = dirPath + "/" + root + DD + ".";
 
         gen = new GeneralInformationFile(rootPath + GEN_NAME);
@@ -433,12 +462,12 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
         //assume there is a tile index map
 
         DDFField genInfo = gen.getField(GeneralInformationFile.GENERAL_INFORMATION);
-        swo = genInfo.getSubfield("SWO").floatValue()/3600f;
-        neo = genInfo.getSubfield("NEO").floatValue()/3600f;
-        nea = genInfo.getSubfield("NEA").floatValue()/3600f;
-        swa = genInfo.getSubfield("SWA").floatValue()/3600f;
-        lso = genInfo.getSubfield("LSO").floatValue()/3600f;
-        pso = genInfo.getSubfield("PSO").floatValue()/3600f;
+        swo = genInfo.getSubfield("SWO").floatValue() / 3600f;
+        neo = genInfo.getSubfield("NEO").floatValue() / 3600f;
+        nea = genInfo.getSubfield("NEA").floatValue() / 3600f;
+        swa = genInfo.getSubfield("SWA").floatValue() / 3600f;
+        lso = genInfo.getSubfield("LSO").floatValue() / 3600f;
+        pso = genInfo.getSubfield("PSO").floatValue() / 3600f;
 
         arv = genInfo.getSubfield("ARV").intValue();
         brv = genInfo.getSubfield("BRV").intValue();
@@ -448,25 +477,29 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
 
         DDFField pixelInfo = img.getField(RasterGeoDataFile.PIXEL);
         // Finding this out lets you use the tile index map to access
-        // pixel data.  This offset points to the start of the tile
+        // pixel data. This offset points to the start of the tile
         // data.
-        tileDataOffset = pixelInfo.getHeaderOffset() + pixelInfo.getDataPosition();
+        tileDataOffset = pixelInfo.getHeaderOffset()
+                + pixelInfo.getDataPosition();
 
-        degPerHorBlock = 360f/(float)arv * (float)numHorPixels_Q;
-        degPerVerBlock = 360f/(float)brv * (float)numVerPixels_P;
+        degPerHorBlock = 360f / (float) arv * (float) numHorPixels_Q;
+        degPerVerBlock = 360f / (float) brv * (float) numVerPixels_P;
 
         if (Debug.debugging("asrp")) {
-            Debug.output("For " + rootPath + "\n\thave blocks (" + 
-                         numHorBlocks_N + ", " + numVerBlocks_M + ")\n\twith pixels (" + 
-                         numHorPixels_Q + ", " + numVerPixels_P + ")");
-            Debug.output("\tCoverage from (" + nea + ", " + swo + ") to (" +
-                         swa + ", " + neo + ")");
-            Debug.output("\tPadded coverage starting at (" + pso + ", " + lso + ")");
-            Debug.output("\tNumber of pixels 360 e-w (" + arv + ") , n-s (" + brv + ")");
-            Debug.output("\tdegrees per horizontal block: " + degPerHorBlock +
-                         ", vertical: " + degPerVerBlock);
-            Debug.output("\tImage Data made up of count bits: " + pixelCountBits +
-                         ", value bits: " + pixelValueBits);
+            Debug.output("For " + rootPath + "\n\thave blocks ("
+                    + numHorBlocks_N + ", " + numVerBlocks_M
+                    + ")\n\twith pixels (" + numHorPixels_Q + ", "
+                    + numVerPixels_P + ")");
+            Debug.output("\tCoverage from (" + nea + ", " + swo + ") to ("
+                    + swa + ", " + neo + ")");
+            Debug.output("\tPadded coverage starting at (" + pso + ", " + lso
+                    + ")");
+            Debug.output("\tNumber of pixels 360 e-w (" + arv + ") , n-s ("
+                    + brv + ")");
+            Debug.output("\tdegrees per horizontal block: " + degPerHorBlock
+                    + ", vertical: " + degPerVerBlock);
+            Debug.output("\tImage Data made up of count bits: "
+                    + pixelCountBits + ", value bits: " + pixelValueBits);
 
             if (Debug.debugging("asrpdetail")) {
                 Debug.output("Checking...");
@@ -474,17 +507,21 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
                 float latdiff = nea - swa;
                 float londiff = neo - swo;
 
-                float horPixels = arv * (londiff/360f);
-                float verPixels = brv * (latdiff/360f);
+                float horPixels = arv * (londiff / 360f);
+                float verPixels = brv * (latdiff / 360f);
 
-                Debug.output("\tCalculating " + (horPixels / numHorPixels_Q) + " hor blocks");
-                Debug.output("\tCalculating " + (verPixels / numVerPixels_P) + " hor blocks");
-                Debug.output("\tCalculating " + (lso + degPerHorBlock * numHorBlocks_N) + 
-                             " end latitude");
-                Debug.output("\tCalculating " + (pso - degPerVerBlock * numVerBlocks_M) + 
-                             " end latitude");
+                Debug.output("\tCalculating " + (horPixels / numHorPixels_Q)
+                        + " hor blocks");
+                Debug.output("\tCalculating " + (verPixels / numVerPixels_P)
+                        + " hor blocks");
+                Debug.output("\tCalculating "
+                        + (lso + degPerHorBlock * numHorBlocks_N)
+                        + " end latitude");
+                Debug.output("\tCalculating "
+                        + (pso - degPerVerBlock * numVerBlocks_M)
+                        + " end latitude");
             }
-            
+
         }
 
         getColors();
@@ -494,7 +531,7 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
         qal.close();
         sou.close();
         img.close();
-   }
+    }
 
     /**
      * A private class to store cached images.
@@ -518,9 +555,9 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
     /**
      * Load a block image into the cache, based on the relative
      * coordintes of the block as a key.
-     *
+     * 
      * @param string of form 'x,y' identifying the relative location
-     * of the subframe image.
+     *        of the subframe image.
      * @return Block image, hidden as a CacheObject.
      */
     public CacheObject load(String xAndY) {
@@ -531,7 +568,8 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
             int y = Integer.parseInt(xAndY.substring(commaIndex + 1));
 
             if (Debug.debugging("asrpdetail")) {
-                Debug.output("Getting tiled image " + x + ", " + y + " (from " + xAndY + ")");
+                Debug.output("Getting tiled image " + x + ", " + y + " (from "
+                        + xAndY + ")");
             }
 
             try {
@@ -540,12 +578,13 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
                     return new ASRPBlockCacheObject(xAndY.intern(), block);
                 }
             } catch (IOException ioe) {
-                Debug.error("ASRPDirectory caught exception creating tiled image for " + xAndY);
+                Debug.error("ASRPDirectory caught exception creating tiled image for "
+                        + xAndY);
             }
         }
         return null;
     }
-    
+
     public static void main(String[] argv) {
         Debug.init();
 

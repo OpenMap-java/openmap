@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/09/30 22:36:17 $
+// $Revision: 1.11 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,22 +95,24 @@ import com.bbn.openmap.util.PropUtils;
  * <pre>
  * 
  *  
- *   # Use LayerStatusPanes for the layers if true, otherwise
- *   # LayerPanes.  LayerStatusPanes turn the on/off bulbs to green/red
- *   # bulbs when the layer is resting/working.  LayerPanes just show
- *   # yellow bulbs when the layer is part of the map.
- *   showStatus=true
- *   # When the BufferedLayerMapBean is used, a divider will be
- *   # displayed in the list of layers showing which layers are in the
- *   # MapBean buffer (below the line).  Commands to move layers, by
- *   # default, respect this divider, requiring more commands to have
- *   # layers cross it.
- *   boundary=true
- *   # Add control buttons - use &quot;none&quot; for no button.  If undefined,
- *   # the LayerControlButtonPanel will be created automatically.
- *   controls=com.bbn.openmap.gui.LayerControlButtonPanel
- *   # Any control properties added here, prepended by &quot;controls&quot;...
- *   controls.configuration=WEST
+ *   
+ *    # Use LayerStatusPanes for the layers if true, otherwise
+ *    # LayerPanes.  LayerStatusPanes turn the on/off bulbs to green/red
+ *    # bulbs when the layer is resting/working.  LayerPanes just show
+ *    # yellow bulbs when the layer is part of the map.
+ *    showStatus=true
+ *    # When the BufferedLayerMapBean is used, a divider will be
+ *    # displayed in the list of layers showing which layers are in the
+ *    # MapBean buffer (below the line).  Commands to move layers, by
+ *    # default, respect this divider, requiring more commands to have
+ *    # layers cross it.
+ *    boundary=true
+ *    # Add control buttons - use &quot;none&quot; for no button.  If undefined,
+ *    # the LayerControlButtonPanel will be created automatically.
+ *    controls=com.bbn.openmap.gui.LayerControlButtonPanel
+ *    # Any control properties added here, prepended by &quot;controls&quot;...
+ *    controls.configuration=WEST
+ *    
  *   
  *  
  * </pre>
@@ -340,8 +342,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         JButton layerButton = null;
 
         if (getUseAsTool()) {
-            layerButton = new JButton(new ImageIcon(OMToolSet.class
-                    .getResource("layers.gif"), "Layer Controls"));
+            layerButton = new JButton(new ImageIcon(OMToolSet.class.getResource("layers.gif"), "Layer Controls"));
             layerButton.setBorderPainted(false);
             layerButton.setToolTipText("Layer Controls");
             layerButton.setMargin(new Insets(0, 0, 0, 0));
@@ -568,9 +569,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
             scrollPane = null;
         }
 
-        scrollPane = new JScrollPane(panesPanel,
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane = new JScrollPane(panesPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         add(scrollPane, BorderLayout.CENTER);
         revalidate();
@@ -886,7 +885,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
 
             if (Debug.debugging("layercontrol")) {
                 Debug.output("LayersPanel: layer panel notification that layer is selected: "
-                             + ((Layer) obj).getName());
+                        + ((Layer) obj).getName());
             }
             firePropertyChange(command, null, ((Layer) obj));
 
@@ -897,7 +896,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                 && obj instanceof Layer) {
             if (Debug.debugging("layercontrol")) {
                 Debug.output("LayersPanel: layer panel notification that layer should be raised: "
-                             + ((Layer) obj).getName());
+                        + ((Layer) obj).getName());
             }
             moveLayer((Layer) obj, command);
         }
@@ -962,7 +961,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        String controlString = props.getProperty(prefix + ControlButtonsProperty);
+        String controlString = props.getProperty(prefix
+                + ControlButtonsProperty);
 
         if (controlString != NO_CONTROLS) {
             if (controlString == null) {
@@ -989,30 +989,32 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         LayerControlButtonPanel controls = getControls();
         if (controls != null) {
-            props.put(prefix + ControlButtonsProperty, controls.getClass().getName());
+            props.put(prefix + ControlButtonsProperty, controls.getClass()
+                    .getName());
             controls.getProperties(props);
         }
-        props.put(prefix + BufferedBoundaryProperty, new Boolean(bufferedBoundary)
-                .toString());
-        props.put(prefix + ShowStatusProperty, new Boolean(showStatus).toString());
+        props.put(prefix + BufferedBoundaryProperty,
+                new Boolean(bufferedBoundary).toString());
+        props.put(prefix + ShowStatusProperty,
+                new Boolean(showStatus).toString());
         return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
         props.put(ControlButtonsProperty,
-                  "Class to use for layer control buttons (Optional)");
+                "Class to use for layer control buttons (Optional)");
         LayerControlButtonPanel controls = getControls();
         if (controls != null) {
             controls.getPropertyInfo(props);
         }
         props.put(BufferedBoundaryProperty,
-                  "Force layer movement to respect background layer boundary.");
+                "Force layer movement to respect background layer boundary.");
         props.put(BufferedBoundaryProperty + ScopedEditorProperty,
-                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
         props.put(ShowStatusProperty, "Use Layer Panes that show layer status.");
         props.put(ShowStatusProperty + ScopedEditorProperty,
-                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
         return props;
     }
 }

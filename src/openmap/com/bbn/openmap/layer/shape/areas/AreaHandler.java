@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,19 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.shape.areas;
 
 import com.bbn.openmap.*;
-import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.layer.*;
 import com.bbn.openmap.layer.shape.*;
 import com.bbn.openmap.layer.util.*;
 import com.bbn.openmap.omGraphics.*;
@@ -36,140 +33,140 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.event.MouseEvent;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.net.URL;
-import java.net.MalformedURLException;
-import java.util.Vector; 
-import java.util.Enumeration; 
+import java.util.Vector;
 import java.util.Hashtable;
-import java.util.Properties; 
+import java.util.Properties;
 import java.util.StringTokenizer;
-import javax.swing.ImageIcon;
 
 /**
  * An object to organize graphics in a shapefile and their
- * corresponding attributes in OpenMap.  A properties object can
+ * corresponding attributes in OpenMap. A properties object can
  * determine how areas/graphics are to be colored, or you can grab the
- * graphics directly and color them yourself.  It's called AreaHandler
+ * graphics directly and color them yourself. It's called AreaHandler
  * because it was originally intended to be a management tool for
  * political boundary areas, but it should work for all shapefiles,
- * really.  This object uses a CSV file created from the DBF file that
- * usually accompanies the shapefile.  Also, this class does inflict a
- * startup burden on the map.  Because all the organizational effort
+ * really. This object uses a CSV file created from the DBF file that
+ * usually accompanies the shapefile. Also, this class does inflict a
+ * startup burden on the map. Because all the organizational effort
  * occurs in setProperties(), it occurs even if the handler isn't used
  * in an active Layer.
  * <P>
- * Here is a sample of what this thing is looking for by way of properties:
- * <P> <pre>
- * layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
- * layer.prettyName=Layer Name
- * layer.shapeFile=/usr/local/data/shape/shapefile.shp
- * layer.spatialIndex=/usr/local/data/shape/shapefile.ssx
- *
- * # Now, provide a data file that says what the shapes in the .shp
- * # file are.  You can use the DBF file:
- * layer.dbfFile=/usr/local/data/shape/shapefile.dbf
- * # OR a csv file, created yourself or from the .dbf file.  There
- * # should be the same number of entries in the .csv file that are in
- * # the .shp file.
- * layer.csvFile=/usr/local/data/shape/shapefile.csv
- * # An attribute to tell the AreaHandler to skip over the first row
- * # of the csv file if it contains descriptive column header names.
- * layer.csvFileHasHeader=true
- *
- * # Default DrawingAttributes properties for everything not defined
- * # specifically:
- * layer.lineColor=ff000000
- * layer.fillColor=ffff00ff
- *
- * # Now add any other attributes accepted by the DrawingAttributes
- * # object, with the prefix as stated above, i.e. layer.lineColor)
- * #
- * # The first column index is 0, not 1.
- * #
- * # The key index specifies which column in the csv file contains
- * # unique area names that are listed in the areas list here in the
- * # properties.  In this case, it's the column that contains MA in one
- * # of its rows.
- * layer.keyIndex=4
- *
- * # The name index is the column in the csv file that contains what
- * # should be displayed in the application when a shape is chosen - the
- * # object's proper name.
- * layer.nameIndex=4
- * layer.areas=MA RI
- * layer.areas.MA.fillColor=ffff0000
- * layer.areas.MA.lineColor=ff00ff00
- * layer.areas.RI.fillColor=ffff0000
- * layer.areas.RI.lineColor=ff00ff00
+ * Here is a sample of what this thing is looking for by way of
+ * properties:
+ * <P>
+ * 
+ * <pre>
+ * 
+ *  layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
+ *  layer.prettyName=Layer Name
+ *  layer.shapeFile=/usr/local/data/shape/shapefile.shp
+ *  layer.spatialIndex=/usr/local/data/shape/shapefile.ssx
+ * 
+ *  # Now, provide a data file that says what the shapes in the .shp
+ *  # file are.  You can use the DBF file:
+ *  layer.dbfFile=/usr/local/data/shape/shapefile.dbf
+ *  # OR a csv file, created yourself or from the .dbf file.  There
+ *  # should be the same number of entries in the .csv file that are in
+ *  # the .shp file.
+ *  layer.csvFile=/usr/local/data/shape/shapefile.csv
+ *  # An attribute to tell the AreaHandler to skip over the first row
+ *  # of the csv file if it contains descriptive column header names.
+ *  layer.csvFileHasHeader=true
+ * 
+ *  # Default DrawingAttributes properties for everything not defined
+ *  # specifically:
+ *  layer.lineColor=ff000000
+ *  layer.fillColor=ffff00ff
+ * 
+ *  # Now add any other attributes accepted by the DrawingAttributes
+ *  # object, with the prefix as stated above, i.e. layer.lineColor)
+ *  #
+ *  # The first column index is 0, not 1.
+ *  #
+ *  # The key index specifies which column in the csv file contains
+ *  # unique area names that are listed in the areas list here in the
+ *  # properties.  In this case, it's the column that contains MA in one
+ *  # of its rows.
+ *  layer.keyIndex=4
+ * 
+ *  # The name index is the column in the csv file that contains what
+ *  # should be displayed in the application when a shape is chosen - the
+ *  # object's proper name.
+ *  layer.nameIndex=4
+ *  layer.areas=MA RI
+ *  layer.areas.MA.fillColor=ffff0000
+ *  layer.areas.MA.lineColor=ff00ff00
+ *  layer.areas.RI.fillColor=ffff0000
+ *  layer.areas.RI.lineColor=ff00ff00
+ *  
  * </pre>
- * <P> 
+ * 
+ * <P>
  */
 public class AreaHandler implements PropertyConsumer {
 
-    /** 
-     * The known political areas, based on the list of OMGraphics
-     * each entry contains. 
+    /**
+     * The known political areas, based on the list of OMGraphics each
+     * entry contains.
      */
     protected Hashtable politicalAreas;
     /** The property that lists special colored areas. */
     public static final String areasProperty = "areas";
     /**
-     * A property that sets an image URL to use for point
-     * objects. Only one image for all point objects. 
+     * A property that sets an image URL to use for point objects.
+     * Only one image for all point objects.
      */
     public static final String pointImageURLProperty = "pointImageURL";
     /**
      * The property that specifies an index location for the area
-     * search key for a shape graphic in the database file.  Default
-     * is 1.  The contents of this column should match the area key
-     * used to specify the drawingattributes of that particular
-     * object as listed in these properties. 
+     * search key for a shape graphic in the database file. Default is
+     * 1. The contents of this column should match the area key used
+     * to specify the drawingattributes of that particular object as
+     * listed in these properties.
      */
     public static final String keyIndexProperty = "keyIndex";
     /**
-     * The property that specifies an index location for the area
-     * name for a shape graphic in the database file. Default is 0.
+     * The property that specifies an index location for the area name
+     * for a shape graphic in the database file. Default is 0.
      */
     public static final String nameIndexProperty = "nameIndex";
     /**
      * The resource name, URL or file name of the serialized graphics
-     * file. 
+     * file.
      */
     public static final String CacheFileProperty = "cacheFile";
     /**
      * The name of the property that holds the name of the CSV file
-     * with the area attributes, like the name and the
-     * abbreviation (or search Key). 
+     * with the area attributes, like the name and the abbreviation
+     * (or search Key).
      */
     public final static String csvFileProperty = "csvFile";
-    /** Set if the CSVFile has a header record.  Default is true. */
+    /** Set if the CSVFile has a header record. Default is true. */
     public final static String csvHeaderProperty = "csvFileHasHeader";
     /**
      * The name of the property that holds the name of the DBF file
-     * with the area attributes, like the name and the
-     * abbreviation (or search Key). 
+     * with the area attributes, like the name and the abbreviation
+     * (or search Key).
      */
     public final static String dbfFileProperty = "dbfFile";
     /**
      * The list of areas that have special coloring needs. Used to
-     * write the properties back out.  
+     * write the properties back out.
      */
     protected Vector areasItems = new Vector();
     /**
      * The index of the column that holds the name of the area. This
      * name will be used for display in the GUI for a particular map
-     * object. 
+     * object.
      */
     protected int nameIndex = 0;
     /**
-     * The index of the column that holds the search key of the
-     * area. This is the field that is the key to use for the
-     * Hashtable holding all the area descriptions, and should be
-     * unique for each named area. 
+     * The index of the column that holds the search key of the area.
+     * This is the field that is the key to use for the Hashtable
+     * holding all the area descriptions, and should be unique for
+     * each named area.
      */
     protected int keyIndex = 1;
     /** The URL location of the cached graphics file. */
@@ -179,19 +176,19 @@ public class AreaHandler implements PropertyConsumer {
 
     /**
      * Default draw parameters of the graphics that don't have
-     * something specific set for it. 
+     * something specific set for it.
      */
     protected DrawingAttributes drawingAttributes;
 
     /** The location of the CSV attribute file. */
     protected CSVShapeInfoFile infoFile = null;
-    
+
     /** The DBF attribute file table model. */
     protected DbfTableModel dbfModel = null;
-   
+
     /**
      * Flag that specifies that the first line consists of header
-     * information, and should not be mapped to a graphic. 
+     * information, and should not be mapped to a graphic.
      */
     protected boolean csvHasHeader = true;
 
@@ -199,17 +196,17 @@ public class AreaHandler implements PropertyConsumer {
     protected String originalPrefix = null;
     protected SpatialIndex spatialIndex = null;
 
-//      public AreaHandler() {}
+    //      public AreaHandler() {}
 
     /**
-     * Construct an AreaHandler.  Needs an external SpatialIndex, and
+     * Construct an AreaHandler. Needs an external SpatialIndex, and
      * default DrawingAttributes.
      */
     public AreaHandler(SpatialIndex si, DrawingAttributes da) {
         setDrawingAttributes(da);
         setSpatialIndex(si);
     }
-    
+
     public void setDrawingAttributes(DrawingAttributes da) {
         drawingAttributes = da;
     }
@@ -230,11 +227,11 @@ public class AreaHandler implements PropertyConsumer {
         setProperties(null, props);
     }
 
-    /** 
+    /**
      * Initializes this object from the given properties
-     *
+     * 
      * @param props the <code>Properties</code> holding settings for
-     * this object 
+     *        this object
      */
     public void setProperties(String prefix, Properties props) {
         if (Debug.debugging("areas")) {
@@ -280,14 +277,18 @@ public class AreaHandler implements PropertyConsumer {
     /**
      * Go through the properties, loading the shapefile, information
      * file and attributes files, and resolve how everything should be
-     * drawn.  Might take awhile if the files are large.
+     * drawn. Might take awhile if the files are large.
+     * 
      * @param prefix property file entry header name
      * @param props the properties to look through.
      */
     public void initialize(String prefix, Properties props) {
 
         if (prefix == null || props == null) {
-            Debug.error("AreaHandler: initialize received bad input:\n\tprefix: " + prefix + "\n\tproperties: " + (props == null?"null":"OK"));
+            Debug.error("AreaHandler: initialize received bad input:\n\tprefix: "
+                    + prefix
+                    + "\n\tproperties: "
+                    + (props == null ? "null" : "OK"));
             politicalAreas = null;
             return;
         }
@@ -296,8 +297,8 @@ public class AreaHandler implements PropertyConsumer {
 
         politicalAreas = new Hashtable();
 
-        //  OK, Get the graphics.  We are not expecting that all the
-        //  graphics in the file are not too much to handle.  Also, we
+        //  OK, Get the graphics. We are not expecting that all the
+        //  graphics in the file are not too much to handle. Also, we
         //  test for the serialized graphics file first, and if it
         //  isn't designated, then look for a shapefile and spatial
         //  index file to create an OMGraphicsList.
@@ -306,34 +307,38 @@ public class AreaHandler implements PropertyConsumer {
         // First find the resource, if not, then try as a file-URL...
         try {
             cacheURL = LayerUtils.getResourceOrFileOrURL(this, cacheFile);
-            
+
             if (cacheURL != null) {
                 omgraphics = readCachedGraphics(cacheURL);
             } else {
-                // We'll use the spatial index set from the ShapeLayer.
+                // We'll use the spatial index set from the
+                // ShapeLayer.
 
                 // Now, get the attribute file
                 String dbfFile = props.getProperty(prefix + dbfFileProperty);
                 URL dbfFileURL = null;
                 if (dbfFile != null) {
-                    dbfFileURL = LayerUtils.getResourceOrFileOrURL(this, dbfFile);
+                    dbfFileURL = LayerUtils.getResourceOrFileOrURL(this,
+                            dbfFile);
                 }
                 if (dbfFileURL != null) {
                     InputStream is = dbfFileURL.openStream();
                     dbfModel = new DbfTableModel(new DbfInputStream(is));
                 }
-                if (dbfModel == null) {               
+                if (dbfModel == null) {
                     String csvFile = props.getProperty(prefix + csvFileProperty);
                     URL infofileURL = null;
                     if (csvFile != null) {
-                        infofileURL = 
-                                LayerUtils.getResourceOrFileOrURL(this, csvFile);
+                        infofileURL = LayerUtils.getResourceOrFileOrURL(this,
+                                csvFile);
                     }
-                        
+
                     // Read them in.
                     if (infofileURL != null) {
                         infoFile = new CSVShapeInfoFile(csvFile);
-                        infoFile.setHeadersExist(LayerUtils.booleanFromProperties(props, prefix + csvHeaderProperty, true));
+                        infoFile.setHeadersExist(LayerUtils.booleanFromProperties(props,
+                                prefix + csvHeaderProperty,
+                                true));
                         infoFile.loadData(true);
                     }
                 }
@@ -346,21 +351,25 @@ public class AreaHandler implements PropertyConsumer {
             omgraphics = new OMGraphicList();
         }
 
-        // This is handled properly yet.  The PoliticalArea should be
+        // This is handled properly yet. The PoliticalArea should be
         // updated to handle URLs for area points, and have different
         // icons for different areas.
-//      String defaultPointImageURLString = props.getProperty(prefix + pointImageURLProperty);
+        //      String defaultPointImageURLString =
+        // props.getProperty(prefix + pointImageURLProperty);
 
-        // Now, match the attributes to the graphics.  Find the
-        // indexes of the name and the search key.  Also figure out
+        // Now, match the attributes to the graphics. Find the
+        // indexes of the name and the search key. Also figure out
         // which areas have special coloring needs.
-        keyIndex = LayerUtils.intFromProperties(props, prefix + keyIndexProperty, keyIndex);
-        nameIndex = LayerUtils.intFromProperties(props, prefix + nameIndexProperty, nameIndex);
-        String areas = props.getProperty(prefix+areasProperty);
+        keyIndex = LayerUtils.intFromProperties(props, prefix
+                + keyIndexProperty, keyIndex);
+        nameIndex = LayerUtils.intFromProperties(props, prefix
+                + nameIndexProperty, nameIndex);
+        String areas = props.getProperty(prefix + areasProperty);
 
-        if (areas == null) areas = "";
- 
-        StringTokenizer tokenizer = new StringTokenizer(areas," ");
+        if (areas == null)
+            areas = "";
+
+        StringTokenizer tokenizer = new StringTokenizer(areas, " ");
         // All this uses the properties to set the individual colors
         // of any area
         String currentArea;
@@ -374,12 +383,14 @@ public class AreaHandler implements PropertyConsumer {
             PoliticalArea newParams = new PoliticalArea(currentArea);
 
             if (Debug.debugging("areas")) {
-                Debug.output("AreaHandler: setting SPECIALIZED attributes for \"" + newParams.id + "\"");
+                Debug.output("AreaHandler: setting SPECIALIZED attributes for \""
+                        + newParams.id + "\"");
             }
 
             areasItems.addElement(currentArea);
 
-            newParams.drawingAttributes = new DrawingAttributes(prefix + areasProperty + "." + currentArea, props);
+            newParams.drawingAttributes = new DrawingAttributes(prefix
+                    + areasProperty + "." + currentArea, props);
 
             politicalAreas.put(newParams.id.toUpperCase().intern(), newParams);
         }
@@ -389,18 +400,17 @@ public class AreaHandler implements PropertyConsumer {
         }
     }
 
-    /** 
+    /**
      * Read a cache of OMGraphics
      */
-    public OMGraphicList readCachedGraphics(URL url)
-        throws java.io.IOException {
+    public OMGraphicList readCachedGraphics(URL url) throws java.io.IOException {
 
         if (Debug.debugging("areas")) {
             Debug.output("Reading cached graphics");
         }
-        
+
         OMGraphicList omgraphics = new OMGraphicList();
-        
+
         if (url != null) {
             omgraphics.readGraphics(url);
         }
@@ -413,18 +423,18 @@ public class AreaHandler implements PropertyConsumer {
     public OMGraphicList getGraphics() {
         return getGraphics(90f, -180f, -90f, 180f);
     }
-    
-    /** 
+
+    /**
      * Get the graphics for a particular lat/lon area.
-     *
+     * 
      * @param ulLat upper left latitude, in decimal degrees.
      * @param ulLon upper left longitude, in decimal degrees.
      * @param lrLat lower right latitude, in decimal degrees.
      * @param lrLon lower right longitude, in decimal degrees.
      * @return OMGraphicList
      */
-    public OMGraphicList getGraphics(float ulLat, float ulLon, 
-                                     float lrLat, float lrLon) {
+    public OMGraphicList getGraphics(float ulLat, float ulLon, float lrLat,
+                                     float lrLon) {
 
         if (cacheURL != null) {
             return omgraphics;
@@ -441,12 +451,13 @@ public class AreaHandler implements PropertyConsumer {
         OMGraphicList list = null;
         DrawingAttributes drawParams;
 
-        // check for dateline anomaly on the screen.  we check for ulLon >=
-        // lrLon, but we need to be careful of the check for equality because
+        // check for dateline anomaly on the screen. we check for
+        // ulLon >=
+        // lrLon, but we need to be careful of the check for equality
+        // because
         // of floating point arguments...
-        if ((ulLon > lrLon) ||
-            MoreMath.approximately_equal(ulLon, lrLon, .001f))
-        {
+        if ((ulLon > lrLon)
+                || MoreMath.approximately_equal(ulLon, lrLon, .001f)) {
             if (Debug.debugging("areas")) {
                 Debug.output("AreaHandler.getGraphics(): Dateline is on screen");
             }
@@ -455,13 +466,17 @@ public class AreaHandler implements PropertyConsumer {
             double ymax = (double) Math.max(ulLat, lrLat);
 
             try {
-                ESRIRecord records1[] = spatialIndex.locateRecords(
-                    ulLon, ymin, 180.0d, ymax);
-                ESRIRecord records2[] = spatialIndex.locateRecords(
-                    -180.0d, ymin, lrLon, ymax);
+                ESRIRecord records1[] = spatialIndex.locateRecords(ulLon,
+                        ymin,
+                        180.0d,
+                        ymax);
+                ESRIRecord records2[] = spatialIndex.locateRecords(-180.0d,
+                        ymin,
+                        lrLon,
+                        ymax);
                 int nRecords1 = records1.length;
                 int nRecords2 = records2.length;
-                list = new OMGraphicList(nRecords1+nRecords2);
+                list = new OMGraphicList(nRecords1 + nRecords2);
                 for (int i = 0; i < nRecords1; i++) {
                     drawParams = getDrawParams(records1[i].getRecordNumber());
                     list.addOMGraphic(recordList(records1[i], drawParams));
@@ -483,8 +498,10 @@ public class AreaHandler implements PropertyConsumer {
             double ymax = (double) Math.max(ulLat, lrLat);
 
             try {
-                ESRIRecord records[] = spatialIndex.locateRecords(
-                    xmin, ymin, xmax, ymax);
+                ESRIRecord records[] = spatialIndex.locateRecords(xmin,
+                        ymin,
+                        xmax,
+                        ymax);
                 int nRecords = records.length;
                 list = new OMGraphicList(nRecords);
                 for (int i = 0; i < nRecords; i++) {
@@ -502,80 +519,86 @@ public class AreaHandler implements PropertyConsumer {
 
     /**
      * Return the graphic name, given the infofile vector on the
-     * graphic.  The AreaHandler knows which one is the name.  Returns
+     * graphic. The AreaHandler knows which one is the name. Returns
      * an empty string if something goes wrong.
      */
     public String getName(Vector vector) {
         try {
-            String string = (String)vector.elementAt(nameIndex);
+            String string = (String) vector.elementAt(nameIndex);
             return string;
-        } catch (ClassCastException cce) {}
+        } catch (ClassCastException cce) {
+        }
         return "";
     }
 
     /**
-     * Get the name of the object at record number.  The record number
+     * Get the name of the object at record number. The record number
      * is the shapefile record number, which is one greater than the
-     * index number.  Returns an empty string if something goes wrong.
+     * index number. Returns an empty string if something goes wrong.
      */
     public String getName(Integer integer) {
         try {
             if (infoFile != null) {
                 Vector vector = infoFile.getRecord(integer.intValue() - 1);
                 if (vector != null) {
-                    return (String)vector.elementAt(nameIndex);
+                    return (String) vector.elementAt(nameIndex);
                 }
             } else if (dbfModel != null) {
-                Object obj = dbfModel.getValueAt(integer.intValue() - 1, nameIndex);
+                Object obj = dbfModel.getValueAt(integer.intValue() - 1,
+                        nameIndex);
                 if (obj != null) {
                     if (obj instanceof String) {
-                        return (String)obj;
+                        return (String) obj;
                     } else {
                         return obj.toString();
                     }
                 }
             }
-        } catch (ClassCastException cce) {}
+        } catch (ClassCastException cce) {
+        }
         return "";
     }
 
     /**
      * Given the shapefile record number, find the drawing parameters
-     * that should be used for the shape.  Note, this recordNumber is
-     * the shapefile record number, which starts at one.  All our
-     * indexes start at 0, so this is taken into account here.  Don't
-     * make the adjustment elsewhere.  Returns the default coloring if the
-     * key for the drawing parameters isn't found.
+     * that should be used for the shape. Note, this recordNumber is
+     * the shapefile record number, which starts at one. All our
+     * indexes start at 0, so this is taken into account here. Don't
+     * make the adjustment elsewhere. Returns the default coloring if
+     * the key for the drawing parameters isn't found.
      */
     public DrawingAttributes getDrawParamsFromCSV(int recordNumber) {
         if (infoFile == null) {
             return drawingAttributes;
         }
-    
-        // OFF BY ONE!!!  The shape record numbers
+
+        // OFF BY ONE!!! The shape record numbers
         // assigned to the records start with 1, while
         // everything else we do starts with 0...
         Vector info = infoFile.getRecord(recordNumber - 1);
-    
+
         if (info == null) {
             if (Debug.debugging("areas")) {
-                Debug.output("AreaHandler.getDrawParameters: record " + recordNumber + " has no info");
+                Debug.output("AreaHandler.getDrawParameters: record "
+                        + recordNumber + " has no info");
             }
             return drawingAttributes;
         }
-    
+
         Object keyObj = info.elementAt(keyIndex);
         String key = null;
         PoliticalArea pa = null;
-    
+
         if (keyObj != null) {
             key = ((String) keyObj).toUpperCase().intern();
             pa = (PoliticalArea) politicalAreas.get(key);
         }
-    
+
         if (pa == null) {
             if (Debug.debugging("areas")) {
-                Debug.output("AreaHandler.getDrawParameters: record " + recordNumber + " has key \"" + key + "\" and DEFAULT attributes");
+                Debug.output("AreaHandler.getDrawParameters: record "
+                        + recordNumber + " has key \"" + key
+                        + "\" and DEFAULT attributes");
             }
             return drawingAttributes;
         } else {
@@ -588,91 +611,103 @@ public class AreaHandler implements PropertyConsumer {
                     pa.name = "";
                 }
             }
-    
+
             if (Debug.debugging("areas")) {
-                Debug.output("AreaHandler.getDrawParameters: record " + recordNumber + " has key \"" + key + "\" and SPECIALIZED attributes");
+                Debug.output("AreaHandler.getDrawParameters: record "
+                        + recordNumber + " has key \"" + key
+                        + "\" and SPECIALIZED attributes");
             }
             return pa.drawingAttributes;
         }
     }
+
     /**
-     * Given the shapefile record number, find the drawing parameters from the DBF model
-     * that should be used for the shape. Returns the default coloring if the
-     * key for the drawing parameters isn't found.
+     * Given the shapefile record number, find the drawing parameters
+     * from the DBF model that should be used for the shape. Returns
+     * the default coloring if the key for the drawing parameters
+     * isn't found.
      */
     public DrawingAttributes getDrawParamsFromDBF(int recordNumber) {
         if (dbfModel == null) {
             return drawingAttributes;
         }
-    
-        // OFF BY ONE!!!  The shape record numbers
+
+        // OFF BY ONE!!! The shape record numbers
         // assigned to the records start with 1, while
         // everything else we do starts with 0...
         //Vector info = infoFile.getRecord(recordNumber-1);
         if (dbfModel == null || dbfModel.getRowCount() < recordNumber) {
             if (Debug.debugging("areas")) {
-                Debug.output("AreaHandler.getDrawParameters: record " + recordNumber + " has no info");
+                Debug.output("AreaHandler.getDrawParameters: record "
+                        + recordNumber + " has no info");
             }
             return drawingAttributes;
         }
-    
+
         Object keyObj = dbfModel.getValueAt(recordNumber - 1, keyIndex);
         String key = null;
         PoliticalArea pa = null;
-    
+
         if (keyObj != null) {
             key = ((String) keyObj).toUpperCase().intern();
             pa = (PoliticalArea) politicalAreas.get(key);
         }
-    
+
         if (pa == null) {
             if (Debug.debugging("areas")) {
-                Debug.output("AreaHandler.getDrawParameters: record " + recordNumber + " has key \"" + key + "\" and DEFAULT attributes");
+                Debug.output("AreaHandler.getDrawParameters: record "
+                        + recordNumber + " has key \"" + key
+                        + "\" and DEFAULT attributes");
             }
             return drawingAttributes;
         } else {
             // Only bother with this the first time around.
             if (pa.name == null) {
                 //String name = (String) info.elementAt(nameIndex);
-                String name = (String) dbfModel.getValueAt(recordNumber - 1, nameIndex);
+                String name = (String) dbfModel.getValueAt(recordNumber - 1,
+                        nameIndex);
                 if (name != null) {
                     pa.name = name;
                 } else {
                     pa.name = "";
                 }
             }
-    
+
             if (Debug.debugging("areas")) {
-                Debug.output("AreaHandler.getDrawParameters: record " + recordNumber + " has key \"" + key + "\" and SPECIALIZED attributes");
+                Debug.output("AreaHandler.getDrawParameters: record "
+                        + recordNumber + " has key \"" + key
+                        + "\" and SPECIALIZED attributes");
             }
             return pa.drawingAttributes;
         }
     }
+
     /**
      * Given the shapefile record number, find the drawing parameters
-     * that should be used for the shape. Returns the default coloring if the
-     * key for the drawing parameters isn't found.
+     * that should be used for the shape. Returns the default coloring
+     * if the key for the drawing parameters isn't found.
      */
     public DrawingAttributes getDrawParams(int recordNumber) {
         if (dbfModel != null)
             return getDrawParamsFromDBF(recordNumber);
         else
-            return getDrawParamsFromCSV(recordNumber);    
+            return getDrawParamsFromCSV(recordNumber);
     }
+
     /**
      * This function takes an OMGraphicList and loads each one with
-     * the array representing the records in the dbf file.  Each
+     * the array representing the records in the dbf file. Each
      * graphics stores the graphic in its object slot.
      */
     public void loadDbfModelIntoGraphics(OMGraphicList list) {
         if (list != null && dbfModel.getRowCount() > 0) {
             int numgraphics = list.size();
-    
+
             for (int i = 0; i < numgraphics; i++) {
                 try {
                     OMGraphic omg = list.getOMGraphicAt(i);
                     Integer recnum = (Integer) (omg.getAppObject());
-                    // OFF BY ONE!!!  The shape record numbers
+                    // OFF BY ONE!!! The shape record numbers
                     // assigned to the records start with 1, while
                     // everything else we do starts with 0...
                     Object inforec = dbfModel.getRecord(recnum.intValue() - 1);
@@ -687,44 +722,48 @@ public class AreaHandler implements PropertyConsumer {
             }
         }
     }
+
     /**
      * Gets the record graphics for a record with multiple graphics.
+     * 
      * @return OMGraphicList
      */
-    protected OMGraphicList recordList(ESRIRecord rec, DrawingAttributes drawParams) {
+    protected OMGraphicList recordList(ESRIRecord rec,
+                                       DrawingAttributes drawParams) {
         int recNumber = rec.getRecordNumber();
         OMGraphicList recList = new OMGraphicList(10);
 
-        if (drawParams != null) {           
+        if (drawParams != null) {
             rec.addOMGraphics(recList, drawParams);
         } else {
             rec.addOMGraphics(recList, DrawingAttributes.getDefaultClone());
         }
         // Remember recordNumber to work with .dbf file
-        recList.setAppObject(new Integer(recNumber)); 
-        
+        recList.setAppObject(new Integer(recNumber));
+
         return recList;
     }
 
-    /** 
-     * Find a PoliticalArea named by the search key.  If the shapefile
+    /**
+     * Find a PoliticalArea named by the search key. If the shapefile
      * is large, the first query will take a little extra time on the
      * first query to read in the files.
-     *
+     * 
      * @param area_key the lookup key, of which the index for the
-     * column was designated in the properties file.  
+     *        column was designated in the properties file.
      */
     public PoliticalArea findPoliticalArea(String area_key) {
 
         // Right now, this method gathers all the graphics in the
         // shape file, groups them, and then returns the PoliticalArea
-        // for the key.  In the future, it would be nice to have the
+        // for the key. In the future, it would be nice to have the
         // option to actually search through the data file, find the
         // indexes of the graphics that go to the area, and assemble a
         // temporary list to pass back.
 
         if (politicalAreas == null) {
-            Debug.message("areas", "AreaHandler: initializing graphic attributes");
+            Debug.message("areas",
+                    "AreaHandler: initializing graphic attributes");
             initialize(originalPrefix, originalProperties);
 
             if (omgraphics == null) {
@@ -740,22 +779,24 @@ public class AreaHandler implements PropertyConsumer {
         }
 
         if (politicalAreas != null) {
-            String key = area_key.toUpperCase().intern(); // Just to be sure. 
+            String key = area_key.toUpperCase().intern(); // Just to
+                                                          // be sure.
 
-            return (PoliticalArea)politicalAreas.get(key);
+            return (PoliticalArea) politicalAreas.get(key);
         } else {
-            Debug.error("AreaHandler: initialization failed for " + originalPrefix + "\n\tNo data will be displayed");
+            Debug.error("AreaHandler: initialization failed for "
+                    + originalPrefix + "\n\tNo data will be displayed");
             return null;
         }
     }
 
     /**
-     * Find the graphics that are represented by an search key.  If
-     * the shapefile is large, the first query will take a little
-     * extra time on the first query to read in the files.
-     *
+     * Find the graphics that are represented by an search key. If the
+     * shapefile is large, the first query will take a little extra
+     * time on the first query to read in the files.
+     * 
      * @param area_key the lookup key, of which the index for the
-     * column was designated in the properties file.  
+     *        column was designated in the properties file.
      */
     public OMGeometryList findGraphics(String area_key) {
         PoliticalArea area = findPoliticalArea(area_key);
@@ -766,100 +807,110 @@ public class AreaHandler implements PropertyConsumer {
         }
     }
 
-    /** 
+    /**
      * DeterminePoliticalAreas goes over a list of omgraphics, and
      * spits out a hashtable that holds PoliticalArea objects for
-     * every area key. 
-     * @param graphicList the list of graphics.  The top level graphic
-     * entries on the list represent areas.  
+     * every area key.
+     * 
+     * @param graphicList the list of graphics. The top level graphic
+     *        entries on the list represent areas.
      */
     public Hashtable determinePoliticalAreas(OMGraphicList graphicList) {
         if (Debug.debugging("areas")) {
             Debug.output("AreaHandler: Determining political areas from OMGraphicList");
         }
-        
+
         Hashtable poli_areas = new Hashtable();
         return determinePoliticalAreas(graphicList, poli_areas);
     }
 
-    /** 
+    /**
      * DeterminePoliticalAreas goes over a list of omgraphics, and
      * spits out a hashtable that holds PoliticalArea objects for
      * every area key. When an ID is found in the graphics, it is
      * checked in the hashtable for like graphics, and added to that
-     * PoliticalArea if found.  If not found, a new PoliticalArea is
-     * created and placed in the Hashtable.  This will duplicate
+     * PoliticalArea if found. If not found, a new PoliticalArea is
+     * created and placed in the Hashtable. This will duplicate
      * graphics if you call it more than once for the same graphic
      * list.
-     * @param graphicList the list of graphics.  The top level graphic
-     * entries on the list represent areas.
+     * 
+     * @param graphicList the list of graphics. The top level graphic
+     *        entries on the list represent areas.
      */
     public Hashtable determinePoliticalAreas(OMGraphicList graphicList,
                                              Hashtable poli_areas) {
 
-        // Simple case.  No graphics means an empty list of regions. 
+        // Simple case. No graphics means an empty list of regions.
         String name = null;
         String key = null;
 
-        if (graphicList != null)        {
+        if (graphicList != null) {
             int size = graphicList.size();
             for (int i = 0; i < size; i++) {
                 OMGraphic graphic = graphicList.getOMGraphicAt(i);
-                // below should be a vector like [ "Massachusetts", "MA" ];
+                // below should be a vector like [ "Massachusetts",
+                // "MA" ];
 
                 Object obj = graphic.getAppObject();
                 if (obj == null) {
                     if (Debug.debugging("verbose")) {
-                        Debug.error("AreaHandler: Caught a null app object for graphic #"+ i);
+                        Debug.error("AreaHandler: Caught a null app object for graphic #"
+                                + i);
                     }
                     continue;
                 }
 
                 if (obj instanceof Vector) {
-                    Vector pair = (Vector)obj;
-                    
-                    name = (String)pair.elementAt(nameIndex);
-                    key = ((String)pair.elementAt(keyIndex)).toUpperCase().intern();
+                    Vector pair = (Vector) obj;
+
+                    name = (String) pair.elementAt(nameIndex);
+                    key = ((String) pair.elementAt(keyIndex)).toUpperCase()
+                            .intern();
                     if (Debug.debugging("areas")) {
-                      Debug.output("AreaHandler: looking at " + 
-                                   name + ", " + key);
+                        Debug.output("AreaHandler: looking at " + name + ", "
+                                + key);
                     }
                 } else if (obj instanceof String) {
                     // Assume that the key is stored here, I guess.
                     key = (String) obj;
                     if (Debug.debugging("areas")) {
-                        Debug.output("AreaHandler: String app object, looking at " + key);
+                        Debug.output("AreaHandler: String app object, looking at "
+                                + key);
                     }
                 } else {
                     if (Debug.debugging("verbose")) {
-                        Debug.output("AreaHandler: Unidentified app object type " + obj);
+                        Debug.output("AreaHandler: Unidentified app object type "
+                                + obj);
                     }
                 }
 
                 // Get the political area object for this keyiation.
-                PoliticalArea area = (PoliticalArea)poli_areas.get(key);
+                PoliticalArea area = (PoliticalArea) poli_areas.get(key);
 
                 if (area == null) { // key is not in table
                     area = new PoliticalArea(name, key);
                     poli_areas.put(key, area); // add it to the table
-//                  AreaDrawParams adp = (AreaDrawParams)drawingParams.get(key);
-//                  if (adp != null) {
-//                      area.setDrawingAttributes(adp.drawingAttributes);
-//                  }
+                    //                  AreaDrawParams adp =
+                    // (AreaDrawParams)drawingParams.get(key);
+                    //                  if (adp != null) {
+                    //                      area.setDrawingAttributes(adp.drawingAttributes);
+                    //                  }
                 }
 
-                // Add the graphic to the list for this political area.
+                // Add the graphic to the list for this political
+                // area.
                 area.addGraphic(graphic);
             }
-            
+
             if (Debug.debugging("areas")) {
-                Debug.output("AreaHandler: Finished determinePoliticalAreas: " + poli_areas.size() + " areas defined.");
+                Debug.output("AreaHandler: Finished determinePoliticalAreas: "
+                        + poli_areas.size() + " areas defined.");
             }
         }
-        
+
         return poli_areas;
     }
-    
+
     protected Color getColor(String colorString) {
         Color result = Color.black;
         try {
@@ -870,56 +921,55 @@ public class AreaHandler implements PropertyConsumer {
         return result;
     }
 
-    /** 
+    /**
      * This function would return a Color object for string such as
-     * red, green,..  (all that are available from java.awt.color
-     * class).  It can also return a specific color represented by HEX
-     * or Octal number like 0xffeeffee 
+     * red, green,.. (all that are available from java.awt.color
+     * class). It can also return a specific color represented by HEX
+     * or Octal number like 0xffeeffee
      */
     protected Color GetColorFromString(String token) {
-        String tokstring = (String)token;
-        
+        String tokstring = (String) token;
+
         Color result = Color.black;
-        
+
         if (Debug.debugging("areas")) {
-            Debug.output("AreaHandler: GetColorFromString(" +
-                         tokstring + ")");
+            Debug.output("AreaHandler: GetColorFromString(" + tokstring + ")");
         }
 
         // Thank the heavens for Emacs macros!
         if (tokstring.equals("black"))
-            result =  Color.black;
+            result = Color.black;
         else if (tokstring.equals("blue"))
-            result =  Color.blue;
+            result = Color.blue;
         else if (tokstring.equals("cyan"))
-            result =  Color.cyan;
+            result = Color.cyan;
         else if (tokstring.equals("darkGray"))
-            result =  Color.darkGray;
+            result = Color.darkGray;
         else if (tokstring.equals("gray"))
-            result =  Color.gray;
+            result = Color.gray;
         else if (tokstring.equals("green"))
-            result =  Color.green;
+            result = Color.green;
         else if (tokstring.equals("lightGray"))
-            result =  Color.lightGray;
+            result = Color.lightGray;
         else if (tokstring.equals("magenta"))
-            result =  Color.magenta;
+            result = Color.magenta;
         else if (tokstring.equals("orange"))
-            result =  Color.orange;
+            result = Color.orange;
         else if (tokstring.equals("pink"))
-            result =  Color.pink;
+            result = Color.pink;
         else if (tokstring.equals("red"))
-            result =  Color.red;
+            result = Color.red;
         else if (tokstring.equals("white"))
-            result =  Color.white;
+            result = Color.white;
         else if (tokstring.equals("yellow"))
-            result =  Color.yellow;
+            result = Color.yellow;
         else
             // decode a hex color string.
             result = Color.decode(tokstring);
-        
+
         if (Debug.debugging("areas")) {
-            Debug.output("AreaHandler.GetColorFromToken returns (" + 
-                         result + ")");
+            Debug.output("AreaHandler.GetColorFromToken returns (" + result
+                    + ")");
         }
         return result;
     }
@@ -927,7 +977,7 @@ public class AreaHandler implements PropertyConsumer {
     /**
      * This main function basically reads in the data sources (the
      * shape file and the csv information file, and creates a
-     * serialized graphics file that will act like a cache later.  
+     * serialized graphics file that will act like a cache later.
      */
     public static void main(String[] argv) {
         String propertiesFile = null;
@@ -936,7 +986,8 @@ public class AreaHandler implements PropertyConsumer {
 
         Debug.init();
 
-        if (argv.length < 6) printUsage();
+        if (argv.length < 6)
+            printUsage();
 
         for (int i = 0; i < argv.length; i++) {
             if (argv[i].equalsIgnoreCase("-props")) {
@@ -945,12 +996,10 @@ public class AreaHandler implements PropertyConsumer {
                 prefix = argv[++i];
             } else if (argv[i].equalsIgnoreCase("-file")) {
                 outputFile = argv[++i];
-            } 
+            }
         }
-        
-        if (propertiesFile == null || 
-            prefix == null || 
-            outputFile == null) {
+
+        if (propertiesFile == null || prefix == null || outputFile == null) {
             printUsage();
         }
 
@@ -965,8 +1014,7 @@ public class AreaHandler implements PropertyConsumer {
             ShapeLayer sl = new ShapeLayer();
             sl.setProperties(prefix, properties);
 
-            AreaHandler ah = new AreaHandler(sl.getSpatialIndex(),
-                                             sl.getDrawingAttributes());
+            AreaHandler ah = new AreaHandler(sl.getSpatialIndex(), sl.getDrawingAttributes());
 
             // Set the properties in the handler.
             ah.setProperties(prefix, properties);
@@ -974,12 +1022,11 @@ public class AreaHandler implements PropertyConsumer {
             ah.getGraphics().writeGraphics(outputFile);
 
         } catch (java.net.MalformedURLException murle) {
-            Debug.error("Bad URL for properties file : " + 
-                        propertiesFile);
+            Debug.error("Bad URL for properties file : " + propertiesFile);
             printUsage();
         } catch (java.io.IOException ioe) {
-            Debug.error("IOException creating cached graphics file: " +
-                        outputFile);
+            Debug.error("IOException creating cached graphics file: "
+                    + outputFile);
             printUsage();
         }
     }

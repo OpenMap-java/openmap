@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/HorizontalGrabPoint.java,v $
 // $RCSfile: HorizontalGrabPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics;
 
@@ -34,7 +33,7 @@ public class HorizontalGrabPoint extends GrabPoint {
 
     /**
      * y is ignored, since it can't affect the vertical movement of a
-     * HorizontalGrabPoint.  
+     * HorizontalGrabPoint.
      */
     public void set(int x, int y) {
         setX(x);
@@ -42,11 +41,11 @@ public class HorizontalGrabPoint extends GrabPoint {
 
     /**
      * Move the point.
-     *
+     * 
      * @param x the new x location
      * @param y the new y location
      * @param override true if the vertical limitation should be
-     * ignored.
+     *        ignored.
      */
     public void set(int x, int y, boolean override) {
         if (override) {
@@ -59,7 +58,6 @@ public class HorizontalGrabPoint extends GrabPoint {
     /**
      * No action, because vertical movement is limited.
      */
-    public void setY(int y) {
-    }
+    public void setY(int y) {}
 
 }

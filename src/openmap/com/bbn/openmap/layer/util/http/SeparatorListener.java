@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -13,14 +13,12 @@
 // **********************************************************************
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/SeparatorListener.java,v $
-// $Revision: 1.4 $ $Date: 2004/01/26 18:18:11 $ $Author: dietrick $
+// $Revision: 1.5 $ $Date: 2004/10/14 18:06:07 $ $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.util.http;
 
-import java.io.Writer;
 import java.io.IOException;
 
 /**
@@ -28,13 +26,12 @@ import java.io.IOException;
  * to the client.
  */
 public class SeparatorListener implements HttpRequestListener {
-    public SeparatorListener () {
-    }
+    public SeparatorListener() {}
 
     /**
      * Ignore the request, just write the separator.
      */
-    public void httpRequest (HttpRequestEvent e) throws IOException {
+    public void httpRequest(HttpRequestEvent e) throws IOException {
         e.getWriter().write("<HR>");
     }
 }

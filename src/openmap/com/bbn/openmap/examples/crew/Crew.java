@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/crew/Crew.java,v $
 // $RCSfile: Crew.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.examples.crew;
 
@@ -27,7 +26,6 @@ import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 
 import javax.swing.JFrame;
@@ -46,8 +44,8 @@ import com.bbn.openmap.gui.ToolPanel;
 import com.bbn.openmap.layer.shape.ShapeLayer;
 
 /**
- * A sample application incorporating the <code>MapBean</code>.  This
- * program adds a MouseMode that passes events to the RouteLayer.
+ * A sample application incorporating the <code>MapBean</code>.
+ * This program adds a MouseMode that passes events to the RouteLayer.
  * Move the mouse over the three lines, and click on them.
  */
 public class Crew extends JFrame {
@@ -57,27 +55,26 @@ public class Crew extends JFrame {
 
     /**
      * The properties acquired from the resource file.
-     *
+     * 
      * @see #crewResources
      */
     private Properties properties;
 
     /**
-     * Create a default Crew instance.  The instance
-     * will use the default properties.
+     * Create a default Crew instance. The instance will use the
+     * default properties.
      */
     public Crew() throws MultipleSoloMapComponentException {
         this(new Properties());
     }
 
     /**
-     * Create a Crew instance with the given properties.  The
+     * Create a Crew instance with the given properties. The
      * properties override the defaults.
-     *
+     * 
      * @param props The override properties
      */
-    public Crew(Properties props) 
-        throws MultipleSoloMapComponentException {
+    public Crew(Properties props) throws MultipleSoloMapComponentException {
 
         // Initialize the parent class (JFrame)
         super("Crew Example");
@@ -89,7 +86,8 @@ public class Crew extends JFrame {
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 quit();
-            }});
+            }
+        });
 
         // Store the given properties for later use.
         properties = props;
@@ -110,8 +108,8 @@ public class Crew extends JFrame {
         // Create a mouse delegator to handle mouse events on the map
         mapHandler.add(new MouseDelegator());
         // Create and add the MouseMode that the RouteLayer wants
-        // events from.  The MouseDelegator asks all layers which
-        // MouseMode they listen to, and hooks them up.  When that
+        // events from. The MouseDelegator asks all layers which
+        // MouseMode they listen to, and hooks them up. When that
         // MouseMode is active, events flow to the top layer, then
         // down to lower layers if the event is not consumed along the
         // way.
@@ -120,7 +118,7 @@ public class Crew extends JFrame {
         // Add a LayerHandler, which manages all layers, on or off.
         mapHandler.add(new LayerHandler());
 
-        // Create and add a Route Layer.  The LayerHandler will find
+        // Create and add a Route Layer. The LayerHandler will find
         // it via the LayerHandler, and then the LayerHandler will add
         // it to the map because layer.isVisible() == true;
         Layer layer = createRouteLayer();
@@ -131,9 +129,10 @@ public class Crew extends JFrame {
 
         // Create and add a Political Background
         layer = createPoliticalLayer();
-        if (layer != null) mapHandler.add(layer);
+        if (layer != null)
+            mapHandler.add(layer);
 
-        // Add some navigation tools.  The ToolPanel will find the
+        // Add some navigation tools. The ToolPanel will find the
         // OMToolSet (a Tool) in the MapHandler.
         ToolPanel toolPanel = new ToolPanel();
         mapHandler.add(toolPanel);
@@ -141,7 +140,7 @@ public class Crew extends JFrame {
         // Add the ToolPanel to the JFrame.
         getContentPane().add(toolPanel, BorderLayout.NORTH);
 
-        // Oh, for fun, lets add a GUI to control the layers.  A
+        // Oh, for fun, lets add a GUI to control the layers. A
         // button to launch it will get added to the ToolPanel.
         mapHandler.add(new LayersPanel());
 
@@ -150,14 +149,15 @@ public class Crew extends JFrame {
     }
 
     /**
-     * Creates a political boundary map layer.  Actually, this method
+     * Creates a political boundary map layer. Actually, this method
      * instantiates a DCW Layer (Digital Chart of the World), and sets
      * the layer's parameters so that it will render a political map.
      * <p>
-     * Creation of the political layer is controlled by the <code><bold>
-     * showPolitical</bold></code> property.  See the resource file
-     * crew.properties for more information.
-     *
+     * Creation of the political layer is controlled by the
+     * <code><bold>
+     * showPolitical</bold></code> property. See the
+     * resource file crew.properties for more information.
+     * 
      * @return the political layer, or null if an error occurred
      */
     protected Layer createPoliticalLayer() {
@@ -166,13 +166,13 @@ public class Crew extends JFrame {
         // You can add a showPolitical=false property to the
         // Crew.properties file to make this layer not be added to the
         // application.
-        showPolitical =
-            new Boolean(properties.getProperty("showPolitical", "true"));
+        showPolitical = new Boolean(properties.getProperty("showPolitical",
+                "true"));
 
-        if (! showPolitical.booleanValue()) {
+        if (!showPolitical.booleanValue()) {
             return null;
         }
-        
+
         ShapeLayer politicalLayer = new ShapeLayer();
         politicalLayer.setProperties("political", properties);
 
@@ -180,9 +180,8 @@ public class Crew extends JFrame {
     }
 
     /**
-     * Creates a route layer to display great circle lines on
-     * the map.
-     *
+     * Creates a route layer to display great circle lines on the map.
+     * 
      * @return the route layer
      * @see RouteLayer
      */
@@ -198,9 +197,9 @@ public class Crew extends JFrame {
     }
 
     /**
-     * Launches the application.  Reads the resource file, instantiates
+     * Launches the application. Reads the resource file, instantiates
      * a application, sizes it and displays it.
-     *
+     * 
      * @param args command line arguments -- ignored
      */
     public static void main(String[] args) {
@@ -215,8 +214,8 @@ public class Crew extends JFrame {
             try {
                 crewProps.load(propsIn);
             } catch (java.io.IOException e) {
-                System.err.println("Caught IOException loading resources: " +
-                                   crewResources);
+                System.err.println("Caught IOException loading resources: "
+                        + crewResources);
                 System.err.println("Using default resources.");
             }
         }
@@ -228,8 +227,8 @@ public class Crew extends JFrame {
             crew.setVisible(true);
         } catch (MultipleSoloMapComponentException msmce) {
             // The MapHandler is only allowed to have one of certain
-            // items.  These items implement the SoloMapComponent
-            // interface.  The MapHandler can have a policy that
+            // items. These items implement the SoloMapComponent
+            // interface. The MapHandler can have a policy that
             // determines what to do when duplicate instances of the
             // same type of object are added - replace or ignore.
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,18 +14,15 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/vpf/TableListener.java,v $
 // $RCSfile: TableListener.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.specialist.vpf;
 
-import java.io.Writer;
 import java.io.IOException;
-import java.io.File;
 import java.util.List;
 import java.util.Iterator;
 
@@ -34,7 +31,10 @@ import com.bbn.openmap.layer.util.html.*;
 import com.bbn.openmap.layer.vpf.DcwColumnInfo;
 import com.bbn.openmap.layer.vpf.DcwRecordFile;
 
-/** An HttpRequestListener that returns schema and data from a VPF table */
+/**
+ * An HttpRequestListener that returns schema and data from a VPF
+ * table
+ */
 public class TableListener implements HttpRequestListener {
 
     public TableListener() {}
@@ -61,13 +61,13 @@ public class TableListener implements HttpRequestListener {
             t.addElement(new TableHeaderElement("Thematic Index Name"));
             t.addElement(new TableHeaderElement("Narrative Table"));
             TableRowElement rw = new TableRowElement();
-            for (int i=0; i < dci.length; i++) {
+            for (int i = 0; i < dci.length; i++) {
                 TableRowElement row = new TableRowElement();
                 d.addElement(row);
                 row.addElement(dci[i].getColumnName());
                 char munge[] = dci[i].getColumnName().toCharArray();
-                for (int j=0; j < munge.length; j++)
-                    if (munge[j]=='_')
+                for (int j = 0; j < munge.length; j++)
+                    if (munge[j] == '_')
                         munge[j] = ' ';
                 rw.addElement(new TableHeaderElement(new String(munge)));
                 row.addElement(new Character(dci[i].getFieldType()).toString());
@@ -93,7 +93,7 @@ public class TableListener implements HttpRequestListener {
         }
         d.generate(e.getWriter());
     }
-    
+
     private TableRowElement listAsTableRow(List v) {
         TableRowElement rv = new TableRowElement();
         Iterator it = v.iterator();

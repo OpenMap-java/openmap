@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ControlMenu.java,v $
 // $RCSfile: ControlMenu.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************

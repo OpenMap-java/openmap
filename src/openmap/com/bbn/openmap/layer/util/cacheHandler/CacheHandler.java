@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/cacheHandler/CacheHandler.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/cacheHandler/CacheHandler.java,v
+// $
 // $RCSfile: CacheHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/01 21:18:54 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.util.cacheHandler;
 
@@ -28,10 +29,10 @@ import com.bbn.openmap.util.Debug;
 public abstract class CacheHandler {
     protected CacheObject[] objs;
     protected int logicalClock;
-  
+
     public static int DEFAULT_MAX_CACHE_SIZE = 25;
 
-    /** 
+    /**
      * Standard default constructor
      */
     public CacheHandler() {
@@ -56,8 +57,8 @@ public abstract class CacheHandler {
         }
         logicalClock = 0;
     }
-    
-    /** 
+
+    /**
      * Remove all the objects from the cache.
      */
     public void clear() {
@@ -69,7 +70,7 @@ public abstract class CacheHandler {
     }
 
     /**
-     * Need to clear memory, get gc moving, and ready for new objects 
+     * Need to clear memory, get gc moving, and ready for new objects
      */
     public void resetCache() {
         initCache(objs.length);
@@ -79,6 +80,7 @@ public abstract class CacheHandler {
      * Need to clear memory, get gc moving, and ready for new objects.
      * Delete the current Hashtable and create a new one with the new
      * capacity.
+     * 
      * @param max_size the capacity of the Hashtable.
      */
     public void resetCache(int max_size) {
@@ -97,10 +99,12 @@ public abstract class CacheHandler {
      */
     public Object get(String key) {
         CacheObject ret = searchCache(key);
-        if (ret != null) return ret.obj;
+        if (ret != null)
+            return ret.obj;
 
         ret = load(key);
-        if (ret == null) return null;
+        if (ret == null)
+            return null;
 
         replaceLeastUsed(ret);
         return ret.obj;
@@ -108,14 +112,14 @@ public abstract class CacheHandler {
 
     /**
      * Called from get if the key doesn't exist, to "load" the new
-     * object into the cache before returning it.  This function should
+     * object into the cache before returning it. This function should
      * define how a CacheObject is created, or loaded from the file
-     * system, or whatever.  
+     * system, or whatever.
      */
     public abstract CacheObject load(String key);
 
     /**
-     * Search the cache for a match -return null if not found.  The key
+     * Search the cache for a match -return null if not found. The key
      * search is case insensitive.
      */
     public CacheObject searchCache(String key) {
@@ -132,9 +136,9 @@ public abstract class CacheHandler {
         return null;
     }
 
-    /** 
-     * If there is space in the cache, put the object in.  If there
-     * isn't space, find the least used object, and replace it.  
+    /**
+     * If there is space in the cache, put the object in. If there
+     * isn't space, find the least used object, and replace it.
      */
     protected void replaceLeastUsed(CacheObject newObj) {
 
@@ -148,7 +152,8 @@ public abstract class CacheHandler {
                     // there is nothing in the cache.
                     objs[0] = newObj;
                     if (Debug.debugging("cache")) {
-                        Debug.output("CacheHandler: was empty - added " + newObj.id);
+                        Debug.output("CacheHandler: was empty - added "
+                                + newObj.id);
                     }
 
                     return;
@@ -162,10 +167,10 @@ public abstract class CacheHandler {
             } else {
                 // We are at the index of the last taken spot, and the
                 // next place is available.
-                objs[i+1] = newObj;
+                objs[i + 1] = newObj;
                 if (Debug.debugging("cache")) {
-                    Debug.output("CacheHandler: had room - added " + newObj.id + 
-                                 " to the " + i + " spot.");
+                    Debug.output("CacheHandler: had room - added " + newObj.id
+                            + " to the " + i + " spot.");
                 }
                 return;
             }
@@ -176,7 +181,7 @@ public abstract class CacheHandler {
         int minClock = logicalClock + 1;
         int LUIndex = -1;
 
-        for (i = objs.length - 1; i >=0; i--) {
+        for (i = objs.length - 1; i >= 0; i--) {
             if (objs[i].older(minClock)) {
                 LUIndex = i;
                 minClock = objs[i].cachedTime;
@@ -185,8 +190,8 @@ public abstract class CacheHandler {
 
         if (LUIndex != -1) {
             if (Debug.debugging("cache")) {
-                Debug.output("CacheHandler: Tossing " + objs[LUIndex].id + 
-                             " from cache to add " + newObj.id);
+                Debug.output("CacheHandler: Tossing " + objs[LUIndex].id
+                        + " from cache to add " + newObj.id);
             }
             objs[LUIndex] = newObj;
             newObj.cachedTime = logicalClock++;

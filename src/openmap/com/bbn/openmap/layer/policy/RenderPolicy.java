@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/RenderPolicy.java,v $
 // $RCSfile: RenderPolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/04 18:15:21 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.policy;
 
@@ -45,7 +44,7 @@ public interface RenderPolicy {
 
     /**
      * Called when an OMGraphicHandlerLayer should begin preparing
-     * OMGraphics for the map.  This is a hook into the list to help
+     * OMGraphics for the map. This is a hook into the list to help
      * RenderPolicy make decisions or set up the list for faster
      * rendering.
      */
@@ -53,7 +52,7 @@ public interface RenderPolicy {
 
     /**
      * Called from OMGraphicHandlerLayer.paint(Graphics), so the
-     * policy can handle the painting for the layer.  If you are going
+     * policy can handle the painting for the layer. If you are going
      * to change the Graphics object in this method, you should make a
      * copy of it first using the Graphics.create() method so the
      * changes won't affect other layers.

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,16 +14,13 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/StandardDTEDNameTranslator.java,v $
 // $RCSfile: StandardDTEDNameTranslator.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.dataAccess.dted;
-
-import java.io.File;
 
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
@@ -31,11 +28,15 @@ import com.bbn.openmap.util.Debug;
 /**
  * A class implementing the DTEDNameTranslator interface that handles
  * DTED file names as specified in the DTED specification. These file
- * names follow this naming convention:<P>
+ * names follow this naming convention:
+ * <P>
+ * 
  * <pre>
- *
- * dted/[e|w]xxx/[n|s]yy.dt[level]
- *
+ * 
+ * 
+ *  dted/[e|w]xxx/[n|s]yy.dt[level]
+ * 
+ *  
  * </pre>
  */
 public class StandardDTEDNameTranslator implements DTEDNameTranslator {
@@ -55,14 +56,16 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
 
     /**
      * Set the internal parameters given a parent DTED directory,
-     * latitude, longitude and level.  getName() can be called to
-     * fetch a file name for these parameters.
+     * latitude, longitude and level. getName() can be called to fetch
+     * a file name for these parameters.
+     * 
      * @param dtedDir the path to the top DTED directory.
      * @param lat the desired latitude, in decimal degrees.
      * @param lon the desired longitude, in decimal degrees.
      * @param level the DTED level (0, 1, 2).
      */
-    public StandardDTEDNameTranslator(String dtedDir, double lat, double lon, int level) {
+    public StandardDTEDNameTranslator(String dtedDir, double lat, double lon,
+            int level) {
         set(dtedDir, lat, lon, level);
     }
 
@@ -70,6 +73,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * Assuming that the DTED directory will be set, set the other
      * parameters to reveal a path to a file name, which would be
      * retrieved by calling getName().
+     * 
      * @param lat the desired latitude, in decimal degrees.
      * @param lon the desired longitude, in decimal degrees.
      * @param level the DTED level (0, 1, 2).
@@ -80,6 +84,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
 
     /**
      * Set the internal parameters based on the given file path.
+     * 
      * @param filePath a path to a dted frame file.
      */
     public void set(String filePath) throws FormatException {
@@ -88,8 +93,9 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
 
     /**
      * Set the internal parameters given a parent DTED directory,
-     * latitude, longitude and level.  getName() can be called to
-     * fetch a file name for these parameters.
+     * latitude, longitude and level. getName() can be called to fetch
+     * a file name for these parameters.
+     * 
      * @param dtedDir the path to the top DTED directory.
      * @param lat the desired latitude, in decimal degrees.
      * @param lon the desired longitude, in decimal degrees.
@@ -104,6 +110,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
      * Assuming that the DTED directory is set, set the other
      * parameters to reveal a path to a file name, which would be
      * retrieved by calling getName().
+     * 
      * @param lat the desired latitude, in decimal degrees.
      * @param lon the desired longitude, in decimal degrees.
      * @param level the DTED level (0, 1, 2).
@@ -114,12 +121,13 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
 
     /**
      * Set the latitude in the translator.
+     * 
      * @param lat the desired latitude, in decimal degrees.
      */
     public void setLat(double latitude) {
         filename = evaluate(latitude, getLon(), getLevel());
     }
-    
+
     /**
      * Get the latitude.
      */
@@ -129,6 +137,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
 
     /**
      * Set the longitude in the translator.
+     * 
      * @param lat the desired longitude, in decimal degrees.
      */
     public void setLon(double longitude) {
@@ -144,6 +153,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
 
     /**
      * Set the DTED level in the translator.
+     * 
      * @param level the DTED level (0, 1, 2).
      */
     public void setLevel(int level) {
@@ -174,8 +184,8 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
     }
 
     /**
-     * Get the complete path to the DTED frame file based on the current
-     * internal settings.
+     * Get the complete path to the DTED frame file based on the
+     * current internal settings.
      */
     public String getName() {
         return dtedDir + "/" + filename;
@@ -213,8 +223,8 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
         this.lat = Math.floor(lat);
         this.lon = Math.floor(lon);
         this.level = level;
-        return DTEDFrameUtil.lonToFileString((float)lon) + "/" +
-            DTEDFrameUtil.latToFileString((float)lat, level);
+        return DTEDFrameUtil.lonToFileString((float) lon) + "/"
+                + DTEDFrameUtil.latToFileString((float) lat, level);
     }
 
     /**
@@ -229,7 +239,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
                     Debug.output("Have lat index of " + latSlash);
                 }
                 String lonSearch = filePath.substring(0, latSlash);
-                
+
                 if (DEBUG) {
                     Debug.output("Searching for lon index in " + lonSearch);
                 }
@@ -245,7 +255,8 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
                     int dotIndex = latString.indexOf(".");
                     if (dotIndex > 0) {
 
-                        lat = Double.parseDouble(latString.substring(1, dotIndex));
+                        lat = Double.parseDouble(latString.substring(1,
+                                dotIndex));
                         if (latString.charAt(0) == 'S') {
                             lat *= -1;
                         }
@@ -279,8 +290,8 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
 
         }
 
-        throw new FormatException("StandardDTEDNameTranslator couldn't convert " + filePath + 
-                                  " to valid parameters");
+        throw new FormatException("StandardDTEDNameTranslator couldn't convert "
+                + filePath + " to valid parameters");
     }
 
     public String toString() {

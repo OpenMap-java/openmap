@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,60 +14,56 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.14 $
-// $Date: 2004/05/10 20:50:58 $
+// $Revision: 1.15 $
+// $Date: 2004/10/14 18:06:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.plugin;
 
-
 /*  Java Core  */
-import java.awt.Component;
-import java.awt.Point;
-import java.awt.event.*;
-import java.beans.*;
-import java.beans.beancontext.*;
+import java.beans.PropertyVetoException;
+import java.beans.beancontext.BeanContext;
+import java.beans.beancontext.BeanContextChild;
+import java.beans.beancontext.BeanContextMembershipListener;
 import java.util.Properties;
 
 /*  OpenMap  */
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.*;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.ComponentFactory;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
- * The PlugInLayer is a kind of layer that has a direct interface
- * with the MapBean.  The Layer contains a handle to a PlugIn object,
- * which is, in effect, a module that knows how to respond to
- * geographical requests for information, and can create graphics to
- * be drawn.
+ * The PlugInLayer is a kind of layer that has a direct interface with
+ * the MapBean. The Layer contains a handle to a PlugIn object, which
+ * is, in effect, a module that knows how to respond to geographical
+ * requests for information, and can create graphics to be drawn.
  * <p>
  * The PlugInLayer has a standard interface to the PlugIn module
  * object, and knows to call certain PlugIn methods to respond to
- * Layer methods.  It also knows about the OMGraphicsList that is
- * part of the PlugIn, and when graphical objects are to be rendered,
- * it tells the plugin's OMGraphicsList to render the object using a
+ * Layer methods. It also knows about the OMGraphicsList that is part
+ * of the PlugIn, and when graphical objects are to be rendered, it
+ * tells the plugin's OMGraphicsList to render the object using a
  * Graphics that the Layer provides.
  */
 public class PlugInLayer extends OMGraphicHandlerLayer {
 
     /**
-     * If the PlugInLayer creates the PlugIn, it will append
-     * ".plugin" to the properties prefix it will send to
+     * If the PlugInLayer creates the PlugIn, it will append ".plugin"
+     * to the properties prefix it will send to
      * PlugIn.setProperties(). So, the PlugIn properties should look
-     * like layerPrefix.plugin.pluginPropertyName=value.<P>
-     *
-     * NOTE: This is different than when a PlugIn is created 
-     * as a component by the ComponentFactory called by the 
-     * PropertyHandler.  If the PropertyHandler calls the 
-     * ComponentFactory, then the properties should look like 
+     * like layerPrefix.plugin.pluginPropertyName=value.
+     * <P>
+     * 
+     * NOTE: This is different than when a PlugIn is created as a
+     * component by the ComponentFactory called by the
+     * PropertyHandler. If the PropertyHandler calls the
+     * ComponentFactory, then the properties should look like
      * pluginComponentPrefix.pluginProperty=value.
      */
     public final static String PlugInProperty = "plugin";
@@ -75,7 +71,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
     /** The handle to the PlugIn object. */
     protected transient PlugIn plugin = null;
 
-    /** 
+    /**
      * The MapMouseListener for the layer/plugin combo that knows how
      * to respond to mouse events.
      */
@@ -88,7 +84,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
     protected String plugInClass = null;
 
     /**
-     * The default constructor for the Layer.  All of the attributes
+     * The default constructor for the Layer. All of the attributes
      * are set to their default values.
      */
     public PlugInLayer() {
@@ -109,7 +105,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 
     /**
      * Set the properties for the PlugIn Layer.
-     */ 
+     */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
 
@@ -119,7 +115,9 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
         if (plugInClass != null) {
             String plugInPrefix = PlugInProperty;
             plugInPrefix = realPrefix + PlugInProperty;
-            setPlugIn((PlugIn)ComponentFactory.create(plugInClass, plugInPrefix, props));
+            setPlugIn((PlugIn) ComponentFactory.create(plugInClass,
+                    plugInPrefix,
+                    props));
         } else {
             // If plugInClass is not defined, then we want the
             // PlugInLayer to be invisible - the PlugIn should be
@@ -166,14 +164,17 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
             // PlugInLayer to be invisible - the PlugIn should be
             // the only thing in the properties, and ther other
             // components should be OK with that.
-            
+
             props.put(PlugInProperty, "Class name of PlugIn");
-            props.put(PlugInProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
+            props.put(PlugInProperty + ScopedEditorProperty,
+                    "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
         } else {
             props.put("class", "Class name of PlugIn");
-            props.put("class" + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
+            props.put("class" + ScopedEditorProperty,
+                    "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
             props.put(PrettyNameProperty, getName());
-            props.put(PrettyNameProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
+            props.put(PrettyNameProperty + ScopedEditorProperty,
+                    "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
         }
 
         if (pi != null) {
@@ -185,10 +186,10 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 
     /**
      * Set the property key prefix that should be used by the
-     * PropertyConsumer.  The prefix, along with a '.', should be
+     * PropertyConsumer. The prefix, along with a '.', should be
      * prepended to the property keys known by the PropertyConsumer.
-     *
-     * @param prefix the prefix String.  
+     * 
+     * @param prefix the prefix String.
      */
     public void setPropertyPrefix(String prefix) {
         super.setPropertyPrefix(prefix);
@@ -197,7 +198,8 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 
         if (pi != null) {
             if (plugInClass != null) {
-                pi.setPropertyPrefix(PropUtils.getScopedPropertyPrefix(prefix) + PlugInProperty);
+                pi.setPropertyPrefix(PropUtils.getScopedPropertyPrefix(prefix)
+                        + PlugInProperty);
             } else {
                 plugin.setPropertyPrefix(prefix);
             }
@@ -206,7 +208,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 
     /**
      * Sets the current graphics list to the given list.
-     *
+     * 
      * @param aList a list of OMGraphics
      * @deprecated call setList() instead.
      */
@@ -216,23 +218,24 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 
     /**
      * Retrieves the current graphics list.
+     * 
      * @deprecated call getList() instead.
      */
     public synchronized OMGraphicList getGraphicList() {
         return getList();
     }
 
-    /** 
-     *  Returns the plugin module of the layer.
+    /**
+     * Returns the plugin module of the layer.
      */
     public PlugIn getPlugIn() {
         return plugin;
     }
 
     /**
-     *  Sets the plugin module of the layer.  This method also calls
-     *  setLayer on the plugin, and gets the MapMouseListener from the
-     *  plugin, too.
+     * Sets the plugin module of the layer. This method also calls
+     * setLayer on the plugin, and gets the MapMouseListener from the
+     * plugin, too.
      */
     public void setPlugIn(PlugIn aPlugIn) {
         // Need to remove from BeanContext if it was added previously.
@@ -240,14 +243,13 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
             removePlugInFromBeanContext(plugin);
         }
 
-
         plugin = aPlugIn;
         if (aPlugIn != null) {
             plugin.setComponent(this);
             setMapMouseListener(plugin.getMapMouseListener());
             // This might be called as a result of setProperties() and
             // then this call won't do anything because the
-            // BeanContext hasn't been set yet.  We need to call it
+            // BeanContext hasn't been set yet. We need to call it
             // now in case the plugin is set in the layer later.
             addPlugInToBeanContext(plugin);
         } else if (Debug.debugging("plugin")) {
@@ -258,60 +260,62 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
     /**
      * Returns the MapMouseListener object that handles the mouse
      * events.
+     * 
      * @return the MapMouseListener for the layer, or null if none
      */
     public MapMouseListener getMapMouseListener() {
         return mml;
     }
- 
+
     /**
      * Set the MapMouseListener for the layer.
+     * 
      * @param mml the object that will handle the mouse events for the
-     * layer.
+     *        layer.
      */
     public synchronized void setMapMouseListener(MapMouseListener mmlIn) {
         mml = mmlIn;
     }
 
     /**
-     * Prepares the graphics for the layer.  This is where the
-     * getRectangle() method call is made on the plugin.  This is
+     * Prepares the graphics for the layer. This is where the
+     * getRectangle() method call is made on the plugin. This is
      * called by the PulgInWorker, or can be called from a different
-     * thread than the AWT thread.  If you're not sure, call
+     * thread than the AWT thread. If you're not sure, call
      * doPrepare() instead, and a separate thread will be launched to
      * call this.
-     *
+     * 
      * @return new OMGraphicList filled by plugin.
      */
     public synchronized OMGraphicList prepare() {
-        Debug.message("plugin", getName()+"|PlugInLayer.prepare()");
+        Debug.message("plugin", getName() + "|PlugInLayer.prepare()");
 
         if (isCancelled()) {
-            Debug.message("plugin", getName()+"|PlugInLayer.prepare(): aborted.");
+            Debug.message("plugin", getName()
+                    + "|PlugInLayer.prepare(): aborted.");
             return null;
         }
 
         if (plugin == null) {
-            System.out.println(getName()+"|PlugInLayer.prepare(): No plugin in layer.");
+            System.out.println(getName()
+                    + "|PlugInLayer.prepare(): No plugin in layer.");
             return null;
         }
 
-        Debug.message("basic", getName()+"|PlugInLayer.prepare(): doing it");
+        Debug.message("basic", getName() + "|PlugInLayer.prepare(): doing it");
 
-        // Setting the OMGraphicsList for this layer.  Remember, the
+        // Setting the OMGraphicsList for this layer. Remember, the
         // OMGraphicList is made up of OMGraphics, which are generated
-        // (projected) when the graphics are added to the list.  So,
+        // (projected) when the graphics are added to the list. So,
         // after this call, the list is ready for painting.
 
         // call getRectangle();
         Projection proj = getProjection();
         if (Debug.debugging("plugin") && proj != null) {
-            System.out.println(
-                      getName()+"|PlugInLayer.prepare(): " +
-                      "calling getRectangle " +
-                      " with projection: " + proj +
-                      " ul = " + proj.getUpperLeft() + " lr = " + 
-                      proj.getLowerRight()); 
+            System.out.println(getName() + "|PlugInLayer.prepare(): "
+                    + "calling getRectangle " + " with projection: " + proj
+                    + " ul = " + proj.getUpperLeft() + " lr = "
+                    + proj.getLowerRight());
         }
 
         OMGraphicList omGraphicList = null;
@@ -324,14 +328,16 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
         // safe quit
         int size = 0;
         if (omGraphicList != null) {
-            size = omGraphicList.size();        
+            size = omGraphicList.size();
             if (Debug.debugging("basic")) {
-                Debug.output(getName() + "|PlugInLayer.prepare(): finished with "+
-                             size + " graphics");
+                Debug.output(getName()
+                        + "|PlugInLayer.prepare(): finished with " + size
+                        + " graphics");
             }
         } else {
             if (Debug.debugging("basic")) {
-                Debug.output(getName() + "|PlugInLayer.prepare(): finished with null graphics list");
+                Debug.output(getName()
+                        + "|PlugInLayer.prepare(): finished with null graphics list");
             }
             omGraphicList = new OMGraphicList();
         }
@@ -342,7 +348,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
     }
 
     /**
-     * Checks the PlugIn to see if it has a GUI.  Returns null if the
+     * Checks the PlugIn to see if it has a GUI. Returns null if the
      * PlugIn doesn't exist.
      */
     public java.awt.Component getGUI() {
@@ -359,13 +365,13 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      */
     public boolean getAddToBeanContext() {
         boolean ret = false;
-        if (plugin != null && 
+        if (plugin != null
+                &&
 
-            (plugin instanceof BeanContextChild ||
-             plugin instanceof BeanContextMembershipListener)) {
+                (plugin instanceof BeanContextChild || plugin instanceof BeanContextMembershipListener)) {
 
             if (plugin instanceof AbstractPlugIn) {
-                ret = ((AbstractPlugIn)plugin).getAddToBeanContext();
+                ret = ((AbstractPlugIn) plugin).getAddToBeanContext();
             } else {
                 ret = true;
             }
@@ -382,8 +388,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
     }
 
     /** Method for BeanContextChild interface. */
-    public void setBeanContext(BeanContext in_bc) 
-        throws PropertyVetoException {
+    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
         super.setBeanContext(in_bc);
 
         // Needs to be done here, because if the plugin was created
@@ -400,12 +405,11 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
     public void addPlugInToBeanContext(PlugIn pi) {
         BeanContext bc = getBeanContext();
 
-        if (bc != null && 
-            pi != null && 
+        if (bc != null
+                && pi != null
+                &&
 
-            (pi instanceof BeanContextChild || 
-             (pi instanceof AbstractPlugIn && 
-              ((AbstractPlugIn)pi).getAddToBeanContext()))) {
+                (pi instanceof BeanContextChild || (pi instanceof AbstractPlugIn && ((AbstractPlugIn) pi).getAddToBeanContext()))) {
 
             bc.add(pi);
         }
@@ -419,17 +423,18 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
     public void removePlugInFromBeanContext(PlugIn pi) {
         BeanContext bc = getBeanContext();
 
-        if (bc != null && 
-            pi != null && 
+        if (bc != null
+                && pi != null
+                &&
 
-            (pi instanceof BeanContextChild || 
-             (pi instanceof AbstractPlugIn && 
-              ((AbstractPlugIn)pi).getAddToBeanContext()))) {
+                (pi instanceof BeanContextChild || (pi instanceof AbstractPlugIn && ((AbstractPlugIn) pi).getAddToBeanContext()))) {
 
-        // Of course, we don't need all these conditions met to order
-        // the removal, but they are the ones in place that would
-        // cause it to be added, so we don't waste the effort unless
-        // the same conditions are met.
+            // Of course, we don't need all these conditions met to
+            // order
+            // the removal, but they are the ones in place that would
+            // cause it to be added, so we don't waste the effort
+            // unless
+            // the same conditions are met.
             bc.remove(pi);
         }
     }

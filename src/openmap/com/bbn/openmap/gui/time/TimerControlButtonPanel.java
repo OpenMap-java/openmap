@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,16 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimerControlButtonPanel.java,v $
 // $RCSfile: TimerControlButtonPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.gui.time;
 
-import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.gui.OMComponentPanel;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -34,17 +32,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
 import javax.swing.*;
 
 /**
- * The TimerControlButtonPanel provides control for starting and stopping
- * a clock contained in a RealTimeHandler.  This class also has
- * provisions for having the clock run the reverse direction, and for
- * stepping the clock forward and backward one interval.
+ * The TimerControlButtonPanel provides control for starting and
+ * stopping a clock contained in a RealTimeHandler. This class also
+ * has provisions for having the clock run the reverse direction, and
+ * for stepping the clock forward and backward one interval.
  */
-public class TimerControlButtonPanel extends OMComponentPanel 
-    implements PropertyChangeListener, ActionListener, TimeConstants {
+public class TimerControlButtonPanel extends OMComponentPanel implements
+        PropertyChangeListener, ActionListener, TimeConstants {
 
     protected ImageIcon backwardStepIcon;
     protected ImageIcon backwardIcon;
@@ -98,7 +95,7 @@ public class TimerControlButtonPanel extends OMComponentPanel
         try {
             URL url = PropUtils.getResourceOrFileOrURL(this, forwardIconURL);
             forwardIcon = new ImageIcon(url);
-            
+
             url = PropUtils.getResourceOrFileOrURL(this, forwardStepIconURL);
             forwardStepIcon = new ImageIcon(url);
 
@@ -149,7 +146,7 @@ public class TimerControlButtonPanel extends OMComponentPanel
 
     /**
      * PropertyChangeListener Interface Method used to find out when
-     * the timer has been stopped and started.  Is expecting that the
+     * the timer has been stopped and started. Is expecting that the
      * property name and value are the actual string objects defined
      * in the TimeConstants interface. It does ==, not equals().
      */
@@ -157,7 +154,7 @@ public class TimerControlButtonPanel extends OMComponentPanel
         String propName = pce.getPropertyName();
         Object obj = pce.getNewValue();
         if (propName == TIMER_RUNNING_STATUS && obj instanceof String) {
-            update((String)obj);
+            update((String) obj);
         }
     }
 
@@ -191,8 +188,8 @@ public class TimerControlButtonPanel extends OMComponentPanel
 
     /**
      * ActionListener Interface Method listens to the timer, in case
-     * something else starts it, we can update the gui.  Also
-     * listens to this button, to start and stop the given timer.
+     * something else starts it, we can update the gui. Also listens
+     * to this button, to start and stop the given timer.
      */
     public void actionPerformed(ActionEvent ae) {
         String cmd = ae.getActionCommand();

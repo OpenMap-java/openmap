@@ -25,7 +25,6 @@ import java.net.*;
 import java.beans.*;
 import java.beans.beancontext.*;
 import javax.swing.*;
-import javax.swing.event.*;
 import javax.swing.border.*;
 
 import com.bbn.openmap.tools.dnd.DefaultDnDCatcher;
@@ -35,622 +34,641 @@ import com.bbn.openmap.tools.dnd.DefaultTransferableObject;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.SoloMapComponent;
 import com.bbn.openmap.Layer;
-import com.bbn.openmap.LayerHandler;
-import com.bbn.openmap.MouseDelegator;
-import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.event.LayerListener;
 import com.bbn.openmap.event.ProjectionListener;
-import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The BeanBoxDnDCatcher class manages all Java Drag-and-Drop events 
- * associated with openmap layers that implement the 
- * {@link com.bbn.openmap.tools.beanbox.BeanBoxHandler} interface. 
+ * The BeanBoxDnDCatcher class manages all Java Drag-and-Drop events
+ * associated with openmap layers that implement the
+ * {@link com.bbn.openmap.tools.beanbox.BeanBoxHandler}interface.
  */
-public class BeanBoxDnDCatcher
-  extends DefaultDnDCatcher
-  implements SoloMapComponent, BeanContextChild, BeanContextMembershipListener, 
-  PropertyChangeListener, Serializable, ProjectionListener, LayerListener,
-  ActionListener {
+public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
+        SoloMapComponent, BeanContextChild, BeanContextMembershipListener,
+        PropertyChangeListener, Serializable, ProjectionListener,
+        LayerListener, ActionListener {
 
-  static {
+    static {
 
-    setDefaultIcon();
+        setDefaultIcon();
 
-  }
-
-  private Vector transferData;
-  private Point dropLocation;
-
-  /** holds the currently selected bean */
-  protected Object selectedBean = null;
-
-  /** holds the serialized version of currently selected bean */
-  protected ByteArrayOutputStream serBean = null;
-
-  /** holds the map location of the currently selected bean */
-  protected Point selectedBeanLocation = null;
-
-  /** holds the {@link com.bbn.openmap.tools.beanbox.BeanBox} 
-   * that manages the currently selected bean */
-  protected BeanBox selectedBeanBox = null;
-
-  /** holds the openmap layer that contains the currently selected bean */
-  protected Layer selectedBeanLayer = null;
-
-
-  /** holds the currently cut bean, if any */
-  Object cutBean = null;
-
-  /** 
-   * contains BeanInfo objects hashed by the class names of the associated
-   * bean classes
-   */
-  protected HashMap beanInfoMap = null;
-
-  /**
-   * Constructs a new 
-   * {@link com.bbn.openmap.tools.dnd.DnDListener} object.
-   */
-  public BeanBoxDnDCatcher() {
-    this(new DragSource());
-  }
-
-  /**    
-   * Constructs a new MouseDragGestureRecognizer     
-   * given the DragSource for the Component.     
-   *     
-   * @param ds the DragSource for the Component     
-   */
-  public BeanBoxDnDCatcher(DragSource ds) {
-    this(ds, null);
-  }
-
-  /**     
-   * Construct a new MouseDragGestureRecognizer     
-   * given the DragSource for the     
-   * Component c, and the     
-   * Component to observe.     
-   *     
-   * @param ds the DragSource for the Component c     
-   * @param c  the Component to observe     
-   */
-  public BeanBoxDnDCatcher(DragSource ds, Component c) {
-    this(ds, c, DnDConstants.ACTION_MOVE);
-  }
-
-  /**     
-   * Construct a new MouseDragGestureRecognizer     
-   * given the DragSource for the     
-   * Component c, and the     
-   * Component to observe and
-   * the drag-and-drop action.
-   *     
-   * @param ds the DragSource for the Component c     
-   * @param c  the Component to observe     
-   * @param act  the drag-and-drop action
-   */
-  public BeanBoxDnDCatcher(DragSource ds, Component c, int act) {
-    this(ds, c, act, null);
-  }
-
-  /**     
-   * Construct a new MouseDragGestureRecognizer     
-   * given the DragSource for the     
-   * Component c, and the     
-   * Component to observe.
-   * the drag-and-drop action and
-   * a DragGestureListener
-   *     
-   * @param ds the DragSource for the Component c     
-   * @param c  the Component to observe     
-   * @param act  the drag-and-drop action
-   * @param dgl  the DragGestureListener
-   */
-  public BeanBoxDnDCatcher(DragSource ds, Component c, int act, 
-    DragGestureListener dgl) {
-    super(ds, c, act, dgl);
-    dragSource = getDragSource();
-    dragGestureListener = new ComponentDragGestureListener(this, this);
-    setSourceActions(DnDConstants.ACTION_MOVE);
-
-    beanInfoMap = new HashMap();
-  }
-
-  /**
-   * Calls superclass method and
-   * then adds the KeyListener to someObj if someObj is of type OpenMapFrame.
-   */
-  public void findAndInit(Object someObj) {
-    super.findAndInit(someObj);
-    if (someObj instanceof MapBean) {
-
-      ((MapBean)someObj).addKeyListener (new KeyAdapter () {
-          public void keyPressed(KeyEvent evt) {
-            if (evt.getModifiers() == InputEvent.CTRL_MASK &&
-                evt.getKeyCode() == KeyEvent.VK_C)
-              copySelectedBean();
-            else
-            if (evt.getModifiers() == InputEvent.CTRL_MASK &&
-                evt.getKeyCode() == KeyEvent.VK_V)
-              pasteSelectedBean();
-            else
-            if (evt.getModifiers() == InputEvent.CTRL_MASK &&
-                evt.getKeyCode() == KeyEvent.VK_X)
-              cutSelectedBean();
-            else
-            if (evt.getKeyCode() == KeyEvent.VK_ESCAPE)
-              unCutSelectedBean();
-            else
-            if (evt.getKeyCode() == KeyEvent.VK_DELETE)
-              deleteSelectedBean();
-          }
-        });
-    }
-  }
-
-  /**
-   * This method is called when the user chooses to copy
-   * a bean by some means such by by pressing Ctrl-C. This method tries to 
-   * serialize the selected bean. If no bean is selected or the bean is not
-   * serializable, this method is a no-op.
-   */
-  protected void copySelectedBean () {
-    if (Debug.debugging("beanbox")) Debug.output("Enter> copySelectedBean");
-    if (selectedBean == null || selectedBeanLocation == null) {
-      clearSelection();
-      if (Debug.debugging("beanbox")) Debug.output("selectedBean="+selectedBean);
-      if (Debug.debugging("beanbox")) Debug.output("selectedBeanLocation="+selectedBeanLocation);
-      return;
     }
 
-    try {
-      serBean = new ByteArrayOutputStream ();
-      ObjectOutputStream oos = new ObjectOutputStream (serBean);
-      oos.writeObject(selectedBean);
-    } catch (Exception e) {
-      e.printStackTrace();
-      clearSelection();;
-      if (Debug.debugging("beanbox")) Debug.output("Exit> copySelectedBean");
-      return;
+    private Vector transferData;
+    private Point dropLocation;
+
+    /** holds the currently selected bean */
+    protected Object selectedBean = null;
+
+    /** holds the serialized version of currently selected bean */
+    protected ByteArrayOutputStream serBean = null;
+
+    /** holds the map location of the currently selected bean */
+    protected Point selectedBeanLocation = null;
+
+    /**
+     * holds the {@link com.bbn.openmap.tools.beanbox.BeanBox}that
+     * manages the currently selected bean
+     */
+    protected BeanBox selectedBeanBox = null;
+
+    /**
+     * holds the openmap layer that contains the currently selected
+     * bean
+     */
+    protected Layer selectedBeanLayer = null;
+
+    /** holds the currently cut bean, if any */
+    Object cutBean = null;
+
+    /**
+     * contains BeanInfo objects hashed by the class names of the
+     * associated bean classes
+     */
+    protected HashMap beanInfoMap = null;
+
+    /**
+     * Constructs a new {@link com.bbn.openmap.tools.dnd.DnDListener}
+     * object.
+     */
+    public BeanBoxDnDCatcher() {
+        this(new DragSource());
     }
 
-    cutBean = null;
-
-    if (Debug.debugging("beanbox")) Debug.output("Exit> copySelectedBean");
-  }
-
-  /**
-   * This method is called when the user chooses to paste by some means 
-   * (such by pressing Ctrl-V) a previously copied or cut bean. 
-   * This method tries to deserialize the previously serialized bean. 
-   * If the bean in question was cut, this method also removes it from
-   * from the source beanbox. The paste operation is treated the same as 
-   * a drop operation.
-   * If no bean was previously copied or cut or if an error occurs during
-   * deserialization, this method is a no-op.
-   */
-  protected void pasteSelectedBean () {
-    if (Debug.debugging("beanbox")) Debug.output("Enter> pasteSelectedBean");
-
-    if (serBean == null) {
-      clearSelection();
-      if (Debug.debugging("beanbox")) Debug.output("Exit> pasteSelectedBean");
-      return;
+    /**
+     * Constructs a new MouseDragGestureRecognizer given the
+     * DragSource for the Component.
+     * 
+     * @param ds the DragSource for the Component
+     */
+    public BeanBoxDnDCatcher(DragSource ds) {
+        this(ds, null);
     }
 
-    BeanInfo beanInfo = (BeanInfo)beanInfoMap.get(
-                           selectedBean.getClass().getName());
-    if (beanInfo == null) {
-      System.out.println("ERROR> BBDnDC::pasteSelectedBean: " + 
-        "no cached BeanInfo found for bean " + selectedBean);
-      clearSelection();
-      return;
+    /**
+     * Construct a new MouseDragGestureRecognizer given the DragSource
+     * for the Component c, and the Component to observe.
+     * 
+     * @param ds the DragSource for the Component c
+     * @param c the Component to observe
+     */
+    public BeanBoxDnDCatcher(DragSource ds, Component c) {
+        this(ds, c, DnDConstants.ACTION_MOVE);
     }
 
-    // if bean was cut, remove it from its present location
-    if (cutBean != null) {
-      selectedBeanBox.removeBean(selectedBean);
+    /**
+     * Construct a new MouseDragGestureRecognizer given the DragSource
+     * for the Component c, and the Component to observe and the
+     * drag-and-drop action.
+     * 
+     * @param ds the DragSource for the Component c
+     * @param c the Component to observe
+     * @param act the drag-and-drop action
+     */
+    public BeanBoxDnDCatcher(DragSource ds, Component c, int act) {
+        this(ds, c, act, null);
     }
 
-    Object deserBean = null;
+    /**
+     * Construct a new MouseDragGestureRecognizer given the DragSource
+     * for the Component c, and the Component to observe. the
+     * drag-and-drop action and a DragGestureListener
+     * 
+     * @param ds the DragSource for the Component c
+     * @param c the Component to observe
+     * @param act the drag-and-drop action
+     * @param dgl the DragGestureListener
+     */
+    public BeanBoxDnDCatcher(DragSource ds, Component c, int act,
+            DragGestureListener dgl) {
+        super(ds, c, act, dgl);
+        dragSource = getDragSource();
+        dragGestureListener = new ComponentDragGestureListener(this, this);
+        setSourceActions(DnDConstants.ACTION_MOVE);
 
-    try {
-      ByteArrayInputStream bais = new ByteArrayInputStream (serBean.toByteArray());
-      ObjectInputStream ois = new ObjectInputStream (bais);
-      deserBean = ois.readObject();
-    } catch (Exception e) {
-      e.printStackTrace();
-      clearSelection();;
-      if (Debug.debugging("beanbox")) Debug.output("Exit> pasteSelectedBean");
-      return;
+        beanInfoMap = new HashMap();
     }
 
-    // construct a transferData object
-    transferData = new Vector();
-    transferData.add(deserBean);
-    transferData.add(beanInfo);
-    transferData.add(new Boolean(false)); // bean not being moved
+    /**
+     * Calls superclass method and then adds the KeyListener to
+     * someObj if someObj is of type OpenMapFrame.
+     */
+    public void findAndInit(Object someObj) {
+        super.findAndInit(someObj);
+        if (someObj instanceof MapBean) {
 
-    // let dropLocation be selectedBeanLocation
-    dropLocation = selectedBeanLocation;
-
-    showPopUp(selectedBeanLayer);
-
-    cutBean = null;
-    if (Debug.debugging("beanbox")) Debug.output("Exit> pasteSelectedBean");
-  }
-
-  /**
-   * This method is called when the user chooses to cut
-   * a bean by some means such by by pressing Ctrl-X. This method tries to 
-   * serialize the selected bean. If no bean is selected or the bean is not
-   * serializable, this method is a no-op.
-   */
-  protected void cutSelectedBean () {
-    if (Debug.debugging("beanbox")) Debug.output("Enter> cutSelectedBean");
-
-    if (selectedBean == null || selectedBeanLocation == null) {
-      if (Debug.debugging("beanbox")) Debug.output("selectedBean="+selectedBean);
-      if (Debug.debugging("beanbox")) Debug.output("selectedBeanLocation="+selectedBeanLocation);
-      clearSelection();
-      return;
+            ((MapBean) someObj).addKeyListener(new KeyAdapter() {
+                public void keyPressed(KeyEvent evt) {
+                    if (evt.getModifiers() == InputEvent.CTRL_MASK
+                            && evt.getKeyCode() == KeyEvent.VK_C)
+                        copySelectedBean();
+                    else if (evt.getModifiers() == InputEvent.CTRL_MASK
+                            && evt.getKeyCode() == KeyEvent.VK_V)
+                        pasteSelectedBean();
+                    else if (evt.getModifiers() == InputEvent.CTRL_MASK
+                            && evt.getKeyCode() == KeyEvent.VK_X)
+                        cutSelectedBean();
+                    else if (evt.getKeyCode() == KeyEvent.VK_ESCAPE)
+                        unCutSelectedBean();
+                    else if (evt.getKeyCode() == KeyEvent.VK_DELETE)
+                        deleteSelectedBean();
+                }
+            });
+        }
     }
 
-    try {
-      serBean = new ByteArrayOutputStream ();
-      ObjectOutputStream oos = new ObjectOutputStream (serBean);
-      oos.writeObject(selectedBean);
-    } catch (Exception e) {
-      e.printStackTrace();
-      clearSelection();;
-      if (Debug.debugging("beanbox")) Debug.output("Exit> copySelectedBean");
-      return;
+    /**
+     * This method is called when the user chooses to copy a bean by
+     * some means such by by pressing Ctrl-C. This method tries to
+     * serialize the selected bean. If no bean is selected or the bean
+     * is not serializable, this method is a no-op.
+     */
+    protected void copySelectedBean() {
+        if (Debug.debugging("beanbox"))
+            Debug.output("Enter> copySelectedBean");
+        if (selectedBean == null || selectedBeanLocation == null) {
+            clearSelection();
+            if (Debug.debugging("beanbox"))
+                Debug.output("selectedBean=" + selectedBean);
+            if (Debug.debugging("beanbox"))
+                Debug.output("selectedBeanLocation=" + selectedBeanLocation);
+            return;
+        }
+
+        try {
+            serBean = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(serBean);
+            oos.writeObject(selectedBean);
+        } catch (Exception e) {
+            e.printStackTrace();
+            clearSelection();
+            ;
+            if (Debug.debugging("beanbox"))
+                Debug.output("Exit> copySelectedBean");
+            return;
+        }
+
+        cutBean = null;
+
+        if (Debug.debugging("beanbox"))
+            Debug.output("Exit> copySelectedBean");
     }
 
-    cutBean = selectedBean;
+    /**
+     * This method is called when the user chooses to paste by some
+     * means (such by pressing Ctrl-V) a previously copied or cut
+     * bean. This method tries to deserialize the previously
+     * serialized bean. If the bean in question was cut, this method
+     * also removes it from from the source beanbox. The paste
+     * operation is treated the same as a drop operation. If no bean
+     * was previously copied or cut or if an error occurs during
+     * deserialization, this method is a no-op.
+     */
+    protected void pasteSelectedBean() {
+        if (Debug.debugging("beanbox"))
+            Debug.output("Enter> pasteSelectedBean");
 
-    selectedBeanBox.showCut(selectedBean);
+        if (serBean == null) {
+            clearSelection();
+            if (Debug.debugging("beanbox"))
+                Debug.output("Exit> pasteSelectedBean");
+            return;
+        }
 
-    if (Debug.debugging("beanbox")) Debug.output("Exit> cutSelectedBean");
-  }
+        BeanInfo beanInfo = (BeanInfo) beanInfoMap.get(selectedBean.getClass()
+                .getName());
+        if (beanInfo == null) {
+            System.out.println("ERROR> BBDnDC::pasteSelectedBean: "
+                    + "no cached BeanInfo found for bean " + selectedBean);
+            clearSelection();
+            return;
+        }
 
-  /**
-   * This method is called when the user chooses to cancel a cut operation
-   * on a bean by some means such by by pressing ESC. 
-   * If no bean was marked for cutting this method is a no-op.
-   */
-  protected void unCutSelectedBean () {
-    if (Debug.debugging("beanbox")) Debug.output("Enter> unCutSelectedBean");
+        // if bean was cut, remove it from its present location
+        if (cutBean != null) {
+            selectedBeanBox.removeBean(selectedBean);
+        }
 
-    if (selectedBean == null || selectedBeanLocation == null) {
-      if (Debug.debugging("beanbox")) Debug.output("selectedBean="+selectedBean);
-      if (Debug.debugging("beanbox")) Debug.output("selectedBeanLocation="+selectedBeanLocation);
-      clearSelection();
-      return;
+        Object deserBean = null;
+
+        try {
+            ByteArrayInputStream bais = new ByteArrayInputStream(serBean.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            deserBean = ois.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            clearSelection();
+            ;
+            if (Debug.debugging("beanbox"))
+                Debug.output("Exit> pasteSelectedBean");
+            return;
+        }
+
+        // construct a transferData object
+        transferData = new Vector();
+        transferData.add(deserBean);
+        transferData.add(beanInfo);
+        transferData.add(new Boolean(false)); // bean not being moved
+
+        // let dropLocation be selectedBeanLocation
+        dropLocation = selectedBeanLocation;
+
+        showPopUp(selectedBeanLayer);
+
+        cutBean = null;
+        if (Debug.debugging("beanbox"))
+            Debug.output("Exit> pasteSelectedBean");
     }
 
-    selectedBeanBox.showUnCut(selectedBean);
+    /**
+     * This method is called when the user chooses to cut a bean by
+     * some means such by by pressing Ctrl-X. This method tries to
+     * serialize the selected bean. If no bean is selected or the bean
+     * is not serializable, this method is a no-op.
+     */
+    protected void cutSelectedBean() {
+        if (Debug.debugging("beanbox"))
+            Debug.output("Enter> cutSelectedBean");
 
-    clearSelection();
+        if (selectedBean == null || selectedBeanLocation == null) {
+            if (Debug.debugging("beanbox"))
+                Debug.output("selectedBean=" + selectedBean);
+            if (Debug.debugging("beanbox"))
+                Debug.output("selectedBeanLocation=" + selectedBeanLocation);
+            clearSelection();
+            return;
+        }
 
-    if (Debug.debugging("beanbox")) Debug.output("Exit> unCutSelectedBean");
-  }
+        try {
+            serBean = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(serBean);
+            oos.writeObject(selectedBean);
+        } catch (Exception e) {
+            e.printStackTrace();
+            clearSelection();
+            ;
+            if (Debug.debugging("beanbox"))
+                Debug.output("Exit> copySelectedBean");
+            return;
+        }
 
-  private void clearSelection() {
-    cutBean = null;
-    selectedBean = null;
-    selectedBeanLocation = null;
-    selectedBeanBox = null;
-    selectedBeanLayer = null;
-    serBean = null;
-  }
+        cutBean = selectedBean;
 
-  /**
-   * This method is called when the user chooses to delete
-   * a bean by some means such by by pressing DEL. This method removes the 
-   * selected bean from its beanbox. If no bean is selected 
-   * this method is a no-op.
-   */
-  protected void deleteSelectedBean () {
-    if (Debug.debugging("beanbox")) Debug.output("Enter> deleteSelectedBean");
+        selectedBeanBox.showCut(selectedBean);
 
-    if (selectedBean == null || selectedBeanLocation == null) {
-      if (Debug.debugging("beanbox")) Debug.output("selectedBean="+selectedBean);
-      if (Debug.debugging("beanbox")) Debug.output("selectedBeanLocation="+selectedBeanLocation);
-      return;
+        if (Debug.debugging("beanbox"))
+            Debug.output("Exit> cutSelectedBean");
     }
 
-    selectedBeanBox.removeBean(selectedBean);
-    cutBean = null;
+    /**
+     * This method is called when the user chooses to cancel a cut
+     * operation on a bean by some means such by by pressing ESC. If
+     * no bean was marked for cutting this method is a no-op.
+     */
+    protected void unCutSelectedBean() {
+        if (Debug.debugging("beanbox"))
+            Debug.output("Enter> unCutSelectedBean");
 
-    if (Debug.debugging("beanbox")) Debug.output("Exit> deleteSelectedBean");
-  }
+        if (selectedBean == null || selectedBeanLocation == null) {
+            if (Debug.debugging("beanbox"))
+                Debug.output("selectedBean=" + selectedBean);
+            if (Debug.debugging("beanbox"))
+                Debug.output("selectedBeanLocation=" + selectedBeanLocation);
+            clearSelection();
+            return;
+        }
 
-  /**
-   * The drag operation has terminated 
-   * with a drop on this <code>DropTarget</code>.
-   * This method is responsible for undertaking
-   * the transfer of the data associated with the
-   * gesture. The <code>DropTargetDropEvent</code> 
-   * provides a means to obtain a <code>Transferable</code>
-   * object that represents the data object(s) to 
-   * be transfered.<P>
-   * <P>
-   * @param dtde the <code>DropTargetDropEvent</code> 
-   */
-  public void drop(DropTargetDropEvent dtde) {
-    if (Debug.debugging("beanbox")) Debug.output("Enter> drop");
+        selectedBeanBox.showUnCut(selectedBean);
 
-    dtde.acceptDrop(DnDConstants.ACTION_MOVE);
-    extractTransferData(dtde);
-    extractDropLocation(dtde);
+        clearSelection();
 
-    if (transferData == null || dropLocation == null)
-      return;
+        if (Debug.debugging("beanbox"))
+            Debug.output("Exit> unCutSelectedBean");
+    }
 
-    Component parent = ((DropTarget) dtde.getSource()).getComponent();
+    private void clearSelection() {
+        cutBean = null;
+        selectedBean = null;
+        selectedBeanLocation = null;
+        selectedBeanBox = null;
+        selectedBeanLayer = null;
+        serBean = null;
+    }
 
-    dtde.dropComplete(true);
+    /**
+     * This method is called when the user chooses to delete a bean by
+     * some means such by by pressing DEL. This method removes the
+     * selected bean from its beanbox. If no bean is selected this
+     * method is a no-op.
+     */
+    protected void deleteSelectedBean() {
+        if (Debug.debugging("beanbox"))
+            Debug.output("Enter> deleteSelectedBean");
 
-    showPopUp(parent);
-    if (Debug.debugging("beanbox")) Debug.output("Exit> drop");
-  }
+        if (selectedBean == null || selectedBeanLocation == null) {
+            if (Debug.debugging("beanbox"))
+                Debug.output("selectedBean=" + selectedBean);
+            if (Debug.debugging("beanbox"))
+                Debug.output("selectedBeanLocation=" + selectedBeanLocation);
+            return;
+        }
 
-  private void showPopUp(Component parent) {
-    if (Debug.debugging("beanbox")) Debug.output("Enter> showPopUp");
-    JPopupMenu popup = new JPopupMenu();
-    TitledBorder titledBorder = BorderFactory.createTitledBorder(
-      BorderFactory.createEmptyBorder(), "Available Drop Targets:");
+        selectedBeanBox.removeBean(selectedBean);
+        cutBean = null;
 
-    titledBorder.setTitleColor(Color.gray);
-    popup.setBorder(titledBorder);
+        if (Debug.debugging("beanbox"))
+            Debug.output("Exit> deleteSelectedBean");
+    }
 
-    Border compoundborder = BorderFactory.createCompoundBorder(
-                      BorderFactory.createEtchedBorder(),
-                      BorderFactory.createEmptyBorder(2, 2, 2, 2));
+    /**
+     * The drag operation has terminated with a drop on this
+     * <code>DropTarget</code>. This method is responsible for
+     * undertaking the transfer of the data associated with the
+     * gesture. The <code>DropTargetDropEvent</code> provides a
+     * means to obtain a <code>Transferable</code> object that
+     * represents the data object(s) to be transfered.
+     * <P>
+     * <P>
+     * 
+     * @param dtde the <code>DropTargetDropEvent</code>
+     */
+    public void drop(DropTargetDropEvent dtde) {
+        if (Debug.debugging("beanbox"))
+            Debug.output("Enter> drop");
 
-    Enumeration keys = layers.keys();
-    while (keys.hasMoreElements()) {
-      String layerName = keys.nextElement().toString();
-      Layer omlayer = (Layer) layers.get(layerName);
+        dtde.acceptDrop(DnDConstants.ACTION_MOVE);
+        extractTransferData(dtde);
+        extractDropLocation(dtde);
 
-      if (omlayer.isVisible()) {
-        JMenuItem menuItem = new JMenuItem(layerName);
+        if (transferData == null || dropLocation == null)
+            return;
+
+        Component parent = ((DropTarget) dtde.getSource()).getComponent();
+
+        dtde.dropComplete(true);
+
+        showPopUp(parent);
+        if (Debug.debugging("beanbox"))
+            Debug.output("Exit> drop");
+    }
+
+    private void showPopUp(Component parent) {
+        if (Debug.debugging("beanbox"))
+            Debug.output("Enter> showPopUp");
+        JPopupMenu popup = new JPopupMenu();
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(),
+                "Available Drop Targets:");
+
+        titledBorder.setTitleColor(Color.gray);
+        popup.setBorder(titledBorder);
+
+        Border compoundborder = BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(),
+                BorderFactory.createEmptyBorder(2, 2, 2, 2));
+
+        Enumeration keys = layers.keys();
+        while (keys.hasMoreElements()) {
+            String layerName = keys.nextElement().toString();
+            Layer omlayer = (Layer) layers.get(layerName);
+
+            if (omlayer.isVisible()) {
+                JMenuItem menuItem = new JMenuItem(layerName);
+                menuItem.setHorizontalTextPosition(SwingConstants.CENTER);
+                menuItem.setBorder(compoundborder);
+                menuItem.addActionListener(this);
+                popup.add(menuItem);
+            }
+        }
+
+        popup.addSeparator();
+
+        JMenuItem menuItem = new JMenuItem("CANCEL");
+        menuItem.setForeground(Color.red);
         menuItem.setHorizontalTextPosition(SwingConstants.CENTER);
         menuItem.setBorder(compoundborder);
-        menuItem.addActionListener(this);
+
         popup.add(menuItem);
-      }
+
+        popup.setPreferredSize(new Dimension(150, (popup.getComponentCount() + 1) * 25));
+
+        if (Debug.debugging("beanbox"))
+            Debug.output("showing popup");
+
+        popup.show(parent, dropLocation.x, dropLocation.y);
+        if (Debug.debugging("beanbox"))
+            Debug.output("Exit> showPopUp");
     }
 
-    popup.addSeparator();
+    /**
+     * Displays a
+     * {@link com.bbn.openmap.tools.beanbox.GenericPropertySheet}if
+     * mouse click is on a bean in some layer. In case of overlapping
+     * beans, chooses the first bean found to be under the mouse,
+     * which is usually a bean in the top most visible layer.
+     */
+    public void mouseClicked(MouseEvent evt) {
+        if (Debug.debugging("beanbox"))
+            Debug.output("Enter> mouseClicked");
 
-    JMenuItem menuItem = new JMenuItem("CANCEL");
-    menuItem.setForeground(Color.red);
-    menuItem.setHorizontalTextPosition(SwingConstants.CENTER);
-    menuItem.setBorder(compoundborder);
+        Point srcLocation = evt.getPoint();
 
-    popup.add(menuItem);
+        Enumeration keys = layers.keys();
+        while (keys.hasMoreElements()) {
+            String layerName = keys.nextElement().toString();
+            selectedBeanLayer = (Layer) layers.get(layerName);
+            if (!selectedBeanLayer.isVisible())
+                continue;
+            selectedBeanBox = ((BeanBoxHandler) selectedBeanLayer).getBeanBox();
+            if (selectedBeanBox == null)
+                continue;
+            selectedBean = selectedBeanBox.getBeanAtLocation(srcLocation);
+            if (selectedBean != null) {
+                break;
+            }
+        }
 
-    popup.setPreferredSize(new Dimension(150, 
-      (popup.getComponentCount()+1)*25));
+        if (selectedBean == null) {
+            clearSelection();
+            return;
+        }
 
+        selectedBeanLocation = srcLocation;
 
-    if (Debug.debugging("beanbox")) Debug.output("showing popup");
+        selectedBeanBox.showSelected(selectedBean);
 
-    popup.show(parent, dropLocation.x, dropLocation.y);
-    if (Debug.debugging("beanbox")) Debug.output("Exit> showPopUp");
-  }
+        if (Debug.debugging("beanbox"))
+            Debug.output("selectedBean=" + selectedBean);
 
-  /**
-   * Displays a {@link com.bbn.openmap.tools.beanbox.GenericPropertySheet}
-   * if mouse click is on a bean in some layer. In case of overlapping beans,
-   * chooses the first bean found to be under the mouse, which is usually a bean
-   * in the top most visible layer.
-   */
-  public void mouseClicked(MouseEvent evt) {
-    if (Debug.debugging("beanbox")) Debug.output("Enter> mouseClicked");
+        if (evt.getModifiers() != InputEvent.BUTTON1_MASK) {
+            GenericPropertySheet propertySheet = new GenericPropertySheet(selectedBean, 575, 20, null, selectedBeanBox);
+            propertySheet.setVisible(true);
+        }
 
-    Point srcLocation = evt.getPoint();
-    
-    Enumeration keys = layers.keys();
-    while (keys.hasMoreElements()) {
-      String layerName = keys.nextElement().toString();
-      selectedBeanLayer = (Layer) layers.get(layerName);
-      if (!selectedBeanLayer.isVisible()) 
-        continue;
-      selectedBeanBox = ((BeanBoxHandler)selectedBeanLayer).getBeanBox();
-      if (selectedBeanBox == null)
-        continue;
-      selectedBean = selectedBeanBox.getBeanAtLocation(srcLocation);
-      if (selectedBean != null) {
-        break;
-      }
-    }
-    
-    if (selectedBean == null) {
-      clearSelection();
-      return;
-    }
-
-    selectedBeanLocation = srcLocation;
-
-    selectedBeanBox.showSelected(selectedBean);
-
-    if (Debug.debugging("beanbox")) Debug.output("selectedBean="+selectedBean);
-
-    if (evt.getModifiers() != InputEvent.BUTTON1_MASK) {
-      GenericPropertySheet propertySheet = new GenericPropertySheet
-        (selectedBean, 575, 20, null, selectedBeanBox);
-      propertySheet.setVisible(true);
+        if (Debug.debugging("beanbox"))
+            Debug.output("Exit> mouseClicked");
     }
 
-    if (Debug.debugging("beanbox")) Debug.output("Exit> mouseClicked");
-  }
+    /**
+     * This method is called whenever the user choose a layer to drop
+     * or move a bean to. This method adds the bean to the layer or
+     * moves the beans to or within the selected layer.
+     */
+    public void actionPerformed(ActionEvent evt) {
 
-  /**
-   * This method is called
-   * whenever the user choose a layer to drop or move a bean to. This
-   * method adds the bean to the layer or moves the beans to or within
-   * the selected layer. 
-   */
-  public void actionPerformed(ActionEvent evt) {
+        if (Debug.debugging("beanbox"))
+            Debug.output("Enter> actionPerformed");
+        Object source = evt.getSource();
+        if (!(source instanceof JMenuItem))
+            return;
 
-    if (Debug.debugging("beanbox")) Debug.output("Enter> actionPerformed");
-    Object source = evt.getSource();
-    if (!(source instanceof JMenuItem))
-      return;
+        JMenuItem mi = (JMenuItem) source;
+        String name = mi.getText();
+        Layer targetLayer = (Layer) layers.get(name);
 
-    JMenuItem mi = (JMenuItem)source;
-    String name = mi.getText();
-    Layer targetLayer = (Layer)layers.get(name);
-    
-    if (targetLayer == null) {
-      System.out.println("ERROR> BBDnDC::actionPerformed: " + 
-        "no layer found with name " + name);
-      return;
-    }
+        if (targetLayer == null) {
+            System.out.println("ERROR> BBDnDC::actionPerformed: "
+                    + "no layer found with name " + name);
+            return;
+        }
 
-    BeanBox targetBeanBox = ((BeanBoxHandler)targetLayer).getBeanBox();
+        BeanBox targetBeanBox = ((BeanBoxHandler) targetLayer).getBeanBox();
 
-    Object bean = transferData.get(0);
-    BeanInfo beanInfo = (BeanInfo)transferData.get(1);
-    Boolean wasBeanMoved = (Boolean)transferData.get(2);
-
-    if (wasBeanMoved.booleanValue()) {
-
-      String sourceLayerName = (String)transferData.get(3);
-      if (sourceLayerName.equals(targetLayer.getName())) {
-        targetBeanBox.relocateBean(bean, beanInfo, dropLocation);
-      } else {
-        Layer sourceLayer = (Layer)layers.get(sourceLayerName);
-        BeanBox sourceBeanBox = ((BeanBoxHandler)sourceLayer).getBeanBox();
-        sourceBeanBox.removeBean(bean);
-        Vector object = new Vector();
-        object.add(bean);
-        object.add(beanInfo);
-        object.add(dropLocation);
-        targetBeanBox.addBean(object);
-      }
-    } else {
-      Vector object = new Vector();
-      object.add(bean);
-      object.add(beanInfo);
-      object.add(dropLocation);
-      targetBeanBox.addBean(object);
-    }
-  }
-
-  /**
-   * Asscoiates a DropTarget
-   * with each layer. Also caches all layers that implement
-   * the BeanBoxHandler interface. 
-   */
-  public void setLayers(Layer[] allLayers) {
-    layers.clear();
-    for (int i = 0; i < allLayers.length; i++) {
-      new DropTarget(allLayers[i], DnDConstants.ACTION_MOVE, this);
-      if (allLayers[i] instanceof BeanBoxHandler) {
-        Debug.message("DnDCatcher", "Layers changed");
-        layers.put(allLayers[i].getName(), allLayers[i]);
-      }
-    }
-  }
-
-  /**
-   * Invoked on dragGestureRecognized
-   */
-  public void startDragAction(DragGestureEvent dge, DragSourceListener dsl) {
-    if (Debug.debugging("beanbox")) Debug.output("Enter> startDragAction");
-
-
-    Object selectedBean = null;
-    BeanBox selectedBeanBox = null;
-    Layer selectedLayer = null;
-
-    Point srcLocation = dge.getDragOrigin();
-
-    Enumeration keys = layers.keys();
-    while (keys.hasMoreElements()) {
-      String layerName = keys.nextElement().toString();
-      Layer omLayer = (Layer) layers.get(layerName);
-      BeanBox beanBox = ((BeanBoxHandler)omLayer).getBeanBox();
-      selectedBean = beanBox.getBeanAtLocation(srcLocation);
-      if (selectedBean != null) {
-        selectedBeanBox = beanBox;
-        selectedLayer = omLayer;
-        break;
-      }
-    }
-
-    if (Debug.debugging("beanbox")) Debug.output("selectedBean="+selectedBean);
-    
-    if (selectedBean == null) {
-      if (Debug.debugging("beanbox")) Debug.output("Exit> startDragAction");
-      return;
-    }
-
-    Image dragImage = selectedBeanBox.getDragImage(selectedBean);
-
-    super.setCursor(dragImage, DragSource.DefaultMoveDrop);
-
-    BeanInfo beanInfo = selectedBeanBox.getBeanInfoForBean(
-                          selectedBean.getClass().getName());
-
-    Vector beanTransferData = new Vector();
-    beanTransferData.add(selectedBean);
-    beanTransferData.add(beanInfo);
-    beanTransferData.add(new Boolean(true));
-    beanTransferData.add(selectedLayer.getName());
-
-    dragSource.startDrag(dge, 
-      super.getCursor(DragSource.DefaultMoveDrop), 
-      new DefaultTransferableObject(beanTransferData), dsl);
-
-    if (Debug.debugging("beanbox")) Debug.output("Exit> startDragAction");
-  }
-
-  private void extractTransferData(DropTargetDropEvent dtde) {
-    if (dtde == null) {
-      System.out.println("ERROR> BDnDC::getTransferData(): dropEvent is null");
-      return;
-    }
-
-    Transferable tr = dtde.getTransferable();
-    try {
-      transferData = (Vector)tr.getTransferData(
-                                   DefaultTransferableObject.OBJECT_FLAVOR);
-
-      // cache beanInfos
-      if (transferData.size() >= 2) {
         Object bean = transferData.get(0);
-        BeanInfo beanInfo = (BeanInfo)transferData.get(1);
-        beanInfoMap.put(bean.getClass().getName(), beanInfo);
-      }
+        BeanInfo beanInfo = (BeanInfo) transferData.get(1);
+        Boolean wasBeanMoved = (Boolean) transferData.get(2);
 
-    } catch (Exception e) {
-      e.printStackTrace();
+        if (wasBeanMoved.booleanValue()) {
+
+            String sourceLayerName = (String) transferData.get(3);
+            if (sourceLayerName.equals(targetLayer.getName())) {
+                targetBeanBox.relocateBean(bean, beanInfo, dropLocation);
+            } else {
+                Layer sourceLayer = (Layer) layers.get(sourceLayerName);
+                BeanBox sourceBeanBox = ((BeanBoxHandler) sourceLayer).getBeanBox();
+                sourceBeanBox.removeBean(bean);
+                Vector object = new Vector();
+                object.add(bean);
+                object.add(beanInfo);
+                object.add(dropLocation);
+                targetBeanBox.addBean(object);
+            }
+        } else {
+            Vector object = new Vector();
+            object.add(bean);
+            object.add(beanInfo);
+            object.add(dropLocation);
+            targetBeanBox.addBean(object);
+        }
     }
-  }
 
-  private void extractDropLocation(DropTargetDropEvent dtde) {
-    if (dtde == null) {
-      System.out.println("ERROR> BDnDC::getTransferData(): dropEvent is null");
-      return;
+    /**
+     * Asscoiates a DropTarget with each layer. Also caches all layers
+     * that implement the BeanBoxHandler interface.
+     */
+    public void setLayers(Layer[] allLayers) {
+        layers.clear();
+        for (int i = 0; i < allLayers.length; i++) {
+            new DropTarget(allLayers[i], DnDConstants.ACTION_MOVE, this);
+            if (allLayers[i] instanceof BeanBoxHandler) {
+                Debug.message("DnDCatcher", "Layers changed");
+                layers.put(allLayers[i].getName(), allLayers[i]);
+            }
+        }
     }
 
-    dropLocation = dtde.getLocation();
-  }
+    /**
+     * Invoked on dragGestureRecognized
+     */
+    public void startDragAction(DragGestureEvent dge, DragSourceListener dsl) {
+        if (Debug.debugging("beanbox"))
+            Debug.output("Enter> startDragAction");
 
-  private static void setDefaultIcon() {
-    if (BeanPanel.defaultBeanIcon == null) {
-      URL url = BeanPanel.class.getResource("bluebean.gif");
-      if (url != null)
-        BeanPanel.defaultBeanIcon = new ImageIcon(url);
+        Object selectedBean = null;
+        BeanBox selectedBeanBox = null;
+        Layer selectedLayer = null;
+
+        Point srcLocation = dge.getDragOrigin();
+
+        Enumeration keys = layers.keys();
+        while (keys.hasMoreElements()) {
+            String layerName = keys.nextElement().toString();
+            Layer omLayer = (Layer) layers.get(layerName);
+            BeanBox beanBox = ((BeanBoxHandler) omLayer).getBeanBox();
+            selectedBean = beanBox.getBeanAtLocation(srcLocation);
+            if (selectedBean != null) {
+                selectedBeanBox = beanBox;
+                selectedLayer = omLayer;
+                break;
+            }
+        }
+
+        if (Debug.debugging("beanbox"))
+            Debug.output("selectedBean=" + selectedBean);
+
+        if (selectedBean == null) {
+            if (Debug.debugging("beanbox"))
+                Debug.output("Exit> startDragAction");
+            return;
+        }
+
+        Image dragImage = selectedBeanBox.getDragImage(selectedBean);
+
+        super.setCursor(dragImage, DragSource.DefaultMoveDrop);
+
+        BeanInfo beanInfo = selectedBeanBox.getBeanInfoForBean(selectedBean.getClass()
+                .getName());
+
+        Vector beanTransferData = new Vector();
+        beanTransferData.add(selectedBean);
+        beanTransferData.add(beanInfo);
+        beanTransferData.add(new Boolean(true));
+        beanTransferData.add(selectedLayer.getName());
+
+        dragSource.startDrag(dge,
+                super.getCursor(DragSource.DefaultMoveDrop),
+                new DefaultTransferableObject(beanTransferData),
+                dsl);
+
+        if (Debug.debugging("beanbox"))
+            Debug.output("Exit> startDragAction");
     }
-  }
+
+    private void extractTransferData(DropTargetDropEvent dtde) {
+        if (dtde == null) {
+            System.out.println("ERROR> BDnDC::getTransferData(): dropEvent is null");
+            return;
+        }
+
+        Transferable tr = dtde.getTransferable();
+        try {
+            transferData = (Vector) tr.getTransferData(DefaultTransferableObject.OBJECT_FLAVOR);
+
+            // cache beanInfos
+            if (transferData.size() >= 2) {
+                Object bean = transferData.get(0);
+                BeanInfo beanInfo = (BeanInfo) transferData.get(1);
+                beanInfoMap.put(bean.getClass().getName(), beanInfo);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void extractDropLocation(DropTargetDropEvent dtde) {
+        if (dtde == null) {
+            System.out.println("ERROR> BDnDC::getTransferData(): dropEvent is null");
+            return;
+        }
+
+        dropLocation = dtde.getLocation();
+    }
+
+    private static void setDefaultIcon() {
+        if (BeanPanel.defaultBeanIcon == null) {
+            URL url = BeanPanel.class.getResource("bluebean.gif");
+            if (url != null)
+                BeanPanel.defaultBeanIcon = new ImageIcon(url);
+        }
+    }
 }
 

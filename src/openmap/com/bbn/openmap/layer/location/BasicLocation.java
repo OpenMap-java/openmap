@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,62 +14,64 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/BasicLocation.java,v $
 // $RCSfile: BasicLocation.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
-
 package com.bbn.openmap.layer.location;
 
 /*  OpenMap  */
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMGraphic;
 
-/** 
- * A BasicLocation the standard Location - dot for the marker, text
- * to the right of the dot.  Other graphics can be substituted for the
+/**
+ * A BasicLocation the standard Location - dot for the marker, text to
+ * the right of the dot. Other graphics can be substituted for the
  * dot, but you should modify the setGraphicLocations methods
- * accordingly.  
+ * accordingly.
  */
 public class BasicLocation extends Location {
 
-    /** 
+    /**
      * A plain constructor if you are planning on setting everything
-     * yourself.  
+     * yourself.
      */
-    public BasicLocation(){}
+    public BasicLocation() {}
 
     /**
-     * Create a location at a latitude/longitude.  If the
+     * Create a location at a latitude/longitude. If the
      * locationMarker is null, a small rectangle (dot) will be created
      * to mark the location.
-     *
-     * @param latitude the latitude, in decimal degrees, of the location.
-     * @param longitude the longitude, in decimal degrees, of the location.
+     * 
+     * @param latitude the latitude, in decimal degrees, of the
+     *        location.
+     * @param longitude the longitude, in decimal degrees, of the
+     *        location.
      * @param name the name of the location, also used in the label.
-     * @param locationMarker the OMGraphic to use for the location mark.  
+     * @param locationMarker the OMGraphic to use for the location
+     *        mark.
      */
-    public BasicLocation(float latitude, float longitude, String name, 
-                         OMGraphic locationMarker){
+    public BasicLocation(float latitude, float longitude, String name,
+            OMGraphic locationMarker) {
         super(latitude, longitude, name, locationMarker);
     }
-    
+
     /**
-     * Create a location at a map location.  If the
-     * locationMarker is null, a small rectangle (dot) will be created
-     * to mark the location.
-     *
-     * @param x the pixel location of the object from the let of the map.
-     * @param y the pixel location of the object from the top of the map
+     * Create a location at a map location. If the locationMarker is
+     * null, a small rectangle (dot) will be created to mark the
+     * location.
+     * 
+     * @param x the pixel location of the object from the let of the
+     *        map.
+     * @param y the pixel location of the object from the top of the
+     *        map
      * @param name the name of the location, also used in the label.
-     * @param locationMarker the OMGraphic to use for the location mark.  
+     * @param locationMarker the OMGraphic to use for the location
+     *        mark.
      */
-    public BasicLocation(int x, int y, String name, 
-                         OMGraphic locationMarker){
+    public BasicLocation(int x, int y, String name, OMGraphic locationMarker) {
         super(x, y, name, locationMarker);
     }
 
@@ -77,54 +79,61 @@ public class BasicLocation extends Location {
      * Create a location at a pixel offset from a latitude/longitude.
      * If the locationMarker is null, a small rectangle (dot) will be
      * created to mark the location.
-     *
-     * @param latitude the latitude, in decimal degrees, of the location.
-     * @param longitude the longitude, in decimal degrees, of the location.
-     * @param xOffset the pixel location of the object from the longitude.
-     * @param yOffset the pixel location of the object from the latitude.
+     * 
+     * @param latitude the latitude, in decimal degrees, of the
+     *        location.
+     * @param longitude the longitude, in decimal degrees, of the
+     *        location.
+     * @param xOffset the pixel location of the object from the
+     *        longitude.
+     * @param yOffset the pixel location of the object from the
+     *        latitude.
      * @param name the name of the location, also used in the label.
-     * @param locationMarker the OMGraphic to use for the location mark.
+     * @param locationMarker the OMGraphic to use for the location
+     *        mark.
      */
-    public BasicLocation(float latitude, float longitude,
-                         int xOffset, int yOffset, String name, 
-                         OMGraphic locationMarker){
+    public BasicLocation(float latitude, float longitude, int xOffset,
+            int yOffset, String name, OMGraphic locationMarker) {
         super(latitude, longitude, xOffset, yOffset, name, locationMarker);
     }
 
-    /** 
-     * Called by setLocations().  Assumes the dot for the location
-     * marker, and a text object as the label, stored to the right.  
+    /**
+     * Called by setLocations(). Assumes the dot for the location
+     * marker, and a text object as the label, stored to the right.
      */
-    public void setGraphicLocations(float latitude, float longitude){
-        if (location instanceof OMRect){
-            ((OMRect)location).setLocation(latitude, longitude, -1, -1, 1, 1);
+    public void setGraphicLocations(float latitude, float longitude) {
+        if (location instanceof OMRect) {
+            ((OMRect) location).setLocation(latitude, longitude, -1, -1, 1, 1);
         }
         label.setLat(latitude);
         label.setLon(longitude);
     }
 
-    /** 
-     * Called by setLocations().  Assumes the dot for the location
-     * marker, and a text object as the label, stored to the right.  
+    /**
+     * Called by setLocations(). Assumes the dot for the location
+     * marker, and a text object as the label, stored to the right.
      */
-    public void setGraphicLocations(int x, int y){
-        if (location instanceof OMRect){
-            ((OMRect)location).setLocation(x-1, y-1, x+1, y+1);
+    public void setGraphicLocations(int x, int y) {
+        if (location instanceof OMRect) {
+            ((OMRect) location).setLocation(x - 1, y - 1, x + 1, y + 1);
         }
         label.setX(x);
         label.setY(y);
     }
 
-    /** 
-     * Called by setLocations().  Assumes the dot for the location
-     * marker, and a text object as the label, stored to the right.  
+    /**
+     * Called by setLocations(). Assumes the dot for the location
+     * marker, and a text object as the label, stored to the right.
      */
     public void setGraphicLocations(float latitude, float longitude,
-                                             int offsetX, int offsetY){
-        if (location instanceof OMRect){
-            ((OMRect)location).setLocation(latitude, longitude, 
-                                           offsetX-1, offsetY-1, 
-                                           offsetX+1, offsetY+1);
+                                    int offsetX, int offsetY) {
+        if (location instanceof OMRect) {
+            ((OMRect) location).setLocation(latitude,
+                    longitude,
+                    offsetX - 1,
+                    offsetY - 1,
+                    offsetX + 1,
+                    offsetY + 1);
         }
 
         label.setLat(latitude);

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,35 +14,39 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/TextPropertyEditor.java,v $
 // $RCSfile: TextPropertyEditor.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.util.propertyEditor;
 
-import java.beans.*;
-import javax.swing.*;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.beans.PropertyEditorSupport;
 
-/** 
- * A PropertyEditor that displays a TextField to edit a String. 
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+/**
+ * A PropertyEditor that displays a TextField to edit a String.
  */
-public class TextPropertyEditor extends PropertyEditorSupport
-    implements ActionListener, FocusListener {
-    
+public class TextPropertyEditor extends PropertyEditorSupport implements
+        ActionListener, FocusListener {
+
     /** The GUI component of this editor. */
     JTextField textField = new JTextField(10);
-    
+
     public boolean supportsCustomEditor() {
         return true;
     }
-    
+
     /** Returns the editor GUI, ie a JTextField. */
     public Component getCustomEditor() {
         JPanel jp = new JPanel();
@@ -57,23 +61,26 @@ public class TextPropertyEditor extends PropertyEditorSupport
         c.fill = GridBagConstraints.HORIZONTAL;
         gridbag.setConstraints(textField, c);
         jp.add(textField);
-        
+
         return jp;
     }
-    
+
     public void actionPerformed(ActionEvent e) {
         //System.out.println("value changed");
         firePropertyChange();
     }
 
     public void focusGained(FocusEvent e) {}
-    public void focusLost(FocusEvent e) { firePropertyChange(); }
-    
+
+    public void focusLost(FocusEvent e) {
+        firePropertyChange();
+    }
+
     /** Sets String in JTextField. */
     public void setValue(Object string) {
-        if(!(string instanceof String))
+        if (!(string instanceof String))
             return;
-        textField.setText((String)string);
+        textField.setText((String) string);
     }
 
     /** Returns String from JTextfield. */

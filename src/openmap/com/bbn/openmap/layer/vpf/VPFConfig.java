@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,34 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFConfig.java,v $
 // $RCSfile: VPFConfig.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.8 $
+// $Date: 2004/10/14 18:06:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Properties;
+
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
@@ -61,22 +56,23 @@ import com.bbn.openmap.util.PropUtils;
 /**
  * A component that can look at the VPF configuration files at the top
  * level of the VPF directory structure, and provide an interface for
- * defining an OpenMap VPFLayer for chosen features.<p>
- *
+ * defining an OpenMap VPFLayer for chosen features.
+ * <p>
+ * 
  * If the VPFConfig is provided a LayerHandler, it will have a button
- * that will create a layer with selected features.  If it doesn't
- * have a LayerHandler, it will provide a button to print out the
- * properties for a VPFLayer for the selected features.  This class
- * can be run in stand-alone mode to create properties.
+ * that will create a layer with selected features. If it doesn't have
+ * a LayerHandler, it will provide a button to print out the
+ * properties for a VPFLayer for the selected features. This class can
+ * be run in stand-alone mode to create properties.
  */
 public class VPFConfig extends JPanel implements ActionListener {
 
     private static boolean DEBUG = false;
 
-    //Optionally play with line styles.  Possible values are
+    //Optionally play with line styles. Possible values are
     //"Angled", "Horizontal", and "None" (the default).
     private boolean playWithLineStyle = false;
-    private String lineStyle = "Angled"; 
+    private String lineStyle = "Angled";
     protected boolean showAll = false;
     protected boolean standAlone = false;
 
@@ -122,13 +118,13 @@ public class VPFConfig extends JPanel implements ActionListener {
         this(dataPaths, null, layerName);
     }
 
-    public VPFConfig(String[] dataPaths, LayerHandler layerHandler, 
-                     String layerName) {
+    public VPFConfig(String[] dataPaths, LayerHandler layerHandler,
+            String layerName) {
         this(dataPaths, layerHandler, layerName, false);
     }
 
     protected VPFConfig(String[] dataPaths, LayerHandler layerHandler,
-                        String layerName, boolean standAlone) {
+            String layerName, boolean standAlone) {
 
         this.layerHandler = layerHandler;
         this.standAlone = standAlone;
@@ -148,7 +144,8 @@ public class VPFConfig extends JPanel implements ActionListener {
         try {
             createNodes(top, dataPaths);
         } catch (FormatException fe) {
-            Debug.output("Caught FormatException reading data: " + fe.getMessage());
+            Debug.output("Caught FormatException reading data: "
+                    + fe.getMessage());
             if (standAlone) {
                 System.exit(0);
             }
@@ -166,7 +163,8 @@ public class VPFConfig extends JPanel implements ActionListener {
         try {
             createNodes(top, lb.getLibrarySelectionTable());
         } catch (FormatException fe) {
-            Debug.output("Caught FormatException reading data: " + fe.getMessage());
+            Debug.output("Caught FormatException reading data: "
+                    + fe.getMessage());
         }
 
         init(top);
@@ -181,7 +179,8 @@ public class VPFConfig extends JPanel implements ActionListener {
             try {
                 createNodes(top, layer.lst);
             } catch (FormatException fe) {
-                Debug.output("Caught FormatException reading data: " + fe.getMessage());
+                Debug.output("Caught FormatException reading data: "
+                        + fe.getMessage());
             }
             init(top);
         }
@@ -193,21 +192,21 @@ public class VPFConfig extends JPanel implements ActionListener {
 
         //Create a tree that allows one selection at a time.
         final JTree tree = new JTree(top);
-        tree.getSelectionModel().setSelectionMode
-                (TreeSelectionModel.SINGLE_TREE_SELECTION);
+        tree.getSelectionModel()
+                .setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.setVisibleRowCount(10);
 
         //Listen for when the selection changes.
         tree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
-                DefaultMutableTreeNode node = 
-                    (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
-                if (node == null) return;
+                if (node == null)
+                    return;
 
                 Object nodeInfo = node.getUserObject();
                 if (node.isLeaf() && nodeInfo instanceof FeatureInfo) {
-                    FeatureInfo feature = (FeatureInfo)nodeInfo;
+                    FeatureInfo feature = (FeatureInfo) nodeInfo;
                     currentFeature = node;
                     // enable addToLayer button here.
                     addFeatureButton.setEnabled(true);
@@ -222,7 +221,7 @@ public class VPFConfig extends JPanel implements ActionListener {
             tree.putClientProperty("JTree.lineStyle", lineStyle);
         }
 
-        //Create the scroll pane and add the tree to it. 
+        //Create the scroll pane and add the tree to it.
         GridBagLayout outergridbag = new GridBagLayout();
         GridBagConstraints outerc = new GridBagConstraints();
 
@@ -289,7 +288,7 @@ public class VPFConfig extends JPanel implements ActionListener {
         JScrollPane featureListScrollPane = new JScrollPane(currentFeatureList);
         featureListScrollPane.setPreferredSize(new Dimension(150, 10));
         currentFeatureListPanel.add(featureListScrollPane);
-        
+
         c.gridx = 2;
         c.gridy = 0;
         c.weightx = 1.0;
@@ -303,26 +302,26 @@ public class VPFConfig extends JPanel implements ActionListener {
         GridBagConstraints c2 = new GridBagConstraints();
         JPanel namePanel = new JPanel();
         namePanel.setLayout(gridbag2);
-        
+
         c2.weightx = 0;
         c2.weighty = 0;
         c2.anchor = GridBagConstraints.WEST;
         JLabel nameLabel = new JLabel("Layer Name: ");
         gridbag2.setConstraints(nameLabel, c2);
         namePanel.add(nameLabel);
-        
+
         c2.fill = GridBagConstraints.HORIZONTAL;
         c2.weightx = 1.0;
         c2.weighty = 1.0;
         nameField = new JTextField(layerName);
         gridbag2.setConstraints(nameField, c2);
         namePanel.add(nameField);
-        
+
         outerc.anchor = GridBagConstraints.WEST;
         outerc.weighty = 0;
         outergridbag.setConstraints(namePanel, outerc);
         add(namePanel);
-        
+
         outerc.fill = GridBagConstraints.HORIZONTAL;
         outerc.weighty = .25;
         outerc.anchor = GridBagConstraints.CENTER;
@@ -336,12 +335,10 @@ public class VPFConfig extends JPanel implements ActionListener {
         if (command == AddFeatureCmd) {
 
             if (currentFeature != null) {
-                FeatureInfo feature = 
-                    (FeatureInfo)currentFeature.getUserObject();
-                // Save the current DrawingAttributes 
+                FeatureInfo feature = (FeatureInfo) currentFeature.getUserObject();
+                // Save the current DrawingAttributes
                 // settings for the feature.
-                feature.drawingAttributes = 
-                    (DrawingAttributes)drawingAttributes.clone();
+                feature.drawingAttributes = (DrawingAttributes) drawingAttributes.clone();
                 featureList.add(currentFeature);
 
                 String cfl = currentFeatureList.getText();
@@ -385,8 +382,9 @@ public class VPFConfig extends JPanel implements ActionListener {
             if (layer != null) {
                 propertyPrefix = PropUtils.getScopedPropertyPrefix(layer);
             } else {
-                propertyPrefix = PropUtils.getScopedPropertyPrefix(
-                    name.replace(' ', '_').toLowerCase());
+                propertyPrefix = PropUtils.getScopedPropertyPrefix(name.replace(' ',
+                        '_')
+                        .toLowerCase());
             }
 
             if (layer != null) {
@@ -400,46 +398,51 @@ public class VPFConfig extends JPanel implements ActionListener {
             layerFeatures.clear();
 
             if (standAlone) {
-                layerProperties.put(propertyPrefix + "class", "com.bbn.openmap.layer.vpf.VPFLayer");
+                layerProperties.put(propertyPrefix + "class",
+                        "com.bbn.openmap.layer.vpf.VPFLayer");
             }
 
             layerProperties.put(propertyPrefix + Layer.PrettyNameProperty, name);
             layerProperties.put(propertyPrefix + VPFLayer.pathProperty, paths);
-            layerProperties.put(propertyPrefix + VPFLayer.searchByFeatureProperty, 
-                                new Boolean(searchByFeature).toString());
+            layerProperties.put(propertyPrefix
+                    + VPFLayer.searchByFeatureProperty,
+                    new Boolean(searchByFeature).toString());
 
-            // Now, build up coverageTypeProperty and featureTypesProperty
+            // Now, build up coverageTypeProperty and
+            // featureTypesProperty
             // from the linked list of featureNodes...
             Iterator it = featureList.iterator();
             while (it.hasNext()) {
-                addPropertiesForFeature((DefaultMutableTreeNode)it.next(),
-                                        propertyPrefix, layerProperties);
+                addPropertiesForFeature((DefaultMutableTreeNode) it.next(),
+                        propertyPrefix,
+                        layerProperties);
             }
-            
-            // coverageTypeProperty and featureTypesProperty should 
+
+            // coverageTypeProperty and featureTypesProperty should
             // be built from above iteration, should push them into
             // properties...
             // List the coverages
-            layerProperties.put(propertyPrefix + VPFLayer.coverageTypeProperty, 
-                                stringTogether(layerCoverageTypes.iterator()));
-            // List area/edge/point/text, whatever has been set up 
+            layerProperties.put(propertyPrefix + VPFLayer.coverageTypeProperty,
+                    stringTogether(layerCoverageTypes.iterator()));
+            // List area/edge/point/text, whatever has been set up
             // with the chosen features.
-            layerProperties.put(propertyPrefix + VPFLayer.featureTypesProperty, 
-                                stringTogether(layerFeatureTypes.iterator()));
+            layerProperties.put(propertyPrefix + VPFLayer.featureTypesProperty,
+                    stringTogether(layerFeatureTypes.iterator()));
 
-            // OK, now go through the layerFeature lists for 
+            // OK, now go through the layerFeature lists for
             // area/edge/text/point and add the property listing the
             // features associated with each type.
             Enumeration keys = layerFeatures.keys();
             while (keys.hasMoreElements()) {
                 String key = (String) keys.nextElement();
-                HashSet featureSet = (HashSet)layerFeatures.get(key);
-                layerProperties.put(propertyPrefix + key, 
-                                    stringTogether(featureSet.iterator()));
+                HashSet featureSet = (HashSet) layerFeatures.get(key);
+                layerProperties.put(propertyPrefix + key,
+                        stringTogether(featureSet.iterator()));
             }
 
             if (layer != null) {
-                layer.setConfigSettings(layer.getPropertyPrefix(), layerProperties);
+                layer.setConfigSettings(layer.getPropertyPrefix(),
+                        layerProperties);
             } else if (layerHandler != null) {
                 VPFLayer layer = new VPFLayer();
                 layer.setProperties(propertyPrefix, layerProperties);
@@ -457,19 +460,20 @@ public class VPFConfig extends JPanel implements ActionListener {
         }
     }
 
-    private void addPropertiesForFeature(DefaultMutableTreeNode featureNode, 
+    private void addPropertiesForFeature(DefaultMutableTreeNode featureNode,
                                          String propertyPrefix,
                                          Properties layerProperties) {
-        FeatureInfo feature = (FeatureInfo)featureNode.getUserObject();
-        CoverageInfo coverage = (CoverageInfo)((DefaultMutableTreeNode)featureNode.getParent()).getUserObject();
+        FeatureInfo feature = (FeatureInfo) featureNode.getUserObject();
+        CoverageInfo coverage = (CoverageInfo) ((DefaultMutableTreeNode) featureNode.getParent()).getUserObject();
 
-        // Adding to  coverage list
+        // Adding to coverage list
         layerCoverageTypes.add(coverage.coverageName);
         // Adding area, edge, text, point to list if it doesn't exist.
         layerFeatureTypes.add(feature.featureTypeString);
 
-        // adding feature name to appropriate edge/area/text/point list
-        HashSet featureSet = ((HashSet)layerFeatures.get(feature.featureTypeString));
+        // adding feature name to appropriate edge/area/text/point
+        // list
+        HashSet featureSet = ((HashSet) layerFeatures.get(feature.featureTypeString));
 
         if (featureSet == null) {
             // If it's the first category type for the feature
@@ -478,7 +482,8 @@ public class VPFConfig extends JPanel implements ActionListener {
         }
         // Add feature to feature type list for edge/area/text/point
         featureSet.add(feature.featureName);
-        feature.drawingAttributes.setPropertyPrefix(propertyPrefix + feature.featureName);
+        feature.drawingAttributes.setPropertyPrefix(propertyPrefix
+                + feature.featureName);
         feature.drawingAttributes.getProperties(layerProperties);
     }
 
@@ -486,7 +491,7 @@ public class VPFConfig extends JPanel implements ActionListener {
         Enumeration keys = props.propertyNames();
         System.out.println("######## START Properties ########");
         while (keys.hasMoreElements()) {
-            String key = (String)keys.nextElement();
+            String key = (String) keys.nextElement();
             System.out.println(key + "=" + props.getProperty(key));
         }
         System.out.println("######## END Properties ########");
@@ -497,7 +502,7 @@ public class VPFConfig extends JPanel implements ActionListener {
 
         while (it.hasNext()) {
             String val = (String) it.next();
-            
+
             if (buf == null) {
                 buf = new StringBuffer(val);
             } else {
@@ -522,7 +527,7 @@ public class VPFConfig extends JPanel implements ActionListener {
 
         public FeatureInfo(CoverageTable ct, CoverageTable.FeatureClassRec fcr) {
             record = fcr;
-            
+
             featureTypeString = UNKNOWN;
             if (fcr.type == CoverageTable.TEXT_FEATURETYPE) {
                 featureTypeString = TEXT;
@@ -569,11 +574,12 @@ public class VPFConfig extends JPanel implements ActionListener {
         }
     }
 
-    private boolean addFeatureNodes(DefaultMutableTreeNode coverageNode, CoverageTable ct) {
+    private boolean addFeatureNodes(DefaultMutableTreeNode coverageNode,
+                                    CoverageTable ct) {
         int numFeatures = 0;
         Hashtable info = ct.getFeatureTypeInfo();
         for (Enumeration enum = info.elements(); enum.hasMoreElements();) {
-            CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec)enum.nextElement();
+            CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec) enum.nextElement();
 
             if (fcr.type == CoverageTable.SKIP_FEATURETYPE) {
                 continue;
@@ -585,22 +591,23 @@ public class VPFConfig extends JPanel implements ActionListener {
         return numFeatures > 0;
     }
 
-    private void addCoverageNodes(DefaultMutableTreeNode libraryNode, CoverageAttributeTable cat) {
+    private void addCoverageNodes(DefaultMutableTreeNode libraryNode,
+                                  CoverageAttributeTable cat) {
         String[] coverages = cat.getCoverageNames();
         for (int covi = 0; covi < coverages.length; covi++) {
             String coverage = coverages[covi];
             CoverageInfo covInfo = new CoverageInfo(cat, coverage);
             DefaultMutableTreeNode covNode = new DefaultMutableTreeNode(covInfo);
-            if (showAll || 
-                addFeatureNodes(covNode, cat.getCoverageTable(coverage)) || 
-                !cat.isTiledData()) {
+            if (showAll
+                    || addFeatureNodes(covNode, cat.getCoverageTable(coverage))
+                    || !cat.isTiledData()) {
                 libraryNode.add(covNode);
             }
         }
     }
 
-    private void createNodes(DefaultMutableTreeNode top, LibrarySelectionTable lst) 
-        throws FormatException {
+    private void createNodes(DefaultMutableTreeNode top,
+                             LibrarySelectionTable lst) throws FormatException {
 
         DefaultMutableTreeNode category = null;
 
@@ -614,8 +621,8 @@ public class VPFConfig extends JPanel implements ActionListener {
         }
     }
 
-    private void createNodes(DefaultMutableTreeNode top, String[] dataPaths) 
-        throws FormatException {
+    private void createNodes(DefaultMutableTreeNode top, String[] dataPaths)
+            throws FormatException {
 
         DefaultMutableTreeNode category = null;
 
@@ -626,13 +633,13 @@ public class VPFConfig extends JPanel implements ActionListener {
         }
     }
 
-    public static void createLayer(String[] vpfPaths, LayerHandler layerHandler,
-                                   String layerName) {
+    public static void createLayer(String[] vpfPaths,
+                                   LayerHandler layerHandler, String layerName) {
         launchFrame(new VPFConfig(vpfPaths, layerHandler, layerName), false);
     }
 
-    public static void createLayer(LibraryBean libraryBean, LayerHandler layerHandler,
-                                   String layerName) {
+    public static void createLayer(LibraryBean libraryBean,
+                                   LayerHandler layerHandler, String layerName) {
         launchFrame(new VPFConfig(libraryBean, layerHandler, layerName), false);
     }
 
@@ -642,10 +649,10 @@ public class VPFConfig extends JPanel implements ActionListener {
         frame.getContentPane().add(content);
         if (exitOnClose) {
             frame.addWindowListener(new WindowAdapter() {
-                    public void windowClosing(WindowEvent e) {
-                        System.exit(0);
-                    }
-                });  
+                public void windowClosing(WindowEvent e) {
+                    System.exit(0);
+                }
+            });
         }
 
         frame.pack();

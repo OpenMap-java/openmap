@@ -21,14 +21,14 @@ import java.util.*;
 import com.bbn.openmap.tools.beanbox.BeanLayoutManagerBeanInfo;
 
 /**
- * A BeanInfo for the 
- * {@link com.bbn.openmap.examples.beanbox.WallFormationLayout} bean.
+ * A BeanInfo for the
+ * {@link com.bbn.openmap.examples.beanbox.WallFormationLayout}bean.
  */
 public class WallFormationLayoutBeanInfo extends BeanLayoutManagerBeanInfo {
 
-  protected void localProperties (List propsList) {
-    super.localProperties (propsList);
-    property(propsList, "separationInNM", WallFormationLayout.class);
-    property(propsList, "bearingInDeg", WallFormationLayout.class);
-  }
+    protected void localProperties(List propsList) {
+        super.localProperties(propsList);
+        property(propsList, "separationInNM", WallFormationLayout.class);
+        property(propsList, "bearingInDeg", WallFormationLayout.class);
+    }
 }

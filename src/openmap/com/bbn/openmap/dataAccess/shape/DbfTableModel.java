@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/09/17 18:04:08 $
+// $Revision: 1.8 $
+// $Date: 2004/10/14 18:05:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.dataAccess.shape;
 
@@ -32,7 +31,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.dataAccess.shape.input.*;
 import com.bbn.openmap.dataAccess.shape.output.*;
 import com.bbn.openmap.util.Debug;
@@ -41,33 +39,36 @@ import com.bbn.openmap.util.FileUtils;
 /**
  * An implemention of TableModel that manages tabular data read from a
  * dbf file and enables the user to stored data store herein to be
- * saved to a file conforming to the DBF III file format specification.
- *
+ * saved to a file conforming to the DBF III file format
+ * specification.
+ * 
  * To create a three one column model:
+ * 
  * <pre>
- *   DbfTableModel model = new DbfTableModel(1);
- *
- *   model.setDecimalCount(0, (byte)0);
- *   model.setLength(0, (byte)10);
- *   model.setColumnName(0, "Column1");
- *   model.setType(0, (byte)DbfTableModel.TYPE_CHARACTER);
- *
- *   model.setDecimalCount(1, (byte)0);
- *   model.setLength(1, (byte)10);
- *   model.setColumnName(1, "Column1");
- *   model.setType(1, (byte)DbfTableModel.TYPE_NUMERIC);
- *
- *   model.setDecimalCount(2, (byte)0);
- *   model.setLength(2, (byte)10);
- *   model.setColumnName(2, "Column1");
- *   model.setType(2, (byte)DbfTableModel.TYPE_CHARACTER);
- *
- *   esriLayer.setModel(model);
+ * DbfTableModel model = new DbfTableModel(1);
+ * 
+ * model.setDecimalCount(0, (byte) 0);
+ * model.setLength(0, (byte) 10);
+ * model.setColumnName(0, &quot;Column1&quot;);
+ * model.setType(0, (byte) DbfTableModel.TYPE_CHARACTER);
+ * 
+ * model.setDecimalCount(1, (byte) 0);
+ * model.setLength(1, (byte) 10);
+ * model.setColumnName(1, &quot;Column1&quot;);
+ * model.setType(1, (byte) DbfTableModel.TYPE_NUMERIC);
+ * 
+ * model.setDecimalCount(2, (byte) 0);
+ * model.setLength(2, (byte) 10);
+ * model.setColumnName(2, &quot;Column1&quot;);
+ * model.setType(2, (byte) DbfTableModel.TYPE_CHARACTER);
+ * 
+ * esriLayer.setModel(model);
  * </pre>
- * @author Doug Van Auken 
+ * 
+ * @author Doug Van Auken
  */
-public class DbfTableModel extends AbstractTableModel 
-    implements ShapeConstants, TableModelListener {
+public class DbfTableModel extends AbstractTableModel implements
+        ShapeConstants, TableModelListener {
 
     public static final int TYPE_CHARACTER = 67;
     public static final int TYPE_DATE = 68;
@@ -80,7 +81,7 @@ public class DbfTableModel extends AbstractTableModel
      * careful with this option if you plan on using this file with a
      * shape file - the number of records has to match the number of
      * graphics in a shape file, so if you add or delete, you should
-     * add/delete the graphic in the shape file, too. 
+     * add/delete the graphic in the shape file, too.
      */
     public static final int MODIFY_ROW_MASK = 1 << 0;
     /**
@@ -88,7 +89,7 @@ public class DbfTableModel extends AbstractTableModel
      * attribute table.
      */
     public static final int MODIFY_COLUMN_MASK = 1 << 1;
-    /** 
+    /**
      * Button mask to drop the frame quietly, with the modifications
      * to the table complete.
      */
@@ -101,13 +102,13 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * An array of bytes that contain the character lengths for each
-     * column 
+     * column
      */
     protected int[] _lengths = null;
 
-    /** 
+    /**
      * An array of bytes that contain the number of decimal places for
-     * each column 
+     * each column
      */
     protected byte[] _decimalCounts = null;
 
@@ -120,7 +121,10 @@ public class DbfTableModel extends AbstractTableModel
     /** Class scope reference to a list of data formatted by row */
     protected ArrayList _records = null;
 
-    /** Class scope variable for the number of columns that exist in the model */
+    /**
+     * Class scope variable for the number of columns that exist in
+     * the model
+     */
     protected int _columnCount = -1;
 
     protected boolean writable = false;
@@ -135,6 +139,7 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Creates a blank DbfTableModel
+     * 
      * @param columnCount The number of columns this model will manage
      */
     public DbfTableModel(int columnCount) {
@@ -151,6 +156,7 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Creates a DbfTableModel based on an InputStream
+     * 
      * @param is The dbf file
      */
     public DbfTableModel(DbfInputStream is) {
@@ -166,10 +172,12 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Adds a row of data to the the model
-     * @param columns A collection of columns that comprise the row of data
+     * 
+     * @param columns A collection of columns that comprise the row of
+     *        data
      * @exception An exception is thrown if the number of elements in
-     * the passed in collection does not match the number of columns
-     * in the model 
+     *            the passed in collection does not match the number
+     *            of columns in the model
      */
     public void addRecord(ArrayList columns) {
         if (columns.size() != _columnCount) {
@@ -182,17 +190,18 @@ public class DbfTableModel extends AbstractTableModel
      * Remove the record at the index.
      */
     public ArrayList remove(int index) {
-        return (ArrayList)_records.remove(index);
+        return (ArrayList) _records.remove(index);
     }
 
     public void addBlankRecord() {
         ArrayList record = new ArrayList();
-        
+
         for (int i = 0; i < _columnCount; i++) {
             record.add(getEmptyDefaultForType(getType(i)));
         }
         addRecord(record);
-        if (DEBUG) Debug.output("Adding record: " + record);
+        if (DEBUG)
+            Debug.output("Adding record: " + record);
     }
 
     public Object getEmptyDefaultForType(byte type) {
@@ -207,11 +216,12 @@ public class DbfTableModel extends AbstractTableModel
     }
 
     /**
-     * Retrieves the record array list for the passed record number 
+     * Retrieves the record array list for the passed record number
+     * 
      * @param recordnumber The record number
      * @return An ArrayList for the given record number
      */
-    public Object getRecord(int recordnumber) { 
+    public Object getRecord(int recordnumber) {
         return _records.get(recordnumber);
     }
 
@@ -224,6 +234,7 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Retrieves the column class for the passed in column index
+     * 
      * @param c The column index
      * @return The column class for the given column index
      */
@@ -233,6 +244,7 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Retrieves the number of columns that exist in the model
+     * 
      * @return The number of columns that exist in the model
      */
     public int getColumnCount() {
@@ -240,7 +252,9 @@ public class DbfTableModel extends AbstractTableModel
     }
 
     /**
-     * Retrieves the number of decimal places for the passed in column index
+     * Retrieves the number of decimal places for the passed in column
+     * index
+     * 
      * @param column The column index
      * @return The number of decimal places for the given column index
      */
@@ -250,6 +264,7 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Retrieves the column name for the passed in column index
+     * 
      * @param column The column index
      * @return The column name for the given column index
      */
@@ -259,6 +274,7 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Retrieves the character length for the passed in column index
+     * 
      * @param column The column index
      * @return The charcter length for the given column index
      */
@@ -268,19 +284,20 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Retrieves the number of columns that exist in the model
+     * 
      * @return The number column that exist in the model
      */
     public int getRowCount() {
         if (_records == null) {
             return 0;
-        }
-        else {
+        } else {
             return _records.size();
         }
     }
 
     /**
      * Retrieves the column type for the passed in column index
+     * 
      * @param column The column index
      * @return The column type for the given column index
      */
@@ -290,16 +307,18 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Retrieves a value for a specific column and row index
+     * 
      * @return Object A value for a specific column and row index
      */
     public Object getValueAt(int row, int column) {
-        ArrayList cells = (ArrayList)_records.get(row);
+        ArrayList cells = (ArrayList) _records.get(row);
         Object cell = cells.get(column);
         return cell;
     }
 
     /**
      * Sets the column name for the passed-in field index
+     * 
      * @param column The column index
      * @param name The name to assign for the passed-in column index
      */
@@ -309,8 +328,10 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Sets the decimal count for the passed in field index
+     * 
      * @param column The index to the column
-     * @param decimalCount The number of decimals places to assign to the passed in column
+     * @param decimalCount The number of decimals places to assign to
+     *        the passed in column
      */
     public void setDecimalCount(int column, byte decimalCount) {
         _decimalCounts[column] = decimalCount;
@@ -318,9 +339,10 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Set the character length fro the passed-in field index
+     * 
      * @param column The column index
      * @param length The character length to assign for the passed-in
-     * column index 
+     *        column index
      */
     public void setLength(int column, int length) {
         _lengths[column] = length;
@@ -328,16 +350,17 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Sets the column type for the passed-in field index
+     * 
      * @param column The column index
      * @param type The type of column to assign for the passed-in
-     * column index 
+     *        column index
      */
     public void setType(int column, byte type) {
         _types[column] = type;
     }
 
     public void setValueAt(Object object, int row, int column) {
-        ArrayList columns = (ArrayList)_records.get(row);
+        ArrayList columns = (ArrayList) _records.get(row);
         columns.set(column, object);
     }
 
@@ -375,12 +398,10 @@ public class DbfTableModel extends AbstractTableModel
         JPanel panel = new JPanel();
 
         if (filename != null) {
-            panel.setBorder(
-                BorderFactory.createTitledBorder(
-                    BorderFactory.createEtchedBorder(), filename));
+            panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                    filename));
         } else {
-            panel.setBorder(
-                BorderFactory.createEtchedBorder());
+            panel.setBorder(BorderFactory.createEtchedBorder());
         }
 
         panel.setLayout(new BorderLayout());
@@ -394,83 +415,88 @@ public class DbfTableModel extends AbstractTableModel
         if ((actionMask & MODIFY_ROW_MASK) != 0) {
             JButton addButton = new JButton("Add");
             addButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        addBlankRecord();
-                        fireTableDataChanged();
-                    }
-                });
+                public void actionPerformed(ActionEvent ae) {
+                    addBlankRecord();
+                    fireTableDataChanged();
+                }
+            });
 
             JButton deleteButton = new JButton("Delete");
             deleteButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        int[] index = getTable().getSelectedRows();
+                public void actionPerformed(ActionEvent ae) {
+                    int[] index = getTable().getSelectedRows();
 
-                        if (index.length > 0) {
+                    if (index.length > 0) {
 
-                            // Ask to make sure...
+                        // Ask to make sure...
 
-                            int check = JOptionPane.showConfirmDialog(null, ("Are you sure you want to delete "+(index.length>1?"these rows?":"this row?")), "Confirm Delete", JOptionPane.OK_CANCEL_OPTION);
+                        int check = JOptionPane.showConfirmDialog(null,
+                                ("Are you sure you want to delete " + (index.length > 1 ? "these rows?"
+                                        : "this row?")),
+                                "Confirm Delete",
+                                JOptionPane.OK_CANCEL_OPTION);
 
-                            if (check == JOptionPane.YES_OPTION) {
+                        if (check == JOptionPane.YES_OPTION) {
 
-                                for (int i = index.length - 1; i >= 0; i--) {
-                                    if (DEBUG) Debug.output("Deleting record " + index[i]);
-                                    ArrayList removed = remove(index[i]);
-                                    if (DEBUG) Debug.output("Deleted records: " + removed);
-                                }
-                                fireTableDataChanged();
+                            for (int i = index.length - 1; i >= 0; i--) {
+                                if (DEBUG)
+                                    Debug.output("Deleting record " + index[i]);
+                                ArrayList removed = remove(index[i]);
+                                if (DEBUG)
+                                    Debug.output("Deleted records: " + removed);
                             }
+                            fireTableDataChanged();
                         }
                     }
-                });
+                }
+            });
 
             controlPanel.add(addButton);
             controlPanel.add(deleteButton);
-        } 
+        }
 
         if ((actionMask & MODIFY_COLUMN_MASK) != 0) {
             JButton editTableButton = new JButton("Edit Table Format");
             editTableButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        MetaDbfTableModel mdtm = new MetaDbfTableModel(parent);
-                        mdtm.addTableModelListener(parent);
-                        mdtm.showGUI(filePath.toString());
-                    }
-                });
-            
+                public void actionPerformed(ActionEvent ae) {
+                    MetaDbfTableModel mdtm = new MetaDbfTableModel(parent);
+                    mdtm.addTableModelListener(parent);
+                    mdtm.showGUI(filePath.toString());
+                }
+            });
+
             controlPanel.add(editTableButton);
         }
 
         if ((actionMask & SAVE_MASK) != 0) {
             JButton saveButton = new JButton("Save");
             saveButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        try {
-                            String filePath = FileUtils.getFilePathFromUser("Select DBF file name...");
-                            if (!filePath.endsWith(".dbf")) {
-                                filePath = filePath + ".dbf";
-                            }
-                            if (filePath != null) {
-                                DbfOutputStream dos = 
-                                    new DbfOutputStream(new FileOutputStream(new File(filePath)));
-                                dos.writeModel(parent);
-                                dos.close();
-                            }
-                        } catch (FileNotFoundException fnfe) {
-                        } catch (IOException ioe) {
+                public void actionPerformed(ActionEvent ae) {
+                    try {
+                        String filePath = FileUtils.getFilePathFromUser("Select DBF file name...");
+                        if (!filePath.endsWith(".dbf")) {
+                            filePath = filePath + ".dbf";
                         }
+                        if (filePath != null) {
+                            DbfOutputStream dos = new DbfOutputStream(new FileOutputStream(new File(filePath)));
+                            dos.writeModel(parent);
+                            dos.close();
+                        }
+                    } catch (FileNotFoundException fnfe) {
+                    } catch (IOException ioe) {
                     }
-                });
+                }
+            });
             controlPanel.add(saveButton);
         }
 
         if ((actionMask & DONE_MASK) != 0) {
             JButton doneButton = new JButton("Done");
             doneButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        frame.dispose();
-                    }
-                });
+                public void actionPerformed(ActionEvent ae) {
+                    frame.dispose();
+                }
+            });
             controlPanel.add(doneButton);
         }
 
@@ -490,61 +516,66 @@ public class DbfTableModel extends AbstractTableModel
 
         if (frame == null) {
             frame = new JFrame(filename);
-        
+
             filePath.replace(0, filePath.capacity(), filename);
 
-            frame.getContentPane().add(getGUI(null, actionMask), BorderLayout.CENTER);
-        
+            frame.getContentPane().add(getGUI(null, actionMask),
+                    BorderLayout.CENTER);
+
             frame.setSize(400, 300);
             frame.addWindowListener(new WindowAdapter() {
-                    public void windowClosing(WindowEvent e) {
-                        // need a shutdown event to notify other gui beans and
-                        // then exit.
-                        exitWindowClosed();
-                    }
-                });
+                public void windowClosing(WindowEvent e) {
+                    // need a shutdown event to notify other gui beans
+                    // and
+                    // then exit.
+                    exitWindowClosed();
+                }
+            });
         }
 
         frame.setVisible(true);
     }
 
     public void exitWindowClosed() {
-        if (exitOnClose) {            
+        if (exitOnClose) {
             System.exit(0);
         }
     }
 
     public void tableChanged(TableModelEvent e) {
         dirty = true;
-        if (DEBUG) Debug.output("DbfTableModel sensing change");
+        if (DEBUG)
+            Debug.output("DbfTableModel sensing change");
 
         int row = e.getFirstRow();
         // Of course, the only thing we're listening to here is the
         // MetaDbfTableModel changes, and if we get a HEADER_ROW
         // change it's telling us to modify *OUR* headers, to commit
-        // all the changes that were made to it.  Otherwise, we should
+        // all the changes that were made to it. Otherwise, we should
         // just track the events and make them happen when we get
         // this.
         if (row == TableModelEvent.HEADER_ROW) {
-            commitEvents((DbfTableModel)e.getSource());
+            commitEvents((DbfTableModel) e.getSource());
         }
     }
 
     protected void commitEvents(DbfTableModel model) {
-        
-        if (DEBUG) Debug.output("Committing changes");
+
+        if (DEBUG)
+            Debug.output("Committing changes");
 
         Iterator modelRecords = model.getRecords();
         int index = -1;
 
         while (modelRecords.hasNext()) {
-            ArrayList modelRecord = (ArrayList)modelRecords.next();
+            ArrayList modelRecord = (ArrayList) modelRecords.next();
 
             String modelColumnName = (String) modelRecord.get(0);
             index++;
             if (index < _columnCount) {
                 String columnName = _names[index];
-                if (DEBUG) Debug.output(columnName + ", " + modelColumnName);
+                if (DEBUG)
+                    Debug.output(columnName + ", " + modelColumnName);
                 while (!columnName.equalsIgnoreCase(modelColumnName)) {
                     deleteColumn(index);
                     if (index >= _columnCount) {
@@ -556,13 +587,15 @@ public class DbfTableModel extends AbstractTableModel
 
             } else {
                 // Add Column
-                if (DEBUG) Debug.output("Add column " + modelColumnName);
+                if (DEBUG)
+                    Debug.output("Add column " + modelColumnName);
                 addColumn(modelRecord);
             }
         }
 
         while (++index < _columnCount) {
-            if (DEBUG) Debug.output("Deleting extra column");
+            if (DEBUG)
+                Debug.output("Deleting extra column");
             deleteColumn(index);
         }
 
@@ -583,7 +616,7 @@ public class DbfTableModel extends AbstractTableModel
     protected void deleteColumn(int columnIndex) {
         Iterator rows = getRecords();
         while (rows.hasNext()) {
-            ArrayList row = (ArrayList)rows.next();
+            ArrayList row = (ArrayList) rows.next();
             row.remove(columnIndex);
         }
 
@@ -601,8 +634,8 @@ public class DbfTableModel extends AbstractTableModel
 
         int[] newBytes = new int[current.length - 1];
         System.arraycopy(current, 0, newBytes, 0, index);
-        System.arraycopy(current, index + 1, newBytes, index,
-                         current.length - index - 1);
+        System.arraycopy(current, index + 1, newBytes, index, current.length
+                - index - 1);
         return newBytes;
     }
 
@@ -612,8 +645,8 @@ public class DbfTableModel extends AbstractTableModel
 
         byte[] newBytes = new byte[current.length - 1];
         System.arraycopy(current, 0, newBytes, 0, index);
-        System.arraycopy(current, index + 1, newBytes, index,
-                         current.length - index - 1);
+        System.arraycopy(current, index + 1, newBytes, index, current.length
+                - index - 1);
         return newBytes;
     }
 
@@ -623,8 +656,8 @@ public class DbfTableModel extends AbstractTableModel
 
         String[] newStrings = new String[current.length - 1];
         System.arraycopy(current, 0, newStrings, 0, index);
-        System.arraycopy(current, index + 1, newStrings, index,
-                         current.length - index - 1);
+        System.arraycopy(current, index + 1, newStrings, index, current.length
+                - index - 1);
         return newStrings;
     }
 
@@ -636,16 +669,17 @@ public class DbfTableModel extends AbstractTableModel
 
         Iterator rows = getRecords();
         while (rows.hasNext()) {
-            ArrayList row = (ArrayList)rows.next();
+            ArrayList row = (ArrayList) rows.next();
             row.add("");
         }
 
         _columnCount++;
 
-        _names = add(_names, ((String)recordColumn.get(0)));
-        _types = add(_types, ((Byte)recordColumn.get(1)).byteValue());
-        _lengths = add(_lengths, ((Integer)recordColumn.get(2)).byteValue());
-        _decimalCounts = add(_decimalCounts, ((Integer)recordColumn.get(3)).byteValue());
+        _names = add(_names, ((String) recordColumn.get(0)));
+        _types = add(_types, ((Byte) recordColumn.get(1)).byteValue());
+        _lengths = add(_lengths, ((Integer) recordColumn.get(2)).byteValue());
+        _decimalCounts = add(_decimalCounts,
+                ((Integer) recordColumn.get(3)).byteValue());
     }
 
     /**
@@ -674,7 +708,8 @@ public class DbfTableModel extends AbstractTableModel
     }
 
     public void cleanupChanges() {
-        if (DEBUG) Debug.output("DbfTableModel cleaning up changes.");
+        if (DEBUG)
+            Debug.output("DbfTableModel cleaning up changes.");
         dirty = false;
     }
 
@@ -697,6 +732,7 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Creates a DbfTableModel for a given .dbf file
+     * 
      * @param dbf The url of the file to retrieve.
      * @return The DbfTableModel, null if there is a problem.
      */
@@ -705,19 +741,18 @@ public class DbfTableModel extends AbstractTableModel
         DbfTableModel model = null;
         try {
             InputStream is = dbf.openStream();
-            try{
+            try {
                 model = new DbfTableModel(new DbfInputStream(is));
-            }
-            catch(Exception exception) {
+            } catch (Exception exception) {
                 System.out.println(exception);
             }
             is.close();
-        } catch(Exception exception) {
+        } catch (Exception exception) {
             System.out.println(exception);
         }
         return model;
     }
-    
+
     public static void main(String[] args) {
         Debug.init();
         if (args.length < 1) {
@@ -725,14 +760,16 @@ public class DbfTableModel extends AbstractTableModel
         }
 
         try {
-            
-            URL dbf = com.bbn.openmap.layer.util.LayerUtils.getResourceOrFileOrURL(null, args[0]);
+
+            URL dbf = com.bbn.openmap.layer.util.LayerUtils.getResourceOrFileOrURL(null,
+                    args[0]);
             InputStream is = dbf.openStream();
             DbfInputStream dis = new DbfInputStream(is);
             DbfTableModel dtm = new DbfTableModel(dis);
             dtm.setWritable(true);
             dtm.exitOnClose = true;
-            dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK | SAVE_MASK);
+            dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK
+                    | SAVE_MASK);
             is.close();
         } catch (Exception e) {
             Debug.error(e.getMessage());

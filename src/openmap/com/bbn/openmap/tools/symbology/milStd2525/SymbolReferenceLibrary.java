@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolReferenceLibrary.java,v $
 // $RCSfile: SymbolReferenceLibrary.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:06:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,9 +32,9 @@ import com.bbn.openmap.util.PropUtils;
 
 /**
  * The SymbolReferenceLibrary is a organizational class for creating
- * and managing a SymbolPart tree.  It can handle requests for
- * decoding a Symbol code and providing a SymbolPart for that code,
- * and can fetch ImageIcons for codes and SymbolParts.
+ * and managing a SymbolPart tree. It can handle requests for decoding
+ * a Symbol code and providing a SymbolPart for that code, and can
+ * fetch ImageIcons for codes and SymbolParts.
  */
 public class SymbolReferenceLibrary {
 
@@ -56,15 +56,17 @@ public class SymbolReferenceLibrary {
 
     public Properties getProperties(String propertiesResource) {
         try {
-            URL url = PropUtils.getResourceOrFileOrURL(SymbolReferenceLibrary.class, 
-                                                       propertiesResource);
+            URL url = PropUtils.getResourceOrFileOrURL(SymbolReferenceLibrary.class,
+                    propertiesResource);
             Properties props = new Properties();
             props.load(url.openStream());
             return props;
         } catch (java.net.MalformedURLException murle) {
-            Debug.output("SymbolReferenceLibrary has malformed path to " + propertiesResource);
+            Debug.output("SymbolReferenceLibrary has malformed path to "
+                    + propertiesResource);
         } catch (java.io.IOException ioe) {
-            Debug.output("SymbolReferenceLibrary I/O exception reading " + propertiesResource);
+            Debug.output("SymbolReferenceLibrary I/O exception reading "
+                    + propertiesResource);
         }
         return null;
     }
@@ -101,6 +103,7 @@ public class SymbolReferenceLibrary {
     /**
      * Given a SymbolPart, return what options are available for it.
      * This depends on what scheme the SymbolPart inherits from.
+     * 
      * @param sp The SymbolPart in question.
      * @param co Current settings that may be in use.
      */
@@ -116,7 +119,8 @@ public class SymbolReferenceLibrary {
     }
 
     /**
-     * Return an image for a particular SymbolPart, its options and dimensions.
+     * Return an image for a particular SymbolPart, its options and
+     * dimensions.
      */
     public ImageIcon getIcon(SymbolPart sp, CodeOptions co, Dimension di) {
         return null;

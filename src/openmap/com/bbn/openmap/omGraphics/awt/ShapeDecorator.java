@@ -1,7 +1,6 @@
 package com.bbn.openmap.omGraphics.awt;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
@@ -11,9 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * The ShapeDecorator class : in charge of drawing repeatedly
- * several stored decorations along a path (a polyline or a complex shape)
-  * 
+ * The ShapeDecorator class : in charge of drawing repeatedly several
+ * stored decorations along a path (a polyline or a complex shape)
+ * 
  * @author Eric LEPICIER
  * @version 26 juil. 2002
  */
@@ -36,6 +35,7 @@ public class ShapeDecorator implements Revertable {
 
     /**
      * Returns the decorations.
+     * 
      * @return List the list of decorations
      */
     public List getDecorations() {
@@ -44,6 +44,7 @@ public class ShapeDecorator implements Revertable {
 
     /**
      * Inserts a Decoration.
+     * 
      * @param index the index where to insert the new decoration
      * @param decoration the new decoration
      */
@@ -53,6 +54,7 @@ public class ShapeDecorator implements Revertable {
 
     /**
      * Adds a Decoration at the end of the list.
+     * 
      * @param decoration the new decoration
      */
     public void addDecoration(ShapeDecoration decoration) {
@@ -61,6 +63,7 @@ public class ShapeDecorator implements Revertable {
 
     /**
      * Removes a Decoration.
+     * 
      * @param index the index of the Decoration to be removed
      * @return ShapeDecoration the removed Decoration
      */
@@ -70,6 +73,7 @@ public class ShapeDecorator implements Revertable {
 
     /**
      * Removes a Decoration.
+     * 
      * @param decoration the decoration to remove
      * @return boolean true if it was removed
      */
@@ -79,6 +83,7 @@ public class ShapeDecorator implements Revertable {
 
     /**
      * Reverts all the decorations
+     * 
      * @implements fr.free.lepicier.awt.Revertable#revert()
      */
     public void revert() {
@@ -91,6 +96,7 @@ public class ShapeDecorator implements Revertable {
 
     /**
      * Draws a decorated shape
+     * 
      * @param g the Graphics to use
      * @param s the shape to render
      */
@@ -114,7 +120,7 @@ public class ShapeDecorator implements Revertable {
             point = new Point2D.Double(segCoords[0], segCoords[1]);
 
             switch (segType) {
-            case PathIterator.SEG_MOVETO :
+            case PathIterator.SEG_MOVETO:
                 if (firstPoint == null)
                     firstPoint = point;
 
@@ -126,10 +132,10 @@ public class ShapeDecorator implements Revertable {
                 points.clear();
                 points.add(point);
                 break;
-            case PathIterator.SEG_LINETO :
+            case PathIterator.SEG_LINETO:
                 points.add(point);
                 break;
-            case PathIterator.SEG_CLOSE :
+            case PathIterator.SEG_CLOSE:
                 points.add(firstPoint);
                 break;
             }
@@ -144,6 +150,7 @@ public class ShapeDecorator implements Revertable {
 
     /**
      * Draws a decorated polyline
+     * 
      * @param g the Graphics to use
      * @param xcoords array of x floating coordinates
      * @param ycoords array of y floating coordinates
@@ -157,6 +164,7 @@ public class ShapeDecorator implements Revertable {
 
     /**
      * Draws a decorated polyline
+     * 
      * @param g the Graphics to use
      * @param xcoords array of x integer coordinates
      * @param ycoords array of y integer coordinates
@@ -170,6 +178,7 @@ public class ShapeDecorator implements Revertable {
 
     /**
      * Draws a decorated polyline
+     * 
      * @param g the Graphics to use
      * @param points array of points
      */
@@ -181,15 +190,15 @@ public class ShapeDecorator implements Revertable {
     }
 
     /**
-     * Draws a decorated polyline
-     * Calls ShapeDecoration.draw(...) for each decoration on an subsetted
-     * polyline with the same length than the decoration, cycling until all
-     * the path is consumed.
+     * Draws a decorated polyline Calls ShapeDecoration.draw(...) for
+     * each decoration on an subsetted polyline with the same length
+     * than the decoration, cycling until all the path is consumed.
+     * 
      * @param g the Graphics to use
      * @param points array of points (instances of Point2D)
      */
     protected void draw(Graphics g, LinkedList points) {
-                
+
         if (decorations.size() == 0)
             throw new NullPointerException("No decorations");
 
@@ -201,10 +210,14 @@ public class ShapeDecorator implements Revertable {
             if (!decorationIterator.hasNext())
                 decorationIterator = decorations.listIterator();
             ShapeDecoration decor = (ShapeDecoration) decorationIterator.next();
-                
-            boolean complete = LineUtil.retrievePoints(decor.getLength(), points, polysegment);
+
+            boolean complete = LineUtil.retrievePoints(decor.getLength(),
+                    points,
+                    polysegment);
             // drawing is delegated to the decoration
-            decor.draw(g, (Point2D[]) polysegment.toArray(point2DArrayType), complete);
+            decor.draw(g,
+                    (Point2D[]) polysegment.toArray(point2DArrayType),
+                    complete);
         }
     }
 

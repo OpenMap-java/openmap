@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/AssertionException.java,v $
 // $RCSfile: AssertionException.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,9 +24,9 @@ package com.bbn.openmap.util;
 
 /**
  * Signals that an assertion has failed.
- *
+ * 
  * @author unascribed
- * @version $Revision: 1.2 $, $Date: 2004/01/26 18:18:15 $
+ * @version $Revision: 1.3 $, $Date: 2004/10/14 18:06:29 $
  * @see Assert
  */
 public class AssertionException extends RuntimeException {
@@ -34,17 +34,17 @@ public class AssertionException extends RuntimeException {
     /**
      * Constructs a default <code>AssertionException</code>.
      */
-    public AssertionException () {
+    public AssertionException() {
         this("");
     }
 
     /**
      * Constructs an <code>AssertionException</code> with the
      * specified detail message.
-     *
+     * 
      * @param s the detail message
      */
-    public AssertionException (String s) {
+    public AssertionException(String s) {
         super(s);
     }
 }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,32 +14,28 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageMaster.java,v $
 // $RCSfile: ImageMaster.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.image;
 
 import java.awt.*;
-import java.awt.image.*;
 import java.util.*;
 import java.net.*;
 import java.io.*;
 
 import com.bbn.openmap.*;
 import com.bbn.openmap.proj.*;
-import com.bbn.openmap.event.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
-
-/** 
+/**
  * The ImageMaster is an organizer for running the ImageServer to
- * create one or more images.  It relies on a properties file, which sets
- * up a series of entries for an ImageServer.  Each entry has
+ * create one or more images. It relies on a properties file, which
+ * sets up a series of entries for an ImageServer. Each entry has
  * parameters for setting up a projection for an image, a parameters
  * for a URL for the ImageServer to use to set up the layers for an
  * image, and a parameter to set the name and path of the output image
@@ -53,22 +49,24 @@ public class ImageMaster {
 
     /** Property for space separated image servers to be created. */
     public static final String ImageServersProperty = "servers";
-    /** Property for the properties file holding property for a
-     *  particular image. */
+    /**
+     * Property for the properties file holding property for a
+     * particular image.
+     */
     public static final String ServerPropertiesProperty = "properties";
     /** Property for an image's projection type. */
     public static final String ImageProjectionProperty = "imageProjection";
-    /** Property for an image's projection center latitude.*/
+    /** Property for an image's projection center latitude. */
     public static final String ImageLatitudeProperty = "imageLatitude";
     /** Property for an image's projection center longitude. */
     public static final String ImageLongitudeProperty = "imageLongitude";
-    /** Property for an image's projection scale.*/
+    /** Property for an image's projection scale. */
     public static final String ImageScaleProperty = "imageScale";
-    /** Property for an image's height.*/
+    /** Property for an image's height. */
     public static final String ImageHeightProperty = "imageHeight";
-    /** Property for an image's width.*/
+    /** Property for an image's width. */
     public static final String ImageWidthProperty = "imageWidth";
-    /** Property for the image's background color.*/
+    /** Property for the image's background color. */
     public static final String ImageBackgroundColorProperty = "imageBackgroundColor";
     /** Property for an image's output name. */
     public static final String ImageNameProperty = "outputName";
@@ -80,8 +78,10 @@ public class ImageMaster {
     public static final String OutputLogFileProperty = "outputLogFile";
     /** Property for an error log file. */
     public static final String ErrorLogFileProperty = "errorLogFile";
-    /** Hashtable of instantiated layers across servers, to reduce
-     *  duplication of same layers. */
+    /**
+     * Hashtable of instantiated layers across servers, to reduce
+     * duplication of same layers.
+     */
     protected Hashtable instantiatedLayers = new Hashtable();
 
     ImageMasterHelper[] helpers;
@@ -106,9 +106,9 @@ public class ImageMaster {
     }
 
     /**
-     * Loads properties from a java resource.  This will load the
-     * named resource identifier into the given properties instance.
-     *
+     * Loads properties from a java resource. This will load the named
+     * resource identifier into the given properties instance.
+     * 
      * @param props the Properties instance to receive the properties
      * @param resourceName the name of the resource to load
      * @return true if all's well.
@@ -120,8 +120,7 @@ public class ImageMaster {
 
         if (propsIn == null) {
             if (Debug.debugging("imagemaster")) {
-                Debug.error("Unable to locate resources: "
-                            + resourceName);
+                Debug.error("Unable to locate resources: " + resourceName);
             }
             return false;
         } else {
@@ -130,38 +129,38 @@ public class ImageMaster {
                 return true;
             } catch (java.io.IOException e) {
                 Debug.error("ImageMaster: Caught IOException loading resources: "
-                            + resourceName);
+                        + resourceName);
                 return false;
-            }           
+            }
         }
     }
 
     /**
-     * Loads properties from a java resource.  This will load the
-     * named resource identifier into the given properties instance.
-     *
+     * Loads properties from a java resource. This will load the named
+     * resource identifier into the given properties instance.
+     * 
      * @param props the Properties instance to receive the properties
      * @param url the url to load
      * @return true if all's well.
      */
-    public boolean loadProperties(Properties props,  URL url) {
+    public boolean loadProperties(Properties props, URL url) {
         try {
             InputStream propsIn = url.openStream();
             props.load(propsIn);
             return true;
         } catch (java.io.IOException e) {
-            Debug.error("ImageMaster: Caught IOException loading resources: " + 
-                        url);
+            Debug.error("ImageMaster: Caught IOException loading resources: "
+                    + url);
             return false;
-        }               
+        }
     }
 
     /**
      * Load the named file from the named directory into the given
-     * <code>Properties</code> instance.  If the file is not found
-     * a warning is issued.  If an IOException occurs, a fatal error
-     * is printed and the application will exit.
-     *
+     * <code>Properties</code> instance. If the file is not found a
+     * warning is issued. If an IOException occurs, a fatal error is
+     * printed and the application will exit.
+     * 
      * @param file the name of the file
      * @return true if all's well.
      */
@@ -172,15 +171,19 @@ public class ImageMaster {
             props.load(propsStream);
             return true;
         } catch (java.io.FileNotFoundException e) {
-            Debug.error("ImageMaster.loadProperties(): Unable to read configuration file \"" +  propsFile + "\"");
+            Debug.error("ImageMaster.loadProperties(): Unable to read configuration file \""
+                    + propsFile + "\"");
         } catch (java.io.IOException e) {
-            Debug.error("ImageMaster.loadProperties(): Caught IO Exception reading configuration file \"" + propsFile + "\" \n" + e);
+            Debug.error("ImageMaster.loadProperties(): Caught IO Exception reading configuration file \""
+                    + propsFile + "\" \n" + e);
         }
         return false;
     }
 
-    /** Set the properties for the ImageMaster, which also gets all
-     *  the ImageMasterHelpers created. */
+    /**
+     * Set the properties for the ImageMaster, which also gets all the
+     * ImageMasterHelpers created.
+     */
     public void setProperties(Properties properties) {
         helpers = setImageServers(properties);
     }
@@ -190,12 +193,12 @@ public class ImageMaster {
         doNext();
     }
 
-    /** 
+    /**
      * This causes the ImageMaster to look through the list of
      * ImageMasterHelpers and launch the next one that hasn't been
-     * completed.  It will cause the program to exit if there is
-     * nothing more to do. 
-     */    
+     * completed. It will cause the program to exit if there is
+     * nothing more to do.
+     */
     protected void doNext() {
         for (int i = 0; i < helpers.length; i++) {
             if (!helpers[i].complete) {
@@ -208,54 +211,51 @@ public class ImageMaster {
 
     /**
      * Creates the ImageMasterHelper array from an ImageMaster
-     * properties object.  After this method is called, call run() to
+     * properties object. After this method is called, call run() to
      * start the servers on their creative ways.
-     *
+     * 
      * @param properties the ImageMaster properties.
-     * @return ImageMasterHelper array. 
+     * @return ImageMasterHelper array.
      */
     public ImageMasterHelper[] setImageServers(Properties properties) {
 
         String serversValue = properties.getProperty(ImageServersProperty);
 
         if (Debug.debugging("imagemaster")) {
-            Debug.output("ImageMaster.setImageServers(): servers = \"" + 
-                         serversValue + "\"");
+            Debug.output("ImageMaster.setImageServers(): servers = \""
+                    + serversValue + "\"");
         }
-        
+
         if (serversValue == null) {
-            Debug.error("ImageMaster.setImageServers(): No property \"" + 
-                        ImageServersProperty
-                        + "\" found in application properties.");
+            Debug.error("ImageMaster.setImageServers(): No property \""
+                    + ImageServersProperty
+                    + "\" found in application properties.");
             return new ImageMasterHelper[0];
         }
 
         // Divide up the names ...
         StringTokenizer tokens = new StringTokenizer(serversValue, " ");
         Vector serverNames = new Vector();
-        while(tokens.hasMoreTokens()) {
+        while (tokens.hasMoreTokens()) {
             serverNames.addElement(tokens.nextToken());
         }
 
         if (Debug.debugging("imagemaster")) {
-            Debug.output("ImageMaster.setImageServers(): "+ 
-                         serverNames);
+            Debug.output("ImageMaster.setImageServers(): " + serverNames);
         }
 
         int nServerNames = serverNames.size();
-        ImageMasterHelper[] masterHelpers = 
-            new ImageMasterHelper[nServerNames];
+        ImageMasterHelper[] masterHelpers = new ImageMasterHelper[nServerNames];
 
         for (int i = 0; i < nServerNames; i++) {
-            String serverName = (String)serverNames.elementAt(i);
-            masterHelpers[i] = new ImageMasterHelper(serverName,
-                                                     properties, this);
+            String serverName = (String) serverNames.elementAt(i);
+            masterHelpers[i] = new ImageMasterHelper(serverName, properties, this);
 
         }
         return masterHelpers;
     }
 
-    /** 
+    /**
      * Start up and go.
      */
     public static void main(String[] args) {
@@ -281,7 +281,7 @@ public class ImageMaster {
                 printHelp();
             }
         }
-        
+
         if (master != null) {
             master.run();
         } else {
@@ -289,9 +289,9 @@ public class ImageMaster {
         }
     }
 
-    /** 
-     * <b>printHelp</b> should print a usage statement which reflects the
-     * command line needs of the ImageServer. 
+    /**
+     * <b>printHelp </b> should print a usage statement which reflects
+     * the command line needs of the ImageServer.
      */
     public static void printHelp() {
         Debug.output("");
@@ -301,7 +301,7 @@ public class ImageMaster {
         Debug.output("     -masterprops prints out an example of a ImageMaster properties file.");
         Debug.output("     -serverprops prints out an example of a ImageServer properties file.");
         Debug.output("");
-        
+
         System.exit(1);
     }
 
@@ -365,7 +365,6 @@ public class ImageMaster {
         Debug.output("");
     }
 
-
     /**
      * The ImageMasterHelper contains an ImageServer, and acts like
      * the ImageReceiver to create the Image file when the bits are
@@ -381,26 +380,36 @@ public class ImageMaster {
         public String errorLogFileName;
         public int scaleToWidth = -1;
         public int scaleToHeight = -1;
-        
 
-        public ImageMasterHelper(String prefix, Properties props, 
-                                 ImageMaster master) {
+        public ImageMasterHelper(String prefix, Properties props,
+                ImageMaster master) {
 
             String propPrefix = prefix + ".";
 
-            float scale = PropUtils.floatFromProperties(props, propPrefix + ImageScaleProperty, 20000000f);
-            int height = PropUtils.intFromProperties(props, propPrefix + ImageHeightProperty, 480);
-            int width = PropUtils.intFromProperties(props, propPrefix + ImageWidthProperty, 640);
-            float longitude = PropUtils.floatFromProperties(props,  propPrefix + ImageLongitudeProperty, -71f);
-            float latitude = PropUtils.floatFromProperties(props, propPrefix + ImageLatitudeProperty, 42f);
-            String projType = props.getProperty(propPrefix + ImageProjectionProperty);
-            String uniquePropsURL = props.getProperty(propPrefix + ServerPropertiesProperty);
-            scaleToWidth = PropUtils.intFromProperties(props, propPrefix + ScaleToWidthProperty, -1);
-            scaleToHeight = PropUtils.intFromProperties(props, propPrefix + ScaleToHeightProperty, -1);
+            float scale = PropUtils.floatFromProperties(props, propPrefix
+                    + ImageScaleProperty, 20000000f);
+            int height = PropUtils.intFromProperties(props, propPrefix
+                    + ImageHeightProperty, 480);
+            int width = PropUtils.intFromProperties(props, propPrefix
+                    + ImageWidthProperty, 640);
+            float longitude = PropUtils.floatFromProperties(props, propPrefix
+                    + ImageLongitudeProperty, -71f);
+            float latitude = PropUtils.floatFromProperties(props, propPrefix
+                    + ImageLatitudeProperty, 42f);
+            String projType = props.getProperty(propPrefix
+                    + ImageProjectionProperty);
+            String uniquePropsURL = props.getProperty(propPrefix
+                    + ServerPropertiesProperty);
+            scaleToWidth = PropUtils.intFromProperties(props, propPrefix
+                    + ScaleToWidthProperty, -1);
+            scaleToHeight = PropUtils.intFromProperties(props, propPrefix
+                    + ScaleToHeightProperty, -1);
 
             outputFileName = props.getProperty(propPrefix + ImageNameProperty);
-            outputLogFileName = props.getProperty(propPrefix + OutputLogFileProperty);
-            errorLogFileName = props.getProperty(propPrefix + ErrorLogFileProperty);
+            outputLogFileName = props.getProperty(propPrefix
+                    + OutputLogFileProperty);
+            errorLogFileName = props.getProperty(propPrefix
+                    + ErrorLogFileProperty);
 
             if (outputLogFileName != null && errorLogFileName != null) {
                 if (outputLogFileName.equalsIgnoreCase(errorLogFileName)) {
@@ -418,14 +427,22 @@ public class ImageMaster {
                 }
             }
 
-            if (projType == null) {
-                projType = "mercator";
+            Class projClass = ProjectionFactory.getProjClassForName(projType);
+            if (projClass == null) {
+                projClass = Mercator.class;
             }
 
-            proj = (Proj)ProjectionFactory.makeProjection (ProjectionFactory.getProjType(projType), latitude, longitude, scale, width, height);
+            proj = (Proj) ProjectionFactory.makeProjection(projClass,
+                    latitude,
+                    longitude,
+                    scale,
+                    width,
+                    height);
 
             // Set the background color of the map
-            Color background = (Color)PropUtils.parseColorFromProperties(props, propPrefix + ImageBackgroundColorProperty, MapBean.DEFAULT_BACKGROUND_COLOR);
+            Color background = (Color) PropUtils.parseColorFromProperties(props,
+                    propPrefix + ImageBackgroundColorProperty,
+                    MapBean.DEFAULT_BACKGROUND_COLOR);
 
             iMaster = master;
 
@@ -439,7 +456,8 @@ public class ImageMaster {
                 try {
                     loadProperties(uniqueProps, new URL(uniquePropsURL));
                 } catch (MalformedURLException mue) {
-                    Debug.error("ImageMaster: Malformed URL for server properties: " + uniquePropsURL);
+                    Debug.error("ImageMaster: Malformed URL for server properties: "
+                            + uniquePropsURL);
                     uniqueProps = null;
                 }
             } else {
@@ -447,8 +465,7 @@ public class ImageMaster {
             }
 
             if (uniqueProps != null && outputFileName != null) {
-                iServer = new ImageServer(propPrefix, uniqueProps, 
-                                          instantiatedLayers);
+                iServer = new ImageServer(propPrefix, uniqueProps, instantiatedLayers);
                 iServer.setBackground(background);
             }
         }
@@ -457,12 +474,15 @@ public class ImageMaster {
          * Start the ImageServer on it's creative journey.
          */
         public void create() {
-            receiveImageData(iServer.createImage(proj, scaleToWidth, scaleToHeight));
+            receiveImageData(iServer.createImage(proj,
+                    scaleToWidth,
+                    scaleToHeight));
         }
-        
+
         /**
-         * Receive the bytes from a image. ImageReceiver interface function.
-         *
+         * Receive the bytes from a image. ImageReceiver interface
+         * function.
+         * 
          * @param imageBytes the formatted image..
          */
         public void receiveImageData(byte[] imageBytes) {
@@ -470,23 +490,25 @@ public class ImageMaster {
             complete = true;
             iMaster.doNext();
         }
-        
-        /** 
+
+        /**
          * Write the image to a file.
          * 
          * @param fileName the file name to write the image into.
          * @param imageData the image data to put in the file.
-         * */
+         */
         public void writeDataFile(String fileName, byte[] imageData) {
             try {
-                Debug.message("imagemaster","ImageMasterHelper: Writing image file " + fileName);
-                
+                Debug.message("imagemaster",
+                        "ImageMasterHelper: Writing image file " + fileName);
+
                 FileOutputStream binFile = new FileOutputStream(fileName);
                 binFile.write(imageData);
                 binFile.close();
-                
+
             } catch (IOException ioe) {
-                Debug.error("ImageMasterHelper: Error writing image file " + fileName);
+                Debug.error("ImageMasterHelper: Error writing image file "
+                        + fileName);
             }
         }
     }

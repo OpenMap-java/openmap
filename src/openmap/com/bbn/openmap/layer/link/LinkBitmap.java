@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,22 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkBitmap.java,v $
 // $RCSfile: LinkBitmap.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.link;
 
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.omGraphics.OMBitmap;
-import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
-import java.awt.BasicStroke;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -37,11 +34,12 @@ import java.io.IOException;
 /**
  * Reading and writing the Link protocol version of a bitmap..
  */
-public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants {
+public class LinkBitmap implements LinkGraphicConstants,
+        LinkPropertiesConstants {
 
     /**
-     * Lat/Lon placement.  
-     *
+     * Lat/Lon placement.
+     * 
      * @param lt latitude of the top of the image.
      * @param ln longitude of the left side of the image.
      * @param w width of the image, in pixels.
@@ -51,12 +49,10 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
      * @param dos DataOutputStream.
      * @throws IOException
      */
-    public static void write(float lt, float ln, int w, int h, 
-                             byte[] bytes, 
-                             LinkProperties properties,
-                             DataOutputStream dos)
-        throws IOException {
-        
+    public static void write(float lt, float ln, int w, int h, byte[] bytes,
+                             LinkProperties properties, DataOutputStream dos)
+            throws IOException {
+
         dos.write(Link.BITMAP_HEADER.getBytes());
         dos.writeInt(GRAPHICTYPE_BITMAP);
         dos.writeInt(RENDERTYPE_LATLON);
@@ -64,16 +60,16 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
         dos.writeFloat(ln);
         dos.writeInt(w);
         dos.writeInt(h);
-        
-        dos.writeInt(bytes.length); 
-        dos.write(bytes,0,bytes.length);
+
+        dos.writeInt(bytes.length);
+        dos.write(bytes, 0, bytes.length);
 
         properties.write(dos);
     }
-  
+
     /**
-     * XY placement. 
-     *
+     * XY placement.
+     * 
      * @param x1 window location of the left side of the image.
      * @param y1 window location of the top of the image.
      * @param w width of the image, in pixels.
@@ -83,10 +79,9 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
      * @param dos DataOutputStream.
      * @throws IOException
      */
-    public static void write(int x1, int y1, int w, int h, byte[] bytes, 
-                             LinkProperties properties,
-                             DataOutputStream dos)
-        throws IOException {
+    public static void write(int x1, int y1, int w, int h, byte[] bytes,
+                             LinkProperties properties, DataOutputStream dos)
+            throws IOException {
 
         dos.write(Link.BITMAP_HEADER.getBytes());
         dos.writeInt(GRAPHICTYPE_BITMAP);
@@ -95,18 +90,19 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
         dos.writeInt(y1);
         dos.writeInt(w);
         dos.writeInt(h);
-        
+
         dos.writeInt(bytes.length);
-        dos.write(bytes,0,bytes.length);
-        
+        dos.write(bytes, 0, bytes.length);
+
         properties.write(dos);
     }
 
     /**
      * Lat/lon placement with XY offset.
-     *
+     * 
      * @param lt latitude of the top of the image, before the offset.
-     * @param ln longitude of the left side of the image, before the offset.
+     * @param ln longitude of the left side of the image, before the
+     *        offset.
      * @param offset_x1 number of pixels to move image to the right.
      * @param offset_y1 number of pixels to move image down.
      * @param w width of the image, in pixels.
@@ -118,9 +114,8 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
      */
     public static void write(float lt, float ln, int offset_x1, int offset_y1,
                              int w, int h, byte[] bytes,
-                             LinkProperties properties,
-                             DataOutputStream dos)
-        throws IOException {
+                             LinkProperties properties, DataOutputStream dos)
+            throws IOException {
 
         dos.write(Link.BITMAP_HEADER.getBytes());
         dos.writeInt(GRAPHICTYPE_BITMAP);
@@ -131,9 +126,9 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
         dos.writeInt(offset_y1);
         dos.writeInt(w);
         dos.writeInt(h);
-        
-        dos.writeInt(bytes.length);     
-        dos.write(bytes,0,bytes.length);
+
+        dos.writeInt(bytes.length);
+        dos.write(bytes, 0, bytes.length);
 
         properties.write(dos);
     }
@@ -142,40 +137,51 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
      * Write a bitmap to the link.
      */
     public static void write(OMBitmap bitmap, Link link, LinkProperties props)
-        throws IOException {
+            throws IOException {
 
         switch (bitmap.getRenderType()) {
         case OMBitmap.RENDERTYPE_LATLON:
-            LinkBitmap.write(bitmap.getLat(), bitmap.getLon(),
-                             bitmap.getWidth(), bitmap.getHeight(),
-                             bitmap.getBits(), props, link.dos);
+            LinkBitmap.write(bitmap.getLat(),
+                    bitmap.getLon(),
+                    bitmap.getWidth(),
+                    bitmap.getHeight(),
+                    bitmap.getBits(),
+                    props,
+                    link.dos);
             break;
         case OMBitmap.RENDERTYPE_XY:
-            LinkBitmap.write(bitmap.getX(), bitmap.getY(),
-                             bitmap.getWidth(), bitmap.getHeight(),
-                             bitmap.getBits(), props, link.dos);
+            LinkBitmap.write(bitmap.getX(),
+                    bitmap.getY(),
+                    bitmap.getWidth(),
+                    bitmap.getHeight(),
+                    bitmap.getBits(),
+                    props,
+                    link.dos);
             break;
         case OMBitmap.RENDERTYPE_OFFSET:
-            LinkBitmap.write(bitmap.getLat(), bitmap.getLon(),
-                             bitmap.getX(), bitmap.getY(),
-                             bitmap.getBits(), props, link.dos);
+            LinkBitmap.write(bitmap.getLat(),
+                    bitmap.getLon(),
+                    bitmap.getX(),
+                    bitmap.getY(),
+                    bitmap.getBits(),
+                    props,
+                    link.dos);
             break;
         default:
             Debug.error("LinkBitmap.write: bitmap rendertype not handled.");
         }
     }
 
-    /** 
-     * Read a Bitmap off a DataInputStream.  Assumes the Bitmap
-     * header has already been read.
-     *
+    /**
+     * Read a Bitmap off a DataInputStream. Assumes the Bitmap header
+     * has already been read.
+     * 
      * @param dis DataInputStream to read from.
      * @return OMBitmap
      * @throws IOException
-     * @see com.bbn.openmap.omGraphics.OMBitmap 
+     * @see com.bbn.openmap.omGraphics.OMBitmap
      */
-    public static OMBitmap read(DataInputStream dis)
-        throws IOException {
+    public static OMBitmap read(DataInputStream dis) throws IOException {
 
         OMBitmap bitmap = null;
         float lat = 0;
@@ -188,12 +194,12 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
         String url;
 
         int renderType = dis.readInt();
-        
+
         switch (renderType) {
         case RENDERTYPE_OFFSET:
             lat = dis.readFloat();
             lon = dis.readFloat();
-            // Fall through...          
+        // Fall through...
         case RENDERTYPE_XY:
             x = dis.readInt();
             y = dis.readInt();
@@ -203,14 +209,14 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
             lat = dis.readFloat();
             lon = dis.readFloat();
         }
-        
+
         w = dis.readInt();
         h = dis.readInt();
         length = dis.readInt();
-        
+
         byte[] bytes = new byte[length];
         dis.readFully(bytes);
-        
+
         switch (renderType) {
         case RENDERTYPE_OFFSET:
             bitmap = new OMBitmap(lat, lon, x, y, w, h, bytes);
@@ -222,11 +228,13 @@ public class LinkBitmap implements LinkGraphicConstants, LinkPropertiesConstants
         default:
             bitmap = new OMBitmap(lat, lon, w, h, bytes);
         }
-        
+
         LinkProperties properties = new LinkProperties(dis);
         if (bitmap != null) {
             properties.setProperties(bitmap);
-            bitmap.setRotationAngle((double) ProjMath.degToRad(PropUtils.floatFromProperties(properties, LPC_LINKROTATION, 0.0f)));
+            bitmap.setRotationAngle((double) ProjMath.degToRad(PropUtils.floatFromProperties(properties,
+                    LPC_LINKROTATION,
+                    0.0f)));
         }
 
         return bitmap;

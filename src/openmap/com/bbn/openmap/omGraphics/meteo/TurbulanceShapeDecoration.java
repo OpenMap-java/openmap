@@ -1,3 +1,25 @@
+//**********************************************************************
+//
+//<copyright>
+//
+//BBN Technologies
+//10 Moulton Street
+//Cambridge, MA 02138
+//(617) 873-8000
+//
+//Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
+//</copyright>
+//**********************************************************************
+//
+//$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/meteo/TurbulanceShapeDecoration.java,v $
+//$RCSfile: TurbulanceShapeDecoration.java,v $
+//$Revision: 1.2 $
+//$Date: 2004/10/14 18:06:19 $
+//$Author: dietrick $
+//
+//**********************************************************************
+
 package com.bbn.openmap.omGraphics.meteo;
 
 import java.awt.Color;
@@ -15,13 +37,15 @@ public class TurbulanceShapeDecoration extends AbstractShapeDecoration {
     /** We use to draw them red ! */
     public static Color COLOR = Color.blue;
 
-    /** Filled half circles for surface fronts, 
-     * empty ones for altitude fronts
-     */ 
+    /**
+     * Filled half circles for surface fronts, empty ones for altitude
+     * fronts
+     */
     private boolean filled = true;
 
     /**
      * Constructor.
+     * 
      * @param length
      * @param radius
      * @param orientation
@@ -32,7 +56,8 @@ public class TurbulanceShapeDecoration extends AbstractShapeDecoration {
     }
 
     /**
-     * @see com.bbn.openmap.omGraphics.awt.ShapeDecoration#draw(Graphics, Point2D[], boolean)
+     * @see com.bbn.openmap.omGraphics.awt.ShapeDecoration#draw(Graphics,
+     *      Point2D[], boolean)
      */
     public void draw(Graphics g, Point2D[] points, boolean complete) {
         Graphics2D g2D = (Graphics2D) g;
@@ -57,13 +82,15 @@ public class TurbulanceShapeDecoration extends AbstractShapeDecoration {
             // Compute vertices
             double r = getLength() / 2.0; // x radius before rotation
             double w = getWidth();
-            // rotate 
+            // rotate
 
             int x = (int) (xcoord1 + r * rcos);
             int y = (int) (ycoord1 + r * rsin);
 
-            g.fillOval((int)(x - w/2), (int)(y - w/2), 
-                       (int)(w), (int)(w));
+            g.fillOval((int) (x - w / 2),
+                    (int) (y - w / 2),
+                    (int) (w),
+                    (int) (w));
         }
 
         restoreGraphics(g);
@@ -72,6 +99,7 @@ public class TurbulanceShapeDecoration extends AbstractShapeDecoration {
 
     /**
      * Returns the filled boolean.
+     * 
      * @return boolean
      */
     public boolean isFilled() {
@@ -80,6 +108,7 @@ public class TurbulanceShapeDecoration extends AbstractShapeDecoration {
 
     /**
      * Sets the filled (draw a half disk or a half circle ?).
+     * 
      * @param filled The filled to set
      */
     public void setFilled(boolean filled) {

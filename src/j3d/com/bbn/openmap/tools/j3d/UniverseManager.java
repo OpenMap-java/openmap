@@ -10,15 +10,16 @@ package com.bbn.openmap.tools.j3d;
 import javax.media.j3d.*;
 
 /**
- * Test class for representing a universe <P>
- *
- * Basic universe consisting of a default Locale and three
- * branch graphs for objects that exist in the display and
- * world spaces, as well as a separate branch for cameras.
- *
- * @author    Justin Couch
- * @created   April 25, 2002
- * @version   Who Cares!
+ * Test class for representing a universe
+ * <P>
+ * 
+ * Basic universe consisting of a default Locale and three branch
+ * graphs for objects that exist in the display and world spaces, as
+ * well as a separate branch for cameras.
+ * 
+ * @author Justin Couch
+ * @created April 25, 2002
+ * @version Who Cares!
  */
 public class UniverseManager extends VirtualUniverse {
 
@@ -26,25 +27,21 @@ public class UniverseManager extends VirtualUniverse {
     private BranchGroup view_group;
     private BranchGroup world_object_group;
 
-
     /**
      * Create the basic universe and all of the supporting
-     * infrastructure that is needed by a J3D application.
-     * The default setup just uses a single local located at
-     * the origin.
+     * infrastructure that is needed by a J3D application. The default
+     * setup just uses a single local located at the origin.
      */
     public UniverseManager() {
         this(null);
     }
 
-
     /**
      * Create the basic universe and all of the supporting
-     * infrastructure that is needed by a J3D application.
-     * The default setup just uses a single local located at
-     * the origin.
-     *
-     * @param worldGroup   Description of the Parameter
+     * infrastructure that is needed by a J3D application. The default
+     * setup just uses a single local located at the origin.
+     * 
+     * @param worldGroup Description of the Parameter
      */
     public UniverseManager(BranchGroup worldGroup) {
         locale = new Locale(this);
@@ -60,35 +57,30 @@ public class UniverseManager extends VirtualUniverse {
         }
     }
 
-
     /**
      * Add a camera to the world.
-     *
-     * @param cam  The camera that may be added
+     * 
+     * @param cam The camera that may be added
      */
     public void addCamera(Camera cam) {
         view_group.addChild(cam.getNode());
     }
 
-
     /**
      * Add an object to the world object group.
-     *
-     * @param node  The node that may be added
+     * 
+     * @param node The node that may be added
      */
     public void addWorldObject(Node node) {
         world_object_group.addChild(node);
     }
 
-
     public BranchGroup getWorldBranchGroup() {
         return world_object_group;
     }
 
-
     /**
-     * Make the universe live by adding the objects to the
-     * locale
+     * Make the universe live by adding the objects to the locale
      */
     public void makeLive() {
         view_group.compile();

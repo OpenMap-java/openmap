@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,15 +14,13 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/SlopeGenerator.java,v $
 // $RCSfile: SlopeGenerator.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/24 03:38:44 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.grid;
-
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.*;
@@ -30,18 +28,17 @@ import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
-import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Shape;
 
 /**
  * The SlopeGenerator is an OMGridGenerator that looks at elevation
- * data and creates shading images from it.  It currently works for
- * short data only, since that what DTED elevation data is.  Making it
+ * data and creates shading images from it. It currently works for
+ * short data only, since that what DTED elevation data is. Making it
  * work with different data types is on the to-do list.
  */
 public class SlopeGenerator implements OMGridGenerator {
-    
+
     protected int contrast = 5;
     protected ElevationColors colors = new ColoredShadingColors();
 
@@ -72,13 +69,12 @@ public class SlopeGenerator implements OMGridGenerator {
 
     /**
      * Called from within generate to create an OMRaster object for
-     * the OMGrid.  This method exists to make it easier to extend
-     * this class to create an OMRaster as needed.
+     * the OMGrid. This method exists to make it easier to extend this
+     * class to create an OMRaster as needed.
      */
     protected OMRaster getRaster(OMGrid grid) {
-        return new OMRaster(grid.point1.x, grid.point1.y, 
-                            grid.width, grid.height,
-                            new int[grid.width*grid.height]);        
+        return new OMRaster(grid.point1.x, grid.point1.y, grid.width, grid.height, new int[grid.width
+                * grid.height]);
     }
 
     protected boolean incomplete = false;
@@ -101,8 +97,11 @@ public class SlopeGenerator implements OMGridGenerator {
         Shape gridShape = grid.getShape();
 
         // Don't generate the raster if the grid is off-map...
-        if (gridShape == null || 
-            ! gridShape.intersects(0, 0, proj.getWidth(), proj.getHeight())) {
+        if (gridShape == null
+                || !gridShape.intersects(0,
+                        0,
+                        proj.getWidth(),
+                        proj.getHeight())) {
             if (Debug.debugging("grid")) {
                 Debug.output("SlopeGenerator: OMGrid does not overlap map, skipping generation.");
             }
@@ -120,18 +119,19 @@ public class SlopeGenerator implements OMGridGenerator {
         GridData gd = grid.getData();
 
         if (!(gd instanceof GridData.Short)) {
-            Debug.message("grid", "SlopeGenerator: grid doesn't contain short data.");
+            Debug.message("grid",
+                    "SlopeGenerator: grid doesn't contain short data.");
             return SinkGraphic.getSharedInstance();
         }
 
         int rows = grid.getRows();
         int columns = grid.getColumns();
-        short[][] data = ((GridData.Short)gd).getData();
+        short[][] data = ((GridData.Short) gd).getData();
         boolean major = grid.getMajor();
 
         double distance = getSlopeRun(grid, getContrast());
 
-        // Used for projections of image coordinates.  Reused in the
+        // Used for projections of image coordinates. Reused in the
         // loops to save memory.
         LatLonPoint llp = new LatLonPoint();
         Point point = new Point();
@@ -145,7 +145,7 @@ public class SlopeGenerator implements OMGridGenerator {
         for (short x = 0; x < grid.width; x++) {
             // Check to make sure the pixels we're calculating are on
             // the map.
-            int screenx = (int)grid.point1.getX() + x;
+            int screenx = (int) grid.point1.getX() + x;
             if (screenx < 0 || screenx > proj.getWidth()) {
                 incomplete = true;
                 continue;
@@ -155,28 +155,34 @@ public class SlopeGenerator implements OMGridGenerator {
 
                 // Check to make sure the pixels we're calculating are
                 // on the map.
-                int screeny = (int)grid.point1.getY() + y;
+                int screeny = (int) grid.point1.getY() + y;
                 if (screeny < 0 || screeny > proj.getHeight()) {
                     incomplete = true;
                     continue;
                 }
 
                 // OK, on the map.
-                point.setLocation(screenx, screeny); 
+                point.setLocation(screenx, screeny);
                 llp = proj.inverse(point, llp);
 
-                int yc = Math.round((llp.getLatitude() - grid.getLatitude())/grid.getVerticalResolution());
-                int xc = Math.round((llp.getLongitude() - grid.getLongitude())/grid.getHorizontalResolution());
+                int yc = Math.round((llp.getLatitude() - grid.getLatitude())
+                        / grid.getVerticalResolution());
+                int xc = Math.round((llp.getLongitude() - grid.getLongitude())
+                        / grid.getHorizontalResolution());
 
                 // If the calculated index is out of the data ranges,
-                // push it to the end.  Don't blow it off, it will
-                // cause unfilled data pixel lines to appear.  You
+                // push it to the end. Don't blow it off, it will
+                // cause unfilled data pixel lines to appear. You
                 // only want to blow off pixels that are not on the
                 // map, or are never going to be on the map.
-                if (yc < 0) yc = 0;
-                if (yc > rows - 1) yc = rows - 1;
-                if (xc < 0) xc = 0;
-                if (xc > columns - 1) xc = columns - 1;
+                if (yc < 0)
+                    yc = 0;
+                if (yc > rows - 1)
+                    yc = rows - 1;
+                if (xc < 0)
+                    xc = 0;
+                if (xc > columns - 1)
+                    xc = columns - 1;
 
                 int elevation = 0;
 
@@ -184,8 +190,8 @@ public class SlopeGenerator implements OMGridGenerator {
                 try {
                     elevation = (int) data[xc][yc];
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
-                    Debug.output("Error Accessing data array:\n\txc: " + xc +
-                                 ", yc: " + yc + " for x: " + x + ", y: " + y);
+                    Debug.output("Error Accessing data array:\n\txc: " + xc
+                            + ", yc: " + yc + " for x: " + x + ", y: " + y);
                 }
 
                 // Slope shading calculations, get the upper left and
@@ -197,45 +203,51 @@ public class SlopeGenerator implements OMGridGenerator {
                 if (xc == 0 || xnw < 0) {
                     xnw = xc;
                 }
-                if (xc == columns - 1 ||  xse > columns - 1) {
+                if (xc == columns - 1 || xse > columns - 1) {
                     xse = columns - 1;
                 }
 
                 int yse = yc - 1;
                 int ynw = yc + 1;
-                //  trying to smooth out the edge of the frame by handling the
+                //  trying to smooth out the edge of the frame by
+                // handling the
                 //  frame limits
                 if (yse < 0) {
                     yse = 0;
                 }
-                if (yc == rows-1 || ynw > rows-1) {
+                if (yc == rows - 1 || ynw > rows - 1) {
                     ynw = rows - 1;
                 }
 
-                // Get the elevation points for the slope measurement points.
+                // Get the elevation points for the slope measurement
+                // points.
                 try {
-                    short e2 = data[xse][yse];  // down & right elevation
-                    short e1 = data[xnw][ynw];  // up and left elevation
+                    short e2 = data[xse][yse]; // down & right
+                                               // elevation
+                    short e1 = data[xnw][ynw]; // up and left
+                                               // elevation
 
-                    // colormap value darker for negative slopes, brighter for
+                    // colormap value darker for negative slopes,
+                    // brighter for
                     // positive slopes.
                     // slope relative to nw sun
-                    double slope = (e2 - e1)/distance; 
+                    double slope = (e2 - e1) / distance;
 
-                    raster.setPixel(x, y, colors.getARGB(elevation, grid.getUnits(), slope));
+                    raster.setPixel(x, y, colors.getARGB(elevation,
+                            grid.getUnits(),
+                            slope));
 
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
-                    Debug.output("Error Accessing data array:\n\txse: " + xse +
-                                 ", yse: " + yse +
-                                 "\n\txnw: " + xnw +
-                                 ", ynw: " + ynw + 
-                                 "\n\tfor x: " + x + ", y: " + y);
+                    Debug.output("Error Accessing data array:\n\txse: " + xse
+                            + ", yse: " + yse + "\n\txnw: " + xnw + ", ynw: "
+                            + ynw + "\n\tfor x: " + x + ", y: " + y);
                 }
             }
         }
-        
+
         raster.generate(proj);
-        if (Debug.debugging("grid")) Debug.output("SlopeGenerator: leaving generate");
+        if (Debug.debugging("grid"))
+            Debug.output("SlopeGenerator: leaving generate");
         return raster;
     }
 
@@ -245,35 +257,37 @@ public class SlopeGenerator implements OMGridGenerator {
 
     /**
      * Method to calculate the run part of the slope (rise over run,
-     * right?).  The rise is calcuated with the elevations of the
+     * right?). The rise is calcuated with the elevations of the
      * points to the northwest and southeast of the point of concern,
      * the run is some factor of the distance between those two posts.
-     * @param grid the OMGrid that contains the data, need to get units.
+     * 
+     * @param grid the OMGrid that contains the data, need to get
+     *        units.
      * @param contrastAdj contrast adjustment from 1-10, 5 being no
-     * adjustment.  10 is high contrast, 1 is low contrast.
+     *        adjustment. 10 is high contrast, 1 is low contrast.
      */
     protected double getSlopeRun(OMGrid grid, int contrastAdj) {
-        double modifier = (double).045;
+        double modifier = (double) .045;
 
         for (int h = 0; h < contrastAdj; h++) {
             modifier -= .005;
         }
 
-        // Smaller modifiers result in more contrast.  .025, by
+        // Smaller modifiers result in more contrast. .025, by
         // testing and judgement, looks like a good average, and the
         // values have been set up to provide that with an adjustment
-        // of 5.  0 is very high contrast.
+        // of 5. 0 is very high contrast.
 
-
-        float vRes = grid.getVerticalResolution();  // Degrees per data point
+        float vRes = grid.getVerticalResolution(); // Degrees per data
+                                                   // point
         float hRes = grid.getHorizontalResolution();
 
         float vResRad = Length.DECIMAL_DEGREE.toRadians(vRes);
         float hResRad = Length.DECIMAL_DEGREE.toRadians(hRes);
 
         Length units = grid.getUnits();
-        double vDist = Math.pow(2.0*(double)units.fromRadians(vResRad), 2);
-        double hDist = Math.pow(2.0*(double)units.fromRadians(hResRad), 2);
+        double vDist = Math.pow(2.0 * (double) units.fromRadians(vResRad), 2);
+        double hDist = Math.pow(2.0 * (double) units.fromRadians(hResRad), 2);
 
         return modifier * Math.sqrt(vDist + hDist);
     }

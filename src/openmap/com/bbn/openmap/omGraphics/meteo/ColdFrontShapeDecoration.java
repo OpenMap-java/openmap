@@ -1,3 +1,25 @@
+//**********************************************************************
+//
+//<copyright>
+//
+//BBN Technologies
+//10 Moulton Street
+//Cambridge, MA 02138
+//(617) 873-8000
+//
+//Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
+//</copyright>
+//**********************************************************************
+//
+//$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/meteo/ColdFrontShapeDecoration.java,v $
+//$RCSfile: ColdFrontShapeDecoration.java,v $
+//$Revision: 1.6 $
+//$Date: 2004/10/14 18:06:19 $
+//$Author: dietrick $
+//
+//**********************************************************************
+
 package com.bbn.openmap.omGraphics.meteo;
 
 import java.awt.Color;
@@ -17,14 +39,16 @@ public class ColdFrontShapeDecoration extends AbstractShapeDecoration {
 
     /** We use to draw them blue ! */
     public static Color COLOR = Color.blue;
-        
-    /** Filled half triangles for surface fronts, 
-     * empty ones for altitude fronts
-     */ 
+
+    /**
+     * Filled half triangles for surface fronts, empty ones for
+     * altitude fronts
+     */
     private boolean filled = true;
 
     /**
      * Constructor.
+     * 
      * @param length
      * @param width
      * @param orientation
@@ -35,7 +59,8 @@ public class ColdFrontShapeDecoration extends AbstractShapeDecoration {
     }
 
     /**
-     * @see com.bbn.openmap.omGraphics.awt.ShapeDecoration#draw(Graphics, Point2D[], boolean)
+     * @see com.bbn.openmap.omGraphics.awt.ShapeDecoration#draw(Graphics,
+     *      Point2D[], boolean)
      */
     public void draw(Graphics g, Point2D[] points, boolean complete) {
         Graphics2D g2D = (Graphics2D) g;
@@ -62,8 +87,9 @@ public class ColdFrontShapeDecoration extends AbstractShapeDecoration {
 
             // Compute vertices
             double r = getLength() / 2.0; // x radius before rotation
-            double w = orient * getWidth(); // y radius before rotation
-            // rotate 
+            double w = orient * getWidth(); // y radius before
+                                            // rotation
+            // rotate
             xcoord[nbpts] = (int) (points[0].getX() + r * rcos - w * rsin);
             ycoord[nbpts++] = (int) (points[0].getY() + r * rsin + w * rcos);
 
@@ -71,7 +97,7 @@ public class ColdFrontShapeDecoration extends AbstractShapeDecoration {
             xcoord[nbpts] = (int) points[0].getX();
             ycoord[nbpts++] = (int) points[0].getY();
 
-            if (filled) 
+            if (filled)
                 g.fillPolygon(xcoord, ycoord, nbpts);
         }
         g.drawPolyline(xcoord, ycoord, nbpts);
@@ -80,6 +106,7 @@ public class ColdFrontShapeDecoration extends AbstractShapeDecoration {
 
     /**
      * Returns the filled boolean.
+     * 
      * @return boolean
      */
     public boolean isFilled() {
@@ -88,6 +115,7 @@ public class ColdFrontShapeDecoration extends AbstractShapeDecoration {
 
     /**
      * Sets the filled (draw a polygon or a polyline ?).
+     * 
      * @param filled The filled to set
      */
     public void setFilled(boolean filled) {

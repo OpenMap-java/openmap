@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,60 +14,52 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/GraphicAttributes.java,v $
 // $RCSfile: GraphicAttributes.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/09/22 20:49:20 $
+// $Revision: 1.9 $
+// $Date: 2004/10/14 18:06:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics;
 
-
 /*  Java Core  */
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.beans.*;
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.NoSuchElementException;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import javax.swing.*;
-import javax.swing.event.*;
 
 /* OpenMap */
-import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.proj.LineType;
-import com.bbn.openmap.util.ColorFactory;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PaletteHelper;
 
-/** 
+/**
  * The GraphicAttributes provides an extension to DrawingAttributes by
  * provideing a mechanism for loading and managing different graphic
  * attributes that may be used, such as line type (LINETYPE_STRAIGHT,
  * LINETYPE_GREATCIRCLE, LINETYPE_RHUMB, or LINETYPE_UNKNOWN), or
  * render type (RENDERTYPE_XY, RENDERTYPE_LATLON, RENDERTYPE_OFFSET,
- * or RENDERTYPE_UNKNOWN).  The DrawingAttributes class fishes out the
+ * or RENDERTYPE_UNKNOWN). The DrawingAttributes class fishes out the
  * applicable properties for you, creates the objects needed, and then
- * lets you get those objects when needed.  
+ * lets you get those objects when needed.
  */
-public class GraphicAttributes extends DrawingAttributes implements ActionListener, Serializable, OMGraphicConstants  {
+public class GraphicAttributes extends DrawingAttributes implements
+        ActionListener, Serializable, OMGraphicConstants {
 
-    /** The name of the property that holds the line type of the graphic. */
+    /**
+     * The name of the property that holds the line type of the
+     * graphic.
+     */
     public final static String lineTypeProperty = "lineType";
-    /** The name of the property that holds the render type of the graphic. */
+    /**
+     * The name of the property that holds the render type of the
+     * graphic.
+     */
     public final static String renderTypeProperty = "renderType";
 
     /** The line type of a graphic, defaults to LINETYPE_STRAIGHT. */
     protected int lineType = LINETYPE_STRAIGHT;
-    /** The rendertype of a graphic.  Default is RENDERTYPE_XY. */
+    /** The rendertype of a graphic. Default is RENDERTYPE_XY. */
     protected int renderType = RENDERTYPE_XY;
     /** Flag to disable choice of line type, from an external source. */
     protected boolean enableLineTypeChoice = true;
@@ -76,7 +68,7 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
 
     /**
      * Create a GraphicAttributes with the default settings - clear
-     * fill paint and pattern, sold black edge line of width 1.  
+     * fill paint and pattern, sold black edge line of width 1.
      */
     public GraphicAttributes() {
         super();
@@ -84,8 +76,9 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
 
     /**
      * Create the GraphicAttributes and call init without a prefix for
-     * the properties.  Call init without a prefix for the properties.
-     * @param props the Properties to look in.  
+     * the properties. Call init without a prefix for the properties.
+     * 
+     * @param props the Properties to look in.
      */
     public GraphicAttributes(Properties props) {
         super(props);
@@ -93,10 +86,12 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
 
     /**
      * Create the GraphicAttributes and call init with a prefix for
-     * the properties.  
+     * the properties.
+     * 
      * @param prefix the prefix marker to use for a property, like
-     * prefix.propertyName.  The period is added in this function.
-     * @param props the Properties to look in.  
+     *        prefix.propertyName. The period is added in this
+     *        function.
+     * @param props the Properties to look in.
      */
     public GraphicAttributes(String prefix, Properties props) {
         super(prefix, props);
@@ -111,7 +106,7 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
     }
 
     /**
-     *  PropertyConsumer method.
+     * PropertyConsumer method.
      */
     public void setProperties(String prefix, Properties props) {
 
@@ -128,17 +123,13 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
         } else {
             realPrefix = "";
         }
-        
+
         //  Set up the Graphic attributes.
-        lineType =
-            LayerUtils.intFromProperties(
-                props, realPrefix + lineTypeProperty,
-                LINETYPE_UNKNOWN);
-        
-        renderType =
-            LayerUtils.intFromProperties(
-                props, realPrefix + renderTypeProperty,
-                RENDERTYPE_UNKNOWN);
+        lineType = LayerUtils.intFromProperties(props, realPrefix
+                + lineTypeProperty, LINETYPE_UNKNOWN);
+
+        renderType = LayerUtils.intFromProperties(props, realPrefix
+                + renderTypeProperty, RENDERTYPE_UNKNOWN);
     }
 
     public Object clone() {
@@ -162,23 +153,22 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
     }
 
     /**
-     * Set the line type.  If it isn't straight, great circle or
-     * rhumb, it's set to unknown.  
+     * Set the line type. If it isn't straight, great circle or rhumb,
+     * it's set to unknown.
      */
     public void setLineType(int lt) {
         int oldLineType = lineType;
 
-        if (lt == LINETYPE_STRAIGHT ||
-            lt == LINETYPE_GREATCIRCLE ||
-            lt == LINETYPE_RHUMB) {
+        if (lt == LINETYPE_STRAIGHT || lt == LINETYPE_GREATCIRCLE
+                || lt == LINETYPE_RHUMB) {
             lineType = lt;
         } else {
             lineType = LINETYPE_UNKNOWN;
         }
 
-        propertyChangeSupport.firePropertyChange("lineType", 
-                                                 oldLineType, 
-                                                 lineType);
+        propertyChangeSupport.firePropertyChange("lineType",
+                oldLineType,
+                lineType);
     }
 
     /**
@@ -189,32 +179,32 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
     }
 
     /**
-     * Set the render type.  If it isn't xy, lat/lon, or lat/lon with
+     * Set the render type. If it isn't xy, lat/lon, or lat/lon with
      * offset, it's set to unknown.
      */
     public void setRenderType(int rt) {
         int oldRenderType = renderType;
 
-        if (rt == RENDERTYPE_XY ||
-            rt == RENDERTYPE_LATLON ||
-            rt == RENDERTYPE_OFFSET) {
+        if (rt == RENDERTYPE_XY || rt == RENDERTYPE_LATLON
+                || rt == RENDERTYPE_OFFSET) {
             renderType = rt;
 
         } else {
             renderType = RENDERTYPE_UNKNOWN;
         }
 
-        propertyChangeSupport.firePropertyChange("renderType", 
-                                                 oldRenderType, 
-                                                 renderType);
+        propertyChangeSupport.firePropertyChange("renderType",
+                oldRenderType,
+                renderType);
     }
 
     /**
      * Set the GraphicAttributes parameters based on the current
-     * settings of an OMGraphic.  
+     * settings of an OMGraphic.
      */
     public void setFrom(OMGraphic graphic) {
-        if (graphic == null) return;
+        if (graphic == null)
+            return;
 
         super.setFrom(graphic);
         lineType = graphic.getLineType();
@@ -226,10 +216,11 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * Set all the attributes for the graphic that are contained
      * within this GraphicAttributes class.
      * 
-     * @param graphic OMGraphic.  
+     * @param graphic OMGraphic.
      */
     public void setTo(OMGraphic graphic) {
-        if (graphic == null) return;
+        if (graphic == null)
+            return;
 
         super.setTo(graphic);
         graphic.setLineType(lineType);
@@ -257,22 +248,22 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
             lineTypeMenu = new JMenu("Line Type");
 
             ActionListener listener = new ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        String command  = ae.getActionCommand();
-                        try {
-                            setLineType(Integer.parseInt(command));
-                        } catch (NumberFormatException e) {}
+                public void actionPerformed(ActionEvent ae) {
+                    String command = ae.getActionCommand();
+                    try {
+                        setLineType(Integer.parseInt(command));
+                    } catch (NumberFormatException e) {
                     }
-                };
+                }
+            };
 
-            ButtonGroup group = new ButtonGroup(); 
-            JRadioButtonMenuItem button = 
-                new JRadioButtonMenuItem("Great Circle", lineType == LineType.GreatCircle);
+            ButtonGroup group = new ButtonGroup();
+            JRadioButtonMenuItem button = new JRadioButtonMenuItem("Great Circle", lineType == LineType.GreatCircle);
             button.setActionCommand(String.valueOf(LineType.GreatCircle));
             group.add(button);
             button.addActionListener(listener);
             lineTypeMenu.add(button);
-        
+
             button = new JRadioButtonMenuItem("Rhumb", lineType == LineType.Rhumb);
             button.setActionCommand(String.valueOf(LineType.Rhumb));
             group.add(button);

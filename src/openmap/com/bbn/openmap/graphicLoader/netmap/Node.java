@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/Node.java,v $
 // $RCSfile: Node.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/24 21:50:32 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.graphicLoader.netmap;
 
@@ -32,8 +31,7 @@ import com.bbn.openmap.omGraphics.OMPoint;
 /**
  * Object that represents a NetMap node on the map.
  */
-public class Node extends OMPoint
-    implements ActionListener, FocusListener {
+public class Node extends OMPoint implements ActionListener, FocusListener {
 
     private static final int DEFAULT_LENGTH = 10;
     private static final int DEFAULT_WIDTH = 10;
@@ -43,21 +41,21 @@ public class Node extends OMPoint
     public static Color STATUS_DOWN = Color.red;
     public static Color STATUS_UNKNOWN = Color.yellow;
 
-    protected String    label;
-    protected int       index;
-    protected Color     color = null;
+    protected String label;
+    protected int index;
+    protected Color color = null;
 
-    protected int       posX = 0;
-    protected int       posY = 0;
-    protected String    posLat = null;
-    protected String    posLon = null;
-    protected double    gpsTime = 0;
+    protected int posX = 0;
+    protected int posY = 0;
+    protected String posLat = null;
+    protected String posLon = null;
+    protected double gpsTime = 0;
 
-    protected int       length = 0;
-    protected int       width = 0;
+    protected int length = 0;
+    protected int width = 0;
 
-    protected int       menu = 0;
-    protected int       shape = 0;
+    protected int menu = 0;
+    protected int shape = 0;
 
     protected boolean localhost = false;
 
@@ -76,7 +74,6 @@ public class Node extends OMPoint
         initOM();
     }
 
-
     private void initOM() {
         setOval(true);
         setRadius(DEFAULT_RADIUS);
@@ -88,52 +85,42 @@ public class Node extends OMPoint
         return this.label;
     }
 
-
     public String getName() {
         return getLabel();
     }
-
 
     public void setIndex(int index) {
         this.index = index;
     }
 
-
     public int getIndex() {
         return this.index;
     }
 
-
     public Color getColor() {
         return this.color;
     }
-
 
     public void setStatus(int color) {
         this.color = NodeColor.colorOf(color);
         setFillPaint(this.color);
     }
 
-
     public int getStatus() {
         return NodeColor.valueOf(this.color);
     }
-
 
     public void setTime(double time) {
         this.gpsTime = time;
     }
 
-
     public double getTime() {
         return this.gpsTime;
     }
 
-
     public void setShape(int shape) {
         this.shape = shape;
     }
-
 
     public void moveTo(int newX, int newY) {
         if (getRenderType() == OMGraphic.RENDERTYPE_XY) {
@@ -141,7 +128,6 @@ public class Node extends OMPoint
             setY(newY);
         }
     }
-
 
     public void moveTo(float newLat, float newLon) {
         if (getRenderType() == OMGraphic.RENDERTYPE_LATLON) {
@@ -162,7 +148,9 @@ public class Node extends OMPoint
     }
 
     public void focusGained(FocusEvent e) {}
+
     public void focusLost(FocusEvent e) {}
+
     public void actionPerformed(ActionEvent ae) {}
 }
 

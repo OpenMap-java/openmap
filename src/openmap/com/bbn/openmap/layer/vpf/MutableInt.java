@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,16 +14,15 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/MutableInt.java,v $
 // $RCSfile: MutableInt.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.vpf;
 
-/** 
+/**
  * Implement a wrapper class to allow mutable ints.
  */
 public class MutableInt {
@@ -32,15 +31,15 @@ public class MutableInt {
 
     /**
      * Construct a object with a value
+     * 
      * @param newval our value
      */
     public MutableInt(int newval) {
         value = newval;
     }
-    
+
     /**
      * Construct an object with the default value.
      */
-    public MutableInt() {
-    }
+    public MutableInt() {}
 }

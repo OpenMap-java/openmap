@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,13 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/AreaTable.java,v $
-// $Revision: 1.3 $ $Date: 2004/01/26 18:18:11 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2004/10/14 18:06:07 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
 import java.util.*;
 
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.io.FormatException;
 
@@ -34,7 +33,7 @@ public class AreaTable extends PrimitiveTable {
 
     /** the edge table for the tile we are working on */
     final private EdgeTable edges;
-  
+
     /** if the edgetable is private or shared */
     final private boolean privateEdgeTable;
 
@@ -49,17 +48,19 @@ public class AreaTable extends PrimitiveTable {
 
     /** TilingAdapters used to retrieve edge table information */
     final private TilingAdapter edgeRightFaceAdapter, edgeLeftFaceAdapter,
-        edgeRightEdgeAdapter, edgeLeftEdgeAdapter;
+            edgeRightEdgeAdapter, edgeLeftEdgeAdapter;
 
     /**
      * Construct an AreaTable for a tile.
+     * 
      * @param cov the coverage table that is our "parent"
      * @param edg the edge table for the same tile as us (can be null)
      * @param tile the tile to parse
-     * @exception FormatException if something goes wrong reading the area
+     * @exception FormatException if something goes wrong reading the
+     *            area
      */
-    public AreaTable(CoverageTable cov, EdgeTable edg,
-                     TileDirectory tile) throws FormatException{
+    public AreaTable(CoverageTable cov, EdgeTable edg, TileDirectory tile)
+            throws FormatException {
         super(cov, tile, Constants.faceTableName);
 
         ringIDColumn = whatColumn(Constants.FAC_RINGPTR);
@@ -73,27 +74,25 @@ public class AreaTable extends PrimitiveTable {
 
         if (edges.topologyLevel() != 3) {
             throw new FormatException("AreaTable: need level 3 topology: "
-                                      + edges.topologyLevel());
+                    + edges.topologyLevel());
         }
 
-        rings = new DcwRecordFile(cov.getDataPath() + tile.getPath() +
-                                  Constants.ringTableName +
-                                  (cov.appendDot ? "." : ""));
+        rings = new DcwRecordFile(cov.getDataPath() + tile.getPath()
+                + Constants.ringTableName + (cov.appendDot ? "." : ""));
 
         if ((ringStartColumn = rings.whatColumn(Constants.RNG_STARTEDGE)) == -1) {
             throw new FormatException("ring has no start edge: "
-                                      + rings.filename);
+                    + rings.filename);
         }
 
         if ((faceIDColumn = rings.whatColumn(Constants.RNG_FACEID)) == -1) {
-            throw new FormatException("ring has no face_id: "
-                                      + rings.filename);
+            throw new FormatException("ring has no face_id: " + rings.filename);
         }
     }
 
     /**
-     * Close the files associated with this tile.  If an edgetable was
-     * passed to the constructor, that table is NOT closed.  If this
+     * Close the files associated with this tile. If an edgetable was
+     * passed to the constructor, that table is NOT closed. If this
      * instance created its own edgetable, it IS closed.
      */
     public void close() {
@@ -105,23 +104,26 @@ public class AreaTable extends PrimitiveTable {
     }
 
     /**
-     * Computes the full set of points that determine the edge of the area.
+     * Computes the full set of points that determine the edge of the
+     * area.
+     * 
      * @param facevec a row from the VPF face table for this area
-     * @param allLLPoints a List that gets modified to contain 
-     * CoordFloatString objects defining the area.  CoordFloatString objects
-     * with a negative element count (e.g. -3) contain the absolute value of 
-     * the count (e.g. 3), but must be traversed in reverse order.
+     * @param allLLPoints a List that gets modified to contain
+     *        CoordFloatString objects defining the area.
+     *        CoordFloatString objects with a negative element count
+     *        (e.g. -3) contain the absolute value of the count (e.g.
+     *        3), but must be traversed in reverse order.
      * @return the total number of points that define the polygon
      * @exception FormatException may throw FormatExceptions
      */
     public int computeEdgePoints(List facevec, List allLLPoints)
-        throws FormatException {
-        int ring_ptr = ((Number)facevec.get(ringIDColumn)).intValue();
+            throws FormatException {
+        int ring_ptr = ((Number) facevec.get(ringIDColumn)).intValue();
         List ring1 = new ArrayList(rings.getColumnCount());
         rings.getRow(ring1, ring_ptr);
-        int fac_id = ((Number)ring1.get(faceIDColumn)).intValue();
-        
-        int startedgeid =((Number)ring1.get(ringStartColumn)).intValue();
+        int fac_id = ((Number) ring1.get(faceIDColumn)).intValue();
+
+        int startedgeid = ((Number) ring1.get(ringStartColumn)).intValue();
         if (startedgeid <= 0) {
             return 0;
         }
@@ -144,12 +146,12 @@ public class AreaTable extends PrimitiveTable {
                 prev_node = start_node;
                 firsttime = false;
             }
-          
+
             //Debug.message("dcwSpecialist",
             //              "edge: " + nextedgeid + " start->end: "
             //              + start_node + "->" + end_node);
             CoordFloatString cfs = edges.getCoordinates(edge);
-            
+
             if ((fac_id == rht_face) && (fac_id == lft_face)) {
                 if (start_node == prev_node) {
                     nextedgeid = right_edge;
@@ -179,55 +181,71 @@ public class AreaTable extends PrimitiveTable {
     }
 
     /**
-     * Parse the area records for this tile, calling warehouse.createArea
-     * once for each record.
-     * @param warehouse the warehouse used for createArea calls (must not be
-     * null)
-     * @param dpplat threshold for latitude thinning (passed to warehouse)
-     * @param dpplon threshold for longitude thinngin (passed to warehouse)
+     * Parse the area records for this tile, calling
+     * warehouse.createArea once for each record.
+     * 
+     * @param warehouse the warehouse used for createArea calls (must
+     *        not be null)
+     * @param dpplat threshold for latitude thinning (passed to
+     *        warehouse)
+     * @param dpplon threshold for longitude thinngin (passed to
+     *        warehouse)
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
      * @see VPFGraphicWarehouse#createArea
      */
-    public void drawTile(VPFGraphicWarehouse warehouse,
-                         float dpplat, float dpplon,
-                         LatLonPoint ll1, LatLonPoint ll2)
-    {
+    public void drawTile(VPFGraphicWarehouse warehouse, float dpplat,
+                         float dpplon, LatLonPoint ll1, LatLonPoint ll2) {
         try {
-            for (List area = new ArrayList(getColumnCount()); parseRow(area);){
-                warehouse.createArea(covtable, this, area, ll1, ll2,
-                                     dpplat, dpplon);
+            for (List area = new ArrayList(getColumnCount()); parseRow(area);) {
+                warehouse.createArea(covtable,
+                        this,
+                        area,
+                        ll1,
+                        ll2,
+                        dpplat,
+                        dpplon);
             }
         } catch (FormatException f) {
-            System.out.println("Exception: " + f.getClass() + 
-                               " " + f.getMessage());
+            System.out.println("Exception: " + f.getClass() + " "
+                    + f.getMessage());
         }
     }
 
     /**
-     * Use the warehouse to create a graphic from a feature in the AreaTable.
-     * @param warehouse the warehouse used for createArea calls (must not be
-     * null)
-     * @param dpplat threshold for latitude thinning (passed to warehouse)
-     * @param dpplon threshold for longitude thinngin (passed to warehouse)
+     * Use the warehouse to create a graphic from a feature in the
+     * AreaTable.
+     * 
+     * @param warehouse the warehouse used for createArea calls (must
+     *        not be null)
+     * @param dpplat threshold for latitude thinning (passed to
+     *        warehouse)
+     * @param dpplon threshold for longitude thinngin (passed to
+     *        warehouse)
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
      * @param area a List containing the AreaTable row contents.
      * @param featureType the string representing the feature type, in
-     * case the warehouse wants to do some intelligent rendering.
+     *        case the warehouse wants to do some intelligent
+     *        rendering.
      * @see VPFGraphicWarehouse#createEdge
      */
-    public void drawFeature(VPFFeatureWarehouse warehouse,
-                            float dpplat, float dpplon,
-                            LatLonPoint ll1, LatLonPoint ll2,
+    public void drawFeature(VPFFeatureWarehouse warehouse, float dpplat,
+                            float dpplon, LatLonPoint ll1, LatLonPoint ll2,
                             List area, String featureType) {
 
         if (warehouse == null) {
             return;
         }
 
-        warehouse.createArea(covtable, this, area, ll1, ll2,
-                             dpplat, dpplon, featureType);
+        warehouse.createArea(covtable,
+                this,
+                area,
+                ll1,
+                ll2,
+                dpplat,
+                dpplon,
+                featureType);
     }
 
 }

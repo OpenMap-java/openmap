@@ -2,7 +2,7 @@
 //
 // <copyright>
 //
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,29 +14,19 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkArc.java,v $
 // $RCSfile: LinkArc.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:56 $
 // $Author: dietrick $
 //
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.link;
 
 import com.bbn.openmap.omGraphics.OMArc;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.proj.Length;
-import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.LatLonPoint;
 
-import java.awt.BasicStroke;
-import java.awt.image.BufferedImage;
-import java.awt.Graphics2D;
-import java.awt.TexturePaint;
-import java.awt.geom.Line2D;
-import java.awt.Color;
-import java.awt.Rectangle;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -48,6 +38,7 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
 
     /**
      * Write an arc with lat/lon placement.
+     * 
      * @param latPoint latitude of center point, decimal degrees
      * @param lonPoint longitude of center point, decimal degrees
      * @param w horizontal diameter of arc, pixels
@@ -58,18 +49,19 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param dos DataOutputStream.
      * @throws IOException
      */
-    public static void write(float latPoint, float lonPoint,
-                             int w, int h, float s, float e,
-                             LinkProperties properties,
+    public static void write(float latPoint, float lonPoint, int w, int h,
+                             float s, float e, LinkProperties properties,
                              DataOutputStream dos) throws IOException {
         LinkArc.write(latPoint, lonPoint, 0, 0, w, h, s, e, properties, dos);
     }
 
     /**
      * Write an arc with x/y placement.
-     *
-     * @param x1 window position of center point from left of window, in pixels
-     * @param y1 window position of center point from top of window, in pixels
+     * 
+     * @param x1 window position of center point from left of window,
+     *        in pixels
+     * @param y1 window position of center point from top of window,
+     *        in pixels
      * @param w horizontal diameter of arc, pixels
      * @param h vertical diameter of arc, pixels
      * @param s starting angle of arc, decimal degrees
@@ -78,11 +70,9 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param dos DataOutputStream.
      * @throws IOException
      */
-    public static void write(int x1, int y1, int w, int h,
-                             float s, float e,
-                             LinkProperties properties,
-                             DataOutputStream dos)
-        throws IOException {
+    public static void write(int x1, int y1, int w, int h, float s, float e,
+                             LinkProperties properties, DataOutputStream dos)
+            throws IOException {
 
         dos.write(Link.ARC_HEADER.getBytes());
         dos.writeInt(GRAPHICTYPE_ARC);
@@ -98,13 +88,13 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
 
     /**
      * Writing an arc at a x, y, offset to a Lat/Lon location.
-     *
+     * 
      * @param latPoint latitude of center of arc.
      * @param lonPoint longitude of center of arc.
      * @param offset_x1 # pixels to the right the center will be moved
-     * from lonPoint.
+     *        from lonPoint.
      * @param offset_y1 # pixels down that the center will be moved
-     * from latPoint.
+     *        from latPoint.
      * @param w horizontal diameter of arc, pixels.
      * @param h vertical diameter of arc, pixels.
      * @param s starting angle of arc, decimal degrees
@@ -113,12 +103,10 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param dos DataOutputStream.
      * @throws IOException
      */
-    public static void write(float latPoint, float lonPoint,
-                             int offset_x1, int offset_y1,
-                             int w, int h, float s, float e,
-                             LinkProperties properties,
-                             DataOutputStream dos)
-        throws IOException {
+    public static void write(float latPoint, float lonPoint, int offset_x1,
+                             int offset_y1, int w, int h, float s, float e,
+                             LinkProperties properties, DataOutputStream dos)
+            throws IOException {
 
         dos.write(Link.ARC_HEADER.getBytes());
         dos.writeInt(GRAPHICTYPE_ARC);
@@ -137,7 +125,7 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
     /**
      * Write an arc with a certain radius at a Lat/Lon location.
      * Assumes the radius is in decimal degrees.
-     *
+     * 
      * @param latPoint latitude of center point, decimal degrees
      * @param lonPoint longitude of center point, decimal degrees
      * @param radius distance in decimal degrees
@@ -148,61 +136,64 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
      * @throws IOException
      */
     public static void write(float latPoint, float lonPoint, float radius,
-                             float s, float e,
-                             LinkProperties properties,
-                             DataOutputStream dos)
-        throws IOException  {
+                             float s, float e, LinkProperties properties,
+                             DataOutputStream dos) throws IOException {
         LinkArc.write(latPoint, lonPoint, radius, -1, -1, s, e, properties, dos);
     }
 
     /**
-     * Write an arc with a certain radius at a Lat/Lon location,
-     * and allows you to specify units of the radius.
-     *
+     * Write an arc with a certain radius at a Lat/Lon location, and
+     * allows you to specify units of the radius.
+     * 
      * @param latPoint latitude of center of arc in decimal degrees
      * @param lonPoint longitude of center of arc in decimal degrees
      * @param radius distance
      * @param units integer value for units for distance - KM, MILES,
-     * NMILES.  If &lt; 0, assume decimal degrees.
+     *        NMILES. If &lt; 0, assume decimal degrees.
      * @param s starting angle of arc, decimal degrees
      * @param e angular extent of arc, decimal degrees
      * @param properties attributes for the arc.
      * @param dos DataOutputStream.
      * @throws IOException
      */
-    public static void write(float latPoint, float lonPoint,
-                             float radius, int units,
-                             float s, float e,
-                             LinkProperties properties,
-                             DataOutputStream dos)
-        throws IOException {
-        LinkArc.write(latPoint, lonPoint, radius, units, -1, s, e, properties, dos);
+    public static void write(float latPoint, float lonPoint, float radius,
+                             int units, float s, float e,
+                             LinkProperties properties, DataOutputStream dos)
+            throws IOException {
+        LinkArc.write(latPoint,
+                lonPoint,
+                radius,
+                units,
+                -1,
+                s,
+                e,
+                properties,
+                dos);
     }
 
     /**
-     * Write an arc with a certain radius at a Lat/Lon location,
-     * and allows you to specify units of the radius, as well as the
+     * Write an arc with a certain radius at a Lat/Lon location, and
+     * allows you to specify units of the radius, as well as the
      * number of verticies to use to approximate the arc.
-     *
+     * 
      * @param latPoint latitude of center of arc in decimal degrees
      * @param lonPoint longitude of center of arc in decimal degrees
      * @param radius distance
-     * @param units integer value for units for distance - OMArc.KM, OMArc.MILES,
-     * OMArc.NMILES.  If &lt; 0, assume decimal degrees.
-     * @param nverts number of vertices for the poly-arc (if &lt; 3, value
-     * is generated internally).
+     * @param units integer value for units for distance - OMArc.KM,
+     *        OMArc.MILES, OMArc.NMILES. If &lt; 0, assume decimal
+     *        degrees.
+     * @param nverts number of vertices for the poly-arc (if &lt; 3,
+     *        value is generated internally).
      * @param s starting angle of arc, decimal degrees
      * @param e angular extent of arc, decimal degrees
      * @param properties attributes for the arc.
      * @param dos DataOutputStream.
      * @throws IOException
      */
-    public static void write(float latPoint, float lonPoint,
-                             float radius, int units, int nverts,
-                             float s, float e,
-                             LinkProperties properties,
-                             DataOutputStream dos)
-        throws IOException {
+    public static void write(float latPoint, float lonPoint, float radius,
+                             int units, int nverts, float s, float e,
+                             LinkProperties properties, DataOutputStream dos)
+            throws IOException {
         // Write this out...
         dos.write(Link.ARC_HEADER.getBytes());
         dos.writeInt(GRAPHICTYPE_ARC);
@@ -218,30 +209,42 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
     }
 
     public static void write(OMArc arc, Link link, LinkProperties props)
-        throws IOException {
+            throws IOException {
 
         LatLonPoint llp;
         switch (arc.getRenderType()) {
         case OMArc.RENDERTYPE_LATLON:
             llp = arc.getLatLon();
-            LinkArc.write(llp.getLatitude(), llp.getLongitude(),
-                          arc.getRadius(),
-                          arc.getStartAngle(), arc.getExtentAngle(),
-                          props, link.dos);
+            LinkArc.write(llp.getLatitude(),
+                    llp.getLongitude(),
+                    arc.getRadius(),
+                    arc.getStartAngle(),
+                    arc.getExtentAngle(),
+                    props,
+                    link.dos);
             break;
         case OMArc.RENDERTYPE_XY:
-            LinkArc.write(arc.getX(), arc.getY(),
-                          arc.getWidth(), arc.getHeight(),
-                          arc.getStartAngle(), arc.getExtentAngle(),
-                          props, link.dos);
+            LinkArc.write(arc.getX(),
+                    arc.getY(),
+                    arc.getWidth(),
+                    arc.getHeight(),
+                    arc.getStartAngle(),
+                    arc.getExtentAngle(),
+                    props,
+                    link.dos);
             break;
         case OMArc.RENDERTYPE_OFFSET:
             llp = arc.getLatLon();
-            LinkArc.write(llp.getLatitude(), llp.getLongitude(),
-                          arc.getOffX(), arc.getOffY(),
-                          arc.getWidth(), arc.getHeight(),
-                          arc.getStartAngle(), arc.getExtentAngle(),
-                          props, link.dos);
+            LinkArc.write(llp.getLatitude(),
+                    llp.getLongitude(),
+                    arc.getOffX(),
+                    arc.getOffY(),
+                    arc.getWidth(),
+                    arc.getHeight(),
+                    arc.getStartAngle(),
+                    arc.getExtentAngle(),
+                    props,
+                    link.dos);
             break;
         default:
             Debug.error("LinkArc.write: arc rendertype unknown.");
@@ -249,17 +252,15 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
     }
 
     /**
-     * Read the arc protocol off the data input, and return an
-     * OMArc.  Assumes the header for the graphic has already been
-     * read.
-     *
+     * Read the arc protocol off the data input, and return an OMArc.
+     * Assumes the header for the graphic has already been read.
+     * 
      * @param dis the DataInputStream
      * @return OMArc
      * @throws IOException
      * @see com.bbn.openmap.omGraphics.OMArc
      */
-    public static OMArc read(DataInputStream dis)
-        throws IOException {
+    public static OMArc read(DataInputStream dis) throws IOException {
 
         OMArc arc = null;
         float lat, lon, radius, start, extent;
@@ -280,17 +281,19 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
             Length unit = Length.DECIMAL_DEGREE;
 
             switch (units) {
-            case 0: unit = Length.KM;
+            case 0:
+                unit = Length.KM;
                 break;
-            case 1: unit = Length.MILE;
+            case 1:
+                unit = Length.MILE;
                 break;
-            case 2: unit = Length.NM;
+            case 2:
+                unit = Length.NM;
                 break;
             default:
             }
 
-            arc = new OMArc(new LatLonPoint(lat, lon),
-                            radius, unit, nverts, start, extent);
+            arc = new OMArc(new LatLonPoint(lat, lon), radius, unit, nverts, start, extent);
             break;
         case RENDERTYPE_XY:
             x = dis.readInt();
@@ -323,6 +326,5 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
 
         return arc;
     }
-
 
 }

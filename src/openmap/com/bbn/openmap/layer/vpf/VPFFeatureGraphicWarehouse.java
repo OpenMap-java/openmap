@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,42 +14,41 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFFeatureGraphicWarehouse.java,v $
 // $RCSfile: VPFFeatureGraphicWarehouse.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/03/31 21:17:58 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.io.FormatException;
-import java.awt.Color;
+
 import java.awt.Component;
 import java.util.*;
+
 import javax.swing.JTabbedPane;
 
 /**
- * Implement a graphic factory that builds OMGraphics.  It's different
+ * Implement a graphic factory that builds OMGraphics. It's different
  * in that it expects that the feature type has already been checked
  * at the CoverageTable level, and should just build whatever graphic
- * is sent to it.  Called from within CoverageTable.drawFeatures().
+ * is sent to it. Called from within CoverageTable.drawFeatures().
  * 
- * @see com.bbn.openmap.omGraphics.OMGraphic 
+ * @see com.bbn.openmap.omGraphics.OMGraphic
  */
-public class VPFFeatureGraphicWarehouse 
-    extends VPFLayerGraphicWarehouse implements VPFFeatureWarehouse {
+public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
+        implements VPFFeatureWarehouse {
 
     public final static String DEFAULT = "DEFAULT";
     Hashtable featureDrawingAttributes;
-    
+
     /**
-     *
+     *  
      */
     public VPFFeatureGraphicWarehouse() {
         super();
@@ -57,6 +56,7 @@ public class VPFFeatureGraphicWarehouse
 
     /**
      * Set properties of the warehouse.
+     * 
      * @param prefix the prefix to use for looking up properties.
      * @param props the properties file to look at.
      */
@@ -67,21 +67,20 @@ public class VPFFeatureGraphicWarehouse
 
     /**
      * From the initial properties, create the hashtable that holds
-     * the DrawingAttributes object for each feature type.  The
-     * feature name is the key to the drawing attributes for that
-     * feature (roadl).
-     *
+     * the DrawingAttributes object for each feature type. The feature
+     * name is the key to the drawing attributes for that feature
+     * (roadl).
+     * 
      * @param prefix the prefix used for the properties
      * @param props the properties object
-     * @param features a List of Strings, each representing a
-     * feature type that when appended to the prefix, will serve as a
-     * prefix for the drawing attributes settings for that feature.
-     * With a layer prefix of vmapRoads, and a feature type of roadl,
-     * the line color attribute property looked for will be
-     * vmapRoads.roadl.lineColor.
+     * @param features a List of Strings, each representing a feature
+     *        type that when appended to the prefix, will serve as a
+     *        prefix for the drawing attributes settings for that
+     *        feature. With a layer prefix of vmapRoads, and a feature
+     *        type of roadl, the line color attribute property looked
+     *        for will be vmapRoads.roadl.lineColor.
      */
-    public void createFeatureDrawingAttributes(String prefix, 
-                                               Properties props, 
+    public void createFeatureDrawingAttributes(String prefix, Properties props,
                                                List features) {
 
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
@@ -94,8 +93,8 @@ public class VPFFeatureGraphicWarehouse
         }
 
         for (Iterator fiter = features.iterator(); fiter.hasNext();) {
-            String feature = ((String)fiter.next()).intern();
-            DrawingAttributes da = (DrawingAttributes)drawingAttributes.clone();
+            String feature = ((String) fiter.next()).intern();
+            DrawingAttributes da = (DrawingAttributes) drawingAttributes.clone();
             da.setStroke(drawingAttributes.cloneBasicStroke());
             da.setProperties(realPrefix + feature, props);
             featureDrawingAttributes.put(feature, da);
@@ -104,7 +103,7 @@ public class VPFFeatureGraphicWarehouse
 
     /**
      * Don't do this lightly, or everything will be colored the
-     * default value.  The keys to the Hashtable should be the feature
+     * default value. The keys to the Hashtable should be the feature
      * type names, and the values should be the DrawingAttributes for
      * that feature.
      */
@@ -121,17 +120,20 @@ public class VPFFeatureGraphicWarehouse
     }
 
     /**
-     * Return the GUI for certain warehouse attributes.  By default,
+     * Return the GUI for certain warehouse attributes. By default,
      * return the GUI for the DrawingAttributes object being used for
-     * rendering attributes of the graphics.  
-     *
+     * rendering attributes of the graphics.
+     * 
      * @param lst LibrarySelectionTable to use to get information
-     * about the data, if needed.  
+     *        about the data, if needed.
      */
     public Component getGUI(LibrarySelectionTable lst) {
         JTabbedPane jtp = new JTabbedPane();
 
-        jtp.addTab(DEFAULT, null, drawingAttributes.getGUI(), "General Attributes");
+        jtp.addTab(DEFAULT,
+                null,
+                drawingAttributes.getGUI(),
+                "General Attributes");
         List features = getFeatures();
         int size = features.size();
         for (int i = 0; i < size; i++) {
@@ -141,7 +143,8 @@ public class VPFFeatureGraphicWarehouse
                 String desc = null;
                 try {
                     desc = lst.getDescription(currentFeature);
-                } catch (FormatException fe){}
+                } catch (FormatException fe) {
+                }
 
                 if (desc == null) {
                     desc = "Feature Description Unavailable";
@@ -155,14 +158,14 @@ public class VPFFeatureGraphicWarehouse
 
     /**
      * Given a feature type, get the DrawingAttributes for that
-     * feature.  Should be very unlikely to get a null value back.
+     * feature. Should be very unlikely to get a null value back.
      */
     public DrawingAttributes getAttributesForFeature(String featureType) {
         if (featureType != null) {
             DrawingAttributes ret;
 
             if (featureDrawingAttributes != null) {
-                ret = (DrawingAttributes)featureDrawingAttributes.get(featureType);
+                ret = (DrawingAttributes) featureDrawingAttributes.get(featureType);
                 if (ret == null) {
                     ret = drawingAttributes;
                 }
@@ -179,16 +182,11 @@ public class VPFFeatureGraphicWarehouse
     }
 
     /**
-     *
+     *  
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
-                           List facevec,
-                           LatLonPoint ll1,
-                           LatLonPoint ll2,
-                           float dpplat,
-                           float dpplon,
-                           String featureType)
-    {
+                           List facevec, LatLonPoint ll1, LatLonPoint ll2,
+                           float dpplat, float dpplon, String featureType) {
 
         List ipts = new ArrayList();
 
@@ -203,15 +201,19 @@ public class VPFFeatureGraphicWarehouse
             return;
         }
 
-        OMPoly py = createAreaOMPoly(ipts, totalSize, ll1, ll2, 
-                                     dpplat, dpplon,
-                                     covtable.doAntarcticaWorkaround);
+        OMPoly py = createAreaOMPoly(ipts,
+                totalSize,
+                ll1,
+                ll2,
+                dpplat,
+                dpplon,
+                covtable.doAntarcticaWorkaround);
 
         getAttributesForFeature(featureType).setTo(py);
 
         // HACK to get tile boundaries to not show up for areas.
-//         py.setLinePaint(py.getFillPaint());
-//         py.setSelectPaint(py.getFillPaint());
+        //         py.setLinePaint(py.getFillPaint());
+        //         py.setSelectPaint(py.getFillPaint());
         py.setLinePaint(OMColor.clear);
         py.setSelectPaint(OMColor.clear);
 
@@ -219,17 +221,12 @@ public class VPFFeatureGraphicWarehouse
     }
 
     /**
-     *
+     *  
      */
-    public void createEdge(CoverageTable c, EdgeTable edgetable,
-                           List edgevec,
-                           LatLonPoint ll1,
-                           LatLonPoint ll2,
-                           float dpplat,
-                           float dpplon,
-                           CoordFloatString coords,
-                           String featureType)
-    {
+    public void createEdge(CoverageTable c, EdgeTable edgetable, List edgevec,
+                           LatLonPoint ll1, LatLonPoint ll2, float dpplat,
+                           float dpplon, CoordFloatString coords,
+                           String featureType) {
 
         OMPoly py = createEdgeOMPoly(coords, ll1, ll2, dpplat, dpplon);
         getAttributesForFeature(featureType).setTo(py);
@@ -239,15 +236,11 @@ public class VPFFeatureGraphicWarehouse
     }
 
     /**
-     *
+     *  
      */
-    public void createText(CoverageTable c, TextTable texttable,
-                           List textvec,
-                           float latitude,
-                           float longitude,
-                           String text,
-                           String featureType)
-    {
+    public void createText(CoverageTable c, TextTable texttable, List textvec,
+                           float latitude, float longitude, String text,
+                           String featureType) {
 
         OMText txt = createOMText(text, latitude, longitude);
         getAttributesForFeature(featureType).setTo(txt);
@@ -255,7 +248,8 @@ public class VPFFeatureGraphicWarehouse
     }
 
     /**
-     * Method called by the VPF reader code to construct a node feature.
+     * Method called by the VPF reader code to construct a node
+     * feature.
      */
     public void createNode(CoverageTable c, NodeTable t, List nodeprim,
                            float latitude, float longitude,
@@ -265,7 +259,8 @@ public class VPFFeatureGraphicWarehouse
         addPoint(pt);
     }
 
-    public boolean needToFetchTileContents(String currentFeature, TileDirectory currentTile) {
+    public boolean needToFetchTileContents(String currentFeature,
+                                           TileDirectory currentTile) {
         return true;
     }
 

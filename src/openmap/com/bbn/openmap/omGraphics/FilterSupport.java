@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/FilterSupport.java,v $
 // $RCSfile: FilterSupport.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/09/23 20:56:24 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:06:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics;
 
@@ -32,15 +31,16 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * This class provides support for implementing the OMGraphicHandler
- * interface.  If you already calculate an OMGraphicList, you can use
- * this class to apply filtering to it.  The graphics on the list you
+ * interface. If you already calculate an OMGraphicList, you can use
+ * this class to apply filtering to it. The graphics on the list you
  * provide it will be made visible or not depending on whether they
- * meet the filter criteria. <p>
+ * meet the filter criteria.
+ * <p>
  * 
  * The visibility of the graphics is affected when a filter is
  * applied, and visiblity is used as the test if whether a graphic is
- * added to a returned list.  Use resetFiltering() to turn visibility
- * back on for all the OMGraphics.  If a graphic is not visible when a
+ * added to a returned list. Use resetFiltering() to turn visibility
+ * back on for all the OMGraphics. If a graphic is not visible when a
  * filter is applied, then the filter test will automatically fail.
  */
 public class FilterSupport implements OMGraphicHandler, Serializable {
@@ -50,9 +50,9 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      */
     protected OMGraphicList list = null;
 
-    /** 
+    /**
      * A flag to use the Area.intersets(Area) test, which may be a
-     * performance hit. 
+     * performance hit.
      */
     protected boolean precise = true;
 
@@ -66,14 +66,16 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
 
     /**
      * Filters the OMGraphicHandler graphic list so that graphics
-     * within the given shape will be visible.  Returns an
-     * OMGraphicList with those visible shapes.  The returned list
+     * within the given shape will be visible. Returns an
+     * OMGraphicList with those visible shapes. The returned list
      * should not be assumed to be the same OMGraphicList object that
-     * is maintained inside the OMGraphicHandler.  Same as calling
+     * is maintained inside the OMGraphicHandler. Same as calling
      * filter(withinThisShape, true).
-     * @param withinThisShape java.awt.Shape object defining a boundary.
+     * 
+     * @param withinThisShape java.awt.Shape object defining a
+     *        boundary.
      * @return OMGraphicList containing OMGraphics that are within the
-     * Shape.  
+     *         Shape.
      */
     public OMGraphicList filter(Shape withinThisShape) {
         return filter(withinThisShape, true);
@@ -81,19 +83,19 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
 
     /**
      * Filters the OMGraphicHandler graphic list so that graphics
-     * inside or outside the given shape will be visible.  Returns an
-     * OMGraphicList with those visible shapes.  The returned list
+     * inside or outside the given shape will be visible. Returns an
+     * OMGraphicList with those visible shapes. The returned list
      * should not be assumed to be the same OMGraphicList object that
      * is maintained inside the OMGraphicHandler.
+     * 
      * @param shapeBoundary java.awt.Shape object defining a boundary.
      * @param getInsideBoundary if true, the filter will look for
-     * shapes inside and contacting the boundary.  If false, the
-     * filter will look for shapes outside the boundary.
+     *        shapes inside and contacting the boundary. If false, the
+     *        filter will look for shapes outside the boundary.
      * @return OMGraphicList containing OMGraphics that are within the
-     * Shape.  
+     *         Shape.
      */
-    public OMGraphicList filter(Shape shapeBoundary, 
-                                boolean getInsideBoundary) {
+    public OMGraphicList filter(Shape shapeBoundary, boolean getInsideBoundary) {
         Area area = null;
         if (shapeBoundary != null) {
             area = new Area(shapeBoundary);
@@ -110,9 +112,9 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      * Method that provides a recursive mechanism to go through
      * OMGraphicsLists to filter out areas, inside or outside another.
      */
-    protected OMGraphicList filterList(OMGraphicList omgl,
-                                       Area area, boolean getInsideArea) {
-        
+    protected OMGraphicList filterList(OMGraphicList omgl, Area area,
+                                       boolean getInsideArea) {
+
         OMGraphicList ret = new OMGraphicList();
         boolean DEBUG_DETAIL = Debug.debugging("filtersupportdetail");
         boolean DEBUG = Debug.debugging("filtersupport") || DEBUG_DETAIL;
@@ -127,10 +129,11 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
             Iterator it = omgl.iterator();
 
             while (it.hasNext()) {
-                OMGraphic omg = (OMGraphic)it.next();
+                OMGraphic omg = (OMGraphic) it.next();
 
                 if (DEBUG) {
-                    Debug.output("FilterSupport.filterList evaluating " + (count++) + " OMGraphic, " + omg);
+                    Debug.output("FilterSupport.filterList evaluating "
+                            + (count++) + " OMGraphic, " + omg);
                 }
 
                 boolean outsideFilter = true;
@@ -154,13 +157,15 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
                         Debug.output("  (filterList recursiving handing OMGraphicList)");
                     }
 
-                    OMGraphicList subList = 
-                        filterList((OMGraphicList)omg, area, getInsideArea);
+                    OMGraphicList subList = filterList((OMGraphicList) omg,
+                            area,
+                            getInsideArea);
 
                     if (!subList.isEmpty()) {
                         if (DEBUG) {
-                            Debug.output("  +++ OMGraphicList's contents (" + 
-                                         subList.size() + ") pass filter, adding...");
+                            Debug.output("  +++ OMGraphicList's contents ("
+                                    + subList.size()
+                                    + ") pass filter, adding...");
                         }
 
                         passedFilter(subList);
@@ -177,21 +182,21 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
                     continue;
                 } else {
                     Shape omgShape = omg.getShape();
-                    if (omgShape != null && 
-                        area.intersects(omgShape.getBounds2D())) {
+                    if (omgShape != null
+                            && area.intersects(omgShape.getBounds2D())) {
 
                         if (DEBUG_DETAIL) {
                             Debug.output("   +++ omg intersects bounds");
                         }
 
                         // The area.interects() method above is a
-                        // general case.  If you care about
+                        // general case. If you care about
                         // preciseness, set the precise flag.
                         // Depending on the performance cost, we might
                         // want to make it permanent.
 
                         if (precise) {
-                            Area clone = (Area)area.clone();
+                            Area clone = (Area) area.clone();
                             clone.intersect(new Area(omgShape));
                             if (!clone.isEmpty()) {
                                 outsideFilter = false;
@@ -203,8 +208,8 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
 
                     // decide what to do depending on filteredOut and
                     // getInsideArea
-                    if ((outsideFilter && !getInsideArea) ||
-                        (!outsideFilter && getInsideArea)) {
+                    if ((outsideFilter && !getInsideArea)
+                            || (!outsideFilter && getInsideArea)) {
 
                         if (DEBUG) {
                             Debug.output("   +++ OMGraphic passes filter, adding...");
@@ -237,13 +242,14 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
 
     /**
      * Filters the OMGraphicHandler graphic list so that graphics
-     * meeting the SQL query statement will be visible.  Returns an
-     * OMGraphicList with those visible shapes.  The returned list
+     * meeting the SQL query statement will be visible. Returns an
+     * OMGraphicList with those visible shapes. The returned list
      * should not be assumed to be the same OMGraphicList object that
      * is maintained inside the OMGraphicHandler.
+     * 
      * @param SQLQuery a SELECT SQL statement
      * @return OMGraphicList containing OMGraphics that meet the
-     * SELECT statemenet criteria.
+     *         SELECT statemenet criteria.
      */
     public OMGraphicList filter(String SQLQuery) {
         return new OMGraphicList();
@@ -252,8 +258,10 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
     /**
      * Allows the OMGraphicHandler to receive graphics or take some
      * action on one.
+     * 
      * @param graphic the OMGraphic to do the action on.
-     * @param action the OMAction describing what to do to the graphic.
+     * @param action the OMAction describing what to do to the
+     *        graphic.
      * @return true if the action was able to be carried out.
      */
     public boolean doAction(OMGraphic graphic, OMAction action) {
@@ -266,20 +274,23 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
 
     /**
      * Return the graphic list currently being used by the
-     * OMGraphicHandler.  If filters have been applied, then the
+     * OMGraphicHandler. If filters have been applied, then the
      * OMGraphics that have made it through the filter are visible.
      * List may be null, if it hasn't been set.
-     * @see OMGraphic#isVisible().  
+     * 
+     * @see OMGraphic#isVisible().
      */
     public synchronized OMGraphicList getList() {
         if (DEBUG) {
-            Debug.output("FilterSupport.getList() with " + (list != null?list.size()+" graphics.":"null list."));
+            Debug.output("FilterSupport.getList() with "
+                    + (list != null ? list.size() + " graphics." : "null list."));
         }
         return list;
     }
 
     /**
-     * Indicates if the OMGraphicHandler can have its OMGraphicList set.
+     * Indicates if the OMGraphicHandler can have its OMGraphicList
+     * set.
      */
     public boolean canSetList() {
         return true;
@@ -291,25 +302,27 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      */
     public synchronized void setList(OMGraphicList omgl) {
         if (DEBUG) {
-            Debug.output("FilterSupport.setList() with " + (omgl != null?omgl.size()+" graphics.":"null list."));
+            Debug.output("FilterSupport.setList() with "
+                    + (omgl != null ? omgl.size() + " graphics." : "null list."));
         }
         list = omgl;
     }
-    
+
     /**
      * Remove all filters, and reset all graphics to be visible.
      */
     public void resetFiltering() {
         OMGraphicList list = getList();
-        if (list != null) list.setVisible(true);
+        if (list != null)
+            list.setVisible(true);
     }
 
     /**
      * Method called when FilterSupport finds an OMGraphic that fails
-     * the filter test.  The OMGraphic is not being added to a list
+     * the filter test. The OMGraphic is not being added to a list
      * that is being returned for passing OMGraphics in another
      * method, this call-out is an opportunity to make settings on
-     * OMGraphics that pass the filter.  By default, the visibility of
+     * OMGraphics that pass the filter. By default, the visibility of
      * the OMGraphic is set to false.
      */
     protected void failedFilter(OMGraphic omg) {
@@ -318,12 +331,12 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
 
     /**
      * Method called when FilterSupport finds an OMGraphic that passes
-     * the filter test.  The OMGraphic is already being added to a
-     * list that is being returned in another method, this call-out is
-     * an opportunity to make settings on OMGraphics that pass the
+     * the filter test. The OMGraphic is already being added to a list
+     * that is being returned in another method, this call-out is an
+     * opportunity to make settings on OMGraphics that pass the
      * filter.
      */
     protected void passedFilter(OMGraphic omg) {
-        // NO-OP, by default
+    // NO-OP, by default
     }
 }

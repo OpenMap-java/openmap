@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,28 +12,28 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/Attic/GreyscaleSlopeGenerator.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/GreyscaleSlopeGenerator.java,v
+// $
 // $RCSfile: GreyscaleSlopeGenerator.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.grid;
 
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
-import java.awt.Graphics;
 
 public class GreyscaleSlopeGenerator {
-    
-    public OMGraphic generate(OMGrid grid, Projection proj){
+
+    public OMGraphic generate(OMGrid grid, Projection proj) {
         return null;
     }
 
-    public boolean needGenerateToRender(){
+    public boolean needGenerateToRender() {
         return true;
     }
 }

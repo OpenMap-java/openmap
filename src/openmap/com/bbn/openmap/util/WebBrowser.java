@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,19 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/WebBrowser.java,v $
 // $RCSfile: WebBrowser.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/09/17 19:07:27 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:06:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
-
 package com.bbn.openmap.util;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URL;
-import java.net.MalformedURLException;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.event.InfoDisplayEvent;
@@ -43,15 +44,16 @@ public class WebBrowser {
 
     /**
      * Create a webbrowser.
-     *
+     *  
      */
     public WebBrowser() {}
 
-    /** 
+    /**
      * Get the launch cmd.
+     * 
      * @param url URL to show
      * @return String
-     *
+     *  
      */
     protected String generateLaunchCmd(String url) {
         //HACK, needs to be OS/web-browser specific
@@ -60,6 +62,7 @@ public class WebBrowser {
 
     /**
      * Write temporary file to temporary directory, and generate URL.
+     * 
      * @param text text String
      * @return String file URL
      */
@@ -68,16 +71,17 @@ public class WebBrowser {
         File tmpFile = null;
 
         try {
-            tmpFile = File.createTempFile(
-                Environment.OpenMapPrefix, ".html", 
-                new File(Environment.get(Environment.TmpDir)));
+            tmpFile = File.createTempFile(Environment.OpenMapPrefix,
+                    ".html",
+                    new File(Environment.get(Environment.TmpDir)));
 
-            tmpFile.deleteOnExit(); // get rid of it when the user quits.
+            tmpFile.deleteOnExit(); // get rid of it when the user
+                                    // quits.
 
             FileOutputStream fs = new FileOutputStream(tmpFile);
-            PrintWriter out = new PrintWriter((OutputStream)fs);
+            PrintWriter out = new PrintWriter((OutputStream) fs);
             out.println(text);
-            out.close();                        // close the streams
+            out.close(); // close the streams
 
             String urlString = tmpFile.toURL().toString();
             Debug.output("WebBrowser: created " + urlString);
@@ -88,16 +92,16 @@ public class WebBrowser {
         } catch (IOException ioe) {
             Debug.error("WebBrowser.writeAndGenerateURL: " + ioe);
         }
-        
-        postErrorMessage("Cannot write to temp file:" + 
-                         (tmpFile != null?tmpFile.getAbsolutePath():"unknown"));
+
+        postErrorMessage("Cannot write to temp file:"
+                + (tmpFile != null ? tmpFile.getAbsolutePath() : "unknown"));
 
         return null;
     }
 
     /**
-     * Points a web browser that's already running where
-     * to go next.
+     * Points a web browser that's already running where to go next.
+     * 
      * @param url URL to go
      */
     protected void sendTo(String url) {
@@ -106,8 +110,8 @@ public class WebBrowser {
             try {
                 edu.stanford.ejalbert.BrowserLauncher.openURL(url);
             } catch (IOException ioe) {
-                Debug.error("WebBrowser caught IOException loading webpage (" + url.toString() +
-                            ")\n" + ioe.getMessage());
+                Debug.error("WebBrowser caught IOException loading webpage ("
+                        + url.toString() + ")\n" + ioe.getMessage());
             }
             return;
 
@@ -126,8 +130,8 @@ public class WebBrowser {
                     ac.showDocument(new URL(url), "otherFrame");
                 } catch (java.net.MalformedURLException e) {
                     System.err.println("WebBrowser.sendTo: " + e);
-                    postErrorMessage("Cannot show document: " +
-                                     Environment.get("line.separator") + e);
+                    postErrorMessage("Cannot show document: "
+                            + Environment.get("line.separator") + e);
                 }
                 return;
             }
@@ -137,8 +141,8 @@ public class WebBrowser {
                 cmd = Environment.get(Environment.WebBrowser) + " " + url;
             } else {
                 // Assume Unix HACK
-                cmd = Environment.get(Environment.WebBrowser) +
-                    " -remote OpenURL(" + url + ")";
+                cmd = Environment.get(Environment.WebBrowser)
+                        + " -remote OpenURL(" + url + ")";
             }
 
             try {
@@ -146,8 +150,8 @@ public class WebBrowser {
                 Runtime.getRuntime().exec(cmd).waitFor();
             } catch (IOException e) {
                 System.err.println("WebBrowser.sendTo: " + e);
-                postErrorMessage("Cannot start WebBrowser: " +
-                                 Environment.get("line.separator") + e);
+                postErrorMessage("Cannot start WebBrowser: "
+                        + Environment.get("line.separator") + e);
             } catch (InterruptedException f) {
                 System.err.println("WebBrowser.sendTo: interrupted");
             }
@@ -159,10 +163,11 @@ public class WebBrowser {
     }
 
     /**
-     * Creates a new web browser process, or points the current
-     * one to the url argument.
+     * Creates a new web browser process, or points the current one to
+     * the url argument.
+     * 
      * @param urlString URL
-     *
+     *  
      */
     public void launch(String urlString) {
         String launchCmd = null;
@@ -175,9 +180,9 @@ public class WebBrowser {
                 proc = Runtime.getRuntime().exec(launchCmd);
             } catch (IOException e) {
                 System.err.println("WebBrowser.launch: " + e);
-                postErrorMessage("Cannot start WebBrowser: " +
-                                 Environment.get("line.separator") + "\"" +
-                                 launchCmd + "\"");
+                postErrorMessage("Cannot start WebBrowser: "
+                        + Environment.get("line.separator") + "\"" + launchCmd
+                        + "\"");
             }
         }
 
@@ -187,16 +192,16 @@ public class WebBrowser {
         }
     }
 
-
     private void postErrorMessage(String message) {
         info.requestMessage(new InfoDisplayEvent(this, message));
     }
 
     /**
-     * Writes out temporary text file, and creates a new web browser process
-     * or points the current one at the file.
+     * Writes out temporary text file, and creates a new web browser
+     * process or points the current one at the file.
+     * 
      * @param text String
-     *
+     *  
      */
     public void writeAndLaunch(String text) {
         String cmd = null;
@@ -208,14 +213,14 @@ public class WebBrowser {
                 proc = Runtime.getRuntime().exec(cmd);
             } catch (IOException e) {
                 System.err.println("WebBrowser.writeAndLaunch: " + e);
-                postErrorMessage("Cannot start WebBrowser: " +
-                        Environment.get("line.separator") +
-                        "\"" + cmd + "\"");
+                postErrorMessage("Cannot start WebBrowser: "
+                        + Environment.get("line.separator") + "\"" + cmd + "\"");
             }
         }
 
         // send the new url to the web browser that's already running
-        else sendTo(writeFileAndGenerateURL(text));
+        else
+            sendTo(writeFileAndGenerateURL(text));
     }
 
     /**
@@ -232,7 +237,7 @@ public class WebBrowser {
         try {
             proc.exitValue();
             Debug.message("www", "WebBrowser.exitValue: WebBrowser died");
-            proc = null;                // go down
+            proc = null; // go down
         } catch (IllegalStateException e) {
         } catch (IllegalThreadStateException f) {
         }
@@ -249,8 +254,8 @@ public class WebBrowser {
         try {
             edu.stanford.ejalbert.BrowserLauncher.openURL(url);
         } catch (IOException ioe) {
-            Debug.error("WebBrowser caught IOException loading webpage (" + url.toString() +
-                        ")\n" + ioe.getMessage());
+            Debug.error("WebBrowser caught IOException loading webpage ("
+                    + url.toString() + ")\n" + ioe.getMessage());
         }
 
     }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFileSections.java,v $
 // $RCSfile: RpfFileSections.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 /*
  * The meat of this code is based on source code provided by
@@ -30,22 +29,21 @@
  * Corporation for those parts, and used with permission.
  */
 
-
 package com.bbn.openmap.layer.rpf;
 
+import java.awt.Color;
 import java.io.IOException;
 
 import com.bbn.openmap.io.*;
-import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.util.Debug;
 
 /**
  * The class to use to get the locations of different sections of the
- * RPF files.  This class will find out the section locations, and
- * then let you use it later to get to and read those sections. 
+ * RPF files. This class will find out the section locations, and then
+ * let you use it later to get to and read those sections.
  */
 public class RpfFileSections {
-/* DKS switched 3 and 4 to match handbook */
+    /* DKS switched 3 and 4 to match handbook */
     public static final int LOC_BOUNDARIES = 3;
     public static final int LOC_FRAMES = 4;
     public static final int LOC_COVERAGE = 6;
@@ -53,7 +51,7 @@ public class RpfFileSections {
     public static final int LOC_CLUT = 9;
     public static final int LOC_IMAGE = 10;
 
-/* DKS. New Location ID's for SUBsections */
+    /* DKS. New Location ID's for SUBsections */
     public static final int LOC_HEADER_SECTION = 128;
     public static final int LOC_LOCATION_SECTION = 129;
     public static final int LOC_COVERAGE_SECTION = 130;
@@ -87,24 +85,25 @@ public class RpfFileSections {
     public static final int COLOR_LOCATION_KEY = 3;
 
     RpfLocationSection locationSection; // created in init()
-    RpfLocationRecord[] locationRecords;  // created as found in the file
+    RpfLocationRecord[] locationRecords; // created as found in the
+                                         // file
 
     protected boolean DEBUG_RPFDETAIL = false;
 
-    public RpfFileSections() {
-    }
+    public RpfFileSections() {}
 
     /**
      * Create the file sections object, and then go ahead and parse
-     * the file section section of the RPF file.  Assumes, the file
-     * pointer is in the right place, at the Rpfheader.locationSectionLocation.
-     *
+     * the file section section of the RPF file. Assumes, the file
+     * pointer is in the right place, at the
+     * Rpfheader.locationSectionLocation.
+     * 
      * @param binFile the binaryFile of the RPF frame file.
      */
     public RpfFileSections(BinaryFile binFile) {
         parse(binFile);
     }
-    
+
     public void parse(BinaryFile binFile) {
         DEBUG_RPFDETAIL = Debug.debugging("rpfdetail");
         // Location section
@@ -113,17 +112,18 @@ public class RpfFileSections {
 
     public RpfLocationRecord[] getLocations(int key) {
 
-        if (locationRecords == null) return null;
+        if (locationRecords == null)
+            return null;
 
         RpfLocationRecord[] locations = new RpfLocationRecord[key];
         int[] ids = new int[key];
-        
+
         switch (key) {
         case TOC_LOCATION_KEY:
-            ids[0] = LOC_BOUNDARY_SECTION_SUBHEADER;  /* 148 */
-            ids[1] = LOC_BOUNDARY_RECTANGLE_TABLE;  /* 149 */
-            ids[2] = LOC_FRAME_FILE_INDEX_SUBHEADER;  /* 150 */
-            ids[3] = LOC_FRAME_FILE_INDEX_SUBSECTION;  /* 151 */
+            ids[0] = LOC_BOUNDARY_SECTION_SUBHEADER; /* 148 */
+            ids[1] = LOC_BOUNDARY_RECTANGLE_TABLE; /* 149 */
+            ids[2] = LOC_FRAME_FILE_INDEX_SUBHEADER; /* 150 */
+            ids[3] = LOC_FRAME_FILE_INDEX_SUBSECTION; /* 151 */
             break;
         case FRAME_LOCATION_KEY:
             ids[0] = LOC_COMPRESSION_SECTION; /* 131 */
@@ -136,24 +136,23 @@ public class RpfFileSections {
             ids[7] = LOC_ATTRIBUTE_SUBSECTION; /* 142 */
             break;
         case COLOR_LOCATION_KEY:
-            ids[0] = LOC_COLORGRAY_SECTION_SUBHEADER;   /* 134 */
-            ids[1] = LOC_COLORMAP_SUBSECTION;  /* 135 */
-            ids[2] = LOC_COLOR_CONVERTER_SUBSECTION;  /* 139 */
+            ids[0] = LOC_COLORGRAY_SECTION_SUBHEADER; /* 134 */
+            ids[1] = LOC_COLORMAP_SUBSECTION; /* 135 */
+            ids[2] = LOC_COLOR_CONVERTER_SUBSECTION; /* 139 */
             break;
         default:
         }
-        
+
         for (int i = 0; i < key; i++)
             locations[i] = getRpfLocationRecord(ids[i]);
-        
+
         return locations;
     }
 
-
     /**
      * This function returns the location record, which provides the
-     * file location for a particular section.  The LOC ids are in
-     * this file.
+     * file location for a particular section. The LOC ids are in this
+     * file.
      */
     public RpfLocationRecord getRpfLocationRecord(int locationRecordId) {
         if (locationRecords != null) {
@@ -170,8 +169,8 @@ public class RpfFileSections {
      * This function returns the RpfLocationSection for the file.
      * Since we don't really know the location of the location section
      * yet, we really have to have the file pointer set to the right
-     * place.  This function should be called right after the
-     * RpfHeader has been read.
+     * place. This function should be called right after the RpfHeader
+     * has been read.
      */
     protected boolean parseLocationSection(BinaryFile binFile) {
 
@@ -183,52 +182,54 @@ public class RpfFileSections {
             locationSection.numberRecords = (int) binFile.readShort();
             locationSection.recordLength = (int) binFile.readShort();
             locationSection.aggregateLength = (long) binFile.readInteger();
-            
+
             if (DEBUG_RPFDETAIL) {
                 Debug.output(locationSection.toString());
             }
 
             locationRecords = new RpfLocationRecord[locationSection.numberRecords];
 
-            // Now go find the ones we want 
-            for (int i = 0; i < locationSection.numberRecords; i++)
-            {
+            // Now go find the ones we want
+            for (int i = 0; i < locationSection.numberRecords; i++) {
                 locationRecords[i] = new RpfLocationRecord();
                 locationRecords[i].id = binFile.readShort();
                 locationRecords[i].componentLength = (long) binFile.readInteger();
                 locationRecords[i].componentLocation = (long) (binFile.readInteger());
 
                 if (DEBUG_RPFDETAIL) {
-                    Debug.output("** record " + i + ": " + locationRecords[i].toString());
+                    Debug.output("** record " + i + ": "
+                            + locationRecords[i].toString());
                 }
 
             }
-            
+
         } catch (IOException ioe) {
             Debug.error("RpfFileSections: IO ERROR parsing locations!\n" + ioe);
-            return false;           
-        } catch (FormatException fe) {
-            Debug.error("RpfFileSections: Format ERROR parsing locations!\n" + fe);
             return false;
-        } 
+        } catch (FormatException fe) {
+            Debug.error("RpfFileSections: Format ERROR parsing locations!\n"
+                    + fe);
+            return false;
+        }
 
         return true;
     }
 
     /**
-     * Read the location and information about the coverage
-     * section. The method will find out where to start reading from
-     * inside the file.
+     * Read the location and information about the coverage section.
+     * The method will find out where to start reading from inside the
+     * file.
      */
     public RpfCoverageSection parseCoverageSection(BinaryFile binFile) {
         RpfLocationRecord lr = getRpfLocationRecord(LOC_COVERAGE_SECTION);
-        if (lr == null) return null;
+        if (lr == null)
+            return null;
 
-        try{
+        try {
             binFile.seek(lr.componentLocation);
 
             RpfCoverageSection coverage = new RpfCoverageSection();
-            
+
             if (coverage.read(binFile)) {
                 if (DEBUG_RPFDETAIL)
                     Debug.output(coverage.toString());
@@ -242,9 +243,9 @@ public class RpfFileSections {
     }
 
     /**
-     * Read the location and information about the attribute
-     * section. The method will find out where to start reading from
-     * inside the file.
+     * Read the location and information about the attribute section.
+     * The method will find out where to start reading from inside the
+     * file.
      */
     public RpfAttributes parseAttributes(BinaryFile binFile) {
         RpfLocationRecord lr = getRpfLocationRecord(LOC_ATTRIBUTE_SECTION_SUBHEADER);
@@ -262,17 +263,20 @@ public class RpfFileSections {
         }
         return null;
     }
-    
+
     /**
      * This kicks back an array of OMColors, representing the
-     * colortable.  By going through the RpfFileSections fuction, the
+     * colortable. By going through the RpfFileSections fuction, the
      * file locations for the color sections are taken care of, and
      * the RpfColortable.parseColorLookUpTable function is called
      * correctly.
      */
-    public OMColor[] parseColorSection(BinaryFile binFile, RpfColortable colortable) {
-        if (locationRecords == null) return null;
-        return colortable.parseColorLookUpTable(binFile, getLocations(COLOR_LOCATION_KEY));
+    public Color[] parseColorSection(BinaryFile binFile,
+                                       RpfColortable colortable) {
+        if (locationRecords == null)
+            return null;
+        return colortable.parseColorLookUpTable(binFile,
+                getLocations(COLOR_LOCATION_KEY));
     }
 
     static public class RpfCoverageSection {
@@ -304,14 +308,16 @@ public class RpfFileSections {
                 ewHorRes = binFile.readDouble();
                 latInterval = binFile.readDouble();
                 lonInterval = binFile.readDouble();
-                
+
             } catch (IOException ioe) {
-                Debug.error("RpfFileSections: IO ERROR parsing coverage!\n" + ioe);
-                return false;       
-            } catch (FormatException fe) {
-                Debug.error("RpfFileSections: Format ERROR parsing coverage!\n" + fe);
+                Debug.error("RpfFileSections: IO ERROR parsing coverage!\n"
+                        + ioe);
                 return false;
-            } 
+            } catch (FormatException fe) {
+                Debug.error("RpfFileSections: Format ERROR parsing coverage!\n"
+                        + fe);
+                return false;
+            }
             return true;
         }
 
@@ -352,7 +358,7 @@ public class RpfFileSections {
             return s.toString();
         }
     }
-    
+
     static public class RpfLocationRecord {
         public short id;
         public long componentLength;

@@ -2,7 +2,7 @@
 //
 // <copyright>
 //
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,38 +14,27 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/ControlledManager.java,v $
 // $RCSfile: ControlledManager.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/09 13:33:36 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:38 $
 // $Author: dietrick $
 //
 // **********************************************************************
 
-
 package com.bbn.openmap.tools.j3d;
 
-import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
-import com.sun.j3d.utils.behaviors.keyboard.*;
-import com.sun.j3d.utils.behaviors.mouse.*;
-import com.sun.j3d.utils.geometry.ColorCube;
-import com.sun.j3d.utils.universe.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Enumeration;
 import javax.media.j3d.*;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.vecmath.*;
 
 /**
- * A 3D manager where the eye position is controlled by an
- * outside object. The keys should still work to control the
- * view orientation, just not position. (I don't think they do, yet).
- *
- * @author    dietrick
- * @created   April 25, 2002
+ * A 3D manager where the eye position is controlled by an outside
+ * object. The keys should still work to control the view orientation,
+ * just not position. (I don't think they do, yet).
+ * 
+ * @author dietrick
+ * @created April 25, 2002
  */
 public class ControlledManager extends MapContentManager {
 
@@ -54,33 +43,31 @@ public class ControlledManager extends MapContentManager {
      */
     protected NavBehaviorProvider controller;
 
-    public ControlledManager(MapHandler mapHandler, NavBehaviorProvider cont, int contentMask) {
+    public ControlledManager(MapHandler mapHandler, NavBehaviorProvider cont,
+            int contentMask) {
         this(mapHandler, cont, new Background(0f, 0f, 0f), contentMask);
     }
 
-
-    public ControlledManager(MapHandler mapHandler,
-            NavBehaviorProvider cont,
+    public ControlledManager(MapHandler mapHandler, NavBehaviorProvider cont,
             Background background, int contentMask) {
         super();
 
-//      background.setCapability(Background.ALLOW_APPLICATION_BOUNDS_WRITE);
-//      background.setCapability(Background.ALLOW_APPLICATION_BOUNDS_READ);
-//      background.setCapability(Background.ALLOW_COLOR_READ);
-//      background.setCapability(Background.ALLOW_COLOR_WRITE);
+        //      background.setCapability(Background.ALLOW_APPLICATION_BOUNDS_WRITE);
+        //      background.setCapability(Background.ALLOW_APPLICATION_BOUNDS_READ);
+        //      background.setCapability(Background.ALLOW_COLOR_READ);
+        //      background.setCapability(Background.ALLOW_COLOR_WRITE);
 
         setController(cont);
         this.setSceneBackground(background);
         addMapContent(mapHandler, objRootBG, contentMask);
 
-        // Important!!  Compiles the universe
-        ((UniverseManager)universe).makeLive();
+        // Important!! Compiles the universe
+        ((UniverseManager) universe).makeLive();
     }
 
     protected void setController(NavBehaviorProvider cont) {
         controller = cont;
     }
-
 
     public NavBehaviorProvider getController() {
         return controller;
@@ -91,15 +78,17 @@ public class ControlledManager extends MapContentManager {
 
         Behavior behavior = null;
         if (controller != null) {
-            behavior = controller.setViewingPlatformBehavior(cameraTransform, projection, scaleFactor);
+            behavior = controller.setViewingPlatformBehavior(cameraTransform,
+                    projection,
+                    scaleFactor);
         }
         return behavior;
     }
 
     public static JFrame getFrame(String title, int width, int height,
-            MapHandler mapHandler,
-            NavBehaviorProvider controller,
-            Background background, int contentMask) {
+                                  MapHandler mapHandler,
+                                  NavBehaviorProvider controller,
+                                  Background background, int contentMask) {
 
         JFrame frame = new JFrame(title);
         frame.setSize(width, height);

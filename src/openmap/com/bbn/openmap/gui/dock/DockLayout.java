@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/DockLayout.java,v $
 // $RCSfile: DockLayout.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,11 +30,12 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * A Layout manager used for the docking component...
+ * 
  * @author Ben Lubin
- * @version $Revision: 1.3 $ on $Date: 2004/01/26 18:18:08 $
+ * @version $Revision: 1.4 $ on $Date: 2004/10/14 18:05:49 $
  * @since 12/5/02
  */
-public class DockLayout implements LayoutManager2 {    
+public class DockLayout implements LayoutManager2 {
 
     private BasicDockPanel p;
 
@@ -50,7 +51,7 @@ public class DockLayout implements LayoutManager2 {
 
     //Layout Query Functions:
     /////////////////////////
-    
+
     /** Account for the extra size of the cardinal DockWrapper. */
     protected int getHeightAtLeftCardinal(DockWrapper dw) {
         return getHeightAtLeft(dw) - p.getOverlapTolerance();
@@ -66,7 +67,7 @@ public class DockLayout implements LayoutManager2 {
         return getWidthAtY(dw, y) - p.getOverlapTolerance();
     }
 
-    /** 
+    /**
      * Get the height at the left point for a north or south
      * DockWrapper.
      */
@@ -74,12 +75,12 @@ public class DockLayout implements LayoutManager2 {
         int ret = dw.getPreferredSize().height;
         java.util.List l = dw.getDockedWrappers();
         if (l.size() > 0) {
-            ret += getHeightAtLeft((DockWrapper)l.get(0));
-        }       
+            ret += getHeightAtLeft((DockWrapper) l.get(0));
+        }
         return ret;
     }
 
-    /** 
+    /**
      * Get the height at the right point for a north or south
      * DockWrapper.
      */
@@ -87,23 +88,23 @@ public class DockLayout implements LayoutManager2 {
         int ret = dw.getPreferredSize().height;
         java.util.List l = dw.getDockedWrappers();
         if (l.size() > 0) {
-            ret += getHeightAtRight((DockWrapper)l.get(l.size()-1));
-        }       
+            ret += getHeightAtRight((DockWrapper) l.get(l.size() - 1));
+        }
         return ret;
     }
 
     /**
-     * Get the width at the given point for a east or west DockWrapper.
+     * Get the width at the given point for a east or west
+     * DockWrapper.
      */
     protected int getWidthAtY(DockWrapper dw, int y) {
         Rectangle bounds = dw.getBounds();
         int ret = 0;
-        if ( (bounds.y <= y) && 
-             (bounds.y + bounds.height >= y)) {
+        if ((bounds.y <= y) && (bounds.y + bounds.height >= y)) {
             ret = bounds.width;
         }
-        for(Iterator iter=dw.getDockedWrappers().iterator(); iter.hasNext();){
-            DockWrapper c = (DockWrapper)iter.next();
+        for (Iterator iter = dw.getDockedWrappers().iterator(); iter.hasNext();) {
+            DockWrapper c = (DockWrapper) iter.next();
             ret += getWidthAtY(c, y);
         }
         return ret;
@@ -125,154 +126,155 @@ public class DockLayout implements LayoutManager2 {
         inBounds.height -= insets.top;
         inBounds.height -= insets.bottom;
 
-        backgroundBounds = (Rectangle)inBounds.clone();
-        occludingBounds = (Rectangle)inBounds.clone();
+        backgroundBounds = (Rectangle) inBounds.clone();
+        occludingBounds = (Rectangle) inBounds.clone();
 
         layoutCardinals();
-        layoutEast(p.getEast(), 
-                   occludingBounds.x + occludingBounds.width, occludingBounds.y,
-                   occludingBounds.width, occludingBounds.height);
+        layoutEast(p.getEast(),
+                occludingBounds.x + occludingBounds.width,
+                occludingBounds.y,
+                occludingBounds.width,
+                occludingBounds.height);
 
-        layoutWest(p.getWest(), 
-                   occludingBounds.x, occludingBounds.y,
-                   occludingBounds.width, occludingBounds.height);
+        layoutWest(p.getWest(),
+                occludingBounds.x,
+                occludingBounds.y,
+                occludingBounds.width,
+                occludingBounds.height);
 
-        int southLeft = 
-            inBounds.x +
-            getWidthAtYCardinal(p.getWest(), 
-                                inBounds.y + inBounds.height - 
-                                getHeightAtLeftCardinal(p.getSouth()));       
-        int southRight = 
-            inBounds.x + inBounds.width -
-            getWidthAtYCardinal(p.getEast(),
-                                inBounds.y + inBounds.height - 
-                                getHeightAtRightCardinal(p.getSouth()));
+        int southLeft = inBounds.x
+                + getWidthAtYCardinal(p.getWest(), inBounds.y + inBounds.height
+                        - getHeightAtLeftCardinal(p.getSouth()));
+        int southRight = inBounds.x
+                + inBounds.width
+                - getWidthAtYCardinal(p.getEast(), inBounds.y + inBounds.height
+                        - getHeightAtRightCardinal(p.getSouth()));
         layoutSouth(p.getSouth(),
-                    southLeft, 
-                    occludingBounds.y + occludingBounds.height,
-                    southRight - southLeft, 
-                    occludingBounds.height);
+                southLeft,
+                occludingBounds.y + occludingBounds.height,
+                southRight - southLeft,
+                occludingBounds.height);
 
-        int northLeft = 
-            inBounds.x +
-            getWidthAtYCardinal(p.getWest(),
-                                inBounds.y +
-                                getHeightAtLeftCardinal(p.getNorth()));
-        int northRight = 
-            inBounds.x + inBounds.width -
-            getWidthAtYCardinal(p.getEast(),
-                                inBounds.y +
-                                getHeightAtRightCardinal(p.getNorth()));
-        layoutNorth(p.getNorth(),
-                    northLeft,
-                    occludingBounds.y,
-                    northRight - northLeft,                 
-                    occludingBounds.height);
+        int northLeft = inBounds.x
+                + getWidthAtYCardinal(p.getWest(), inBounds.y
+                        + getHeightAtLeftCardinal(p.getNorth()));
+        int northRight = inBounds.x
+                + inBounds.width
+                - getWidthAtYCardinal(p.getEast(), inBounds.y
+                        + getHeightAtRightCardinal(p.getNorth()));
+        layoutNorth(p.getNorth(), northLeft, occludingBounds.y, northRight
+                - northLeft, occludingBounds.height);
 
         layoutBackground();
     }
 
     protected void layoutCardinals() {
-        p.getNorth().setBounds(0, 0, 
-                               p.getWidth(), p.getOverlapTolerance());
-        p.getSouth().setBounds(0, p.getHeight() - p.getOverlapTolerance(), 
-                               p.getWidth(), p.getOverlapTolerance());
-        p.getEast().setBounds(p.getWidth() - p.getOverlapTolerance(), 0, 
-                              p.getOverlapTolerance(), p.getWidth());
-        p.getWest().setBounds(0, 0, 
-                              p.getOverlapTolerance(), p.getWidth());
+        p.getNorth().setBounds(0, 0, p.getWidth(), p.getOverlapTolerance());
+        p.getSouth().setBounds(0,
+                p.getHeight() - p.getOverlapTolerance(),
+                p.getWidth(),
+                p.getOverlapTolerance());
+        p.getEast().setBounds(p.getWidth() - p.getOverlapTolerance(),
+                0,
+                p.getOverlapTolerance(),
+                p.getWidth());
+        p.getWest().setBounds(0, 0, p.getOverlapTolerance(), p.getWidth());
     }
 
     /**
      * Layout west side.
+     * 
      * @param x right most edge.
      * @param y top most edge.
      */
-    protected void layoutEast(DockWrapper base,
-                              int x, int y, int maxwidth, int maxheight) {
-        for(Iterator iter=base.getDockedWrappers().iterator(); iter.hasNext();){
-            DockWrapper dw = (DockWrapper)iter.next();
+    protected void layoutEast(DockWrapper base, int x, int y, int maxwidth,
+                              int maxheight) {
+        for (Iterator iter = base.getDockedWrappers().iterator(); iter.hasNext();) {
+            DockWrapper dw = (DockWrapper) iter.next();
             Dimension d = dw.getPreferredSize();
             int w = min(d.width, maxwidth);
             int h = min(d.height, maxheight);
-            dw.setBounds(x-w, y, w, h);
+            dw.setBounds(x - w, y, w, h);
             if (!dw.canOcclude()) {
-                updateRight(backgroundBounds, x-w);
+                updateRight(backgroundBounds, x - w);
             }
-            updateRight(occludingBounds, x-w);
-            layoutEast(dw, x-w, y, maxwidth - w, maxheight);
+            updateRight(occludingBounds, x - w);
+            layoutEast(dw, x - w, y, maxwidth - w, maxheight);
             y += h;
-            maxheight -=h; 
+            maxheight -= h;
         }
     }
 
     /**
      * Layout west side.
+     * 
      * @param x left most edge.
      * @param y top most edge.
      */
-    protected void layoutWest(DockWrapper base, 
-                              int x, int y, int maxwidth, int maxheight) {
-        for(Iterator iter=base.getDockedWrappers().iterator(); iter.hasNext();){
-            DockWrapper dw = (DockWrapper)iter.next();
+    protected void layoutWest(DockWrapper base, int x, int y, int maxwidth,
+                              int maxheight) {
+        for (Iterator iter = base.getDockedWrappers().iterator(); iter.hasNext();) {
+            DockWrapper dw = (DockWrapper) iter.next();
             Dimension d = dw.getPreferredSize();
             int w = min(d.width, maxwidth);
             int h = min(d.height, maxheight);
             dw.setBounds(x, y, w, h);
             if (!dw.canOcclude()) {
-                updateLeft(backgroundBounds, x+w);
+                updateLeft(backgroundBounds, x + w);
             }
-            updateLeft(occludingBounds, x+w);
-            layoutWest(dw, x+w, y, maxwidth - w, maxheight);
+            updateLeft(occludingBounds, x + w);
+            layoutWest(dw, x + w, y, maxwidth - w, maxheight);
             y += h;
-            maxheight -=h; 
+            maxheight -= h;
         }
     }
 
     /**
      * Layout north side.
+     * 
      * @param x left most edge.
      * @param y top most edge.
      */
-    protected void layoutNorth(DockWrapper base,
-                               int x, int y, int maxwidth, int maxheight) {
-        for(Iterator iter=base.getDockedWrappers().iterator(); iter.hasNext();){
-            DockWrapper dw = (DockWrapper)iter.next();
+    protected void layoutNorth(DockWrapper base, int x, int y, int maxwidth,
+                               int maxheight) {
+        for (Iterator iter = base.getDockedWrappers().iterator(); iter.hasNext();) {
+            DockWrapper dw = (DockWrapper) iter.next();
             Dimension d = dw.getPreferredSize();
             int w = min(d.width, maxwidth);
             int h = min(d.height, maxheight);
             dw.setBounds(x, y, w, h);
             if (!dw.canOcclude()) {
-                updateTop(backgroundBounds, y+h);
+                updateTop(backgroundBounds, y + h);
             }
-            updateTop(occludingBounds, y+h);
-            layoutNorth(dw, x, y+h, maxwidth, maxheight-h);
+            updateTop(occludingBounds, y + h);
+            layoutNorth(dw, x, y + h, maxwidth, maxheight - h);
             x += w;
-            maxwidth -= w; 
-        }       
+            maxwidth -= w;
+        }
     }
 
     /**
      * Layout north side.
+     * 
      * @param x left most edge.
      * @param y bottom most edge.
      */
-    protected void layoutSouth(DockWrapper base,
-                               int x, int y, int maxwidth, int maxheight) {
-        for(Iterator iter=base.getDockedWrappers().iterator(); iter.hasNext();){
-            DockWrapper dw = (DockWrapper)iter.next();
+    protected void layoutSouth(DockWrapper base, int x, int y, int maxwidth,
+                               int maxheight) {
+        for (Iterator iter = base.getDockedWrappers().iterator(); iter.hasNext();) {
+            DockWrapper dw = (DockWrapper) iter.next();
             Dimension d = dw.getPreferredSize();
             int w = min(d.width, maxwidth);
             int h = min(d.height, maxheight);
-            dw.setBounds(x, y-h, w, h);
+            dw.setBounds(x, y - h, w, h);
             //      System.out.println("RES: "+ dw.getBounds());
             if (!dw.canOcclude()) {
-                updateBottom(backgroundBounds, y-h);
+                updateBottom(backgroundBounds, y - h);
             }
-            updateBottom(occludingBounds, y-h);
-            layoutSouth(dw, x, y-h, maxwidth, maxheight-h);
+            updateBottom(occludingBounds, y - h);
+            layoutSouth(dw, x, y - h, maxwidth, maxheight - h);
             x += w;
-            maxwidth -= w; 
+            maxwidth -= w;
         }
     }
 
@@ -280,11 +282,10 @@ public class DockLayout implements LayoutManager2 {
         JComponent background = p.getBackgroundComponent();
         if (background != null) {
             /*
-              backgroundBounds.x += 10;
-              backgroundBounds.y += 10;
-              backgroundBounds.width -= 20;
-              backgroundBounds.height -= 20;
-            */
+             * backgroundBounds.x += 10; backgroundBounds.y += 10;
+             * backgroundBounds.width -= 20; backgroundBounds.height -=
+             * 20;
+             */
             background.setBounds(backgroundBounds);
         }
     }
@@ -305,11 +306,11 @@ public class DockLayout implements LayoutManager2 {
         if (tmp > 0) {
             r.x += tmp;
             r.width -= tmp;
-        }       
+        }
     }
 
     protected void updateRight(Rectangle r, int right) {
-        r.width=min(r.x + r.width, right);
+        r.width = min(r.x + r.width, right);
     }
 
     protected void updateTop(Rectangle r, int top) {
@@ -317,11 +318,11 @@ public class DockLayout implements LayoutManager2 {
         if (tmp > 0) {
             r.y += tmp;
             r.height -= tmp;
-        }       
+        }
     }
 
     protected void updateBottom(Rectangle r, int bottom) {
-        r.height=min(r.y + r.height, bottom);
+        r.height = min(r.y + r.height, bottom);
     }
 
     // From LayoutManager2:
@@ -334,12 +335,10 @@ public class DockLayout implements LayoutManager2 {
         }
         layoutContainer();
     }
-    
-    public void addLayoutComponent(String name,
-                                   Component comp) {}
 
-    public void addLayoutComponent(Component comp,
-                                   Object constraints) {}
+    public void addLayoutComponent(String name, Component comp) {}
+
+    public void addLayoutComponent(Component comp, Object constraints) {}
 
     public void removeLayoutComponent(Component comp) {}
 
@@ -347,7 +346,7 @@ public class DockLayout implements LayoutManager2 {
         JComponent background = p.getBackgroundComponent();
         if (background != null) {
             return background.getPreferredSize();
-        }       
+        }
         return new Dimension(0, 0);
     }
 
@@ -355,7 +354,7 @@ public class DockLayout implements LayoutManager2 {
         JComponent background = p.getBackgroundComponent();
         if (background != null) {
             return background.getMinimumSize();
-        }       
+        }
         return new Dimension(0, 0);
     }
 
@@ -363,15 +362,18 @@ public class DockLayout implements LayoutManager2 {
         JComponent background = p.getBackgroundComponent();
         if (background != null) {
             return background.getMaximumSize();
-        }       
+        }
         return new Dimension(0, 0);
     }
 
-    public float getLayoutAlignmentX(Container target) { return .5f;}
+    public float getLayoutAlignmentX(Container target) {
+        return .5f;
+    }
 
-    public float getLayoutAlignmentY(Container target) {return .5f;}
+    public float getLayoutAlignmentY(Container target) {
+        return .5f;
+    }
 
-    public void invalidateLayout(Container target) {
-    }    
+    public void invalidateLayout(Container target) {}
 }
 

@@ -20,32 +20,32 @@ import java.awt.*;
 import java.beans.*;
 import java.util.*;
 
-/** A BeanInfo for the 
- * {@link com.bbn.openmap.examples.beanbox.SimpleBeanObject} bean.
+/**
+ * A BeanInfo for the
+ * {@link com.bbn.openmap.examples.beanbox.SimpleBeanObject}bean.
  */
 public class SimpleBeanObjectBeanInfo extends SimpleBeanInfo {
 
-  public PropertyDescriptor[] getPropertyDescriptors () {
+    public PropertyDescriptor[] getPropertyDescriptors() {
 
-    ArrayList list = new ArrayList(4);
+        ArrayList list = new ArrayList(4);
 
-    try {
-      list.add(new PropertyDescriptor("id", SimpleBeanObject.class));
-      list.add(new PropertyDescriptor("latitude", SimpleBeanObject.class));
-      list.add(new PropertyDescriptor("longitude", SimpleBeanObject.class));
-      list.add(new PropertyDescriptor("bearingInDeg", SimpleBeanObject.class));
-    } catch (IntrospectionException e) {
-      e.printStackTrace();
+        try {
+            list.add(new PropertyDescriptor("id", SimpleBeanObject.class));
+            list.add(new PropertyDescriptor("latitude", SimpleBeanObject.class));
+            list.add(new PropertyDescriptor("longitude", SimpleBeanObject.class));
+            list.add(new PropertyDescriptor("bearingInDeg", SimpleBeanObject.class));
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        }
+        return (PropertyDescriptor[]) list.toArray(new PropertyDescriptor[0]);
     }
-    return (PropertyDescriptor[])list.toArray(new PropertyDescriptor [0]);
-  }
 
+    public Image getIcon(int iconKind) {
 
-  public Image getIcon (int iconKind) {
+        Image image = loadImage("/com/bbn/openmap/examples/beanbox/simplebean.gif");
 
-    Image image = loadImage("/com/bbn/openmap/examples/beanbox/simplebean.gif");
-
-    return image;
-  }
+        return image;
+    }
 
 }

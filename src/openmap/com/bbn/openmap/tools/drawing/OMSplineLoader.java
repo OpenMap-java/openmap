@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMSplineLoader.java,v $
 // $RCSfile: OMSplineLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/04 17:26:04 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.drawing;
 
@@ -39,25 +38,20 @@ import com.bbn.openmap.omGraphics.labeled.EditableLabeledOMSpline;
  * @author Eric LEPICIER
  * @version 22 juil. 2002
  */
-public class OMSplineLoader extends AbstractToolLoader
-    implements EditToolLoader {
+public class OMSplineLoader extends AbstractToolLoader implements
+        EditToolLoader {
 
-    protected String graphicClassName =
-        "com.bbn.openmap.omGraphics.OMSpline";
-    protected String labeledClassName =
-        "com.bbn.openmap.omGraphics.labeled.LabeledOMSpline";
+    protected String graphicClassName = "com.bbn.openmap.omGraphics.OMSpline";
+    protected String labeledClassName = "com.bbn.openmap.omGraphics.labeled.LabeledOMSpline";
 
     public OMSplineLoader() {
         init();
     }
 
     public void init() {
-        EditClassWrapper ecw =
-            new EditClassWrapper(
-                                 graphicClassName,
-                                 "com.bbn.openmap.omGraphics.EditableOMSpline",
-                                 "editablespline.gif",
-                                 i18n.get(OMSplineLoader.class,"omspline","Splines"));
+        EditClassWrapper ecw = new EditClassWrapper(graphicClassName, "com.bbn.openmap.omGraphics.EditableOMSpline", "editablespline.gif", i18n.get(OMSplineLoader.class,
+                "omspline",
+                "Splines"));
         addEditClassWrapper(ecw);
 
         // A class wrapper isn't added here for the LabeledOMSpline
@@ -66,12 +60,11 @@ public class OMSplineLoader extends AbstractToolLoader
 
     /**
      * Give the classname of a graphic to create, returning an
-     * EditableOMGraphic for that graphic.  The GraphicAttributes
-     * object lets you set some of the initial parameters of the spline,
-     * like spline type and rendertype.
+     * EditableOMGraphic for that graphic. The GraphicAttributes
+     * object lets you set some of the initial parameters of the
+     * spline, like spline type and rendertype.
      */
-    public EditableOMGraphic getEditableGraphic(
-                                                String classname,
+    public EditableOMGraphic getEditableGraphic(String classname,
                                                 GraphicAttributes ga) {
         if (classname.intern() == graphicClassName) {
             return new EditableOMSpline(ga);

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,26 +12,23 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JPoly.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JPoly.java,v
+// $
 // $RCSfile: JPoly.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
 import com.bbn.openmap.CSpecialist.LLPoint;
 import com.bbn.openmap.CSpecialist.PolyPackage.*;
-import com.bbn.openmap.CSpecialist.XYPoint;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.ProjMath;
-import java.awt.Point;
 import java.io.Serializable;
-import java.util.Vector;
 
 public class JPoly extends OMPoly implements Serializable, JObjectHolder {
 
@@ -54,7 +51,7 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
             xs = new int[npts];
             ys = new int[npts];
 
-            for(int i=0; i < npts; i++) {
+            for (int i = 0; i < npts; i++) {
                 xs[i] = epoly.xypoints[i].x;
                 ys[i] = epoly.xypoints[i].y;
             }
@@ -62,18 +59,20 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
 
         npts = epoly.llpoints.length;
         if (npts > 0) {
-            int i,j;
-            rawllpts = (isPolygon)
-                ?  new float[npts*2 +2]//*2 for pairs +2 for connect
-                :  new float[npts*2];//*2 for pairs
+            int i, j;
+            rawllpts = (isPolygon) ? new float[npts * 2 + 2]//*2 for
+                                                            // pairs
+                                                            // +2 for
+                                                            // connect
+                    : new float[npts * 2];//*2 for pairs
 
-            for(i=0,j=0; i < npts; i++, j+=2) {
+            for (i = 0, j = 0; i < npts; i++, j += 2) {
                 rawllpts[j] = ProjMath.degToRad(epoly.llpoints[i].lat);
-                rawllpts[j+1] = ProjMath.degToRad(epoly.llpoints[i].lon);
+                rawllpts[j + 1] = ProjMath.degToRad(epoly.llpoints[i].lon);
             }
             if (isPolygon) {//connect the polygon
                 rawllpts[j] = rawllpts[0];
-                rawllpts[j+1] = rawllpts[1];
+                rawllpts[j + 1] = rawllpts[1];
             }
         }
 
@@ -81,7 +80,7 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
     }
 
     public static int getCoordMode(CoordMode cMode) {
-        
+
         int cm;
         switch (cMode.value()) {
         case CoordMode._CModePrevious:
@@ -92,7 +91,7 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
             break;
         }
         return cm;
-        
+
     }
 
     public void setObject(com.bbn.openmap.CSpecialist.EComp aObject) {
@@ -103,27 +102,30 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
         return object;
     }
 
-    public void update(com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
-        JGraphic.update((JObjectHolder)this, update);
+    public void update(
+                       com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
+        JGraphic.update((JObjectHolder) this, update);
     }
 
-    /** update() - takes a PolyPackage.PF_update and changes the fields
-     *  that need to be.  Called as a result of a gesture.*/
+    /**
+     * update() - takes a PolyPackage.PF_update and changes the fields
+     * that need to be. Called as a result of a gesture.
+     */
     public void update(com.bbn.openmap.CSpecialist.PolyPackage.PF_update update) {
         int npts;
 
         switch (update.discriminator().value()) {
 
-              // set fixed point
+        // set fixed point
         case com.bbn.openmap.CSpecialist.PolyPackage.settableFields._PF_ll1:
             LLPoint ll = update.ll1();
             lat = ll.lat;
             lon = ll.lon;
             setNeedToRegenerate(true);
             break;
-            
-            // set coordinate mode
-            
+
+        // set coordinate mode
+
         case com.bbn.openmap.CSpecialist.PolyPackage.settableFields._PF_cMode:
             int newMode = getCoordMode(update.cMode());
             if (newMode != coordMode) {
@@ -131,47 +133,46 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
                 setNeedToRegenerate(true);
             }
             break;
-            
-              // set xypoints
-          case com.bbn.openmap.CSpecialist.PolyPackage.settableFields._PF_xypoints:
 
-              com.bbn.openmap.CSpecialist.XYPoint[] xypoints = update.xypoints();
-              npts = xypoints.length;
-              if (npts > 0) {
-                  xs = new int[npts];
-                  ys = new int[npts];
-                  
-                  for(int i=0; i < npts; i++) {
-                      xs[i] = xypoints[i].x;
-                      ys[i] = xypoints[i].y;
-                  }
-              }
-              
-              if (renderType != RENDERTYPE_LATLON)
-                  setNeedToRegenerate(true);
-              break;
+        // set xypoints
+        case com.bbn.openmap.CSpecialist.PolyPackage.settableFields._PF_xypoints:
 
-              // set llpoints
-          case com.bbn.openmap.CSpecialist.PolyPackage.settableFields._PF_llpoints:
-              com.bbn.openmap.CSpecialist.LLPoint[] llpoints = update.llpoints();
-              npts = llpoints.length;
-              if (npts > 0) {
-                  rawllpts = new float[npts*2];
-                  
-                  for(int i=0; i < npts; i+=2) {
-                      rawllpts[i] = llpoints[i].lat;
-                      rawllpts[i+1] = llpoints[i].lon;
-                  }
-              }
+            com.bbn.openmap.CSpecialist.XYPoint[] xypoints = update.xypoints();
+            npts = xypoints.length;
+            if (npts > 0) {
+                xs = new int[npts];
+                ys = new int[npts];
 
-              if (renderType == RENDERTYPE_LATLON)
-                  setNeedToRegenerate(true);
-              break;
+                for (int i = 0; i < npts; i++) {
+                    xs[i] = xypoints[i].x;
+                    ys[i] = xypoints[i].y;
+                }
+            }
 
-          default:
-              System.err.println(
-                  "JPoly.update: invalid poly update");
-              break;
+            if (renderType != RENDERTYPE_LATLON)
+                setNeedToRegenerate(true);
+            break;
+
+        // set llpoints
+        case com.bbn.openmap.CSpecialist.PolyPackage.settableFields._PF_llpoints:
+            com.bbn.openmap.CSpecialist.LLPoint[] llpoints = update.llpoints();
+            npts = llpoints.length;
+            if (npts > 0) {
+                rawllpts = new float[npts * 2];
+
+                for (int i = 0; i < npts; i += 2) {
+                    rawllpts[i] = llpoints[i].lat;
+                    rawllpts[i + 1] = llpoints[i].lon;
+                }
+            }
+
+            if (renderType == RENDERTYPE_LATLON)
+                setNeedToRegenerate(true);
+            break;
+
+        default:
+            System.err.println("JPoly.update: invalid poly update");
+            break;
         }
     }
 }

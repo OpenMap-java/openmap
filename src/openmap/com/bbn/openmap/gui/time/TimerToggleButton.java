@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimerToggleButton.java,v $
 // $RCSfile: TimerToggleButton.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.time;
 
@@ -40,8 +39,8 @@ import javax.swing.*;
  * The TimerToggleButton provides a control for starting and stopping
  * a clock contained in a RealTimeHandler.
  */
-public class TimerToggleButton extends JToggleButton 
-    implements PropertyChangeListener, PropertyConsumer, ActionListener, TimeConstants {
+public class TimerToggleButton extends JToggleButton implements
+        PropertyChangeListener, PropertyConsumer, ActionListener, TimeConstants {
 
     protected ImageIcon running;
     protected ImageIcon stopped;
@@ -119,7 +118,7 @@ public class TimerToggleButton extends JToggleButton
 
     /**
      * PropertyChangeListener Interface Method used to find out when
-     * the timer has been stopped and started.  Is expecting that the
+     * the timer has been stopped and started. Is expecting that the
      * property name and value are the actual string objects defined
      * in the TimeConstants interface. It does ==, not equals().
      */
@@ -139,8 +138,8 @@ public class TimerToggleButton extends JToggleButton
 
     /**
      * ActionListener Interface Method listens to the timer, in case
-     * something else starts it, we can update the gui.  Also
-     * listens to this button, to start and stop the given timer.
+     * something else starts it, we can update the gui. Also listens
+     * to this button, to start and stop the given timer.
      */
     public void actionPerformed(ActionEvent ae) {
         Object source = ae.getSource();
@@ -182,6 +181,4 @@ public class TimerToggleButton extends JToggleButton
     }
 
 }
-
-
 

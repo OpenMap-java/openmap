@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OpenMapFrame.java,v $
 // $RCSfile: OpenMapFrame.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/09/30 22:36:18 $
+// $Revision: 1.11 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,8 +76,7 @@ public class OpenMapFrame extends JFrame implements
      * BeanContextChildSupport object provides helper functions for
      * BeanContextChild interface.
      */
-    private BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(
-            this);
+    private BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
 
     /**
      * Create the frame with "OpenMap <version>" in the title.
@@ -94,7 +93,7 @@ public class OpenMapFrame extends JFrame implements
      */
     public OpenMapFrame(boolean useAsInternalFrameRootPaneIfNecessary) {
         this(Environment.get(Environment.Title),
-                useAsInternalFrameRootPaneIfNecessary);
+             useAsInternalFrameRootPaneIfNecessary);
     }
 
     /**
@@ -291,13 +290,13 @@ public class OpenMapFrame extends JFrame implements
 
     /** Method for BeanContextChild interface. */
     public void addVetoableChangeListener(String propertyName,
-            VetoableChangeListener in_vcl) {
+                                          VetoableChangeListener in_vcl) {
         beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
     }
 
     /** Method for BeanContextChild interface. */
     public void removeVetoableChangeListener(String propertyName,
-            VetoableChangeListener in_vcl) {
+                                             VetoableChangeListener in_vcl) {
         beanContextChildSupport.removeVetoableChangeListener(propertyName,
                 in_vcl);
     }
@@ -335,8 +334,9 @@ public class OpenMapFrame extends JFrame implements
     public void setProperties(String prefix, Properties setList) {
 
         if (useAsInternalFrameRootPaneIfNecessary) {
-            boolean useInternalFrames = PropUtils.booleanFromProperties(
-                    setList, Environment.UseInternalFrames, false);
+            boolean useInternalFrames = PropUtils.booleanFromProperties(setList,
+                    Environment.UseInternalFrames,
+                    false);
 
             if (useInternalFrames
                     && Environment.getInternalFrameDesktop() == null) {
@@ -409,8 +409,7 @@ public class OpenMapFrame extends JFrame implements
      * 
      * @param prefix the prefix String.
      */
-    public void setPropertyPrefix(String prefix) {
-    }
+    public void setPropertyPrefix(String prefix) {}
 
     /**
      * Get the property key prefix that is being used to prepend to

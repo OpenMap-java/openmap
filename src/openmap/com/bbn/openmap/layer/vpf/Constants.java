@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,21 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/Constants.java,v $
 // $RCSfile: Constants.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/29 20:35:09 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:07 $
+// $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
 /**
- * This class provides numerous string constants (typically column names for
- * VPF tables) from the VPF Specification.
+ * This class provides numerous string constants (typically column
+ * names for VPF tables) from the VPF Specification.
  */
 public interface Constants {
-  
+
     /** name of the VPF integer value description table */
     public final static String intVDTTableName = "int.vdt";
     /** name of the VPF character value description table */

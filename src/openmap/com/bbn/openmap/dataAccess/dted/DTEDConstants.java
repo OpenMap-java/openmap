@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDConstants.java,v $
 // $RCSfile: DTEDConstants.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/01/24 02:56:11 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:05:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.dataAccess.dted;
 
@@ -37,8 +36,10 @@ public interface DTEDConstants {
     public static final int BANDSHADING = 2;
     /** Test markings, for the boundary of the subframe. */
     public static final int BOUNDARYSHADING = 4;
-    /** Colorized slope shading.  Color basnds are based on elevation,
-     * and are accented by shaded indications. */
+    /**
+     * Colorized slope shading. Color basnds are based on elevation,
+     * and are accented by shaded indications.
+     */
     public static final int COLOREDSHADING = 5;
     /** DTED LEVEL 0, 1km posts. */
     public static final int LEVEL_0 = 0;

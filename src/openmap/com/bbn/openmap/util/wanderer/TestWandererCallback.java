@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/TestWandererCallback.java,v $
 // $RCSfile: TestWandererCallback.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:16 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.util.wanderer;
 
@@ -27,16 +26,16 @@ import java.io.File;
 
 /**
  * The Wanderer walks through a directory tree, and makes calls to the
- * WandererCallback with what it finds.  You add your WandererCallback
+ * WandererCallback with what it finds. You add your WandererCallback
  * to the Wanderer, and then just take your action on the files.
  */
 public class TestWandererCallback implements WandererCallback {
 
     public void handleDirectory(File directory) {
-        System.out.println("Directory - " + directory.getName() + 
-                           " has " + directory.list().length + " item(s)");
+        System.out.println("Directory - " + directory.getName() + " has "
+                + directory.list().length + " item(s)");
     }
- 
+
     public void handleFile(File file) {
         System.out.println("File - " + file.getName());
     }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeSizeModifier.java,v $
 // $RCSfile: CodeSizeModifier.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.symbology.milStd2525;
 
@@ -37,7 +36,7 @@ public class CodeSizeModifier extends CodePosition {
     }
 
     /**
-     * The CodeSizeModifier is more particular.  It wants the first 14
+     * The CodeSizeModifier is more particular. It wants the first 14
      * code in modifers.properties, and then the last one.
      */
     protected void parsePositions(String prefix, Properties props) {
@@ -52,7 +51,8 @@ public class CodeSizeModifier extends CodePosition {
             }
         }
 
-        // HACK I know that 'K-' is at 128 in the modifiers.properties file.
+        // HACK I know that 'K-' is at 128 in the modifiers.properties
+        // file.
         entry = props.getProperty(prefix + "128");
         if (entry != null) {
             addPositionChoice(128, entry, prefix, props);

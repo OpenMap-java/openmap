@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.25 $
-// $Date: 2004/10/12 17:13:43 $
+// $Revision: 1.26 $
+// $Date: 2004/10/14 18:05:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -136,20 +136,22 @@ import com.bbn.openmap.util.SwingWorker;
  * 
  * <pre>
  * 
- * 
- *  layer.projectionChangePolicy=pcp
- *  layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
- * 
- *  layer.renderPolicy=srp
- *  layer.srp.class=com.bbn.openmap.layer.policy.StandardRenderPolicy
- *  # or
- *  layer.renderPolicy=ta
- *  layer.ta.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
- *  layer.ta.renderingHints=KEY_TEXT_ANTIALIASING
- *  layer.ta.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
- * 
- *  layer.mouseModes=Gestures
- *  layer.consumeEvents=true
+ *  
+ *  
+ *   layer.projectionChangePolicy=pcp
+ *   layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
+ *  
+ *   layer.renderPolicy=srp
+ *   layer.srp.class=com.bbn.openmap.layer.policy.StandardRenderPolicy
+ *   # or
+ *   layer.renderPolicy=ta
+ *   layer.ta.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
+ *   layer.ta.renderingHints=KEY_TEXT_ANTIALIASING
+ *   layer.ta.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
+ *  
+ *   layer.mouseModes=Gestures
+ *   layer.consumeEvents=true
+ *   
  *  
  * </pre>
  */

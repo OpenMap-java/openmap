@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,44 +14,47 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/NonEditablePropertyEditor.java,v $
 // $RCSfile: NonEditablePropertyEditor.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.util.propertyEditor;
 
 import java.awt.Component;
-import java.awt.event.*;
-import javax.swing.*;
-import java.beans.*;
+import java.awt.event.ActionEvent;
+import java.beans.PropertyEditorSupport;
 
-/** 
+import javax.swing.JLabel;
+
+/**
  * A PropertyEditor that doesn't let you edit the property.
  */
 public class NonEditablePropertyEditor extends PropertyEditorSupport {
-    
+
     /** The Component returned by getCustomEditor(). */
     JLabel label;
 
-    /** Create NonEditablePropertyEditor.  */
+    /** Create NonEditablePropertyEditor. */
     public NonEditablePropertyEditor() {}
 
     //
     //  PropertyEditor interface
     //
-    
-    /** PropertyEditor interface.
-     *  @return true 
+
+    /**
+     * PropertyEditor interface.
+     * 
+     * @return true
      */
     public boolean supportsCustomEditor() {
         return true;
     }
-    
+
     /**
      * Returns a blank JLabel.
+     * 
      * @return JButton button
      */
     public Component getCustomEditor() {
@@ -60,23 +63,22 @@ public class NonEditablePropertyEditor extends PropertyEditorSupport {
         }
         return label;
     }
-    
+
     /** Implement PropertyEditor interface. */
     public void setValue(Object someObj) {
-        if(someObj instanceof String) {
-            label.setText((String)someObj);
+        if (someObj instanceof String) {
+            label.setText((String) someObj);
         }
     }
-    
+
     /** Implement PropertyEditor interface. */
     public String getAsText() {
         return label.getText();
     }
-    
+
     //
     //  ActionListener interface
     //
-    
-    public void actionPerformed(ActionEvent e) {
-    }
+
+    public void actionPerformed(ActionEvent e) {}
 }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,20 +12,18 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileStateMachine.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileStateMachine.java,v
+// $
 // $RCSfile: ProfileStateMachine.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.terrain;
 
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
 import com.bbn.openmap.layer.util.stateMachine.*;
 
 class ProfileStateMachine extends StateMachine {
@@ -36,7 +34,7 @@ class ProfileStateMachine extends StateMachine {
     public static final int TOOL_DEFINED = 2;
     public static final int TOOL_VIEW = 3;
 
-    public ProfileStateMachine(ProfileGenerator generator){
+    public ProfileStateMachine(ProfileGenerator generator) {
         pg = generator;
         State[] profileStates = init();
         setStates(profileStates);
@@ -47,8 +45,7 @@ class ProfileStateMachine extends StateMachine {
         setMapMouseListenerResponses(true);
     }
 
-
-    protected State[] init(){
+    protected State[] init() {
         State[] pStates = new State[4];
 
         pStates[TOOL_DO_NOTHING] = new ProfileDoNothingState(pg);
@@ -59,13 +56,4 @@ class ProfileStateMachine extends StateMachine {
         return pStates;
     }
 }
-
-
-
-
-
-
-
-
-
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/GeneralInformationFile.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/GeneralInformationFile.java,v
+// $
 // $RCSfile: GeneralInformationFile.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/03/04 04:14:29 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:05:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.dataAccess.asrp;
 
@@ -38,9 +39,8 @@ public class GeneralInformationFile extends GeneralASRPFile {
     public final static String BAND_ID = "BDF";
     public final static String TILE_INDEX_MAP = "TIM";
     public final static String DATASET_DESCRIPTION = "DRF";
-    
-    protected Dimension subframeDimensions;
 
+    protected Dimension subframeDimensions;
 
     public GeneralInformationFile(String fileName) throws IOException {
         DDFModule mod = load(fileName);
@@ -64,7 +64,7 @@ public class GeneralInformationFile extends GeneralASRPFile {
         if (argv.length < 1) {
             Debug.output("Usage: GeneralInformationFile filename");
         }
-        
+
         try {
             GeneralInformationFile gen = new GeneralInformationFile(argv[0]);
             gen.dumpFields();

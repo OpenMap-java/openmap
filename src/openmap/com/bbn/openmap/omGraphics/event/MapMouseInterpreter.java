@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/MapMouseInterpreter.java,v $
 // $RCSfile: MapMouseInterpreter.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/08 21:34:08 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.event;
 
@@ -31,7 +30,7 @@ import com.bbn.openmap.omGraphics.OMGraphic;
  * A MapMouseInterpreter is an extension of the MapMouseListener that
  * has some understanding how MouseEvents on a Map relate to an
  * OMGraphicList, and what kind of actions should be taken on the
- * OMGraphics on a list.  This interface describes specific actions
+ * OMGraphics on a list. This interface describes specific actions
  * being taken on OMGraphics over a map, and the implementing class
  * can then take this information to make more abstract calls on its
  * GestureResponsePolicy.
@@ -57,7 +56,7 @@ public interface MapMouseInterpreter extends MapMouseListener {
 
     /**
      * Notification that a particular OMGraphic, previously
-     * left-clicked upon, has been un-clicked.  Most likely due to the
+     * left-clicked upon, has been un-clicked. Most likely due to the
      * user clicking on another OMGraphic, using a different mouse
      * button to click on this same OMGraphic, or when the background
      * map was clicked upon.
@@ -70,13 +69,14 @@ public interface MapMouseInterpreter extends MapMouseListener {
     public boolean rightClick(MouseEvent me);
 
     /**
-     * Notification that a particular OMGraphic was right-clicked upon.
+     * Notification that a particular OMGraphic was right-clicked
+     * upon.
      */
     public boolean rightClick(OMGraphic omg, MouseEvent me);
 
     /**
      * Notification that a particular OMGraphic, previously
-     * right-clicked upon, has been un-clicked.  Most likely due to the
+     * right-clicked upon, has been un-clicked. Most likely due to the
      * user clicking on another OMGraphic, using a different mouse
      * button to click on this same OMGraphic, or when the background
      * map was clicked upon.

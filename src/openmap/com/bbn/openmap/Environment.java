@@ -2,7 +2,7 @@
 //
 // <copyright>
 //
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Environment.java,v $
 // $RCSfile: Environment.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/09/30 22:32:51 $
+// $Revision: 1.9 $
+// $Date: 2004/10/14 18:05:39 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -77,25 +77,27 @@ import com.bbn.openmap.util.PropUtils;
  * <pre>
  * 
  *  
- *   # metanames of the names of the variables used in the OpenMap
- *   # system to configure the Enivironment class from the properties.
- *   openmap.Title - String for title of application window.
- *   openmap.Version - Version number of application.
- *   openmap.BuildDate - Build data of code base.
- *   openmap.WebBrowser - The launch command to launch a browser.
- *   openmap.TempDirectory - A path to a directory to use for temporary files.
- *   openmap.UseInternalFrames - For an application, to direct it to use InternalFrames for other windows.
- *   openmap.Latitude - Starting latitude for map projection.
- *   openmap.Longitude - Starting longitude for map projection.
- *   openmap.Scale - Starting scale for map projection.
- *   openmap.Projection - Starting projection type for map projection.
- *   openmap.Width - Pixel width for map.
- *   openmap.Height - Pixel height for map.
- *   openmap.HelpURL - The URL to use for OpenMap/Application help pages.
- *   openmap.BackgroundColor - An ARGB integer to use for the background (sea) color.
- *   openmap.Debug - Debug tokens to activate for printout.  @see com.bbn.openmap.util.Debug
- *  
- *   openmap.UniqueID String for unique identification of OpenMap instance (calculated)
+ *   
+ *    # metanames of the names of the variables used in the OpenMap
+ *    # system to configure the Enivironment class from the properties.
+ *    openmap.Title - String for title of application window.
+ *    openmap.Version - Version number of application.
+ *    openmap.BuildDate - Build data of code base.
+ *    openmap.WebBrowser - The launch command to launch a browser.
+ *    openmap.TempDirectory - A path to a directory to use for temporary files.
+ *    openmap.UseInternalFrames - For an application, to direct it to use InternalFrames for other windows.
+ *    openmap.Latitude - Starting latitude for map projection.
+ *    openmap.Longitude - Starting longitude for map projection.
+ *    openmap.Scale - Starting scale for map projection.
+ *    openmap.Projection - Starting projection type for map projection.
+ *    openmap.Width - Pixel width for map.
+ *    openmap.Height - Pixel height for map.
+ *    openmap.HelpURL - The URL to use for OpenMap/Application help pages.
+ *    openmap.BackgroundColor - An ARGB integer to use for the background (sea) color.
+ *    openmap.Debug - Debug tokens to activate for printout.  @see com.bbn.openmap.util.Debug
+ *   
+ *    openmap.UniqueID String for unique identification of OpenMap instance (calculated)
+ *    
  *   
  *  
  * </pre>
@@ -350,8 +352,7 @@ public class Environment extends Properties {
             addr = java.net.InetAddress.getLocalHost();
         } catch (NullPointerException npe) {
             // Linux threw a npe when unconnected.
-            Debug
-                    .output("Environment.init: Can't get hostname from InetAddress!");
+            Debug.output("Environment.init: Can't get hostname from InetAddress!");
         } catch (java.net.UnknownHostException e) {
             Debug.output("Environment.init: I don't know my hostname!");
         } catch (IndexOutOfBoundsException ioobe) {
@@ -749,8 +750,7 @@ public class Environment extends Properties {
         Vector v = new Vector();
         try {
             String classPath = System.getProperty("java.class.path");
-            StringTokenizer st = new StringTokenizer(classPath,
-                    File.pathSeparator);
+            StringTokenizer st = new StringTokenizer(classPath, File.pathSeparator);
 
             while (st.hasMoreTokens()) {
                 String path = st.nextToken();

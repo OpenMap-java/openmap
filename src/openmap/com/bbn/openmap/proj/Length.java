@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,24 +14,21 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Length.java,v $
 // $RCSfile: Length.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/06 19:03:04 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:06:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
-
 
 package com.bbn.openmap.proj;
 
 import com.bbn.openmap.util.Debug;
 
-
-/** 
- * Length is a convenience class used for a couple of things.  It can
+/**
+ * Length is a convenience class used for a couple of things. It can
  * be used to specifiy unit type, and can be used for conversion from
  * radians to/from whatever units are represented by the implemented
- * class.  
+ * class.
  */
 public class Length {
 
@@ -50,34 +47,34 @@ public class Length {
     /** Radians, in terms of a spherical earth. */
     public final static Length RADIAN = new Length("radian", "rad", com.bbn.openmap.MoreMath.TWO_PI_D);
     /** Data Mile, in WGS 84 spherical earth model units. */
-    public final static Length DM = new Length("datamile", "dm", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0/6000.0);
+    public final static Length DM = new Length("datamile", "dm", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0 / 6000.0);
 
     /** Unit/radians */
     protected final double constant;
     protected final String name;
     protected final String abbr;
-    
+
     /**
      * Create a Length, with a name an the number of it's units that
-     * go around the earth at its equator.  The name and abbreviation
+     * go around the earth at its equator. The name and abbreviation
      * are converted to lower case for consistency.
      */
     public Length(String name, String abbr, double unitEquatorCircumference) {
         this.name = name.toLowerCase().intern();
-        constant = unitEquatorCircumference/com.bbn.openmap.MoreMath.TWO_PI_D;
+        constant = unitEquatorCircumference / com.bbn.openmap.MoreMath.TWO_PI_D;
         this.abbr = abbr.toLowerCase().intern();
     }
 
     /**
-     * Given a number of units provided by this Length, convert
-     * to a number of radians.
+     * Given a number of units provided by this Length, convert to a
+     * number of radians.
      */
     public float toRadians(float numUnits) {
         if (Debug.debugging("length")) {
             Debug.output("Translating " + name + " from radians");
         }
 
-        return numUnits/(float)constant;
+        return numUnits / (float) constant;
     }
 
     public double toRadians(double numUnits) {
@@ -85,7 +82,7 @@ public class Length {
             Debug.output("Translating " + name + " from radians");
         }
 
-        return numUnits/constant;
+        return numUnits / constant;
     }
 
     /**
@@ -96,8 +93,8 @@ public class Length {
         if (Debug.debugging("length")) {
             Debug.output("Translating radians from " + name);
         }
-        
-        return numRadians*(float)constant;
+
+        return numRadians * (float) constant;
     }
 
     /**
@@ -108,8 +105,8 @@ public class Length {
         if (Debug.debugging("length")) {
             Debug.output("Translating radians from " + name);
         }
-        
-        return numRadians*constant;
+
+        return numRadians * constant;
     }
 
     /**
@@ -125,27 +122,27 @@ public class Length {
     public String getAbbr() {
         return abbr;
     }
-    
-    /** 
+
+    /**
      * Get a list of the Lengths currently defined as static
      * implementations of this class.
      */
     public static Length[] getAvailable() {
-        return new Length[] {METER, KM, FEET, MILE, DM, NM, DECIMAL_DEGREE};
+        return new Length[] { METER, KM, FEET, MILE, DM, NM, DECIMAL_DEGREE };
     }
 
     /**
-     * Get the Length object with the given name or abbreviation.  If
-     * nothing exists with that name, then return null.  The lower
-     * case version of the name or abbreviation is checked against the
+     * Get the Length object with the given name or abbreviation. If
+     * nothing exists with that name, then return null. The lower case
+     * version of the name or abbreviation is checked against the
      * available options.
      */
     public static Length get(String name) {
         Length[] choices = getAvailable();
 
         for (int i = 0; i < choices.length; i++) {
-            if (name.toLowerCase().intern() == choices[i].toString() ||
-                name.toLowerCase().intern() == choices[i].getAbbr()) {
+            if (name.toLowerCase().intern() == choices[i].toString()
+                    || name.toLowerCase().intern() == choices[i].getAbbr()) {
                 return choices[i];
             }
         }

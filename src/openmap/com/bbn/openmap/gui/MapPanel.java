@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MapPanel.java,v $
 // $RCSfile: MapPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/08 16:27:19 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
@@ -32,9 +31,9 @@ import com.bbn.openmap.MapHandler;
 /**
  * The MapPanel is a interface describing a component that contains a
  * MapBean, MapHandler, menu widgets and all the other components
- * connected to make an OpenMap map widget.  A MapPanel is a
- * self-contained OpenMap Swing component.  It is expected that the
- * MapPanel will extend from java.awt.Container.  If it doesn't, it
+ * connected to make an OpenMap map widget. A MapPanel is a
+ * self-contained OpenMap Swing component. It is expected that the
+ * MapPanel will extend from java.awt.Container. If it doesn't, it
  * might not be automatically added to the OpenMapFrame or
  * OpenMapApplet if it is found in the MapHandler.
  */
@@ -42,14 +41,14 @@ public interface MapPanel {
 
     /**
      * Get the MapBean used for the MapPanel.
-     */      
+     */
     public MapBean getMapBean();
 
     /**
-     * Get the MapHandler used for the MapPanel.  You should be able
-     * to use the MapHandler to get to any component used in the
+     * Get the MapHandler used for the MapPanel. You should be able to
+     * use the MapHandler to get to any component used in the
      * MapPanel.
-     */      
+     */
     public MapHandler getMapHandler();
 
     /**

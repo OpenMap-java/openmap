@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,21 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ZoomEvent.java,v $
 // $RCSfile: ZoomEvent.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.event;
 
 /**
- * An event to request that the map zoom in or out.
- * Event specifies the type and amount of zoom of the map.
+ * An event to request that the map zoom in or out. Event specifies
+ * the type and amount of zoom of the map.
  */
-public class ZoomEvent extends java.util.EventObject
-    implements java.io.Serializable {
+public class ZoomEvent extends java.util.EventObject implements
+        java.io.Serializable {
     /**
      * Specifies that the amount should be used as a multiplier to the
      * current scale.
@@ -52,18 +51,20 @@ public class ZoomEvent extends java.util.EventObject
 
     /**
      * Construct a ZoomEvent.
+     * 
      * @param source the creator of the ZoomEvent.
-     * @param type the type of the event, refering to how to use the amount.
+     * @param type the type of the event, refering to how to use the
+     *        amount.
      * @param amount the value of the ZoomEvent.
      */
     public ZoomEvent(Object source, int type, float amount) {
         super(source);
         switch (type) {
-            case RELATIVE:
-            case ABSOLUTE:
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid type: " + type);
+        case RELATIVE:
+        case ABSOLUTE:
+            break;
+        default:
+            throw new IllegalArgumentException("Invalid type: " + type);
         }
         this.type = type;
         this.amount = amount;
@@ -71,6 +72,7 @@ public class ZoomEvent extends java.util.EventObject
 
     /**
      * Check if the type is RELATIVE.
+     * 
      * @return boolean
      */
     public boolean isRelative() {
@@ -79,6 +81,7 @@ public class ZoomEvent extends java.util.EventObject
 
     /**
      * Check if the type is ABSOLUTE.
+     * 
      * @return boolean
      */
     public boolean isAbsolute() {
@@ -87,6 +90,7 @@ public class ZoomEvent extends java.util.EventObject
 
     /**
      * Get the amount of zoom.
+     * 
      * @return float
      */
     public float getAmount() {
@@ -95,10 +99,11 @@ public class ZoomEvent extends java.util.EventObject
 
     /**
      * Stringify the object.
+     * 
      * @return String
      */
     public String toString() {
-        return "#<ZoomEvent " + (isRelative() ? "Relative " : "") 
-          + (isAbsolute() ? "Absolute " : "") + amount + ">";
+        return "#<ZoomEvent " + (isRelative() ? "Relative " : "")
+                + (isAbsolute() ? "Absolute " : "") + amount + ">";
     }
 }

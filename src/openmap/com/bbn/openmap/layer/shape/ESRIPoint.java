@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPoint.java,v $
 // $RCSfile: ESRIPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.shape;
 
@@ -27,10 +26,10 @@ import java.text.NumberFormat;
 
 /**
  * A class representing an x,y coordinate.
- *
+ * 
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.2 $ $Date: 2004/01/26 18:18:11 $
+ * @version $Revision: 1.3 $ $Date: 2004/10/14 18:06:04 $
  */
 public class ESRIPoint {
 
@@ -54,7 +53,7 @@ public class ESRIPoint {
 
     /**
      * Initializes a point with the given coordinates.
-     *
+     * 
      * @param _x the x coordinate
      * @param _y the y coordinate
      */
@@ -65,21 +64,25 @@ public class ESRIPoint {
 
     /**
      * Returns the X coordinate of this point.
-     *
+     * 
      * @return the x coordinate
      */
-    public double getX() { return x; }
+    public double getX() {
+        return x;
+    }
 
     /**
      * Returns the Y coordinate of this point.
-     *
+     * 
      * @return the y coordinate
      */
-    public double getY() { return y; }
+    public double getY() {
+        return y;
+    }
 
     /**
      * Converts this point to an appropriate string representation.
-     *
+     * 
      * @return a string representing this point
      */
     public String toString() {
@@ -87,15 +90,14 @@ public class ESRIPoint {
     }
 
     /**
-     * 
+     *  
      */
-//     public int binaryStoreSize() {
-//      return 28;              // Constant for Point records
-//     }
-
+    //     public int binaryStoreSize() {
+    //      return 28; // Constant for Point records
+    //     }
     /**
      * Constructs a point from the given data buffer.
-     *
+     * 
      * @param b the data buffer
      * @param off the offset into the buffer
      */
@@ -106,7 +108,7 @@ public class ESRIPoint {
 
     /**
      * Writes this point to the given buffer at the given offset.
-     *
+     * 
      * @param b the data buffer
      * @param off the offset into the buffer
      * @return then number of bytes written
@@ -119,13 +121,13 @@ public class ESRIPoint {
 
     /**
      * Determines equality of this instance with any other instance.
-     *
+     * 
      * @param obj another instance
      * @return true if equal, false otherwise
      */
     public boolean equals(Object obj) {
         if (obj instanceof ESRIPoint) {
-            ESRIPoint pt= (ESRIPoint) obj;
+            ESRIPoint pt = (ESRIPoint) obj;
             return (x == pt.x && y == pt.y);
         }
         return false;

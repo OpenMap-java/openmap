@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.HashSet;
 import java.util.Iterator;
 import javax.media.j3d.*;
-import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandlerChild;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.tools.j3d.MapContent;
@@ -12,15 +11,14 @@ import com.bbn.openmap.tools.j3d.OM3DGraphicHandler;
 import com.bbn.openmap.tools.j3d.OMGraphicUtil;
 
 /**
- * The curtain class is just a set of planes around the
- * projection boundaries in the map. OpenMap depends on the
- * MapBean clipping for not drawing things on the map.
- * Unfortunately, this means that some leftovers can appear
- * in the 3D scene. Use this class to create a 3D barrier
- * that will hide those leftovers.
- *
- * @author    dietrick
- * @created   April 25, 2002
+ * The curtain class is just a set of planes around the projection
+ * boundaries in the map. OpenMap depends on the MapBean clipping for
+ * not drawing things on the map. Unfortunately, this means that some
+ * leftovers can appear in the 3D scene. Use this class to create a 3D
+ * barrier that will hide those leftovers.
+ * 
+ * @author dietrick
+ * @created April 25, 2002
  */
 
 public class Curtain extends MapHandlerChild implements OM3DGraphicHandler {
@@ -33,8 +31,7 @@ public class Curtain extends MapHandlerChild implements OM3DGraphicHandler {
     Iterator curtains = null;
 
     /**
-     * An amount to add (or subtract) from the projection
-     * boundaries.
+     * An amount to add (or subtract) from the projection boundaries.
      */
     protected double extra = 0;
 
@@ -43,9 +40,7 @@ public class Curtain extends MapHandlerChild implements OM3DGraphicHandler {
      */
     protected double curtainHeight = 500;
 
-
-    public Curtain() { }
-
+    public Curtain() {}
 
     public void addGraphicsToScene(MapContent mapContent) {
 
@@ -54,19 +49,18 @@ public class Curtain extends MapHandlerChild implements OM3DGraphicHandler {
         }
 
         while (curtains.hasNext()) {
-            mapContent.add((Shape3D)curtains.next());
+            mapContent.add((Shape3D) curtains.next());
         }
 
         curtains = null;
     }
 
-
     protected Iterator init(Projection proj) {
 
         HashSet set = new HashSet();
 
-        double width = (double)proj.getWidth() + extra;
-        double depth = (double)proj.getHeight() + extra;
+        double width = (double) proj.getWidth() + extra;
+        double depth = (double) proj.getHeight() + extra;
         double height = curtainHeight + extra;
 
         // The lower left corner value, or the value of zero.
@@ -167,21 +161,17 @@ public class Curtain extends MapHandlerChild implements OM3DGraphicHandler {
         return set.iterator();
     }
 
-
     public void setColor(Color curtainColor) {
         color = curtainColor;
     }
-
 
     public Color getColor() {
         return color;
     }
 
-
     public void setCurtainHeight(double height) {
         curtainHeight = height;
     }
-
 
     public double getCurtainHeight() {
         return curtainHeight;

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,34 +14,31 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ESRILinkPointRecord.java,v $
 // $RCSfile: ESRILinkPointRecord.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
-
 
 package com.bbn.openmap.layer.link.shape;
 
 import java.io.IOException;
 import com.bbn.openmap.layer.shape.*;
-import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.layer.link.*;
-
 
 /**
  * An ESRI Point record.
- *
+ * 
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.3 $ $Date: 2004/01/26 18:18:09 $
+ * @version $Revision: 1.4 $ $Date: 2004/10/14 18:05:58 $
  */
-public class ESRILinkPointRecord extends ESRIPointRecord implements ESRILinkRecord{
+public class ESRILinkPointRecord extends ESRIPointRecord implements
+        ESRILinkRecord {
 
     /**
      * Initializes this point from the given point.
-     *
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      */
@@ -51,7 +48,7 @@ public class ESRILinkPointRecord extends ESRIPointRecord implements ESRILinkReco
 
     /**
      * Initialize a point record from the given buffer.
-     *
+     * 
      * @param b the buffer
      * @param off the offset into the buffer where the data starts
      */
@@ -61,13 +58,13 @@ public class ESRILinkPointRecord extends ESRIPointRecord implements ESRILinkReco
 
     /**
      * Generates OMGraphics and adds them to the given list.
-     *
+     * 
      * @param lgl the graphics response to write the point to.
-     * @param properties the semantic description of how the point should be drawn.
+     * @param properties the semantic description of how the point
+     *        should be drawn.
      */
-    public void writeLinkGraphics(LinkGraphicList lgl,
-                                  LinkProperties properties)
-        throws IOException {
-        lgl.addRectangle((float)y, (float)x, -1, -1, 1, 1, properties);
+    public void writeLinkGraphics(LinkGraphicList lgl, LinkProperties properties)
+            throws IOException {
+        lgl.addRectangle((float) y, (float) x, -1, -1, 1, 1, properties);
     }
 }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeIndex.java,v $
 // $RCSfile: ShapeIndex.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.shape;
 
@@ -29,22 +28,22 @@ import com.bbn.openmap.util.Debug;
 /**
  * A class representing a shape index file.
  * <p>
- * Currently this class has limited capabilities.  It can dump
- * the index information to stdout.  This is useful for verification
- * of a spatial index.
- *
+ * Currently this class has limited capabilities. It can dump the
+ * index information to stdout. This is useful for verification of a
+ * spatial index.
+ * 
  * <H2>Usage</H2>
- * <DT> java com.bbn.openmap.shape.ShapeIndex file.shx</DT>
- * <DD><i> Dumps spatial index information, excluding bounding boxes
- *      to stdout.  Useful for comparing to a shape index.</i></DD>
- *
+ * <DT>java com.bbn.openmap.shape.ShapeIndex file.shx</DT>
+ * <DD><i>Dumps spatial index information, excluding bounding boxes
+ * to stdout. Useful for comparing to a shape index. </i></DD>
+ * 
  * <H2>To Do</H2>
  * <UL>
- * <LI> Generate an index from a shape file</LI>
+ * <LI>Generate an index from a shape file</LI>
  * </UL>
- *
+ * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.3 $ $Date: 2004/01/26 18:18:11 $
+ * @version $Revision: 1.4 $ $Date: 2004/10/14 18:06:05 $
  * @see SpatialIndex
  */
 public class ShapeIndex extends ShapeUtils {
@@ -57,7 +56,7 @@ public class ShapeIndex extends ShapeUtils {
 
     /**
      * Opens a shape index file for reading.
-     *
+     * 
      * @param shxFilename the name of the spatial index file
      * @exception IOException if something goes wrong opening the file
      */
@@ -67,7 +66,7 @@ public class ShapeIndex extends ShapeUtils {
 
     /**
      * Displays the contents of this index.
-     *
+     * 
      * @exception IOException if something goes wrong reading the file
      */
     public void dumpIndex() throws IOException {
@@ -76,8 +75,8 @@ public class ShapeIndex extends ShapeUtils {
         int recNum = 0;
         int count = 0;
 
-        shx.seek(100);          // skip the file header
-        while (! atEOF) {
+        shx.seek(100); // skip the file header
+        while (!atEOF) {
             int result = shx.read(ixRecord, 0, SHAPE_INDEX_RECORD_LENGTH);
             if (result == -1) {
                 atEOF = true;
@@ -86,24 +85,23 @@ public class ShapeIndex extends ShapeUtils {
                 recNum++;
                 int offset = readBEInt(ixRecord, 0);
                 int length = readBEInt(ixRecord, 4);
-                Debug.output("Record " + recNum + ": " +
-                                   offset + ", " + length);
+                Debug.output("Record " + recNum + ": " + offset + ", " + length);
             }
         }
-            
+
     }
 
     /**
-     * The driver for the command line interface.  Reads the
-     * command line arguments and executes appropriate calls.
+     * The driver for the command line interface. Reads the command
+     * line arguments and executes appropriate calls.
      * <p>
      * See the file documentation for usage.
-     *
+     * 
      * @param args the command line arguments
      * @exception IOException if something goes wrong reading or
      *            writing the file
      */
-    public static void main (String args[]) throws IOException {
+    public static void main(String args[]) throws IOException {
         String name = args[0];
         ShapeIndex si = new ShapeIndex(name);
         si.dumpIndex();

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,20 +12,18 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/LOSStateMachine.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/LOSStateMachine.java,v
+// $
 // $RCSfile: LOSStateMachine.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.terrain;
 
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
 import com.bbn.openmap.layer.util.stateMachine.*;
 
 class LOSStateMachine extends StateMachine {
@@ -36,7 +34,7 @@ class LOSStateMachine extends StateMachine {
     public static final int TOOL_DEFINED = 2;
     public static final int TOOL_VIEW = 3;
 
-    public LOSStateMachine(LOSGenerator generator){
+    public LOSStateMachine(LOSGenerator generator) {
         losg = generator;
         State[] losStates = init();
         setStates(losStates);
@@ -47,8 +45,7 @@ class LOSStateMachine extends StateMachine {
         setMapMouseListenerResponses(true);
     }
 
-
-    protected State[] init(){
+    protected State[] init() {
         State[] LOSStates = new State[4];
 
         LOSStates[TOOL_DO_NOTHING] = new LOSDoNothingState(losg);
@@ -59,13 +56,4 @@ class LOSStateMachine extends StateMachine {
         return LOSStates;
     }
 }
-
-
-
-
-
-
-
-
-
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/ControlPanelToggleMenuItem.java,v $
 // $RCSfile: ControlPanelToggleMenuItem.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.menu;
 
@@ -32,24 +31,24 @@ import javax.swing.JMenuItem;
 
 /**
  * Menu item that holds onto the OMControlPanel, and hides/displays it
- * when selected.  
+ * when selected.
  */
-public class ControlPanelToggleMenuItem extends JMenuItem 
-    implements ActionListener, LightMapHandlerChild {
+public class ControlPanelToggleMenuItem extends JMenuItem implements
+        ActionListener, LightMapHandlerChild {
 
     protected OMControlPanel controlPanel = null;
     protected final static String hideLabel = "Hide Control Panel";
     protected final static String displayLabel = "Display Control Panel";
 
     public ControlPanelToggleMenuItem() {
-        // assume that the control panel isn't there.  
+        // assume that the control panel isn't there.
         // Won't be visible if it isn't.
         super(hideLabel);
         init(null);
     }
 
     public ControlPanelToggleMenuItem(OMControlPanel cp) {
-        super(cp.isVisible()?hideLabel:displayLabel);
+        super(cp.isVisible() ? hideLabel : displayLabel);
         init(cp);
     }
 
@@ -75,19 +74,19 @@ public class ControlPanelToggleMenuItem extends JMenuItem
         if (controlPanel != null) {
             boolean selected = controlPanel.isVisible();
             controlPanel.setVisible(!selected);
-            setText(selected?displayLabel:hideLabel);
+            setText(selected ? displayLabel : hideLabel);
         }
     }
 
     public void findAndInit(Object someObj) {
         if (someObj instanceof OMControlPanel) {
-            setControlPanel((OMControlPanel)someObj);
+            setControlPanel((OMControlPanel) someObj);
         }
     }
 
     public void findAndUndo(Object someObj) {
-        if (someObj instanceof OMControlPanel &&
-            getControlPanel() == (OMControlPanel)someObj) {
+        if (someObj instanceof OMControlPanel
+                && getControlPanel() == (OMControlPanel) someObj) {
             setControlPanel(null);
         }
     }

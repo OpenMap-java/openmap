@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SUnitSymbol.java,v $
 // $RCSfile: SUnitSymbol.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,8 +26,6 @@ package com.bbn.openmap.layer.specialist;
 import com.bbn.openmap.CSpecialist.*;
 import com.bbn.openmap.CSpecialist.GraphicPackage.*;
 import com.bbn.openmap.CSpecialist.UnitSymbolPackage.*;
-import java.io.*;
-import java.util.*;
 
 /** FM101 Unit Symbols are part of a Goverment standard for icons. */
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,31 +14,24 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMDistance.java,v $
 // $RCSfile: OMDistance.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:06:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
-
 package com.bbn.openmap.omGraphics;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.geo.Geo;
-import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
 
 import java.awt.*;
-import java.awt.geom.*;
-import java.io.Serializable;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 /**
- * OMGraphic object that represents a polyline, labeled with distances.
+ * OMGraphic object that represents a polyline, labeled with
+ * distances.
  */
 public class OMDistance extends OMPoly {
 
@@ -69,14 +62,15 @@ public class OMDistance extends OMPoly {
      * need to ensure that the first and last coordinate pairs are the
      * same.
      * </ul>
-     *
+     * 
      * @param llPoints array of lat/lon points, arranged lat, lon,
-     * lat, lon, etc.
-     * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
-     * or OMGraphic.DECIMAL_DEGREES
+     *        lat, lon, etc.
+     * @param units radians or decimal degrees. Use OMGraphic.RADIANS
+     *        or OMGraphic.DECIMAL_DEGREES
      * @param lType line type, from a list defined in OMGraphic.
      */
-    public OMDistance(float[] llPoints, int units, int lType, Length distanceUnits) {
+    public OMDistance(float[] llPoints, int units, int lType,
+            Length distanceUnits) {
         this(llPoints, units, lType, -1, distanceUnits);
     }
 
@@ -93,17 +87,18 @@ public class OMDistance extends OMPoly {
      * need to ensure that the first and last coordinate pairs are the
      * same.
      * </ul>
-     *
+     * 
      * @param llPoints array of lat/lon points, arranged lat, lon,
-     * lat, lon, etc.
-     * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
-     * or OMGraphic.DECIMAL_DEGREES
+     *        lat, lon, etc.
+     * @param units radians or decimal degrees. Use OMGraphic.RADIANS
+     *        or OMGraphic.DECIMAL_DEGREES
      * @param lType line type, from a list defined in OMGraphic.
      * @param nsegs number of segment points (only for
-     * LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and if &lt;
-     * 1, this value is generated internally)
+     *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and
+     *        if &lt; 1, this value is generated internally)
      */
-    public OMDistance(float[] llPoints, int units, int lType, int nsegs, Length distanceUnits) {
+    public OMDistance(float[] llPoints, int units, int lType, int nsegs,
+            Length distanceUnits) {
         super(llPoints, units, lType, nsegs);
         setDistUnits(distanceUnits);
     }
@@ -148,51 +143,52 @@ public class OMDistance extends OMPoly {
 
         int l = 0;
         float cumulativeDist = 0f;
-        for (int p = 2 ; p< rawllpts.length; p +=2) {
-            Geo curGeo = Geo.createGeo(rawllpts[p], rawllpts[p+1]);
-            
+        for (int p = 2; p < rawllpts.length; p += 2) {
+            Geo curGeo = Geo.createGeo(rawllpts[p], rawllpts[p + 1]);
+
             float dist = getDist(lastGeo, curGeo);
             cumulativeDist += dist;
 
-            labels.add(createLabel(lastGeo, curGeo, dist, cumulativeDist, distUnits));
-            points.add(new OMPoint(ProjMath.radToDeg(rawllpts[p]), ProjMath.radToDeg(rawllpts[p+1]), 1));
+            labels.add(createLabel(lastGeo,
+                    curGeo,
+                    dist,
+                    cumulativeDist,
+                    distUnits));
+            points.add(new OMPoint(ProjMath.radToDeg(rawllpts[p]), ProjMath.radToDeg(rawllpts[p + 1]), 1));
             lastGeo = curGeo;
         }
     }
 
-    /** 
-     * Get an OMText label for a segments between the given
-     * lat/lon points whose given distance and
-     * cumulative distance is specified.
+    /**
+     * Get an OMText label for a segments between the given lat/lon
+     * points whose given distance and cumulative distance is
+     * specified.
      */
-    public OMText createLabel(Geo g1, Geo g2,
-                              float dist, float cumulativeDist,
+    public OMText createLabel(Geo g1, Geo g2, float dist, float cumulativeDist,
                               Length distanceUnits) {
         Geo mid;
         switch (getLineType()) {
         case LINETYPE_STRAIGHT:
-            float lat = (float)(g1.getLatitude() + g2.getLatitude()) / 2f;
-            float lon = (float)(g1.getLongitude() + g2.getLongitude()) / 2f;
+            float lat = (float) (g1.getLatitude() + g2.getLatitude()) / 2f;
+            float lon = (float) (g1.getLongitude() + g2.getLongitude()) / 2f;
             mid = new Geo(lat, lon);
             break;
         case LINETYPE_RHUMB:
             System.err.println("Rhumb distance calculation not implemented.");
         case LINETYPE_GREATCIRCLE:
         case LINETYPE_UNKNOWN:
-        default:        
+        default:
             mid = g1.midPoint(g2);
         }
-        
-//      String text = ((int)dist) + " (" + ((int)cumulativeDist) + ")";
 
-        String text = (df.format(distanceUnits.fromRadians(dist))) + " (" + 
-            (df.format(distanceUnits.fromRadians(cumulativeDist))) + ") " +
-            distanceUnits.getAbbr();
-        OMText omtext = new OMText((float)mid.getLatitude(), 
-                                   (float)mid.getLongitude(),
-                                   text,
-                                   OMText.JUSTIFY_LEFT);
-//      omtext.setLinePaint(new Color(200, 200, 255));
+        //      String text = ((int)dist) + " (" + ((int)cumulativeDist) +
+        // ")";
+
+        String text = (df.format(distanceUnits.fromRadians(dist))) + " ("
+                + (df.format(distanceUnits.fromRadians(cumulativeDist))) + ") "
+                + distanceUnits.getAbbr();
+        OMText omtext = new OMText((float) mid.getLatitude(), (float) mid.getLongitude(), text, OMText.JUSTIFY_LEFT);
+        //      omtext.setLinePaint(new Color(200, 200, 255));
         return omtext;
     }
 
@@ -203,22 +199,22 @@ public class OMDistance extends OMPoly {
     public float getDist(Geo g1, Geo g2) {
         switch (getLineType()) {
         case LINETYPE_STRAIGHT:
-            float lonDist = ProjMath.lonDistance((float)g2.getLongitude(),
-                                                 (float)g1.getLongitude());
-            float latDist = (float)g2.getLatitude() - (float)g1.getLatitude();
-            return (float)Math.sqrt(lonDist*lonDist + latDist*latDist);
+            float lonDist = ProjMath.lonDistance((float) g2.getLongitude(),
+                    (float) g1.getLongitude());
+            float latDist = (float) g2.getLatitude() - (float) g1.getLatitude();
+            return (float) Math.sqrt(lonDist * lonDist + latDist * latDist);
         case LINETYPE_RHUMB:
             Debug.error("Rhumb distance calculation not implemented.");
         case LINETYPE_GREATCIRCLE:
         case LINETYPE_UNKNOWN:
         default:
-            return (float)g1.distance(g2);
+            return (float) g1.distance(g2);
         }
     }
 
     /**
      * Prepare the poly for rendering.
-     *
+     * 
      * @param proj Projection
      * @return true if generate was successful
      */
@@ -237,9 +233,8 @@ public class OMDistance extends OMPoly {
     protected boolean paintOnlyPoly = false;
 
     /**
-     * Paint the poly. 
-     * This works if generate() has been successful.
-     *
+     * Paint the poly. This works if generate() has been successful.
+     * 
      * @param g java.awt.Graphics to paint the poly onto.
      */
     public void render(Graphics g) {
@@ -259,16 +254,16 @@ public class OMDistance extends OMPoly {
         }
     }
 
-    private void writeObject(java.io.ObjectOutputStream stream) 
-        throws java.io.IOException {
+    private void writeObject(java.io.ObjectOutputStream stream)
+            throws java.io.IOException {
         stream.defaultWriteObject();
         stream.writeObject(distUnits.getAbbr());
-     }
+    }
 
     private void readObject(java.io.ObjectInputStream stream)
-        throws java.io.IOException, ClassNotFoundException {
+            throws java.io.IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        distUnits = Length.get((String)stream.readObject());
+        distUnits = Length.get((String) stream.readObject());
     }
 
 }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapListenerSupport.java,v $
 // $RCSfile: NetMapListenerSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.graphicLoader.netmap;
 
@@ -40,12 +39,13 @@ public class NetMapListenerSupport implements java.io.Serializable {
     /**
      * Construct a NetMapListenerSupport.
      */
-    public NetMapListenerSupport () {
+    public NetMapListenerSupport() {
         this(null);
     }
 
     /**
      * Construct a NetMapListenerSupport.
+     * 
      * @param aSource source Object
      */
     public NetMapListenerSupport(Object aSource) {
@@ -54,6 +54,7 @@ public class NetMapListenerSupport implements java.io.Serializable {
 
     /**
      * Set the source object.
+     * 
      * @param aSource source Object
      */
     public synchronized void setSource(Object aSource) {
@@ -62,6 +63,7 @@ public class NetMapListenerSupport implements java.io.Serializable {
 
     /**
      * Get the source object.
+     * 
      * @return Object source
      */
     public synchronized Object getSource() {
@@ -70,6 +72,7 @@ public class NetMapListenerSupport implements java.io.Serializable {
 
     /**
      * Add a NetMapListener.
+     * 
      * @param l NetMapListener
      */
     public synchronized void addNetMapListener(NetMapListener l) {
@@ -81,9 +84,9 @@ public class NetMapListenerSupport implements java.io.Serializable {
         }
     }
 
-
     /**
      * Remove a NetMapListener.
+     * 
      * @param l NetMapListener
      */
     public synchronized void removeNetMapListener(NetMapListener l) {
@@ -95,6 +98,7 @@ public class NetMapListenerSupport implements java.io.Serializable {
 
     /**
      * Return a cloned list of Listeners.
+     * 
      * @return Vector of listeners, null if none have been added.
      */
     public synchronized java.util.Vector getListeners() {
@@ -128,15 +132,16 @@ public class NetMapListenerSupport implements java.io.Serializable {
 
         int nTargets = targets.size();
 
-        if (nTargets == 0) return;
+        if (nTargets == 0)
+            return;
 
         NetMapEvent evt = new NetMapEvent(theSource, eventProperties);
 
         for (int i = 0; i < nTargets; i++) {
-            target = (NetMapListener)targets.elementAt(i);
+            target = (NetMapListener) targets.elementAt(i);
             if (Debug.debugging("mapbean")) {
-                Debug.output("NetMapListenerSupport.fireNetMapEvent(): " +
-                             "target is: " + target);
+                Debug.output("NetMapListenerSupport.fireNetMapEvent(): "
+                        + "target is: " + target);
             }
 
             target.catchEvent(evt);

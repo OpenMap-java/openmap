@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygonList.java,v $
 // $RCSfile: EsriPolygonList.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:05:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.dataAccess.shape;
 
@@ -32,18 +31,21 @@ import java.util.Vector;
 import java.util.Iterator;
 
 /**
- * An EsriGraphicList ensures that only EsriPolygons are added to its list.
- * @author Doug Van Auken 
+ * An EsriGraphicList ensures that only EsriPolygons are added to its
+ * list.
+ * 
+ * @author Doug Van Auken
  * @author Don Dietrick
  */
 public class EsriPolygonList extends EsriGraphicList {
 
     /**
      * Over-ride the add( ) method to trap for inconsistent shape
-     * geometry.  If you are adding a OMGraphic that is not a list,
+     * geometry. If you are adding a OMGraphic that is not a list,
      * make sure this list is a sub-list containing multiple geometry
-     * parts.  Only add another list to a top level EsriGraphicList.
-     * @param shape the non-null OMGraphic to add 
+     * parts. Only add another list to a top level EsriGraphicList.
+     * 
+     * @param shape the non-null OMGraphic to add
      */
     public void add(OMGraphic shape) {
         try {
@@ -54,25 +56,27 @@ public class EsriPolygonList extends EsriGraphicList {
             }
 
             if (shape instanceof OMGraphicList) {
-                OMGraphicList list = (OMGraphicList)shape;
-                EsriGraphic graphic = (EsriGraphic)list.getOMGraphicAt(0);
+                OMGraphicList list = (OMGraphicList) shape;
+                EsriGraphic graphic = (EsriGraphic) list.getOMGraphicAt(0);
 
-                if (graphic instanceof EsriPolygon ||
-                    graphic instanceof EsriPolygonList) {
+                if (graphic instanceof EsriPolygon
+                        || graphic instanceof EsriPolygonList) {
                     graphics.add(shape);
-                    addExtents(((EsriGraphicList)shape).getExtents());
+                    addExtents(((EsriGraphicList) shape).getExtents());
                 } else if (graphic instanceof OMGraphic) {
                     // Try recursively...
-                    add((OMGraphic)graphic);
+                    add((OMGraphic) graphic);
                 } else {
-                    Debug.message("esri", "EsriPolygonList.add()- graphic list isn't a EsriPolygonList, can't add.");
+                    Debug.message("esri",
+                            "EsriPolygonList.add()- graphic list isn't a EsriPolygonList, can't add.");
                 }
 
             } else if (shape instanceof EsriPolygon) {
                 graphics.add(shape);
-                addExtents(((EsriPolygon)shape).getExtents());
+                addExtents(((EsriPolygon) shape).getExtents());
             } else {
-                Debug.message("esri", "EsriPolygonList.add()- graphic isn't a EsriPoly or OMPoly, can't add.");
+                Debug.message("esri",
+                        "EsriPolygonList.add()- graphic isn't a EsriPoly or OMPoly, can't add.");
             }
         } catch (ClassCastException cce) {
         }
@@ -91,22 +95,22 @@ public class EsriPolygonList extends EsriGraphicList {
     public EsriPolygonList() {
         super();
     }
-    
+
     /**
-     * Construct an EsriPolygonList with an initial capacity. 
-     *
-     * @param initialCapacity the initial capacity of the list 
+     * Construct an EsriPolygonList with an initial capacity.
+     * 
+     * @param initialCapacity the initial capacity of the list
      */
     public EsriPolygonList(int initialCapacity) {
         super(initialCapacity);
     }
 
     /**
-     * Construct an EsriPolygonList with an initial capacity and
-     * a standard increment value.
-     *
-     * @param initialCapacity the initial capacity of the list 
-     * @param capacityIncrement the capacityIncrement for resizing 
+     * Construct an EsriPolygonList with an initial capacity and a
+     * standard increment value.
+     * 
+     * @param initialCapacity the initial capacity of the list
+     * @param capacityIncrement the capacityIncrement for resizing
      * @deprecated capacityIncrement doesn't do anything.
      */
     public EsriPolygonList(int initialCapacity, int capacityIncrement) {
@@ -152,7 +156,8 @@ public class EsriPolygonList extends EsriGraphicList {
         float[] segPoints = new float[2];
 
         while (!circle.isDone()) {
-            //by passing segpoints the array is filled with each x\y point
+            //by passing segpoints the array is filled with each x\y
+            // point
             //iterated by the circle
             int segType = circle.currentSegment(segPoints);
             initialPoints.add(new Float(segPoints[0]));
@@ -168,9 +173,8 @@ public class EsriPolygonList extends EsriGraphicList {
 
         //convert the x/y points to lat/lon points
         for (int p = 0; p < initialPoints.size(); p += 2) {
-            LatLonPoint llp = proj.inverse(
-                    ((Float)initialPoints.elementAt(p)).intValue(),
-                    ((Float)initialPoints.elementAt(p + 1)).intValue());
+            LatLonPoint llp = proj.inverse(((Float) initialPoints.elementAt(p)).intValue(),
+                    ((Float) initialPoints.elementAt(p + 1)).intValue());
 
             circlePoints[p] = llp.getLatitude();
             circlePoints[p + 1] = llp.getLongitude();
@@ -185,21 +189,22 @@ public class EsriPolygonList extends EsriGraphicList {
         return poly;
     }
 
-
     //converts range rings to circles which are passed to the
     //convertCircles() method to be converted to OMPolys
-    public static OMGraphicList convert(OMRangeRings omRR, 
-                                        Projection proj) {
+    public static OMGraphicList convert(OMRangeRings omRR, Projection proj) {
         //get the array of circles
         OMCircle[] circles = omRR.createCircles();
         OMCircle circ;
         OMGraphicList circleList = new OMGraphicList();
         circleList.setAppObject(omRR.getAppObject());
 
-        //get the line color and fill color that are to be passed with
+        //get the line color and fill color that are to be passed
+        // with
         //the dbf info
-//          Color lineColor = getColorString(dtlGraphic.getLineColor());
-//          Color fillColor = getColorString(dtlGraphic.getFillColor());
+        //          Color lineColor =
+        // getColorString(dtlGraphic.getLineColor());
+        //          Color fillColor =
+        // getColorString(dtlGraphic.getFillColor());
 
         if (proj == null) {
             return circleList;
@@ -209,12 +214,15 @@ public class EsriPolygonList extends EsriGraphicList {
         for (i = 0; i < circles.length; i++) {
             //information passed to the dbflist includes the interval
             //units and the interval
-//              dbfList = getDbfList("RangeRings(" + omRR.getIntervalUnits().toString() + "s)", omRR.getInterval() * (i + 1), lineColor, fillColor);
+            //              dbfList = getDbfList("RangeRings(" +
+            // omRR.getIntervalUnits().toString() + "s)",
+            // omRR.getInterval() * (i + 1), lineColor, fillColor);
 
             //have to re-generate each circle in the range ring array
             if (circles[i].generate(proj)) {
-                //call convertCircles to convert each ring to an OMPoly
-                OMPoly poly = convert((OMCircle)circles[i], proj);
+                //call convertCircles to convert each ring to an
+                // OMPoly
+                OMPoly poly = convert((OMCircle) circles[i], proj);
                 //call the method to add this ring to the EsriLayer
                 if (poly != null) {
                     circleList.add(poly);
@@ -233,7 +241,9 @@ public class EsriPolygonList extends EsriGraphicList {
         //units and the interval since we don't know the exact
         //interval of the last ring the string "less than" is applied
         //to the last rings interval
-//          dbfList = getDbfList("RangeRings(" + omRR.getIntervalUnits().toString() + ")less than", omRR.getInterval() * (i + 1), lineColor, fillColor);
+        //          dbfList = getDbfList("RangeRings(" +
+        // omRR.getIntervalUnits().toString() + ")less than",
+        // omRR.getInterval() * (i + 1), lineColor, fillColor);
 
         DrawingAttributes da = new DrawingAttributes();
         da.setFrom(omRR);
@@ -244,9 +254,9 @@ public class EsriPolygonList extends EsriGraphicList {
 
     public EsriGraphic shallowCopy() {
         EsriPolygonList ret = new EsriPolygonList(size());
-        for (Iterator iter = iterator(); iter.hasNext(); ) {
-            EsriGraphic g = (EsriGraphic)iter.next();
-            ret.add((OMGraphic)g.shallowCopy());
+        for (Iterator iter = iterator(); iter.hasNext();) {
+            EsriGraphic g = (EsriGraphic) iter.next();
+            ret.add((OMGraphic) g.shallowCopy());
         }
         ret.setAppObject(getAppObject());
         return ret;

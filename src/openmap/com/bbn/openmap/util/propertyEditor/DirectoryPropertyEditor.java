@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,31 +14,32 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/DirectoryPropertyEditor.java,v $
 // $RCSfile: DirectoryPropertyEditor.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.util.propertyEditor;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 
-/** 
+/**
  * A PropertyEditor that brings up a JFileChooser panel to select a
- * directory.  A single directpry choice can be made, and only choices
+ * directory. A single directpry choice can be made, and only choices
  * that reside on the local file system.
  */
 public class DirectoryPropertyEditor extends FilePropertyEditor {
-    
-    /** Create DirectoryPropertyEditor.  */
+
+    /** Create DirectoryPropertyEditor. */
     public DirectoryPropertyEditor() {
         button = new JButton("Select directory...");
     }
 
     /**
      * Returns a JFileChooser that will choose a directory.
+     * 
      * @return JFileChooser
      */
     public JFileChooser getFileChooser() {

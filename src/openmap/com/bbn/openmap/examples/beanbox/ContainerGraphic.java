@@ -17,71 +17,66 @@
 package com.bbn.openmap.examples.beanbox;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
 
 /**
  * A custom graphic class for representing objects of type
- * {@link com.bbn.openmap.examples.beanbox.SimpleBeanContainer}
- * as a rectangular box.
+ * {@link com.bbn.openmap.examples.beanbox.SimpleBeanContainer}as a
+ * rectangular box.
  */
-public class ContainerGraphic
-extends CustomGraphic {
+public class ContainerGraphic extends CustomGraphic {
 
-  public ContainerGraphic (SimpleBeanObject object) {
-    super(object);
-    this.setRenderType(OMGraphicConstants.RENDERTYPE_LATLON);
-  }
-
-  /**
-   * Returns an OMRect object with dimensions equal to the width
-   * and height of the SimpleBeanContainer and position equal to
-   * the center lat/lon position of the SimpleBeanContainer object.
-   */
-  public OMGraphic createGraphic (SimpleBeanObject object) {
-
-    if (!(object instanceof SimpleBeanContainer)) {
-      throw new IllegalArgumentException (
-        object + " not instance of SimpleBeanContainer");
+    public ContainerGraphic(SimpleBeanObject object) {
+        super(object);
+        this.setRenderType(OMGraphicConstants.RENDERTYPE_LATLON);
     }
 
-    SimpleBeanContainer bc = (SimpleBeanContainer)object;
+    /**
+     * Returns an OMRect object with dimensions equal to the width and
+     * height of the SimpleBeanContainer and position equal to the
+     * center lat/lon position of the SimpleBeanContainer object.
+     */
+    public OMGraphic createGraphic(SimpleBeanObject object) {
 
-    return new OMRect(bc.getTopLatitude(), bc.getLeftLongitude(), 
-                       bc.getBottomLatitude(), bc.getRightLongitude(), 
-                          OMGraphicConstants.LINETYPE_RHUMB);
-  }
+        if (!(object instanceof SimpleBeanContainer)) {
+            throw new IllegalArgumentException(object
+                    + " not instance of SimpleBeanContainer");
+        }
 
+        SimpleBeanContainer bc = (SimpleBeanContainer) object;
 
-  /**
-   * Updates the width, height and position of OMRect object
-   * used to represent the SimpleBeanContainer object with the 
-   * corresponding values in the SimpleBeanContainer object.
-   */
-  public void updateGraphic (SimpleBeanObject object) {
-
-    if (!(object instanceof SimpleBeanContainer)) {
-      throw new IllegalArgumentException (
-        object + " not instance of SimpleBeanContainer");
+        return new OMRect(bc.getTopLatitude(), bc.getLeftLongitude(), bc.getBottomLatitude(), bc.getRightLongitude(), OMGraphicConstants.LINETYPE_RHUMB);
     }
 
-    SimpleBeanContainer bc = (SimpleBeanContainer)object;
+    /**
+     * Updates the width, height and position of OMRect object used to
+     * represent the SimpleBeanContainer object with the corresponding
+     * values in the SimpleBeanContainer object.
+     */
+    public void updateGraphic(SimpleBeanObject object) {
 
-    OMGraphic graphic = super.getOMGraphicAt(0);
+        if (!(object instanceof SimpleBeanContainer)) {
+            throw new IllegalArgumentException(object
+                    + " not instance of SimpleBeanContainer");
+        }
 
-    if (graphic instanceof OMRect) {
+        SimpleBeanContainer bc = (SimpleBeanContainer) object;
 
-      OMRect rect = (OMRect)graphic;
+        OMGraphic graphic = super.getOMGraphicAt(0);
 
-      rect.setLocation(bc.getTopLatitude(), 
-                       bc.getLeftLongitude(), 
-                       bc.getBottomLatitude(), 
-                       bc.getRightLongitude(), 
-                       OMGraphicConstants.LINETYPE_RHUMB);
+        if (graphic instanceof OMRect) {
+
+            OMRect rect = (OMRect) graphic;
+
+            rect.setLocation(bc.getTopLatitude(),
+                    bc.getLeftLongitude(),
+                    bc.getBottomLatitude(),
+                    bc.getRightLongitude(),
+                    OMGraphicConstants.LINETYPE_RHUMB);
+
+        }
 
     }
-
-  }
 
 }

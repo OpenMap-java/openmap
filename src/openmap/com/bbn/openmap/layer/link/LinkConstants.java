@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,20 +14,18 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkConstants.java,v $
 // $RCSfile: LinkConstants.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
-
 
 package com.bbn.openmap.layer.link;
 
 /**
  * The LinkConstants object is an interface that describes all the
  * constants that relate directly to the Link object, and that are
- * defined by the Link Protocol.  They are kept here in the
+ * defined by the Link Protocol. They are kept here in the
  * LinkContants interface to keep the Link object less cluttered.
  */
 public interface LinkConstants {
@@ -37,7 +35,7 @@ public interface LinkConstants {
     public final static String END_TOTAL = "\r";
     /** The symbol used to end a section/part of a request/response. */
     public final static String END_SECTION = "\n";
-    /** The Link Protocol version.  Latest version is 0.3. */
+    /** The Link Protocol version. Latest version is 0.3. */
     public static final float LINK_VERSION = 0.3f;
 
     /** Graphics request header. */
@@ -64,7 +62,7 @@ public interface LinkConstants {
     public static final String SHUTDOWN_HEADER = "<OMLINK:SHUTDOWN>";
 
     /** Bitmap graphic object header. */
-    public static final String BITMAP_HEADER ="<OMLINK:BITMAP>";
+    public static final String BITMAP_HEADER = "<OMLINK:BITMAP>";
     /** Text graphic object header. */
     public static final String TEXT_HEADER = "<OMLINK:TEXT>";
     /** Poly graphic object header. */

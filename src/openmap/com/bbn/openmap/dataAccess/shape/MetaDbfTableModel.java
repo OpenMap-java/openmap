@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,23 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/MetaDbfTableModel.java,v $
 // $RCSfile: MetaDbfTableModel.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.dataAccess.shape;
 
-import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
 
 import com.bbn.openmap.dataAccess.shape.input.*;
 import com.bbn.openmap.util.Debug;
@@ -38,12 +34,11 @@ import com.bbn.openmap.util.Debug;
 /**
  * An extension of the DbfTableModel that allows editing of the format
  * of the TbfTableModel, allowing addition and deletion of columns of
- * the DbfTableModel.  The original DbfTableModel column headers are
- * scanned and put into records, and edited the rows.  Be careful with
+ * the DbfTableModel. The original DbfTableModel column headers are
+ * scanned and put into records, and edited the rows. Be careful with
  * this.
  */
-public class MetaDbfTableModel extends DbfTableModel
-    implements ShapeConstants {
+public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
 
     public final static int META_RECORDNAME_COLUMN_NUMBER = 0;
     public final static int META_TYPE_COLUMN_NUMBER = 1;
@@ -51,14 +46,15 @@ public class MetaDbfTableModel extends DbfTableModel
     public final static int META_PLACES_COLUMN_NUMBER = 3;
 
     protected DbfTableModel source = null;
-    /** 
-     * Keeps track of the original columns.  If a name is changed the
-     * row will be deleted in all the records. 
+    /**
+     * Keeps track of the original columns. If a name is changed the
+     * row will be deleted in all the records.
      */
     protected int originalColumnNumber = 0;
 
     /**
      * Creates a blank DbfTableModel from the source DbfTableModel.
+     * 
      * @param source the DbfTableModel to be modified.
      */
     public MetaDbfTableModel(DbfTableModel source) {
@@ -78,7 +74,8 @@ public class MetaDbfTableModel extends DbfTableModel
             record.add(new Integer(source.getLength(i)));
             record.add(new Integer(source.getDecimalCount(i)));
             addRecord(record);
-            if (DEBUG) Debug.output("Adding record: " + record);
+            if (DEBUG)
+                Debug.output("Adding record: " + record);
         }
     }
 
@@ -94,24 +91,24 @@ public class MetaDbfTableModel extends DbfTableModel
 
         for (int i = 0; i < 4; i++) {
 
-            _lengths[i] = (byte)12;
-            _decimalCounts[i] = (byte)0;
-            
+            _lengths[i] = (byte) 12;
+            _decimalCounts[i] = (byte) 0;
+
             byte type;
             if (i < 2) {
                 type = DBF_TYPE_CHARACTER.byteValue();
             } else {
                 type = DBF_TYPE_NUMERIC.byteValue();
             }
-            
+
             _types[i] = type;
         }
     }
 
     /**
-     * Remove the record at the index.  This extension decreases the
+     * Remove the record at the index. This extension decreases the
      * originalColumnNumber which controls which rows[0] can be
-     * edited.  
+     * edited.
      */
     public ArrayList remove(int columnIndex) {
         ArrayList ret = super.remove(columnIndex);
@@ -130,33 +127,34 @@ public class MetaDbfTableModel extends DbfTableModel
     }
 
     /**
-     * Sets an object at a certain location.  The type is translated
+     * Sets an object at a certain location. The type is translated
      * from integer values to names for easier use.
      */
     public void setValueAt(Object object, int row, int column) {
 
         if (column == META_TYPE_COLUMN_NUMBER) {
-            if (DBF_CHARACTER.equals(object) || 
-                DBF_TYPE_CHARACTER.equals(object)) {
+            if (DBF_CHARACTER.equals(object)
+                    || DBF_TYPE_CHARACTER.equals(object)) {
                 object = DBF_TYPE_CHARACTER;
-            } else if (DBF_DATE.equals(object) || 
-                       DBF_TYPE_DATE.equals(object)) {
+            } else if (DBF_DATE.equals(object) || DBF_TYPE_DATE.equals(object)) {
                 object = DBF_TYPE_DATE;
-            } else if (DBF_NUMERIC.equals(object) ||
-                       DBF_TYPE_NUMERIC.equals(object)) {
+            } else if (DBF_NUMERIC.equals(object)
+                    || DBF_TYPE_NUMERIC.equals(object)) {
                 object = DBF_TYPE_NUMERIC;
-            } else if (DBF_LOGICAL.equals(object) ||
-                       DBF_TYPE_LOGICAL.equals(object)) {
+            } else if (DBF_LOGICAL.equals(object)
+                    || DBF_TYPE_LOGICAL.equals(object)) {
                 object = DBF_TYPE_LOGICAL;
-            } else if (DBF_MEMO.equals(object) ||
-                       DBF_TYPE_MEMO.equals(object)) {
+            } else if (DBF_MEMO.equals(object) || DBF_TYPE_MEMO.equals(object)) {
                 object = DBF_TYPE_MEMO;
             } else {
-                Debug.error("Rejected " + object + " as input. Use: \n    Character, Number, Date, Boolean, or Memo");
+                Debug.error("Rejected "
+                        + object
+                        + " as input. Use: \n    Character, Number, Date, Boolean, or Memo");
                 return;
             }
 
-            if (DEBUG) Debug.output("New value set to " + object);
+            if (DEBUG)
+                Debug.output("New value set to " + object);
         }
 
         super.setValueAt(object, row, column);
@@ -164,6 +162,7 @@ public class MetaDbfTableModel extends DbfTableModel
 
     /**
      * Retrieves a value for a specific column and row index
+     * 
      * @return Object A value for a specific column and row index
      */
     public Object getValueAt(int row, int column) {
@@ -188,7 +187,7 @@ public class MetaDbfTableModel extends DbfTableModel
 
     /**
      * Create a new record, corresponding to a new column in the
-     * source DbfTableModel.  Filled in with standard things that can
+     * source DbfTableModel. Filled in with standard things that can
      * be edited.
      */
     public void addBlankRecord() {
@@ -198,7 +197,8 @@ public class MetaDbfTableModel extends DbfTableModel
         record.add(new Integer(12));
         record.add(new Integer(0));
         addRecord(record);
-        if (DEBUG) Debug.output("Adding record: " + record);
+        if (DEBUG)
+            Debug.output("Adding record: " + record);
     }
 
     /**
@@ -206,7 +206,10 @@ public class MetaDbfTableModel extends DbfTableModel
      */
     public void exitWindowClosed() {
         if (source != null && source.dirty) {
-            int check = JOptionPane.showConfirmDialog(null, "Do you want to save your changes?", "Confirm Close", JOptionPane.YES_NO_OPTION);
+            int check = JOptionPane.showConfirmDialog(null,
+                    "Do you want to save your changes?",
+                    "Confirm Close",
+                    JOptionPane.YES_NO_OPTION);
             if (check == JOptionPane.YES_OPTION) {
                 fireTableStructureChanged();
             } else {
@@ -221,30 +224,36 @@ public class MetaDbfTableModel extends DbfTableModel
         if (frame == null) {
             frame = new JFrame("Editing Attribute File Structure");
 
-            frame.getContentPane().add(getGUI(filename, MODIFY_ROW_MASK | DONE_MASK), BorderLayout.CENTER);
-        
+            frame.getContentPane().add(getGUI(filename, MODIFY_ROW_MASK
+                    | DONE_MASK),
+                    BorderLayout.CENTER);
+
             JButton saveButton = new JButton("Save Changes");
             saveButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        int check = JOptionPane.showConfirmDialog(null, "Are you sure you want to modify the table format?", "Confirm Save", JOptionPane.OK_CANCEL_OPTION);
+                public void actionPerformed(ActionEvent ae) {
+                    int check = JOptionPane.showConfirmDialog(null,
+                            "Are you sure you want to modify the table format?",
+                            "Confirm Save",
+                            JOptionPane.OK_CANCEL_OPTION);
 
-                        if (check == JOptionPane.YES_OPTION) {
-                            fireTableStructureChanged();
-                        }
+                    if (check == JOptionPane.YES_OPTION) {
+                        fireTableStructureChanged();
                     }
-                });
+                }
+            });
 
             controlPanel.add(saveButton);
             frame.validate();
 
             frame.setSize(500, 300);
             frame.addWindowListener(new WindowAdapter() {
-                    public void windowClosing(WindowEvent e) {
-                        // need a shutdown event to notify other gui beans and
-                        // then exit.
-                        exitWindowClosed();
-                    }
-                });
+                public void windowClosing(WindowEvent e) {
+                    // need a shutdown event to notify other gui beans
+                    // and
+                    // then exit.
+                    exitWindowClosed();
+                }
+            });
         }
         frame.setVisible(true);
     }

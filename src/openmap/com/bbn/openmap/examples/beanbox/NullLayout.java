@@ -16,19 +16,17 @@
 
 package com.bbn.openmap.examples.beanbox;
 
-import java.util.*;
-
 import com.bbn.openmap.tools.beanbox.BeanLayoutManager;
 
 /**
  * A layout manager that represents a null layout. This is as good as
- * not specifying a layout for the 
+ * not specifying a layout for the
  * {@link com.bbn.openmap.examples.beanbox.SimpleBeanContainer}.
  */
 public class NullLayout extends BeanLayoutManager {
 
-  /** does nothing. */
-  public void layoutContainer() {
+    /** does nothing. */
+    public void layoutContainer() {
     // NOOP
-  }
+    }
 }

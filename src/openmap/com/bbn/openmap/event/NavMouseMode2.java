@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode2.java,v $
 // $RCSfile: NavMouseMode2.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/09/17 18:06:17 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:05:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
@@ -28,7 +27,6 @@ import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.Projection;
@@ -37,37 +35,37 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * The Navigation Mouse Mode interprets mouse clicks and mouse drags
- * to recenter and rescale the map.  The map is centered on the
- * location where a click occurs.  The difference between this
+ * to recenter and rescale the map. The map is centered on the
+ * location where a click occurs. The difference between this
  * MouseMode and the original NavMouseMode is that the box drawn is
- * interpreted differently.  The point where the mouse is pressed is
+ * interpreted differently. The point where the mouse is pressed is
  * interpreted to be the center of the new zoom area (instead of one
  * of the corners), and the dragged mouse point is the edge of the
  * box, reflected equally on the other side of the center point.
-
+ * 
  * <p>
  * You MUST add this MouseMode as a ProjectionListener to the MapBean
- * to get it to work.  If you use a MouseDelegator with the bean, it
- * will take care of that for you.  
+ * to get it to work. If you use a MouseDelegator with the bean, it
+ * will take care of that for you.
  */
 public class NavMouseMode2 extends NavMouseMode {
 
     /**
-     * Construct a NavMouseMode2.
-     * Sets the ID of the mode to the modeID, the consume mode to
-     * true, and the cursor to the crosshair. 
+     * Construct a NavMouseMode2. Sets the ID of the mode to the
+     * modeID, the consume mode to true, and the cursor to the
+     * crosshair.
      */
     public NavMouseMode2() {
         this(true);
     }
 
     /**
-     * Construct a NavMouseMode2.
-     * Lets you set the consume mode.  If the events are consumed,
-     * then a MouseEvent is sent only to the first MapMouseListener
-     * that successfully processes the event.  If they are not
-     * consumed, then all of the listeners get a chance to act on the
-     * event.
+     * Construct a NavMouseMode2. Lets you set the consume mode. If
+     * the events are consumed, then a MouseEvent is sent only to the
+     * first MapMouseListener that successfully processes the event.
+     * If they are not consumed, then all of the listeners get a
+     * chance to act on the event.
+     * 
      * @param shouldConsumeEvents the mode setting.
      */
     public NavMouseMode2(boolean shouldConsumeEvents) {
@@ -75,40 +73,41 @@ public class NavMouseMode2 extends NavMouseMode {
     }
 
     /**
-     * Handle a mouseReleased MouseListener event.
-     * If there was no drag events, or if there was only a small
-     * amount of dragging between the occurence of the mousePressed
-     * and this event, then recenter the map.  Otherwise we get the
-     * second corner of the navigation rectangle and try to figure
-     * out the best scale and location to zoom in to based on that
-     * rectangle.
+     * Handle a mouseReleased MouseListener event. If there was no
+     * drag events, or if there was only a small amount of dragging
+     * between the occurence of the mousePressed and this event, then
+     * recenter the map. Otherwise we get the second corner of the
+     * navigation rectangle and try to figure out the best scale and
+     * location to zoom in to based on that rectangle.
+     * 
      * @param e MouseEvent to be handled
      */
     public void mouseReleased(MouseEvent e) {
         if (Debug.debugging("mousemode")) {
-            Debug.output(getID()+"|NavMouseMode2.mouseReleased()");
+            Debug.output(getID() + "|NavMouseMode2.mouseReleased()");
         }
 
         Object obj = e.getSource();
 
-        if (! mouseSupport.fireMapMouseReleased(e)) {
+        if (!mouseSupport.fireMapMouseReleased(e)) {
 
-            if (!(obj instanceof MapBean) || 
-                !autoZoom || point1 == null) return;
+            if (!(obj instanceof MapBean) || !autoZoom || point1 == null)
+                return;
 
-            MapBean map = (MapBean)obj;
+            MapBean map = (MapBean) obj;
             Projection projection = map.getProjection();
-            Proj p = (Proj)projection;
+            Proj p = (Proj) projection;
 
             synchronized (this) {
                 point2 = e.getPoint();
-                int dx = Math.abs(point2.x -point1.x);
-                int dy = Math.abs(point2.y -point1.y);
+                int dx = Math.abs(point2.x - point1.x);
+                int dy = Math.abs(point2.y - point1.y);
 
                 // Dont bother redrawing if the rectangle is too small
                 if ((dx < 5) || (dy < 5)) {
-                    // clean up the rectangle, since point2 has the old value.
-                    paintRectangle(map, point1, point2); 
+                    // clean up the rectangle, since point2 has the
+                    // old value.
+                    paintRectangle(map, point1, point2);
 
                     // If rectangle is too small in both x and y then
                     // recenter the map
@@ -142,22 +141,21 @@ public class NavMouseMode2 extends NavMouseMode {
                 dy = Math.abs(point2.y - point1.y);
 
                 // cornerPoint 1 should be the upper left.
-                Point cornerPoint1 = new Point(point2.x < point1.x?point2.x:point1.x,
-                                               point2.y < point1.y?point2.y:point1.y);
-                Point cornerPoint2 = new Point(cornerPoint1.x + 2*dx,
-                                               cornerPoint1.y + 2*dy);
+                Point cornerPoint1 = new Point(point2.x < point1.x ? point2.x
+                        : point1.x, point2.y < point1.y ? point2.y : point1.y);
+                Point cornerPoint2 = new Point(cornerPoint1.x + 2 * dx, cornerPoint1.y
+                        + 2 * dy);
 
-                float newScale = 
-                    com.bbn.openmap.proj.ProjMath.getScale(cornerPoint1,
-                                                           cornerPoint2,
-                                                           projection);
+                float newScale = com.bbn.openmap.proj.ProjMath.getScale(cornerPoint1,
+                        cornerPoint2,
+                        projection);
 
                 // Figure out the center of the rectangle
-                com.bbn.openmap.LatLonPoint center = 
-                    projection.inverse(point1.x, point1.y);
+                com.bbn.openmap.LatLonPoint center = projection.inverse(point1.x,
+                        point1.y);
 
                 // Set the parameters of the projection and then set
-                // the projection of the map.  This way we save having
+                // the projection of the map. This way we save having
                 // the MapBean fire two ProjectionEvents.
                 p.setScale(newScale);
                 p.setCenter(center);
@@ -176,12 +174,13 @@ public class NavMouseMode2 extends NavMouseMode {
     ///////////////////////////////
 
     /**
-     * Draws or erases boxes between two screen pixel points.  The
+     * Draws or erases boxes between two screen pixel points. The
      * graphics from the map is set to XOR mode, and this method uses
      * two colors to make the box disappear if on has been drawn at
      * these coordinates, and the box to appear if it hasn't.
+     * 
      * @param pt1 one corner of the box to drawn, in window pixel
-     * coordinates.
+     *        coordinates.
      * @param pt2 the opposite corner of the box.
      */
     protected void paintRectangle(Graphics g, Point pt1, Point pt2) {
@@ -193,11 +192,12 @@ public class NavMouseMode2 extends NavMouseMode {
             int width = Math.abs(pt2.x - pt1.x);
             int height = Math.abs(pt2.y - pt1.y);
 
-            if (width == 0) width++;
-            if (height == 0) height++;
+            if (width == 0)
+                width++;
+            if (height == 0)
+                height++;
 
-            g.drawRect(pt1.x - width, pt1.y - height,
-                       width*2, height*2);
+            g.drawRect(pt1.x - width, pt1.y - height, width * 2, height * 2);
             g.drawRect(pt1.x - 1, pt1.y - 1, 3, 3);
         }
     }

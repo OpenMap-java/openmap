@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/RoadClass.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/RoadClass.java,v
+// $
 // $RCSfile: RoadClass.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/02/13 17:16:33 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.roads;
 
@@ -33,25 +34,25 @@ public class RoadClass {
     private float convoySpeed;
 
     public RoadClass(Object name, Color color, int width, float convoySpeed) {
-	this.name = name;
-	this.color = color;
-	this.width = width;
-	this.convoySpeed = convoySpeed;
+        this.name = name;
+        this.color = color;
+        this.width = width;
+        this.convoySpeed = convoySpeed;
     }
 
     public Object getName() {
-	return name;
+        return name;
     }
 
     public Color getColor() {
-	return color;
+        return color;
     }
 
     public int getWidth() {
-	return width;
+        return width;
     }
 
     public float getConvoySpeed() {
-	return convoySpeed;
+        return convoySpeed;
     }
 }

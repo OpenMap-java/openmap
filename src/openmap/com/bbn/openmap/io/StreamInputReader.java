@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/StreamInputReader.java,v $
 // $RCSfile: StreamInputReader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.io;
 
@@ -30,20 +29,21 @@ import com.bbn.openmap.util.Debug;
  * An Abstract InputReader to handle reading data from streams, where
  * seeking to a place in the file in front of the current pointer
  * involves closing the stream, and re-seeking from the beginning.
- *
+ * 
  * @see com.bbn.openmap.io.InputReader
  * @see com.bbn.openmap.io.BinaryFile
  */
 public abstract class StreamInputReader implements InputReader {
-    
+
     /**
-     * The underlying data input stream, for resource files.  Is used
-     * if the inputFile is null. */
+     * The underlying data input stream, for resource files. Is used
+     * if the inputFile is null.
+     */
     protected InputStream inputStream = null;
 
     /**
      * Keep track of how many bytes have been read when using the
-     * DataInputStream to read the file. 
+     * DataInputStream to read the file.
      */
     protected long inputStreamCount = 0;
 
@@ -58,9 +58,9 @@ public abstract class StreamInputReader implements InputReader {
 
     /**
      * Add the number of bytes to the inputStreamCount.
-     *
+     * 
      * @return number of bytes added in this call, to pass along to
-     * anything else that will be interested.  
+     *         anything else that will be interested.
      */
     protected int count(int add) {
         inputStreamCount += add;
@@ -69,14 +69,15 @@ public abstract class StreamInputReader implements InputReader {
 
     /**
      * Reset the DataInputStream to the beginning, by closing the
-     * current connection and reopening it.  The StreamInputReader
+     * current connection and reopening it. The StreamInputReader
      * method simply closes the input stream and resets the input
      * stream count, so the implementation of this class needs to
-     * reopen the stream at the beginning of the source file.  
+     * reopen the stream at the beginning of the source file.
      */
     protected void reopen() throws IOException {
         if (inputStream != null) {
-            Debug.message("binaryfile", "StreamInputReader: Closing inputStream");
+            Debug.message("binaryfile",
+                    "StreamInputReader: Closing inputStream");
             inputStream.close();
         }
 
@@ -85,11 +86,11 @@ public abstract class StreamInputReader implements InputReader {
 
     /**
      * Skip over n bytes in the input file
-     *
+     * 
      * @param n the number of bytes to skip
-     * @return the actual number of bytes skipped.  annoying, isn't it?
-     * @exception IOException Any IO errors that occur in skipping bytes
-     * in the underlying file
+     * @return the actual number of bytes skipped. annoying, isn't it?
+     * @exception IOException Any IO errors that occur in skipping
+     *            bytes in the underlying file
      */
     public long skipBytes(long n) throws IOException {
 
@@ -99,7 +100,8 @@ public abstract class StreamInputReader implements InputReader {
         while (count < n) {
             gotsofar = inputStream.skip(n - count);
             if (gotsofar == 0) { // added from david marklund
-                Debug.error("StreamInputReader can't skip " + n + " bytes as instructed");
+                Debug.error("StreamInputReader can't skip " + n
+                        + " bytes as instructed");
                 break;
             }
             count += gotsofar;
@@ -111,10 +113,10 @@ public abstract class StreamInputReader implements InputReader {
 
     /**
      * Get the index of the next character to be read
-     *
+     * 
      * @return the index
      * @exception IOException Any IO errors that occur in accessing
-     * the underlying file
+     *            the underlying file
      */
     public long getFilePointer() throws IOException {
         return inputStreamCount;
@@ -122,10 +124,10 @@ public abstract class StreamInputReader implements InputReader {
 
     /**
      * Set the index of the next character to be read.
-     *
+     * 
      * @param pos the position to seek to.
      * @exception IOException Any IO Errors that occur in seeking the
-     * underlying file.
+     *            underlying file.
      */
     public void seek(long pos) throws IOException {
         boolean seekComments = false;
@@ -137,28 +139,28 @@ public abstract class StreamInputReader implements InputReader {
         long curPosition = inputStreamCount;
         if (pos >= curPosition) {
             if (seekComments) {
-                Debug.output("StreamInputReader - seeking to " + pos +
-                             " from " + curPosition);
+                Debug.output("StreamInputReader - seeking to " + pos + " from "
+                        + curPosition);
             }
 
             skipped = skipBytes(pos - curPosition);
 
             if (seekComments) {
-                Debug.output("   now at: " + inputStreamCount + ", having skipped " + 
-                             skipped);
+                Debug.output("   now at: " + inputStreamCount
+                        + ", having skipped " + skipped);
             }
         } else {
             if (seekComments) {
-                Debug.output("StreamInputReader - having to start over for seek - " + 
-                             pos + " from " + curPosition);
+                Debug.output("StreamInputReader - having to start over for seek - "
+                        + pos + " from " + curPosition);
             }
             reopen();
-            if (seekComments) 
+            if (seekComments)
                 Debug.output("   skipping to: " + pos);
             skipped = skipBytes(pos);
             if (seekComments) {
-                Debug.output("   now at: " + inputStreamCount + 
-                             ", having skipped " + skipped);
+                Debug.output("   now at: " + inputStreamCount
+                        + ", having skipped " + skipped);
             }
         }
     }
@@ -166,10 +168,12 @@ public abstract class StreamInputReader implements InputReader {
     /**
      * Return how many bytes the input stream thinks make up the file.
      * This is calculated by adding the number of bytes read to the
-     * number of bytes available.  May not be reliable.
-     *
-     * @return the number of bytes remaining to be read (counted in bytes)
-     * @exception IOException Any IO errors encountered in accessing the file 
+     * number of bytes available. May not be reliable.
+     * 
+     * @return the number of bytes remaining to be read (counted in
+     *         bytes)
+     * @exception IOException Any IO errors encountered in accessing
+     *            the file
      */
     public long length() throws IOException {
         return inputStreamCount + inputStream.available();
@@ -177,34 +181,39 @@ public abstract class StreamInputReader implements InputReader {
 
     /**
      * Return how many bytes the input stream thinks are available.
-     *
-     * @return the number of bytes remaining to be read (counted in bytes)
-     * @exception IOException Any IO errors encountered in accessing the file
+     * 
+     * @return the number of bytes remaining to be read (counted in
+     *         bytes)
+     * @exception IOException Any IO errors encountered in accessing
+     *            the file
      */
     public long available() throws IOException {
         return inputStream.available();
     }
 
-    /** 
+    /**
      * Closes the underlying file
-     *
-     * @exception IOException Any IO errors encountered in accessing the file
+     * 
+     * @exception IOException Any IO errors encountered in accessing
+     *            the file
      */
     public void close() throws IOException {
         try {
             Debug.message("binaryfile", "StreamInputReader.close()");
 
-            // From the Sun Network Programming Guide for 1.4, if there are
+            // From the Sun Network Programming Guide for 1.4, if
+            // there are
             // problems with Connection reset by peer, then you should
             // do this before closing the stream, giving all the data
-            // a chance to be read.  Haven't decided to do this by
+            // a chance to be read. Haven't decided to do this by
             // default, but put it in here for easy access if people
             // decided they need it.
             if (Debug.debugging("connection_problems")) {
                 Thread.sleep(1000);
             }
 
-            if (inputStream != null) inputStream.close();
+            if (inputStream != null)
+                inputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -213,9 +222,10 @@ public abstract class StreamInputReader implements InputReader {
 
     /**
      * Read from the file.
-     *
-     * @return one byte from the file.  -1 for EOF
-     * @exception IOException Any IO errors encountered in reading from the file
+     * 
+     * @return one byte from the file. -1 for EOF
+     * @exception IOException Any IO errors encountered in reading
+     *            from the file
      */
     public int read() throws IOException {
         count(1);
@@ -224,12 +234,13 @@ public abstract class StreamInputReader implements InputReader {
 
     /**
      * Read from the file
-     *
+     * 
      * @param b The byte array to read into
      * @param off the first array position to read into
      * @param len the number of bytes to read
      * @return the number of bytes read
-     * @exception IOException Any IO errors encountered in reading from the file
+     * @exception IOException Any IO errors encountered in reading
+     *            from the file
      */
     public int read(byte b[], int off, int len) throws IOException {
 
@@ -247,38 +258,40 @@ public abstract class StreamInputReader implements InputReader {
                 gotsofar += read;
             }
         }
-        
+
         count(gotsofar);
         return gotsofar;
     }
 
-    /** 
+    /**
      * Read from the file.
-     *
-     * @param b the byte array to read into.  Equivelent to 
-     * <code>read(b, 0, b.length)</code>
+     * 
+     * @param b the byte array to read into. Equivelent to
+     *        <code>read(b, 0, b.length)</code>
      * @return the number of bytes read
-     * @exception IOException Any IO errors encountered in reading from the file
+     * @exception IOException Any IO errors encountered in reading
+     *            from the file
      * @see java.io.RandomAccessFile#read(byte[])
      */
     public int read(byte b[]) throws IOException {
         return inputStream.read(b, 0, b.length);
     }
 
-    /** 
+    /**
      * Read from the file.
-     *
+     * 
      * @param howmany the number of bytes to read
      * @param allowless if we can return fewer bytes than requested
      * @return the array of bytes read.
-     * @exception FormatException Any IO Exceptions, plus an end-of-file
-     * encountered after reading some, but now enough, bytes when allowless
-     * was <code>false</code>
-     * @exception EOFException Encountered an end-of-file while allowless 
-     * was <code>false</code>, but NO bytes had been read.
+     * @exception FormatException Any IO Exceptions, plus an
+     *            end-of-file encountered after reading some, but now
+     *            enough, bytes when allowless was <code>false</code>
+     * @exception EOFException Encountered an end-of-file while
+     *            allowless was <code>false</code>, but NO bytes
+     *            had been read.
      */
-    public byte[] readBytes(int howmany, boolean allowless) 
-        throws EOFException, FormatException {
+    public byte[] readBytes(int howmany, boolean allowless)
+            throws EOFException, FormatException {
 
         byte foo[] = new byte[howmany];
         int gotsofar = 0;
@@ -289,7 +302,8 @@ public abstract class StreamInputReader implements InputReader {
 
                 if (err == -1) {
                     if (allowless) {
-                        //return a smaller array, so the caller can tell how much
+                        //return a smaller array, so the caller can
+                        // tell how much
                         //they really got
                         byte retval[] = new byte[gotsofar];
                         System.arraycopy(foo, 0, retval, 0, gotsofar);
@@ -306,8 +320,8 @@ public abstract class StreamInputReader implements InputReader {
                 gotsofar += err;
             }
         } catch (IOException i) {
-            throw new FormatException("StreamInputReader: readBytes IOException: " +
-                                      i.getMessage());
+            throw new FormatException("StreamInputReader: readBytes IOException: "
+                    + i.getMessage());
         }
         count(howmany);
         return foo;

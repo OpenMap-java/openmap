@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,37 +14,38 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/FDUPropertyEditor.java,v $
 // $RCSfile: FDUPropertyEditor.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/23 21:16:05 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:06:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.util.propertyEditor;
 
 import java.awt.Component;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.event.ActionEvent;
 
-/** 
- * FDUPropertyEditor - File, Directory and URL PropertyEditor.  This
- * is a PropertyEditor that provides a text field where a URL, file
- * path or directory path can be entered.  There is also a button that
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
+/**
+ * FDUPropertyEditor - File, Directory and URL PropertyEditor. This is
+ * a PropertyEditor that provides a text field where a URL, file path
+ * or directory path can be entered. There is also a button that
  * brings up a file chooser, and anything chosen *replaces* the
- * contents in the text field.  
+ * contents in the text field.
  */
 public class FDUPropertyEditor extends MultiDirectoryPropertyEditor {
-    
-    /** Create MultiDirectoryPropertyEditor.  */
+
+    /** Create MultiDirectoryPropertyEditor. */
     public FDUPropertyEditor() {
         button = new JButton("Set");
     }
 
     public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = getFileChooser();
-        int returnVal = chooser.showOpenDialog((Component)null);
-        if (returnVal==JFileChooser.APPROVE_OPTION) {
+        int returnVal = chooser.showOpenDialog((Component) null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
             String newFilename = chooser.getSelectedFile().getAbsolutePath();
             newFilename = cleanUpName(newFilename);
             setValue(newFilename);
@@ -53,9 +54,11 @@ public class FDUPropertyEditor extends MultiDirectoryPropertyEditor {
     }
 
     /**
-     * Returns a JFileChooser that will choose a directory.  The
-     * MultiSelectionEnabled doesn't work yet, so we have to have a workaround.
-     * @return JFileChooser 
+     * Returns a JFileChooser that will choose a directory. The
+     * MultiSelectionEnabled doesn't work yet, so we have to have a
+     * workaround.
+     * 
+     * @return JFileChooser
      */
     public JFileChooser getFileChooser() {
         JFileChooser chooser = new JFileChooser(getLastLocation());

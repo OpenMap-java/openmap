@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,19 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/dted/DTEDSpecialist.java,v $
 // $RCSfile: DTEDSpecialist.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.specialist.dted;
 
 import java.util.*;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.layer.dted.*;
 import com.bbn.openmap.layer.specialist.*;
 import com.bbn.openmap.omGraphics.*;
@@ -41,20 +39,16 @@ import com.bbn.openmap.CSpecialist.GraphicPackage.*;
 import com.bbn.openmap.CSpecialist.RasterPackage.*;
 
 /**
- * Implement the Specialist interface so that we can serve graphics
- * to OpenMap via CORBA. 
+ * Implement the Specialist interface so that we can serve graphics to
+ * OpenMap via CORBA.
  */
 public class DTEDSpecialist extends Specialist {
 
-    protected String[] dtedpaths = new String [] {
-        "/mnt/cdrom/dted",
-        "/mnt/disk/dted"
-    };
+    protected String[] dtedpaths = new String[] { "/mnt/cdrom/dted",
+            "/mnt/disk/dted" };
 
-    protected String[] dted2paths = new String [] {
-        "/mnt/cdrom/dted_level2",
-        "/mnt/disk/dted_level2"
-    };
+    protected String[] dted2paths = new String[] { "/mnt/cdrom/dted_level2",
+            "/mnt/disk/dted_level2" };
 
     protected int ncolors = 216;
 
@@ -69,28 +63,28 @@ public class DTEDSpecialist extends Specialist {
 
     protected float minScale = 20000000f;
 
-    final private static transient EColor nullColor = new EColor(null, (short)0, (short)0, (short)0);
-    final private static transient EStipple nullStipple = new EStipple(null, (short)0, (short)0, new byte[0]);
+    final private static transient EColor nullColor = new EColor(null, (short) 0, (short) 0, (short) 0);
+    final private static transient EStipple nullStipple = new EStipple(null, (short) 0, (short) 0, new byte[0]);
     final private static transient EComp nullComp = new EComp(null, "");
-    final private static transient XYPoint nullP1 = new XYPoint((short)0, (short)0);
+    final private static transient XYPoint nullP1 = new XYPoint((short) 0, (short) 0);
 
-    /** 
+    /**
      * default constructor is called when we're loading the class
-     * directly into OpenMap. 
+     * directly into OpenMap.
      */
     public DTEDSpecialist() {
-        super("DTEDSpecialist", (short)2, true);
+        super("DTEDSpecialist", (short) 2, true);
     }
 
     protected void init() {
         cache_manager = new DTEDCacheManager(dtedpaths, dted2paths, ncolors, opaque);
-        DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(viewType, bandHeight, 
-                dtedLevel, slopeAdjust);
+        DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(viewType, bandHeight, dtedLevel, slopeAdjust);
         dfsi.colorModel = OMRasterObject.COLORMODEL_INDEXED;
         cache_manager.setSubframeInfo(dfsi);
     }
-  
-    public UGraphic[] fillRectangle(com.bbn.openmap.CSpecialist.CProjection p,
+
+    public UGraphic[] fillRectangle(
+                                    com.bbn.openmap.CSpecialist.CProjection p,
                                     com.bbn.openmap.CSpecialist.LLPoint ll1,
                                     com.bbn.openmap.CSpecialist.LLPoint ll2,
                                     String staticArgs,
@@ -103,8 +97,7 @@ public class DTEDSpecialist extends Specialist {
             com.bbn.openmap.omGraphics.OMGraphicList omgraphics;
 
             if ((p.kind == CADRG.CADRGType) && (p.scale < minScale)) {
-                omgraphics = cache_manager.getRectangle(
-                        new CADRG(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height));
+                omgraphics = cache_manager.getRectangle(new CADRG(new LatLonPoint(p.center.lat, p.center.lon), p.scale, p.width, p.height));
             } else {
                 System.out.println("DTEDSpecialist.fillRectangle(): wrong projection!");
                 return new UGraphic[0];
@@ -112,7 +105,8 @@ public class DTEDSpecialist extends Specialist {
 
             UGraphic[] ugraphics = createUGraphics(omgraphics);
 
-            System.out.println("DTEDSpecialist.fillRectangle(): got "+ugraphics.length+" graphics");
+            System.out.println("DTEDSpecialist.fillRectangle(): got "
+                    + ugraphics.length + " graphics");
             return ugraphics;
         } catch (Throwable t) {
             System.err.println("DTEDSpecialist.fillRectangle(): " + t);
@@ -128,14 +122,11 @@ public class DTEDSpecialist extends Specialist {
         EGraphic eg;
         UGraphic ug;
         CTEntry[] ct;
-        for (int i=0; i<len; i++) {
-            OMRaster omr = (OMRaster)omgraphics.getOMGraphicAt(i);
+        for (int i = 0; i < len; i++) {
+            OMRaster omr = (OMRaster) omgraphics.getOMGraphicAt(i);
             eg = createEGraphic();
             ct = createColorTable(omr.getColors());
-            er = new ERaster(
-                    eg, nullP1, new LLPoint(omr.getLat(), omr.getLon()), omr.getBits(),
-                    (short)omr.getWidth(), (short)omr.getHeight(), (short)0, (short)0,
-                    (short)ct.length, ct, (short)omr.getTransparent());
+            er = new ERaster(eg, nullP1, new LLPoint(omr.getLat(), omr.getLon()), omr.getBits(), (short) omr.getWidth(), (short) omr.getHeight(), (short) 0, (short) 0, (short) ct.length, ct, (short) omr.getTransparent());
             ug = new UGraphic();
             ug.eras(er);
             ugraphics[i] = ug;
@@ -143,7 +134,8 @@ public class DTEDSpecialist extends Specialist {
         return ugraphics;
     }
 
-    private static int gid=0;
+    private static int gid = 0;
+
     protected EGraphic createEGraphic() {
         EGraphic eg = new EGraphic();
         eg.graph = null;
@@ -161,13 +153,11 @@ public class DTEDSpecialist extends Specialist {
         return eg;
     }
 
-    protected CTEntry[] createColorTable (int[] colors) {
-        int len=colors.length;
+    protected CTEntry[] createColorTable(int[] colors) {
+        int len = colors.length;
         CTEntry[] colorTable = new CTEntry[len];
-        for (int i=0; i<len; i++) {
-            colorTable[i] = new CTEntry(
-                    (short)((colors[i]>>16)&0xff), (short)((colors[i]>>8 )&0xff),
-                    (short)((colors[i]    )&0xff), (short)((colors[i]>>24)&0xff));
+        for (int i = 0; i < len; i++) {
+            colorTable[i] = new CTEntry((short) ((colors[i] >> 16) & 0xff), (short) ((colors[i] >> 8) & 0xff), (short) ((colors[i]) & 0xff), (short) ((colors[i] >> 24) & 0xff));
         }
         return colorTable;
     }
@@ -176,48 +166,34 @@ public class DTEDSpecialist extends Specialist {
         System.out.println("DTEDSpecialist.signOff()");
     }
 
-    public void receiveGesture(MouseEvent gesture, String uniqueID) {
-    }
+    public void receiveGesture(MouseEvent gesture, String uniqueID) {}
 
-    public void makePalette(WidgetChange notifyOnChange,
-                            String staticArgs,
+    public void makePalette(WidgetChange notifyOnChange, String staticArgs,
                             org.omg.CORBA.StringHolder dynamicArgs,
-                            String uniqueID) {
-    }
+                            String uniqueID) {}
 
     public void printHelp() {
-        System.err.println(
-                "usage: java [java/vbj args] <specialist class> [specialist args]");
+        System.err.println("usage: java [java/vbj args] <specialist class> [specialist args]");
         System.err.println("");
-        System.err.println(
-                "       Java Args:");
-        System.err.println(
-                "       -mx<NUM>m               Set max Java heap in Megs");
+        System.err.println("       Java Args:");
+        System.err.println("       -mx<NUM>m               Set max Java heap in Megs");
         System.err.println("");
-        System.err.println(
-                "       VBJ Args:");
-        System.err.println(
-                "       -DORBmbufSize=8388608   Define the VBJ buffer size");
-        System.err.println(
-                "       -DORBdebug              Enable VBJ debugging");
+        System.err.println("       VBJ Args:");
+        System.err.println("       -DORBmbufSize=8388608   Define the VBJ buffer size");
+        System.err.println("       -DORBdebug              Enable VBJ debugging");
         System.err.println("");
-        System.err.println(
-                "       Specialist Args:");
-        System.err.println(
-                "       -ior <iorfile>                  IOR file");
-        System.err.println(
-                "       -dtedpaths \"<path1> ...\"      Path to search for DTED data");
-        System.err.println(
-                "       -dted2paths \"<path1> ...\"     Path to search for DTED level2 data");
-        System.err.println(
-                "       -level <0|1|2>                  DTED level (default is 0)");
+        System.err.println("       Specialist Args:");
+        System.err.println("       -ior <iorfile>                  IOR file");
+        System.err.println("       -dtedpaths \"<path1> ...\"      Path to search for DTED data");
+        System.err.println("       -dted2paths \"<path1> ...\"     Path to search for DTED level2 data");
+        System.err.println("       -level <0|1|2>                  DTED level (default is 0)");
     }
 
     private String[] getPaths(String str) {
         StringTokenizer tok = new StringTokenizer(str);
         int len = tok.countTokens();
         String[] paths = new String[len];
-        for (int j=0; j<len; j++) {
+        for (int j = 0; j < len; j++) {
             paths[j] = tok.nextToken();
         }
         return paths;
@@ -231,19 +207,19 @@ public class DTEDSpecialist extends Specialist {
                 dted2paths = getPaths(args[++i]);
             } else if (args[i].equalsIgnoreCase("-level")) {
                 switch (Integer.parseInt(args[++i])) {
-                    case 1:
-                        System.out.println("Setting level 1");
-                        dtedLevel = DTEDFrameSubframe.LEVEL_1;
-                        break;
-                    case 2:
-                        System.out.println("Setting level 2");
-                        dtedLevel = DTEDFrameSubframe.LEVEL_2;
-                        break;
-                    case 0:
-                    default:
-                        System.out.println("Setting level 0");
-                        dtedLevel = DTEDFrameSubframe.LEVEL_0;
-                        break;
+                case 1:
+                    System.out.println("Setting level 1");
+                    dtedLevel = DTEDFrameSubframe.LEVEL_1;
+                    break;
+                case 2:
+                    System.out.println("Setting level 2");
+                    dtedLevel = DTEDFrameSubframe.LEVEL_2;
+                    break;
+                case 0:
+                default:
+                    System.out.println("Setting level 0");
+                    dtedLevel = DTEDFrameSubframe.LEVEL_0;
+                    break;
                 }
             }
         }

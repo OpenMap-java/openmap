@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,13 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/PlotLayer.java,v $
 // $RCSfile: PlotLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/05 18:15:08 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
-
 
 package com.bbn.openmap.layer.plotLayer;
 
@@ -34,15 +32,14 @@ import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 
 /**
- *
+ *  
  */
-public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
-{
+public class PlotLayer extends OMGraphicHandlerLayer implements
+        MapMouseListener {
 
     private static transient int counter = 0;
     private boolean boxy = true;
@@ -53,12 +50,12 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
     // The currently selected graphic.
     private OMGraphic selectedGraphic;
     private Vector selectedGraphics = null;
-    
-    // Where do we get the data from? 
+
+    // Where do we get the data from?
     // default to use GLOBE atmospheric temperature.
     private String datasource = "AT.gst_small.txt";
 
-    // "http://globe.ngdc.noaa.gov/sda/student_data/AT.gst.txt"; 
+    // "http://globe.ngdc.noaa.gov/sda/student_data/AT.gst.txt";
     // "file:/home/gkeith/openmap/openmap/com/bbn/openmap/plotLayer/AT.gst.txt";
     // "file:/home/gkeith/openmap/openmap/com/bbn/openmap/plotLayer/AT.gst_thin.txt";
     // "file:/home/gkeith/openmap/openmap/com/bbn/openmap/plotLayer/AT.gst_small.txt";
@@ -97,11 +94,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
         boxy = true;
 
         getDataSource();
-        graph = new ScatterGraph(678,790, null, 
-                                 temperature_data.overall_min_year_, 
-                                 temperature_data.overall_max_year_,
-                                 temperature_data.overall_min_temp_, 
-                                 temperature_data.overall_max_temp_);
+        graph = new ScatterGraph(678, 790, null, temperature_data.overall_min_year_, temperature_data.overall_max_year_, temperature_data.overall_min_temp_, temperature_data.overall_max_temp_);
         setList(plotDataSources());
     }
 
@@ -112,7 +105,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
 
     /**
      * Search for the data in the directories listing in the
-     * CLASSPATH.  We should also check to see if the datafile is
+     * CLASSPATH. We should also check to see if the datafile is
      * specified as a URL so that we can load it as such.
      */
     private GLOBETempData getDataSource() {
@@ -126,13 +119,13 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
         FileInputStream is = null;
         int nDirs = dirs.size();
         if (nDirs > 0) {
-            for (int i=0; i<nDirs; i++) {
+            for (int i = 0; i < nDirs; i++) {
                 String dir = (String) dirs.elementAt(i);
                 File datafile = new File(dir, datasource);
                 if (datafile.isFile()) {
                     try {
                         is = new FileInputStream(datafile);
-//                      System.out.println("datafile="+datafile);
+                        //                      System.out.println("datafile="+datafile);
                         break;
                     } catch (java.io.IOException e) {
                         e.printStackTrace();
@@ -140,15 +133,13 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
                 }
             }
             if (is == null) {
-                System.err.println(
-                        "Unable to load datafile \"" + datasource +
-                        "\" from CLASSPATH");
+                System.err.println("Unable to load datafile \"" + datasource
+                        + "\" from CLASSPATH");
             }
         } else {
             System.err.println("No directories in CLASSPATH!");
-            System.err.println(
-                    "Unable to load datafile \"" + datasource +
-                    "\" from CLASSPATH");
+            System.err.println("Unable to load datafile \"" + datasource
+                    + "\" from CLASSPATH");
         }
         if (is == null)
             return null;
@@ -157,8 +148,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
         try {
             temperature_data = new GLOBETempData();
             temperature_data.loadData(is);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println(e);
         }
         return temperature_data;
@@ -168,30 +158,30 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
     private OMGraphicList plotDataSources() {
         Debug.message("basic", "PlotLayer.plotDataSources()");
         int num_graphics = 0;
-        
+
         OMGraphicList graphics = new OMGraphicList();
         graphics.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
         graphics.clear();
-      
-        Enumeration site_enum = temperature_data.getAllSites();
-        while (site_enum.hasMoreElements()) 
-            {
-                GLOBESite site = (GLOBESite)site_enum.nextElement();
-                //Debug.message("basic", "Plotlayer adds " + site.getName());
-                graphics.addOMGraphic(site.getGraphic());
-                num_graphics++;
-            }
-        
-        Debug.message("basic",
-                      "Plotlayer found " + num_graphics + " distinct sites");
 
-        // Find the sites that are visible on the map. 
+        Enumeration site_enum = temperature_data.getAllSites();
+        while (site_enum.hasMoreElements()) {
+            GLOBESite site = (GLOBESite) site_enum.nextElement();
+            //Debug.message("basic", "Plotlayer adds " +
+            // site.getName());
+            graphics.addOMGraphic(site.getGraphic());
+            num_graphics++;
+        }
+
+        Debug.message("basic", "Plotlayer found " + num_graphics
+                + " distinct sites");
+
+        // Find the sites that are visible on the map.
         return graphics;
     }
 
     /** Build and display the plot. */
     private OMGraphic generatePlot() {
-//      System.out.println("Generating Plot ");
+        //      System.out.println("Generating Plot ");
         if (graph != null) {
             graph.setDataPoints(selectedGraphics);
             graph.plotData();
@@ -207,7 +197,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
         OMGraphicList list = getList();
 
         if (plot != null) {
-//          System.out.println("Making plot visible..");
+            //          System.out.println("Making plot visible..");
             list.addOMGraphic(plot);
         }
         // generate the graphics for rendering.
@@ -216,7 +206,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
     }
 
     private void hidePlot() {
-//      System.out.println("Making plot IN-visible..");
+        //      System.out.println("Making plot IN-visible..");
         show_plot_ = false;
         if (graph != null) {
             OMGraphic plot = graph.getPlotGraphics();
@@ -228,59 +218,55 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
         }
         repaint();
     }
-    
+
     /**
-     * Add the data from the clicked site to the list of things 
-     * we are drawing.
+     * Add the data from the clicked site to the list of things we are
+     * drawing.
      */
     private void addSelectionToPlotList() {
         if (selectedGraphic != null) {
             // Change the color of the clicked ones
             selectedGraphic.setLinePaint(Color.blue);
-            
+
             if (selectedGraphics == null) {
                 selectedGraphics = new Vector();
             }
-            
+
             Object app_obj = selectedGraphic.getAppObject();
-            
+
             if (app_obj instanceof GLOBESite) {
-                GLOBESite site = (GLOBESite)app_obj;
-                if ( ! selectedGraphics.contains(app_obj) ) {
+                GLOBESite site = (GLOBESite) app_obj;
+                if (!selectedGraphics.contains(app_obj)) {
                     Debug.message("basic", "Adding to plot list...");
                     selectedGraphics.addElement(site);
                     selectedGraphic.setFillPaint(Color.yellow);
-                }
-                else {
+                } else {
                     Debug.message("basic", "Removing from plot list...");
                     selectedGraphics.removeElement(site);
                     selectedGraphic.setFillPaint(Color.red);
                     selectedGraphic.setLinePaint(Color.red);
                 }
-                    
+
             }
-        } 
-        else {
+        } else {
             Debug.message("basic", "Nothing to add to plot list!");
         }
     }
-  
-  
+
     /**
-     * Returns self as the <code>MapMouseListener</code> in order
-     * to receive <code>MapMouseEvent</code>s.  If the implementation
-     * would prefer to delegate <code>MapMouseEvent</code>s, it could
-     * return the delegate from this method instead.
-     *
-     * @return The object to receive <code>MapMouseEvent</code>s or
+     * Returns self as the <code>MapMouseListener</code> in order to
+     * receive <code>MapMouseEvent</code>s. If the implementation
+     * would prefer to delegate <code>MapMouseEvent</code>s, it
+     * could return the delegate from this method instead.
+     * 
+     * @return The object to receive <code>MapMouseEvent</code> s or
      *         null if this layer isn't interested in
-     *         <code>MapMouseEvent</code>s
+     *         <code>MapMouseEvent</code> s
      */
     public MapMouseListener getMapMouseListener() {
         return this;
     }
-    
-    
+
     public Component getGUI() {
         if (pal == null) {
             ActionListener al = new ActionListener() {
@@ -288,7 +274,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
                     int index = Integer.parseInt(e.getActionCommand(), 10);
                     switch (index) {
                     case 0:
-                        if ( show_plot_ )
+                        if (show_plot_)
                             hidePlot();
                         else
                             showPlot();
@@ -298,56 +284,49 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
                     }
                 }
             };
-            pal = PaletteHelper.
-                createCheckbox("Plot Control", 
-                               new String[] {"Show Temperature Plot"},
-                               new boolean[] {show_plot_}, 
-                               al);
+            pal = PaletteHelper.createCheckbox("Plot Control",
+                    new String[] { "Show Temperature Plot" },
+                    new boolean[] { show_plot_ },
+                    al);
         }
         return pal;
     }
-
-
 
     //----------------------------------------------------------------------
     // MapMouseListener interface implementation
     //----------------------------------------------------------------------
 
-
     /**
      * Indicates which mouse modes should send events to this
      * <code>Layer</code>.
-     *
+     * 
      * @return String[] of mouse mode names
-     *
+     * 
      * @see com.bbn.openmap.event.MapMouseListener
      * @see com.bbn.openmap.MouseDelegator
      */
-    public String[] getMouseModeServiceList () {
-        return new String[] {
-            SelectMouseMode.modeID
-        };
+    public String[] getMouseModeServiceList() {
+        return new String[] { SelectMouseMode.modeID };
     }
 
     //graphic position variables when moving the plot graphic
     private int prevX, prevY;
     private boolean grabbed_plot_graphics_ = false;
 
-
     /**
-     * Called whenever the mouse is pressed by the user and
-     * one of the requested mouse modes is active.
-     *
+     * Called whenever the mouse is pressed by the user and one of the
+     * requested mouse modes is active.
+     * 
      * @param e the press event
      * @return true if event was consumed (handled), false otherwise
      * @see #getMouseModeServiceList
      */
     public boolean mousePressed(MouseEvent e) {
-        if ( show_plot_ && graph != null ) {
+        if (show_plot_ && graph != null) {
             int x = e.getX();
             int y = e.getY();
-            if ((x >= plotX) && (x <= plotX+plotWidth) && 
-                (y >= plotY) && (y <= plotY+plotWidth)) {
+            if ((x >= plotX) && (x <= plotX + plotWidth) && (y >= plotY)
+                    && (y <= plotY + plotWidth)) {
 
                 grabbed_plot_graphics_ = true;
                 // grab the location
@@ -357,13 +336,11 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
         }
         return false;
     }
- 
-
 
     /**
-     * Called whenever the mouse is released by the user and
-     * one of the requested mouse modes is active.
-     *
+     * Called whenever the mouse is released by the user and one of
+     * the requested mouse modes is active.
+     * 
      * @param e the release event
      * @return true if event was consumed (handled), false otherwise
      * @see #getMouseModeServiceList
@@ -374,29 +351,31 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
     }
 
     /**
-     * Called whenever the mouse is clicked by the user and
-     * one of the requested mouse modes is active.
-     *
+     * Called whenever the mouse is clicked by the user and one of the
+     * requested mouse modes is active.
+     * 
      * @param e the click event
      * @return true if event was consumed (handled), false otherwise
      * @see #getMouseModeServiceList
      */
     public boolean mouseClicked(MouseEvent e) {
-//      System.out.println("XY: " + e.getX() + " " + e.getY() );
-        if (selectedGraphic != null && !show_plot_ ) {
+        //      System.out.println("XY: " + e.getX() + " " + e.getY() );
+        if (selectedGraphic != null && !show_plot_) {
             switch (e.getClickCount()) {
-            case 1:  
-                /** One click adds the site to our list of sites
-                 *  to plot.
+            case 1:
+                /**
+                 * One click adds the site to our list of sites to
+                 * plot.
                  */
                 addSelectionToPlotList();
                 generatePlot();
                 repaint();
                 break;
             case 2:
-                /** Double click means generate the plot. 
-                 */ 
-//              System.out.println("Saw DoubleClick!");
+                /**
+                 * Double click means generate the plot.
+                 */
+                //              System.out.println("Saw DoubleClick!");
                 repaint();
                 break;
             default:
@@ -409,29 +388,27 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
     }
 
     /**
-     * Called whenever the mouse enters this layer and
-     * one of the requested mouse modes is active.
-     *
+     * Called whenever the mouse enters this layer and one of the
+     * requested mouse modes is active.
+     * 
      * @param e the enter event
      * @see #getMouseModeServiceList
      */
-    public void mouseEntered(MouseEvent e) {
-    }
+    public void mouseEntered(MouseEvent e) {}
 
     /**
-     * Called whenever the mouse exits this layer and
-     * one of the requested mouse modes is active.
-     *
+     * Called whenever the mouse exits this layer and one of the
+     * requested mouse modes is active.
+     * 
      * @param e the exit event
      * @see #getMouseModeServiceList
      */
-    public void mouseExited(MouseEvent e) {
-    }
+    public void mouseExited(MouseEvent e) {}
 
     /**
-     * Called whenever the mouse is dragged on this layer and
-     * one of the requested mouse modes is active.
-     *
+     * Called whenever the mouse is dragged on this layer and one of
+     * the requested mouse modes is active.
+     * 
      * @param e the drag event
      * @return true if event was consumed (handled), false otherwise
      * @see #getMouseModeServiceList
@@ -440,8 +417,8 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
         if (grabbed_plot_graphics_) {
             int x = e.getX();
             int y = e.getY();
-            int dx = x-prevX;
-            int dy = y-prevY;
+            int dx = x - prevX;
+            int dy = y - prevY;
 
             plotX += dx;
             plotY += dy;
@@ -457,16 +434,14 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
         return false;
     }
 
-
-
     /**
-     * Called whenever the mouse is moved on this layer and
-     * one of the requested mouse modes is active.
+     * Called whenever the mouse is moved on this layer and one of the
+     * requested mouse modes is active.
      * <p>
-     * Tries to locate a graphic near the mouse, and if it
-     * is found, it is highlighted and the Layer is repainted
-     * to show the highlighting.
-     *
+     * Tries to locate a graphic near the mouse, and if it is found,
+     * it is highlighted and the Layer is repainted to show the
+     * highlighting.
+     * 
      * @param e the move event
      * @return true if event was consumed (handled), false otherwise
      * @see #getMouseModeServiceList
@@ -474,42 +449,41 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
     public boolean mouseMoved(MouseEvent e) {
         OMGraphic newSelectedGraphic;
 
-        if ( show_plot_ && graph != null ) {
-            
+        if (show_plot_ && graph != null) {
+
             newSelectedGraphic = graph.selectPoint(e.getX(), e.getY(), 4.0f);
-            
+
             if (newSelectedGraphic != null) {
-                String infostring = (String)(newSelectedGraphic.getAppObject());
+                String infostring = (String) (newSelectedGraphic.getAppObject());
                 if (infostring != null) {
-                    fireRequestInfoLine(infostring);            
+                    fireRequestInfoLine(infostring);
                 }
             } else {
                 fireRequestInfoLine("");
             }
-            
+
         } else {
-            newSelectedGraphic = 
-                getList().selectClosest(e.getX(), e.getY(), 4.0f);
-        
-            if (newSelectedGraphic != null &&
-                (selectedGraphic == null ||
-                 newSelectedGraphic != selectedGraphic)) {
+            newSelectedGraphic = getList().selectClosest(e.getX(),
+                    e.getY(),
+                    4.0f);
+
+            if (newSelectedGraphic != null
+                    && (selectedGraphic == null || newSelectedGraphic != selectedGraphic)) {
 
                 Debug.message("basic", "Making selection...");
 
                 selectedGraphic = newSelectedGraphic;
                 //selectedGraphic.setLineColor(Color.yellow);
                 selectedGraphic.regenerate(getProjection());
-                    
+
                 // display site info on map
-                GLOBESite site = (GLOBESite)(newSelectedGraphic.getAppObject());
+                GLOBESite site = (GLOBESite) (newSelectedGraphic.getAppObject());
                 if (site != null) {
-                    fireRequestInfoLine(site.getInfo());                
+                    fireRequestInfoLine(site.getInfo());
                 }
 
                 repaint();
-            } else if (selectedGraphic != null &&
-                       newSelectedGraphic == null) { 
+            } else if (selectedGraphic != null && newSelectedGraphic == null) {
 
                 // revert color of un-moused object.
                 Debug.message("basic", "Clearing selection...");
@@ -518,27 +492,29 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
                 fireRequestInfoLine("");
                 selectedGraphic = null;
                 repaint();
-            }  
+            }
         }
         return true;
     }
-    
-    /** Called whenever the mouse is moved on this layer and one of
-     * the requested mouse modes is active, and the gesture is
-     * consumed by another active layer.  We need to deselect anything
-     * that may be selected.
-     *
-     * @see #getMouseModeServiceList */
+
+    /**
+     * Called whenever the mouse is moved on this layer and one of the
+     * requested mouse modes is active, and the gesture is consumed by
+     * another active layer. We need to deselect anything that may be
+     * selected.
+     * 
+     * @see #getMouseModeServiceList
+     */
     public void mouseMoved() {
         getList().deselectAll();
         repaint();
     }
 
-
     /**
      * Initializes this layer from the given properties.
+     * 
      * @param props the <code>Properties</code> holding settings for
-     * this layer
+     *        this layer
      */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);

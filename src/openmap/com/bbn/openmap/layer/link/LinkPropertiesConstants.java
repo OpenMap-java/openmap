@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,36 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkPropertiesConstants.java,v $
 // $RCSfile: LinkPropertiesConstants.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.util.Debug;
-
-import java.util.Properties;
-import java.util.Enumeration;
-import java.io.IOException;
-
 /**
- * A LinkPropertiesConstants interface defines the well known
- * expected properties that may be coming over the link inside the
- * properties.  Other properties may be carried as well, but these are
- * properties you can kind of expect to see.
+ * A LinkPropertiesConstants interface defines the well known expected
+ * properties that may be coming over the link inside the properties.
+ * Other properties may be carried as well, but these are properties
+ * you can kind of expect to see.
  */
 public interface LinkPropertiesConstants {
 
     // Constants that contain graphic attributes
 
     /** The line color attribute name. */
-    public final static String LPC_LINECOLOR = "lineColor"; 
+    public final static String LPC_LINECOLOR = "lineColor";
     /** The line style (dash attribute) attribute name. */
     public final static String LPC_LINESTYLE = "lineStyle";
-   /** The highlight color attribute name. */
+    /** The highlight color attribute name. */
     public final static String LPC_HIGHLIGHTCOLOR = "highlightColor";
     /** The fill color attribute name. */
     public final static String LPC_FILLCOLOR = "fillColor";
@@ -57,9 +50,8 @@ public interface LinkPropertiesConstants {
     public final static String LPC_LINKTEXTFONT = "textFont";
     /**
      * The location of the text baseline relative to the specified
-     * text location.  The property should be BASELINE_BOTTOM,
-     * BASELINE_MIDDLE, BASELINE_TOP.  BASELINE_BOTTOM is the
-     * default. 
+     * text location. The property should be BASELINE_BOTTOM,
+     * BASELINE_MIDDLE, BASELINE_TOP. BASELINE_BOTTOM is the default.
      */
     public final static String LPC_LINKTEXTBASELINE = "textBaseline";
     /** The rotation in degrees clockwise from North. */
@@ -105,19 +97,19 @@ public interface LinkPropertiesConstants {
     public final static String LPC_TIME = "time";
 
     /** Line styles */
-    public final static String LPC_SOLID        = "SOLID";
-    public final static String LPC_LONG_DASH    = "LONG_DASH";
-    public final static String LPC_DASH         = "DASH";
-    public final static String LPC_DOT          = "DOT";
-    public final static String LPC_DASH_DOT     = "DASH_DOT";
+    public final static String LPC_SOLID = "SOLID";
+    public final static String LPC_LONG_DASH = "LONG_DASH";
+    public final static String LPC_DASH = "DASH";
+    public final static String LPC_DOT = "DOT";
+    public final static String LPC_DASH_DOT = "DASH_DOT";
     public final static String LPC_DASH_DOT_DOT = "DASH_DOT_DOT";
 
     /** Fill patterns */
-    public final static String LPC_SOLID_PATTERN         = "SOLID";
-    public final static String LPC_VERTICAL_PATTERN      = "VERTICAL";
-    public final static String LPC_HORIZONTAL_PATTERN    = "HORIZONTAL";
-    public final static String LPC_CROSS_PATTERN         = "CROSS";
-    public final static String LPC_DIAG_CROSS_PATTERN    = "DIAG_CROSS";
-    public final static String LPC_FORWARD_DIAG_PATTERN  = "FORWARD_DIAG";
+    public final static String LPC_SOLID_PATTERN = "SOLID";
+    public final static String LPC_VERTICAL_PATTERN = "VERTICAL";
+    public final static String LPC_HORIZONTAL_PATTERN = "HORIZONTAL";
+    public final static String LPC_CROSS_PATTERN = "CROSS";
+    public final static String LPC_DIAG_CROSS_PATTERN = "DIAG_CROSS";
+    public final static String LPC_FORWARD_DIAG_PATTERN = "FORWARD_DIAG";
     public final static String LPC_BACKWARD_DIAG_PATTERN = "BACKWARD_DIAG";
 }

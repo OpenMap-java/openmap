@@ -21,33 +21,33 @@ import java.util.*;
 import java.beans.*;
 
 /**
- * A BeanInfo for the {@link com.bbn.openmap.examples.beanbox.Fighter} bean.
+ * A BeanInfo for the {@link com.bbn.openmap.examples.beanbox.Fighter}
+ * bean.
  */
 public class FighterBeanInfo extends SimpleBeanObjectBeanInfo {
 
-  public PropertyDescriptor[] getPropertyDescriptors () {
+    public PropertyDescriptor[] getPropertyDescriptors() {
 
-    ArrayList list = new ArrayList(7);
+        ArrayList list = new ArrayList(7);
 
-    PropertyDescriptor[] pds = super.getPropertyDescriptors();
-    list.addAll(Arrays.asList(pds));
+        PropertyDescriptor[] pds = super.getPropertyDescriptors();
+        list.addAll(Arrays.asList(pds));
 
-    try {
-      list.add(new PropertyDescriptor("type", Fighter.class));
-      list.add(new PropertyDescriptor("speedInNMPerHr", Fighter.class));
-    } catch (IntrospectionException e) {
-      e.printStackTrace();
+        try {
+            list.add(new PropertyDescriptor("type", Fighter.class));
+            list.add(new PropertyDescriptor("speedInNMPerHr", Fighter.class));
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        }
+
+        return (PropertyDescriptor[]) list.toArray(new PropertyDescriptor[0]);
     }
-    
-    return (PropertyDescriptor[])list.toArray(new PropertyDescriptor [0]);
-  }
 
+    public Image getIcon(int iconKind) {
 
-  public Image getIcon (int iconKind) {
+        Image image = loadImage("/com/bbn/openmap/examples/beanbox/fighter.gif");
 
-    Image image = loadImage("/com/bbn/openmap/examples/beanbox/fighter.gif");
-
-    return image;
-  }
+        return image;
+    }
 
 }

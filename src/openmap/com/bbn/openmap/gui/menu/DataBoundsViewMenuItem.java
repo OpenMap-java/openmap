@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,38 +12,33 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/DataBoundsViewMenuItem.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/DataBoundsViewMenuItem.java,v
+// $
 // $RCSfile: DataBoundsViewMenuItem.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.gui.menu;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentListener;
-import java.awt.event.ComponentEvent;
-import java.awt.geom.Point2D;
-import java.util.Hashtable;
 
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
-import com.bbn.openmap.plugin.PlugIn;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.util.Debug;
 
-public class DataBoundsViewMenuItem extends MapHandlerMenuItem 
-    implements ActionListener {
+public class DataBoundsViewMenuItem extends MapHandlerMenuItem implements
+        ActionListener {
 
     protected MapBean map;
     protected InformationDelegator infoDelegator;
@@ -63,20 +58,21 @@ public class DataBoundsViewMenuItem extends MapHandlerMenuItem
             if (bounds != null) {
                 java.awt.geom.Point2D center = bounds.getCenter();
                 if (center != null) {
-                    proj.setCenter((float)center.getY(), (float)center.getX());
-                    LatLonPoint llp1 = new LatLonPoint(bounds.getMax().getY(),
-                                                       bounds.getMin().getX());
+                    proj.setCenter((float) center.getY(), (float) center.getX());
+                    LatLonPoint llp1 = new LatLonPoint(bounds.getMax().getY(), bounds.getMin()
+                            .getX());
 
-                    LatLonPoint llp2 = new LatLonPoint(bounds.getMin().getY(),
-                                                       bounds.getMax().getX());
+                    LatLonPoint llp2 = new LatLonPoint(bounds.getMin().getY(), bounds.getMax()
+                            .getX());
 
-                    // 1.1 buffers the edges for viewing a little, a little zommed out.
+                    // 1.1 buffers the edges for viewing a little, a
+                    // little zommed out.
                     proj.setScale(ProjMath.getScale(llp1, llp2, proj) * 1.1f);
                     map.setProjection(proj);
                 }
             } else {
-                String complaint = "Can't move map over data: " +
-                    provider.getName() + " isn't ready.  Add to map?";
+                String complaint = "Can't move map over data: "
+                        + provider.getName() + " isn't ready.  Add to map?";
                 if (infoDelegator != null) {
                     infoDelegator.displayMessage("Go Over Data", complaint);
                 } else {
@@ -90,16 +86,16 @@ public class DataBoundsViewMenuItem extends MapHandlerMenuItem
         super.findAndInit(someObj);
         if (someObj instanceof MapHandler) {
             // Check to see if the MapBean is already available.
-            map = (MapBean)mapHandler.get("com.bbn.openmap.MapBean");
-            infoDelegator = (InformationDelegator)mapHandler.get("com.bbn.openmap.InformationDelegator");
+            map = (MapBean) mapHandler.get("com.bbn.openmap.MapBean");
+            infoDelegator = (InformationDelegator) mapHandler.get("com.bbn.openmap.InformationDelegator");
         }
 
         if (someObj instanceof MapBean) {
-            map = (MapBean)someObj;
+            map = (MapBean) someObj;
         }
 
         if (someObj instanceof InformationDelegator) {
-            infoDelegator = (InformationDelegator)someObj;
+            infoDelegator = (InformationDelegator) someObj;
         }
     }
 
@@ -110,12 +106,10 @@ public class DataBoundsViewMenuItem extends MapHandlerMenuItem
             map = null;
         }
 
-        if (someObj instanceof InformationDelegator &&
-            infoDelegator == someObj) {
+        if (someObj instanceof InformationDelegator && infoDelegator == someObj) {
 
             infoDelegator = null;
         }
     }
 }
-
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,37 +12,48 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGraphic.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGraphic.java,v
+// $
 // $RCSfile: LinkGraphic.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.omGraphics.OMBitmap;
+import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMGrid;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 
-import java.awt.*;
-import java.io.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Paint;
+import java.io.IOException;
 import java.util.Iterator;
 
 public class LinkGraphic implements LinkConstants, LinkPropertiesConstants {
 
-    public static void write(OMGraphic omGraphic, Link link) 
-        throws IOException {
+    public static void write(OMGraphic omGraphic, Link link) throws IOException {
         write(omGraphic, link, null);
     }
 
-    public static void write(OMGraphic omGraphic, Link link, 
+    public static void write(OMGraphic omGraphic, Link link,
                              LinkProperties props) throws IOException {
 
-        // This is so not object-oriented.  I know, I know.
+        // This is so not object-oriented. I know, I know.
 
         if (props == null) {
             Object obj = omGraphic.getAppObject();
@@ -54,55 +65,56 @@ public class LinkGraphic implements LinkConstants, LinkPropertiesConstants {
         }
 
         if (omGraphic instanceof OMGraphicList) {
-            Iterator iterator = ((OMGraphicList)omGraphic).getTargets().iterator();
+            Iterator iterator = ((OMGraphicList) omGraphic).getTargets()
+                    .iterator();
             while (iterator.hasNext()) {
-                write((OMGraphic)iterator.next(), link);
+                write((OMGraphic) iterator.next(), link);
             }
             return;
         }
 
-        props.setProperty(LPC_LINEWIDTH, Integer.toString((int)((BasicStroke)omGraphic.getStroke()).getLineWidth()));
+        props.setProperty(LPC_LINEWIDTH,
+                Integer.toString((int) ((BasicStroke) omGraphic.getStroke()).getLineWidth()));
 
         Paint paint = omGraphic.getLinePaint();
         if (paint instanceof Color) {
-            props.setProperty(LPC_LINECOLOR, 
-                              ColorFactory.getHexColorString((Color)paint));
+            props.setProperty(LPC_LINECOLOR,
+                    ColorFactory.getHexColorString((Color) paint));
         }
 
         paint = omGraphic.getFillPaint();
         if (paint instanceof Color) {
             props.setProperty(LPC_FILLCOLOR,
-                              ColorFactory.getHexColorString((Color)paint));
+                    ColorFactory.getHexColorString((Color) paint));
         }
 
         paint = omGraphic.getSelectPaint();
         if (paint instanceof Color) {
             props.setProperty(LPC_HIGHLIGHTCOLOR,
-                              ColorFactory.getHexColorString((Color)paint));
+                    ColorFactory.getHexColorString((Color) paint));
         }
 
         if (omGraphic instanceof OMBitmap) {
-            LinkBitmap.write((OMBitmap)omGraphic, link, props);
+            LinkBitmap.write((OMBitmap) omGraphic, link, props);
         } else if (omGraphic instanceof OMCircle) {
-            LinkCircle.write((OMCircle)omGraphic, link, props);
+            LinkCircle.write((OMCircle) omGraphic, link, props);
         } else if (omGraphic instanceof OMGrid) {
-            LinkGrid.write((OMGrid)omGraphic, link, props);
+            LinkGrid.write((OMGrid) omGraphic, link, props);
         } else if (omGraphic instanceof OMLine) {
-            LinkLine.write((OMLine)omGraphic, link, props);
+            LinkLine.write((OMLine) omGraphic, link, props);
         } else if (omGraphic instanceof OMPoint) {
-            LinkPoint.write((OMPoint)omGraphic, link, props);
+            LinkPoint.write((OMPoint) omGraphic, link, props);
         } else if (omGraphic instanceof OMRect) {
-            LinkRectangle.write((OMRect)omGraphic, link, props);
+            LinkRectangle.write((OMRect) omGraphic, link, props);
         } else if (omGraphic instanceof OMRaster) {
-            LinkRaster.write((OMRaster)omGraphic, link, props);
+            LinkRaster.write((OMRaster) omGraphic, link, props);
         } else if (omGraphic instanceof OMText) {
-            LinkText.write((OMText)omGraphic, link, props);
+            LinkText.write((OMText) omGraphic, link, props);
         } else if (omGraphic instanceof OMPoly) {
-            LinkPoly.write((OMPoly)omGraphic, link, props);
+            LinkPoly.write((OMPoly) omGraphic, link, props);
         } else {
             Debug.error("LinkGraphic.write: OMGraphic Type not handled by LinkProtocol");
         }
-
 
     }
 }

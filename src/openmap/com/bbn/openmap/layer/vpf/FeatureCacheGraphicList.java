@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/FeatureCacheGraphicList.java,v $
 // $RCSfile: FeatureCacheGraphicList.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/03/31 21:17:58 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
@@ -31,12 +30,12 @@ import java.util.Iterator;
 
 /**
  * The FeatureCacheGraphicList is an extended OMGraphicList that knows
- * what types of VPF features it holds.  This allows it to be able to
+ * what types of VPF features it holds. This allows it to be able to
  * use a VPFFeatureGraphicWarehouse to set the proper
  * DrawingAttributes on its contents.
  */
-public abstract class FeatureCacheGraphicList extends OMGraphicList 
-    implements Cloneable {
+public abstract class FeatureCacheGraphicList extends OMGraphicList implements
+        Cloneable {
 
     /**
      * The identifying code for the features held in this list.
@@ -60,7 +59,7 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList
     public synchronized void setTo(DrawingAttributes da) {
         if (da != null) {
             for (Iterator it = iterator(); it.hasNext();) {
-                da.setTo((OMGraphic)it.next());
+                da.setTo((OMGraphic) it.next());
             }
         }
     }
@@ -70,7 +69,7 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList
      * FeatureCacheGraphicList for a particular feature type,
      * VPFUtil.Edge, VPFUtil.Area, VPFUtil.Text, and/or VPFUtil.Point,
      * with each list subclass tuned to help properly color features
-     * when they are set based on layer requirements.  If featureType
+     * when they are set based on layer requirements. If featureType
      * is null or isn't one of the types listed above, the DEFAULT
      * version will be returned.
      */
@@ -114,7 +113,8 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList
             super(size);
         }
 
-        public synchronized void setDrawingAttributes(VPFFeatureGraphicWarehouse vfgw) {
+        public synchronized void setDrawingAttributes(
+                                                      VPFFeatureGraphicWarehouse vfgw) {
             DrawingAttributes da = vfgw.getAttributesForFeature(featureName);
             da.setLinePaint(com.bbn.openmap.omGraphics.OMColor.clear);
             da.setSelectPaint(com.bbn.openmap.omGraphics.OMColor.clear);
@@ -131,7 +131,8 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList
             super(size);
         }
 
-        public synchronized void setDrawingAttributes(VPFFeatureGraphicWarehouse vfgw) {
+        public synchronized void setDrawingAttributes(
+                                                      VPFFeatureGraphicWarehouse vfgw) {
             DrawingAttributes da = vfgw.getAttributesForFeature(featureName);
             da.setFillPaint(com.bbn.openmap.omGraphics.OMColor.clear);
             setTo(da);
@@ -147,7 +148,8 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList
             super(size);
         }
 
-        public synchronized void setDrawingAttributes(VPFFeatureGraphicWarehouse vfgw) {
+        public synchronized void setDrawingAttributes(
+                                                      VPFFeatureGraphicWarehouse vfgw) {
             setTo(vfgw.getAttributesForFeature(featureName));
         }
     }

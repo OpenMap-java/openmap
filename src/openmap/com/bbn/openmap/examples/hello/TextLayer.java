@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,30 +12,29 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/hello/TextLayer.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/hello/TextLayer.java,v
+// $
 // $RCSfile: TextLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.examples.hello;
 
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.event.ProjectionEvent;
 
 public class TextLayer extends Layer {
 
-    // Projection projection;  // not needed in this very simple layer
+    // Projection projection; // not needed in this very simple layer
 
-    /** 
-     * During construction, we'll fill this with this Font we wish
-     * to use
+    /**
+     * During construction, we'll fill this with this Font we wish to
+     * use
      */
     Font font;
 
@@ -44,7 +43,7 @@ public class TextLayer extends Layer {
      */
     public TextLayer() {
         font = new Font("TimesRoman", Font.BOLD + Font.ITALIC, 48);
-        setName("Hello, World");        // pretty name for menus
+        setName("Hello, World"); // pretty name for menus
     }
 
     /**
@@ -60,17 +59,18 @@ public class TextLayer extends Layer {
         int halfStringWidth = fm.stringWidth(HelloWorld.message) / 2;
         g.setColor(Color.red);
         g.drawString(HelloWorld.message,
-                     halfWidth - halfStringWidth, halfHeight);
+                halfWidth - halfStringWidth,
+                halfHeight);
     }
 
     /**
-     * We have to implement this method.  In this simple case,
-     * it turns out we don't have to reshape our "Hello, World!"
-     * display for the projection, so this method becomes a NOP.
-     *
-     * Normally in this method we would get the projection,
-     * and then either send it a forward message, or send an
-     * OMGraphics the project message, and then call repaint().
+     * We have to implement this method. In this simple case, it turns
+     * out we don't have to reshape our "Hello, World!" display for
+     * the projection, so this method becomes a NOP.
+     * 
+     * Normally in this method we would get the projection, and then
+     * either send it a forward message, or send an OMGraphics the
+     * project message, and then call repaint().
      */
     public void projectionChanged(ProjectionEvent e) {}
 

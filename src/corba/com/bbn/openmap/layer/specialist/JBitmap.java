@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,23 +12,22 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JBitmap.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JBitmap.java,v
+// $
 // $RCSfile: JBitmap.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.specialist;
 
 // import netscape.application.*;
-import java.awt.Point;
 import java.io.Serializable;
 
 import com.bbn.openmap.CSpecialist.BitmapPackage.*;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
 import com.bbn.openmap.CSpecialist.LLPoint;
 import com.bbn.openmap.CSpecialist.XYPoint;
 import com.bbn.openmap.omGraphics.*;
@@ -40,7 +39,7 @@ public class JBitmap extends OMBitmap implements Serializable, JObjectHolder {
 
     private int x_hot, y_hot;//UNUSED
 
-    /** Constructor.  Creates an OMBitmap out of a EBitmap. */
+    /** Constructor. Creates an OMBitmap out of a EBitmap. */
     public JBitmap(EBitmap ebit) {
         super();
         JGraphic.fillOMGraphicParams(this, ebit.egraphic);
@@ -65,56 +64,56 @@ public class JBitmap extends OMBitmap implements Serializable, JObjectHolder {
         return object;
     }
 
-    public void update(com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
-        JGraphic.update((JObjectHolder)this, update);
+    public void update(
+                       com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
+        JGraphic.update((JObjectHolder) this, update);
     }
 
-    public void update(com.bbn.openmap.CSpecialist.BitmapPackage.BF_update update) {
-                // do the updates, but don't rerender just yet
+    public void update(
+                       com.bbn.openmap.CSpecialist.BitmapPackage.BF_update update) {
+        // do the updates, but don't rerender just yet
 
         switch (update.discriminator().value()) {
-            // set fixed point
-            case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_ll1:
-                LLPoint ll = update.ll1();
-                setLat(ll.lat);
-                setLon(ll.lon);
-                break;
-            
-            case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_p1:
-                XYPoint pt = update.p1();
-                setX(pt.x);
-                setY(pt.y);
-                break;
-            
-            case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_width:
-                setWidth(update.width());
-                break;
-                
-          case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_height:
-              setHeight(update.height());
-              break;
+        // set fixed point
+        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_ll1:
+            LLPoint ll = update.ll1();
+            setLat(ll.lat);
+            setLon(ll.lon);
+            break;
 
-          case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_x_hot:
-//            setX_hot(update.x_hot());
-              break;
+        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_p1:
+            XYPoint pt = update.p1();
+            setX(pt.x);
+            setY(pt.y);
+            break;
 
-          case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_y_hot:
-//            setY_hot(update.y_hot());
-              break;
+        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_width:
+            setWidth(update.width());
+            break;
 
-          case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_bits:
-              setBits(update.bits());
-              break;
+        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_height:
+            setHeight(update.height());
+            break;
 
-          case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_bmref:
-              System.err.println(
-                  "CSBitmap.update: bmref update not supported/necessary.");
-              break;
+        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_x_hot:
+            //            setX_hot(update.x_hot());
+            break;
 
-          default:
-              System.err.println(
-                  "CSBitmap.update: invalid bitmap update");
-              break;
+        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_y_hot:
+            //            setY_hot(update.y_hot());
+            break;
+
+        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_bits:
+            setBits(update.bits());
+            break;
+
+        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_bmref:
+            System.err.println("CSBitmap.update: bmref update not supported/necessary.");
+            break;
+
+        default:
+            System.err.println("CSBitmap.update: invalid bitmap update");
+            break;
         }
     }
 }

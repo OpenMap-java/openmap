@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CenterSupport.java,v $
 // $RCSfile: CenterSupport.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
@@ -27,9 +26,9 @@ import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
- * for handling CenterListeners and firing CenterEvents  You can use
- * an instance of this class as a member field of your bean and
- * delegate work to it.
+ * for handling CenterListeners and firing CenterEvents You can use an
+ * instance of this class as a member field of your bean and delegate
+ * work to it.
  * <p>
  * A center event is one that sets the center of a map by specifying
  * latitude and longitude.
@@ -37,7 +36,8 @@ import java.util.Iterator;
 public class CenterSupport extends ListenerSupport {
 
     /**
-     * @param sourceBean The bean to be given as the source for any events
+     * @param sourceBean The bean to be given as the source for any
+     *        events
      */
     public CenterSupport(Object sourceBean) {
         super(sourceBean);
@@ -45,8 +45,8 @@ public class CenterSupport extends ListenerSupport {
 
     /**
      * Add a CenterListener to the listener list.
-     *
-     * @param listener  The CenterListener to be added
+     * 
+     * @param listener The CenterListener to be added
      */
     public synchronized void addCenterListener(CenterListener listener) {
         addListener(listener);
@@ -54,8 +54,8 @@ public class CenterSupport extends ListenerSupport {
 
     /**
      * Remove a CenterListener from the listener list.
-     *
-     * @param listener  The CenterListener to be removed
+     * 
+     * @param listener The CenterListener to be removed
      */
     public synchronized void removeCenterListener(CenterListener listener) {
         removeListener(listener);
@@ -63,19 +63,20 @@ public class CenterSupport extends ListenerSupport {
 
     /**
      * Send a center event to all registered listeners.
-     *
+     * 
      * @param latitude the latitude
      * @param longitude the longitude
      * @see CenterEvent
      */
     public synchronized void fireCenter(float latitude, float longitude) {
         Iterator it = iterator();
-        if (size() == 0) return;
+        if (size() == 0)
+            return;
 
         CenterEvent evt = new CenterEvent(source, latitude, longitude);
 
         while (it.hasNext()) {
-            ((CenterListener)it.next()).center(evt);
+            ((CenterListener) it.next()).center(evt);
         }
     }
 }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ListenerSupport.java,v $
 // $RCSfile: ListenerSupport.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
@@ -36,10 +35,10 @@ import java.util.Vector;
 
 /**
  * This is an utility class that can be used by beans that need
- * support for handling listeners and firing events.  You can use an
+ * support for handling listeners and firing events. You can use an
  * subclass of this class as a member field of your bean and delegate
- * work to it.  It handles the work for a listener support subclass
- * managing the Vector of listeners.  It knows nothing about firing
+ * work to it. It handles the work for a listener support subclass
+ * managing the Vector of listeners. It knows nothing about firing
  * events to the listeners.
  */
 public class ListenerSupport implements java.io.Serializable {
@@ -50,11 +49,13 @@ public class ListenerSupport implements java.io.Serializable {
 
     /**
      * Construct a ListenerSupport object.
-     * @param sourceBean  The bean to be given as the source for any events.
+     * 
+     * @param sourceBean The bean to be given as the source for any
+     *        events.
      */
     public ListenerSupport(Object sourceBean) {
         setSource(sourceBean);
-        Debug.message("listenersupport","ListenerSupport()");
+        Debug.message("listenersupport", "ListenerSupport()");
     }
 
     /**
@@ -73,7 +74,7 @@ public class ListenerSupport implements java.io.Serializable {
 
     /**
      * Add an Object to the listener list.
-     *
+     * 
      * @param listener The listener object to be added
      */
     public synchronized void addListener(Object listener) {
@@ -84,14 +85,15 @@ public class ListenerSupport implements java.io.Serializable {
         if (!listeners.contains(listener)) {
             listeners.addElement(listener);
             if (Debug.debugging("listenersupport")) {
-                Debug.output("ListenerSupport | addListener " + listener.getClass() + " was added");
+                Debug.output("ListenerSupport | addListener "
+                        + listener.getClass() + " was added");
             }
         }
     }
 
     /**
      * Remove an Object from the listener list.
-     *
+     * 
      * @param obj The Object to be removed
      */
     public synchronized void removeListener(Object obj) {
@@ -110,7 +112,7 @@ public class ListenerSupport implements java.io.Serializable {
     }
 
     /**
-     * Return an iterator over a clone of the listeners.  If listeners
+     * Return an iterator over a clone of the listeners. If listeners
      * is null, it will return an empty iterator.
      */
     public synchronized Iterator iterator() {
@@ -135,6 +137,7 @@ public class ListenerSupport implements java.io.Serializable {
 
     /**
      * Return a cloned list of Listeners.
+     * 
      * @return List of listeners, null if none have been added.
      */
     public synchronized List getListeners() {
@@ -164,15 +167,14 @@ public class ListenerSupport implements java.io.Serializable {
         s.writeObject(null);
     }
 
-
     /**
      * Read the listeners from a stream.
      */
-    public void readObject(ObjectInputStream s) 
-        throws ClassNotFoundException, IOException {
+    public void readObject(ObjectInputStream s) throws ClassNotFoundException,
+            IOException {
 
         s.defaultReadObject();
-      
+
         Object listenerOrNull;
         while (null != (listenerOrNull = s.readObject())) {
             addListener(listenerOrNull);

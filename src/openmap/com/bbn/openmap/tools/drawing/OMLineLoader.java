@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,24 +14,24 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMLineLoader.java,v $
 // $RCSfile: OMLineLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/04 17:26:04 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
-
-
 package com.bbn.openmap.tools.drawing;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
+import com.bbn.openmap.omGraphics.EditableOMLine;
+import com.bbn.openmap.omGraphics.GraphicAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMLine;
 
 /**
  * Loader that knows how to create/edit OMLine objects.
  */
-public class OMLineLoader extends AbstractToolLoader
-    implements EditToolLoader {
+public class OMLineLoader extends AbstractToolLoader implements EditToolLoader {
 
     protected String graphicClassName = "com.bbn.openmap.omGraphics.OMLine";
 
@@ -40,21 +40,19 @@ public class OMLineLoader extends AbstractToolLoader
     }
 
     public void init() {
-        EditClassWrapper ecw = 
-            new EditClassWrapper(graphicClassName,
-                                 "com.bbn.openmap.omGraphics.EditableOMLine",
-                                 "editableline.gif",
-                                 i18n.get(OMLineLoader.class,"omline","Line"));                          
+        EditClassWrapper ecw = new EditClassWrapper(graphicClassName, "com.bbn.openmap.omGraphics.EditableOMLine", "editableline.gif", i18n.get(OMLineLoader.class,
+                "omline",
+                "Line"));
         addEditClassWrapper(ecw);
     }
 
     /**
      * Give the classname of a graphic to create, returning an
-     * EditableOMGraphic for that graphic.  The GraphicAttributes
+     * EditableOMGraphic for that graphic. The GraphicAttributes
      * object lets you set some of the initial parameters of the line,
      * like line type and rendertype.
      */
-    public EditableOMGraphic getEditableGraphic(String classname, 
+    public EditableOMGraphic getEditableGraphic(String classname,
                                                 GraphicAttributes ga) {
         if (classname.intern() == graphicClassName) {
             return new EditableOMLine(ga);
@@ -68,7 +66,7 @@ public class OMLineLoader extends AbstractToolLoader
      */
     public EditableOMGraphic getEditableGraphic(OMGraphic graphic) {
         if (graphic instanceof OMLine) {
-            return new EditableOMLine((OMLine)graphic);
+            return new EditableOMLine((OMLine) graphic);
         }
         return null;
     }

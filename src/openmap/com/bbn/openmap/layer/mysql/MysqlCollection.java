@@ -10,22 +10,24 @@
  * Version 1.0
  * ***********************************************************************
  */
- 
+
 package com.bbn.openmap.layer.mysql;
 
 /**
- * This class represents the encapsulation of a MySQL GeometryCollection.
+ * This class represents the encapsulation of a MySQL
+ * GeometryCollection.
  * 
- * Copyright 2003 by the Author<br>
+ * Copyright 2003 by the Author <br>
  * <p>
- * @author Uwe Baier  uwe.baier@gmx.net<br>
- * @version 1.0<br>
+ * 
+ * @author Uwe Baier uwe.baier@gmx.net <br>
+ * @version 1.0 <br>
  */
 public class MysqlCollection extends MysqlMulti {
 
     public MysqlCollection() {
         super();
-        this.setType(this.GEOMETRYCOLLECTIONTYPE);
+        this.setType(MysqlGeometry.GEOMETRYCOLLECTIONTYPE);
     }
 
     public void addElement(MysqlGeometry mg) {

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMLine.java,v $
 // $RCSfile: EditableOMLine.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:06:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics;
 
@@ -44,7 +43,8 @@ public class EditableOMLine extends EditableOMGraphic {
     protected GrabPoint gp1;
     protected GrabPoint gp2;
     protected OffsetGrabPoint gpo; // offset
-    protected OffsetGrabPoint gpm; // for grabing the line and moving it.
+    protected OffsetGrabPoint gpm; // for grabing the line and moving
+                                   // it.
 
     protected OMLine line;
 
@@ -54,7 +54,7 @@ public class EditableOMLine extends EditableOMGraphic {
 
     /**
      * Create the EditableOMLine, setting the state machine to create
-     * the line off of the gestures.  
+     * the line off of the gestures.
      */
     public EditableOMLine() {
         createGraphic(null);
@@ -71,7 +71,7 @@ public class EditableOMLine extends EditableOMGraphic {
     /**
      * Create the EditableOMLine with an OMLine already defined, ready
      * for editing.
-     *
+     * 
      * @param oml OMLine that should be edited.
      */
     public EditableOMLine(OMLine oml) {
@@ -81,7 +81,7 @@ public class EditableOMLine extends EditableOMGraphic {
     /**
      * Create and initialize the state machine that interprets the
      * modifying gestures/commands, as well as ititialize the grab
-     * points.  Also allocates the grab point array needed by the
+     * points. Also allocates the grab point array needed by the
      * EditableOMLine.
      */
     public void init() {
@@ -91,15 +91,14 @@ public class EditableOMLine extends EditableOMGraphic {
     }
 
     /**
-     * Set the graphic within the state machine.  If the graphic
-     * is null, then one shall be created, and located off screen
-     * until the gestures driving the state machine place it on the
-     * map.  
+     * Set the graphic within the state machine. If the graphic is
+     * null, then one shall be created, and located off screen until
+     * the gestures driving the state machine place it on the map.
      */
     public void setGraphic(OMGraphic graphic) {
         init();
         if (graphic instanceof OMLine) {
-            line = (OMLine)graphic;
+            line = (OMLine) graphic;
             stateMachine.setSelected();
             setGrabPoints(line);
         } else {
@@ -108,8 +107,8 @@ public class EditableOMLine extends EditableOMGraphic {
     }
 
     /**
-     * Create and set the graphic within the state machine.  The
-     * GraphicAttributes describe the type of line to create. 
+     * Create and set the graphic within the state machine. The
+     * GraphicAttributes describe the type of line to create.
      */
     public void createGraphic(GraphicAttributes ga) {
         init();
@@ -123,15 +122,14 @@ public class EditableOMLine extends EditableOMGraphic {
         }
 
         if (Debug.debugging("eoml")) {
-            Debug.output("EditableOMLine.createGraphic(): rendertype = " +
-                         renderType);
+            Debug.output("EditableOMLine.createGraphic(): rendertype = "
+                    + renderType);
         }
 
         if (lineType == OMGraphic.LINETYPE_UNKNOWN) {
             lineType = OMGraphic.LINETYPE_GREATCIRCLE;
             ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
         }
-
 
         switch (renderType) {
         case (OMGraphic.RENDERTYPE_LATLON):
@@ -150,7 +148,7 @@ public class EditableOMLine extends EditableOMGraphic {
     }
 
     /**
-     * Get the OMGraphic being created/modified by the EditableOMLine.  
+     * Get the OMGraphic being created/modified by the EditableOMLine.
      */
     public OMGraphic getGraphic() {
         return line;
@@ -167,7 +165,7 @@ public class EditableOMLine extends EditableOMGraphic {
 
     /**
      * Attach to the Moving OffsetGrabPoint so if it moves, it will
-     * move this EditableOMGraphic with it.  EditableOMGraphic version
+     * move this EditableOMGraphic with it. EditableOMGraphic version
      * doesn't do anything, each subclass has to decide which of its
      * OffsetGrabPoints should be attached to it.
      */
@@ -176,7 +174,7 @@ public class EditableOMLine extends EditableOMGraphic {
     }
 
     /**
-     * Detach from a Moving OffsetGrabPoint.  The EditableOMGraphic
+     * Detach from a Moving OffsetGrabPoint. The EditableOMGraphic
      * version doesn't do anything, each subclass should remove
      * whatever GrabPoint it would have attached to an
      * OffsetGrabPoint.
@@ -186,8 +184,8 @@ public class EditableOMLine extends EditableOMGraphic {
     }
 
     /**
-     * Check to make sure the grab points are not null.  If they are,
-     * allocate them, and them assign them to the array. 
+     * Check to make sure the grab points are not null. If they are,
+     * allocate them, and them assign them to the array.
      */
     public void assertGrabPoints() {
         if (gp1 == null) {
@@ -209,7 +207,7 @@ public class EditableOMLine extends EditableOMGraphic {
 
     /**
      * Set the grab points for the graphic provided, setting them on
-     * the extents of the graphic.  Called when you want to set the
+     * the extents of the graphic. Called when you want to set the
      * grab points off the location of the graphic.
      */
     public void setGrabPoints(OMGraphic graphic) {
@@ -226,26 +224,27 @@ public class EditableOMLine extends EditableOMGraphic {
             if (renderType == OMGraphic.RENDERTYPE_LATLON) {
                 Debug.message("eomg", "EditableOMLine: modifying lat/lon line");
 
-                // Complicated lines!!!!  Need to grab the end points
-                // that are on the map!  See, for very large lines
+                // Complicated lines!!!! Need to grab the end points
+                // that are on the map! See, for very large lines
                 // that go around the earth, they are acutally drawn
                 // in OpenMap as an array of lines that are clipped as
-                // they go offscreen.  Eventually, one of the points
-                // should appear on the map somewhere.  If they don't,
+                // they go offscreen. Eventually, one of the points
+                // should appear on the map somewhere. If they don't,
                 // then then the end points may not be on the screen.
                 if (projection != null) {
-                    
+
                     float[] ll = line.getLL();
                     java.awt.Point p = projection.forward(ll[0], ll[1]);
-                    gp1.set((int)p.getX(), (int)p.getY());
+                    gp1.set((int) p.getX(), (int) p.getY());
 
                     projection.forward(ll[2], ll[3], p);
-                    gp2.set((int)p.getX(), (int)p.getY());
+                    gp2.set((int) p.getX(), (int) p.getY());
                 }
 
             } else {
                 // Grab the projected endpoints
-                Debug.message("eomg", "EditableOMLine: modifying x/y or offset standard line");
+                Debug.message("eomg",
+                        "EditableOMLine: modifying x/y or offset standard line");
                 gp1.set(line.xpoints[0][0], line.ypoints[0][0]);
 
                 int last = line.xpoints[0].length - 1;
@@ -254,23 +253,24 @@ public class EditableOMLine extends EditableOMGraphic {
 
             // Check to see if the line is a offset line, and set the
             // offset grab point accordingly.
-            if (line.getRenderType() == OMGraphic.RENDERTYPE_OFFSET &&
-                projection != null) {
+            if (line.getRenderType() == OMGraphic.RENDERTYPE_OFFSET
+                    && projection != null) {
 
                 float[] ll = line.getLL();
                 java.awt.Point p = projection.forward(ll[0], ll[1]);
 
-                gpo.set((int)p.getX(), (int)p.getY());
+                gpo.set((int) p.getX(), (int) p.getY());
                 gpo.updateOffsets();
             }
         } else {
-            Debug.message("eomg", "EditableOMLine.setGrabPoints: graphic needs to be regenerated");
+            Debug.message("eomg",
+                    "EditableOMLine.setGrabPoints: graphic needs to be regenerated");
         }
     }
 
     /**
      * Take the current location of the GrabPoints, and modify the
-     * location parameters of the OMLine with them.  Called when you
+     * location parameters of the OMLine with them. Called when you
      * want the graphic to change according to the grab points.
      */
     public void setGrabPoints() {
@@ -279,8 +279,8 @@ public class EditableOMLine extends EditableOMGraphic {
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
             if (projection != null) {
                 float[] floats = new float[4];
-                com.bbn.openmap.LatLonPoint llp = 
-                    projection.inverse(gp1.getX(), gp1.getY());
+                com.bbn.openmap.LatLonPoint llp = projection.inverse(gp1.getX(),
+                        gp1.getY());
 
                 floats[0] = llp.getLatitude();
                 floats[1] = llp.getLongitude();
@@ -290,27 +290,29 @@ public class EditableOMLine extends EditableOMGraphic {
                 floats[3] = llp.getLongitude();
                 line.setLL(floats);
             } else {
-                Debug.message("eomg", "EditableOMLine.setGrabPoints: projection is null, can't figure out LATLON points for line.");
+                Debug.message("eomg",
+                        "EditableOMLine.setGrabPoints: projection is null, can't figure out LATLON points for line.");
             }
         } else if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
             // Do the offset point.
             if (projection != null) {
                 float[] floats = new float[4];
-                com.bbn.openmap.LatLonPoint llp = 
-                    projection.inverse(gpo.getX(), gpo.getY());
-                
+                com.bbn.openmap.LatLonPoint llp = projection.inverse(gpo.getX(),
+                        gpo.getY());
+
                 floats[0] = llp.getLatitude();
                 floats[1] = llp.getLongitude();
                 floats[2] = 0;// not used
                 floats[3] = 0;// not used
                 line.setLL(floats);
             } else {
-                Debug.message("eomg", "EditableOMLine.setGrabPoints: projection is null, can't figure out LATLON points for line offset.");
+                Debug.message("eomg",
+                        "EditableOMLine.setGrabPoints: projection is null, can't figure out LATLON points for line offset.");
             }
         }
 
-        if (renderType == OMGraphic.RENDERTYPE_XY ||
-            renderType == OMGraphic.RENDERTYPE_OFFSET) {
+        if (renderType == OMGraphic.RENDERTYPE_XY
+                || renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
             int[] ints = new int[4];
             if (renderType == OMGraphic.RENDERTYPE_OFFSET && gpo != null) {
@@ -328,22 +330,22 @@ public class EditableOMLine extends EditableOMGraphic {
             }
             line.setPts(ints);
         }
-        
+
     }
 
     /**
      * Called to set the OffsetGrabPoint to the current mouse
      * location, and update the OffsetGrabPoint with all the other
-     * GrabPoint locations, so everything can shift smoothly.  Should
-     * also set the OffsetGrabPoint to the movingPoint.  Should be
+     * GrabPoint locations, so everything can shift smoothly. Should
+     * also set the OffsetGrabPoint to the movingPoint. Should be
      * called only once at the beginning of the general movement, in
-     * order to set the movingPoint.  After that, redraw(e) should
-     * just be called, and the movingPoint will make the adjustments
-     * to the graphic that are needed.
+     * order to set the movingPoint. After that, redraw(e) should just
+     * be called, and the movingPoint will make the adjustments to the
+     * graphic that are needed.
      */
     public void move(MouseEvent e) {
         // Need to check to see if the OffsetGrabPoint is currently
-        // being used.  If not, just use it, otherwise, will need to
+        // being used. If not, just use it, otherwise, will need to
         // create a special one for the move.
         if (line.getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
             gpm = new OffsetGrabPoint(e.getX(), e.getY());
@@ -362,21 +364,25 @@ public class EditableOMLine extends EditableOMGraphic {
     /**
      * Use the current projection to place the graphics on the screen.
      * Has to be called to at least assure the graphics that they are
-     * ready for rendering.  Called when the graphic position changes.
-     *
+     * ready for rendering. Called when the graphic position changes.
+     * 
      * @param proj com.bbn.openmap.proj.Projection
-     * @return true 
+     * @return true
      */
     public boolean generate(Projection proj) {
         Debug.message("eomg", "EditableOMLine.generate()");
-        if (line != null) line.generate(proj);
+        if (line != null)
+            line.generate(proj);
 
-        if (gp1 != null) gp1.generate(proj);
-        if (gp2 != null) gp2.generate(proj);
+        if (gp1 != null)
+            gp1.generate(proj);
+        if (gp2 != null)
+            gp2.generate(proj);
         if (gpo != null) {
             gpo.generate(proj);
             gpo.updateOffsets();
-        };
+        }
+        ;
         return true;
     }
 
@@ -387,11 +393,14 @@ public class EditableOMLine extends EditableOMGraphic {
      */
     public void regenerate(Projection proj) {
         Debug.message("eomg", "EditableOMLine.regenerate()");
-        if (line != null) line.generate(proj);
+        if (line != null)
+            line.generate(proj);
         setGrabPoints(line);
 
-        if (gp1 != null) gp1.generate(proj);
-        if (gp2 != null) gp2.generate(proj);
+        if (gp1 != null)
+            gp1.generate(proj);
+        if (gp2 != null)
+            gp2.generate(proj);
         if (gpo != null) {
             gpo.generate(proj);
             gpo.updateOffsets();
@@ -400,9 +409,9 @@ public class EditableOMLine extends EditableOMGraphic {
 
     /**
      * Draw the EditableOMLine parts into the java.awt.Graphics
-     * object.  The grab points are only rendered if the line machine
+     * object. The grab points are only rendered if the line machine
      * state is LineSelectedState.LINE_SELECTED.
-     *
+     * 
      * @param graphics java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
@@ -417,7 +426,6 @@ public class EditableOMLine extends EditableOMGraphic {
         } else {
             Debug.message("eomg", "EditableOMLine.render: null line.");
         }
-        
 
         if (state instanceof GraphicSelectedState) {
             if (gp1 != null) {
@@ -433,11 +441,14 @@ public class EditableOMLine extends EditableOMGraphic {
             }
         }
 
-        if (state instanceof GraphicSelectedState ||
-            state instanceof GraphicEditState /* ||
-            state instanceof LineSetOffsetState */) {
-            if (gpo != null && 
-                line.getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
+        if (state instanceof GraphicSelectedState
+                || state instanceof GraphicEditState /*
+                                                      * || state
+                                                      * instanceof
+                                                      * LineSetOffsetState
+                                                      */) {
+            if (gpo != null
+                    && line.getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
                 gpo.setVisible(true);
                 gpo.render(graphics);
                 gpo.setVisible(false);
@@ -448,7 +459,7 @@ public class EditableOMLine extends EditableOMGraphic {
     public Component getGUI(GraphicAttributes graphicAttributes) {
         if (graphicAttributes != null) {
             JMenu ahm = getArrowHeadMenu();
-            graphicAttributes.setLineMenuAdditions(new JMenu[] {ahm});
+            graphicAttributes.setLineMenuAdditions(new JMenu[] { ahm });
             return graphicAttributes.getGUI();
         }
         return null;
@@ -462,38 +473,38 @@ public class EditableOMLine extends EditableOMGraphic {
             arrowheadMenu = new JMenu("Arrows");
 
             ActionListener listener = new ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        String command  = ae.getActionCommand();
-                        try {
-                            int what = Integer.parseInt(command);
-                            if (what < 0) {
-                                ((OMLine)getGraphic()).addArrowHead(false);
-                            } else {
-                                ((OMLine)getGraphic()).addArrowHead(what);
-                            }
-                            generate(getProjection());
-                            repaint();
-                        } catch (NumberFormatException e) {}
+                public void actionPerformed(ActionEvent ae) {
+                    String command = ae.getActionCommand();
+                    try {
+                        int what = Integer.parseInt(command);
+                        if (what < 0) {
+                            ((OMLine) getGraphic()).addArrowHead(false);
+                        } else {
+                            ((OMLine) getGraphic()).addArrowHead(what);
+                        }
+                        generate(getProjection());
+                        repaint();
+                    } catch (NumberFormatException e) {
                     }
-                };
+                }
+            };
 
-            boolean doArrowHead = ((OMLine)getGraphic()).doArrowHead;
-            int currentDirection = ((OMLine)getGraphic()).arrowDirectionType;
+            boolean doArrowHead = ((OMLine) getGraphic()).doArrowHead;
+            int currentDirection = ((OMLine) getGraphic()).arrowDirectionType;
             int descDir = -1; // this description direction
 
-            ButtonGroup group = new ButtonGroup(); 
+            ButtonGroup group = new ButtonGroup();
             ImageIcon ii = createArrowIcon(new BasicStroke(1), 50, 20, descDir);
-            JRadioButtonMenuItem button = 
-                new JRadioButtonMenuItem(ii, doArrowHead == false);
+            JRadioButtonMenuItem button = new JRadioButtonMenuItem(ii, doArrowHead == false);
             button.setActionCommand(String.valueOf(descDir));
             group.add(button);
             button.addActionListener(listener);
             arrowheadMenu.add(button);
 
-            for (descDir = OMArrowHead.ARROWHEAD_DIRECTION_FORWARD;
-                 descDir <= OMArrowHead.ARROWHEAD_DIRECTION_BOTH; descDir++) {
+            for (descDir = OMArrowHead.ARROWHEAD_DIRECTION_FORWARD; descDir <= OMArrowHead.ARROWHEAD_DIRECTION_BOTH; descDir++) {
                 ii = createArrowIcon(new BasicStroke(1), 50, 20, descDir);
-                button = new JRadioButtonMenuItem(ii, doArrowHead && currentDirection == descDir);
+                button = new JRadioButtonMenuItem(ii, doArrowHead
+                        && currentDirection == descDir);
                 button.setActionCommand(String.valueOf(descDir));
                 group.add(button);
                 button.addActionListener(listener);
@@ -503,25 +514,23 @@ public class EditableOMLine extends EditableOMGraphic {
         return arrowheadMenu;
     }
 
-    /** 
+    /**
      * Given some arrowhead parameters, create an ImageIcon that shows
      * it.
-     *
+     * 
      * @param stroke the BasicStroke to draw on the Icon.
      * @param width the width of the icon.
      * @param height the height of the icon.
      * @param arrowHeadType -1 for no arrowhead, use the OMArrowHead
-     * directions for other versions.
+     *        directions for other versions.
      */
-    public ImageIcon createArrowIcon(BasicStroke stroke, 
-                                     int width, int height, 
+    public ImageIcon createArrowIcon(BasicStroke stroke, int width, int height,
                                      int arrowHeadType) {
 
-        BufferedImage bigImage = new BufferedImage(width, height,
-                                                   BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = (Graphics2D)bigImage.getGraphics();
+        BufferedImage bigImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = (Graphics2D) bigImage.getGraphics();
 
-        int middleY = height/2;
+        int middleY = height / 2;
 
         g.setBackground(OMColor.clear);
         g.setPaint(OMColor.clear);
@@ -530,23 +539,23 @@ public class EditableOMLine extends EditableOMGraphic {
         g.setStroke(stroke);
         g.drawLine(0, middleY, width, middleY);
 
-        int upTip = (int)((float)height * .25);
-        int downTip = (int)((float)height * .75);
+        int upTip = (int) ((float) height * .25);
+        int downTip = (int) ((float) height * .75);
         Polygon poly = null;
-        if (arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_FORWARD || 
-            arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_BOTH) {
-            int rightWingX = (int)((float)width * .75);
-            poly = new Polygon(new int[] {width, rightWingX, rightWingX},
-                               new int[] {middleY, upTip, downTip}, 3);
+        if (arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_FORWARD
+                || arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_BOTH) {
+            int rightWingX = (int) ((float) width * .75);
+            poly = new Polygon(new int[] { width, rightWingX, rightWingX }, new int[] {
+                    middleY, upTip, downTip }, 3);
             g.fill(poly);
             g.draw(poly); // Seems to help with rendering problem.
         }
 
-        if (arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD || 
-            arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_BOTH) {
-            int leftWingX = (int)((float)width * .25);
-            poly = new Polygon(new int[] {0, leftWingX, leftWingX},
-                               new int[] {middleY, upTip, downTip}, 3);
+        if (arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD
+                || arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_BOTH) {
+            int leftWingX = (int) ((float) width * .25);
+            poly = new Polygon(new int[] { 0, leftWingX, leftWingX }, new int[] {
+                    middleY, upTip, downTip }, 3);
             g.fill(poly);
             g.draw(poly); // Seems to help with rendering problem.
         }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/OMGridData.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/OMGridData.java,v
+// $
 // $RCSfile: OMGridData.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.grid;
 
@@ -32,7 +33,7 @@ public abstract class OMGridData implements GridData {
      * array represent. COLUMN_MAJOR is the default, meaning that the
      * first dimension of the array represents the vertical location
      * in the array, and the second is the horizontal location in the
-     * array.  
+     * array.
      */
     protected boolean major = OMGrid.COLUMN_MAJOR;
 
@@ -58,7 +59,7 @@ public abstract class OMGridData implements GridData {
         public void setData(boolean[][] d) {
             data = d;
         }
-        
+
         public boolean[][] getData() {
             return data;
         }
@@ -102,7 +103,7 @@ public abstract class OMGridData implements GridData {
         public void setData(byte[][] d) {
             data = d;
         }
-        
+
         public byte[][] getData() {
             return data;
         }
@@ -146,7 +147,7 @@ public abstract class OMGridData implements GridData {
         public void setData(char[][] d) {
             data = d;
         }
-        
+
         public char[][] getData() {
             return data;
         }
@@ -190,7 +191,7 @@ public abstract class OMGridData implements GridData {
         public void setData(float[][] d) {
             data = d;
         }
-        
+
         public float[][] getData() {
             return data;
         }
@@ -219,7 +220,7 @@ public abstract class OMGridData implements GridData {
             }
         }
     }
- 
+
     /**
      * Int is a GridData object that contains ints.
      */
@@ -234,7 +235,7 @@ public abstract class OMGridData implements GridData {
         public void setData(int[][] d) {
             data = d;
         }
-        
+
         public int[][] getData() {
             return data;
         }
@@ -264,7 +265,6 @@ public abstract class OMGridData implements GridData {
         }
     }
 
-
     /**
      * Short is a GridData object that contains shorts.
      */
@@ -279,7 +279,7 @@ public abstract class OMGridData implements GridData {
         public void setData(short[][] d) {
             data = d;
         }
-        
+
         public short[][] getData() {
             return data;
         }
@@ -323,7 +323,7 @@ public abstract class OMGridData implements GridData {
         public void setData(double[][] d) {
             data = d;
         }
-        
+
         public double[][] getData() {
             return data;
         }

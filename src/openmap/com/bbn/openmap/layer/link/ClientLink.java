@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,29 +14,21 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/ClientLink.java,v $
 // $RCSfile: ClientLink.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.Projection;
-
-import java.awt.Color;
-import java.awt.event.MouseEvent;
-import java.awt.event.KeyEvent;
-import java.io.*;
+import java.io.IOException;
 import java.net.Socket;
-import javax.swing.JComponent;
 
 /**
  * The ClientLink provides the method to close the link down, since it
- * makes that decision.  The server should remain connected until the
- * client is finished.  The server can request to be disconnected,
+ * makes that decision. The server should remain connected until the
+ * client is finished. The server can request to be disconnected,
  * however, and the ClientLink provides a method for the client to
  * check if that request has been made.
  */
@@ -57,7 +49,7 @@ public class ClientLink extends Link {
      * Since the client is the side of the link that can close the
      * link, it can find out if the server wants to close down the
      * link with this method.
-     *
+     * 
      * @return true if the link should be shut down.
      */
     public boolean isCloseLink() {

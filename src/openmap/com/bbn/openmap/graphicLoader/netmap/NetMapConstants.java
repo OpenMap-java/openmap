@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,18 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapConstants.java,v $
 // $RCSfile: NetMapConstants.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:05:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.graphicLoader.netmap;
 
 /**
  * This interface describes the different constant settings used for
- * the NetMapEvent properties.  If you implement this class, you have
+ * the NetMapEvent properties. If you implement this class, you have
  * direct access to the constants.
  */
 public interface NetMapConstants {

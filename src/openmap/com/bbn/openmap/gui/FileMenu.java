@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,41 +14,33 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/FileMenu.java,v $
 // $RCSfile: FileMenu.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/05/10 20:43:03 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.beans.beancontext.*;
-import java.util.*;
 import javax.swing.*;
 
 import com.bbn.openmap.*;
 import com.bbn.openmap.gui.menu.*;
-import com.bbn.openmap.image.*;
-import com.bbn.openmap.util.Debug;
 
 /**
  * FileMenu creates AboutMenuItem, SavePropertiesMenuItem,
  * SaveImageMenuItem, ExitMenuItem. It only adds AboutMenuItem if
  * runing as an Applet, all otherwise. These menu items are added by
- * default.  
+ * default.
  */
 public class FileMenu extends AbstractOpenMapMenu {
-    
+
     private String defaultText = "File";
-    private int defaultMnemonic= 'F';
-    
+    private int defaultMnemonic = 'F';
+
     /**
      * Create and add menuitems(About, SaveProperties, SaveAsImage and
-     * Exit) 
+     * Exit)
      */
     public FileMenu() {
         super();
@@ -56,7 +48,7 @@ public class FileMenu extends AbstractOpenMapMenu {
         setMnemonic(defaultMnemonic);
 
         add(new AboutMenuItem());
-        
+
         if (!Environment.isApplet()) {
             add(new JSeparator());
             add(new SavePropertiesMenuItem());
@@ -67,5 +59,5 @@ public class FileMenu extends AbstractOpenMapMenu {
             add(new JSeparator());
             add(new QuitMenuItem());
         }
-    } 
+    }
 }

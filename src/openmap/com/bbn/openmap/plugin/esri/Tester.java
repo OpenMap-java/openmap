@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,29 +14,26 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/Tester.java,v $
 // $RCSfile: Tester.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.plugin.esri;
 
 import javax.swing.*;
-import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import com.bbn.openmap.dataAccess.shape.*;
-import com.bbn.openmap.dataAccess.shape.input.*;
 import com.bbn.openmap.dataAccess.shape.output.*;
 import com.bbn.openmap.omGraphics.*;
 import java.util.*;
 
 /**
  * A class to test the creation of shape file sets
- *
+ * 
  * @author Doug Van Auken
  */
 public class Tester extends JFrame implements ShapeConstants {
@@ -47,39 +44,36 @@ public class Tester extends JFrame implements ShapeConstants {
     public Tester() {
         JButton cmdPolylineTest = new JButton("Test Polyline");
         cmdPolylineTest.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    try{
-                        testPolyline();
-                    }
-                    catch(Exception exception) {
-                        exception.printStackTrace();
-                    }
+            public void actionPerformed(ActionEvent event) {
+                try {
+                    testPolyline();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
-            });
+            }
+        });
 
         JButton cmdPolygonTest = new JButton("Test Polygon");
         cmdPolygonTest.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    try{
-                        testPolygon();
-                    }
-                    catch(Exception exception) {
-                        exception.printStackTrace();
-                    }
+            public void actionPerformed(ActionEvent event) {
+                try {
+                    testPolygon();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
-            });
+            }
+        });
 
         JButton cmdPointTest = new JButton("Test Point");
         cmdPointTest.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    try{
-                        testPoint();
-                    }
-                    catch(Exception exception) {
-                        exception.printStackTrace();
-                    }
+            public void actionPerformed(ActionEvent event) {
+                try {
+                    testPoint();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
-            });
+            }
+        });
 
         JPanel centerPanel = new JPanel();
         JPanel southPanel = new JPanel();
@@ -89,7 +83,7 @@ public class Tester extends JFrame implements ShapeConstants {
         getContentPane().add(centerPanel, BorderLayout.CENTER);
         getContentPane().add(southPanel, BorderLayout.SOUTH);
 
-        setSize(400,300);
+        setSize(400, 300);
         setVisible(true);
     }
 
@@ -98,32 +92,31 @@ public class Tester extends JFrame implements ShapeConstants {
      */
     public void testPolyline() throws Exception {
         /*
-         * Create the layer.
-         * Parameter 1 = layer name
-         * Param 2 = layer type
-         * Param3 = number of columns to allocate in DbfTableColumnModel
+         * Create the layer. Parameter 1 = layer name Param 2 = layer
+         * type Param3 = number of columns to allocate in
+         * DbfTableColumnModel
          */
         EsriLayer layer = new EsriLayer("Drawable Layer", SHAPE_TYPE_POLYLINE, 2);
         DbfTableModel model = layer.getModel();
 
         //Setup table structure
         //Setup column 0 to be character
-        model.setDecimalCount(0, (byte)0);
-        model.setLength(0, (byte)20);
+        model.setDecimalCount(0, (byte) 0);
+        model.setLength(0, (byte) 20);
         model.setColumnName(0, "Column1");
-        model.setType(0, (byte)DbfTableModel.TYPE_CHARACTER);
+        model.setType(0, (byte) DbfTableModel.TYPE_CHARACTER);
 
         //Setup column 1 to be numeric
-        model.setDecimalCount(1, (byte)3);
-        model.setLength(1, (byte)20);
+        model.setDecimalCount(1, (byte) 3);
+        model.setLength(1, (byte) 20);
         model.setColumnName(1, "Column2");
-        model.setType(1, (byte)DbfTableModel.TYPE_NUMERIC);
+        model.setType(1, (byte) DbfTableModel.TYPE_NUMERIC);
 
         addPolylineRecord1(layer);
         addPolylineRecord2(layer);
         addPolylineRecord3(layer);
 
-        EsriGraphicList list =  layer.getEsriGraphicList();
+        EsriGraphicList list = layer.getEsriGraphicList();
 
         ShpOutputStream pos = new ShpOutputStream(new FileOutputStream("polylinetest0.shp"));
         int[][] indexData = pos.writeGeometry(list);
@@ -135,36 +128,34 @@ public class Tester extends JFrame implements ShapeConstants {
         dos.writeModel(model);
     }
 
-
     /**
      * Creates a polygon shape file set
      */
     public void testPolygon() throws Exception {
         /*
-         * Create the layer.
-         * Parameter 1 = layer name
-         * Param 2 = layer type
-         * Param3 = number of columns to allocate in DbfTableColumnModel
+         * Create the layer. Parameter 1 = layer name Param 2 = layer
+         * type Param3 = number of columns to allocate in
+         * DbfTableColumnModel
          */
         EsriLayer layer = new EsriLayer("Polygon Layer", SHAPE_TYPE_POLYGON, 2);
         DbfTableModel model = layer.getModel();
 
         //Setup table structure
         //Setup column 0 to be character
-        model.setDecimalCount(0, (byte)0);
-        model.setLength(0, (byte)20);
+        model.setDecimalCount(0, (byte) 0);
+        model.setLength(0, (byte) 20);
         model.setColumnName(0, "Column1");
-        model.setType(0, (byte)DbfTableModel.TYPE_CHARACTER);
+        model.setType(0, (byte) DbfTableModel.TYPE_CHARACTER);
 
         //Setup column 1 to be numeric
-        model.setDecimalCount(1, (byte)3);
-        model.setLength(1, (byte)20);
+        model.setDecimalCount(1, (byte) 3);
+        model.setLength(1, (byte) 20);
         model.setColumnName(1, "Column2");
-        model.setType(1, (byte)DbfTableModel.TYPE_NUMERIC);
+        model.setType(1, (byte) DbfTableModel.TYPE_NUMERIC);
 
         addPolygonRecord1(layer);
 
-        EsriGraphicList list =  layer.getEsriGraphicList();
+        EsriGraphicList list = layer.getEsriGraphicList();
 
         ShpOutputStream pos = new ShpOutputStream(new FileOutputStream("polygontest5.shp"));
         int[][] indexData = pos.writeGeometry(list);
@@ -181,30 +172,29 @@ public class Tester extends JFrame implements ShapeConstants {
      */
     public void testPoint() throws Exception {
         /*
-         * Create the layer.
-         * Parameter 1 = layer name
-         * Param 2 = layer type
-         * Param3 = number of columns to allocate in DbfTableColumnModel
+         * Create the layer. Parameter 1 = layer name Param 2 = layer
+         * type Param3 = number of columns to allocate in
+         * DbfTableColumnModel
          */
         EsriLayer layer = new EsriLayer("Point Layer", SHAPE_TYPE_POINT, 2);
         DbfTableModel model = layer.getModel();
 
         //Setup table structure
         //Setup column 0 to be character
-        model.setDecimalCount(0, (byte)0);
-        model.setLength(0, (byte)20);
+        model.setDecimalCount(0, (byte) 0);
+        model.setLength(0, (byte) 20);
         model.setColumnName(0, "Column1");
-        model.setType(0, (byte)DbfTableModel.TYPE_CHARACTER);
+        model.setType(0, (byte) DbfTableModel.TYPE_CHARACTER);
 
         //Setup column 1 to be numeric
-        model.setDecimalCount(1, (byte)3);
-        model.setLength(1, (byte)20);
+        model.setDecimalCount(1, (byte) 3);
+        model.setLength(1, (byte) 20);
         model.setColumnName(1, "Column2");
-        model.setType(1, (byte)DbfTableModel.TYPE_NUMERIC);
+        model.setType(1, (byte) DbfTableModel.TYPE_NUMERIC);
 
         addPoints(layer);
 
-        EsriGraphicList list =  layer.getEsriGraphicList();
+        EsriGraphicList list = layer.getEsriGraphicList();
 
         ShpOutputStream pos = new ShpOutputStream(new FileOutputStream("pointtest0.shp"));
         int[][] indexData = pos.writeGeometry(list);
@@ -221,12 +211,14 @@ public class Tester extends JFrame implements ShapeConstants {
      */
     public void addPolylineRecord1(EsriLayer layer) {
         OMGraphicList shapeData = new EsriPolylineList();
-        float[] part0 = new float[]{35.0f, -120.0f, -25.0f, -95.0f, 56.0f, -30.0f};
-        float[] part1 = new float[]{-15.0f, -110.0f, 13.0f, -80.0f, -25.0f, 10.0f};
+        float[] part0 = new float[] { 35.0f, -120.0f, -25.0f, -95.0f, 56.0f,
+                -30.0f };
+        float[] part1 = new float[] { -15.0f, -110.0f, 13.0f, -80.0f, -25.0f,
+                10.0f };
         EsriPolyline poly0 = new EsriPolyline(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
         EsriPolyline poly1 = new EsriPolyline(part1, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
-        shapeData.add(poly0);  //part 1
-        shapeData.add(poly1);  //part 2
+        shapeData.add(poly0); //part 1
+        shapeData.add(poly1); //part 2
 
         ArrayList tabularData = new ArrayList();
         tabularData.add(0, "first value");
@@ -240,9 +232,10 @@ public class Tester extends JFrame implements ShapeConstants {
      */
     public void addPolylineRecord2(EsriLayer layer) {
         OMGraphicList shapeData = new EsriPolylineList();
-        float[] part0 = new float[]{12.0f, -175.0f, -30.0f, 85.0f, 25.0f, 15.0f};
+        float[] part0 = new float[] { 12.0f, -175.0f, -30.0f, 85.0f, 25.0f,
+                15.0f };
         EsriPolyline poly0 = new EsriPolyline(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
-        shapeData.add(poly0);  //part 1
+        shapeData.add(poly0); //part 1
 
         ArrayList tabularData = new ArrayList();
         tabularData.add(0, "second value");
@@ -257,9 +250,12 @@ public class Tester extends JFrame implements ShapeConstants {
     public void addPolylineRecord3(EsriLayer layer) {
         //Create geometry data
         OMGraphicList shapeData = new EsriPolylineList();
-        float[] part0 = new float[]{-25.0f, -140.0f, -50.0f, -95.0f, 65.0f, 51.0f};
-        float[] part1 = new float[]{-10.0f, -130.0f, -47.0f, -101.0f, 71.0f, 59.0f};
-        float[] part2 = new float[]{-15.0f, -151.0f, -49.0f, -100.0f, 76.0f, 41.0f};
+        float[] part0 = new float[] { -25.0f, -140.0f, -50.0f, -95.0f, 65.0f,
+                51.0f };
+        float[] part1 = new float[] { -10.0f, -130.0f, -47.0f, -101.0f, 71.0f,
+                59.0f };
+        float[] part2 = new float[] { -15.0f, -151.0f, -49.0f, -100.0f, 76.0f,
+                41.0f };
 
         EsriPolyline poly0 = new EsriPolyline(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
         EsriPolyline poly1 = new EsriPolyline(part1, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
@@ -269,8 +265,10 @@ public class Tester extends JFrame implements ShapeConstants {
         shapeData.add(poly1);
         shapeData.add(poly2);
 
-        //Create tabular data (Be sure that the structure matches the way the model is setup
-        //(I will be implementing error handling in a second version).  Also, use Double
+        //Create tabular data (Be sure that the structure matches the
+        // way the model is setup
+        //(I will be implementing error handling in a second
+        // version). Also, use Double
         //for number data types and String for other dat types
         ArrayList tabularData = new ArrayList();
         tabularData.add(0, "third value");
@@ -285,17 +283,22 @@ public class Tester extends JFrame implements ShapeConstants {
      */
     public void addPolygonRecord1(EsriLayer layer) {
         OMGraphicList shapeData = new EsriPolygonList();
-        //float[] part0 = new float[]{45.0f, -120.0f, -45.0f, -95.0f, 10.0f, 30.0f, 45.0f, -120.0f};
-        float[] part0 = new float[]{45.0f, -70.0f, 30.0f, -30.0f, 10.0f, -80.0f, 30.0f, -120.0f, 45.0f, -70.0f};
-        //    float[] part1 = new float[]{35.0f, -70.0f, 30.0f, -110.0f, 15.0f, -80.0f, 30.0f, -40.0f, 35.0f, 70.0f};
-        //    float[] part2 = new float[]{25.0f, -70.0f, 30.0f, -100.0f, 20.0f, -80.0f, 30.0f, -50.0f, 25.0f, 70.0f};
-
+        //float[] part0 = new float[]{45.0f, -120.0f, -45.0f, -95.0f,
+        // 10.0f, 30.0f, 45.0f, -120.0f};
+        float[] part0 = new float[] { 45.0f, -70.0f, 30.0f, -30.0f, 10.0f,
+                -80.0f, 30.0f, -120.0f, 45.0f, -70.0f };
+        //    float[] part1 = new float[]{35.0f, -70.0f, 30.0f, -110.0f,
+        // 15.0f, -80.0f, 30.0f, -40.0f, 35.0f, 70.0f};
+        //    float[] part2 = new float[]{25.0f, -70.0f, 30.0f, -100.0f,
+        // 20.0f, -80.0f, 30.0f, -50.0f, 25.0f, 70.0f};
 
         EsriPolygon poly0 = new EsriPolygon(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
-        //    EsriPolygon poly1 = new EsriPolygon(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
-        //    EsriPolygon poly2 = new EsriPolygon(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
+        //    EsriPolygon poly1 = new EsriPolygon(part0,
+        // OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
+        //    EsriPolygon poly2 = new EsriPolygon(part0,
+        // OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
 
-        shapeData.add(poly0);  //part 0
+        shapeData.add(poly0); //part 0
         //    shapeData.add(poly1);
         //    shapeData.add(poly2);
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,38 +14,35 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolChooser.java,v $
 // $RCSfile: SymbolChooser.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.tools.symbology.milStd2525;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JComboBox;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
@@ -53,17 +50,14 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.event.ListenerSupport;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
-import com.bbn.openmap.util.PropUtils;
 
 /**
- * The SymbolChooser is a GUI symbol builder.  It can be used in
+ * The SymbolChooser is a GUI symbol builder. It can be used in
  * stand-alone mode to create image files, or be integrated into a
  * java application to create ImageIcons.
  */
@@ -71,10 +65,10 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
     private static boolean DEBUG = false;
 
-    //Optionally play with line styles.  Possible values are
+    //Optionally play with line styles. Possible values are
     //"Angled", "Horizontal", and "None" (the default).
     private boolean playWithLineStyle = false;
-    private String lineStyle = "Angled"; 
+    private String lineStyle = "Angled";
     protected boolean showAll = false;
 
     public final static String CreateImageCmd = "CreateImageCommand";
@@ -103,7 +97,8 @@ public class SymbolChooser extends JPanel implements ActionListener {
         try {
             trees = createNodes(srl);
         } catch (FormatException fe) {
-            Debug.output("Caught FormatException reading data: " + fe.getMessage());
+            Debug.output("Caught FormatException reading data: "
+                    + fe.getMessage());
         }
 
         init(srl, trees);
@@ -122,7 +117,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
     protected void paintSymbolImage() {
         if (symbolImage != null) {
-            Graphics2D g = (Graphics2D)symbolImage.getGraphics();
+            Graphics2D g = (Graphics2D) symbolImage.getGraphics();
             g.setPaint(getBackground());
             g.fill(new Rectangle(0, 0, 100, 100));
         }
@@ -144,16 +139,16 @@ public class SymbolChooser extends JPanel implements ActionListener {
         JLabel setChoiceLabel = new JLabel("Symbol Set:");
         JComboBox setChoices = new JComboBox(trees.toArray());
         setChoices.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    JComboBox jcb = (JComboBox) e.getSource();
-                    setSelectedTreeHolder((SymbolTreeHolder)jcb.getSelectedItem());
-                }
-            });
+            public void actionPerformed(ActionEvent e) {
+                JComboBox jcb = (JComboBox) e.getSource();
+                setSelectedTreeHolder((SymbolTreeHolder) jcb.getSelectedItem());
+            }
+        });
 
         setChoicePanel.add(setChoiceLabel);
         setChoicePanel.add(setChoices);
 
-        treeView = new JScrollPane(((SymbolTreeHolder)setChoices.getSelectedItem()).getTree());
+        treeView = new JScrollPane(((SymbolTreeHolder) setChoices.getSelectedItem()).getTree());
         setLayout(outergridbag);
 
         outerc.fill = GridBagConstraints.BOTH;
@@ -185,7 +180,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
         /////////////////////
 
         optionPanel = PaletteHelper.createVerticalPanel(" Symbol Attributes ");
-        optionPanel.add(((SymbolTreeHolder)setChoices.getSelectedItem()).getOptionPanel());
+        optionPanel.add(((SymbolTreeHolder) setChoices.getSelectedItem()).getOptionPanel());
         outergridbag.setConstraints(optionPanel, outerc);
         add(optionPanel);
 
@@ -195,19 +190,18 @@ public class SymbolChooser extends JPanel implements ActionListener {
         GridBagConstraints c2 = new GridBagConstraints();
         JPanel namePanel = new JPanel();
         namePanel.setLayout(gridbag2);
-        
+
         c2.weightx = 0;
         c2.anchor = GridBagConstraints.WEST;
         JLabel nameLabel = new JLabel("Symbol Code: ");
         gridbag2.setConstraints(nameLabel, c2);
         namePanel.add(nameLabel);
-        
+
         c2.fill = GridBagConstraints.HORIZONTAL;
         c2.weightx = 1.0;
         nameField = new JTextField();
         gridbag2.setConstraints(nameField, c2);
         namePanel.add(nameField);
-
 
         createImageFileButton = new JButton("Create Image File");
         createImageFileButton.addActionListener(this);
@@ -234,17 +228,16 @@ public class SymbolChooser extends JPanel implements ActionListener {
         }
     }
 
-    private List createNodes(SymbolReferenceLibrary srl) 
-        throws FormatException {
+    private List createNodes(SymbolReferenceLibrary srl) throws FormatException {
 
         List treeList = new LinkedList();
         List subs = srl.getHead().getSubs();
         int count = 1;
         if (subs != null) {
             for (Iterator it = subs.iterator(); it.hasNext();) {
-                SymbolPart schemeSymbolPart = (SymbolPart)it.next();
+                SymbolPart schemeSymbolPart = (SymbolPart) it.next();
 
-                CodeOptions options = ((CodeScheme)srl.positionTree.getFromChoices(count++)).getCodeOptions(null);
+                CodeOptions options = ((CodeScheme) srl.positionTree.getFromChoices(count++)).getCodeOptions(null);
 
                 treeList.add(new SymbolTreeHolder(schemeSymbolPart, options));
             }
@@ -259,7 +252,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
         List subs = sp.getSubs();
         if (subs != null) {
             for (Iterator it = subs.iterator(); it.hasNext();) {
-                sp = (SymbolPart)it.next();
+                sp = (SymbolPart) it.next();
                 newNode = new DefaultMutableTreeNode(sp);
                 node.add(newNode);
                 addNodes(newNode, sp);
@@ -267,16 +260,17 @@ public class SymbolChooser extends JPanel implements ActionListener {
         }
     }
 
-    protected static void launchFrame(JComponent content, String title, boolean exitOnClose) {
+    protected static void launchFrame(JComponent content, String title,
+                                      boolean exitOnClose) {
         JFrame frame = new JFrame(title);
 
         frame.getContentPane().add(content);
         if (exitOnClose) {
             frame.addWindowListener(new WindowAdapter() {
-                    public void windowClosing(WindowEvent e) {
-                        System.exit(0);
-                    }
-                });  
+                public void windowClosing(WindowEvent e) {
+                    System.exit(0);
+                }
+            });
         }
 
         frame.pack();
@@ -288,8 +282,8 @@ public class SymbolChooser extends JPanel implements ActionListener {
         launchFrame(sc, "MIL-STD-2525B Symbology Chooser", true);
     }
 
-
-    public class SymbolTreeHolder extends ListenerSupport implements TreeSelectionListener {
+    public class SymbolTreeHolder extends ListenerSupport implements
+            TreeSelectionListener {
 
         JTree tree;
         JPanel optionPanel;
@@ -301,8 +295,8 @@ public class SymbolChooser extends JPanel implements ActionListener {
             addNodes(top, schemeSymbolPart);
 
             tree = new JTree(top);
-            tree.getSelectionModel().setSelectionMode(
-                TreeSelectionModel.SINGLE_TREE_SELECTION);
+            tree.getSelectionModel()
+                    .setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             tree.setVisibleRowCount(10);
             tree.addTreeSelectionListener(this);
 
@@ -319,14 +313,14 @@ public class SymbolChooser extends JPanel implements ActionListener {
         }
 
         public void valueChanged(TreeSelectionEvent e) {
-            DefaultMutableTreeNode node = 
-                (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-            
-            if (node == null) return;
-            
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+
+            if (node == null)
+                return;
+
             Object nodeInfo = node.getUserObject();
             if (nodeInfo instanceof SymbolPart) {
-                SymbolPart symbolPart = (SymbolPart)nodeInfo;
+                SymbolPart symbolPart = (SymbolPart) nodeInfo;
                 currentSymbol = node;
                 nameField.setText(symbolPart.getSymbolCode());
             } else {
@@ -344,7 +338,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
                 if (options != null) {
                     int i = 0;
                     for (Iterator it = options.getOptions().iterator(); it.hasNext();) {
-                        CodePosition cp = (CodePosition)it.next();
+                        CodePosition cp = (CodePosition) it.next();
                         List lt = cp.getPositionChoices();
 
                         if (lt != null) {
@@ -361,11 +355,11 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
                             JComboBox jcb = new JComboBox(lt.toArray());
                             jcb.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent ae) {
-                                        setPositionSetting((CodePosition)((JComboBox)ae.getSource()).getSelectedItem());
-                                    }
-                                });
-                                                  
+                                public void actionPerformed(ActionEvent ae) {
+                                    setPositionSetting((CodePosition) ((JComboBox) ae.getSource()).getSelectedItem());
+                                }
+                            });
+
                             c.gridx = 1;
                             c.anchor = GridBagConstraints.WEST;
                             c.fill = GridBagConstraints.HORIZONTAL;
@@ -388,7 +382,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
         }
 
         public String toString() {
-            return ((SymbolPart)getSource()).getCodePosition().getPrettyName();
+            return ((SymbolPart) getSource()).getCodePosition().getPrettyName();
         }
 
     }

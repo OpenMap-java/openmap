@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,23 +12,21 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/CircleUndefinedState.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/CircleUndefinedState.java,v
+// $
 // $RCSfile: CircleUndefinedState.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.util.Debug;
 
 public class CircleUndefinedState extends GraphicUndefinedState {
@@ -38,15 +36,17 @@ public class CircleUndefinedState extends GraphicUndefinedState {
     }
 
     /**
-     * In this state, we need to draw a circle from scratch.  So, we
+     * In this state, we need to draw a circle from scratch. So, we
      * listen for a mouse down, and set both points there, and then
-     * set the mode to circle edit.  
+     * set the mode to circle edit.
      */
-    public boolean mousePressed(MouseEvent e){ 
-        Debug.message("eomc", "CircleStateMachine|undefined state|mousePressed = " + 
-                      graphic.getGraphic().getRenderType());
-        
-        graphic.getGrabPoint(EditableOMCircle.CENTER_POINT_INDEX).set(e.getX(), e.getY());
+    public boolean mousePressed(MouseEvent e) {
+        Debug.message("eomc",
+                "CircleStateMachine|undefined state|mousePressed = "
+                        + graphic.getGraphic().getRenderType());
+
+        graphic.getGrabPoint(EditableOMCircle.CENTER_POINT_INDEX).set(e.getX(),
+                e.getY());
         GrabPoint gb;
         if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_LATLON) {
             gb = graphic.getGrabPoint(EditableOMCircle.RADIUS_POINT_INDEX);
@@ -58,9 +58,11 @@ public class CircleUndefinedState extends GraphicUndefinedState {
         graphic.setMovingPoint(gb);
 
         if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
-            graphic.getGrabPoint(EditableOMCircle.OFFSET_POINT_INDEX).set(e.getX(), e.getY());
+            graphic.getGrabPoint(EditableOMCircle.OFFSET_POINT_INDEX)
+                    .set(e.getX(), e.getY());
             graphic.getStateMachine().setOffsetNeeded(true);
-            Debug.message("eomc", "CircleStateMachine|undefined state| *offset needed*");
+            Debug.message("eomc",
+                    "CircleStateMachine|undefined state| *offset needed*");
         }
         graphic.getStateMachine().setEdit();
         return getMapMouseListenerResponse();

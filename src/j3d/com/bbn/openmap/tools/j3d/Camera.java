@@ -9,22 +9,20 @@ package com.bbn.openmap.tools.j3d;
 
 // Standard imports
 import javax.media.j3d.*;
-import javax.vecmath.Color3f;
-import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 import javax.vecmath.AxisAngle4f;
-import com.sun.j3d.utils.universe.ViewingPlatform;
 
 /**
  * This Camera class was modified from Justin Couch's
- * http://www.j3d.org tutorial examples. Test class for
- * showing the use of a View and ViewPlatform <P>
- *
+ * http://www.j3d.org tutorial examples. Test class for showing the
+ * use of a View and ViewPlatform
+ * <P>
+ * 
  * Basic view consists of the standard placement.
- *
- * @author    Justin Couch
- * @created   April 25, 2002
- * @author    dietrick
+ * 
+ * @author Justin Couch
+ * @created April 25, 2002
+ * @author dietrick
  */
 public class Camera implements OM3DConstants {
 
@@ -37,7 +35,6 @@ public class Camera implements OM3DConstants {
 
     private PhysicalBody body;
     private PhysicalEnvironment env;
-
 
     public Camera() {
         hud_group = new Group();
@@ -70,69 +67,62 @@ public class Camera implements OM3DConstants {
         view.attachViewPlatform(platform);
     }
 
-
     /**
      * Set the canvas that this camera is using
-     *
-     * @param canvas  The canvas that is to be used for this
-     *      camera
+     * 
+     * @param canvas The canvas that is to be used for this camera
      */
     public void setCanvas(Canvas3D canvas) {
         view.addCanvas3D(canvas);
     }
 
-
     /**
-     * Set the location of the camera. This is the location
-     * of the center of the camera relative to whatever is
-     * used as its root group node.
-     *
-     * @param loc  The location of the camera
+     * Set the location of the camera. This is the location of the
+     * center of the camera relative to whatever is used as its root
+     * group node.
+     * 
+     * @param loc The location of the camera
      */
     public void setLocation(Vector3f loc) {
         location.setTranslation(loc);
         root_tx_grp.setTransform(location);
     }
 
-
     /**
      * Set the orientation of the camera.
-     *
-     * @param angle  The orientation of the camera
+     * 
+     * @param angle The orientation of the camera
      */
     public void setOrientation(AxisAngle4f angle) {
         location.setRotation(angle);
         root_tx_grp.setTransform(location);
     }
 
-
     /**
-     * Add some goemetry to the HUD area. This geometry must
-     * come complete with its own parent transform to offset
-     * the object by the appropriate amount. The camera does
-     * not do any auto-offsets of geometry.
-     *
-     * @param geom  The geometry to add
+     * Add some goemetry to the HUD area. This geometry must come
+     * complete with its own parent transform to offset the object by
+     * the appropriate amount. The camera does not do any auto-offsets
+     * of geometry.
+     * 
+     * @param geom The geometry to add
      */
     public void addHUDObject(Node geom) {
         hud_group.addChild(geom);
     }
 
-
     /**
      * Enable the headlight that is attached to the camera.
-     *
-     * @param enable  True if the light is to be turned on
+     * 
+     * @param enable True if the light is to be turned on
      */
     public void setHeadLight(boolean enable) {
         headlight.setEnable(enable);
     }
 
-
     /**
      * Get the J3D node that is used to represent the camera
-     *
-     * @return   The root TransformGroup of the camera
+     * 
+     * @return The root TransformGroup of the camera
      */
     Node getNode() {
         return root_tx_grp;

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,38 +14,41 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/ChangeCase.java,v $
 // $RCSfile: ChangeCase.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.rpf;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
 
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
-/** 
+/**
  * ChangeCase is a simple class that traverses a file system tree and
  * converts the contents to upper ot lower case letters, depending on
  * the options provided.
+ * 
  * <pre>
- *  Usage: java com.bbn.openmap.layer.rpf.ChangeCase [-u|-l] (dir path 1)(dir path 2) ...  
+ * 
+ *  
+ *    Usage: java com.bbn.openmap.layer.rpf.ChangeCase [-u|-l] (dir path 1)(dir path 2) ...  
+ *   
+ *  
  * </pre>
  */
 public class ChangeCase {
 
-    /** 
+    /**
      * Given a file, change it's name, and everthing below it (if it's
      * a directory) to the case specified by toUpper.
-     *
+     * 
      * @param file file to start at.
      * @param toUpper file will change to upper case if true, lower
-     * case if false.  
+     *        case if false.
      */
     public static void handleEntry(File file, boolean toUpper) {
         try {
@@ -53,9 +56,9 @@ public class ChangeCase {
 
             if (filenames != null) {
                 File[] contents = new File[filenames.length]; // file.listFiles();
-                for (int i=0; i<contents.length; i++)
-                  contents[i] = new File(file.getAbsolutePath() + File.separator,
-                                         filenames[i]);
+                for (int i = 0; i < contents.length; i++)
+                    contents[i] = new File(file.getAbsolutePath()
+                            + File.separator, filenames[i]);
 
                 for (int i = 0; i < contents.length; i++) {
                     handleEntry(contents[i], toUpper);
@@ -80,18 +83,23 @@ public class ChangeCase {
             }
 
             if (file.renameTo(newFile)) {
-                System.out.println("Renamed " + 
-                                   (file.getParent() == null?".":file.getParent()) + 
-                                   File.separator + file.getName() + " to " + 
-                                   (newFile.getParent() == null?".":newFile.getParent()) + 
-                                   File.separator + newFile.getName());
+                System.out.println("Renamed "
+                        + (file.getParent() == null ? "." : file.getParent())
+                        + File.separator
+                        + file.getName()
+                        + " to "
+                        + (newFile.getParent() == null ? "."
+                                : newFile.getParent()) + File.separator
+                        + newFile.getName());
             } else {
-                System.out.println("Renaming " + 
-                                   (file.getParent() == null?".":file.getParent()) + 
-                                   File.separator + file.getName() + " to " + 
-                                   (newFile.getParent() == null?".":newFile.getParent()) + 
-                                   File.separator + newFile.getName() + 
-                                   " FAILED");
+                System.out.println("Renaming "
+                        + (file.getParent() == null ? "." : file.getParent())
+                        + File.separator
+                        + file.getName()
+                        + " to "
+                        + (newFile.getParent() == null ? "."
+                                : newFile.getParent()) + File.separator
+                        + newFile.getName() + " FAILED");
             }
 
         } catch (NullPointerException npe) {
@@ -102,16 +110,21 @@ public class ChangeCase {
     /**
      * Given a set of files or directories, parade through them to
      * change their case.
+     * 
      * @param argv paths to files or directories, use -h to get a
-     * usage statement.  
+     *        usage statement.
      */
     public static void main(String[] argv) {
         Debug.init();
         boolean toUpper = true;
 
         ArgParser ap = new ArgParser("ChangeCase");
-        ap.add("upper", "Change file and directory names to UPPER CASE (default). <path> <path> ...", ArgParser.TO_END);
-        ap.add("lower", "Change file and directory names to lower case. <path> <path> ...", ArgParser.TO_END);
+        ap.add("upper",
+                "Change file and directory names to UPPER CASE (default). <path> <path> ...",
+                ArgParser.TO_END);
+        ap.add("lower",
+                "Change file and directory names to lower case. <path> <path> ...",
+                ArgParser.TO_END);
 
         if (argv.length == 0) {
             ap.bail("", true);

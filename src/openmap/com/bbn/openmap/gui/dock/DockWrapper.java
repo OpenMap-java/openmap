@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/DockWrapper.java,v $
 // $RCSfile: DockWrapper.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.dock;
 
@@ -28,7 +27,6 @@ import java.awt.Insets;
 import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -41,21 +39,22 @@ import java.util.Iterator;
 import com.bbn.openmap.util.Debug;
 
 /**
- * A panel that contains controls that will either be docked, 
+ * A panel that contains controls that will either be docked,
  * internal-framed or external framed...
+ * 
  * @author Ben Lubin
- * @version $Revision: 1.5 $ on $Date: 2004/01/26 18:18:08 $
+ * @version $Revision: 1.6 $ on $Date: 2004/10/14 18:05:49 $
  * @since 12/5/02
  */
 public class DockWrapper extends JPanel {
 
-    /*package*/ static final int UNDEF = -1;
-    /*package*/ static final int EXTERNAL = 1;
-    /*package*/ static final int INTERNAL = 2;
-    /*package*/ static final int DOCK_NORTH = 3;
-    /*package*/ static final int DOCK_SOUTH = 4;
-    /*package*/ static final int DOCK_WEST =5;
-    /*package*/ static final int DOCK_EAST = 6;
+    /* package */static final int UNDEF = -1;
+    /* package */static final int EXTERNAL = 1;
+    /* package */static final int INTERNAL = 2;
+    /* package */static final int DOCK_NORTH = 3;
+    /* package */static final int DOCK_SOUTH = 4;
+    /* package */static final int DOCK_WEST = 5;
+    /* package */static final int DOCK_EAST = 6;
 
     /** Is this wrapper currently resizable? */
     private boolean resizable = false;
@@ -74,7 +73,7 @@ public class DockWrapper extends JPanel {
     /** Contents of this wrapper, size >1 if tabbed, 1 if not tabbed. */
     private List children = new ArrayList(1);
 
-    /** Other Wrappers that have been docked onto this one.*/
+    /** Other Wrappers that have been docked onto this one. */
     private List dockedWrappers = new ArrayList(0);
 
     private MouseHandler mouseHandler = new MouseHandler();
@@ -86,7 +85,7 @@ public class DockWrapper extends JPanel {
     }
 
     /** Special constructor for use in the cardinal DockWrappers */
-    /* package */ DockWrapper(BasicDockPanel dp, int state) {
+    /* package */DockWrapper(BasicDockPanel dp, int state) {
         this(dp);
         this.state = state;
     }
@@ -118,10 +117,11 @@ public class DockWrapper extends JPanel {
         }
         children.remove(child);
     }
-    
-    /** 
-     * Get all of the children that we are holding. The returned list will have
-     * one element iff the DockWrapper is not tabbed.
+
+    /**
+     * Get all of the children that we are holding. The returned list
+     * will have one element iff the DockWrapper is not tabbed.
+     * 
      * @return a list of JComponents that are the children.
      */
     public List getChildren() {
@@ -129,19 +129,19 @@ public class DockWrapper extends JPanel {
     }
 
     /**
-     * Get the one and only child if we are not tabbed.
-     * If we are tabbed, there may be more than one child...
+     * Get the one and only child if we are not tabbed. If we are
+     * tabbed, there may be more than one child...
      */
     public JComponent getChild() {
         if (children.size() == 0)
             return null;
-        return (JComponent)children.get(0);
+        return (JComponent) children.get(0);
     }
 
     //Tabbing Methods:
     //////////////////
 
-    /*package*/ void setTabName(JComponent child, String name) {
+    /* package */void setTabName(JComponent child, String name) {
         if (isTabbed()) {
             tabPane.setTitleAt(tabPane.indexOfComponent(child), name);
         }
@@ -153,13 +153,13 @@ public class DockWrapper extends JPanel {
     }
 
     /**
-     * Get the index of the dockwrapper that we should use for tabbing-up,
-     * or -1 if there is none.
+     * Get the index of the dockwrapper that we should use for
+     * tabbing-up, or -1 if there is none.
      */
     public int getDockedWrapperIndexForTabbing() {
         int idx = 0;
-        for (Iterator iter=getDockedWrappers().iterator(); iter.hasNext();){
-            DockWrapper dw = (DockWrapper)iter.next();
+        for (Iterator iter = getDockedWrappers().iterator(); iter.hasNext();) {
+            DockWrapper dw = (DockWrapper) iter.next();
             if (dw.canTab()) {
                 return idx;
             }
@@ -176,12 +176,12 @@ public class DockWrapper extends JPanel {
             JComponent child = getChild();
             removeChild(child);
             tabPane = new JTabbedPane(JTabbedPane.BOTTOM);
-            add(tabPane, BorderLayout.CENTER);      
+            add(tabPane, BorderLayout.CENTER);
             setOpaque(true);
             addChild(child);
         }
-        for (Iterator iter=w.getChildren().iterator(); iter.hasNext();) {
-            JComponent child = (JComponent)iter.next();
+        for (Iterator iter = w.getChildren().iterator(); iter.hasNext();) {
+            JComponent child = (JComponent) iter.next();
             dockPanel.setWrapper(child, this);
             addChild(child);
         }
@@ -213,7 +213,8 @@ public class DockWrapper extends JPanel {
 
     /**
      * Set the indicated JComponent to transparent or not transparent.
-     * @return true iff this call has changed the state 
+     * 
+     * @return true iff this call has changed the state
      */
     protected static boolean setTransparent(JComponent child, boolean t) {
         boolean ret = false;
@@ -226,32 +227,32 @@ public class DockWrapper extends JPanel {
             ret |= child.isOpaque() == t;
         }
         if (child instanceof AbstractButton) {
-            AbstractButton b = (AbstractButton)child;
+            AbstractButton b = (AbstractButton) child;
             if (t) {
-                if (! (b.getUI() instanceof TransparentButtonUI)) {
+                if (!(b.getUI() instanceof TransparentButtonUI)) {
                     b.setContentAreaFilled(false);
-                    b.setUI((ButtonUI)TransparentButtonUI.createUI(b));
+                    b.setUI((ButtonUI) TransparentButtonUI.createUI(b));
                     ret = true;
                 }
             } else {
                 if (b.getUI() instanceof TransparentButtonUI) {
                     b.setContentAreaFilled(true);
-                    b.setUI((ButtonUI)UIManager.getUI(b));
+                    b.setUI((ButtonUI) UIManager.getUI(b));
                     ret = true;
                 }
             }
         }
 
-        for (int i=0; i<child.getComponentCount(); i++) {
+        for (int i = 0; i < child.getComponentCount(); i++) {
             Object o = child.getComponent(i);
             if (o instanceof JComponent) {
-                JComponent c = (JComponent)o;
+                JComponent c = (JComponent) o;
                 ret |= setTransparent(c, t);
             }
         }
         return ret;
     }
-    
+
     //Resizing Methods:
     ///////////////////
 
@@ -286,32 +287,30 @@ public class DockWrapper extends JPanel {
         if (y >= getHeight() - i.bottom) {
             return DOCK_SOUTH;
         }
-        return UNDEF;       
+        return UNDEF;
     }
 
-    protected Border makeResizeBorder() {       
+    protected Border makeResizeBorder() {
         Color highlightOuter = UIManager.getColor("controlLtHighlight");
         Color highlightInner = UIManager.getColor("controlHighlight");
         Color shadowOuter = UIManager.getColor("controlDkShadow");
         Color shadowInner = UIManager.getColor("controlShadow");
-        if (transparent) {      
-            highlightOuter = new Color(0,0,0,50);
-            highlightInner = new Color(0,0,0,75);
-            shadowOuter = new Color(0,0,0,175);
-            shadowInner = new Color(0,0,0,150);
+        if (transparent) {
+            highlightOuter = new Color(0, 0, 0, 50);
+            highlightInner = new Color(0, 0, 0, 75);
+            shadowOuter = new Color(0, 0, 0, 175);
+            shadowInner = new Color(0, 0, 0, 150);
         }
-        Border border = 
-            BorderFactory.createCompoundBorder
-            (BorderFactory.createBevelBorder(BevelBorder.RAISED,
-                                             highlightOuter,
-                                             highlightInner,
-                                             shadowOuter,
-                                             shadowInner),
-             BorderFactory.createBevelBorder(BevelBorder.LOWERED,
-                                             highlightOuter,
-                                             highlightInner,
-                                             shadowOuter,
-                                             shadowInner));
+        Border border = BorderFactory.createCompoundBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED,
+                highlightOuter,
+                highlightInner,
+                shadowOuter,
+                shadowInner),
+                BorderFactory.createBevelBorder(BevelBorder.LOWERED,
+                        highlightOuter,
+                        highlightInner,
+                        shadowOuter,
+                        shadowInner));
         return border;
     }
 
@@ -319,20 +318,21 @@ public class DockWrapper extends JPanel {
     /////////////////////
 
     /**
-     * Set the transparency of this DockWrapper to whatever the Constraint
-     * says it should be.
+     * Set the transparency of this DockWrapper to whatever the
+     * Constraint says it should be.
+     * 
      * @return true iff the state has changed.
      */
     public boolean updateTransparency() {
         boolean ret = false;
-        if(children.size() == 1) {
+        if (children.size() == 1) {
             boolean t = dockPanel.getConstraint(getChild()).canTransparent();
             transparent = t;
             ret |= setTransparent(getChild(), t);
         } else {
             transparent = false;
             for (Iterator iter = children.iterator(); iter.hasNext();) {
-                JComponent c = (JComponent)iter.next();
+                JComponent c = (JComponent) iter.next();
                 ret |= setTransparent(c, transparent);
             }
         }
@@ -412,6 +412,7 @@ public class DockWrapper extends JPanel {
         freeWrapper();
         state = EXTERNAL;
     }
+
     protected void removeExternalFrame() {
         state = UNDEF;
     }
@@ -420,13 +421,15 @@ public class DockWrapper extends JPanel {
         freeWrapper();
         state = INTERNAL;
     }
+
     protected void removeInternalFrame() {
         state = UNDEF;
     }
-    
+
     public void makeDockNorth() {
         makeDock(DOCK_NORTH);
     }
+
     protected void removeDockNorth() {
         removeDock();
     }
@@ -434,6 +437,7 @@ public class DockWrapper extends JPanel {
     public void makeDockSouth() {
         makeDock(DOCK_SOUTH);
     }
+
     protected void removeDockSouth() {
         removeDock();
     }
@@ -441,6 +445,7 @@ public class DockWrapper extends JPanel {
     public void makeDockEast() {
         makeDock(DOCK_EAST);
     }
+
     protected void removeDockEast() {
         removeDock();
     }
@@ -448,6 +453,7 @@ public class DockWrapper extends JPanel {
     public void makeDockWest() {
         makeDock(DOCK_WEST);
     }
+
     protected void removeDockWest() {
         removeDock();
     }
@@ -460,13 +466,13 @@ public class DockWrapper extends JPanel {
     }
 
     protected void orientToolbars() {
-        for (Iterator iter=getChildren().iterator(); iter.hasNext(); ) {
-            JComponent child = (JComponent)iter.next();
-            if (! (child instanceof JToolBar)) {
+        for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
+            JComponent child = (JComponent) iter.next();
+            if (!(child instanceof JToolBar)) {
                 continue;
             }
-            JToolBar t = (JToolBar)child;
-            switch(state) {
+            JToolBar t = (JToolBar) child;
+            switch (state) {
             case DOCK_NORTH:
             case DOCK_SOUTH:
                 t.setOrientation(JToolBar.HORIZONTAL);
@@ -485,7 +491,7 @@ public class DockWrapper extends JPanel {
     }
 
     protected void setState(int state) {
-        switch(state) {
+        switch (state) {
         case INTERNAL:
             makeInternalFrame();
             break;
@@ -504,14 +510,14 @@ public class DockWrapper extends JPanel {
         case DOCK_EAST:
             makeDockEast();
             break;
-        }       
+        }
     }
 
     //Docking up Methods:
     /////////////////////
 
     public void freeWrapper() {
-        switch(state) {
+        switch (state) {
         case INTERNAL:
             removeInternalFrame();
             break;
@@ -540,7 +546,7 @@ public class DockWrapper extends JPanel {
             return true;
         }
         for (Iterator iter = dockedWrappers.iterator(); iter.hasNext();) {
-            DockWrapper dw = (DockWrapper)iter.next();
+            DockWrapper dw = (DockWrapper) iter.next();
             if (dw.freeWrapper(w)) {
                 return true;
             }
@@ -555,9 +561,9 @@ public class DockWrapper extends JPanel {
     public List getDockedWrappers() {
         return dockedWrappers;
     }
-    
+
     public DockWrapper getDockedWrapper(int idx) {
-        return (DockWrapper)dockedWrappers.get(idx);
+        return (DockWrapper) dockedWrappers.get(idx);
     }
 
     public void dock(DockWrapper w) {
@@ -567,9 +573,9 @@ public class DockWrapper extends JPanel {
     public void dock(DockWrapper w, int i) {
         w.setState(state);
         int idx = getDockedWrapperIndexForTabbing();
-        if(idx != -1 && w.canTab()) {
+        if (idx != -1 && w.canTab()) {
             getDockedWrapper(idx).tab(w);
-        } else {        
+        } else {
             if (i == -1) {
                 dockedWrappers.add(w);
             } else {
@@ -578,7 +584,7 @@ public class DockWrapper extends JPanel {
         }
     }
 
-    /** 
+    /**
      * Recursively determine if another wrapper is docked on this one.
      */
     public boolean isDockedOnRecurse(DockWrapper w) {
@@ -586,12 +592,12 @@ public class DockWrapper extends JPanel {
             return true;
         }
         for (Iterator iter = dockedWrappers.iterator(); iter.hasNext();) {
-            DockWrapper dw = (DockWrapper)iter.next();
+            DockWrapper dw = (DockWrapper) iter.next();
             if (dw.isDockedOnRecurse(w)) {
                 return true;
             }
         }
-        return false;   
+        return false;
     }
 
     public void setPreferredHeight(int i) {
@@ -615,7 +621,7 @@ public class DockWrapper extends JPanel {
 
         public void mousePressed(MouseEvent e) {
             resizeLoc = inBorder(e.getX(), e.getY());
-            switch(resizeLoc) {
+            switch (resizeLoc) {
             case DOCK_NORTH:
             case DOCK_SOUTH:
                 pressedVal = e.getY();
@@ -624,38 +630,38 @@ public class DockWrapper extends JPanel {
             case DOCK_WEST:
                 pressedVal = e.getX();
                 break;
-            }       
+            }
         }
-        
+
         public void mouseReleased(MouseEvent e) {
             Dimension d = getSize();
-            switch(resizeLoc) {
+            switch (resizeLoc) {
             case DOCK_NORTH:
-                d.height += pressedVal -e.getY();
+                d.height += pressedVal - e.getY();
                 setPreferredSize(d);
                 revalidate();
                 break;
             case DOCK_SOUTH:
-                d.height -= pressedVal -e.getY();
+                d.height -= pressedVal - e.getY();
                 setPreferredSize(d);
                 revalidate();
                 break;
             case DOCK_EAST:
-                d.width -= pressedVal -e.getX();
+                d.width -= pressedVal - e.getX();
                 setPreferredSize(d);
                 revalidate();
                 break;
             case DOCK_WEST:
-                d.width += pressedVal -e.getX();
+                d.width += pressedVal - e.getX();
                 setPreferredSize(d);
                 revalidate();
                 break;
-            }               
+            }
         }
 
         public void mouseMoved(MouseEvent e) {
             int loc = inBorder(e.getX(), e.getY());
-            switch(loc) {
+            switch (loc) {
             case DOCK_NORTH:
                 setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
                 break;
@@ -672,6 +678,7 @@ public class DockWrapper extends JPanel {
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             }
         }
+
         public void mouseExited(MouseEvent e) {
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }

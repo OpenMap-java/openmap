@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,17 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePosition.java,v $
 // $RCSfile: CodePosition.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.9 $
+// $Date: 2004/10/14 18:06:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.tools.symbology.milStd2525;
 
-import java.lang.reflect.*;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,27 +33,28 @@ import com.bbn.openmap.util.PropUtils;
 
 /**
  * The CodePosition class is a base class used to interpret and
- * organize role settings for a symbol.  The SymbolCode describes a
+ * organize role settings for a symbol. The SymbolCode describes a
  * symbol and its role, with different characters having defined
- * meanings and optional values, depending on the symbol.  The
+ * meanings and optional values, depending on the symbol. The
  * CodePosition object defines a character and meaning for a character
- * in a certain place.  A SymbolPart refers to a particlar
- * CodePosition that uniquely defines it, giving it some
- * organizational meaning.  SymbolParts that share a parent can get to
- * the parent's CodePositin to see that meaning as well. <P>
- *
+ * in a certain place. A SymbolPart refers to a particlar CodePosition
+ * that uniquely defines it, giving it some organizational meaning.
+ * SymbolParts that share a parent can get to the parent's CodePositin
+ * to see that meaning as well.
+ * <P>
+ * 
  * CodePositions have some intelligence for parsing position
  * properties and hierarchy properties, which allow the whole symbol
- * tree to be defined. <P>
- *
- * CodePositions server a couple of different roles.  Some
- * CodePosition objects organize the kinds of set values that may be
- * applicable for a certain character position, and can offer those
- * choices.  These organizational CodePositions won't have a
- * SymbolPart to represent itself.  Other CodePositions, including the
- * choices and those tied directly to SymbolParts in the SymbolPart
- * tree, don't offer choices but can provide SymbolParts to represent
- * themselves in the symbol.
+ * tree to be defined.
+ * <P>
+ * 
+ * CodePositions server a couple of different roles. Some CodePosition
+ * objects organize the kinds of set values that may be applicable for
+ * a certain character position, and can offer those choices. These
+ * organizational CodePositions won't have a SymbolPart to represent
+ * itself. Other CodePositions, including the choices and those tied
+ * directly to SymbolParts in the SymbolPart tree, don't offer choices
+ * but can provide SymbolParts to represent themselves in the symbol.
  */
 public class CodePosition {
 
@@ -76,14 +74,14 @@ public class CodePosition {
     /** Property file property for pretty name 'name' */
     public final static String NameProperty = "name";
 
-    /** 
+    /**
      * Property file property for a classname representing the next
-     * position in the position tree 'next'. 
+     * position in the position tree 'next'.
      */
     public final static String NextProperty = "next";
 
     /**
-     * A list of CodePosition choices for this position.  This is only
+     * A list of CodePosition choices for this position. This is only
      * used for a single instance of the CodePosition that in turn
      * holds this list of possible versions.
      */
@@ -101,7 +99,7 @@ public class CodePosition {
     }
 
     /**
-     * Get the current list of CodePosition possibilies.  Only returns
+     * Get the current list of CodePosition possibilies. Only returns
      * a list for the CodePositions used to parse the position
      * properties.
      */
@@ -111,7 +109,7 @@ public class CodePosition {
 
     /**
      * Get a CodePosition from this list of available possibilities
-     * given the hierarchy number for the position.  Not all positions
+     * given the hierarchy number for the position. Not all positions
      * have a hierarchy number, but the number given in the positions
      * properties will probably suffice.
      */
@@ -119,7 +117,7 @@ public class CodePosition {
         List aList = getPositionChoices();
         if (aList != null) {
             for (Iterator it = aList.iterator(); it.hasNext();) {
-                CodePosition cp = (CodePosition)it.next();
+                CodePosition cp = (CodePosition) it.next();
                 if (hierarchyNumber == cp.getHierarchyNumber()) {
                     return cp;
                 }
@@ -129,28 +127,33 @@ public class CodePosition {
     }
 
     /**
-     * Method to add a position to the choices for this particular code position.
+     * Method to add a position to the choices for this particular
+     * code position.
+     * 
      * @param index the hierarhical index for this position choice.
-     * This really only becomes important for those CodePositions
-     * which are used for interpreting the hierarchy properties.
-     * Other positions can use them for convenience, and this value
-     * will probably be just an ordering number for this choice out of
-     * all the other choices for the position.
+     *        This really only becomes important for those
+     *        CodePositions which are used for interpreting the
+     *        hierarchy properties. Other positions can use them for
+     *        convenience, and this value will probably be just an
+     *        ordering number for this choice out of all the other
+     *        choices for the position.
      * @param entry this should be character or characters used in the
-     * symbol code for this particular position choice.
+     *        symbol code for this particular position choice.
      * @param prefix the scoping property prefix used for all the
-     * properties.  The entry is discovered by looking in the
-     * properties for this 'prefix.index'.  Then other properties are
-     * discovered by looking for 'prefix.entry.propertyKey' properties.
+     *        properties. The entry is discovered by looking in the
+     *        properties for this 'prefix.index'. Then other
+     *        properties are discovered by looking for
+     *        'prefix.entry.propertyKey' properties.
      * @param props the position properties.
      */
-    protected CodePosition addPositionChoice(int index, String entry, 
+    protected CodePosition addPositionChoice(int index, String entry,
                                              String prefix, Properties props) {
         String className = this.getClass().getName();
-        CodePosition cp = (CodePosition)ComponentFactory.create(className);
+        CodePosition cp = (CodePosition) ComponentFactory.create(className);
         if (cp != null) {
             if (DEBUG) {
-                Debug.output("CodePosition:  created position (" + className + ")");
+                Debug.output("CodePosition:  created position (" + className
+                        + ")");
             }
 
             // Before prefix is modified
@@ -160,12 +163,13 @@ public class CodePosition {
 
             // Might not mean anything for option-type positions
             cp.hierarchyNumber = index;
-            cp.id = entry.charAt(0);  // ASSUMED
+            cp.id = entry.charAt(0); // ASSUMED
             cp.prettyName = props.getProperty(prefix + NameProperty);
             addPositionChoice(cp);
         } else {
             if (DEBUG) {
-                Debug.output("CodePosition: couldn't create position (" + className + ")");
+                Debug.output("CodePosition: couldn't create position ("
+                        + className + ")");
             }
         }
         return cp;
@@ -198,21 +202,24 @@ public class CodePosition {
 
     /**
      * A method called when parsing position properties.
+     * 
      * @param entry should be prefix of the overall position class
-     * along with the symbol representation for that position.
+     *        along with the symbol representation for that position.
      * @param prefix should just be the prefix for the overall
-     * position class, including the period before the symbol
-     * representation for that position.
+     *        position class, including the period before the symbol
+     *        representation for that position.
      * @param props the position properties.
      */
-    protected SymbolPart getSymbolPart(String entry, String prefix, Properties props) {
+    protected SymbolPart getSymbolPart(String entry, String prefix,
+                                       Properties props) {
         int offset = prefix.length();
-        return new SymbolPart(this, entry, props, null, offset, 
-                              offset + endIndex - startIndex, false);
+        return new SymbolPart(this, entry, props, null, offset, offset
+                + endIndex - startIndex, false);
     }
 
-    protected void parseHierarchy(String hCode, Properties props, SymbolPart parent) {
-        
+    protected void parseHierarchy(String hCode, Properties props,
+                                  SymbolPart parent) {
+
         List parentList = null;
         int levelCounter = 1;
 
@@ -221,8 +228,8 @@ public class CodePosition {
             String hierarchyCode = hCode + "." + levelCounter;
 
             if (DEBUG) {
-                Debug.output("CodePosition.parse: " + hierarchyCode + 
-                             " with " + getPrettyName());
+                Debug.output("CodePosition.parse: " + hierarchyCode + " with "
+                        + getPrettyName());
             }
 
             String entry = props.getProperty(hierarchyCode);
@@ -240,16 +247,16 @@ public class CodePosition {
                 }
 
                 if (DEBUG) {
-                    Debug.output("CodePosition.parse: adding " + 
-                                 sp.getPrettyName() + 
-                                 " to " + parent.getPrettyName());
+                    Debug.output("CodePosition.parse: adding "
+                            + sp.getPrettyName() + " to "
+                            + parent.getPrettyName());
                 }
 
                 parentList.add(sp);
 
                 if (DEBUG) {
-                    Debug.output("CodePosition.parse: looking for children of " + 
-                                 sp.getPrettyName());
+                    Debug.output("CodePosition.parse: looking for children of "
+                            + sp.getPrettyName());
                 }
 
                 cp.parseHierarchy(hierarchyCode, props, sp);
@@ -279,14 +286,16 @@ public class CodePosition {
     }
 
     /**
-     * Get the character, in the symbol code, that this position represents.
+     * Get the character, in the symbol code, that this position
+     * represents.
      */
     public char getID() {
         return id;
     }
 
     /**
-     * Get the pretty name that states what this position and character represents.
+     * Get the pretty name that states what this position and
+     * character represents.
      */
     public String getPrettyName() {
         return prettyName;
@@ -294,7 +303,7 @@ public class CodePosition {
 
     /**
      * Get the starting index of the span that this position
-     * represents.  This value is a java index value starting at 0.
+     * represents. This value is a java index value starting at 0.
      */
     public int getStartIndex() {
         return startIndex;
@@ -309,7 +318,7 @@ public class CodePosition {
     }
 
     /**
-     * Return the next CodePosition.  An organizational tool to help
+     * Return the next CodePosition. An organizational tool to help
      * build the SymbolPart tree when parsing the hierarchy
      * properties.
      */
@@ -318,8 +327,8 @@ public class CodePosition {
     }
 
     public String toString() {
-//      return getPrettyName() + " [" + getID() + "] at " + 
-//          getStartIndex() + ", " + getEndIndex();
+        //      return getPrettyName() + " [" + getID() + "] at " +
+        //          getStartIndex() + ", " + getEndIndex();
         return getPrettyName();
     }
 }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingIcon.java,v $
 // $RCSfile: OMScalingIcon.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/09/24 20:21:42 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics;
 
@@ -31,9 +30,10 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.Projection;
 
 /**
- * This is an extension to OMScalingRaster that scales an icon.  The
- * icon is automatically centered over the lat/lon location.  The
+ * This is an extension to OMScalingRaster that scales an icon. The
+ * icon is automatically centered over the lat/lon location. The
  * offsets push the icon away from the lat/lon.
+ * 
  * @see OMScalingRaster
  */
 public class OMScalingIcon extends OMScalingRaster implements Serializable {
@@ -41,54 +41,60 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     protected float baseScale;
     protected float maxScale = Float.MAX_VALUE;
     protected float minScale = 0f;
-    
+
     /**
      * Constuct a blank OMRaster, to be filled in with set calls.
      */
     public OMScalingIcon() {
         super();
     }
-    
-    ///////////////////////////////////// INT PIXELS - DIRECT COLORMODEL
-    
+
+    ///////////////////////////////////// INT PIXELS - DIRECT
+    // COLORMODEL
+
     /**
      * Creates an OMRaster images, Lat/Lon placement with a direct
      * colormodel image.
-     *
+     * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
-     * @param offsetX horizontal pixel offset of icon (positive pushes east).
-     * @param offsetY vertical pixel offset of icon (positive pushes south).
+     * @param offsetX horizontal pixel offset of icon (positive pushes
+     *        east).
+     * @param offsetY vertical pixel offset of icon (positive pushes
+     *        south).
      * @param w width of the image, in pixels.
      * @param h height of the image, in pixels.
      * @param pix color values for the pixels.
-     * @param baseScale the scale where the icon will be show regular size.
-     * @see #setPixel 
+     * @param baseScale the scale where the icon will be show regular
+     *        size.
+     * @see #setPixel
      */
-    public OMScalingIcon(float centerLat, float centerLon, int offsetX, int offsetY,
-                         int w, int h, int[] pix, float baseScale) {
+    public OMScalingIcon(float centerLat, float centerLon, int offsetX,
+            int offsetY, int w, int h, int[] pix, float baseScale) {
 
         super(centerLat, centerLon, 0f, 0f, w, h, pix);
         setX(offsetX);
         setY(offsetY);
         this.baseScale = baseScale;
     }
-  
+
     ////////////////////////////////////// IMAGEICON
 
     /**
      * Create an OMRaster, Lat/Lon placement with an ImageIcon.
-     *
+     * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
-     * @param offsetX horizontal pixel offset of icon (positive pushes east).
-     * @param offsetY vertical pixel offset of icon (positive pushes south).
+     * @param offsetX horizontal pixel offset of icon (positive pushes
+     *        east).
+     * @param offsetY vertical pixel offset of icon (positive pushes
+     *        south).
      * @param ii ImageIcon used for the image.
-     * @param baseScale the scale where the icon will be show regular size.
+     * @param baseScale the scale where the icon will be show regular
+     *        size.
      */
-    public OMScalingIcon(float centerLat, float centerLon, 
-                         int offsetX, int offsetY,
-                         ImageIcon ii, float baseScale) {
+    public OMScalingIcon(float centerLat, float centerLon, int offsetX,
+            int offsetY, ImageIcon ii, float baseScale) {
         this(centerLat, centerLon, offsetX, offsetY, ii.getImage(), baseScale);
     }
 
@@ -96,7 +102,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * Create an OMRaster, Lat/Lon placement with an ImageIcon.
      * Doesn't scale, because baseScale, minScale and maxScale are all
      * set to the same number (4000000).
-     *
+     * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
      * @param ii ImageIcon used for the image.
@@ -107,17 +113,19 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
 
     /**
      * Create an OMRaster, Lat/Lon placement with an Image.
-     *
+     * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
-     * @param offsetX horizontal pixel offset of icon (positive pushes east).
-     * @param offsetY vertical pixel offset of icon (positive pushes south).
+     * @param offsetX horizontal pixel offset of icon (positive pushes
+     *        east).
+     * @param offsetY vertical pixel offset of icon (positive pushes
+     *        south).
      * @param ii Image used for the image.
-     * @param baseScale the scale where the icon will be show regular size.
+     * @param baseScale the scale where the icon will be show regular
+     *        size.
      */
-    public OMScalingIcon(float centerLat, float centerLon,
-                         int offsetX, int offsetY,
-                         Image ii, float baseScale) {
+    public OMScalingIcon(float centerLat, float centerLon, int offsetX,
+            int offsetY, Image ii, float baseScale) {
         super();
         setRenderType(OMGraphic.RENDERTYPE_LATLON);
         setColorModel(COLORMODEL_IMAGEICON);
@@ -129,12 +137,12 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
         setY(offsetY);
         this.baseScale = baseScale;
     }
-  
+
     /**
      * Create an OMRaster, Lat/Lon placement with an ImageIcon.
      * Doesn't scale, because baseScale, minScale and maxScale are all
      * set to the same number (4000000).
-     *
+     * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
      * @param ii ImageIcon used for the image.
@@ -145,30 +153,31 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
         setMinScale(4000000);
     }
 
-    ////////////////////////////////////// BYTE PIXELS with COLORTABLE
+    ////////////////////////////////////// BYTE PIXELS with
+    // COLORTABLE
 
     /**
      * Lat/Lon placement with a indexed colormodel, which is using a
-     * colortable and a byte array to contruct the int[] pixels.  
-     *
+     * colortable and a byte array to contruct the int[] pixels.
+     * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
-     * @param offsetX horizontal pixel offset of icon (positive pushes east).
-     * @param offsetY vertical pixel offset of icon (positive pushes south).
+     * @param offsetX horizontal pixel offset of icon (positive pushes
+     *        east).
+     * @param offsetY vertical pixel offset of icon (positive pushes
+     *        south).
      * @param w width of the image, in pixels.
      * @param h height of the image, in pixels.
      * @param bytes colortable index values for the pixels.
      * @param colorTable color array corresponding to bytes
      * @param trans transparency of image.
-     * @param baseScale the scale where the icon will be show regular size.
-     * @see #setPixel 
+     * @param baseScale the scale where the icon will be show regular
+     *        size.
+     * @see #setPixel
      */
-    public OMScalingIcon(float centerLat, float centerLon,
-                         int offsetX, int offsetY,
-                         int w, int h, 
-                         byte[] bytes,
-                         Color[] colorTable,
-                         int trans, float baseScale) {
+    public OMScalingIcon(float centerLat, float centerLon, int offsetX,
+            int offsetY, int w, int h, byte[] bytes, Color[] colorTable,
+            int trans, float baseScale) {
 
         super(centerLat, centerLon, 0f, 0f, w, h, bytes, colorTable, trans);
         setX(offsetX);
@@ -177,13 +186,12 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     }
 
     /**
-     * Since the image doesn't necessarily need to be regenerated
-     * when it is merely moved, raster objects have this function,
-     * called from generate() and when a placement attribute is
-     * changed.
-     *
+     * Since the image doesn't necessarily need to be regenerated when
+     * it is merely moved, raster objects have this function, called
+     * from generate() and when a placement attribute is changed.
+     * 
      * @return true if enough information is in the object for proper
-     * placement.
+     *         placement.
      * @param proj projection of window.
      */
     protected boolean position(Projection proj) {
@@ -192,7 +200,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
             Debug.error("OMScalingIcon: null projection in position!");
             return false;
         }
-        
+
         float shrinkScale = proj.getScale();
 
         if (shrinkScale > maxScale) {
@@ -201,17 +209,17 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
         if (shrinkScale < minScale) {
             shrinkScale = minScale;
         }
-        
-        float scaleFactor = baseScale/shrinkScale;
+
+        float scaleFactor = baseScale / shrinkScale;
 
         point1 = proj.forward(lat, lon);
         point2 = proj.forward(lat, lon);
 
-        point1.setLocation((int)(point1.getX() + (scaleFactor * (getX() - sourceImage.getWidth()/2))),
-                          (int)(point1.getY() + (scaleFactor * (getY() - sourceImage.getHeight()/2))));
+        point1.setLocation((int) (point1.getX() + (scaleFactor * (getX() - sourceImage.getWidth() / 2))),
+                (int) (point1.getY() + (scaleFactor * (getY() - sourceImage.getHeight() / 2))));
 
-        point2.setLocation((int)(point2.getX() + (scaleFactor * (getX() + sourceImage.getWidth()/2))),
-                           (int)(point2.getY() + (scaleFactor * (getY() + sourceImage.getHeight()/2))));
+        point2.setLocation((int) (point2.getX() + (scaleFactor * (getX() + sourceImage.getWidth() / 2))),
+                (int) (point2.getY() + (scaleFactor * (getY() + sourceImage.getHeight() / 2))));
 
         setNeedToReposition(false);
         return true;
@@ -227,11 +235,11 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
 
         Point p1 = proj.forward(proj.getUpperLeft());
         Point p2 = proj.forward(proj.getLowerRight());
-        int h = (int)(p2.getY() - p1.getY());
-        int w = (int)(p2.getX() - p1.getX());
+        int h = (int) (p2.getY() - p1.getY());
+        int w = (int) (p2.getX() - p1.getX());
 
-        Rectangle mapRect = new Rectangle((int)p1.getX(), (int)p1.getY(), w, h);
-        
+        Rectangle mapRect = new Rectangle((int) p1.getX(), (int) p1.getY(), w, h);
+
         return mapRect.intersects(shape.getBounds());
     }
 
@@ -265,9 +273,5 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
         return minScale;
     }
 
-    
-
-    
 }
-
 

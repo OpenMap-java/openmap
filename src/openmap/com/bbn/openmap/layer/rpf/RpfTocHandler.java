@@ -2,7 +2,7 @@
 //
 // <copyright>
 //
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocHandler.java,v $
 // $RCSfile: RpfTocHandler.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/09/17 19:34:34 $
+// $Revision: 1.9 $
+// $Date: 2004/10/14 18:06:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -39,33 +39,31 @@
 package com.bbn.openmap.layer.rpf;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.EOFException;
 import java.util.List;
 import java.util.Vector;
 
 import com.bbn.openmap.io.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.CADRG;
-import com.bbn.openmap.LatLonPoint;
 
 /**
  * The RpfTocHandler knows how to read A.TOC files for RPF raster
- * data.  The A.TOC file describes the coverage found in the tree of
- * data that accompanies it.  This coverage is described as a series
- * of rectangles describing the frame of groups of coverage, with
- * common-scale maps, types for different CADRG zones.  The
+ * data. The A.TOC file describes the coverage found in the tree of
+ * data that accompanies it. This coverage is described as a series of
+ * rectangles describing the frame of groups of coverage, with
+ * common-scale maps, types for different CADRG zones. The
  * RpfTocHandler can also provide a description of the frames and
- * subframes to use for a screen with a given projection.  <P>
- *
+ * subframes to use for a screen with a given projection.
+ * <P>
+ * 
  * The RPF specification says that the frame paths and file names,
- * from the RPF directory, should be in upper-case letters.  The paths
- * and file names are stored in the A.TOC file this way.  Sometimes,
+ * from the RPF directory, should be in upper-case letters. The paths
+ * and file names are stored in the A.TOC file this way. Sometimes,
  * however, through CDROM and downloading quirks, the paths and file
  * names, as stored on the hard drive, are actually transferred to
- * lower-case letters.  This RpfTocHandler will check for lower case
- * letter paths, but only for all the letters to be lower case.  The
+ * lower-case letters. This RpfTocHandler will check for lower case
+ * letter paths, but only for all the letters to be lower case. The
  * frame will be marked as non-existant if some of the directories or
  * filenames have be transformed to uppercase.
  */
@@ -73,7 +71,8 @@ public class RpfTocHandler {
 
     public final static String RPF_TOC_FILE_NAME = "A.TOC";
     public final static String LITTLE_RPF_TOC_FILE_NAME = "a.toc";
-    public final static int DEFAULT_FRAME_SPACE = 300; // frame file in kilobytes
+    public final static int DEFAULT_FRAME_SPACE = 300; // frame file
+                                                       // in kilobytes
 
     protected RpfHeader head;
     protected BinaryFile binFile;
@@ -88,8 +87,7 @@ public class RpfTocHandler {
     protected boolean valid = false;
     /**
      * Set by the RpfFrameProvider, and used to track down this
-     * particular TOC to get to the frames offered by it's
-     * coverages.
+     * particular TOC to get to the frames offered by it's coverages.
      */
     private int tocNumber = 0;
     /**
@@ -100,8 +98,8 @@ public class RpfTocHandler {
      * Flag to note whether absolute pathnames are used in the A.TOC.
      * Set to false, because it's not supposed to be that way,
      * according to the specification. This is reset automatically
-     * when the A.TOC file is read.  If the first two characters of
-     * the directory paths are ./, then it stays false.
+     * when the A.TOC file is read. If the first two characters of the
+     * directory paths are ./, then it stays false.
      */
     protected boolean fullPathsInATOC = false;
 
@@ -111,8 +109,8 @@ public class RpfTocHandler {
     protected boolean DEBUG_RPFTOCFRAMEDETAIL = false;
 
     // Added zone extents
-    private static final int CADRG_zone_extents[] = {0, 32, 48, 56, 64,
-                                                             68, 72, 76, 80, 90};
+    private static final int CADRG_zone_extents[] = { 0, 32, 48, 56, 64, 68,
+            72, 76, 80, 90 };
 
     public RpfTocHandler() {
 
@@ -123,8 +121,10 @@ public class RpfTocHandler {
         }
     }
 
-    /** Should be used in situations where it is certain that this is
-     *  the only A.TOC in town. */
+    /**
+     * Should be used in situations where it is certain that this is
+     * the only A.TOC in town.
+     */
     public RpfTocHandler(String parentDir) {
         this(parentDir, 0);
     }
@@ -132,11 +132,12 @@ public class RpfTocHandler {
     /**
      * Used when there is more than one A.TOC being used, or where
      * there is a possibility of that happening, like in the RPF
-     * layer.  The TOC number should be unique for a certain
+     * layer. The TOC number should be unique for a certain
      * RpfFrameProvider.
-     *
+     * 
      * @param parentDir the RPF directory
-     * @param TOCNumber a unique number to identify this TOC for a RpfFrameProvider.
+     * @param TOCNumber a unique number to identify this TOC for a
+     *        RpfFrameProvider.
      */
     public RpfTocHandler(String parentDir, int TOCNumber) {
         tocNumber = TOCNumber;
@@ -145,8 +146,7 @@ public class RpfTocHandler {
         /* DKS. Open input "A.TOC" */
         valid = loadFile(parentDir);
         if (!valid) {
-            Debug.error("RpfTocHandler: Invalid TOC File in " +
-                        parentDir);
+            Debug.error("RpfTocHandler: Invalid TOC File in " + parentDir);
         }
 
         DEBUG_RPF = Debug.debugging("rpf");
@@ -157,10 +157,10 @@ public class RpfTocHandler {
 
     /**
      * Given a parent RPF directory, find the a.toc file directly
-     * inside it, as dictated by the specification. Not called anymore
-     * - the BinaryFile does the searching, and can find URL
-     * and jar files.
-     *
+     * inside it, as dictated by the specification. Not called anymore -
+     * the BinaryFile does the searching, and can find URL and jar
+     * files.
+     * 
      * @param parentDir Path to the RPF directory.
      * @return File
      */
@@ -170,8 +170,9 @@ public class RpfTocHandler {
         if (!file.exists()) {
             file = new File(parentDir + "/" + LITTLE_RPF_TOC_FILE_NAME);
             if (!file.exists()) {
-//              Debug.error("RpfTocHandler: getTocFile(): file in "+
-//                           parentDir + " not found");
+                //              Debug.error("RpfTocHandler: getTocFile(): file in
+                // "+
+                //                           parentDir + " not found");
                 return null;
             }
         }
@@ -192,20 +193,20 @@ public class RpfTocHandler {
 
     /**
      * A way to check if the status of the A.TOC file is different, in
-     * case another one has taken its place.  Handy if the A.TOC is on
+     * case another one has taken its place. Handy if the A.TOC is on
      * a CDROM drive and the disk has been swapped. Not valid anymore,
      * with the advent of the new BinaryFile, where the file
      * information may not be available.
      */
     public boolean hasChanged() {
-//      File tmpFile = getTocFile(dir);
-//      if (tmpFile == null) {
-//          return valid;
-//      }
-//      if (tmpFile.lastModified() != currencyTime && valid) {
-//          valid = false;
-//          return true;
-//      }
+        //      File tmpFile = getTocFile(dir);
+        //      if (tmpFile == null) {
+        //          return valid;
+        //      }
+        //      if (tmpFile.lastModified() != currencyTime && valid) {
+        //          valid = false;
+        //          return true;
+        //      }
         return false;
     }
 
@@ -230,7 +231,8 @@ public class RpfTocHandler {
                 binFile = new BinaryBufferedFile(lowerCaseVersion);
             }
 
-            if (binFile == null) return false;
+            if (binFile == null)
+                return false;
 
             if (DEBUG_RPFTOC) {
                 Debug.output("RpfTocHandler: TOC file is in " + parentDir);
@@ -240,7 +242,7 @@ public class RpfTocHandler {
 
             // With the new BinaryFile, we can't get to this
             // info, because we aren't using File objects anymore.
-//          currencyTime = file.lastModified();
+            //          currencyTime = file.lastModified();
 
             if (!parseToc(binFile)) {
                 ret = false;
@@ -267,11 +269,14 @@ public class RpfTocHandler {
         long pathOffset; // uint, offset of frame file pathname
         int boundaryRecordLength; // ushort
         int numPathnameRecords; //ushort
-        int indexRecordLength; //ushort, frame file index record length
-        int indexSubheaderLength = 9 ; //ushort, frame file index subheader length
+        int indexRecordLength; //ushort, frame file index record
+                               // length
+        int indexSubheaderLength = 9; //ushort, frame file index
+                                      // subheader length
 
         long boundRectTableOffset; // uint, Bound. rect. table offset
-        long frameIndexTableOffset; // uint, Frame file index table offset
+        long frameIndexTableOffset; // uint, Frame file index table
+                                    // offset
 
         if (DEBUG_RPFTOC) {
             Debug.output("ENTER TOC parsing...");
@@ -288,7 +293,8 @@ public class RpfTocHandler {
 
             // Read header
             head = new RpfHeader();
-            if (!head.read(binFile)) return false;
+            if (!head.read(binFile))
+                return false;
 
             if (DEBUG_RPFTOC) {
                 Debug.output("RpfTocHandler.parseToc: read header:\n" + head);
@@ -298,15 +304,16 @@ public class RpfTocHandler {
             RpfFileSections rfs = new RpfFileSections(binFile);
 
             // Everything must be OK to reach here...
-            // DKS.  fseek to start of location section: 48
-            // DFD not necessarily 48!  New A.TOCs are different.
+            // DKS. fseek to start of location section: 48
+            // DFD not necessarily 48! New A.TOCs are different.
             RpfFileSections.RpfLocationRecord[] locations = rfs.getLocations(RpfFileSections.TOC_LOCATION_KEY);
 
             // Read boundary rectangles
             // Number of Boundary records
             // DKS: now phys_index, not index
             if (DEBUG_RPFTOCDETAIL) {
-                Debug.output("RpfTocHandler: parseToc(): fseek to Boundary section subheader: " + locations[0].componentLocation);
+                Debug.output("RpfTocHandler: parseToc(): fseek to Boundary section subheader: "
+                        + locations[0].componentLocation);
             }
 
             binFile.seek(locations[0].componentLocation);
@@ -315,12 +322,14 @@ public class RpfTocHandler {
             boundRectTableOffset = (long) binFile.readInteger();
 
             if (DEBUG_RPFTOCDETAIL) {
-                Debug.output("RpfTocHandler: parseToc(): BoundRectTableOffset: " + boundRectTableOffset);
+                Debug.output("RpfTocHandler: parseToc(): BoundRectTableOffset: "
+                        + boundRectTableOffset);
             }
 
             n = (int) binFile.readShort();
             if (DEBUG_RPFTOCDETAIL) {
-                Debug.output("RpfTocHandler: parseToc(): # Boundary rect. recs: " + n);
+                Debug.output("RpfTocHandler: parseToc(): # Boundary rect. recs: "
+                        + n);
             }
 
             numBoundaries = n;
@@ -330,12 +339,13 @@ public class RpfTocHandler {
             boundaryRecordLength = (int) binFile.readShort();
 
             if (DEBUG_RPFTOCDETAIL) {
-                Debug.output("RpfTocHandler: parseToc(): should be 132: "+
-                             boundaryRecordLength);
+                Debug.output("RpfTocHandler: parseToc(): should be 132: "
+                        + boundaryRecordLength);
             }
 
             if (DEBUG_RPFTOCDETAIL) {
-                Debug.output("RpfTocHandler: parseToc(): fseek to Boundary Rectangle Table: " + locations[1].componentLocation);
+                Debug.output("RpfTocHandler: parseToc(): fseek to Boundary Rectangle Table: "
+                        + locations[1].componentLocation);
             }
             binFile.seek(locations[1].componentLocation);
 
@@ -344,31 +354,34 @@ public class RpfTocHandler {
             // Read Boundary rectangle records
             for (i = 0; i < n; i++) {
                 if (DEBUG_RPFTOCDETAIL) {
-                    Debug.output("RpfTocHandler: parseToc(): read boundary rec#: " + i);
+                    Debug.output("RpfTocHandler: parseToc(): read boundary rec#: "
+                            + i);
                 }
 
-                // All this stuff moved to RpfTocEntry.java - DFD 8/18/99
+                // All this stuff moved to RpfTocEntry.java - DFD
+                // 8/18/99
                 entries[i] = new RpfTocEntry(binFile, tocNumber, i);
 
                 if (DEBUG_RPFTOCDETAIL) {
-                    Debug.output("RpfTocHandler: parseToc(): entry " + i +
-                                 " has scale " + entries[i].scale +
-                                 ", type " +
-                                 (entries[i].Cib?"CIB":"CADRG") +
-                                 " in zone " + entries[i].zone);
+                    Debug.output("RpfTocHandler: parseToc(): entry " + i
+                            + " has scale " + entries[i].scale + ", type "
+                            + (entries[i].Cib ? "CIB" : "CADRG") + " in zone "
+                            + entries[i].zone);
                     if (entries[i].Cib)
                         Debug.output("RpfTocHandler: parseToc(): entry noted as a Cib entry.");
                 }
             }
 
             if (DEBUG_RPFTOCDETAIL) {
-                Debug.output("RpfTocHandler: parseToc(): Read frame file index section subheader at loc: " + locations[2].componentLocation);
+                Debug.output("RpfTocHandler: parseToc(): Read frame file index section subheader at loc: "
+                        + locations[2].componentLocation);
             }
 
             // Read # of frame file index records
             // Skip 1 byte security classification
-            // locations[2] is loc of frame file index section subheader
-            binFile.seek(locations[2].componentLocation +1);
+            // locations[2] is loc of frame file index section
+            // subheader
+            binFile.seek(locations[2].componentLocation + 1);
 
             // NEW
             frameIndexTableOffset = (long) binFile.readInteger();
@@ -378,35 +391,43 @@ public class RpfTocHandler {
             indexRecordLength = (int) binFile.readShort();
 
             if (DEBUG_RPFTOCDETAIL) {
-                Debug.output("RpfTocHandler: parseToc(): frameIndexTableOffset: " + frameIndexTableOffset);
-                Debug.output("RpfTocHandler: parseToc(): # Frame file index recs: " + numFrameIndexRecords);
-                Debug.output("RpfTocHandler: parseToc(): # pathname records: " + numPathnameRecords);
-                Debug.output("RpfTocHandler: parseToc(): Index rec len(33): " + indexRecordLength);
+                Debug.output("RpfTocHandler: parseToc(): frameIndexTableOffset: "
+                        + frameIndexTableOffset);
+                Debug.output("RpfTocHandler: parseToc(): # Frame file index recs: "
+                        + numFrameIndexRecords);
+                Debug.output("RpfTocHandler: parseToc(): # pathname records: "
+                        + numPathnameRecords);
+                Debug.output("RpfTocHandler: parseToc(): Index rec len(33): "
+                        + indexRecordLength);
             }
 
             // Read frame file index records
-            for (i = 0; i < numFrameIndexRecords; i++)
-            {
+            for (i = 0; i < numFrameIndexRecords; i++) {
                 if (DEBUG_RPFTOCFRAMEDETAIL) {
-                    Debug.output("RpfTocHandler: parseToc(): Read frame file index rec #: " + i);
+                    Debug.output("RpfTocHandler: parseToc(): Read frame file index rec #: "
+                            + i);
                 }
 
                 // Index_subhdr_len (9) instead of table_offset (11)
                 // indexRecordLength (33) instead of 35
                 // componentLocation, not index
                 // locations[3] is frame file index table subsection
-                binFile.seek(locations[3].componentLocation + indexRecordLength*i);
+                binFile.seek(locations[3].componentLocation + indexRecordLength
+                        * i);
 
                 boundaryId = (int) binFile.readShort();
 
                 if (DEBUG_RPFTOCFRAMEDETAIL) {
-                    Debug.output("boundary id for frame: " + i + " is " + boundaryId);
+                    Debug.output("boundary id for frame: " + i + " is "
+                            + boundaryId);
                 }
 
-                // DKS NEW: changed from 1 to 0 to agree w/ spec.   -1 added also.
-                // if (boundaryId < 0 || boundaryId > numBoundaries - 1 )
-                if  (boundaryId > numBoundaries - 1) {
-                    Debug.output( "Bad boundary id in FF index record " + i);
+                // DKS NEW: changed from 1 to 0 to agree w/ spec. -1
+                // added also.
+                // if (boundaryId < 0 || boundaryId > numBoundaries -
+                // 1 )
+                if (boundaryId > numBoundaries - 1) {
+                    Debug.output("Bad boundary id in FF index record " + i);
                     return false;
                 }
                 // DKS NEW: -1 removed to match spec
@@ -415,18 +436,19 @@ public class RpfTocHandler {
                 frameRow = (int) binFile.readShort();
                 frameCol = (int) binFile.readShort();
 
-                // DKS.  switched from horizFrames to vertFrames
-                // DKS NEW: CHANGED FROM 1 to 0 to agree w/spec.   ALSO COL below
+                // DKS. switched from horizFrames to vertFrames
+                // DKS NEW: CHANGED FROM 1 to 0 to agree w/spec. ALSO
+                // COL below
                 //    if (frameRow < 1 || frameRow > entry->vertFrames)
                 if (frameRow > entry.vertFrames - 1) {
-                    Debug.output(" Bad row number: " + frameRow +
-                                 ", in FF index record " + i);
-                    Debug.output(" Min row num=0;  Max. row num:" +
-                                 (entry.horizFrames-1));
+                    Debug.output(" Bad row number: " + frameRow
+                            + ", in FF index record " + i);
+                    Debug.output(" Min row num=0;  Max. row num:"
+                            + (entry.horizFrames - 1));
                     return false;
                 }
 
-                // DKS.  switched from vertFrames to horizFrames
+                // DKS. switched from vertFrames to horizFrames
                 if (frameCol > entry.horizFrames - 1) {
                     Debug.output(" Bad col number in FF index record " + i);
                     return false;
@@ -441,13 +463,13 @@ public class RpfTocHandler {
                 // correctly from the top left, instead of the
                 // specification notation of bottom left.
 
-                frame = entry.frames[(entry.vertFrames - 1)-frameRow][frameCol];
+                frame = entry.frames[(entry.vertFrames - 1) - frameRow][frameCol];
 
                 if (frame.exists && DEBUG_RPFTOCDETAIL) {
-                    Debug.output( "FF " + i + " is a duplicate");
+                    Debug.output("FF " + i + " is a duplicate");
                 }
 
-                // DKS:  phys_loc deleted
+                // DKS: phys_loc deleted
 
                 // pathname offset
                 pathOffset = (long) binFile.readInteger();
@@ -459,7 +481,8 @@ public class RpfTocHandler {
                 // DKS. New pathOffset offset from start of frame file
                 // index section of TOC??
                 if (DEBUG_RPFTOCFRAMEDETAIL) {
-                    Debug.output("RpfTocHandler: parseToc(): locations[1].componentLocation: " + locations[1].componentLocation);
+                    Debug.output("RpfTocHandler: parseToc(): locations[1].componentLocation: "
+                            + locations[1].componentLocation);
                 }
                 // DKS. Add pathoffset wrt frame file index table
                 // subsection (loc[3])
@@ -467,8 +490,8 @@ public class RpfTocHandler {
 
                 pathLength = (int) binFile.readShort();
                 if (DEBUG_RPFTOCFRAMEDETAIL) {
-                    Debug.output("RpfTocHandler: parseToc(): pathLength:" +
-                                 pathLength);
+                    Debug.output("RpfTocHandler: parseToc(): pathLength:"
+                            + pathLength);
                 }
 
                 // 1st part of directory name is passed as arg:
@@ -487,17 +510,18 @@ public class RpfTocHandler {
 
                 if (!fullPathsInATOC) {
                     // DKS: Make up for skipped 2 chars
-                    sBuf.append(binFile.readFixedLengthString(pathLength-2));
+                    sBuf.append(binFile.readFixedLengthString(pathLength - 2));
                 } else {
                     sBuf.append(pathTest);
-                    sBuf.append(binFile.readFixedLengthString(pathLength-2));
+                    sBuf.append(binFile.readFixedLengthString(pathLength - 2));
                 }
 
                 // Add the trim because it looks like NIMA doesn't
                 // always get the pathLength correct...
                 frame.directory = sBuf.toString().trim();
                 if (DEBUG_RPFTOCFRAMEDETAIL) {
-                    Debug.output("RpfTocHandler: parseToc(): frame directory: " + frame.directory);
+                    Debug.output("RpfTocHandler: parseToc(): frame directory: "
+                            + frame.directory);
                 }
 
                 /* Go back to get filename tail */
@@ -505,25 +529,30 @@ public class RpfTocHandler {
 
                 frame.filename = binFile.readFixedLengthString(12);
                 if (DEBUG_RPFTOCFRAMEDETAIL) {
-                    Debug.output("RpfTocHandler: parseToc(): frame filename: " + frame.filename);
+                    Debug.output("RpfTocHandler: parseToc(): frame filename: "
+                            + frame.filename);
                 }
 
                 // Figure out the chart series ID
                 int dot = frame.filename.lastIndexOf('.');
-                // Interned so we can look it up in the catalog later...
-                entry.setInfo(frame.filename.substring(dot+1, dot+3).intern());
+                // Interned so we can look it up in the catalog
+                // later...
+                entry.setInfo(frame.filename.substring(dot + 1, dot + 3)
+                        .intern());
 
                 // We duplicate this below!!!
-//              frame.framePath = new String(frame.rpfdir + frame.directory +
-//                                           "/" + frame.filename);
+                //              frame.framePath = new String(frame.rpfdir +
+                // frame.directory +
+                //                                           "/" + frame.filename);
 
-                // DKS new DCHUM.  Fill in last digit v of vv version
+                // DKS new DCHUM. Fill in last digit v of vv version
                 // #. fffffvvp.JNz or ffffffvp.IMz for CIB boundaryId
                 // will equal frame file number: 1 boundary rect. per
                 // frame.
 
-//              if (Dchum)
-//                  entries[boundaryId].version = frame.filename.charAt(6);
+                //              if (Dchum)
+                //                  entries[boundaryId].version =
+                // frame.filename.charAt(6);
 
                 // do diskspace calculations
                 String tempPath;
@@ -532,7 +561,8 @@ public class RpfTocHandler {
                     tempPath = frame.rpfdir + frame.directory + frame.filename;
                 } else {
                     tempPath = frame.directory + frame.filename;
-                    frame.rpfdir = null; // The path to the rpf dir is in frame.directory
+                    frame.rpfdir = null; // The path to the rpf dir is
+                                         // in frame.directory
                 }
 
                 long diskspace = 288000;
@@ -542,41 +572,48 @@ public class RpfTocHandler {
                 // Assume it's there, the RPFFrame has been modified
                 // to try lower case names if needed.
 
-//                 if (local) {
-//                     exists = BinaryFile.exists(tempPath);
+                //                 if (local) {
+                //                     exists = BinaryFile.exists(tempPath);
 
-//                     // This may fail because of FTP and/or CDROM filename
-//                     // shinanagins.  The A.TOC file should always think
-//                     // that the filenames are uppercase.  They may get
-//                     // copied as lowercase, so we'll check that here.  If
-//                     // they are actually lowercase, we'll change it here
-//                     // so that everything will work at runtime. - DFD 8/20/99
+                //                     // This may fail because of FTP and/or CDROM
+                // filename
+                //                     // shinanagins. The A.TOC file should always think
+                //                     // that the filenames are uppercase. They may get
+                //                     // copied as lowercase, so we'll check that here.
+                // If
+                //                     // they are actually lowercase, we'll change it
+                // here
+                //                     // so that everything will work at runtime. - DFD
+                // 8/20/99
 
-//                     // OK, with the advent of the new BinaryFile that
-//                     // will let these files be read from a jar file or
-//                     // from a URL, we have to assume that the files
-//                     // are there, and deal with it if they are not.
-//                 }
+                //                     // OK, with the advent of the new BinaryFile that
+                //                     // will let these files be read from a jar file or
+                //                     // from a URL, we have to assume that the files
+                //                     // are there, and deal with it if they are not.
+                //                 }
 
-//                 if (exists) {
-                    frame.diskspace = diskspace;
-                    frame.framePath = tempPath;
-                    frame.exists = true;
-//                 } else if (!fullPathsInATOC) {
+                //                 if (exists) {
+                frame.diskspace = diskspace;
+                frame.framePath = tempPath;
+                frame.exists = true;
+                //                 } else if (!fullPathsInATOC) {
 
-//                     // This should only be an issue for local files.
-//                     tempPath = frame.rpfdir + frame.directory.toLowerCase() +
-//                         frame.filename.toLowerCase();
+                //                     // This should only be an issue for local files.
+                //                     tempPath = frame.rpfdir +
+                // frame.directory.toLowerCase() +
+                //                         frame.filename.toLowerCase();
 
-// //                     if (BinaryFile.exists(tempPath)) {
-//                         frame.diskspace = diskspace;
-//                         frame.framePath = tempPath;
-//                         frame.exists = true;
-// //                     }
-//                 }
+                // // if (BinaryFile.exists(tempPath)) {
+                //                         frame.diskspace = diskspace;
+                //                         frame.framePath = tempPath;
+                //                         frame.exists = true;
+                // // }
+                //                 }
 
                 if (frame.framePath == null) {
-                    Debug.output("RpfTocHandler: Frame " + tempPath + " doesn't exist.  Please rebuild A.TOC file using MakeToc, or check read permissions for the file.");
+                    Debug.output("RpfTocHandler: Frame "
+                            + tempPath
+                            + " doesn't exist.  Please rebuild A.TOC file using MakeToc, or check read permissions for the file.");
                 }
             } /* for i = numFrameIndexRecords */
 
@@ -587,7 +624,6 @@ public class RpfTocHandler {
             Debug.error("RpfTocHandler: Format ERROR parsing file!\n\t" + fe);
             return false;
         }
-
 
         if (DEBUG_RPFTOC) {
             Debug.output("LEAVE TOC parsing...");
@@ -634,12 +670,12 @@ public class RpfTocHandler {
 
         Long resolution;
         Long realValue;
-        int expLetter;  // location of m, M, K
+        int expLetter; // location of m, M, K
         int expLetterSmall;
         int colon = textScale.indexOf(":");
         boolean hasExpLetter = false;
 
-        try{
+        try {
             if (colon == -1) {
                 // dealing with an imagery scale
                 expLetter = textScale.indexOf("m");
@@ -650,7 +686,7 @@ public class RpfTocHandler {
                 }
 
                 resolution = new Long(textScale.substring(0, expLetter));
-                return (long) (resolution.longValue()/.000150);
+                return (long) (resolution.longValue() / .000150);
             }
 
             // dealing with a map scale
@@ -677,10 +713,10 @@ public class RpfTocHandler {
                 if (expLetter == -1) {
                     expLetter = expLetterSmall;
                 }
-                buf = new StringBuffer(textScale.substring(colon+1, expLetter));
+                buf = new StringBuffer(textScale.substring(colon + 1, expLetter));
                 buf.append(expValue);
             } else {
-                buf = new StringBuffer(textScale.substring(colon+1));
+                buf = new StringBuffer(textScale.substring(colon + 1));
             }
 
             String longString = buf.toString().trim();
@@ -689,22 +725,22 @@ public class RpfTocHandler {
         } catch (NumberFormatException nfe) {
             if (Debug.debugging("rpftoc")) {
                 Debug.output("textScaleToLong: Number Format Exception!!!!"
-                             + textScale);
+                        + textScale);
             }
             return (long) RpfConstants.UK.scale;
         } catch (StringIndexOutOfBoundsException sioobe) {
             if (Debug.debugging("rpftoc")) {
-                Debug.output("textScaleToLong: String index out of bounds:\n" +
-                             sioobe.getMessage());
+                Debug.output("textScaleToLong: String index out of bounds:\n"
+                        + sioobe.getMessage());
             }
             return (long) RpfConstants.UK.scale;
         }
 
-        long ret = (realValue.longValue()/resolution.longValue());
+        long ret = (realValue.longValue() / resolution.longValue());
 
         if (Debug.debugging("rpftoc")) {
-            Debug.output("RpfTocHandler: textScaleToLong converted " +
-                         textScale + " to " + ret);
+            Debug.output("RpfTocHandler: textScaleToLong converted "
+                    + textScale + " to " + ret);
         }
 
         return ret;
@@ -714,40 +750,41 @@ public class RpfTocHandler {
     protected int getASCIIZone(float ullat, int zone) {
         int z = zone;
         // Now convert it to ASCII to compare
-        if (ullat>0) z += 48;  // for ASCII compare next
+        if (ullat > 0)
+            z += 48; // for ASCII compare next
         else {
             z += 64;
-            if (z == 73) z++;  // Can't be equal to I -> J
+            if (z == 73)
+                z++; // Can't be equal to I -> J
         }
         return z;
     }
 
     /**
      * Given a coordinate box and a scale, return the entries that
-     * have coverage over the given area.  The chart types returned
-     * are dictated by the chartSeriesCode passed in, which must be an
+     * have coverage over the given area. The chart types returned are
+     * dictated by the chartSeriesCode passed in, which must be an
      * entry from an RpfProductInfo.seriesCode.
-     *
+     * 
      * @param ullat upper left latitude, in decimal degrees
      * @param ullon upper left longitude, in decimal degrees
      * @param lrlat lower right latitude, in decimal degrees
      * @param lrlon lower right longitude, in decimal degrees
      * @param proj CADRG projection describing map.
-     * @param chartSeriesCode chart selection.  If null, all coverage
-     * boxes fitting on the screen will be returned.
+     * @param chartSeriesCode chart selection. If null, all coverage
+     *        boxes fitting on the screen will be returned.
      * @param coverages a list of potential coverages
      * @return a Vector of applicable RpfCoverageBoxes.
      */
-    public void getCatalogCoverage(float ullat, float ullon,
-                                   float lrlat, float lrlon,
-                                   CADRG proj,
-                                   String chartSeriesCode,
-                                   Vector coverages) {
-        if (!valid) return;
+    public void getCatalogCoverage(float ullat, float ullon, float lrlat,
+                                   float lrlon, CADRG proj,
+                                   String chartSeriesCode, Vector coverages) {
+        if (!valid)
+            return;
 
         String chartSeries;
 
-        for (int i=0; i < numBoundaries; i++) {
+        for (int i = 0; i < numBoundaries; i++) {
 
             // Try to get the boundary rectangle with the most
             // coverage, so reset the entry for this particular query.
@@ -759,11 +796,13 @@ public class RpfTocHandler {
                 chartSeries = chartSeriesCode;
             }
 
-            if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY) ||
-                chartSeries.equalsIgnoreCase(entries[i].info.seriesCode)) {
+            if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)
+                    || chartSeries.equalsIgnoreCase(entries[i].info.seriesCode)) {
 
-                if (entries[i].coverage.setPercentCoverage(ullat, ullon,
-                                                           lrlat, lrlon) > 0f) {
+                if (entries[i].coverage.setPercentCoverage(ullat,
+                        ullon,
+                        lrlat,
+                        lrlon) > 0f) {
                     coverages.addElement(entries[i].coverage);
                 }
             }
@@ -772,26 +811,27 @@ public class RpfTocHandler {
 
     /**
      * Given a coordinate box and a scale, find the entry in the table
-     * of contents file with the right data.  Zone is always of the
+     * of contents file with the right data. Zone is always of the
      * northern hemisphere, and is transformed to southern inside if
      * needed. The box will get filled in with the correct
-     * information.  The subframe description will have scaling
+     * information. The subframe description will have scaling
      * information for the subframes to be scaled to match the scale.
      * If proj is null, only exact matches will be found
-     *
-     * NOTE: method getZone() of the CADRG projection is only
-     * relevant (according to OpenMap documentation) when you're viewing
-     * a map type (ONC, etc) at its proper scale (i.e. 1:1mil for ONC).
-     * There was a method in RpfTocHandler that only checked a TOC for coverage
-     * if the TOC zone matched the zone of the projection.  This caused gaps
-     * of coverage when viewing the maps at large scales that were different
-     * from their proper scale (e.g. viewing JNC at 1:10mil).  Modified this
-     * method so that it obtains all the possible zones the current map
-     * projection could be in, and compares the TOC zones to that set.
-     *
-     * Note that this now returns a list of coverage entries
-     * instead of just one.
-     *
+     * 
+     * NOTE: method getZone() of the CADRG projection is only relevant
+     * (according to OpenMap documentation) when you're viewing a map
+     * type (ONC, etc) at its proper scale (i.e. 1:1mil for ONC).
+     * There was a method in RpfTocHandler that only checked a TOC for
+     * coverage if the TOC zone matched the zone of the projection.
+     * This caused gaps of coverage when viewing the maps at large
+     * scales that were different from their proper scale (e.g.
+     * viewing JNC at 1:10mil). Modified this method so that it
+     * obtains all the possible zones the current map projection could
+     * be in, and compares the TOC zones to that set.
+     * 
+     * Note that this now returns a list of coverage entries instead
+     * of just one.
+     * 
      * @param ullat upper left latitude, in decimal degrees
      * @param ullon upper left longitude, in decimal degrees
      * @param lrlat lower right latitude, in decimal degrees
@@ -800,11 +840,11 @@ public class RpfTocHandler {
      * @param viewAtts view attributes determine chart selection.
      * @return a Vector of applicable RpfCoverageBoxes.
      */
-    public List getBestCoverageEntry(float ullat, float ullon,
-                                     float lrlat, float lrlon,
-                                     CADRG proj,
+    public List getBestCoverageEntry(float ullat, float ullon, float lrlat,
+                                     float lrlon, CADRG proj,
                                      RpfViewAttributes viewAtts) {
-        if (!valid) return null;
+        if (!valid)
+            return null;
 
         List coverageEntries = new Vector();
         int insideBoundaries = 0;
@@ -812,13 +852,13 @@ public class RpfTocHandler {
         double lowerScaleFactorLimit = 1.0;
         double upperScaleFactorLimit = 1.0;
 
-        // Good for a preliminary check.  It has to start at least as
+        // Good for a preliminary check. It has to start at least as
         // 4 to have one corner matching.
         int prevBoundaryHits = 0;
 
         if (viewAtts != null) {
-            lowerScaleFactorLimit = (double)(1.0/viewAtts.imageScaleFactor);
-            upperScaleFactorLimit = (double)viewAtts.imageScaleFactor;
+            lowerScaleFactorLimit = (double) (1.0 / viewAtts.imageScaleFactor);
+            upperScaleFactorLimit = (double) viewAtts.imageScaleFactor;
         }
 
         int nscale = 0;
@@ -835,9 +875,9 @@ public class RpfTocHandler {
         }
 
         int zone = getASCIIZone(ullat, proj.getZone());
-        char okZones[] = getOkZones(ullat,lrlat,(char)zone);
+        char okZones[] = getOkZones(ullat, lrlat, (char) zone);
 
-        for (int i=0; i < numBoundaries; i++) {
+        for (int i = 0; i < numBoundaries; i++) {
 
             RpfTocEntry currentEntry = entries[i];
 
@@ -852,8 +892,8 @@ public class RpfTocHandler {
             currentEntry.coverage.reset();
 
             //  Find the scale of the boundary rectangle
-            if (currentEntry.info == null ||
-                currentEntry.info.scale == RpfConstants.Various) {
+            if (currentEntry.info == null
+                    || currentEntry.info.scale == RpfConstants.Various) {
 
                 nscale = (int) textScaleToLong(currentEntry.scale);
                 currentEntry.info = new RpfProductInfo();
@@ -870,18 +910,18 @@ public class RpfTocHandler {
             }
 
             if (DEBUG_RPFTOCDETAIL) {
-                Debug.output("getBestCoverageEntry(): Query scale = " + scale +
-                             " vs. brect scale = " + nscale);
+                Debug.output("getBestCoverageEntry(): Query scale = " + scale
+                        + " vs. brect scale = " + nscale);
             }
 
             // if you want an exact match for scale...
             if (viewAtts != null && !viewAtts.scaleImages) {
                 if (scale == nscale) {
                     scaleFactor = 1.0;
-                }
-                else scaleFactor = lowerScaleFactorLimit - 1.0;
+                } else
+                    scaleFactor = lowerScaleFactorLimit - 1.0;
             } else {
-                scaleFactor = (double)nscale/(double)scale;
+                scaleFactor = (double) nscale / (double) scale;
             }
 
             String chartSeries;
@@ -891,62 +931,75 @@ public class RpfTocHandler {
                 chartSeries = viewAtts.chartSeries;
             }
 
-            if (scaleFactor >= lowerScaleFactorLimit &&
-                scaleFactor <= upperScaleFactorLimit &&
-                (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY) ||
-                 chartSeries.equalsIgnoreCase(currentEntry.info.seriesCode))) {
+            if (scaleFactor >= lowerScaleFactorLimit
+                    && scaleFactor <= upperScaleFactorLimit
+                    && (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY) || chartSeries.equalsIgnoreCase(currentEntry.info.seriesCode))) {
 
-                if ( isOkZone(currentEntry.zone,okZones) ) {
+                if (isOkZone(currentEntry.zone, okZones)) {
                     // sets currentEntry.coverage.boundaryHits
-                    int hits = currentEntry.coverage.setBoundaryHits(ullat, ullon, lrlat, lrlon);
+                    int hits = currentEntry.coverage.setBoundaryHits(ullat,
+                            ullon,
+                            lrlat,
+                            lrlon);
 
                     if (DEBUG_RPFTOCDETAIL) {
-                        Debug.output("getBestCoverageEntry(): Boundary Hits = " +  hits);
+                        Debug.output("getBestCoverageEntry(): Boundary Hits = "
+                                + hits);
                     }
 
                     if (bestEntry != null) {
 
                         boolean betterScale = false;
 
-                        float newScaleDiff = RpfFrameCacheHandler.scaleDifference(proj, currentEntry.coverage);
-                        float bestScaleDiff = RpfFrameCacheHandler.scaleDifference(proj, bestEntry.coverage);
+                        float newScaleDiff = RpfFrameCacheHandler.scaleDifference(proj,
+                                currentEntry.coverage);
+                        float bestScaleDiff = RpfFrameCacheHandler.scaleDifference(proj,
+                                bestEntry.coverage);
 
                         if (newScaleDiff <= bestScaleDiff) {
                             betterScale = true;
                         }
 
-                        if (betterScale &&
-                            (currentEntry.coverage.setPercentCoverage(ullat, ullon, lrlat, lrlon) >= bestEntry.coverage.getPercentCoverage()) &&
-                            (hits >= prevBoundaryHits || hits >= 6)) {
+                        if (betterScale
+                                && (currentEntry.coverage.setPercentCoverage(ullat,
+                                        ullon,
+                                        lrlat,
+                                        lrlon) >= bestEntry.coverage.getPercentCoverage())
+                                && (hits >= prevBoundaryHits || hits >= 6)) {
 
-                           // Add to list if has any hits and is
-                           // the best possible scale.  If new scale difference
-                           // is strictly better, remove other entries
-                           if (newScaleDiff < bestScaleDiff) {
-                              coverageEntries.clear();
-                           }
-                           coverageEntries.add(currentEntry);
-
+                            // Add to list if has any hits and is
+                            // the best possible scale. If new scale
+                            // difference
+                            // is strictly better, remove other
+                            // entries
+                            if (newScaleDiff < bestScaleDiff) {
+                                coverageEntries.clear();
+                            }
+                            coverageEntries.add(currentEntry);
 
                             bestEntry = currentEntry;
                             prevBoundaryHits = hits;
 
                             if (DEBUG_RPFTOC) {
-                                Debug.output("getBestCoverageEntry(): Found a match in a BR with coverage of "+ currentEntry.coverage.getPercentCoverage() + "%.");
+                                Debug.output("getBestCoverageEntry(): Found a match in a BR with coverage of "
+                                        + currentEntry.coverage.getPercentCoverage()
+                                        + "%.");
                             }
+                        } else if (betterScale
+                                && currentEntry.coverage.getPercentCoverage() > 0f) {
+
+                            if (newScaleDiff < bestScaleDiff) {
+                                coverageEntries.clear();
+                            }
+                            coverageEntries.add(currentEntry);
+
                         }
-                        else if (betterScale &&
-                           currentEntry.coverage.getPercentCoverage() > 0f) {
 
-                          if (newScaleDiff < bestScaleDiff) {
-                             coverageEntries.clear();
-                          }
-                          coverageEntries.add(currentEntry);
-
-                       }
-
-                    } else if (hits > prevBoundaryHits &&
-                               (currentEntry.coverage.setPercentCoverage(ullat, ullon, lrlat, lrlon) > 0f)) {
+                    } else if (hits > prevBoundaryHits
+                            && (currentEntry.coverage.setPercentCoverage(ullat,
+                                    ullon,
+                                    lrlat,
+                                    lrlon) > 0f)) {
                         bestEntry = currentEntry;
                         prevBoundaryHits = hits;
 
@@ -954,7 +1007,9 @@ public class RpfTocHandler {
                         coverageEntries.add(currentEntry);
 
                         if (DEBUG_RPFTOC) {
-                            Debug.output("getBestCoverageEntry(): Found a match in a BR with coverage of " + currentEntry.coverage.getPercentCoverage() + "%.");
+                            Debug.output("getBestCoverageEntry(): Found a match in a BR with coverage of "
+                                    + currentEntry.coverage.getPercentCoverage()
+                                    + "%.");
 
                         }
                     }
@@ -963,144 +1018,142 @@ public class RpfTocHandler {
         }
 
         if (DEBUG_RPFTOC) {
-           if (bestEntry != null) {
-              Debug.output("getBestCoverageEntry(): found the best");
-              Debug.output("################");
-              Debug.output(bestEntry.toString());
-              Debug.output("Returning the following coverage boxes: ");
+            if (bestEntry != null) {
+                Debug.output("getBestCoverageEntry(): found the best");
+                Debug.output("################");
+                Debug.output(bestEntry.toString());
+                Debug.output("Returning the following coverage boxes: ");
 
-              for (int i = 0; i < coverageEntries.size(); i++) {
-                 Debug.output(coverageEntries.get(i).toString());
-              }
-           }
-           else {
-              Debug.output("getBestCoverageEntry(): no box found");
-           }
+                for (int i = 0; i < coverageEntries.size(); i++) {
+                    Debug.output(coverageEntries.get(i).toString());
+                }
+            } else {
+                Debug.output("getBestCoverageEntry(): no box found");
+            }
         }
 
         return coverageEntries;
     }
 
     public static char[] getOkZones(float ullat, float lrlat, char zone) {
-      // allow a maximum of 3 additional zones in either direction
-      char[] okZones = new char[7];
-      // add zone from projection
-      okZones[0] = zone;
-      // check above
-      char currentZone = zone;
-      char backupZone;
-      int i=0;
-      for (;i<3;i++) {
-        if ( isAboveZone(ullat, currentZone) ) {
-          backupZone = getHigherZone(currentZone);
-          okZones[i+1] = backupZone;
-          currentZone = backupZone;
-        } else
-          break;
-      }
-      // check below
-      int k=i;
-      currentZone = zone;
-      for (;k<i+3;k++) {
-        if ( isBelowZone(ullat, currentZone) ) {
-          backupZone = getLowerZone(currentZone);
-          okZones[k+1] = backupZone;
-          currentZone = backupZone;
-        } else
-          break;
-      }
-      int size = 0;
-      for (int j=0;j<okZones.length;j++) {
-        if (okZones[j] != 0) {
-          size++;
+        // allow a maximum of 3 additional zones in either direction
+        char[] okZones = new char[7];
+        // add zone from projection
+        okZones[0] = zone;
+        // check above
+        char currentZone = zone;
+        char backupZone;
+        int i = 0;
+        for (; i < 3; i++) {
+            if (isAboveZone(ullat, currentZone)) {
+                backupZone = getHigherZone(currentZone);
+                okZones[i + 1] = backupZone;
+                currentZone = backupZone;
+            } else
+                break;
         }
-      }
-      char[] returnZones = new char[size];
-      for (int j=0;j<size;j++) {
-        returnZones[j] = okZones[j];
-      }
-      return returnZones;
+        // check below
+        int k = i;
+        currentZone = zone;
+        for (; k < i + 3; k++) {
+            if (isBelowZone(ullat, currentZone)) {
+                backupZone = getLowerZone(currentZone);
+                okZones[k + 1] = backupZone;
+                currentZone = backupZone;
+            } else
+                break;
+        }
+        int size = 0;
+        for (int j = 0; j < okZones.length; j++) {
+            if (okZones[j] != 0) {
+                size++;
+            }
+        }
+        char[] returnZones = new char[size];
+        for (int j = 0; j < size; j++) {
+            returnZones[j] = okZones[j];
+        }
+        return returnZones;
     }
 
     public static boolean isOkZone(char zone, char[] okZones) {
-      boolean ok = false;
-      for (int i=0;i<okZones.length;i++) {
-        if (zone == okZones[i]) {
-          ok = true;
+        boolean ok = false;
+        for (int i = 0; i < okZones.length; i++) {
+            if (zone == okZones[i]) {
+                ok = true;
+            }
         }
-      }
-      return ok;
+        return ok;
     }
 
     protected static boolean isBelowZone(float lowerLat, char zone) {
-      float zoneLowerLat = getLowerZoneExtent(zone);
-      if ( lowerLat < zoneLowerLat ) {
-        return true;
-      } else
-        return false;
+        float zoneLowerLat = getLowerZoneExtent(zone);
+        if (lowerLat < zoneLowerLat) {
+            return true;
+        } else
+            return false;
     }
 
     protected static boolean isAboveZone(float upperLat, char zone) {
-      float zoneUpperLat = getUpperZoneExtent(zone);
-      if ( upperLat > zoneUpperLat) {
-        return true;
-      } else
-        return false;
+        float zoneUpperLat = getUpperZoneExtent(zone);
+        if (upperLat > zoneUpperLat) {
+            return true;
+        } else
+            return false;
     }
 
     public static float getUpperZoneExtent(char zone) {
 
-      if (zone >= '0' && zone <= '9') {
-        int i = zone-49;
-        return CADRG_zone_extents[i+1];
-      } else {
-        int i = zone - 65;
-        if (i == 9) i--; // Special care for j
-        return -1 * CADRG_zone_extents[i];
-      }
+        if (zone >= '0' && zone <= '9') {
+            int i = zone - 49;
+            return CADRG_zone_extents[i + 1];
+        } else {
+            int i = zone - 65;
+            if (i == 9)
+                i--; // Special care for j
+            return -1 * CADRG_zone_extents[i];
+        }
     }
 
     public static float getLowerZoneExtent(char zone) {
-      if (zone >= '0' && zone <= '9') {
-        int i = zone-49;
-        return CADRG_zone_extents[i];
-      } else {
-        int i = zone - 65;
-        if (i == 9) i--; // Special care for J
-        return -1 * CADRG_zone_extents[i+1];
-      }
+        if (zone >= '0' && zone <= '9') {
+            int i = zone - 49;
+            return CADRG_zone_extents[i];
+        } else {
+            int i = zone - 65;
+            if (i == 9)
+                i--; // Special care for J
+            return -1 * CADRG_zone_extents[i + 1];
+        }
     }
 
     public static char getLowerZone(char zone) {
-      // if zone = 'J' do nothing
-      if (zone >= '2' && zone <= '9') {
-        zone--;
-      } else if (zone == '1') {
-        zone = 'A';
-      } else if (zone >= 'A' && zone < 'H' ) {
-        zone++;
-      } else if (zone == 'H') {
-        zone = 'J';
-      }
-      return zone;
+        // if zone = 'J' do nothing
+        if (zone >= '2' && zone <= '9') {
+            zone--;
+        } else if (zone == '1') {
+            zone = 'A';
+        } else if (zone >= 'A' && zone < 'H') {
+            zone++;
+        } else if (zone == 'H') {
+            zone = 'J';
+        }
+        return zone;
     }
 
     public static char getHigherZone(char zone) {
-      // if zone = '9' do nothing
-      if (zone >= '1' && zone < '9') {
-        zone++;
-      } else if (zone >= 'B' && zone < 'J' || zone >= 'b' && zone < 'j') {
-        zone--;
-      } else  if (zone == 'J' || zone == 'j') {
-        zone-=2;
-      } else if (zone == 'A' || zone == 'a') {
-        zone = '1';
-      }
-      return zone;
+        // if zone = '9' do nothing
+        if (zone >= '1' && zone < '9') {
+            zone++;
+        } else if (zone >= 'B' && zone < 'J' || zone >= 'b' && zone < 'j') {
+            zone--;
+        } else if (zone == 'J' || zone == 'j') {
+            zone -= 2;
+        } else if (zone == 'A' || zone == 'a') {
+            zone = '1';
+        }
+        return zone;
     }
-
-
-
 
     /** Return the list of grouped frames. */
     public RpfTocEntry[] getEntries() {

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,40 +14,34 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMAreaList.java,v $
 // $RCSfile: OMAreaList.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:06:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
-import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.io.*;
-import java.net.*;
-import java.util.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.GraphicList;
-import com.bbn.openmap.omGraphics.grid.*;
-import com.bbn.openmap.util.Debug;
 
 /**
- * This class encapsulates a list of OMGeometries that are connected to
- * form one area.  Different types of vector OMGeometries can be
+ * This class encapsulates a list of OMGeometries that are connected
+ * to form one area. Different types of vector OMGeometries can be
  * combined and used to create a unique shape over the map.
  * OMRasterObjects will contribute their shape/size, but not their
- * images.  The OMGeometries should be added in a clockwise format.
- *
- * <P> KNOWN ISSUES: OMAreaLists that wrap around the back of the
- * earth and showing up on both edges of the map are not handled well
- * - you'll end up with lines going horizonally across the map.  It's
- * on the todo list to fix this.
+ * images. The OMGeometries should be added in a clockwise format.
+ * 
+ * <P>
+ * KNOWN ISSUES: OMAreaLists that wrap around the back of the earth
+ * and showing up on both edges of the map are not handled well -
+ * you'll end up with lines going horizonally across the map. It's on
+ * the todo list to fix this.
  */
-public class OMAreaList extends OMGeometryList 
-    implements GraphicList, Serializable {
+public class OMAreaList extends OMGeometryList implements GraphicList,
+        Serializable {
 
     /**
      * Construct an OMAreaList.
@@ -56,12 +50,12 @@ public class OMAreaList extends OMGeometryList
         super(10);
         init();
     };
-    
+
     /**
      * Construct an OMAreaList with a capacity to be combined from an
      * initial amount of OMGeometries.
-     *
-     * @param initialCapacity the initial capacity of the list 
+     * 
+     * @param initialCapacity the initial capacity of the list
      */
     public OMAreaList(int initialCapacity) {
         super(initialCapacity);
@@ -69,10 +63,11 @@ public class OMAreaList extends OMGeometryList
     };
 
     /**
-     * Construct an OMAreaList around a List of OMGeometries.  The
+     * Construct an OMAreaList around a List of OMGeometries. The
      * OMAreaList assumes that all the objects on the list are vector
-     * OMGeometries, and never does checking.  Live with the
+     * OMGeometries, and never does checking. Live with the
      * consequences if you put other stuff in there.
+     * 
      * @param list List of vector OMGeometries.
      */
     public OMAreaList(java.util.List list) {
@@ -92,10 +87,10 @@ public class OMAreaList extends OMGeometryList
 
     /**
      * Create the GeneralPath used for the internal Shape objects held
-     * by the OMGeometries added.  With the OMAreaList, all of the
+     * by the OMGeometries added. With the OMAreaList, all of the
      * components are combined to make a single area. So updateShape,
      * which is called from super.generate(), calls appendShapeEdge()
-     * instead of appending each part Shape to the main Shape.  This
+     * instead of appending each part Shape to the main Shape. This
      * method closes off the GeneralPath Shape, so it will be
      * considered a polygon.
      */
@@ -109,19 +104,19 @@ public class OMAreaList extends OMGeometryList
     /**
      * Given a OMGeometry, it calls generate/regenerate on it, and
      * then adds the GeneralPath shape within it to the OMGeometryList
-     * shape object.  The edges of each part are combined to make one
+     * shape object. The edges of each part are combined to make one
      * big polygon.
      */
-    protected void updateShape(OMGeometry geometry, Projection p, 
+    protected void updateShape(OMGeometry geometry, Projection p,
                                boolean forceProject) {
         if (forceProject) {
             geometry.generate(p);
         } else {
             geometry.regenerate(p);
         }
-                    
+
         if (geometry.isVisible()) {
-            GeneralPath gp = (GeneralPath)geometry.getShape();
+            GeneralPath gp = (GeneralPath) geometry.getShape();
 
             if (gp == null) {
                 return;
@@ -130,22 +125,23 @@ public class OMAreaList extends OMGeometryList
             shape = appendShapeEdge(shape, gp);
             // save memory by deleting the shape in each part, since
             // they are each contributing to the whole.
-            geometry.setShape((GeneralPath)null);
+            geometry.setShape((GeneralPath) null);
         }
     }
 
     /**
      * Overrides the OMGeometryList and OMGraphicList methods to just
      * call _distance() on the internal shape object.
-     *
+     * 
      * @param x x coord
      * @param y y coord
      * @param limit the max distance that a graphic has to be within
-     * to be returned, in pixels.
+     *        to be returned, in pixels.
      * @param resetSelect deselect any OMGraphic touched.
      * @return OMDist
      */
-    protected synchronized OMDist _findClosest(int x, int y, float limit, boolean resetSelect) {
+    protected synchronized OMDist _findClosest(int x, int y, float limit,
+                                               boolean resetSelect) {
 
         OMDist omd = new OMDist();
         float currentDistance = Float.MAX_VALUE;
@@ -154,7 +150,8 @@ public class OMAreaList extends OMGeometryList
         if (!isVisible()) {
             omd.omg = null;
         } else {
-            if (resetSelect) deselect();
+            if (resetSelect)
+                deselect();
             currentDistance = _distance(x, y);
         }
 

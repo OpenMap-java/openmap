@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,26 +12,25 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ProgressListenerGauge.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ProgressListenerGauge.java,v
+// $
 // $RCSfile: ProgressListenerGauge.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/09/17 18:12:36 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.util.Debug;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
-public class ProgressListenerGauge extends JPanel 
-    implements ProgressListener {
+public class ProgressListenerGauge extends JPanel implements ProgressListener {
 
     protected JLabel message;
     protected JProgressBar jpb;
@@ -73,7 +72,7 @@ public class ProgressListenerGauge extends JPanel
         message = new JLabel("");
         jpb = new JProgressBar(0, 100);
         JPanel cpanel = new JPanel();
-        cpanel.setLayout(new GridLayout(0,1));
+        cpanel.setLayout(new GridLayout(0, 1));
         cpanel.add(jpb);
         cpanel.add(message);
 
@@ -93,8 +92,7 @@ public class ProgressListenerGauge extends JPanel
     public synchronized void updateProgress(ProgressEvent evt) {
         int type = evt.getType();
 
-        if (type == ProgressEvent.START ||
-            type == ProgressEvent.UPDATE) {
+        if (type == ProgressEvent.START || type == ProgressEvent.UPDATE) {
             setVisible(true);
             message.setText(evt.getTaskDescription());
             jpb.setValue(evt.getPercentComplete());
@@ -114,16 +112,17 @@ public class ProgressListenerGauge extends JPanel
         int h = comp.getHeight();
 
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        Debug.message("basic","Screen dimensions are " + d);
-        int x = d.width/2 - w/2;
-        int y = d.height/2 - h/2;
-        
+        Debug.message("basic", "Screen dimensions are " + d);
+        int x = d.width / 2 - w / 2;
+        int y = d.height / 2 - h / 2;
+
         if (Debug.debugging("basic")) {
-            Debug.output("Setting PLG frame X and Y from properties to " + x + " " + y);
+            Debug.output("Setting PLG frame X and Y from properties to " + x
+                    + " " + y);
         }
 
         // compose the frame, but don't show it here
-        comp.setBounds(x,y,w,h);
+        comp.setBounds(x, y, w, h);
     }
 
 }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,21 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/shape/SpecialistSpatialIndex.java,v $
 // $RCSfile: SpecialistSpatialIndex.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.specialist.shape;
 
 import java.io.*;
-import java.util.Vector;
 
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.layer.shape.*;
-import com.bbn.openmap.util.Debug;
 
 /**
  */
@@ -36,7 +32,7 @@ public class SpecialistSpatialIndex extends SpatialIndex {
 
     /**
      * Opens a spatial index file for reading.
-     *
+     * 
      * @param ssxFilename the name of the spatial index file
      * @exception IOException if something goes wrong opening the file
      */
@@ -46,30 +42,31 @@ public class SpecialistSpatialIndex extends SpatialIndex {
 
     /**
      * Opens a spatial index file and it's associated shape file.
-     *
+     * 
      * @param ssxFilename the name of the spatial index file
      * @param shpFilename the name of the shape file
-     * @exception IOException if something goes wrong opening the files
+     * @exception IOException if something goes wrong opening the
+     *            files
      */
     public SpecialistSpatialIndex(String ssxFilename, String shpFilename)
-        throws IOException {
+            throws IOException {
         super(ssxFilename, shpFilename);
     }
 
     /**
-     * Creates a record instance from the shape file data.  Calls
-     * the appropriate record constructor based on the shapeType,
-     * and passes the buffer and offset to that constructor.
-     *
-     * @param shapeType the shape file's shape type, enumerated
-     *                  in <code>ShapeUtils</code>
+     * Creates a record instance from the shape file data. Calls the
+     * appropriate record constructor based on the shapeType, and
+     * passes the buffer and offset to that constructor.
+     * 
+     * @param shapeType the shape file's shape type, enumerated in
+     *        <code>ShapeUtils</code>
      * @param b the buffer pointing to the raw record data
-     * @param off the offset of the data starting point in the buffer
-     @ @exception IOException if something goes wrong reading the file
+     * @param off the offset of the data starting point in the buffer @
+     * @exception IOException if something goes wrong reading the file
      * @see ShapeUtils
      */
     public ESRIRecord makeESRIRecord(int shapeType, byte[] b, int off)
-        throws IOException {
+            throws IOException {
 
         switch (shapeType) {
 
@@ -79,12 +76,12 @@ public class SpecialistSpatialIndex extends SpatialIndex {
             return new ESRISpecialistPointRecord(b, off);
         case SHAPE_TYPE_POLYGON:
         case SHAPE_TYPE_ARC:
-//      case SHAPE_TYPE_POLYLINE:
+            //      case SHAPE_TYPE_POLYLINE:
             return new ESRISpecialistPolygonRecord(b, off);
         case SHAPE_TYPE_MULTIPOINT:
             System.out.println("SpecialistSpatialIndex.makeESRIRecord: Arc NYI");
             return null;
-//          return new ESRIMultipointRecord(b, off);
+        //          return new ESRIMultipointRecord(b, off);
         default:
             return null;
         }

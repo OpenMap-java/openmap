@@ -19,83 +19,84 @@ package com.bbn.openmap.examples.beanbox;
 import java.awt.*;
 
 /**
- * A simple bean object. Contains a unique long id, a lat, lon position
- * an orientation measured in degrees clockwise from the +ve Y axis and
- * an optional graphic image or custom graphics class name.
+ * A simple bean object. Contains a unique long id, a lat, lon
+ * position an orientation measured in degrees clockwise from the +ve
+ * Y axis and an optional graphic image or custom graphics class name.
  */
 public class SimpleBeanObject {
 
-  protected long id;
-  protected float latitude;
-  protected float longitude;
-  protected float bearingInDeg;
+    protected long id;
+    protected float latitude;
+    protected float longitude;
+    protected float bearingInDeg;
 
-  protected Image graphicImage;
+    protected Image graphicImage;
 
-  protected String customGraphicClassName;
+    protected String customGraphicClassName;
 
-  public SimpleBeanObject () {
-    this(System.currentTimeMillis(), 0, 0, 0);    
-  }
+    public SimpleBeanObject() {
+        this(System.currentTimeMillis(), 0, 0, 0);
+    }
 
-  public SimpleBeanObject (long id, float latitude, float longitude, float bearingInDeg) {
-    this.id = id;
-    this.latitude = latitude;
-    this.longitude = longitude;
-    this.bearingInDeg = bearingInDeg;    
-  }
+    public SimpleBeanObject(long id, float latitude, float longitude,
+            float bearingInDeg) {
+        this.id = id;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.bearingInDeg = bearingInDeg;
+    }
 
-  public void setId(long id) {
-    this.id = id;
-  }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-  public long getId() {
-    return this.id;
-  }
+    public long getId() {
+        return this.id;
+    }
 
-  public void setLatitude(float lat) {
-    this.latitude = lat;
-  }
+    public void setLatitude(float lat) {
+        this.latitude = lat;
+    }
 
-  public float getLatitude() {
-    return this.latitude;
-  }
+    public float getLatitude() {
+        return this.latitude;
+    }
 
-  public void setLongitude(float lon) {
-    this.longitude = lon;
-  }
+    public void setLongitude(float lon) {
+        this.longitude = lon;
+    }
 
-  public float getLongitude() {
-    return this.longitude;
-  }
+    public float getLongitude() {
+        return this.longitude;
+    }
 
-  public float getBearingInDeg() {
-    return bearingInDeg;
-  }
+    public float getBearingInDeg() {
+        return bearingInDeg;
+    }
 
-  public void setBearingInDeg(float bearingInDeg) {
-    this.bearingInDeg = bearingInDeg;
-  }
+    public void setBearingInDeg(float bearingInDeg) {
+        this.bearingInDeg = bearingInDeg;
+    }
 
-  public Image getGraphicImage() {
-    return graphicImage;
-  }
+    public Image getGraphicImage() {
+        return graphicImage;
+    }
 
-  public void setGraphicImage(Image graphicImage) {
-    this.graphicImage = graphicImage;
-  }
+    public void setGraphicImage(Image graphicImage) {
+        this.graphicImage = graphicImage;
+    }
 
-  public String getCustomGraphicClassName() {
-    return customGraphicClassName;
-  }
+    public String getCustomGraphicClassName() {
+        return customGraphicClassName;
+    }
 
-  public void setCustomGraphicClassName(String className) {
-    this.customGraphicClassName = className;
-  }
+    public void setCustomGraphicClassName(String className) {
+        this.customGraphicClassName = className;
+    }
 
-  public String toString() {
-    return "[SBO " + id + " " + latitude + " " + longitude + 
-           " " + bearingInDeg + " " + customGraphicClassName +
-           " " + graphicImage + "]";
-  }
+    public String toString() {
+        return "[SBO " + id + " " + latitude + " " + longitude + " "
+                + bearingInDeg + " " + customGraphicClassName + " "
+                + graphicImage + "]";
+    }
 }

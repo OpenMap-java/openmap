@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,80 +14,83 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServer.java,v $
 // $RCSfile: ImageServer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/02/23 21:21:00 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.image;
 
 import java.awt.*;
-import java.awt.image.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import javax.swing.ImageIcon;
 
 import com.bbn.openmap.*;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.plugin.*;
-import com.bbn.openmap.event.*;
 import com.bbn.openmap.util.*;
 
-/** 
+/**
  * The image server is the class you want to deal with when creating
- * images from the ImageGenerator.  It takes a properties file and
- * sets up the image generator based on those properties. It also has
- * this queuing thing going so that requests can stack up while the
- * image generator is working on requests, and it will notify the
- * requestor when the image is ready.  <P> 
- *
+ * images from the ImageGenerator. It takes a properties file and sets
+ * up the image generator based on those properties. It also has this
+ * queuing thing going so that requests can stack up while the image
+ * generator is working on requests, and it will notify the requestor
+ * when the image is ready.
+ * <P>
+ * 
  * The ImageServer generally has the layers on the map predefined at
- * construction, although you can change the layers that it has.  When
+ * construction, although you can change the layers that it has. When
  * setting the layer array, do not use the same layer in two different
  * slots of the array - it may not give you the expected map, and may
  * mess around with the timing issues that the ImageGenerator takes
- * care of.  If you want to reorder the layers, do so before adding
- * your request to the ImageServer.  Additionally, each request has
- * the option of not using certain layers in the ImageServer layer
- * array, by turning off the appropriate bits in the layer mask.
- * Understand that the image for a request will be created based on
- * the layer array contents and the request layer mask at the time the
- * request processing is started, not when it is submitted.<P> Right
- * now, the ImageServer is single threaded - processing requests one
- * after another.  The request setup was written to support
+ * care of. If you want to reorder the layers, do so before adding
+ * your request to the ImageServer. Additionally, each request has the
+ * option of not using certain layers in the ImageServer layer array,
+ * by turning off the appropriate bits in the layer mask. Understand
+ * that the image for a request will be created based on the layer
+ * array contents and the request layer mask at the time the request
+ * processing is started, not when it is submitted.
+ * <P>
+ * Right now, the ImageServer is single threaded - processing requests
+ * one after another. The request setup was written to support
  * multi-threaded processing, though, where each image could be
- * generated in it's own thread.  That code is not written - maybe
+ * generated in it's own thread. That code is not written - maybe
  * someday.
- * <P><code><pre>
- * # If the ImageServer is created and given a prefix (in this example,
- * # 'imageServer') the properties file should contain the properties:
- * imageServer.layers=<layer1 layer2 ...>
- * layer1.className=<classname>
- * layer1.prettyName=<pretty name of layer>
- * # Add other attributes as required by layer1...
- * layer2.className=<classname>
- * layer2.prettyName=<pretty name of layer>
- * # Add other attributes as required by layer2...
- * # First formatter listed is default.
- * imageServer.formatters=<formatter1 formatter2 ...>
- * formatter1.class=<classname of formatter 1>
- * # Add other formatter1 properties
- * formatter2.class=<classname of formatter 2>
+ * <P>
+ * <code><pre>
+ * 
+ *  
+ *   # If the ImageServer is created and given a prefix (in this example,
+ *   # 'imageServer') the properties file should contain the properties:
+ *   imageServer.layers=&lt;layer1 layer2 ...&gt;
+ *   layer1.className=&lt;classname&gt;
+ *   layer1.prettyName=&lt;pretty name of layer&gt;
+ *   # Add other attributes as required by layer1...
+ *   layer2.className=&lt;classname&gt;
+ *   layer2.prettyName=&lt;pretty name of layer&gt;
+ *   # Add other attributes as required by layer2...
+ *   # First formatter listed is default.
+ *   imageServer.formatters=&lt;formatter1 formatter2 ...&gt;
+ *   formatter1.class=&lt;classname of formatter 1&gt;
+ *   # Add other formatter1 properties
+ *   formatter2.class=&lt;classname of formatter 2&gt;
+ *   
+ *  
  * </pre></code>
  * <P>
  * NOTE: If you simply hand the ImageServer a standard
- * openmap.properties file, it works with the addition of the first two
- * attributes except WITHOUT the 'imageServer.' prefix.  
- *
+ * openmap.properties file, it works with the addition of the first
+ * two attributes except WITHOUT the 'imageServer.' prefix.
+ * 
  * New for 4.5: If the layers property is not defined, then the
  * openmap.layers property is used to define which layers are
  * available for the ImageServer.
  */
-public class ImageServer 
-    implements /*ImageReadyListener, ImageReceiver,*/ PropertyConsumer {
+public class ImageServer implements
+ /* ImageReadyListener, ImageReceiver, */PropertyConsumer {
 
     /** The Image formatter for the output image. */
     protected ImageFormatter formatter;
@@ -97,19 +100,19 @@ public class ImageServer
      */
     protected Hashtable imageFormatters;
 
-    /** The array of layers on the map.  First is on top. */
+    /** The array of layers on the map. First is on top. */
     protected Layer[] layers;
 
     /** Property for space separated layers. */
     public static final String ImageServerLayersProperty = "layers";
-    
+
     /** OpenMap prefix */
     public static final String OpenMapPrefix = "openmap.";
 
     /**
-     * Property for the image formatter list of available
-     * formats. This propery should contain a space separated list of
-     * marker names.
+     * Property for the image formatter list of available formats.
+     * This propery should contain a space separated list of marker
+     * names.
      */
     public static final String ImageFormattersProperty = "formatters";
 
@@ -120,23 +123,23 @@ public class ImageServer
     protected boolean doAntiAliasing = false;
 
     /**
-     * A place to hold on to a property prefix in case one is
-     * used. Useful for ImageServer properties files where more than
-     * one image server is defined. 
+     * A place to hold on to a property prefix in case one is used.
+     * Useful for ImageServer properties files where more than one
+     * image server is defined.
      */
     protected String propertiesPrefix = null;
 
     /**
      * Empty constructor that expects to be configured later.
      */
-    protected ImageServer(){}
+    protected ImageServer() {}
 
     /**
      * To create the image server, you hand it a set of properties
      * that let it create an array of layers, and also to set the
-     * properties for those layers.  The properties file for the
+     * properties for those layers. The properties file for the
      * ImageServer looks strikingly similar to the openmap.properties
-     * file.  So, all the layers get set up here...
+     * file. So, all the layers get set up here...
      */
     public ImageServer(Properties props) {
         setProperties(props);
@@ -144,10 +147,10 @@ public class ImageServer
 
     /**
      * Same as the other constructor, except that the properties can
-     * have a prefix in front of them.  The format of the prefix has
-     * to match how the property is specified the the properties file,
+     * have a prefix in front of them. The format of the prefix has to
+     * match how the property is specified the the properties file,
      * which may include the period - i.e server1.imageServer.layers,
-     * the server1. is the prefix that should get passed in.  The
+     * the server1. is the prefix that should get passed in. The
      * ImageMaster does this.
      */
     public ImageServer(String prefix, Properties props) {
@@ -156,22 +159,23 @@ public class ImageServer
 
     /**
      * Create an ImageServer that should be configured with a
-     * Properties file.  The prefix given is to scope the ImageServer
-     * properties to this instance.  The Hashtable is for reusing any
+     * Properties file. The prefix given is to scope the ImageServer
+     * properties to this instance. The Hashtable is for reusing any
      * layers that may already be instantiated.
      */
-    public ImageServer(String prefix, Properties props, 
-                       Hashtable instantiatedLayers) {
+    public ImageServer(String prefix, Properties props,
+            Hashtable instantiatedLayers) {
         setProperties(prefix, props, instantiatedLayers);
     }
 
     /**
      * Create an ImageServer from an array of Layers and an
-     * ImageFormatter.  It's assumed that the layers are already
+     * ImageFormatter. It's assumed that the layers are already
      * configured.
+     * 
      * @param layers the array of layers.
      * @param formatter the ImageFormatter to use for the output image
-     * format.  
+     *        format.
      */
     public ImageServer(Layer[] layers, ImageFormatter formatter) {
         this.layers = layers;
@@ -193,11 +197,12 @@ public class ImageServer
     }
 
     /**
-     * Set the layers used on the NEXT request that is processed.
-     * Will not affect any image currently being created.
+     * Set the layers used on the NEXT request that is processed. Will
+     * not affect any image currently being created.
+     * 
      * @param newLayers an array of com.bbn.openmap.Layer objects,
-     * already configured and ready to respond to a projectionChanged
-     * method call.
+     *        already configured and ready to respond to a
+     *        projectionChanged method call.
      */
     public synchronized void setLayers(Layer[] newLayers) {
         if (newLayers == null) {
@@ -209,6 +214,7 @@ public class ImageServer
 
     /**
      * Retrieve the current set of layers used for requests.
+     * 
      * @return Layer[]
      */
     public synchronized Layer[] getLayers() {
@@ -216,12 +222,13 @@ public class ImageServer
     }
 
     /**
-     *  Use the ProjectionPainter interface of the layers to create an
-     *  image.   This approach avoids  some of the timing  issues that
-     *  the thread model of the MapBean and Layers that seem to pop up
-     *  from time to time.  They are Swing components, you know.  They
-     *  were designed to be part  of a GUI.  So, this is a serialized,
-     *  safe way to do things. 
+     * Use the ProjectionPainter interface of the layers to create an
+     * image. This approach avoids some of the timing issues that the
+     * thread model of the MapBean and Layers that seem to pop up from
+     * time to time. They are Swing components, you know. They were
+     * designed to be part of a GUI. So, this is a serialized, safe
+     * way to do things.
+     * 
      * @param proj projection of map.
      * @return a byte[] representing the formatted image.
      */
@@ -230,44 +237,46 @@ public class ImageServer
     }
 
     /**
-     *  Use the ProjectionPainter interface of the layers to create an
-     *  image.   This approach avoids  some of the timing  issues that
-     *  the thread model of the MapBean and Layers that seem to pop up
-     *  from time to time.  They are Swing components, you know.  They
-     *  were designed to be part  of a GUI.  So, this is a serialized,
-     *  safe way to do things. 
-     * @param proj projection of map.     
-     * @param scaledWidth scaled pixel width of final image.  If you
-     * don't want it scaled, use -1.
-     * @param scaledHeight scaled pixel height of final image.  If you
-     * don't want it scaled, use -1.
+     * Use the ProjectionPainter interface of the layers to create an
+     * image. This approach avoids some of the timing issues that the
+     * thread model of the MapBean and Layers that seem to pop up from
+     * time to time. They are Swing components, you know. They were
+     * designed to be part of a GUI. So, this is a serialized, safe
+     * way to do things.
+     * 
+     * @param proj projection of map.
+     * @param scaledWidth scaled pixel width of final image. If you
+     *        don't want it scaled, use -1.
+     * @param scaledHeight scaled pixel height of final image. If you
+     *        don't want it scaled, use -1.
      * @return a byte[] representing the formatted image.
      */
     public byte[] createImage(Projection proj, int scaledWidth, int scaledHeight) {
         return createImage(proj, scaledWidth, scaledHeight, 0xFFFFFFFF);
     }
-  
+
     /**
      * Use the ProjectionPainter interface of the layers to create an
-     * image.   This approach avoids  some of the timing  issues that
-     * the thread model of the MapBean and Layers that seem to pop up
-     * from time to time.  They are Swing components, you know.  They
-     * were designed to be part  of a GUI.  So, this is a serialized,
-     * safe way to do things. 
-     *
+     * image. This approach avoids some of the timing issues that the
+     * thread model of the MapBean and Layers that seem to pop up from
+     * time to time. They are Swing components, you know. They were
+     * designed to be part of a GUI. So, this is a serialized, safe
+     * way to do things.
+     * 
      * @param proj projection of map.
-     * @param scaledWidth scaled pixel width of final image.  If you
-     * don't want it scaled, use -1.
-     * @param scaledHeight scaled pixel height of final image.  If you
-     * don't want it scaled, use -1.
+     * @param scaledWidth scaled pixel width of final image. If you
+     *        don't want it scaled, use -1.
+     * @param scaledHeight scaled pixel height of final image. If you
+     *        don't want it scaled, use -1.
      * @param showLayers Layer marker names reflecting the layers that
-     * should be part of this image.
-     * @return a byte[] representing the formatted image.  
+     *        should be part of this image.
+     * @return a byte[] representing the formatted image.
      */
-    public byte[] createImage(Projection proj, int scaledWidth, int scaledHeight, 
-                              Vector showLayers) {
-      
-        Debug.message("imageserver", "ImageServer: using the new ProjectionPainter interface!  createImage with layer string array. ");
+    public byte[] createImage(Projection proj, int scaledWidth,
+                              int scaledHeight, Vector showLayers) {
+
+        Debug.message("imageserver",
+                "ImageServer: using the new ProjectionPainter interface!  createImage with layer string array. ");
 
         if (formatter == null) {
             Debug.error("ImageServer.createImage: no formatter set! Can't create image.");
@@ -276,27 +285,28 @@ public class ImageServer
 
         ImageFormatter imageFormatter = formatter.makeClone();
         java.awt.Graphics graphics = createGraphics(imageFormatter,
-                                                    proj.getWidth(),
-                                                    proj.getHeight());
+                proj.getWidth(),
+                proj.getHeight());
 
         if (graphics == null) {
             return new byte[0];
         }
-      
-        ((Proj)proj).drawBackground((Graphics2D)graphics, background);
+
+        ((Proj) proj).drawBackground((Graphics2D) graphics, background);
         int size = showLayers.size();
 
         if (showLayers != null) {
-            for (int j=size-1; j >= 0; j--) {           
+            for (int j = size - 1; j >= 0; j--) {
                 for (int i = layers.length - 1; i >= 0; i--) {
-                    String layerName = (String)showLayers.elementAt(j);
+                    String layerName = (String) showLayers.elementAt(j);
                     Layer layer = layers[i];
                     if (layerName.equals(layer.getPropertyPrefix())) {
                         layer.renderDataForProjection(proj, graphics);
                         if (Debug.debugging("imageserver")) {
-                            Debug.output("ImageServer: image request adding layer graphics from : " + layer.getName());
+                            Debug.output("ImageServer: image request adding layer graphics from : "
+                                    + layer.getName());
                         }
-                    }                       
+                    }
                 }
             }
         } else if (Debug.debugging("imageserver")) {
@@ -304,7 +314,8 @@ public class ImageServer
         }
 
         byte[] formattedImage = getFormattedImage(imageFormatter,
-                                                  scaledWidth, scaledHeight);
+                scaledWidth,
+                scaledHeight);
         graphics.dispose();
         return formattedImage;
     }
@@ -324,29 +335,30 @@ public class ImageServer
     }
 
     /**
-     *  Use the ProjectionPainter interface of the layers to create an
-     *  image.   This approach avoids  some of the timing  issues that
-     *  the thread model of the MapBean and Layers that seem to pop up
-     *  from time to time.  They are Swing components, you know.  They
-     *  were designed to be part  of a GUI.  So, this is a serialized,
-     *  safe way to do things. 
+     * Use the ProjectionPainter interface of the layers to create an
+     * image. This approach avoids some of the timing issues that the
+     * thread model of the MapBean and Layers that seem to pop up from
+     * time to time. They are Swing components, you know. They were
+     * designed to be part of a GUI. So, this is a serialized, safe
+     * way to do things.
+     * 
      * @param proj projection of map.
-     * @param scaledWidth scaled pixel width of final image.  If you
-     * don't want it scaled, use -1.
-     * @param scaledHeight scaled pixel height of final image.  If you
-     * don't want it scaled, use -1.
+     * @param scaledWidth scaled pixel width of final image. If you
+     *        don't want it scaled, use -1.
+     * @param scaledHeight scaled pixel height of final image. If you
+     *        don't want it scaled, use -1.
      * @param includedLayerMask a mask signifying which of the
-     * ImageServer layers to use in the image.  It's assumed that the
-     * called knows which layers are desired.  Bit 1 of the mask
-     * refers to layer[0], etc.  A bit turned on means the layer will
-     * be included.
-     * @return a byte[] representing the formatted image.  
+     *        ImageServer layers to use in the image. It's assumed
+     *        that the called knows which layers are desired. Bit 1 of
+     *        the mask refers to layer[0], etc. A bit turned on means
+     *        the layer will be included.
+     * @return a byte[] representing the formatted image.
      */
-    public byte[] createImage(Projection proj, 
-                              int scaledWidth, int scaledHeight,
-                              int includedLayerMask) {
+    public byte[] createImage(Projection proj, int scaledWidth,
+                              int scaledHeight, int includedLayerMask) {
 
-        Debug.message("imageserver", "ImageServer: using the new ProjectionPainter interface!  createImage with layer mask.");
+        Debug.message("imageserver",
+                "ImageServer: using the new ProjectionPainter interface!  createImage with layer mask.");
 
         if (formatter == null) {
             Debug.error("ImageServer.createImage: no formatter set! Can't create image.");
@@ -355,80 +367,82 @@ public class ImageServer
 
         ImageFormatter imageFormatter = formatter.makeClone();
 
-        Graphics graphics = createGraphics(imageFormatter, 
-                                           proj.getWidth(),
-                                           proj.getHeight());
+        Graphics graphics = createGraphics(imageFormatter,
+                proj.getWidth(),
+                proj.getHeight());
 
         if (graphics == null) {
             return new byte[0];
         }
 
-        ((Proj)proj).drawBackground((Graphics2D)graphics, background);
+        ((Proj) proj).drawBackground((Graphics2D) graphics, background);
 
         if (Debug.debugging("imageserver")) {
-            Debug.output("ImageServer: considering " + layers.length + " for image...");
+            Debug.output("ImageServer: considering " + layers.length
+                    + " for image...");
         }
 
         for (int i = layers.length - 1; i >= 0; i--) {
-            
+
             if ((includedLayerMask & (0x00000001 << i)) != 0) {
                 if (Debug.debugging("imageserver")) {
                     Debug.output("ImageServer: image request adding layer graphics from : "
-                                 + layers[i].getName());
+                            + layers[i].getName());
                 }
 
                 layers[i].renderDataForProjection(proj, graphics);
             } else {
                 if (Debug.debugging("imageserver")) {
                     Debug.output("ImageServer: skipping layer graphics from : "
-                                 + layers[i].getName());
+                            + layers[i].getName());
                 }
             }
         }
-        
+
         byte[] formattedImage = getFormattedImage(imageFormatter,
-                                                  scaledWidth, scaledHeight);
+                scaledWidth,
+                scaledHeight);
         graphics.dispose();
         return formattedImage;
     }
 
     /**
-     * Create a java.awt.Graphics to use for an image.  The Graphics
+     * Create a java.awt.Graphics to use for an image. The Graphics
      * will affect the image contained within the ImageFormatter.
-     *
+     * 
      * @param formatter the ImageFormatter containing the image.
      * @param width the pixel width of the image.
      * @param height the pixel height of the image.
      */
-    protected Graphics createGraphics(ImageFormatter formatter, 
-                                      int width, int height) {
+    protected Graphics createGraphics(ImageFormatter formatter, int width,
+                                      int height) {
 
         java.awt.Graphics graphics = null;
-      
+
         if (formatter != null) {
             graphics = formatter.getGraphics(width, height);
         } else {
             Debug.error("ImageServer.createGraphics: Formatter is null, returning null graphics.");
             return null;
         }
-      
+
         if (graphics == null) {
             Debug.error("ImageServer.createGraphics: NOT able to create Graphics!");
             return null;
         }
-      
+
         if (Debug.debugging("imageserver")) {
             Debug.output("ImageServer.createGraphics: graphics is cool");
         }
-      
+
         if (doAntiAliasing && graphics instanceof java.awt.Graphics2D) {
             java.awt.Graphics2D g2d = (java.awt.Graphics2D) graphics;
             g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                 RenderingHints.VALUE_ANTIALIAS_ON);
+                    RenderingHints.VALUE_ANTIALIAS_ON);
         }
-      
+
         return graphics;
     }
 
@@ -437,7 +451,7 @@ public class ImageServer
      * scaling to a particular size if the scaledWidth and
      * scaledHeight are greater than 0.
      */
-    protected byte[] getFormattedImage(ImageFormatter formatter, 
+    protected byte[] getFormattedImage(ImageFormatter formatter,
                                        int scaledWidth, int scaledHeight) {
 
         if (Debug.debugging("imageserver")) {
@@ -447,12 +461,13 @@ public class ImageServer
 
         // Now, scale the image, if needed...
         if (scaledWidth > 0 && scaledHeight > 0) {
-            
-            formattedImage = 
-                formatter.getScaledImageBytes(scaledWidth, scaledHeight);
-        
+
+            formattedImage = formatter.getScaledImageBytes(scaledWidth,
+                    scaledHeight);
+
         } else {
-            Debug.message("imageserver", "ImageServer: using full scale image (unscaled).");
+            Debug.message("imageserver",
+                    "ImageServer: using full scale image (unscaled).");
             formattedImage = formatter.getImageBytes();
         }
         return formattedImage;
@@ -466,29 +481,31 @@ public class ImageServer
     }
 
     /**
-     * Set the layers and image type in the properties.  The
-     * properties might have a prefix in the file.  
+     * Set the layers and image type in the properties. The properties
+     * might have a prefix in the file.
      */
     public void setProperties(String prefix, Properties props) {
         setProperties(prefix, props, (Hashtable) null);
     }
 
     /**
-     * Set the layers and image type in the properties.  The
-     * properties might have a prefix in the file.  
+     * Set the layers and image type in the properties. The properties
+     * might have a prefix in the file.
      */
-    public void setProperties(String prefix, Properties props, 
+    public void setProperties(String prefix, Properties props,
                               Hashtable instantiatedLayers) {
         setPropertyPrefix(prefix);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         layers = getLayers(props, instantiatedLayers);
         formatter = getFormatters(props);
-        doAntiAliasing = PropUtils.booleanFromProperties(props, prefix+AntiAliasingProperty, false);
+        doAntiAliasing = PropUtils.booleanFromProperties(props, prefix
+                + AntiAliasingProperty, false);
     }
 
     /**
-     * Part of the PropertyConsumer interface.  Doesn't do anything yet.
+     * Part of the PropertyConsumer interface. Doesn't do anything
+     * yet.
      */
     public Properties getProperties(Properties props) {
         if (props == null) {
@@ -505,14 +522,17 @@ public class ImageServer
             list = new Properties();
         }
 
-        list.put(ImageServerLayersProperty, "A list of marker names (space-separated) for layer definitions");
-        list.put(ImageFormattersProperty, "A list of marker names (space-separated) for ImageFormatter definitions");
-        list.put(AntiAliasingProperty, "Whether to use anti-aliasing for the image");
+        list.put(ImageServerLayersProperty,
+                "A list of marker names (space-separated) for layer definitions");
+        list.put(ImageFormattersProperty,
+                "A list of marker names (space-separated) for ImageFormatter definitions");
+        list.put(AntiAliasingProperty,
+                "Whether to use anti-aliasing for the image");
         return list;
     }
 
     /**
-     * Part of the PropertyConsumer interface.  Set the Properties
+     * Part of the PropertyConsumer interface. Set the Properties
      * prefix to use to scope the relevant properties passed into the
      * setProperties method.
      */
@@ -521,7 +541,7 @@ public class ImageServer
     }
 
     /**
-     * Part of the PropertyConsumer interface.  Get the Properties
+     * Part of the PropertyConsumer interface. Get the Properties
      * prefix used to scope the relevant properties passed into the
      * setProperties method.
      */
@@ -529,18 +549,19 @@ public class ImageServer
         return propertiesPrefix;
     }
 
-    /** 
+    /**
      * Given a integer that represents, bitwise, the layers that you
      * want out of the current list held by the ImageServer layer
-     * array, return an array of those layers.  
+     * array, return an array of those layers.
+     * 
      * @param layerMask bit mask for desired layers, bit 0 is layer 0.
-     * @return layer[]     
+     * @return layer[]
      */
     protected synchronized Layer[] getMaskedLayers(int layerMask) {
         if (layerMask == 0xFFFFFFFF) {
             //  They all want to be there
             Debug.message("imageserver",
-                          "ImageServer: image request adding all layers.");
+                    "ImageServer: image request adding all layers.");
             return layers;
         } else {
             //  Use the vector as a growable array, and add the layers
@@ -550,17 +571,19 @@ public class ImageServer
                 if ((layerMask & (0x00000001 << i)) != 0) {
                     layerVector.add(layers[i]);
                     if (Debug.debugging("imageserver")) {
-                        Debug.output("ImageServer: image request adding layer: " + layers[i].getName());
+                        Debug.output("ImageServer: image request adding layer: "
+                                + layers[i].getName());
                     }
                 }
             }
             Layer[] imageLayers = new Layer[layerVector.size()];
-            return (Layer[])layerVector.toArray(imageLayers);
+            return (Layer[]) layerVector.toArray(imageLayers);
         }
     }
 
     /**
      * Get the ImageFormatter currently used for the image creation.
+     * 
      * @return ImageFormatter.
      */
     public synchronized ImageFormatter getFormatter() {
@@ -575,16 +598,15 @@ public class ImageServer
     }
 
     /**
-     * Set the default formatter to the one with the given label.  The
+     * Set the default formatter to the one with the given label. The
      * label can be retrieved from the ImageFormatter.
-     *
+     * 
      * @param formatterLabel String for a particular formatter.
      * @return true if label matches up with a known formatter, false
-     * if no formatter found.
+     *         if no formatter found.
      */
     public synchronized boolean setFormatter(String formatterLabel) {
-        ImageFormatter tmpFormatter = 
-            (ImageFormatter)imageFormatters.get(formatterLabel.intern());
+        ImageFormatter tmpFormatter = (ImageFormatter) imageFormatters.get(formatterLabel.intern());
 
         if (tmpFormatter != null) {
             setFormatter(tmpFormatter);
@@ -595,9 +617,9 @@ public class ImageServer
     }
 
     /**
-     * Get the Hashtable used to hold the ImageFormatters.  The label
+     * Get the Hashtable used to hold the ImageFormatters. The label
      * for each one is the lookup for it in the Hashtable.
-     *
+     * 
      * @return Hashtable of ImageFormatters.
      */
     public synchronized Hashtable getFormatters() {
@@ -607,19 +629,21 @@ public class ImageServer
     /**
      * Set the ImageFormatter Hashtable to set up the possible choices
      * for image formats.
-     *
+     * 
      * @param iFormatters Hashtable of ImageFormatters
      * @param defaultFormatterKey the key label of the formatter to
-     * use for a default.
+     *        use for a default.
      */
     public synchronized void setFormatters(Hashtable iFormatters,
                                            String defaultFormatterKey) {
         imageFormatters = iFormatters;
-        formatter = (ImageFormatter)imageFormatters.get(defaultFormatterKey.intern());
+        formatter = (ImageFormatter) imageFormatters.get(defaultFormatterKey.intern());
     }
 
     /**
-     * Create an ImageFormatter from the contents of a properties object.
+     * Create an ImageFormatter from the contents of a properties
+     * object.
+     * 
      * @param p Properties used to initialize the Properties.
      * @return default formatter.
      */
@@ -652,7 +676,8 @@ public class ImageServer
             }
 
         } else {
-            Debug.message("imageserver", "ImageServer.getFormatters: no formatters specified");
+            Debug.message("imageserver",
+                    "ImageServer.getFormatters: no formatters specified");
         }
 
         return iFormatter;
@@ -662,33 +687,36 @@ public class ImageServer
      * Create an array of Layers from a properties object.
      */
     protected Layer[] getLayers(Properties p) {
-        return getLayers(p, (Hashtable)null);
+        return getLayers(p, (Hashtable) null);
     }
 
     /**
-     * Create an array of Layers from a properties object.  Reuse the
+     * Create an array of Layers from a properties object. Reuse the
      * layer from the hashtable if it's there under the same property
-     * name.  The Hashtable is kept for an ImageServer that is used
-     * buy an ImageMaster or another object that is using different
-     * layers for it's image.  It will reuse the layers it's already
-     * created if the marker names are the same.
-     *
+     * name. The Hashtable is kept for an ImageServer that is used buy
+     * an ImageMaster or another object that is using different layers
+     * for it's image. It will reuse the layers it's already created
+     * if the marker names are the same.
+     * 
      * @param p properties
      * @param instantiatedLayers a hashtable containing layers, with
-     * the prefix layer name used as the key.  
+     *        the prefix layer name used as the key.
      */
     protected Layer[] getLayers(Properties p, Hashtable instantiatedLayers) {
 
         String layersValue;
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         layersValue = p.getProperty(prefix + ImageServerLayersProperty);
-        
+
         if (layersValue == null) {
             // get openmap.layers value
-            layersValue = p.getProperty(OpenMapPrefix + ImageServerLayersProperty);
-    
+            layersValue = p.getProperty(OpenMapPrefix
+                    + ImageServerLayersProperty);
+
             if (layersValue == null) {
-                Debug.error("ImageServer: No property \"" + ImageServerLayersProperty + "\" found in ImageServer properties.");
+                Debug.error("ImageServer: No property \""
+                        + ImageServerLayersProperty
+                        + "\" found in ImageServer properties.");
                 return new Layer[0];
             }
         }
@@ -696,14 +724,14 @@ public class ImageServer
         Vector layerNames = PropUtils.parseSpacedMarkers(layersValue);
 
         if (Debug.debugging("imageserver")) {
-            Debug.output("OpenMap.getLayers(): "+ layerNames);
+            Debug.output("OpenMap.getLayers(): " + layerNames);
         }
 
         int nLayerNames = layerNames.size();
         Vector layers = new Vector(nLayerNames);
 
         for (int i = 0; i < nLayerNames; i++) {
-            String layerName = (String)layerNames.elementAt(i);
+            String layerName = (String) layerNames.elementAt(i);
 
             // Check to see if some other ImageServer has used this
             // layer, and reuse it.
@@ -712,12 +740,12 @@ public class ImageServer
                 if (iLayer != null) {
 
                     // We might want to consider adding this:
-//                  iLayer.setProperties(layerName, p);
+                    //                  iLayer.setProperties(layerName, p);
 
                     layers.add(iLayer);
                     if (Debug.debugging("imageserver")) {
                         Debug.output("ImageServer: adding instantiated layer /"
-                                     + layerName + "/");
+                                + layerName + "/");
                     }
                     continue;
                 }
@@ -727,8 +755,8 @@ public class ImageServer
             String classProperty = layerName + ".class";
             String className = p.getProperty(classProperty);
             if (className == null) {
-                Debug.error("Failed to locate property \""
-                            + classProperty + "\"");
+                Debug.error("Failed to locate property \"" + classProperty
+                        + "\"");
                 Debug.error("Skipping layer \"" + layerName + "\"");
                 continue;
             }
@@ -741,7 +769,8 @@ public class ImageServer
                     PlugIn pi = (PlugIn) obj;
                     PlugInLayer pil = new PlugInLayer();
                     pil.setPlugIn(pi);
-                    pil.setName(p.getProperty(PropUtils.getScopedPropertyPrefix(pi) + Layer.PrettyNameProperty));
+                    pil.setName(p.getProperty(PropUtils.getScopedPropertyPrefix(pi)
+                            + Layer.PrettyNameProperty));
                     l = pil;
                 } else {
                     l = (Layer) obj;
@@ -752,8 +781,8 @@ public class ImageServer
                 if (instantiatedLayers != null) {
                     instantiatedLayers.put(layerName, l);
                     if (Debug.debugging("imageserver")) {
-                        Debug.output("ImageServer: Saving /" + layerName +
-                                     "/ to instantiated layers hashtable.");
+                        Debug.output("ImageServer: Saving /" + layerName
+                                + "/ to instantiated layers hashtable.");
                     }
                 }
             }
@@ -769,49 +798,48 @@ public class ImageServer
         }
     }
 
-//      protected void finalize() {
-//      if (Debug.debugging("gc")) {
-//          Debug.output("ImageServer: GC'd.");
-//      }
-//      }
+    //      protected void finalize() {
+    //      if (Debug.debugging("gc")) {
+    //          Debug.output("ImageServer: GC'd.");
+    //      }
+    //      }
 
     /**
      * For convenience, to create an image file based on the contents
      * of a properties file (like an openmap.properties file).
-     *
+     * 
      * @param prefix The prefix for the ImageServer properties (layers
-     * and formatters) to use in the properties file.  If defined,
-     * then this method will look for 'prefix.layers' and
-     * prefix.formatters' properties. If null, then this method will
-     * look 'layers' and 'formatters' properties.
-     *
+     *        and formatters) to use in the properties file. If
+     *        defined, then this method will look for 'prefix.layers'
+     *        and prefix.formatters' properties. If null, then this
+     *        method will look 'layers' and 'formatters' properties.
+     * 
      * @param props The properties to use for defining the layers and
-     * plugins to use on the map image.  Standard openmap.properties
-     * formats for layer definitions.  See the standard
-     * openmap.properties file for more details on how to define
-     * layers and plugins.
-     *
-     * @param proj The projection to use for the map.  If null, then
-     * the Environment projection properties will be looked for in the
-     * Properties.
-     *
-     * @param outputPath The output path for the image file.  The
-     * image file should not have an appendix defined.  This method
-     * will check which formatter is being used, and will assign one
-     * based on the image format (leave off the ., too).
-     *
+     *        plugins to use on the map image. Standard
+     *        openmap.properties formats for layer definitions. See
+     *        the standard openmap.properties file for more details on
+     *        how to define layers and plugins.
+     * 
+     * @param proj The projection to use for the map. If null, then
+     *        the Environment projection properties will be looked for
+     *        in the Properties.
+     * 
+     * @param outputPath The output path for the image file. The image
+     *        file should not have an appendix defined. This method
+     *        will check which formatter is being used, and will
+     *        assign one based on the image format (leave off the .,
+     *        too).
+     * 
      * @return the final path of the written image file, with the
-     * chosen appendix attached.
+     *         chosen appendix attached.
      */
-    public static String createImageFile(String prefix, 
-                                         Properties props, 
-                                         Projection proj,
-                                         String outputPath) 
+    public static String createImageFile(String prefix, Properties props,
+                                         Projection proj, String outputPath)
 
-        throws MalformedURLException, IOException {
+    throws MalformedURLException, IOException {
 
         String appendix = "";
-        
+
         ImageServer is = new ImageServer(props);
 
         ImageFormatter formatter = is.getFormatter();
@@ -826,39 +854,46 @@ public class ImageServer
                 appendix = "." + fileType.toLowerCase();
             }
         }
-        
+
         Color background = MapBean.DEFAULT_BACKGROUND_COLOR;
-        background = (Color)PropUtils.parseColorFromProperties(
-            props, Environment.BackgroundColor, background);
-            
+        background = (Color) PropUtils.parseColorFromProperties(props,
+                Environment.BackgroundColor,
+                background);
+
         is.setBackground(background);
 
         // Initialize the map projection, scale, center with
         // user prefs or defaults
         if (proj == null) {
             String projName = props.getProperty(Environment.Projection);
-            if (projName == null) {
-                projName = Mercator.MercatorName;
+            Class projClass = ProjectionFactory.getProjClassForName(projName);
+
+            if (projClass == null) {
+                projClass = Mercator.class;
             }
-            int projType = ProjectionFactory.getProjType(projName);
-            
-            proj = ProjectionFactory.makeProjection(
-                projType,
-                PropUtils.floatFromProperties(props, Environment.Latitude, 0f),
-                PropUtils.floatFromProperties(props, Environment.Longitude, 0f),
-                PropUtils.floatFromProperties(props, Environment.Scale,
-                                               MapBean.DEFAULT_SCALE),
-                PropUtils.intFromProperties(props, Environment.Width,
-                                             MapBean.DEFAULT_WIDTH),
-                PropUtils.intFromProperties(props, Environment.Height,
-                                             MapBean.DEFAULT_HEIGHT));
+
+            proj = ProjectionFactory.makeProjection(projClass,
+                    PropUtils.floatFromProperties(props,
+                            Environment.Latitude,
+                            0f),
+                    PropUtils.floatFromProperties(props,
+                            Environment.Longitude,
+                            0f),
+                    PropUtils.floatFromProperties(props,
+                            Environment.Scale,
+                            MapBean.DEFAULT_SCALE),
+                    PropUtils.intFromProperties(props,
+                            Environment.Width,
+                            MapBean.DEFAULT_WIDTH),
+                    PropUtils.intFromProperties(props,
+                            Environment.Height,
+                            MapBean.DEFAULT_HEIGHT));
         }
-        
+
         if (Debug.debugging("imageserver")) {
-            Debug.output("ImageServer: creating image with projection " + 
-                         proj);
+            Debug.output("ImageServer: creating image with projection " + proj);
         }
-        
+
         byte[] imageBytes = is.createImage(proj);
         String finalOutputPath = outputPath + appendix;
         FileOutputStream fos = new FileOutputStream(finalOutputPath);
@@ -892,13 +927,17 @@ public class ImageServer
     /**
      * The ImageServer class main function will create a map image
      * from a modified openmap.properties file.
-     *
-     * <pre>java com.bbn.openmap.image.ImageServer -properties (path
-     * to properties file) -file (path to output image) </pre> 
-     *
-     * <P> The path to the output image should not have an appendix on
-     * it, that will get assigned depending on what image format is
-     * used.  
+     * 
+     * <pre>
+     * 
+     *  java com.bbn.openmap.image.ImageServer -properties (path
+     *   to properties file) -file (path to output image) 
+     *  
+     * </pre>
+     * 
+     * <P>
+     * The path to the output image should not have an appendix on it,
+     * that will get assigned depending on what image format is used.
      */
     public static void main(String[] argv) {
 
@@ -906,11 +945,12 @@ public class ImageServer
         Debug.put("imageserver");
         Debug.put("image");
 
-        com.bbn.openmap.util.ArgParser ap = new 
-            com.bbn.openmap.util.ArgParser("ImageServer");
+        com.bbn.openmap.util.ArgParser ap = new com.bbn.openmap.util.ArgParser("ImageServer");
 
         ap.add("properties", "The properties file to use for the image.", 1);
-        ap.add("file", "The output image file, without appendix (default is 'image').", 1);
+        ap.add("file",
+                "The output image file, without appendix (default is 'image').",
+                1);
 
         if (!ap.parse(argv)) {
             ap.printUsage();
@@ -939,16 +979,17 @@ public class ImageServer
 
                 Projection proj = null;
 
-                String finalOutputPath = ImageServer.createImageFile(null, props, proj, imagefile);
+                String finalOutputPath = ImageServer.createImageFile(null,
+                        props,
+                        proj,
+                        imagefile);
 
                 if (Debug.debugging("imageserver")) {
                     Debug.output("Writing image file to: " + finalOutputPath);
                 }
 
-
             } catch (MalformedURLException murle) {
-                Debug.error("ImageServer can't find properties file: " +
-                            arg[0]);
+                Debug.error("ImageServer can't find properties file: " + arg[0]);
             } catch (IOException ioe) {
                 Debug.error("ImageServer can't write output image: IOException");
             }
@@ -957,5 +998,4 @@ public class ImageServer
         System.exit(0);
     }
 }
-
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFText.java,v $
 // $RCSfile: MIFText.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.mif;
 
@@ -33,15 +32,15 @@ import com.bbn.openmap.proj.Projection;
  * screen will not become cluttered This extension of OMText defines a
  * property visibleScale. visibleScale is the OpenMap maximum scale at
  * which the text will be rendered all scale values after the
- * visibleScale value will result in the text to be rendered.<P>
+ * visibleScale value will result in the text to be rendered.
+ * <P>
  * 
  * If visible scale is set to -1 the text will be rendered all all
  * scale levels.
  * 
  * @author Simon Bowen
  */
-public class MIFText extends OMText 
-    implements MIFGraphic, java.io.Serializable {
+public class MIFText extends OMText implements MIFGraphic, java.io.Serializable {
     /**
      * default visibleScale value is -1
      */
@@ -51,17 +50,14 @@ public class MIFText extends OMText
 
     /**
      * @param lat the latitude to display the text string
-     * @param lon the longitude to display the text string 
+     * @param lon the longitude to display the text string
      * @param txt the text string to display
      * @param justification from OMText e.g. OMText.JUSTIFY_CENTER
      * @param visibleScale if visible scale is set to -1 the text will
-     * be rendered all all scale levels.
+     *        be rendered all all scale levels.
      */
-    public MIFText(float lat,
-                   float lon,
-                   String txt,
-                   int justification,
-                   float visibleScale) {
+    public MIFText(float lat, float lon, String txt, int justification,
+            float visibleScale) {
 
         super(lat, lon, txt, justification);
         this.setVisibleScale(visibleScale);
@@ -87,8 +83,7 @@ public class MIFText extends OMText
      * scale is appropiate to render the text or not.
      */
     public synchronized boolean generate(Projection proj) {
-        if ((proj.getScale() <= getVisibleScale())
-            || (getVisibleScale() == -1)) {
+        if ((proj.getScale() <= getVisibleScale()) || (getVisibleScale() == -1)) {
 
             this.renderText = true;
         } else {
@@ -110,4 +105,4 @@ public class MIFText extends OMText
     }
 }
 
-/**Last line of file **/
+/** Last line of file * */

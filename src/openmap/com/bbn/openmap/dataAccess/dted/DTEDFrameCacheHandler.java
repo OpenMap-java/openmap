@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,26 +14,21 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrameCacheHandler.java,v $
 // $RCSfile: DTEDFrameCacheHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/03/15 23:42:31 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.dataAccess.dted;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Component;
 import java.awt.CardLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
-import java.io.File;
-import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
@@ -47,16 +42,9 @@ import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMGrid;
-import com.bbn.openmap.omGraphics.OMRaster;
-import com.bbn.openmap.omGraphics.OMRasterObject;
-import com.bbn.openmap.omGraphics.grid.ColoredShadingColors;
-import com.bbn.openmap.omGraphics.grid.ElevationFBandGenerator;
-import com.bbn.openmap.omGraphics.grid.ElevationMBandGenerator;
 import com.bbn.openmap.omGraphics.grid.GeneratorLoader;
-import com.bbn.openmap.omGraphics.grid.GreyscaleSlopeColors;
 import com.bbn.openmap.omGraphics.grid.OMGridGenerator;
 import com.bbn.openmap.omGraphics.grid.SinkGenerator;
-import com.bbn.openmap.omGraphics.grid.SlopeGenerator;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
@@ -64,37 +52,44 @@ import com.bbn.openmap.util.PropUtils;
 
 /**
  * The DTEDFrameCacheHandler is a cache for objects being rendered on
- * the map as a result of reading in DTED data.  It communicates with
- * a DTEDFrameCache to get OMGrid data from the actual DTED data
- * files, and then sets OMGridGenerators on those OMGrids to create
- * representations of the DTED.<P>
- *
+ * the map as a result of reading in DTED data. It communicates with a
+ * DTEDFrameCache to get OMGrid data from the actual DTED data files,
+ * and then sets OMGridGenerators on those OMGrids to create
+ * representations of the DTED.
+ * <P>
+ * 
  * The DTEDFrameCacheHandler uses GeneratorLoaders to create
- * OMGridGenerators for its OMGrids.  The GeneratorLoaders provide a
- * GUI for controlling those OMGridGenerator parameters.  The list of
- * GeneratorLoaders can be set via Properties.  In general, properties
- * being set for a DTEDFrameCacheHandler:<P><pre>
- *
- * markerName.generators=greys colors
- * markerName.greys.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
- * markerName.greys.prettyName=Slope Shading
- * markerName.greys.colorsClass=com.bbn.openmap.omGraphics.grid.GreyscaleSlopeColors
- * markerName.colors.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
- * markerName.colors.prettyName=Elevation Shading
- * markerName.colors.colorsClass=com.bbn.openmap.omGraphics.grid.ColoredShadingColors
- *
+ * OMGridGenerators for its OMGrids. The GeneratorLoaders provide a
+ * GUI for controlling those OMGridGenerator parameters. The list of
+ * GeneratorLoaders can be set via Properties. In general, properties
+ * being set for a DTEDFrameCacheHandler:
+ * <P>
+ * 
+ * <pre>
+ * 
+ * 
+ *  markerName.generators=greys colors
+ *  markerName.greys.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
+ *  markerName.greys.prettyName=Slope Shading
+ *  markerName.greys.colorsClass=com.bbn.openmap.omGraphics.grid.GreyscaleSlopeColors
+ *  markerName.colors.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
+ *  markerName.colors.prettyName=Elevation Shading
+ *  markerName.colors.colorsClass=com.bbn.openmap.omGraphics.grid.ColoredShadingColors
+ * 
+ *  
  * </pre>
- *
+ * 
  * The only properties that are required for the DTEDFrameCacheHandler
  * are the generators property, and then the .class properties for the
- * generator loader class names.  All of the other generator loader
- * properties are sent to the generator loader for interpretation. <p>
- *
+ * generator loader class names. All of the other generator loader
+ * properties are sent to the generator loader for interpretation.
+ * <p>
+ * 
  * The markerName is generally provided by the parent component of the
  * DTEDFrameCacheHandler, like the DTEDFrameCacheLayer.
  */
-public class DTEDFrameCacheHandler extends CacheHandler 
-    implements DTEDConstants, PropertyConsumer, PropertyChangeListener {
+public class DTEDFrameCacheHandler extends CacheHandler implements
+        DTEDConstants, PropertyConsumer, PropertyChangeListener {
 
     public final static String GeneratorLoadersProperty = "generators";
 
@@ -102,7 +97,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
     protected DTEDFrameCache frameCache;
 
     // Setting up the screen...
-    protected double frameUp, frameDown, frameLeft, frameRight; 
+    protected double frameUp, frameDown, frameLeft, frameRight;
 
     // Returning the images...
     protected boolean firstImageReturned = true;
@@ -141,7 +136,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
     public void setFrameCache(DTEDFrameCache dfc) {
         frameCache = dfc;
     }
-    
+
     /**
      * Get the DTEDFrameCache.
      */
@@ -149,9 +144,9 @@ public class DTEDFrameCacheHandler extends CacheHandler
         return frameCache;
     }
 
-    /** 
-     * Get an elevation at a point.  Always uses the cache to
-     * load the frame and get the data.  DTED data is in meters.
+    /**
+     * Get an elevation at a point. Always uses the cache to load the
+     * frame and get the data. DTED data is in meters.
      */
     public int getElevation(float lat, float lon) {
         if (frameCache != null) {
@@ -181,9 +176,9 @@ public class DTEDFrameCacheHandler extends CacheHandler
      */
     public void setActiveGeneratorLoader(String active) {
         for (Iterator it = generatorLoaders.iterator(); it.hasNext();) {
-            GeneratorLoader gl = (GeneratorLoader)it.next();
-            if (active.equals(gl.getPrettyName()) && 
-                gl != activeGeneratorLoader) {
+            GeneratorLoader gl = (GeneratorLoader) it.next();
+            if (active.equals(gl.getPrettyName())
+                    && gl != activeGeneratorLoader) {
                 activeGeneratorLoader = gl;
                 clear();
             }
@@ -218,7 +213,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
 
         for (Iterator it = generatorLoaders.iterator(); it.hasNext();) {
 
-            GeneratorLoader gl = (GeneratorLoader)it.next();
+            GeneratorLoader gl = (GeneratorLoader) it.next();
             String prettyName = gl.getPrettyName();
             comboBoxItems[count++] = prettyName;
 
@@ -233,13 +228,13 @@ public class DTEDFrameCacheHandler extends CacheHandler
         JComboBox cb = new JComboBox(comboBoxItems);
         cb.setEditable(false);
         cb.addItemListener(new ItemListener() {
-                public void itemStateChanged(ItemEvent evt) {
-                    CardLayout cl = (CardLayout)(cards.getLayout());
-                    String active = (String)evt.getItem();
-                    cl.show(cards, active);
-                    setActiveGeneratorLoader(active);
-                }
-            });
+            public void itemStateChanged(ItemEvent evt) {
+                CardLayout cl = (CardLayout) (cards.getLayout());
+                String active = (String) evt.getItem();
+                cl.show(cards, active);
+                setActiveGeneratorLoader(active);
+            }
+        });
         //Put the JComboBox in a JPanel to get a nicer look.
         JPanel comboBoxPane = new JPanel(); //use FlowLayout
         comboBoxPane.add(cb);
@@ -249,17 +244,17 @@ public class DTEDFrameCacheHandler extends CacheHandler
         return pane;
     }
 
-    /** 
+    /**
      * The call to the cache that lets you choose what kind of
-     * information is returned.  This function also figures out what
+     * information is returned. This function also figures out what
      * part of the earth is covered on the screen, and creates
      * auxillary cache handlers as needed.
-     *
+     * 
      * @param proj The projection of the screen (CADRG).
      * @return List of rasters to display.
      */
     public OMGraphicList getRectangle(EqualArc proj) {
-        
+
         float[] lat = new float[3];
         float[] lon = new float[3];
 
@@ -267,10 +262,9 @@ public class DTEDFrameCacheHandler extends CacheHandler
         // dateline: Worst case, crossing both, treat each area
         // separately, so it is the same as handling four requests for
         // data - above and below the equator, and left and right of
-        // the dateline.  Normal case, there is only one box.  Two
+        // the dateline. Normal case, there is only one box. Two
         // boxes if crossing only one of the boundaries.
-        
-        
+
         int xa = 2;
         int ya = 2;
         int lat_minus = 2;
@@ -278,23 +272,24 @@ public class DTEDFrameCacheHandler extends CacheHandler
         // Set up checks for equator and dateline
         LatLonPoint ll1 = proj.getUpperLeft();
         LatLonPoint ll2 = proj.getLowerRight();
-        
+
         lat[0] = ll1.getLatitude();
         lon[0] = ll1.getLongitude();
         lat[1] = ll2.getLatitude();
         lon[1] = ll2.getLongitude();
         lat[2] = ll2.getLatitude();
         lon[2] = ll2.getLongitude();
-        
+
         if (lon[0] > 0 && lon[2] < 0) {
-            lon[1] = -179.999f;  // put a little breather on the dateline
+            lon[1] = -179.999f; // put a little breather on the
+                                // dateline
             lon_minus = 1;
         }
         if (lat[0] > 0 && lat[2] < 0) {
-            lat[1] = -0.0001f;  // put a little breather on the equator
+            lat[1] = -0.0001f; // put a little breather on the equator
             lat_minus = 1;
         }
-        
+
         if (Debug.debugging("dteddetail")) {
             Debug.output("For :");
             Debug.output("lat[0] " + lat[0]);
@@ -306,44 +301,51 @@ public class DTEDFrameCacheHandler extends CacheHandler
             Debug.output("lat_minus = " + lat_minus);
             Debug.output("lon_minus = " + lon_minus);
         }
-        
-        /*  Look at all the paths if needed.  Worst case, there are four
-            boxes on the screen.  Best case, there is one.  The things that
-            create boxes and dictates how large they are are the equator and
-            the dateline.  When the screen straddles one or both of these
-            lat/lon lines, lon_minus and lat_minus get adjusted, causing two
-            or four different calls to the tochandler to get the data
-            above/below the equator, and left/right of the dateline. Plus,
-            each path gets checked until the required boxes are filled. */
-        
+
+        /*
+         * Look at all the paths if needed. Worst case, there are four
+         * boxes on the screen. Best case, there is one. The things
+         * that create boxes and dictates how large they are are the
+         * equator and the dateline. When the screen straddles one or
+         * both of these lat/lon lines, lon_minus and lat_minus get
+         * adjusted, causing two or four different calls to the
+         * tochandler to get the data above/below the equator, and
+         * left/right of the dateline. Plus, each path gets checked
+         * until the required boxes are filled.
+         */
+
         if (Debug.debugging("dted")) {
             Debug.output("--- DTEDFrameCacheHandler: getting images: ---");
         }
 
-        setProjection(proj, lat[ya-lat_minus],lon[xa-lon_minus], lat[ya], lon[xa]);
+        setProjection(proj,
+                lat[ya - lat_minus],
+                lon[xa - lon_minus],
+                lat[ya],
+                lon[xa]);
 
         OMGraphicList list = loadListFromHandler(null);
 
         // Dateline split
         if (lon_minus == 1) {
-            setProjection(proj, lat[ya-lat_minus], lon[0], lat[ya],
-                          -1f*lon[1]); // -1 to make it 180
+            setProjection(proj, lat[ya - lat_minus], lon[0], lat[ya], -1f
+                    * lon[1]); // -1 to make it 180
             list = loadListFromHandler(list);
         }
 
         // Equator Split
         if (lat_minus == 1) {
-            setProjection(proj, lat[0], lon[xa-lon_minus],
-                          -1f*lat[1], // flip breather
-                          lon[xa]);
+            setProjection(proj, lat[0], lon[xa - lon_minus], -1f * lat[1], // flip
+                                                                           // breather
+                    lon[xa]);
             list = loadListFromHandler(list);
         }
 
         // Both!!
         if (lon_minus == 1 && lat_minus == 1) {
-            setProjection(proj, lat[0], lon[0],
-                          -1f*lat[1],//  flip breather
-                          -1f*lon[1]);// -1 to make it 180, not -180
+            setProjection(proj, lat[0], lon[0], -1f * lat[1],//  flip
+                                                             // breather
+                    -1f * lon[1]);// -1 to make it 180, not -180
             list = loadListFromHandler(list);
         }
 
@@ -356,8 +358,8 @@ public class DTEDFrameCacheHandler extends CacheHandler
 
     /**
      * Method that pings the cache for images based on the projection
-     * that has been set on it.  If the cache returns null from
-     * getNextImage(), it's done.  Method creates and returns a
+     * that has been set on it. If the cache returns null from
+     * getNextImage(), it's done. Method creates and returns a
      * graphics list if the one passed in is null, otherwise it
      * returns the one passed in.
      */
@@ -380,78 +382,76 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * The method to call to let the cache handler know what the
      * projection looks like so it can figure out which frames (and
      * subframes) will be needed.
-     *
+     * 
      * @param proj the EqualArc projection of the screen.
      */
     public void setProjection(EqualArc proj) {
-        setProjection(proj, 
-                      proj.getUpperLeft().getLatitude(), 
-                      proj.getUpperLeft().getLongitude(), 
-                      proj.getLowerRight().getLatitude(), 
-                      proj.getLowerRight().getLongitude());
+        setProjection(proj,
+                proj.getUpperLeft().getLatitude(),
+                proj.getUpperLeft().getLongitude(),
+                proj.getLowerRight().getLatitude(),
+                proj.getLowerRight().getLongitude());
     }
-
 
     /**
      * The method to call to let the cache handler know what the
      * projection looks like so it can figure out which frames (and
-     * subframes) will be needed.  Should be called when the
+     * subframes) will be needed. Should be called when the
      * CacheHandler is dealing with just a part of the map, such as
      * when the map covers the dateline or equator.
-     *
+     * 
      * @param proj the EqualArc projection of the screen.
      * @param lat1 latitude of the upper left corner of the window, in
-     * decimal degrees.
+     *        decimal degrees.
      * @param lon1 longitude of the upper left corner of the window,
-     * in decimal degrees.
+     *        in decimal degrees.
      * @param lat2 latitude of the lower right corner of the window,
-     * in decimal degrees.
+     *        in decimal degrees.
      * @param lon2 longitude of the lower right corner of the window,
-     * in decimal degrees.  
+     *        in decimal degrees.
      */
-    public void setProjection(EqualArc proj, 
-                              float lat1, float lon1, 
+    public void setProjection(EqualArc proj, float lat1, float lon1,
                               float lat2, float lon2) {
-        
+
         firstImageReturned = true;
 
         // upper lat of top frame of the screen
         // lower lat of bottom frame of the screen
         // left lon of left frame of the screen
         // upper lon of right frame of the screen
-        frameUp = Math.floor((double)lat1);
-        frameDown = Math.floor((double)lat2);
-        frameLeft = Math.floor((double)lon1);
-        frameRight = Math.ceil((double)lon2);
+        frameUp = Math.floor((double) lat1);
+        frameDown = Math.floor((double) lat2);
+        frameLeft = Math.floor((double) lon1);
+        frameRight = Math.ceil((double) lon2);
 
         if (Debug.debugging("dted"))
-            Debug.output("frameUp = " + frameUp +
-                         ", frameDown = " + frameDown +
-                         ", frameLeft = " + frameLeft +
-                         ", frameRight = " + frameRight);
+            Debug.output("frameUp = " + frameUp + ", frameDown = " + frameDown
+                    + ", frameLeft = " + frameLeft + ", frameRight = "
+                    + frameRight);
     }
 
     /**
-     * Returns the next OMRaster image.  When setProjection() is
+     * Returns the next OMRaster image. When setProjection() is
      * called, the cache sets the projection parameters it needs, and
-     * also resets this popping mechanism.  When this mechanism is
+     * also resets this popping mechanism. When this mechanism is
      * reset, you can keep calling this method to get another subframe
-     * image.  When it returns a null value, it is done.  It will
+     * image. When it returns a null value, it is done. It will
      * automatically skip over window frames it doesn't have, and
-     * return the next one it does have.  It traverses from the top
+     * return the next one it does have. It traverses from the top
      * left to right frames, and top to bottom for each column of
-     * frames.  It handles all the subframes for a frame at one time.
+     * frames. It handles all the subframes for a frame at one time.
+     * 
      * @return OMRaster image.
      */
     public OMGraphic getNextImage() {
-        
-        if (Debug.debugging("dted")) 
+
+        if (Debug.debugging("dted"))
             Debug.output("--- DTEDFrameCacheHandler: getNextImage:");
 
         while (true) {
-            
+
             if (firstImageReturned == true) {
-                frameLon = frameLeft; 
+                frameLon = frameLeft;
                 frameLat = frameDown;
                 newframe = true;
                 firstImageReturned = false;
@@ -464,29 +464,28 @@ public class DTEDFrameCacheHandler extends CacheHandler
                     frameLon++;
                 }
                 newframe = true;
-            } else {  // bounds exceeded, all done
+            } else { // bounds exceeded, all done
                 return (OMGraphic) null;
             }
-            
+
             if (newframe && frameLon < frameRight) {
                 if (Debug.debugging("dted")) {
-                    Debug.output(" gni: Getting new frame Lat = " +
-                                 frameLat + " Lon = " + frameLon);
+                    Debug.output(" gni: Getting new frame Lat = " + frameLat
+                            + " Lon = " + frameLon);
                 }
 
-                
-                OMGraphic omg = get(frameLat, frameLon, dtedLevel); 
+                OMGraphic omg = get(frameLat, frameLon, dtedLevel);
                 if (omg != null) {
                     return omg;
                 }
             }
         }
     }
-    
-    /** 
+
+    /**
      * Return an OMGraphic for the Dted Frame, given A lat, lon and
      * dted level.
-     *
+     * 
      * @param lat latitude of point
      * @param lon longitude of point
      * @param level the dted level wanted (0, 1, 2)
@@ -494,7 +493,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
      */
     public OMGraphic get(double lat, double lon, int level) {
         // First, put together a key from the above info, and then
-        // look for it in the local cache.  If it's not there, then go
+        // look for it in the local cache. If it's not there, then go
         // to the DTEDFrameCache.
 
         String key = new String(lat + ":" + lon + ":" + level);
@@ -502,10 +501,10 @@ public class DTEDFrameCacheHandler extends CacheHandler
         CacheObject ret = searchCache(key);
         if (ret != null) {
             if (Debug.debugging("dted")) {
-                Debug.output("DTEDFrameCacheHandler.get():  retrieving frame from cache (" + 
-                         lat + ":" + lon + ":" + level + ")");
+                Debug.output("DTEDFrameCacheHandler.get():  retrieving frame from cache ("
+                        + lat + ":" + lon + ":" + level + ")");
             }
-            return (OMGraphic)ret.obj;
+            return (OMGraphic) ret.obj;
         }
 
         ret = load(key, lat, lon, level);
@@ -515,23 +514,23 @@ public class DTEDFrameCacheHandler extends CacheHandler
 
         replaceLeastUsed(ret);
         if (Debug.debugging("dted")) {
-            Debug.output("DTEDFrameCacheHandler.get():  loading new frame into cache (" + 
-                         lat + ":" + lon + ":" + level + ")");
+            Debug.output("DTEDFrameCacheHandler.get():  loading new frame into cache ("
+                    + lat + ":" + lon + ":" + level + ")");
         }
-        return (OMGraphic)ret.obj;
+        return (OMGraphic) ret.obj;
     }
 
     /**
      * Load a dted frame into the cache, based on the path of the
-     * frame as a key.  Implements abstract CacheHandler method.
-     *
+     * frame as a key. Implements abstract CacheHandler method.
+     * 
      * @param key key to remember raster created for DTED frame.
      * @return DTED frame, hidden as a CacheObject.
      */
     public CacheObject load(String key, double lat, double lon, int level) {
         if (frameCache != null) {
 
-            DTEDFrame frame = frameCache.get(lat, lon, level); 
+            DTEDFrame frame = frameCache.get(lat, lon, level);
             if (frame != null) {
                 OMGrid omgrid = frame.getOMGrid();
 
@@ -553,12 +552,14 @@ public class DTEDFrameCacheHandler extends CacheHandler
     }
 
     /**
-     * A private class that makes sure that cached frames get
-     * disposed properly.
+     * A private class that makes sure that cached frames get disposed
+     * properly.
      */
     private static class DTEDCacheObject extends CacheObject {
         /**
-         * Construct a DTEDCacheObject, just calls superclass constructor
+         * Construct a DTEDCacheObject, just calls superclass
+         * constructor
+         * 
          * @param id passed to superclass
          * @param obj passed to superclass
          */
@@ -577,6 +578,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
 
     /**
      * Sets the properties for the OMComponent.
+     * 
      * @param props the <code>Properties</code> object.
      */
     public void setProperties(java.util.Properties props) {
@@ -585,6 +587,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
 
     /**
      * Sets the properties for the OMComponent.
+     * 
      * @param prefix the token to prefix the property names
      * @param props the <code>Properties</code> object
      */
@@ -592,15 +595,16 @@ public class DTEDFrameCacheHandler extends CacheHandler
         setPropertyPrefix(prefix);
 
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-        String generatorList = props.getProperty(realPrefix + GeneratorLoadersProperty);
+        String generatorList = props.getProperty(realPrefix
+                + GeneratorLoadersProperty);
         if (generatorList != null) {
             Vector generatorMarkers = PropUtils.parseSpacedMarkers(generatorList);
-            for (Iterator it = generatorMarkers.iterator();it.hasNext();) {
-                String loaderPrefix = realPrefix + (String)it.next();
+            for (Iterator it = generatorMarkers.iterator(); it.hasNext();) {
+                String loaderPrefix = realPrefix + (String) it.next();
                 String loaderClassnameProperty = loaderPrefix + ".class";
                 String classname = props.getProperty(loaderClassnameProperty);
                 try {
-                    GeneratorLoader loader = (GeneratorLoader)ComponentFactory.create(classname);
+                    GeneratorLoader loader = (GeneratorLoader) ComponentFactory.create(classname);
                     loader.setProperties(loaderPrefix, props);
 
                     generatorLoaders.add(loader);
@@ -610,8 +614,8 @@ public class DTEDFrameCacheHandler extends CacheHandler
                         activeGeneratorLoader = loader;
                     }
                 } catch (ClassCastException cce) {
-                    Debug.output("DTEDFrameCacheHandler created " + classname + 
-                                 ", but it's not a GeneratorLoader");
+                    Debug.output("DTEDFrameCacheHandler created " + classname
+                            + ", but it's not a GeneratorLoader");
                 }
             }
         }
@@ -619,18 +623,18 @@ public class DTEDFrameCacheHandler extends CacheHandler
 
     /**
      * PropertyConsumer method, to fill in a Properties object,
-     * reflecting the current values of the OMComponent.  If the
+     * reflecting the current values of the OMComponent. If the
      * component has a propertyPrefix set, the property keys should
      * have that prefix plus a separating '.' prepended to each
      * propery key it uses for configuration.
-     *
+     * 
      * @param props a Properties object to load the PropertyConsumer
-     * properties into.  If props equals null, then a new Properties
-     * object should be created.
+     *        properties into. If props equals null, then a new
+     *        Properties object should be created.
      * @return Properties object containing PropertyConsumer property
-     * values.  If getList was not null, this should equal getList.
-     * Otherwise, it should be the Properties object created by the
-     * PropertyConsumer.
+     *         values. If getList was not null, this should equal
+     *         getList. Otherwise, it should be the Properties object
+     *         created by the PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
         if (props == null) {
@@ -640,7 +644,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         StringBuffer sb = new StringBuffer();
-        for (Iterator it = generatorLoaders.iterator();it.hasNext();) {
+        for (Iterator it = generatorLoaders.iterator(); it.hasNext();) {
             GeneratorLoader gl = (GeneratorLoader) it.next();
             String pref = gl.getPropertyPrefix();
             props.put(pref + ".class", gl.getClass().getName());
@@ -660,21 +664,21 @@ public class DTEDFrameCacheHandler extends CacheHandler
 
     /**
      * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer.  The
-     * key for each property should be the raw property name (without
-     * a prefix) with a value that is a String that describes what the
+     * the properties able to be set on this PropertyConsumer. The key
+     * for each property should be the raw property name (without a
+     * prefix) with a value that is a String that describes what the
      * property key represents, along with any other information about
      * the property that would be helpful (range, default value,
-     * etc.).  For Layer, this method should at least return the
+     * etc.). For Layer, this method should at least return the
      * 'prettyName' property.
-     *
+     * 
      * @param list a Properties object to load the PropertyConsumer
-     * properties into.  If getList equals null, then a new Properties
-     * object should be created.
+     *        properties into. If getList equals null, then a new
+     *        Properties object should be created.
      * @return Properties object containing PropertyConsumer property
-     * values.  If getList was not null, this should equal getList.
-     * Otherwise, it should be the Properties object created by the
-     * PropertyConsumer. 
+     *         values. If getList was not null, this should equal
+     *         getList. Otherwise, it should be the Properties object
+     *         created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         if (list == null) {
@@ -687,10 +691,10 @@ public class DTEDFrameCacheHandler extends CacheHandler
 
     /**
      * Set the property key prefix that should be used by the
-     * PropertyConsumer.  The prefix, along with a '.', should be
+     * PropertyConsumer. The prefix, along with a '.', should be
      * prepended to the property keys known by the PropertyConsumer.
-     *
-     * @param prefix the prefix String.  
+     * 
+     * @param prefix the prefix String.
      */
     public void setPropertyPrefix(String prefix) {
         propertyPrefix = prefix;
@@ -699,7 +703,7 @@ public class DTEDFrameCacheHandler extends CacheHandler
     /**
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
-     *
+     * 
      * @return the property prefix string
      */
     public String getPropertyPrefix() {
@@ -717,6 +721,4 @@ public class DTEDFrameCacheHandler extends CacheHandler
     }
 
 }
-
-
 

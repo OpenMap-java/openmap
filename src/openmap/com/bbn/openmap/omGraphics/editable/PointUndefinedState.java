@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,23 +12,21 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PointUndefinedState.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PointUndefinedState.java,v
+// $
 // $RCSfile: PointUndefinedState.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.util.Debug;
 
 public class PointUndefinedState extends GraphicUndefinedState {
@@ -38,22 +36,25 @@ public class PointUndefinedState extends GraphicUndefinedState {
     }
 
     /**
-     * In this state, we need to draw a rect from scratch.  So, we
+     * In this state, we need to draw a rect from scratch. So, we
      * listen for a mouse down, and set both points there, and then
-     * set the mode to rect edit.  
+     * set the mode to rect edit.
      */
-    public boolean mousePressed(MouseEvent e){ 
-        Debug.message("eomg", "PointStateMachine|undefined state|mousePressed = " + 
-                      graphic.getGraphic().getRenderType());
-        
+    public boolean mousePressed(MouseEvent e) {
+        Debug.message("eomg",
+                "PointStateMachine|undefined state|mousePressed = "
+                        + graphic.getGraphic().getRenderType());
+
         GrabPoint gb = graphic.getGrabPoint(EditableOMPoint.CENTER_POINT_INDEX);
         gb.set(e.getX(), e.getY());
         graphic.setMovingPoint(gb);
 
         if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
-            graphic.getGrabPoint(EditableOMPoint.OFFSET_POINT_INDEX).set(e.getX(), e.getY());
+            graphic.getGrabPoint(EditableOMPoint.OFFSET_POINT_INDEX)
+                    .set(e.getX(), e.getY());
             graphic.getStateMachine().setOffsetNeeded(true);
-            Debug.message("eomg", "PointStateMachine|undefined state| *offset needed*");
+            Debug.message("eomg",
+                    "PointStateMachine|undefined state| *offset needed*");
         }
 
         graphic.getStateMachine().setEdit();
@@ -61,7 +62,8 @@ public class PointUndefinedState extends GraphicUndefinedState {
     }
 
     public boolean mouseMoved(MouseEvent e) {
-        graphic.fireEvent(EOMGCursors.EDIT, "Click to define the point location.");
+        graphic.fireEvent(EOMGCursors.EDIT,
+                "Click to define the point location.");
         return false;
     }
 }

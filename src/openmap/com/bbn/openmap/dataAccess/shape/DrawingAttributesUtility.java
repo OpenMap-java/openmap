@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DrawingAttributesUtility.java,v $
 // $RCSfile: DrawingAttributesUtility.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,7 @@ import java.util.*;
 /**
  * A class to help out with looking in a DBF file, and setting
  * OMGraphics with DrawingAttributes settings that may reside in the
- * DBF.  The DBF column header names should be the same as the
+ * DBF. The DBF column header names should be the same as the
  * DrawingAttributes property strings.
  */
 public class DrawingAttributesUtility implements ShapeConstants {
@@ -64,21 +64,28 @@ public class DrawingAttributesUtility implements ShapeConstants {
 
         Integer value;
 
-        value = (Integer)columnNames.get(SHAPE_DBF_DESCRIPTION);
-        if (value != null) desColumn=value.intValue();
-        
-        value = (Integer)columnNames.get(SHAPE_DBF_LINECOLOR);
-        if (value != null) lineColorColumn=value.intValue();
-        value = (Integer)columnNames.get(SHAPE_DBF_FILLCOLOR);
-        if (value != null) fillColorColumn=value.intValue();
-        value = (Integer)columnNames.get(SHAPE_DBF_SELECTCOLOR);
-        if (value != null) selectColorColumn=value.intValue();
-        value = (Integer)columnNames.get(SHAPE_DBF_LINEWIDTH);
-        if (value != null) lineWidthColumn=value.intValue();
-        value = (Integer)columnNames.get(SHAPE_DBF_DASHPATTERN);
-        if (value != null) dashPatternColumn=value.intValue();
-        value = (Integer)columnNames.get(SHAPE_DBF_DASHPHASE);
-        if (value != null) dashPhaseColumn=value.intValue();
+        value = (Integer) columnNames.get(SHAPE_DBF_DESCRIPTION);
+        if (value != null)
+            desColumn = value.intValue();
+
+        value = (Integer) columnNames.get(SHAPE_DBF_LINECOLOR);
+        if (value != null)
+            lineColorColumn = value.intValue();
+        value = (Integer) columnNames.get(SHAPE_DBF_FILLCOLOR);
+        if (value != null)
+            fillColorColumn = value.intValue();
+        value = (Integer) columnNames.get(SHAPE_DBF_SELECTCOLOR);
+        if (value != null)
+            selectColorColumn = value.intValue();
+        value = (Integer) columnNames.get(SHAPE_DBF_LINEWIDTH);
+        if (value != null)
+            lineWidthColumn = value.intValue();
+        value = (Integer) columnNames.get(SHAPE_DBF_DASHPATTERN);
+        if (value != null)
+            dashPatternColumn = value.intValue();
+        value = (Integer) columnNames.get(SHAPE_DBF_DASHPHASE);
+        if (value != null)
+            dashPhaseColumn = value.intValue();
 
         // OK, the column names should be known;
     }
@@ -103,11 +110,11 @@ public class DrawingAttributesUtility implements ShapeConstants {
 
     public DrawingAttributes getDefaultAttributes() {
         return defaultDA;
-    } 
+    }
 
     protected void configureForRecord(OMGraphic graphic, ArrayList record) {
         if (desColumn != -1) {
-            String ret = (String)record.get(desColumn);
+            String ret = (String) record.get(desColumn);
             if (graphic.getAppObject() == null) {
                 graphic.setAppObject(ret);
             }
@@ -116,18 +123,18 @@ public class DrawingAttributesUtility implements ShapeConstants {
         getDefaultAttributes().setTo(da);
 
         if (lineColorColumn != -1) {
-            da.setLinePaint(parseColor((String)record.get(lineColorColumn),
-                                       (Color)defaultDA.getLinePaint()));
-        }           
+            da.setLinePaint(parseColor((String) record.get(lineColorColumn),
+                    (Color) defaultDA.getLinePaint()));
+        }
 
         if (fillColorColumn != -1) {
-            da.setFillPaint(parseColor((String)record.get(fillColorColumn),
-                                       (Color)defaultDA.getFillPaint()));
+            da.setFillPaint(parseColor((String) record.get(fillColorColumn),
+                    (Color) defaultDA.getFillPaint()));
         }
 
         if (selectColorColumn != -1) {
-            da.setSelectPaint(parseColor((String)record.get(selectColorColumn),
-                                         (Color)defaultDA.getSelectPaint()));
+            da.setSelectPaint(parseColor((String) record.get(selectColorColumn),
+                    (Color) defaultDA.getSelectPaint()));
         }
 
         int lineWidth = 1;
@@ -135,11 +142,11 @@ public class DrawingAttributesUtility implements ShapeConstants {
         float dashPhase = 0f;
 
         if (lineWidthColumn != -1) {
-            lineWidth = ((Double)record.get(lineWidthColumn)).intValue();
+            lineWidth = ((Double) record.get(lineWidthColumn)).intValue();
         }
 
         if (dashPatternColumn != -1) {
-            String dp = (String)record.get(dashPatternColumn);
+            String dp = (String) record.get(dashPatternColumn);
             if (dp.intern() == "") {
                 dp = BasicStrokeEditor.NONE;
             }
@@ -147,20 +154,17 @@ public class DrawingAttributesUtility implements ShapeConstants {
         }
 
         if (dashPhaseColumn != -1) {
-            dashPhase = ((Double)record.get(lineWidthColumn)).floatValue();
+            dashPhase = ((Double) record.get(lineWidthColumn)).floatValue();
         }
-        
-        da.setStroke(new BasicStroke(lineWidth, 
-                                     BasicStroke.CAP_BUTT, 
-                                     BasicStroke.JOIN_MITER, 10.0f, 
-                                     dashPattern, dashPhase));
+
+        da.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dashPattern, dashPhase));
         da.setTo(graphic);
     }
 
     protected void setDrawingAttributes(OMGraphic graphic, int index) {
 
         if (model != null) {
-            ArrayList record = (ArrayList)model.getRecord(index);
+            ArrayList record = (ArrayList) model.getRecord(index);
             if (record != null) {
                 configureForRecord(graphic, record);
             }
@@ -174,7 +178,7 @@ public class DrawingAttributesUtility implements ShapeConstants {
      * Otherwise, use the DrawingAttributes.DEFAULT settings if no
      * attribute parameters found.
      */
-    public static void setDrawingAttributes(EsriGraphicList list, 
+    public static void setDrawingAttributes(EsriGraphicList list,
                                             DbfTableModel model) {
         setDrawingAttributes(list, model, DrawingAttributes.DEFAULT);
     }
@@ -186,8 +190,8 @@ public class DrawingAttributesUtility implements ShapeConstants {
      * Otherwise, use the default DrawingAttributes settings if no
      * attribute parameters found.
      */
-    public static void setDrawingAttributes(EsriGraphicList list, 
-                                            DbfTableModel model, 
+    public static void setDrawingAttributes(EsriGraphicList list,
+                                            DbfTableModel model,
                                             DrawingAttributes defaultDA) {
         // Set it up;
         DrawingAttributesUtility dau = new DrawingAttributesUtility(model);
@@ -196,7 +200,7 @@ public class DrawingAttributesUtility implements ShapeConstants {
         Iterator graphics = list.iterator();
         int index = 0;
         while (graphics.hasNext()) {
-            OMGraphic graphic = (OMGraphic)graphics.next();
+            OMGraphic graphic = (OMGraphic) graphics.next();
             dau.setDrawingAttributes(graphic, index++);
         }
     }

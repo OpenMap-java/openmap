@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JGraphicChange.java,v $
 // $RCSfile: JGraphicChange.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.specialist;
 
@@ -29,17 +28,16 @@ import com.bbn.openmap.CSpecialist._GraphicChangeStub;
 /**
  */
 public class JGraphicChange extends _GraphicChangeStub implements GraphicChange {
-    
+
     protected CSpecLayer layer = null;
-    
+
     public JGraphicChange(CSpecLayer aLayer) {
         layer = aLayer;
     }
 
     /**
      */
-    public void ChangeNotify(boolean forceRedraw,
-                             java.lang.String[] gIDseq) {}
+    public void ChangeNotify(boolean forceRedraw, java.lang.String[] gIDseq) {}
 
     /**
      */
@@ -51,13 +49,15 @@ public class JGraphicChange extends _GraphicChangeStub implements GraphicChange 
     /**
      */
     public void RaiseGraphic(boolean forceRedraw, java.lang.String[] gIDseq) {}
+
     /**
      */
     public void LowerGraphic(boolean forceRedraw, java.lang.String[] gIDseq) {}
 
     /**
      */
-    public void SetClientAttributes(boolean forceRedraw,
+    public void SetClientAttributes(
+                                    boolean forceRedraw,
                                     com.bbn.openmap.CSpecialist.UpdateRecord[] info) {}
 
     /**

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SaveAsJpegMenuItem.java,v $
 // $RCSfile: SaveAsJpegMenuItem.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.menu;
 
@@ -27,7 +26,7 @@ import com.bbn.openmap.image.SunJPEGFormatter;
 
 /**
  * A JMenuItem that uses the MapHandler to find the MapBean and save
- * an image of it in the JPEG format. 
+ * an image of it in the JPEG format.
  */
 public class SaveAsJpegMenuItem extends SaveAsImageMenuItem {
     public SaveAsJpegMenuItem() {

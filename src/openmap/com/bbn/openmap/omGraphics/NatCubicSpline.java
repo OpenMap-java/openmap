@@ -1,3 +1,25 @@
+//**********************************************************************
+//
+//<copyright>
+//
+//BBN Technologies
+//10 Moulton Street
+//Cambridge, MA 02138
+//(617) 873-8000
+//
+//Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
+//</copyright>
+//**********************************************************************
+//
+//$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/NatCubicSpline.java,v $
+//$RCSfile: NatCubicSpline.java,v $
+//$Revision: 1.4 $
+//$Date: 2004/10/14 18:06:11 $
+//$Author: dietrick $
+//
+//**********************************************************************
+
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Polygon;
@@ -6,16 +28,18 @@ import java.awt.Polygon;
  * A natural cubic spline calculation.
  * 
  * @author Eric LEPICIER
- * @see <a href="http://www.cse.unsw.edu.au/~lambert/splines/">Splines</a>
+ * @see <a href="http://www.cse.unsw.edu.au/~lambert/splines/">Splines
+ *      </a>
  * @version 21 juil. 2002
  */
 public class NatCubicSpline {
 
     /**
-     * Calculates the natural cubic spline that interpolates
-     * y[0], y[1], ... y[n]. The first segment is returned as
-     * C[0].a + C[0].b*u + C[0].c*u^2 + C[0].d*u^3 0<=u <1
-     * the other segments are in C[1], C[2], ...  C[n-1]
+     * Calculates the natural cubic spline that interpolates y[0],
+     * y[1], ... y[n]. The first segment is returned as C[0].a +
+     * C[0].b*u + C[0].c*u^2 + C[0].d*u^3 0 <=u <1 the other segments
+     * are in C[1], C[2], ... C[n-1]
+     * 
      * @param n
      * @param x
      * @return Cubic[]
@@ -25,17 +49,16 @@ public class NatCubicSpline {
         float[] delta = new float[n + 1];
         float[] D = new float[n + 1];
         int i;
-        /* We solve the equation
-           [2 1       ] [D[0]]   [3(x[1] - x[0])  ]
-           |1 4 1     | |D[1]|   |3(x[2] - x[0])  |
-           |  1 4 1   | | .  | = |      .         |
-           |    ..... | | .  |   |      .         |
-           |     1 4 1| | .  |   |3(x[n] - x[n-2])|
-           [       1 2] [D[n]]   [3(x[n] - x[n-1])]
-                
-           by using row operations to convert the matrix to upper triangular
-           and then back sustitution.  The D[i] are the derivatives at the knots.
-        */
+        /*
+         * We solve the equation [2 1 ] [D[0]] [3(x[1] - x[0]) ] |1 4
+         * 1 | |D[1]| |3(x[2] - x[0]) | | 1 4 1 | | . | = | . | |
+         * ..... | | . | | . | | 1 4 1| | . | |3(x[n] - x[n-2])| [ 1
+         * 2] [D[n]] [3(x[n] - x[n-1])]
+         * 
+         * by using row operations to convert the matrix to upper
+         * triangular and then back sustitution. The D[i] are the
+         * derivatives at the knots.
+         */
 
         gamma[0] = 1.0f / 2.0f;
         for (i = 1; i < n; i++) {
@@ -57,19 +80,15 @@ public class NatCubicSpline {
         /* now compute the coefficients of the cubics */
         Cubic[] C = new Cubic[n];
         for (i = 0; i < n; i++) {
-            C[i] =
-                new Cubic(
-                    (float) x[i],
-                    D[i],
-                    3 * (x[i + 1] - x[i]) - 2 * D[i] - D[i + 1],
-                    2 * (x[i] - x[i + 1]) + D[i] + D[i + 1]);
+            C[i] = new Cubic((float) x[i], D[i], 3 * (x[i + 1] - x[i]) - 2
+                    * D[i] - D[i + 1], 2 * (x[i] - x[i + 1]) + D[i] + D[i + 1]);
         }
         return C;
     }
 
-
     /**
      * Calculates a cubic spline polyline
+     * 
      * @param xpoints
      * @param ypoints
      * @return int[][]
@@ -80,30 +99,29 @@ public class NatCubicSpline {
             Cubic[] X = calcNaturalCubic(xpoints.length - 1, xpoints);
             Cubic[] Y = calcNaturalCubic(ypoints.length - 1, ypoints);
 
-            /* very crude technique 
-             * just break each segment up into steps lines */
+            /*
+             * very crude technique just break each segment up into
+             * steps lines
+             */
             Polygon p = new Polygon();
-            p.addPoint(
-                (int) Math.round(X[0].eval(0)),
-                (int) Math.round(Y[0].eval(0)));
+            p.addPoint((int) Math.round(X[0].eval(0)),
+                    (int) Math.round(Y[0].eval(0)));
             for (int i = 0; i < X.length; i++) {
                 for (int j = 1; j <= steps; j++) {
                     float u = j / (float) steps;
-                    p.addPoint(
-                        Math.round(X[i].eval(u)),
-                        Math.round(Y[i].eval(u)));
+                    p.addPoint(Math.round(X[i].eval(u)),
+                            Math.round(Y[i].eval(u)));
                 }
             }
 
             // copy polygon points to the return array
             res[0] = new int[p.npoints];
-            System.arraycopy(p.xpoints, 0, res[0], 0, p.npoints);               
+            System.arraycopy(p.xpoints, 0, res[0], 0, p.npoints);
             res[1] = new int[p.npoints];
-            System.arraycopy(p.ypoints, 0, res[1], 0, p.npoints);               
+            System.arraycopy(p.ypoints, 0, res[1], 0, p.npoints);
 
             p = null;
-        }
-        else {
+        } else {
             res[0] = xpoints;
             res[1] = ypoints;
         }
@@ -111,10 +129,12 @@ public class NatCubicSpline {
     }
 
     /**
-     * Calculates a float lat/lon cubic spline 
-     * @param llpoints 
-     * @param precision for dividing floating coordinates to become int,
-     * e.g 0.01 means spline to be calculated with coordinates * 100
+     * Calculates a float lat/lon cubic spline
+     * 
+     * @param llpoints
+     * @param precision for dividing floating coordinates to become
+     *        int, e.g 0.01 means spline to be calculated with
+     *        coordinates * 100
      * @return float[]
      */
     public float[] calc(float[] llpoints, float precision) {
@@ -123,7 +143,7 @@ public class NatCubicSpline {
 
             int[] xpoints = new int[(int) (llpoints.length / 2)];
             int[] ypoints = new int[xpoints.length];
-            for (int i = 0, j=0; i < llpoints.length; i += 2, j++) {
+            for (int i = 0, j = 0; i < llpoints.length; i += 2, j++) {
                 xpoints[j] = (int) (llpoints[i] / precision);
                 ypoints[j] = (int) (llpoints[i + 1] / precision);
             }
@@ -131,18 +151,18 @@ public class NatCubicSpline {
             Cubic[] X = calcNaturalCubic(xpoints.length - 1, xpoints);
             Cubic[] Y = calcNaturalCubic(ypoints.length - 1, ypoints);
 
-            /* very crude technique 
-             * just break each segment up into steps lines */
+            /*
+             * very crude technique just break each segment up into
+             * steps lines
+             */
             Polygon p = new Polygon();
-            p.addPoint(
-                (int) Math.round(X[0].eval(0)),
-                (int) Math.round(Y[0].eval(0)));
+            p.addPoint((int) Math.round(X[0].eval(0)),
+                    (int) Math.round(Y[0].eval(0)));
             for (int i = 0; i < X.length; i++) {
                 for (int j = 1; j <= steps; j++) {
                     float u = j / (float) steps;
-                    p.addPoint(
-                        Math.round(X[i].eval(u)),
-                        Math.round(Y[i].eval(u)));
+                    p.addPoint(Math.round(X[i].eval(u)),
+                            Math.round(Y[i].eval(u)));
                 }
             }
 
@@ -153,8 +173,7 @@ public class NatCubicSpline {
             }
 
             p = null;
-        }
-        else {
+        } else {
             res = llpoints;
         }
         return res;
@@ -162,6 +181,7 @@ public class NatCubicSpline {
 
     /**
      * Returns the steps.
+     * 
      * @return int
      */
     public int getSteps() {
@@ -171,6 +191,7 @@ public class NatCubicSpline {
     /**
      * Sets the number of points (steps) interpolated on the curve
      * between the original points to draw it as a polyline.
+     * 
      * @param steps The steps to set
      */
     public void setSteps(int steps) {

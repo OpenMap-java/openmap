@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/PolygonGeometry.java,v $
 // $RCSfile: PolygonGeometry.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.geom;
 
@@ -27,9 +26,7 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.util.ArrayList;
 import java.io.Serializable;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.*;
 
@@ -37,28 +34,29 @@ import com.bbn.openmap.proj.*;
  * Graphic object that represents a polygon.
  * <p>
  * All of the OMGraphics are moving to having their internal
- * representation as java.awt.Shape objects.  Unfortunately, this has
+ * representation as java.awt.Shape objects. Unfortunately, this has
  * the side effect of slowing OMPolys down, because the way that the
  * projection classes handle transformations cause more objects to be
- * allocated and more loops to be run through.  So, by default, the
+ * allocated and more loops to be run through. So, by default, the
  * OMPoly does NOT use Shape objects internally, to keep layers that
- * throw down many, many polys running quickly.  If you want to do
- * some spatial analysis on an OMPoly, call setDoShapes(true) on it,
- * then generate(Projection), and then call getShapes() to get the
- * java.awt.Shape objects for the poly.  You can then run the
- * different Shape spatial analysis methods on the Shape objects.
- *
+ * throw down many, many polys running quickly. If you want to do some
+ * spatial analysis on an OMPoly, call setDoShapes(true) on it, then
+ * generate(Projection), and then call getShapes() to get the
+ * java.awt.Shape objects for the poly. You can then run the different
+ * Shape spatial analysis methods on the Shape objects.
+ * 
  * <h3>NOTES:</h3>
  * <ul>
- * <li>See the <a href="../../../../com.bbn.openmap.proj.Projection.html#poly_restrictions">
- * RESTRICTIONS</a> on Lat/Lon polygons/polylines.  Not following the
- * guidelines listed may result in ambiguous/undefined shapes!
- * Similar assumptions apply to the other vector graphics that we
- * define: circles, ellipses, rects, lines.
+ * <li>See the <a
+ * href="../../../../com.bbn.openmap.proj.Projection.html#poly_restrictions">
+ * RESTRICTIONS </a> on Lat/Lon polygons/polylines. Not following the
+ * guidelines listed may result in ambiguous/undefined shapes! Similar
+ * assumptions apply to the other vector graphics that we define:
+ * circles, ellipses, rects, lines.
  * <li>LatLon OMPolys store latlon coordinates internally in radian
- * format for efficiency in projecting.  Subclasses should follow this
+ * format for efficiency in projecting. Subclasses should follow this
  * model.
- * <li>Holes in the poly are not supported.  If you want holes, use
+ * <li>Holes in the poly are not supported. If you want holes, use
  * multiple PolyGeometrys in a OMGeometryList.
  * <p>
  * </ul>
@@ -66,9 +64,10 @@ import com.bbn.openmap.proj.*;
  * <ul>
  * <li>Polar filled-polygon correction for Cylindrical projections
  * (like OMCircle).
- * </ul> */
-public abstract class PolygonGeometry extends BasicGeometry 
-    implements Serializable, OMGeometry {
+ * </ul>
+ */
+public abstract class PolygonGeometry extends BasicGeometry implements
+        Serializable, OMGeometry {
 
     /** Internal array of projected x coordinate arrays. */
     protected int[][] xpoints = new int[0][0];
@@ -77,15 +76,15 @@ public abstract class PolygonGeometry extends BasicGeometry
     protected int[][] ypoints = new int[0][0];
 
     /**
-     * Whether it is a polygon, as opposed to a polyline.  Should be a
-     * polygon, since that is what is being created.  The
-     * PolylineGeometry subclasses set this to false.  
+     * Whether it is a polygon, as opposed to a polyline. Should be a
+     * polygon, since that is what is being created. The
+     * PolylineGeometry subclasses set this to false.
      */
     protected boolean isPolygon = true;
 
     /**
      * Flag for telling the PolygonGeometry to use the Shape objects
-     * to represent itself internally.  See intro for more info.  
+     * to represent itself internally. See intro for more info.
      */
     protected boolean doShapes = true;
 
@@ -107,17 +106,17 @@ public abstract class PolygonGeometry extends BasicGeometry
         return isPolygon;
     }
 
-    /** 
+    /**
      * Since OMPoly has the option to not create a Shape, this method
-     * is here to create it if it is asked for.  The OMPoly needs to
-     * be generated.  
+     * is here to create it if it is asked for. The OMPoly needs to be
+     * generated.
      */
     protected abstract void createShape();
 
     /**
      * Return the shortest distance from the graphic to an XY-point.
      * This works if generate() has been successful.
-     *
+     * 
      * @param x horizontal pixel location.
      * @param y vertical pixel location.
      * @return the distance of the object to the location given.
@@ -146,12 +145,13 @@ public abstract class PolygonGeometry extends BasicGeometry
             _y = ypts[i];
 
             // check if point inside polygon
-            if (DrawUtil.inside_polygon(_x,_y,x,y))
-                return 0f;              // close as can be
+            if (DrawUtil.inside_polygon(_x, _y, x, y))
+                return 0f; // close as can be
 
             // get the closest point
             temp = DrawUtil.closestPolyDistance(_x, _y, x, y, false);
-            if (temp < distance) distance = temp;
+            if (temp < distance)
+                distance = temp;
         }
 
         return distance;
@@ -159,17 +159,18 @@ public abstract class PolygonGeometry extends BasicGeometry
 
     /**
      * Get the array of java.awt.Shape objects that represent the
-     * projected graphic.  The array will contain more than one Shape
+     * projected graphic. The array will contain more than one Shape
      * object of the object wraps around the earth and needs to show
-     * up in more than one place on the map.<p>
-     *
+     * up in more than one place on the map.
+     * <p>
+     * 
      * The java.awt.Shape object gives you the ability to do a little
      * spatial analysis on the graphics.
-     *
+     * 
      * @return java.awt.Shape[], or null if the graphic needs to be
-     * generated with the current map projection, or null if the
-     * OMGeometry hasn't been updated to use Shape objects for its
-     * internal representation.
+     *         generated with the current map projection, or null if
+     *         the OMGeometry hasn't been updated to use Shape objects
+     *         for its internal representation.
      */
     public GeneralPath getShape() {
         if (shape == null && !getNeedToRegenerate() && !doShapes) {
@@ -196,48 +197,49 @@ public abstract class PolygonGeometry extends BasicGeometry
          * <p>
          * NOTES:
          * <ul>
-         * <li>llPoints array is converted into radians IN PLACE for more
-         * efficient handling internally if it's not already in radians!
-         * For even better performance, you should send us an array
-         * already in radians format!
-         * <li>If you want the poly to be connected (as a polygon), you
-         * need to ensure that the first and last coordinate pairs are the
-         * same.
+         * <li>llPoints array is converted into radians IN PLACE for
+         * more efficient handling internally if it's not already in
+         * radians! For even better performance, you should send us an
+         * array already in radians format!
+         * <li>If you want the poly to be connected (as a polygon),
+         * you need to ensure that the first and last coordinate pairs
+         * are the same.
          * </ul>
-         *
+         * 
          * @param llPoints array of lat/lon points, arranged lat, lon,
-         * lat, lon, etc.
-         * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
-         * or OMGraphic.DECIMAL_DEGREES
+         *        lat, lon, etc.
+         * @param units radians or decimal degrees. Use
+         *        OMGraphic.RADIANS or OMGraphic.DECIMAL_DEGREES
          * @param lType line type, from a list defined in OMGraphic.
          * @param nsegs number of segment points (only for
-         * LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and if &lt;
-         * 1, this value is generated internally)
+         *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types,
+         *        and if &lt; 1, this value is generated internally)
          */
         public LL(float[] llPoints, int units, int lType, int nsegs) {
             setLineType(lType);
             setLocation(llPoints, units);
             setNumSegs(nsegs);
         }
-        
+
         /**
-         * Create an LL PolygonGeometry from a list of float lat/lon pairs.
+         * Create an LL PolygonGeometry from a list of float lat/lon
+         * pairs.
          * <p>
          * NOTES:
          * <ul>
-         * <li>llPoints array is converted into radians IN PLACE for more
-         * efficient handling internally if it's not already in radians!
-         * For even better performance, you should send us an array
-         * already in radians format!
-         * <li>If you want the poly to be connected (as a polygon), you
-         * need to ensure that the first and last coordinate pairs are the
-         * same.
+         * <li>llPoints array is converted into radians IN PLACE for
+         * more efficient handling internally if it's not already in
+         * radians! For even better performance, you should send us an
+         * array already in radians format!
+         * <li>If you want the poly to be connected (as a polygon),
+         * you need to ensure that the first and last coordinate pairs
+         * are the same.
          * </ul>
-         *
+         * 
          * @param llPoints array of lat/lon points, arranged lat, lon,
-         * lat, lon, etc.
-         * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
-         * or OMGraphic.DECIMAL_DEGREES
+         *        lat, lon, etc.
+         * @param units radians or decimal degrees. Use
+         *        OMGraphic.RADIANS or OMGraphic.DECIMAL_DEGREES
          * @param lType line type, from a list defined in OMGraphic.
          */
         public LL(float[] llPoints, int units, int lType) {
@@ -249,19 +251,20 @@ public abstract class PolygonGeometry extends BasicGeometry
          * <p>
          * NOTES:
          * <ul>
-         * <li>llPoints array is converted into radians IN PLACE for more
-         * efficient handling internally if it's not already in radians!
-         * If you don't want the array to be changed, send in a copy.
-         * <li>If you want the poly to be connected (as a polygon), you
-         * need to ensure that the first and last coordinate pairs are the
-         * same.
+         * <li>llPoints array is converted into radians IN PLACE for
+         * more efficient handling internally if it's not already in
+         * radians! If you don't want the array to be changed, send in
+         * a copy.
+         * <li>If you want the poly to be connected (as a polygon),
+         * you need to ensure that the first and last coordinate pairs
+         * are the same.
          * </ul>
          * This is for RENDERTYPE_LATLON polys.
-         *
+         * 
          * @param llPoints array of lat/lon points, arranged lat, lon,
-         * lat, lon, etc.
-         * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
-         * or OMGraphic.DECIMAL_DEGREES
+         *        lat, lon, etc.
+         * @param units radians or decimal degrees. Use
+         *        OMGraphic.RADIANS or OMGraphic.DECIMAL_DEGREES
          */
         public void setLocation(float[] llPoints, int units) {
             if (units == OMGraphic.DECIMAL_DEGREES) {
@@ -272,10 +275,10 @@ public abstract class PolygonGeometry extends BasicGeometry
         }
 
         /**
-         * Return the rawllpts array.
-         * NOTE: this is an unsafe method to access the rawllpts array.
-         * Use with caution. These are RADIANS!
-         *
+         * Return the rawllpts array. NOTE: this is an unsafe method
+         * to access the rawllpts array. Use with caution. These are
+         * RADIANS!
+         * 
          * @return float[] rawllpts of lat, lon, lat, lon
          */
         public float[] getLatLonArray() {
@@ -284,20 +287,21 @@ public abstract class PolygonGeometry extends BasicGeometry
 
         /**
          * Set the number of subsegments for each segment in the poly.
-         * (This is only for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line
-         * types, and if &lt; 1, this value is generated internally).
-         *
+         * (This is only for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB
+         * line types, and if &lt; 1, this value is generated
+         * internally).
+         * 
          * @param nsegs number of segment points
          */
         public void setNumSegs(int nsegs) {
             this.nsegs = nsegs;
         }
-        
+
         /**
          * Get the number of subsegments for each segment in the poly.
-         * (This is only for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line
-         * types).
-         *
+         * (This is only for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB
+         * line types).
+         * 
          * @return int number of segment points
          */
         public int getNumSegs() {
@@ -307,45 +311,48 @@ public abstract class PolygonGeometry extends BasicGeometry
         public boolean generate(Projection proj) {
             int i, j, npts;
             shape = null;
-            
+
             if (proj == null) {
-                Debug.message("omgraphic", "OMPoly: null projection in generate!");
+                Debug.message("omgraphic",
+                        "OMPoly: null projection in generate!");
                 return false;
             }
-            
+
             // polygon/polyline project the polygon/polyline.
             // Vertices should already be in radians.
-            ArrayList vector = 
-                proj.forwardPoly(rawllpts, lineType, nsegs, isPolygon);
+            ArrayList vector = proj.forwardPoly(rawllpts,
+                    lineType,
+                    nsegs,
+                    isPolygon);
             int size = vector.size();
-                
+
             if (!doShapes) {
-                xpoints = new int[(int)(size/2)][0];
+                xpoints = new int[(int) (size / 2)][0];
                 ypoints = new int[xpoints.length][0];
             }
-                
+
             // We could call create shape, but this is more efficient.
-                
-            for (i=0, j=0; i<size; i+=2, j++) {
+
+            for (i = 0, j = 0; i < size; i += 2, j++) {
                 if (doShapes) {
-                    GeneralPath gp = BasicGeometry.createShape((int[])vector.get(i), 
-                                                               (int[])vector.get(i+1),
-                                                               isPolygon);
+                    GeneralPath gp = BasicGeometry.createShape((int[]) vector.get(i),
+                            (int[]) vector.get(i + 1),
+                            isPolygon);
                     if (shape == null) {
                         shape = gp;
                     } else {
-                        ((GeneralPath)shape).append(gp, false);
+                        ((GeneralPath) shape).append(gp, false);
                     }
                 } else {
-                    xpoints[j] = (int[])vector.get(i);
-                    ypoints[j] = (int[])vector.get(i+1);
+                    xpoints[j] = (int[]) vector.get(i);
+                    ypoints[j] = (int[]) vector.get(i + 1);
                 }
             }
 
             setNeedToRegenerate(false);
             return true;
         }
-        
+
         protected void createShape() {
 
             if (getNeedToRegenerate()) {
@@ -354,14 +361,15 @@ public abstract class PolygonGeometry extends BasicGeometry
 
             int size = xpoints.length;
 
-            for (int i=0; i<size; i++) {
-                GeneralPath gp = 
-                    BasicGeometry.createShape(xpoints[i], ypoints[i], isPolygon);
+            for (int i = 0; i < size; i++) {
+                GeneralPath gp = BasicGeometry.createShape(xpoints[i],
+                        ypoints[i],
+                        isPolygon);
 
                 if (shape == null) {
                     shape = gp;
                 } else {
-                    ((GeneralPath)shape).append(gp, false);
+                    ((GeneralPath) shape).append(gp, false);
                 }
             }
         }
@@ -382,56 +390,58 @@ public abstract class PolygonGeometry extends BasicGeometry
         /**
          * To satify the Offset constructor complaint.
          */
-        protected XY(){}
+        protected XY() {}
 
         /**
-         * Create an OMPoly from a list of xy pairs.
-         * If you want the poly to be connected, you need to ensure that
-         * the first and last coordinate pairs are the same.
-         *
-         * @param xypoints array of x/y points, arranged x, y, x, y, etc.
+         * Create an OMPoly from a list of xy pairs. If you want the
+         * poly to be connected, you need to ensure that the first and
+         * last coordinate pairs are the same.
+         * 
+         * @param xypoints array of x/y points, arranged x, y, x, y,
+         *        etc.
          */
         public XY(int[] xypoints) {
             setLocation(xypoints);
         }
-        
+
         /**
-         * Create an x/y OMPoly.
-         * If you want the poly to be connected, you need to ensure that
-         * the first and last coordinate pairs are the same.
-         *
+         * Create an x/y OMPoly. If you want the poly to be connected,
+         * you need to ensure that the first and last coordinate pairs
+         * are the same.
+         * 
          * @param xPoints int[] of x coordinates
          * @param yPoints int[] of y coordinates
          */
         public XY(int[] xPoints, int[] yPoints) {
             setLocation(xPoints, yPoints);
         }
-        
+
         /**
-         * Set an OMPoly from a list of xy pixel pairs.
-         * If you want the poly to be connected, you need to ensure that
-         * the first and last coordinate pairs are the same.  This is for
+         * Set an OMPoly from a list of xy pixel pairs. If you want
+         * the poly to be connected, you need to ensure that the first
+         * and last coordinate pairs are the same. This is for
          * RENDERTYPE_XY polys.
-         *
-         * @param xypoints array of x/y points, arranged x, y, x, y, etc.
+         * 
+         * @param xypoints array of x/y points, arranged x, y, x, y,
+         *        etc.
          */
         public void setLocation(int[] xypoints) {
-            int end = xypoints.length>>1;
+            int end = xypoints.length >> 1;
             xs = new int[end];
             ys = new int[end];
-            for (int i=0, j=0; i < end; i++, j+=2) {
+            for (int i = 0, j = 0; i < end; i++, j += 2) {
                 xs[i] = xypoints[j];
-                ys[i] = xypoints[j+1];
+                ys[i] = xypoints[j + 1];
             }
             setNeedToRegenerate(true);
         }
-        
+
         /**
-         * Set an OMPoly from a x/y coordinates.
-         * If you want the poly to be connected, you need to ensure that
-         * the first and last coordinate pairs are the same.  This is for
-         * RENDERTYPE_XY polys.
-         *
+         * Set an OMPoly from a x/y coordinates. If you want the poly
+         * to be connected, you need to ensure that the first and last
+         * coordinate pairs are the same. This is for RENDERTYPE_XY
+         * polys.
+         * 
          * @param xPoints int[] of x coordinates
          * @param yPoints int[] of y coordinates
          */
@@ -448,14 +458,14 @@ public abstract class PolygonGeometry extends BasicGeometry
             xs = x;
             setNeedToRegenerate(true);
         }
-        
+
         /**
          * Get the array of x points.
          */
         public int[] getXs() {
             return xs;
         }
-        
+
         /**
          * Set the array of y points.
          */
@@ -463,7 +473,7 @@ public abstract class PolygonGeometry extends BasicGeometry
             ys = y;
             setNeedToRegenerate(true);
         }
-        
+
         /**
          * Get the array of y points.
          */
@@ -476,19 +486,23 @@ public abstract class PolygonGeometry extends BasicGeometry
             shape = null;
 
             if (proj == null) {
-                Debug.message("omgraphic", "OMPoly: null projection in generate!");
+                Debug.message("omgraphic",
+                        "OMPoly: null projection in generate!");
                 return false;
             }
 
             if (xs == null) {
-                Debug.message("omgraphic", "OMPoly x/y rendertype null coordinates");
+                Debug.message("omgraphic",
+                        "OMPoly x/y rendertype null coordinates");
                 return false;
             }
 
             npts = xs.length;
             // Need to keep these around for the LabeledOMPoly
-            xpoints = new int[1][0]; xpoints[0] = xs;
-            ypoints = new int[1][0]; ypoints[0] = ys;
+            xpoints = new int[1][0];
+            xpoints[0] = xs;
+            ypoints = new int[1][0];
+            ypoints[0] = ys;
 
             if (doShapes) {
                 createShape();
@@ -512,73 +526,74 @@ public abstract class PolygonGeometry extends BasicGeometry
     }
 
     public static class Offset extends XY {
-        
+
         /**
          * Translation offsets. The xy points are relative to the
-         * position of fixed latlon point.  
+         * position of fixed latlon point.
          */
         public final static int COORDMODE_ORIGIN = 0;
-        
+
         /**
          * Delta offsets. Each xy point in the array is relative to
          * the previous point, and the first point is relative to the
-         * fixed latlon point.  
+         * fixed latlon point.
          */
         public final static int COORDMODE_PREVIOUS = 1;
 
         /**
-         * The latitude of the starting point of
-         * the poly.  Stored as radians!
+         * The latitude of the starting point of the poly. Stored as
+         * radians!
          */
         protected float lat = 0.0f;
-        
+
         /**
-         * The longitude of the starting point of
-         * the poly.  Stored as radians!
+         * The longitude of the starting point of the poly. Stored as
+         * radians!
          */
         protected float lon = 0.0f;
-        
+
         /**
          * Type of offset.
+         * 
          * @see #COORDMODE_ORIGIN
          * @see #COORDMODE_PREVIOUS
          */
         protected int coordMode = COORDMODE_ORIGIN;
 
         /**
-         * Create an x/y OMPoly at an offset from lat/lon.
-         * If you want the poly to be connected, you need to ensure that
-         * the first and last coordinate pairs are the same.
-         *
+         * Create an x/y OMPoly at an offset from lat/lon. If you want
+         * the poly to be connected, you need to ensure that the first
+         * and last coordinate pairs are the same.
+         * 
          * @param latPoint latitude in decimal degrees
          * @param lonPoint longitude in decimal degrees
          * @param xypoints int[] of x,y pairs
          * @param cMode offset coordinate mode
          */
-        public Offset(float latPoint, float lonPoint, 
-                      int[] xypoints, int cMode) {
-            setLocation(latPoint, lonPoint,
-                        OMGraphic.DECIMAL_DEGREES, xypoints);
+        public Offset(float latPoint, float lonPoint, int[] xypoints, int cMode) {
+            setLocation(latPoint, lonPoint, OMGraphic.DECIMAL_DEGREES, xypoints);
             setCoordMode(cMode);
         }
-        
+
         /**
-         * Create an x/y OMPoly at an offset from lat/lon.
-         * If you want the poly to be connected, you need to ensure that
-         * the first and last coordinate pairs are the same.
-         *
+         * Create an x/y OMPoly at an offset from lat/lon. If you want
+         * the poly to be connected, you need to ensure that the first
+         * and last coordinate pairs are the same.
+         * 
          * @param latPoint latitude in decimal degrees
          * @param lonPoint longitude in decimal degrees
          * @param xPoints int[] of x coordinates
          * @param yPoints int[] of y coordinates
          * @param cMode offset coordinate mode
          */
-        public Offset(float latPoint, float lonPoint, 
-                      int[] xPoints, int[] yPoints, 
-                      int cMode) {
-            
-            setLocation(latPoint, lonPoint,
-                        OMGraphic.DECIMAL_DEGREES, xPoints, yPoints);
+        public Offset(float latPoint, float lonPoint, int[] xPoints,
+                int[] yPoints, int cMode) {
+
+            setLocation(latPoint,
+                    lonPoint,
+                    OMGraphic.DECIMAL_DEGREES,
+                    xPoints,
+                    yPoints);
             setCoordMode(cMode);
         }
 
@@ -586,15 +601,16 @@ public abstract class PolygonGeometry extends BasicGeometry
          * Set the location based on a latitude, longitude, and some
          * xy points. The coordinate mode and the polygon setting are
          * the same as in the constructor used.
-         *
+         * 
          * @param latPoint latitude in decimal degrees.
          * @param lonPoint longitude in decimal degrees.
-         * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
-         * or OMGraphic.DECIMAL_DEGREES
-         * @param xypoints array of x/y points, arranged x, y, x, y, etc.  
+         * @param units radians or decimal degrees. Use
+         *        OMGraphic.RADIANS or OMGraphic.DECIMAL_DEGREES
+         * @param xypoints array of x/y points, arranged x, y, x, y,
+         *        etc.
          */
-        public void setLocation(float latPoint, float lonPoint, 
-                                int units, int[] xypoints) {
+        public void setLocation(float latPoint, float lonPoint, int units,
+                                int[] xypoints) {
             if (units == OMGraphic.DECIMAL_DEGREES) {
                 lat = ProjMath.degToRad(latPoint);
                 lon = ProjMath.degToRad(lonPoint);
@@ -602,12 +618,12 @@ public abstract class PolygonGeometry extends BasicGeometry
                 lat = latPoint;
                 lon = lonPoint;
             }
-            int end = xypoints.length>>1;
+            int end = xypoints.length >> 1;
             xs = new int[end];
             ys = new int[end];
-            for (int i=0, j=0; i < end; i++, j+=2) {
+            for (int i = 0, j = 0; i < end; i++, j += 2) {
                 xs[i] = xypoints[j];
-                ys[i] = xypoints[j+1];
+                ys[i] = xypoints[j + 1];
             }
             setNeedToRegenerate(true);
         }
@@ -616,16 +632,16 @@ public abstract class PolygonGeometry extends BasicGeometry
          * Set the location based on a latitude, longitude, and some
          * xy points. The coordinate mode and the polygon setting are
          * the same as in the constructor used.
-         *
+         * 
          * @param latPoint latitude in decimal degrees
          * @param lonPoint longitude in decimal degrees
-         * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
-         * or OMGraphic.DECIMAL_DEGREES
+         * @param units radians or decimal degrees. Use
+         *        OMGraphic.RADIANS or OMGraphic.DECIMAL_DEGREES
          * @param xPoints int[] of x coordinates
-         * @param yPoints int[] of y coordinates 
+         * @param yPoints int[] of y coordinates
          */
-        public void setLocation(float latPoint, float lonPoint, 
-                                int units, int[] xPoints, int[] yPoints) {
+        public void setLocation(float latPoint, float lonPoint, int units,
+                                int[] xPoints, int[] yPoints) {
             if (units == OMGraphic.DECIMAL_DEGREES) {
                 lat = ProjMath.degToRad(latPoint);
                 lon = ProjMath.degToRad(lonPoint);
@@ -640,15 +656,17 @@ public abstract class PolygonGeometry extends BasicGeometry
 
         /**
          * Type of offset.
+         * 
          * @see #COORDMODE_ORIGIN
          * @see #COORDMODE_PREVIOUS
          */
         public void setCoordMode(int coordMode) {
             this.coordMode = coordMode;
         }
-        
+
         /**
          * Type of offset.
+         * 
          * @see #COORDMODE_ORIGIN
          * @see #COORDMODE_PREVIOUS
          */
@@ -663,14 +681,14 @@ public abstract class PolygonGeometry extends BasicGeometry
             this.lat = ProjMath.degToRad(lat);
             setNeedToRegenerate(true);
         }
-        
+
         /**
          * Get the latitude of the offset point, in decimal degrees.
          */
         public float getLat() {
             return ProjMath.radToDeg(lat);
         }
-        
+
         /**
          * Set the longitude of the offset point, in decimal degrees.
          */
@@ -685,18 +703,20 @@ public abstract class PolygonGeometry extends BasicGeometry
         public float getLon() {
             return ProjMath.radToDeg(lon);
         }
-        
+
         public boolean generate(Projection proj) {
             int i, j, npts;
             shape = null;
 
             if (proj == null) {
-                Debug.message("omgraphic", "OMPoly: null projection in generate!");
+                Debug.message("omgraphic",
+                        "OMPoly: null projection in generate!");
                 return false;
             }
 
             if (xs == null) {
-                Debug.message("omgraphic", "OMPoly offset rendertype null coordinates");
+                Debug.message("omgraphic",
+                        "OMPoly offset rendertype null coordinates");
                 return false;
             }
 
@@ -705,8 +725,7 @@ public abstract class PolygonGeometry extends BasicGeometry
             int[] _y = new int[npts];
 
             // forward project the radian point
-            Point origin = proj.forward(
-                lat, lon, new Point(0,0), true);//radians
+            Point origin = proj.forward(lat, lon, new Point(0, 0), true);//radians
 
             if (coordMode == COORDMODE_ORIGIN) {
                 for (i = 0; i < npts; i++) {
@@ -717,14 +736,16 @@ public abstract class PolygonGeometry extends BasicGeometry
                 _x[0] = xs[0] + origin.x;
                 _y[0] = ys[0] + origin.y;
 
-                for (i=1; i<npts; i++) {
-                    _x[i] = xs[i] + _x[i-1];
-                    _y[i] = ys[i] + _y[i-1];
+                for (i = 1; i < npts; i++) {
+                    _x[i] = xs[i] + _x[i - 1];
+                    _y[i] = ys[i] + _y[i - 1];
                 }
             }
             // Need to keep these around for the LabeledOMPoly
-            xpoints = new int[1][0]; xpoints[0] = _x;
-            ypoints = new int[1][0]; ypoints[0] = _y;
+            xpoints = new int[1][0];
+            xpoints[0] = _x;
+            ypoints = new int[1][0];
+            ypoints[0] = _y;
 
             if (doShapes) {
                 this.createShape();

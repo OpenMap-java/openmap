@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconPartCollection.java,v $
 // $RCSfile: IconPartCollection.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -86,9 +86,10 @@ public class IconPartCollection extends IconPartCollectionEntry {
 
     /**
      * Get an icon part for the given name set with the given
-     * rendering attributes.  Calls get(name);
+     * rendering attributes. Calls get(name);
      */
-    public IconPart get(String name, com.bbn.openmap.omGraphics.DrawingAttributes da) {
+    public IconPart get(String name,
+                        com.bbn.openmap.omGraphics.DrawingAttributes da) {
         IconPart ip = get(name);
         if (ip != null) {
             ip.setRenderingAttributes(da);
@@ -97,10 +98,10 @@ public class IconPartCollection extends IconPartCollectionEntry {
     }
 
     /**
-     * Get an icon part for the given name.  The top level
-     * IconPartCollectionEntries are checked for the name.  Will
-     * return null if no IconPart exists for the name.  If the name is
-     * a collection name, null will be returned.  However, before
+     * Get an icon part for the given name. The top level
+     * IconPartCollectionEntries are checked for the name. Will return
+     * null if no IconPart exists for the name. If the name is a
+     * collection name, null will be returned. However, before
      * returning null, any IconPartCollection added to this collection
      * will be checked, too, and any hits will be returned.
      */
@@ -109,13 +110,13 @@ public class IconPartCollection extends IconPartCollectionEntry {
         IconPart part = null;
 
         if (entry != null) {
-            part = (IconPart)((IconPart)((IconPartCollectionEntry)entry).getIconPart()).clone();
+            part = (IconPart) ((IconPart) ((IconPartCollectionEntry) entry).getIconPart()).clone();
         }
 
         if (part == null) {
             Iterator it = collections.iterator();
             while (it.hasNext()) {
-                IconPartCollection ipc = (IconPartCollection)it.next();
+                IconPartCollection ipc = (IconPartCollection) it.next();
                 part = ipc.get(name);
                 if (part != null) {
                     break;
@@ -127,9 +128,9 @@ public class IconPartCollection extends IconPartCollectionEntry {
     }
 
     /**
-     * Get a description for the given name.  The top level
-     * IconPartCollectionEntries are checked for the name.  Will
-     * return null if no entry exists for the name.  If the name is a
+     * Get a description for the given name. The top level
+     * IconPartCollectionEntries are checked for the name. Will return
+     * null if no entry exists for the name. If the name is a
      * collection name, the description of the collection will be
      * returned. Before returning null, any IconPartCollection added
      * to this collection will be checked, too, and any hits will be
@@ -140,13 +141,13 @@ public class IconPartCollection extends IconPartCollectionEntry {
         String desc = null;
 
         if (entry != null) {
-            desc = ((IconPartCollectionEntry)entry).getDescription();
+            desc = ((IconPartCollectionEntry) entry).getDescription();
         }
 
         if (desc == null) {
             Iterator it = collections.iterator();
             while (it.hasNext()) {
-                IconPartCollection ipc = (IconPartCollection)it.next();
+                IconPartCollection ipc = (IconPartCollection) it.next();
                 desc = ipc.getDescription(name);
                 if (desc != null) {
                     break;
@@ -159,8 +160,9 @@ public class IconPartCollection extends IconPartCollectionEntry {
 
     /**
      * Create an IconPart from the list of entry names.
+     * 
      * @param list a List of Strings, with the strings being names of
-     * entries into this collection.
+     *        entries into this collection.
      */
     public IconPart compose(List list) {
         IconPartList ipl = new IconPartList();
@@ -180,10 +182,11 @@ public class IconPartCollection extends IconPartCollectionEntry {
 
     /**
      * Get a list of description Strings from a list of entry names.
+     * 
      * @param list a List of Strings, with the strings being names of
-     * entries into this collection.
+     *        entries into this collection.
      * @return a List of description Strings for the given list of
-     * names.
+     *         names.
      */
     public List composeDescription(List list) {
         LinkedList ll = new LinkedList();

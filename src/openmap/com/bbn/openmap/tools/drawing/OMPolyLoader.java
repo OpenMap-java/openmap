@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,27 +14,25 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMPolyLoader.java,v $
 // $RCSfile: OMPolyLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/04 17:26:04 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
-
 package com.bbn.openmap.tools.drawing;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.labeled.*;
-import com.bbn.openmap.util.Debug;
-
-import java.awt.Component;
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
+import com.bbn.openmap.omGraphics.EditableOMPoly;
+import com.bbn.openmap.omGraphics.GraphicAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.labeled.EditableLabeledOMPoly;
 
 /**
  * Loader that knows how to create/edit OMPoly objects.
  */
-public class OMPolyLoader extends AbstractToolLoader 
-    implements EditToolLoader {
+public class OMPolyLoader extends AbstractToolLoader implements EditToolLoader {
 
     protected String graphicClassName = "com.bbn.openmap.omGraphics.OMPoly";
     protected String labeledClassName = "com.bbn.openmap.omGraphics.labeled.LabeledOMPoly";
@@ -44,12 +42,10 @@ public class OMPolyLoader extends AbstractToolLoader
     }
 
     public void init() {
-        EditClassWrapper ecw = 
-            new EditClassWrapper(graphicClassName,
-                                 "com.bbn.openmap.omGraphics.EditableOMPoly",
-                                 "editablepoly.gif",
-                                 i18n.get(OMPolyLoader.class,"ompoly","Polygons/Polylines"));
-                                 
+        EditClassWrapper ecw = new EditClassWrapper(graphicClassName, "com.bbn.openmap.omGraphics.EditableOMPoly", "editablepoly.gif", i18n.get(OMPolyLoader.class,
+                "ompoly",
+                "Polygons/Polylines"));
+
         addEditClassWrapper(ecw);
 
         // A class wrapper isn't added here for the LabeledOMPoly
@@ -58,11 +54,11 @@ public class OMPolyLoader extends AbstractToolLoader
 
     /**
      * Give the classname of a graphic to create, returning an
-     * EditableOMGraphic for that graphic.  The GraphicAttributes
+     * EditableOMGraphic for that graphic. The GraphicAttributes
      * object lets you set some of the initial parameters of the poly,
      * like poly type and rendertype.
      */
-    public EditableOMGraphic getEditableGraphic(String classname, 
+    public EditableOMGraphic getEditableGraphic(String classname,
                                                 GraphicAttributes ga) {
         if (classname.intern() == graphicClassName) {
             return new EditableOMPoly(ga);
@@ -79,7 +75,7 @@ public class OMPolyLoader extends AbstractToolLoader
      */
     public EditableOMGraphic getEditableGraphic(OMGraphic graphic) {
         if (graphic instanceof OMPoly) {
-            return new EditableOMPoly((OMPoly)graphic);
+            return new EditableOMPoly((OMPoly) graphic);
         }
         return null;
     }

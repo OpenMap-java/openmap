@@ -18,7 +18,7 @@ package com.bbn.openmap.tools.beanbox;
 
 /**
  * Utility class for reading the contents of a JAR file.
- *
+ *  
  */
 
 import java.io.*;
@@ -26,26 +26,25 @@ import java.util.*;
 import java.util.zip.*;
 import java.beans.*;
 import java.net.*;
-import java.awt.*;
 
 public class JarLoader {
 
     private InputStream jarStream; // Jar input stream
-    private String jarName;     // name of the jar file
+    private String jarName; // name of the jar file
     private static boolean warnedAboutNoBeans;
-
 
     /**
      * Create a JarLoader to read a JAR and to process its contents.
      * Classes and resources are loaded against a single common class
-     * loader instance so that things like "adaptor class instantiaton"
-     * can work.
-     *
+     * loader instance so that things like "adaptor class
+     * instantiaton" can work.
+     * 
      * Loading is started with loadIt()
      */
     public JarLoader(String jarName) throws FileNotFoundException {
         // wil check that this file exists, and that is about it.
-        //System.out.println("Created JarLoader for file: " + jarName);
+        //System.out.println("Created JarLoader for file: " +
+        // jarName);
         this.jarName = jarName;
         InputStream is = new FileInputStream(jarName);
         jarStream = new BufferedInputStream(is);
@@ -54,11 +53,12 @@ public class JarLoader {
     /*
      * In here for compatibility with older versions of JDK1.1
      */
-    private String guessContentTypeFromStream(InputStream is) throws IOException {
+    private String guessContentTypeFromStream(InputStream is)
+            throws IOException {
         String type;
         type = URLConnection.guessContentTypeFromStream(is);
         // that should be taught about serialized objects.
-        
+
         if (type == null) {
             is.mark(10);
             int c1 = is.read();
@@ -94,7 +94,6 @@ public class JarLoader {
 
                 String name = ent.getName();
 
-
                 if (Manifest.isManifestName(name)) {
                     /* the object we're loading */
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -129,8 +128,10 @@ public class JarLoader {
             }
         }
 
-        // Unfortunately ZipInputStream doesn't throw an exception if you hand
-        // it a non-Zip file.  Our only way of spotting an invalid Jar file
+        // Unfortunately ZipInputStream doesn't throw an exception if
+        // you hand
+        // it a non-Zip file. Our only way of spotting an invalid Jar
+        // file
         // is if there no ZIP entries.
         if (empty) {
             throw new IOException("JAR file is corrupt or empty");
@@ -144,21 +145,23 @@ public class JarLoader {
     /**
      * Load the JAR file, then apply an action to each bean found
      */
-    public static void loadJarDoOnBean(String jarFile, DoOnBean action) 
-        throws java.io.IOException {
+    public static void loadJarDoOnBean(String jarFile, DoOnBean action)
+            throws java.io.IOException {
         JarLoader jl = new JarLoader(jarFile);
         JarInfo ji = jl.loadJar();
         if (ji == null) {
-            System.err.println("JAR file "+jarFile+" did not load properly!");
+            System.err.println("JAR file " + jarFile
+                    + " did not load properly!");
             System.err.println("Check for error messages possibly regarding");
             System.err.println("problems defining classes");
             return;
         }
         if (ji.getCount() == 0) {
-            System.err.println("Jar file "+jarFile+" didn't have any beans!");
+            System.err.println("Jar file " + jarFile
+                    + " didn't have any beans!");
             if (!warnedAboutNoBeans) {
                 // We only print this explanatory message once.
-                warnedAboutNoBeans = true;      
+                warnedAboutNoBeans = true;
                 System.err.println("");
                 System.err.println("Each jar file needs to contain a manifest file describing which entries are");
                 System.err.println("beans.  You can should provide a suitable manifest when you create the jar.");
@@ -166,7 +169,7 @@ public class JarLoader {
             }
         }
 
-        for (int i=0; i<ji.getCount(); i++) {
+        for (int i = 0; i < ji.getCount(); i++) {
             String beanName = ji.getName(i);
             BeanInfo bi = ji.getBeanInfo(i);
             Class bc = ji.getBeanClass(i);
@@ -178,7 +181,6 @@ public class JarLoader {
             action.action(ji, bi, bc, beanName);
         }
     }
-
 
     /**
      * Create a JarInfo from a manifest and a class list
@@ -195,8 +197,7 @@ public class JarLoader {
             beans = new Hashtable();
         } else {
             beans = new Hashtable();
-            for (Enumeration entries = mf.entries();
-                 entries.hasMoreElements();) {
+            for (Enumeration entries = mf.entries(); entries.hasMoreElements();) {
                 MessageHeader mh = (MessageHeader) entries.nextElement();
                 String name = mh.findValue("Name");
                 String isBean = mh.findValue("Java-Bean");
@@ -223,12 +224,10 @@ public class JarLoader {
         MessageHeader headers[] = new MessageHeader[beans.size()];
         Enumeration keys;
         int i;
-        for (keys = beans.keys(), i = 0;
-             keys.hasMoreElements();
-             i++) {
+        for (keys = beans.keys(), i = 0; keys.hasMoreElements(); i++) {
             String key = (String) keys.nextElement();
             beanNames[i] = key;
-            fromPrototype[i] = ((Boolean)beans.get(key)).booleanValue();
+            fromPrototype[i] = ((Boolean) beans.get(key)).booleanValue();
             headers[i] = (MessageHeader) headersTable.get(key);
         }
 

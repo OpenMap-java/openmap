@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,70 +12,59 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileDrawState.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileDrawState.java,v
+// $
 // $RCSfile: ProfileDrawState.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.terrain;
 
-import java.util.*;
-import java.awt.*;
 import java.awt.event.*;
 import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.event.LayerStatusEvent;
 
-class ProfileDrawState extends State{
+class ProfileDrawState extends State {
 
     protected ProfileGenerator profileTool;
 
-    public ProfileDrawState(ProfileGenerator tool){
+    public ProfileDrawState(ProfileGenerator tool) {
         profileTool = tool;
     }
 
-    public boolean mouseReleased(MouseEvent e){ 
+    public boolean mouseReleased(MouseEvent e) {
         profileTool.addProfileEvent(e);
         profileTool.layer.repaint();
         return true;
     }
 
-    public boolean mouseDragged(MouseEvent e){
+    public boolean mouseDragged(MouseEvent e) {
         profileTool.addProfileEvent(e);
         profileTool.layer.repaint();
         return true;
     }
 
-    public boolean mouseClicked(MouseEvent e){
-        if (e.getClickCount() > 1){
+    public boolean mouseClicked(MouseEvent e) {
+        if (e.getClickCount() > 1) {
             profileTool.stateMachine.setState(ProfileStateMachine.TOOL_DEFINED);
         }
         return true;
     }
 
-    public void actionPerformed(ActionEvent e){
+    public void actionPerformed(ActionEvent e) {
         String ac = e.getActionCommand();
-        if (ac.equalsIgnoreCase(TerrainLayer.createCommand)){
+        if (ac.equalsIgnoreCase(TerrainLayer.createCommand)) {
             profileTool.layer.fireStatusUpdate(LayerStatusEvent.START_WORKING);
             profileTool.createProfileImage();
             profileTool.stateMachine.setState(ProfileStateMachine.TOOL_VIEW);
             profileTool.layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-        }
-        else if (ac.equalsIgnoreCase(TerrainLayer.clearCommand)){
+        } else if (ac.equalsIgnoreCase(TerrainLayer.clearCommand)) {
             profileTool.reset();
         }
     }
 }
-
-
-
-
-
-
-
-
-
 

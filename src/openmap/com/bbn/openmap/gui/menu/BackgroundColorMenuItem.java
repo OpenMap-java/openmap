@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/BackgroundColorMenuItem.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/BackgroundColorMenuItem.java,v
+// $
 // $RCSfile: BackgroundColorMenuItem.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.menu;
 
@@ -33,8 +34,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 
-public class BackgroundColorMenuItem extends JMenuItem 
-    implements ActionListener, LightMapHandlerChild {
+public class BackgroundColorMenuItem extends JMenuItem implements
+        ActionListener, LightMapHandlerChild {
 
     protected MapBean map = null;
 
@@ -57,13 +58,14 @@ public class BackgroundColorMenuItem extends JMenuItem
 
     public void actionPerformed(ActionEvent ae) {
         if (map != null) {
-            Paint newPaint = OMColorChooser.showDialog(this, getText(),
-                                                       map.getBackground());
+            Paint newPaint = OMColorChooser.showDialog(this,
+                    getText(),
+                    map.getBackground());
             if (newPaint != null) {
 
-                String colorString = Integer.toString(((java.awt.Color)newPaint).getRGB());
+                String colorString = Integer.toString(((java.awt.Color) newPaint).getRGB());
                 Environment.set(Environment.BackgroundColor, colorString);
-                map.setBackground((java.awt.Color)newPaint);
+                map.setBackground((java.awt.Color) newPaint);
                 map.setBckgrnd(newPaint);
             }
         }
@@ -71,7 +73,7 @@ public class BackgroundColorMenuItem extends JMenuItem
 
     public void findAndInit(Object someObj) {
         if (someObj instanceof MapBean) {
-            setMap((MapBean)someObj);
+            setMap((MapBean) someObj);
         }
     }
 

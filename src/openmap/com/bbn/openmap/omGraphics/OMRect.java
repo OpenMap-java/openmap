@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,62 +14,68 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRect.java,v $
 // $RCSfile: OMRect.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.io.Serializable;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.DrawUtil;
 
 /**
- * Graphic type that lets you draw four-sided polygons
- * that have corners that share coordinates or window points.
+ * Graphic type that lets you draw four-sided polygons that have
+ * corners that share coordinates or window points.
  * <p>
  * <h3>NOTE:</h3>
- * See the <a href="com.bbn.openmap.proj.Projection.html#poly_restrictions">
- * RESTRICTIONS</a> on Lat/Lon polygons/polylines which apply to
- * rectangles as well.  Not following the guidelines listed may result
- * in ambiguous/undefined shapes!  Similar assumptions apply to the
+ * See the <a
+ * href="com.bbn.openmap.proj.Projection.html#poly_restrictions">
+ * RESTRICTIONS </a> on Lat/Lon polygons/polylines which apply to
+ * rectangles as well. Not following the guidelines listed may result
+ * in ambiguous/undefined shapes! Similar assumptions apply to the
  * other vector graphics that we define: circles, ellipses, polys,
  * lines.
  * <p>
  * These assumptions are virtually the same as those on the more
  * generic OMPoly graphic type.
  * <p>
+ * 
  * @see OMPoly
- *
+ *  
  */
 public class OMRect extends OMGraphic implements Serializable {
 
-    /** Horizontal window position of first corner, in pixels from
-     * left side of window. */
+    /**
+     * Horizontal window position of first corner, in pixels from left
+     * side of window.
+     */
     protected int x1 = 0;
-    /** Vertical window position of first corner, in pixels from the
-     * top of the window. */
+    /**
+     * Vertical window position of first corner, in pixels from the
+     * top of the window.
+     */
     protected int y1 = 0;
     /** Latitude of first corner, decimal degrees. */
     protected float lat1 = 0.0f;
     /** Longitude of first corner, decimal degrees. */
     protected float lon1 = 0.0f;
-    /** Horizontal window position of second corner, in pixels from
-     * left side of window. */
+    /**
+     * Horizontal window position of second corner, in pixels from
+     * left side of window.
+     */
     protected int x2 = 0;
-    /** Vertical window position of second corner, in pixels from the
-     * top of the window. */
+    /**
+     * Vertical window position of second corner, in pixels from the
+     * top of the window.
+     */
     protected int y2 = 0;
     /** Latitude of second corner, decimal degrees. */
     protected float lat2 = 0.0f;
@@ -77,10 +83,10 @@ public class OMRect extends OMGraphic implements Serializable {
     protected float lon2 = 0.0f;
 
     /**
-     * Number of segments to draw (used only for
-     * LINETYPE_GREATCIRCLE or LINETYPE_RHUMB lines).
+     * Number of segments to draw (used only for LINETYPE_GREATCIRCLE
+     * or LINETYPE_RHUMB lines).
      */
-    protected int nsegs=-1;
+    protected int nsegs = -1;
 
     /** Default constructor, waiting to be filled. */
     public OMRect() {
@@ -89,32 +95,31 @@ public class OMRect extends OMGraphic implements Serializable {
 
     /**
      * Create a lat/lon rectangle.
-     *
+     * 
      * @param lt1 latitude of north edge, decimal degrees.
      * @param ln1 longitude of west edge, decimal degrees.
      * @param lt2 latitude of south edge, decimal degrees.
      * @param ln2 longitude of east edge, decimal degrees.
-     * @param lType line type  - see OMGraphic.lineType.
+     * @param lType line type - see OMGraphic.lineType.
      */
-    public OMRect(float lt1, float ln1, float lt2, float ln2, 
-                  int lType) {
-        this (lt1, ln1, lt2, ln2, lType, -1);
+    public OMRect(float lt1, float ln1, float lt2, float ln2, int lType) {
+        this(lt1, ln1, lt2, ln2, lType, -1);
     }
 
     /**
      * Create a lat/lon rectangle.
-     *
+     * 
      * @param lt1 latitude of north edge, decimal degrees.
      * @param ln1 longitude of west edge, decimal degrees.
      * @param lt2 latitude of south edge, decimal degrees.
      * @param ln2 longitude of east edge, decimal degrees.
-     * @param lType line type  - see OMGraphic.lineType.
-     * @param nsegs number of segment points (only for LINETYPE_GREATCIRCLE
-     * or LINETYPE_RHUMB line types, and if &lt; 1, this value is generated
-     * internally)
+     * @param lType line type - see OMGraphic.lineType.
+     * @param nsegs number of segment points (only for
+     *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and
+     *        if &lt; 1, this value is generated internally)
      */
-    public OMRect(float lt1, float ln1, float lt2, float ln2, 
-                  int lType, int nsegs) {
+    public OMRect(float lt1, float ln1, float lt2, float ln2, int lType,
+            int nsegs) {
         super(RENDERTYPE_LATLON, lType, DECLUTTERTYPE_NONE);
         lat1 = lt1;
         lon1 = ln1;
@@ -124,20 +129,20 @@ public class OMRect extends OMGraphic implements Serializable {
     }
 
     /**
-     * Construct an XY rectangle.
-     * It doesn't matter which corners of the rectangle are used, as
-     * long as they are opposite from each other.
-     *
+     * Construct an XY rectangle. It doesn't matter which corners of
+     * the rectangle are used, as long as they are opposite from each
+     * other.
+     * 
      * @param px1 x pixel position of the first corner relative to the
-     * window origin
+     *        window origin
      * @param py1 y pixel position of the first corner relative to the
-     * window origin
-     * @param px2 x pixel position of the second corner relative to the
-     * window origin
-     * @param py2 y pixel position of the second corner relative to the
-     * window origin
+     *        window origin
+     * @param px2 x pixel position of the second corner relative to
+     *        the window origin
+     * @param py2 y pixel position of the second corner relative to
+     *        the window origin
      */
-    public OMRect(int px1, int py1, int px2, int py2) { 
+    public OMRect(int px1, int py1, int px2, int py2) {
         super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
         x1 = px1;
@@ -148,23 +153,22 @@ public class OMRect extends OMGraphic implements Serializable {
 
     /**
      * Construct an XY rectangle relative to a lat/lon point
-     * (RENDERTYPE_OFFSET).
-     * It doesn't matter which corners of the rectangle are used, as
-     * long as they are opposite from each other.
-     *
+     * (RENDERTYPE_OFFSET). It doesn't matter which corners of the
+     * rectangle are used, as long as they are opposite from each
+     * other.
+     * 
      * @param lt1 latitude of the reference point, decimal degrees.
      * @param ln1 longitude of the reference point, decimal degrees.
      * @param px1 x pixel position of the first corner relative to the
-     * reference point
+     *        reference point
      * @param py1 y pixel position of the first corner relative to the
-     * reference point
-     * @param px2 x pixel position of the second corner relative to the
-     * reference point
-     * @param py2 y pixel position of the second corner relative to the
-     * reference point
+     *        reference point
+     * @param px2 x pixel position of the second corner relative to
+     *        the reference point
+     * @param py2 y pixel position of the second corner relative to
+     *        the reference point
      */
-    public OMRect(float lt1, float ln1, 
-                  int px1, int py1, int px2, int py2) { 
+    public OMRect(float lt1, float ln1, int px1, int py1, int px2, int py2) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         lat1 = lt1;
         lon1 = ln1;
@@ -176,15 +180,14 @@ public class OMRect extends OMGraphic implements Serializable {
 
     /**
      * Set a lat/lon rectangle.
-     *
+     * 
      * @param lt1 latitude of north edge, decimal degrees.
      * @param ln1 longitude of west edge, decimal degrees.
      * @param lt2 latitude of south edge, decimal degrees.
      * @param ln2 longitude of east edge, decimal degrees.
-     * @param lType line type  - see OMGraphic.lineType.
+     * @param lType line type - see OMGraphic.lineType.
      */
-    public void setLocation(float lt1, float ln1, 
-                            float lt2, float ln2, 
+    public void setLocation(float lt1, float ln1, float lt2, float ln2,
                             int lType) {
         setRenderType(RENDERTYPE_LATLON);
         setLineType(lType);
@@ -196,20 +199,20 @@ public class OMRect extends OMGraphic implements Serializable {
     }
 
     /**
-     * Set an XY rectangle.
-     * It doesn't matter which corners of the rectangle are used, as
-     * long as they are opposite from each other.
-     *
+     * Set an XY rectangle. It doesn't matter which corners of the
+     * rectangle are used, as long as they are opposite from each
+     * other.
+     * 
      * @param px1 x pixel position of the first corner relative to the
-     * window origin
+     *        window origin
      * @param py1 y pixel position of the first corner relative to the
-     * window origin
-     * @param px2 x pixel position of the second corner relative to the
-     * window origin
-     * @param py2 y pixel position of the second corner relative to the
-     * window origin
+     *        window origin
+     * @param px2 x pixel position of the second corner relative to
+     *        the window origin
+     * @param py2 y pixel position of the second corner relative to
+     *        the window origin
      */
-    public void setLocation(int px1, int py1, int px2, int py2) { 
+    public void setLocation(int px1, int py1, int px2, int py2) {
         setRenderType(RENDERTYPE_XY);
         setLineType(LINETYPE_UNKNOWN);
         x1 = Math.min(px1, px2);
@@ -221,23 +224,23 @@ public class OMRect extends OMGraphic implements Serializable {
 
     /**
      * Set an XY rectangle relative to a lat/lon point
-     * (RENDERTYPE_OFFSET).
-     * It doesn't matter which corners of the rectangle are used, as
-     * long as they are opposite from each other.
-     *
+     * (RENDERTYPE_OFFSET). It doesn't matter which corners of the
+     * rectangle are used, as long as they are opposite from each
+     * other.
+     * 
      * @param lt1 latitude of the reference point, decimal degrees.
      * @param ln1 longitude of the reference point, decimal degrees.
      * @param px1 x pixel position of the first corner relative to the
-     * reference point
+     *        reference point
      * @param py1 y pixel position of the first corner relative to the
-     * reference point
-     * @param px2 x pixel position of the second corner relative to the
-     * reference point
-     * @param py2 y pixel position of the second corner relative to the
-     * reference point
+     *        reference point
+     * @param px2 x pixel position of the second corner relative to
+     *        the reference point
+     * @param py2 y pixel position of the second corner relative to
+     *        the reference point
      */
-    public void setLocation(float lt1, float ln1, 
-                            int px1, int py1, int px2, int py2) { 
+    public void setLocation(float lt1, float ln1, int px1, int py1, int px2,
+                            int py2) {
         setRenderType(RENDERTYPE_OFFSET);
         setLineType(LINETYPE_UNKNOWN);
         lat1 = lt1;
@@ -250,20 +253,20 @@ public class OMRect extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the latitude of the north edge in a LatLon rectangle.  It
+     * Get the latitude of the north edge in a LatLon rectangle. It
      * also happens to be the latitude of the offset point.
-     *
-     * @return float latitude 
+     * 
+     * @return float latitude
      */
     public float getNorthLat() {
         return lat1;
     }
 
     /**
-     * Get the longitude of the west edge in a LatLon rectangle.  It
+     * Get the longitude of the west edge in a LatLon rectangle. It
      * also happens to be the longitude of the offset point.
-     *
-     * @return float longitude 
+     * 
+     * @return float longitude
      */
     public float getWestLon() {
         return lon1;
@@ -271,7 +274,7 @@ public class OMRect extends OMGraphic implements Serializable {
 
     /**
      * Get the latitude of the south edge in a LatLon rectangle.
-     *
+     * 
      * @return float latitude
      */
     public float getSouthLat() {
@@ -280,7 +283,7 @@ public class OMRect extends OMGraphic implements Serializable {
 
     /**
      * Get the longitude of the east edge in a LatLon rectangle.
-     *
+     * 
      * @return float longitude
      */
     public float getEastLon() {
@@ -289,7 +292,7 @@ public class OMRect extends OMGraphic implements Serializable {
 
     /**
      * Get the top of XY rectangle.
-     *
+     * 
      * @return int
      */
     public int getTop() {
@@ -298,7 +301,7 @@ public class OMRect extends OMGraphic implements Serializable {
 
     /**
      * Get the left of XY rectangle.
-     *
+     * 
      * @return int
      */
     public int getLeft() {
@@ -307,7 +310,7 @@ public class OMRect extends OMGraphic implements Serializable {
 
     /**
      * Get the bottom of XY rectangle.
-     *
+     * 
      * @return int
      */
     public int getBottom() {
@@ -316,7 +319,7 @@ public class OMRect extends OMGraphic implements Serializable {
 
     /**
      * Get the right of XY rectangle.
-     *
+     * 
      * @return int
      */
     public int getRight() {
@@ -324,10 +327,10 @@ public class OMRect extends OMGraphic implements Serializable {
     }
 
     /**
-     * Set the number of segments of the lat/lon lines.
-     * (This is only for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line
-     * types, and if &lt; 1, this value is generated internally).
-     *
+     * Set the number of segments of the lat/lon lines. (This is only
+     * for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and if
+     * &lt; 1, this value is generated internally).
+     * 
      * @param nsegs number of segment points
      */
     public void setNumSegs(int nsegs) {
@@ -335,10 +338,9 @@ public class OMRect extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the number of segments of the lat/lon lines.
-     * (This is only for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line
-     * types).
-     *
+     * Get the number of segments of the lat/lon lines. (This is only
+     * for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types).
+     * 
      * @return int number of segment points
      */
     public int getNumSegs() {
@@ -347,7 +349,7 @@ public class OMRect extends OMGraphic implements Serializable {
 
     /**
      * Prepare the rectangle for rendering.
-     *
+     * 
      * @param proj Projection
      * @return true if generate was successful
      */
@@ -360,13 +362,11 @@ public class OMRect extends OMGraphic implements Serializable {
         }
 
         // reset the internals
-        
+
         switch (renderType) {
         case RENDERTYPE_XY:
-            shape = createBoxShape((int)Math.min(x2, x1),
-                                   (int)Math.min(y2, y1),
-                                   (int)Math.abs(x2 - x1), 
-                                   (int)Math.abs(y2 - y1));
+            shape = createBoxShape((int) Math.min(x2, x1), (int) Math.min(y2,
+                    y1), (int) Math.abs(x2 - x1), (int) Math.abs(y2 - y1));
             break;
         case RENDERTYPE_OFFSET:
             if (!proj.isPlotable(lat1, lon1)) {
@@ -375,29 +375,26 @@ public class OMRect extends OMGraphic implements Serializable {
             }
             Point p1 = proj.forward(lat1, lon1);
 
-            shape = createBoxShape((int)Math.min(p1.x + x1, 
-                                                 p1.x + x2),
-                                   (int)Math.min(p1.y + y1, 
-                                                 p1.y + y2),
-                                   (int)Math.abs(x2 - x1), 
-                                   (int)Math.abs(y2 - y1));
+            shape = createBoxShape((int) Math.min(p1.x + x1, p1.x + x2),
+                    (int) Math.min(p1.y + y1, p1.y + y2),
+                    (int) Math.abs(x2 - x1),
+                    (int) Math.abs(y2 - y1));
             break;
         case RENDERTYPE_LATLON:
-            ArrayList rects =
-                proj.forwardRect(
-                    new LatLonPoint(lat1, lon1), // NW
+            ArrayList rects = proj.forwardRect(new LatLonPoint(lat1, lon1), // NW
                     new LatLonPoint(lat2, lon2), // SE
                     lineType, nsegs, !isClear(fillPaint));
             int size = rects.size();
 
-            for (int i=0, j=0; i<size; i+=2, j++) {
-                GeneralPath gp = createShape((int[])rects.get(i), 
-                                             (int[])rects.get(i+1), true);
+            for (int i = 0, j = 0; i < size; i += 2, j++) {
+                GeneralPath gp = createShape((int[]) rects.get(i),
+                        (int[]) rects.get(i + 1),
+                        true);
 
                 if (shape == null) {
                     shape = gp;
                 } else {
-                    ((GeneralPath)shape).append(gp, false);
+                    ((GeneralPath) shape).append(gp, false);
                 }
             }
             break;

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,26 +14,33 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/CSVTiledImagePlugIn.java,v $
 // $RCSfile: CSVTiledImagePlugIn.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/03 20:41:15 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:06:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.plugin;
 
+import java.awt.Component;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Vector;
+import javax.swing.ImageIcon;
+
 import com.bbn.openmap.io.CSVFile;
 import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMScalingRaster;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.net.*;
-import java.util.*;
-import javax.swing.ImageIcon;
 
 /**
  * This PlugIn can be used to load image files for background use.

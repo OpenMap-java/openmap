@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProjMapBeanKeyListener.java,v $
 // $RCSfile: ProjMapBeanKeyListener.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
@@ -31,19 +30,18 @@ import java.util.Iterator;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.ProjectionStack;
 import com.bbn.openmap.proj.ProjectionStackTrigger;
-import com.bbn.openmap.util.Debug;
 
 /**
  * The ProjMapBeanKeyListener is a KeyListener that gets events when
  * the MapBean has focus, and responds to certain keys by changing the
- * projection.  The arrow keys pan the map, and 'z' zooms in.  Shift-z
+ * projection. The arrow keys pan the map, and 'z' zooms in. Shift-z
  * zooms out. The less than/comma key tells a projection stack to go
  * back to the last projection, and the greater than/period tells it
- * to go to the next projection.  The MapBean has to have focus for
+ * to go to the next projection. The MapBean has to have focus for
  * these to work which is usually gained by clicking on the map.
  */
-public class ProjMapBeanKeyListener extends MapBeanKeyListener 
-    implements ProjectionStackTrigger {
+public class ProjMapBeanKeyListener extends MapBeanKeyListener implements
+        ProjectionStackTrigger {
 
     /**
      * Default Zoom In Factor is 2, meaning that the scale number will
@@ -67,35 +65,35 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener
 
         // When we can control rates, we'll use shift for double pan,
         // and ctrl for half pan
-//      int modifiers = e.getModifiers();
+        //      int modifiers = e.getModifiers();
 
         switch (keyCode) {
         case KeyEvent.VK_UP:
         case KeyEvent.VK_KP_UP:
-            panners.firePan(PanEvent.NORTH);
+            panners.firePan(0f/* PanEvent.NORTH */);
             break;
         case KeyEvent.VK_DOWN:
         case KeyEvent.VK_KP_DOWN:
-            panners.firePan(PanEvent.SOUTH);
+            panners.firePan(180f/* PanEvent.SOUTH */);
             break;
         case KeyEvent.VK_LEFT:
         case KeyEvent.VK_KP_LEFT:
-            panners.firePan(PanEvent.WEST);
+            panners.firePan(-90f/* PanEvent.WEST */);
             break;
         case KeyEvent.VK_RIGHT:
         case KeyEvent.VK_KP_RIGHT:
-            panners.firePan(PanEvent.EAST);
+            panners.firePan(90f/* PanEvent.EAST */);
             break;
         case KeyEvent.VK_Z:
             if (e.isShiftDown()) {
                 zoomers.fireZoom(ZoomEvent.RELATIVE, zoomFactor);
             } else {
-                zoomers.fireZoom(ZoomEvent.RELATIVE, 1f/zoomFactor);
+                zoomers.fireZoom(ZoomEvent.RELATIVE, 1f / zoomFactor);
             }
 
             break;
         case KeyEvent.VK_PLUS:
-            zoomers.fireZoom(ZoomEvent.RELATIVE, 1f/zoomFactor);
+            zoomers.fireZoom(ZoomEvent.RELATIVE, 1f / zoomFactor);
             break;
         case KeyEvent.VK_MINUS:
             zoomers.fireZoom(ZoomEvent.RELATIVE, zoomFactor);
@@ -138,14 +136,14 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener
         ActionEvent event = new ActionEvent(this, 0, command);
         Iterator it = projListeners.iterator();
         while (it.hasNext()) {
-            ((ActionListener)it.next()).actionPerformed(event);
+            ((ActionListener) it.next()).actionPerformed(event);
         }
 
     }
 
     /**
-     * Add an ActionListener for events that trigger events to shift the
-     * Projection stack.
+     * Add an ActionListener for events that trigger events to shift
+     * the Projection stack.
      */
     public void addActionListener(ActionListener al) {
         projListeners.addListener(al);
@@ -162,13 +160,13 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener
     /**
      * To receive a status to let the trigger know if any projections
      * in the forward or backward stacks exist, possibly to disable
-     * any gui widgets.  Does nothing, we don't care here.
-     *
+     * any gui widgets. Does nothing, we don't care here.
+     * 
      * @param containsBackProjections there is at least one past
-     * projection in the back cache.  
+     *        projection in the back cache.
      * @param containsForwardProjections there is at least one future
-     * projection in the forward cache.  Used when a past projection
-     * is being used. 
+     *        projection in the forward cache. Used when a past
+     *        projection is being used.
      */
     public void updateProjectionStackStatus(boolean containsBackProjections,
                                             boolean containsForwardProjections) {}
@@ -180,14 +178,14 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener
     public void findAndInit(Object someObj) {
         super.findAndInit(someObj);
         if (someObj instanceof ProjectionStack) {
-            addActionListener((ActionListener)someObj);
+            addActionListener((ActionListener) someObj);
         }
     }
 
     public void findAndUndo(Object someObj) {
         super.findAndUndo(someObj);
         if (someObj instanceof ProjectionStack) {
-            removeActionListener((ActionListener)someObj);
+            removeActionListener((ActionListener) someObj);
         }
     }
 

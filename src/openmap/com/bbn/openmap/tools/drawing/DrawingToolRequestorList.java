@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/DrawingToolRequestorList.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/DrawingToolRequestorList.java,v
+// $
 // $RCSfile: DrawingToolRequestorList.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.drawing;
 
@@ -66,23 +67,23 @@ public class DrawingToolRequestorList implements DrawingToolRequestor {
                 Debug.output("DTRL.drawingComplete(list)");
             }
 
-            for (Iterator it = ((OMGraphicList)omg).iterator(); it.hasNext();) {
-                OMGraphic omgi = (OMGraphic)it.next();
-                dtr = (DrawingToolRequestor)table.get(omgi);
+            for (Iterator it = ((OMGraphicList) omg).iterator(); it.hasNext();) {
+                OMGraphic omgi = (OMGraphic) it.next();
+                dtr = (DrawingToolRequestor) table.get(omgi);
                 if (dtr != null) {
                     if (Debug.debugging("drawingtool")) {
-                        Debug.output("  notifying requestor for list member " + 
-                                     omgi.getClass().getName());
+                        Debug.output("  notifying requestor for list member "
+                                + omgi.getClass().getName());
                     }
                     dtr.drawingComplete(omgi, action);
                 }
             }
         } else {
-            dtr = (DrawingToolRequestor)table.get(omg);
+            dtr = (DrawingToolRequestor) table.get(omg);
             if (dtr != null) {
                 if (Debug.debugging("drawingtool")) {
-                    Debug.output("  notifying requestor for " + 
-                                 omg.getClass().getName());
+                    Debug.output("  notifying requestor for "
+                            + omg.getClass().getName());
                 }
                 dtr.drawingComplete(omg, action);
             }
@@ -99,10 +100,10 @@ public class DrawingToolRequestorList implements DrawingToolRequestor {
 
     /**
      * Needed to fill in a GUI with a receiver's name, to enable the
-     * user to send a graphic to a specific object.  Should be a
-     * pretty name, suitable to let a user know what it is.  It's
-     * important that the requestor have a name, because that could be
-     * the key that is used in some GUI components.
+     * user to send a graphic to a specific object. Should be a pretty
+     * name, suitable to let a user know what it is. It's important
+     * that the requestor have a name, because that could be the key
+     * that is used in some GUI components.
      */
     public String getName() {
         return name;

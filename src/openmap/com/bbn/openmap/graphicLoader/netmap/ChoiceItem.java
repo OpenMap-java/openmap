@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/ChoiceItem.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/ChoiceItem.java,v
+// $
 // $RCSfile: ChoiceItem.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/24 21:50:32 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.graphicLoader.netmap;
 
@@ -32,7 +33,7 @@ public class ChoiceItem {
         label = null;
         value = null;
     }
-            
+
     public ChoiceItem(String label, Object value) {
         this.label = label;
         this.value = value;

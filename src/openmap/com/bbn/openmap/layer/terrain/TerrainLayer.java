@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,23 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/TerrainLayer.java,v $
 // $RCSfile: TerrainLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/09/17 19:34:34 $
+// $Revision: 1.9 $
+// $Date: 2004/10/14 18:06:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.terrain;
 
 /*  Java Core  */
-import java.awt.Point;
-import java.awt.Component;
-import java.awt.GridLayout;
 import java.awt.event.*;
-import java.util.*;
-import java.io.*;
-import java.net.URL;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -41,51 +34,52 @@ import com.bbn.openmap.*;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.layer.dted.*;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
-import com.bbn.openmap.util.SwingWorker;
 
-/** 
+/**
  * The Terrain Layer is an example of creating a layer that acts as a
  * tool that defines and area (via user gestures) and presents a
- * result of the analysis of the data.  In this case, Elevation data
- * is used in two different ways.  The Profile tool lets you draw a
- * line on the map, and then uses DTED data to create a GIF image that
- * shows the terrain profile along the drawn line.  The LOS
+ * result of the analysis of the data. In this case, Elevation data is
+ * used in two different ways. The Profile tool lets you draw a line
+ * on the map, and then uses DTED data to create a GIF image that
+ * shows the terrain profile along the drawn line. The LOS
  * (line-of-sight) tool lets you define a circle, and then calculates
  * the places on the ground that are within sight of the center of the
- * circle.  The result is shown with the visible points being colored
- * green, and all other points being clear.  The LOS tool lets you use
+ * circle. The result is shown with the visible points being colored
+ * green, and all other points being clear. The LOS tool lets you use
  * a height slider on its palette to define additional height at the
  * point, representing a tower, building, or location of an aircraft.
- *
- * <P>The tools require you to be in the gesture mode of OpenMap.
  * 
- * <P>The TerrainLayer needs a DTEDFrameCache.  It can be added to the
+ * <P>
+ * The tools require you to be in the gesture mode of OpenMap.
+ * 
+ * <P>
+ * The TerrainLayer needs a DTEDFrameCache. It can be added to the
  * layer programmatically, or the layer will find it if the
- * DTEDFrameCache is added to the MapHandler.  To do that in the
+ * DTEDFrameCache is added to the MapHandler. To do that in the
  * OpenMap application, add the DTEDFrameCache to the
  * openmap.components property in the openmap.properties file.
- *
- *  <pre>
- * #----------------------------------------------------------------------
- * # Properties file for TerrainLayer
- * #----------------------------------------------------------------------
- * # The default tool to use for the terrain layer.  Can be PROFILE or
- * LOS.  terrain.default.mode=PROFILE
- * #----------------------------------------------------------------------
- * # End of properties file for TerrainLayer
- * #----------------------------------------------------------------------
+ * 
+ * <pre>
+ * 
+ *  #----------------------------------------------------------------------
+ *  # Properties file for TerrainLayer
+ *  #----------------------------------------------------------------------
+ *  # The default tool to use for the terrain layer.  Can be PROFILE or
+ *  LOS.  terrain.default.mode=PROFILE
+ *  #----------------------------------------------------------------------
+ *  # End of properties file for TerrainLayer
+ *  #----------------------------------------------------------------------
+ *  
  * </pre>
+ * 
  * @see com.bbn.openmap.dataAccess.dted.DTEDFrameCache
  */
-public class TerrainLayer extends OMGraphicHandlerLayer
-    implements ActionListener, MapMouseListener {
+public class TerrainLayer extends OMGraphicHandlerLayer implements
+        ActionListener, MapMouseListener {
     /** The cache that knows how to handle DTED requests. */
     public DTEDFrameCache frameCache;
 
@@ -108,7 +102,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer
     public final static String createCommand = "createTool";
 
     /**
-     * The default constructor for the Layer.  All of the attributes
+     * The default constructor for the Layer. All of the attributes
      * are set to their default values.
      */
     public TerrainLayer() {
@@ -125,7 +119,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer
 
     /**
      * Sets the default values for the variables, if the properties
-     * are not found, or are invalid.  Usually not a good idea.
+     * are not found, or are invalid. Usually not a good idea.
      */
     protected void setDefaultValues() {
         mode = PROFILE;
@@ -139,12 +133,12 @@ public class TerrainLayer extends OMGraphicHandlerLayer
         return frameCache;
     }
 
-    /** 
+    /**
      * Set all the TerrainLayer properties from a proerties object
-     *
+     * 
      * @param prefix a string that gets set to indiviualize the
-     * properties to a specific layer.
-     * @param properties the proerties object 
+     *        properties to a specific layer.
+     * @param properties the proerties object
      */
     public void setProperties(String prefix, java.util.Properties properties) {
 
@@ -152,13 +146,14 @@ public class TerrainLayer extends OMGraphicHandlerLayer
         setDefaultValues();
         prefix = com.bbn.openmap.util.PropUtils.getScopedPropertyPrefix(prefix);
 
-        try{
-            
-            String defaultModeString = properties.getProperty(prefix + defaultModeProperty);
+        try {
+
+            String defaultModeString = properties.getProperty(prefix
+                    + defaultModeProperty);
             if (defaultModeString.equalsIgnoreCase("LOS"))
                 setMode(LOS);
-//          else if (defaultModeString.equalsIgnoreCase("PROFILE"))
-//              defaultMode = PROFILE;
+            //          else if (defaultModeString.equalsIgnoreCase("PROFILE"))
+            //              defaultMode = PROFILE;
             else
                 setMode(PROFILE);
         } catch (NullPointerException e) {
@@ -166,22 +161,24 @@ public class TerrainLayer extends OMGraphicHandlerLayer
             System.err.println("TerrainLayer: Using default resources.");
             setDefaultValues();
             setMode(mode);
-        }               
+        }
     }
-    
+
     /**
-     * Prepares the graphics for the layer.  This is where the
-     * getRectangle() method call is made on the dted.  <p>
-     * Occasionally it is necessary to abort a prepare call.  When
-     * this happens, the map will set the cancel bit in the
-     * LayerThread, (the thread that is running the prepare).  If this
-     * Layer needs to do any cleanups during the abort, it should do
-     * so, but return out of the prepare asap.
+     * Prepares the graphics for the layer. This is where the
+     * getRectangle() method call is made on the dted.
+     * <p>
+     * Occasionally it is necessary to abort a prepare call. When this
+     * happens, the map will set the cancel bit in the LayerThread,
+     * (the thread that is running the prepare). If this Layer needs
+     * to do any cleanups during the abort, it should do so, but
+     * return out of the prepare asap.
      */
     public synchronized OMGraphicList prepare() {
 
         if (isCancelled()) {
-            Debug.message("dted", getName()+"|TerrainLayer.prepare(): aborted.");
+            Debug.message("dted", getName()
+                    + "|TerrainLayer.prepare(): aborted.");
             return null;
         }
 
@@ -192,11 +189,11 @@ public class TerrainLayer extends OMGraphicHandlerLayer
             return new OMGraphicList();
         }
 
-        Debug.message("basic", getName()+"|TerrainLayer.prepare(): doing it");
+        Debug.message("basic", getName() + "|TerrainLayer.prepare(): doing it");
 
-        // Setting the OMGraphicsList for this layer.  Remember, the
+        // Setting the OMGraphicsList for this layer. Remember, the
         // OMGraphicList is made up of OMGraphics, which are generated
-        // (projected) when the graphics are added to the list.  So,
+        // (projected) when the graphics are added to the list. So,
         // after this call, the list is ready for painting.
         LatLonPoint ll2 = projection.getLowerRight();
         LatLonPoint ll1 = projection.getUpperLeft();
@@ -205,7 +202,6 @@ public class TerrainLayer extends OMGraphicHandlerLayer
         LOSTool.setScreenParameters(projection);
         return currentTool.getGraphics();
     }
-
 
     //----------------------------------------------------------------------
     // GUI
@@ -225,13 +221,13 @@ public class TerrainLayer extends OMGraphicHandlerLayer
 
             palette = Box.createVerticalBox();
 
-//          palette = new JPanel();
-//          palette.setLayout(new GridLayout(0, 1));
+            //          palette = new JPanel();
+            //          palette.setLayout(new GridLayout(0, 1));
 
             // The Terrain Level selector
             JPanel modePanel = PaletteHelper.createPaletteJPanel("Tool Mode");
             ButtonGroup modes = new ButtonGroup();
-            
+
             ActionListener al = new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     String ac = e.getActionCommand();
@@ -253,8 +249,10 @@ public class TerrainLayer extends OMGraphicHandlerLayer
             modes.add(profileModeButton);
             modes.add(losModeButton);
 
-            switch(mode) {
-            case LOS: losModeButton.setSelected(true); break;
+            switch (mode) {
+            case LOS:
+                losModeButton.setSelected(true);
+                break;
             case PROFILE:
             default:
                 profileModeButton.setSelected(true);
@@ -265,8 +263,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer
 
             // The LOS Height Adjuster
             JPanel centerHeightPanel = PaletteHelper.createPaletteJPanel("LOS Center Object Height");
-            JSlider centerHeightSlide = new JSlider(
-                JSlider.HORIZONTAL, 0/*min*/, 500/*max*/, 0/*inital*/);
+            JSlider centerHeightSlide = new JSlider(JSlider.HORIZONTAL, 0/* min */, 500/* max */, 0/* inital */);
             java.util.Hashtable dict = new java.util.Hashtable();
             dict.put(new Integer(0), new JLabel("0 ft"));
             dict.put(new Integer(500), new JLabel("500 ft"));
@@ -279,8 +276,8 @@ public class TerrainLayer extends OMGraphicHandlerLayer
                 public void stateChanged(ChangeEvent ce) {
                     JSlider slider = (JSlider) ce.getSource();
                     if (slider.getValueIsAdjusting()) {
-                        fireRequestInfoLine("TerrainLayer - center height value = " + 
-                                           slider.getValue());
+                        fireRequestInfoLine("TerrainLayer - center height value = "
+                                + slider.getValue());
                         LOSTool.setLOSobjectHeight(slider.getValue());
                     }
                 }
@@ -305,19 +302,19 @@ public class TerrainLayer extends OMGraphicHandlerLayer
             palette.add(modePanel);
             palette.add(centerHeightPanel);
             palette.add(profileControlPanel);
-//          palette.add(redraw);
+            //          palette.add(redraw);
         }
 
         return palette;
     }
-  
+
     //----------------------------------------------------------------------
     // ActionListener interface implementation
     //----------------------------------------------------------------------
 
     /**
      * The reaction handler for the buttons being pressed on the
-     * palette. 
+     * palette.
      */
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
@@ -339,32 +336,38 @@ public class TerrainLayer extends OMGraphicHandlerLayer
 
     /**
      * Tells the MouseDelegator which Mouse Modes we're interested in
-     * receiving events from.  In this case, just the "Gestures" mode.
+     * receiving events from. In this case, just the "Gestures" mode.
      */
     public String[] getMouseModeServiceList() {
-        String[] services = {SelectMouseMode.modeID};
+        String[] services = { SelectMouseMode.modeID };
         return services;
     }
-  
+
     public boolean mousePressed(MouseEvent e) {
         return currentTool.getState().mousePressed(e);
     }
+
     public boolean mouseReleased(MouseEvent e) {
         return currentTool.getState().mouseReleased(e);
     }
+
     public boolean mouseClicked(MouseEvent e) {
         return currentTool.getState().mouseClicked(e);
     }
+
     public void mouseEntered(MouseEvent e) {}
+
     public void mouseExited(MouseEvent e) {}
+
     public boolean mouseDragged(MouseEvent e) {
         return currentTool.getState().mouseDragged(e);
     }
+
     public boolean mouseMoved(MouseEvent e) {
         return false;
     }
-    public void mouseMoved() {
-    }
+
+    public void mouseMoved() {}
 
     /**
      * Little math utility that both tools use, that just implements
@@ -372,21 +375,22 @@ public class TerrainLayer extends OMGraphicHandlerLayer
      * screen points.
      */
     public static int numPixelsBetween(int x1, int y1, int x2, int y2) {
-        return (int) Math.sqrt(Math.pow((double)(x1 - x2), 2.0) +
-                               Math.pow((double)(y1 - y2), 2.0));
+        return (int) Math.sqrt(Math.pow((double) (x1 - x2), 2.0)
+                + Math.pow((double) (y1 - y2), 2.0));
     }
 
     /** Set the current tool to be used. */
     public void setMode(int m) {
         mode = m;
-        if (currentTool != null) currentTool.reset();
+        if (currentTool != null)
+            currentTool.reset();
         if (m == PROFILE) {
-          currentTool = profileTool;
-//        System.out.println("Changing mode to PROFILE");
+            currentTool = profileTool;
+            //        System.out.println("Changing mode to PROFILE");
         }
         if (m == LOS) {
-          currentTool = LOSTool;
-//        System.out.println("Changing mode to LOS");
+            currentTool = LOSTool;
+            //        System.out.println("Changing mode to LOS");
         }
         if (currentTool != null) {
             currentTool.reset();
@@ -400,7 +404,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer
 
     public void findAndInit(Object someObj) {
         if (someObj instanceof DTEDFrameCache) {
-            setFrameCache((DTEDFrameCache)someObj);
+            setFrameCache((DTEDFrameCache) someObj);
         }
     }
 
@@ -411,13 +415,4 @@ public class TerrainLayer extends OMGraphicHandlerLayer
     }
 
 }
-
-
-
-
-
-
-
-
-
 

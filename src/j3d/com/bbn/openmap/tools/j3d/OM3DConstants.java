@@ -2,7 +2,7 @@
 //
 // <copyright>
 //
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OM3DConstants.java,v $
 // $RCSfile: OM3DConstants.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/02/09 13:33:36 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:38 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -26,11 +26,11 @@ import javax.vecmath.*;
 import javax.media.j3d.*;
 
 /**
- * An interface that any class can implement to get access
- * to common constant values.
- *
- * @author    dietrick
- * @created   April 25, 2002
+ * An interface that any class can implement to get access to common
+ * constant values.
+ * 
+ * @author dietrick
+ * @created April 25, 2002
  */
 public interface OM3DConstants {
 
@@ -54,24 +54,21 @@ public interface OM3DConstants {
     public final static int DEFAULT_DIMENSION = 400;
 
     /**
-     * Mask for Content. To tell them to look for any layers
-     * that are OMGraphicHandlers, and add those layers'
-     * objects to the scene.
+     * Mask for Content. To tell them to look for any layers that are
+     * OMGraphicHandlers, and add those layers' objects to the scene.
      */
     public final static int CONTENT_MASK_OMGRAPHICHANDLERLAYERS = 1 << 0;
     /**
      * Mask for Content. Tells the Content to look for
-     * OM3DGraphicHandlers in the MapHandler. Any
-     * OM3dGraphicHandler is given a reference to the
-     * Content, and the OM3DGraphicHandler can call methods
-     * on the content to add graphics and shapes to the
-     * scene.
+     * OM3DGraphicHandlers in the MapHandler. Any OM3dGraphicHandler
+     * is given a reference to the Content, and the OM3DGraphicHandler
+     * can call methods on the content to add graphics and shapes to
+     * the scene.
      */
-    public final static int CONTENT_MASK_OM3DGRAPHICHANDLERS= 1 << 1;
+    public final static int CONTENT_MASK_OM3DGRAPHICHANDLERS = 1 << 1;
     /**
-     * Mask for Content. To tell them to take all the
-     * standard OpenMap layers and incorporate them into an
-     * image.
+     * Mask for Content. To tell them to take all the standard OpenMap
+     * layers and incorporate them into an image.
      */
     public final static int CONTENT_MASK_IMAGEMAP = 1 << 2;
     public final static int CONTENT_MASK_ELEVATIONMAP = 1 << 3;

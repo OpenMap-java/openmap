@@ -2,7 +2,7 @@
 //
 // <copyright>
 //
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArc.java,v $
 // $RCSfile: OMArc.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/01 20:41:32 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:06:12 $
 // $Author: dietrick $
 //
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics;
 
@@ -35,15 +34,17 @@ import com.bbn.openmap.proj.*;
  * Graphic object that represents an arc.
  * <p>
  * <h3>NOTE:</h3>
- * See the <a href="com.bbn.openmap.proj.Projection.html#poly_restrictions">
- * RESTRICTIONS</a> on Lat/Lon polygons/polylines which apply to
- * arcs as well.  Not following the guidelines listed may result in
- * ambiguous/undefined shapes!  Similar assumptions apply to the other
+ * See the <a
+ * href="com.bbn.openmap.proj.Projection.html#poly_restrictions">
+ * RESTRICTIONS </a> on Lat/Lon polygons/polylines which apply to arcs
+ * as well. Not following the guidelines listed may result in
+ * ambiguous/undefined shapes! Similar assumptions apply to the other
  * vector graphics that we define: polys, rects, lines.
  * <p>
  * These assumptions are virtually the same as those on the more
  * generic OMPoly graphic type.
  * <p>
+ * 
  * @see OMPoly
  */
 public class OMArc extends OMGraphic implements Serializable {
@@ -62,27 +63,26 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     protected LatLonPoint center;
     /**
-     * Radius of arc in radians. For LATLON arc.  Note that the
-     * methods for this class use Decimal Degrees, or ask for a Length
-     * object to use for units.  The radius is converted to radians
-     * for internal use.
+     * Radius of arc in radians. For LATLON arc. Note that the methods
+     * for this class use Decimal Degrees, or ask for a Length object
+     * to use for units. The radius is converted to radians for
+     * internal use.
      */
     protected float radius = 0.0f;
     /**
-     * The pixel horizontal diameter of the arc.
-     * For XY and OFFSET arcs.
+     * The pixel horizontal diameter of the arc. For XY and OFFSET
+     * arcs.
      */
     protected int width = 0;
     /**
-     * The pixel vertical diameter of the arc.
-     * For XY and OFFSET arcs.
+     * The pixel vertical diameter of the arc. For XY and OFFSET arcs.
      */
     protected int height = 0;
 
     /**
-     * The starting angle of the arc in decimal degrees.  This is
+     * The starting angle of the arc in decimal degrees. This is
      * defined in decimal degrees because the java.awt.geom.Arc object
-     * wants it in decimal degrees.  0 is North?
+     * wants it in decimal degrees. 0 is North?
      */
     protected float start = 0.0f;
 
@@ -95,13 +95,14 @@ public class OMArc extends OMGraphic implements Serializable {
      * For Arcs, how the arc should be closed when rendered.
      * Arc2D.OPEN is the default, Arc2D.PIE and Arc2D.CHORD are
      * options.
+     * 
      * @see java.awt.geom.Arc2D
      */
     protected int arcType = Arc2D.OPEN;
 
     /**
-     * Used to render arc in Cylindrical projections when the
-     * arc encompases a pole.
+     * Used to render arc in Cylindrical projections when the arc
+     * encompases a pole.
      */
     private GeneralPath polarShapeLine = null;
     /**
@@ -116,12 +117,15 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     protected int nverts;
 
-    /** The angle by which the circle/ellipse is to be rotated, in radians */
+    /**
+     * The angle by which the circle/ellipse is to be rotated, in
+     * radians
+     */
     protected double rotationAngle = DEFAULT_ROTATIONANGLE;
 
     /**
-     * The simplest constructor for an OMArc, and it expects that
-     * all fields will be filled in later.  Rendertype is
+     * The simplest constructor for an OMArc, and it expects that all
+     * fields will be filled in later. Rendertype is
      * RENDERTYPE_UNKNOWN.
      */
     public OMArc() {
@@ -129,9 +133,9 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Create an OMArc, positioned with a lat-lon center and x-y
-     * axis.  Rendertype is RENDERTYPE_OFFSET.
-     *
+     * Create an OMArc, positioned with a lat-lon center and x-y axis.
+     * Rendertype is RENDERTYPE_OFFSET.
+     * 
      * @param latPoint latitude of center point, decimal degrees
      * @param lonPoint longitude of center point, decimal degrees
      * @param w horizontal diameter of arc, pixels
@@ -139,26 +143,27 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param s starting angle of arc, decimal degrees
      * @param e angular extent of arc, decimal degrees
      */
-    public OMArc(float latPoint, float lonPoint,
-                 int w, int h, float s, float e) {
+    public OMArc(float latPoint, float lonPoint, int w, int h, float s, float e) {
         this(latPoint, lonPoint, 0, 0, w, h, s, e);
     }
 
     /**
      * Create a OMArc, positioned with a x-y center with x-y axis.
      * Rendertype is RENDERTYPE_XY.
-     *
-     * @param x1 window position of center point from left of window, in pixels
-     * @param y1 window position of center point from top of window, in pixels
+     * 
+     * @param x1 window position of center point from left of window,
+     *        in pixels
+     * @param y1 window position of center point from top of window,
+     *        in pixels
      * @param w horizontal diameter of arc, pixels
      * @param h vertical diameter of arc, pixels
      * @param s starting angle of arc, decimal degrees
-     * @param e angular extent of arc, decimal degrees.  For XY
-     * rendertype arcs, positive extents go in the counter-clockwise
-     * direction, matching the java.awt.geom.Arc2D convention.
+     * @param e angular extent of arc, decimal degrees. For XY
+     *        rendertype arcs, positive extents go in the
+     *        counter-clockwise direction, matching the
+     *        java.awt.geom.Arc2D convention.
      */
-    public OMArc(int x1, int y1,
-                 int w, int h, float s, float e) {
+    public OMArc(int x1, int y1, int w, int h, float s, float e) {
         super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
         this.x1 = x1;
@@ -170,25 +175,25 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Create a OMArc, positioned at a Lat-lon location, x-y
-     * offset, x-y axis.  Rendertype is RENDERTYPE_OFFSET.
-     *
+     * Create a OMArc, positioned at a Lat-lon location, x-y offset,
+     * x-y axis. Rendertype is RENDERTYPE_OFFSET.
+     * 
      * @param latPoint latitude of center of arc.
      * @param lonPoint longitude of center of arc.
      * @param offset_x1 # pixels to the right the center will be moved
-     * from lonPoint.
+     *        from lonPoint.
      * @param offset_y1 # pixels down that the center will be moved
-     * from latPoint.
+     *        from latPoint.
      * @param w horizontal diameter of arc, pixels.
      * @param h vertical diameter of arc, pixels.
      * @param s starting angle of arc, decimal degrees.
-     * @param e angular extent of arc, decimal degrees.  For Offset
-     * rendertype arcs, positive extents go in the counter-clockwise
-     * direction, matching the java.awt.geom.Arc2D convention.
+     * @param e angular extent of arc, decimal degrees. For Offset
+     *        rendertype arcs, positive extents go in the
+     *        counter-clockwise direction, matching the
+     *        java.awt.geom.Arc2D convention.
      */
-    public OMArc(float latPoint, float lonPoint,
-                 int offset_x1, int offset_y1,
-                 int w, int h, float s, float e) {
+    public OMArc(float latPoint, float lonPoint, int offset_x1, int offset_y1,
+            int w, int h, float s, float e) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
         center = new LatLonPoint(latPoint, lonPoint);
@@ -203,78 +208,86 @@ public class OMArc extends OMGraphic implements Serializable {
     /**
      * Creates an OMArc with a Lat-lon center and a lat-lon axis.
      * Rendertype is RENDERTYPE_LATLON.
-     *
+     * 
      * @param latPoint latitude of center point, decimal degrees
      * @param lonPoint longitude of center point, decimal degrees
      * @param radius distance in decimal degrees (converted to radians
-     * internally).
+     *        internally).
      * @param s starting angle of arc, decimal degrees
-     * @param e angular extent of arc, decimal degrees.  For LATLON
-     * rendertype arcs, positive extents go in the clockwise
-     * direction, matching the OpenMap convention in coordinate space.
+     * @param e angular extent of arc, decimal degrees. For LATLON
+     *        rendertype arcs, positive extents go in the clockwise
+     *        direction, matching the OpenMap convention in coordinate
+     *        space.
      */
-    public OMArc(float latPoint, float lonPoint,
-                 float radius, float s, float e) {
+    public OMArc(float latPoint, float lonPoint, float radius, float s, float e) {
 
-        this(new LatLonPoint(latPoint, lonPoint), radius,
-             Length.DECIMAL_DEGREE, -1, s, e);
+        this(new LatLonPoint(latPoint, lonPoint),
+             radius,
+             Length.DECIMAL_DEGREE,
+             -1,
+             s,
+             e);
     }
 
     /**
-     * Create an OMArc with a lat/lon center and a physical
-     * distance radius.  Rendertype is RENDERTYPE_LATLON.
-     *
+     * Create an OMArc with a lat/lon center and a physical distance
+     * radius. Rendertype is RENDERTYPE_LATLON.
+     * 
      * @param latPoint latitude of center of arc in decimal degrees
      * @param lonPoint longitude of center of arc in decimal degrees
      * @param radius distance
      * @param units com.bbn.openmap.proj.Length object.
      * @param s starting angle of arc, decimal degrees.
-     * @param e angular extent of arc, decimal degrees.  For LATLON
-     * rendertype arcs, positive extents go in the clockwise
-     * direction, matching the OpenMap convention in coordinate space.
+     * @param e angular extent of arc, decimal degrees. For LATLON
+     *        rendertype arcs, positive extents go in the clockwise
+     *        direction, matching the OpenMap convention in coordinate
+     *        space.
      */
-    public OMArc(float latPoint, float lonPoint,
-                 float radius, Length units, float s, float e) {
+    public OMArc(float latPoint, float lonPoint, float radius, Length units,
+            float s, float e) {
         this(new LatLonPoint(latPoint, lonPoint), radius, units, -1, s, e);
     }
 
     /**
-     * Create an OMArc with a lat/lon center and a physical
-     * distance radius.  Rendertype is RENDERTYPE_LATLON.
-     *
+     * Create an OMArc with a lat/lon center and a physical distance
+     * radius. Rendertype is RENDERTYPE_LATLON.
+     * 
      * @param latPoint latitude of center of arc in decimal degrees
      * @param lonPoint longitude of center of arc in decimal degrees
      * @param radius distance
-     * @param units com.bbn.openmap.proj.Length object specifying units.
-     * @param nverts number of vertices for the poly-arc (if &lt; 3, value
-     * is generated internally)
+     * @param units com.bbn.openmap.proj.Length object specifying
+     *        units.
+     * @param nverts number of vertices for the poly-arc (if &lt; 3,
+     *        value is generated internally)
      * @param s starting angle of arc, decimal degrees.
-     * @param e angular extent of arc, decimal degrees.  For LATLON
-     * rendertype arcs, positive extents go in the clockwise
-     * direction, matching the OpenMap convention in coordinate space.
+     * @param e angular extent of arc, decimal degrees. For LATLON
+     *        rendertype arcs, positive extents go in the clockwise
+     *        direction, matching the OpenMap convention in coordinate
+     *        space.
      */
-    public OMArc(float latPoint, float lonPoint,
-                 float radius, Length units, int nverts, float s, float e) {
+    public OMArc(float latPoint, float lonPoint, float radius, Length units,
+            int nverts, float s, float e) {
         this(new LatLonPoint(latPoint, lonPoint), radius, units, nverts, s, e);
     }
 
     /**
-     * Create an OMArc with a lat/lon center and a physical
-     * distance radius.  Rendertype is RENDERTYPE_LATLON.
-     *
+     * Create an OMArc with a lat/lon center and a physical distance
+     * radius. Rendertype is RENDERTYPE_LATLON.
+     * 
      * @param center LatLon center of arc
      * @param radius distance
      * @param units com.bbn.openmap.proj.Length object specifying
-     * units for distance.
-     * @param nverts number of vertices for the poly-arc(if &lt; 3, value
-     * is generated internally)
+     *        units for distance.
+     * @param nverts number of vertices for the poly-arc(if &lt; 3,
+     *        value is generated internally)
      * @param s starting angle of arc, decimal degrees.
-     * @param e angular extent of arc, decimal degrees.  For LATLON
-     * rendertype arcs, positive extents go in the clockwise
-     * direction, matching the OpenMap convention in coordinate space.
+     * @param e angular extent of arc, decimal degrees. For LATLON
+     *        rendertype arcs, positive extents go in the clockwise
+     *        direction, matching the OpenMap convention in coordinate
+     *        space.
      */
-    public OMArc(LatLonPoint center, float radius,
-                 Length units, int nverts, float s, float e) {
+    public OMArc(LatLonPoint center, float radius, Length units, int nverts,
+            float s, float e) {
 
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         this.radius = units.toRadians(radius);
@@ -285,10 +298,10 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the x position of the center.  This is always meaningful
+     * Get the x position of the center. This is always meaningful
      * only if the render type is RENDERTYPE_XY or RENDERTYPE_OFFSET,
      * and meaningful after generation if the RENDERTYPE_LATLON.
-     *
+     * 
      * @return x position of center.
      */
     public int getX() {
@@ -296,10 +309,10 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the y position of the center.  This is always meaningful
+     * Get the y position of the center. This is always meaningful
      * only if the render type is RENDERTYPE_XY or RENDERTYPE_OFFSET,
      * and meaningful after generation if the RENDERTYPE_LATLON.
-     *
+     * 
      * @return y position of center.
      */
     public int getY() {
@@ -307,9 +320,9 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the x offset from the center.  This is meaningful only if
+     * Get the x offset from the center. This is meaningful only if
      * the render type is RENDERTYPE_OFFSET.
-     *
+     * 
      * @return x offset from center.
      */
     public int getOffX() {
@@ -317,9 +330,9 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the y position of the center.  This is meaningful only if
+     * Get the y position of the center. This is meaningful only if
      * the render type is RENDERTYPE_OFFSET.
-     *
+     * 
      * @return y offset from center.
      */
     public int getOffY() {
@@ -327,10 +340,9 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the center LatLonPoint.
-     * This is meaningful only if the rendertype is RENDERTYPE_LATLON
-     * or RENDERTYPE_OFFSET.
-     *
+     * Get the center LatLonPoint. This is meaningful only if the
+     * rendertype is RENDERTYPE_LATLON or RENDERTYPE_OFFSET.
+     * 
      * @return LatLonPoint position of center.
      */
     public LatLonPoint getLatLon() {
@@ -338,10 +350,9 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the radius.
-     * This is meaningful only if the render type is
+     * Get the radius. This is meaningful only if the render type is
      * RENDERTYPE_LATLON.
-     *
+     * 
      * @return float radius in decimal degrees
      */
     public float getRadius() {
@@ -349,10 +360,10 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the horizontal pixel diameter of the arc.  This is
+     * Get the horizontal pixel diameter of the arc. This is
      * meaningful only if the render type is RENDERTYPE_XY or
      * RENDERTYPE_OFFSET.
-     *
+     * 
      * @return the horizontal pixel diameter of the arc.
      */
     public int getWidth() {
@@ -360,10 +371,9 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the vertical pixel diameter of the arc.  This is
-     * meaningful only if the render type is RENDERTYPE_XY or
-     * RENDERTYPE_OFFSET.
-     *
+     * Get the vertical pixel diameter of the arc. This is meaningful
+     * only if the render type is RENDERTYPE_XY or RENDERTYPE_OFFSET.
+     * 
      * @return the vertical pixel diameter of the arc.
      */
     public int getHeight() {
@@ -372,6 +382,7 @@ public class OMArc extends OMGraphic implements Serializable {
 
     /**
      * Get the starting angle of the arc.
+     * 
      * @return the starting angle of the arc in decimal degrees.
      */
     public float getStartAngle() {
@@ -380,23 +391,24 @@ public class OMArc extends OMGraphic implements Serializable {
 
     /**
      * Get the extent angle of the arc.
-     * @return the angular extent of the arc in decimal degrees.  For
-     * LATLON rendertype arcs, positive extents go in the clockwise
-     * direction, matching the OpenMap convention in coordinate space.
-     * For XY and OFFSET rendertype arcs, positive extents go in the
-     * clockwise direction, matching the java.awt.geom.Arc2D
-     * convention.
+     * 
+     * @return the angular extent of the arc in decimal degrees. For
+     *         LATLON rendertype arcs, positive extents go in the
+     *         clockwise direction, matching the OpenMap convention in
+     *         coordinate space. For XY and OFFSET rendertype arcs,
+     *         positive extents go in the clockwise direction,
+     *         matching the java.awt.geom.Arc2D convention.
      */
     public float getExtentAngle() {
         return extent;
     }
 
     /**
-     * Get the number of vertices of the lat/lon arc.  This will be
+     * Get the number of vertices of the lat/lon arc. This will be
      * meaningful only if the render type is RENDERTYPE_XY or
-     * RENDERTYPE_OFFSET and for LINETYPE_GREATARC or
-     * LINETYPE_RHUMB line types.
-     *
+     * RENDERTYPE_OFFSET and for LINETYPE_GREATARC or LINETYPE_RHUMB
+     * line types.
+     * 
      * @return int number of segment points
      */
     public int getNumVerts() {
@@ -404,58 +416,62 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Set the x position of the center.  This will be meaningful only
+     * Set the x position of the center. This will be meaningful only
      * if the render type is RENDERTYPE_XY.
-     *
+     * 
      * @param value the x position of center.
      */
     public void setX(int value) {
-        if (x1 == value) return;
+        if (x1 == value)
+            return;
         x1 = value;
         setNeedToRegenerate(true);
     }
 
     /**
-     * Set the y position of the center.  This will be meaningful only
+     * Set the y position of the center. This will be meaningful only
      * if the render type is RENDERTYPE_XY.
-     *
+     * 
      * @param value the y position of center.
      */
     public void setY(int value) {
-        if (y1 == value) return;
+        if (y1 == value)
+            return;
         y1 = value;
         setNeedToRegenerate(true);
     }
 
     /**
-     * Set the x offset from the center.  This will be meaningful only
+     * Set the x offset from the center. This will be meaningful only
      * if the render type is RENDERTYPE_OFFSET.
-     *
+     * 
      * @param value the x position of center.
      */
     public void setOffX(int value) {
-        if (off_x == value) return;
+        if (off_x == value)
+            return;
         off_x = value;
         setNeedToRegenerate(true);
     }
 
     /**
-     * Set the y offset from the center.  This will be meaningful only
+     * Set the y offset from the center. This will be meaningful only
      * if the render type is RENDERTYPE_OFFSET.
-     *
+     * 
      * @param value the y position of center.
      */
     public void setOffY(int value) {
-        if (off_y == value) return;
+        if (off_y == value)
+            return;
         off_y = value;
         setNeedToRegenerate(true);
     }
 
     /**
-     * Set the latitude and longitude of the center point.
-     * This is meaningful only if the rendertype is RENDERTYPE_LATLON
-     * or RENDERTYPE_OFFSET.
-     *
+     * Set the latitude and longitude of the center point. This is
+     * meaningful only if the rendertype is RENDERTYPE_LATLON or
+     * RENDERTYPE_OFFSET.
+     * 
      * @param lat latitude in decimal degrees
      * @param lon longitude in decimal degrees
      */
@@ -464,10 +480,10 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Set the latitude and longitude of the center point.
-     * This is meaningful only if the rendertype is RENDERTYPE_LATLON
-     * or RENDERTYPE_OFFSET.
-     *
+     * Set the latitude and longitude of the center point. This is
+     * meaningful only if the rendertype is RENDERTYPE_LATLON or
+     * RENDERTYPE_OFFSET.
+     * 
      * @param p LatLonPoint of center.
      */
     public void setCenter(LatLonPoint p) {
@@ -486,12 +502,12 @@ public class OMArc extends OMGraphic implements Serializable {
 
     /**
      * Set the radius. This is meaningful only if the render type is
-     * RENDERTYPE_LATLON.  Note that while the radius is specified as
+     * RENDERTYPE_LATLON. Note that while the radius is specified as
      * decimal degrees, it only means the distance along the ground
      * that that number of degrees represents at the equator, *NOT* a
-     * radius of a number of degrees around a certain location.  There
+     * radius of a number of degrees around a certain location. There
      * is a difference.
-     *
+     * 
      * @param radius float radius in decimal degrees
      */
     public void setRadius(float radius) {
@@ -500,10 +516,9 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Set the radius with units.
-     * This is meaningful only if the render type is
-     * RENDERTYPE_LATLON.
-     *
+     * Set the radius with units. This is meaningful only if the
+     * render type is RENDERTYPE_LATLON.
+     * 
      * @param radius float radius
      * @param units Length specifying unit type.
      */
@@ -513,64 +528,67 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Set the horizontal pixel diameter of the arc.  This is
+     * Set the horizontal pixel diameter of the arc. This is
      * meaningful only if the render type is RENDERTYPE_XY or
      * RENDERTYPE_OFFSET.
-     *
+     * 
      * @param value the horizontial pixel diamter of the arc.
      */
     public void setWidth(int value) {
-        if (width == value) return;
+        if (width == value)
+            return;
         width = value;
         setNeedToRegenerate(true);
     }
 
     /**
-     * Set the vertical pixel diameter of the arc.  This is
-     * meaningful only if the render type is RENDERTYPE_XY or
-     * RENDERTYPE_OFFSET.
-     *
+     * Set the vertical pixel diameter of the arc. This is meaningful
+     * only if the render type is RENDERTYPE_XY or RENDERTYPE_OFFSET.
+     * 
      * @param value the vertical pixel diameter of the arc.
      */
     public void setHeight(int value) {
-        if (height == value) return;
+        if (height == value)
+            return;
         height = value;
         setNeedToRegenerate(true);
     }
 
     /**
      * Set the starting angle the arc.
-     *
+     * 
      * @param value the starting angle of the arc in decimal degrees.
      */
     public void setStart(float value) {
-        if (start == value) return;
+        if (start == value)
+            return;
         start = value;
         setNeedToRegenerate(true);
     }
 
     /**
      * Set the angular extent of the arc.
-     *
-     * @param value the angular extent of the arc in decimal degrees.  For
-     * LATLON rendertype arcs, positive extents go in the clockwise
-     * direction, matching the OpenMap convention in coordinate space.
-     * For XY and OFFSET rendertype arcs, positive extents go in the
-     * clockwise direction, matching the java.awt.geom.Arc2D
-     * convention.
+     * 
+     * @param value the angular extent of the arc in decimal degrees.
+     *        For LATLON rendertype arcs, positive extents go in the
+     *        clockwise direction, matching the OpenMap convention in
+     *        coordinate space. For XY and OFFSET rendertype arcs,
+     *        positive extents go in the clockwise direction, matching
+     *        the java.awt.geom.Arc2D convention.
      */
     public void setExtent(float value) {
-        if (extent == value) return;
+        if (extent == value)
+            return;
         extent = value;
         setNeedToRegenerate(true);
     }
 
     /**
-     * Set the number of vertices of the lat/lon arc.  This is
+     * Set the number of vertices of the lat/lon arc. This is
      * meaningful only if the render type is RENDERTYPE_LATLON and for
-     * LINETYPE_GREATARC or LINETYPE_RHUMB line types.  If &lt;
-     * 1, this value is generated internally.
-     *
+     * LINETYPE_GREATARC or LINETYPE_RHUMB line types. If &lt; 1, this
+     * value is generated internally.
+     * 
      * @param nverts number of segment points
      */
     public void setNumVerts(int nverts) {
@@ -580,6 +598,7 @@ public class OMArc extends OMGraphic implements Serializable {
     /**
      * Set the ArcType, either Arc2D.OPEN (default), Arc2D.PIE or
      * Arc2D.CHORD.
+     * 
      * @see java.awt.geom.Arc2D
      */
     public void setArcType(int type) {
@@ -592,6 +611,7 @@ public class OMArc extends OMGraphic implements Serializable {
 
     /**
      * Get the ArcType.
+     * 
      * @see java.awt.geom.Arc2D
      */
     public int getArcType() {
@@ -600,10 +620,10 @@ public class OMArc extends OMGraphic implements Serializable {
 
     /**
      * Set the angle by which the arc is to rotated.
-     *
-     * @param angle the number of radians the arc is to be
-     * rotated.  Measured clockwise from horizontal.  Positive numbers
-     * move the positive x axis toward the positive y axis.
+     * 
+     * @param angle the number of radians the arc is to be rotated.
+     *        Measured clockwise from horizontal. Positive numbers
+     *        move the positive x axis toward the positive y axis.
      */
     public void setRotationAngle(double angle) {
         this.rotationAngle = angle;
@@ -612,7 +632,7 @@ public class OMArc extends OMGraphic implements Serializable {
 
     /**
      * Get the current rotation of the arc.
-     *
+     * 
      * @return the arc rotation.
      */
     public double getRotationAngle() {
@@ -629,7 +649,7 @@ public class OMArc extends OMGraphic implements Serializable {
 
     /**
      * Get the polar-fill-correction-flag.
-     *
+     * 
      * @return boolean
      * @see #setPolarCorrection
      */
@@ -638,14 +658,13 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
-     * Set the polar-fill-correction-flag.
-     * We don't correctly render *filled* arcs/polygons which
-     * encompass a pole in Cylindrical projections.  This method will
-     * toggle support for correcting this problem.  You should only
-     * set this on arcs that encompass a pole and are drawn with a
-     * fill color.  You do not need to set this if you're only drawing
-     * the arc outline.
-     *
+     * Set the polar-fill-correction-flag. We don't correctly render
+     * *filled* arcs/polygons which encompass a pole in Cylindrical
+     * projections. This method will toggle support for correcting
+     * this problem. You should only set this on arcs that encompass a
+     * pole and are drawn with a fill color. You do not need to set
+     * this if you're only drawing the arc outline.
+     * 
      * @param value boolean
      * @see OMGraphic#setLineColor
      * @see OMGraphic#setFillColor
@@ -668,7 +687,7 @@ public class OMArc extends OMGraphic implements Serializable {
 
     /**
      * Prepare the arc for rendering.
-     *
+     * 
      * @param proj Projection
      * @return true if generate was successful
      */
@@ -693,18 +712,19 @@ public class OMArc extends OMGraphic implements Serializable {
                 return false;
             }
             Point p1 = proj.forward(center.radlat_,
-                                    center.radlon_,
-                                    new Point(), true);
+                    center.radlon_,
+                    new Point(),
+                    true);
             x1 = p1.x + off_x;
             y1 = p1.y + off_y;
 
         case RENDERTYPE_XY:
-            float fwidth = (float)width;
-            float fheight = (float)height;
-            float transx = (float)x1;
-            float transy = (float)y1;
-            float x = transx - fwidth/2f;
-            float y = transy - fheight/2f;
+            float fwidth = (float) width;
+            float fheight = (float) height;
+            float transx = (float) x1;
+            float transy = (float) y1;
+            float x = transx - fwidth / 2f;
+            float y = transy - fheight / 2f;
 
             Shape arcShape = createArcShape(x, y, fwidth, fheight);
 
@@ -724,41 +744,41 @@ public class OMArc extends OMGraphic implements Serializable {
             ArrayList coordLists = getCoordLists(proj, center, radius, nverts);
 
             Point p = proj.forward(center.radlat_,
-                                   center.radlon_,
-                                   new Point(), true);
+                    center.radlon_,
+                    new Point(),
+                    true);
             x1 = p.x;
             y1 = p.y;
 
             int size = coordLists.size();
             GeneralPath tempShape = null;
 
-            for (int i=0; i<size; i+=2) {
-                int[] xpoints = (int[])coordLists.get(i);
-                int[] ypoints = (int[])coordLists.get(i+1);
+            for (int i = 0; i < size; i += 2) {
+                int[] xpoints = (int[]) coordLists.get(i);
+                int[] ypoints = (int[]) coordLists.get(i + 1);
 
-                gp = createShape(xpoints, ypoints, 
-                                 (arcType != Arc2D.OPEN || 
-                                  (arcType == Arc2D.OPEN && !isClear(fillPaint))));
+                gp = createShape(xpoints,
+                        ypoints,
+                        (arcType != Arc2D.OPEN || (arcType == Arc2D.OPEN && !isClear(fillPaint))));
 
                 if (shape == null) {
                     shape = gp;
                 } else {
-                    ((GeneralPath)shape).append(gp, false);
+                    ((GeneralPath) shape).append(gp, false);
                 }
 
-                correctFill = proj instanceof Cylindrical &&
-                    ((shouldCenterBeInShape() && !shape.contains(x1, y1)) || correctPolar);
+                correctFill = proj instanceof Cylindrical
+                        && ((shouldCenterBeInShape() && !shape.contains(x1, y1)) || correctPolar);
 
                 if (correctFill) {
-                    int[][] alts = doPolarFillCorrection(
-                        xpoints, ypoints,
-                        (center.radlat_ > 0f) ? -1 : proj.getWidth()+1);
+                    int[][] alts = doPolarFillCorrection(xpoints,
+                            ypoints,
+                            (center.radlat_ > 0f) ? -1 : proj.getWidth() + 1);
 
                     int gp2length = alts[0].length - 2;
 
                     gp1 = createShape(alts[0], alts[1], true);
-                    gp2 = createShape(alts[0], alts[1], 0,
-                                      gp2length, false);
+                    gp2 = createShape(alts[0], alts[1], 0, gp2length, false);
 
                     if (tempShape == null || polarShapeLine == null) {
                         tempShape = gp1;
@@ -785,12 +805,11 @@ public class OMArc extends OMGraphic implements Serializable {
 
     /**
      * An internal method designed to fetch the Shape to be used for
-     * an XY or OFFSET OMArc.  This method is smart enough to take the
+     * an XY or OFFSET OMArc. This method is smart enough to take the
      * calculated position information and make a call to Arc2D.Float
      * with start, extent and arcType information.
      */
-    protected Shape createArcShape(float x, float y, 
-                                   float fwidth, float fheight) {
+    protected Shape createArcShape(float x, float y, float fwidth, float fheight) {
         return new Arc2D.Float(x, y, fwidth, fheight, start, extent, arcType);
     }
 
@@ -803,18 +822,25 @@ public class OMArc extends OMGraphic implements Serializable {
     protected ArrayList getCoordLists(Projection proj, LatLonPoint center,
                                       float radius, int nverts) {
 
-        int at = (arcType == Arc2D.OPEN && !isClear(fillPaint)?Arc2D.CHORD:arcType);
-        return proj.forwardArc(center, /*radians*/true, radius, nverts, 
-                               ProjMath.degToRad(start), ProjMath.degToRad(extent), at);
+        int at = (arcType == Arc2D.OPEN && !isClear(fillPaint) ? Arc2D.CHORD
+                : arcType);
+        return proj.forwardArc(center, /* radians */
+                true,
+                radius,
+                nverts,
+                ProjMath.degToRad(start),
+                ProjMath.degToRad(extent),
+                at);
     }
 
     /**
      * Return the java.awt.Shape (GeneralPath) that reflects a arc
-     * that encompases a pole.  Used when the projection is
+     * that encompases a pole. Used when the projection is
      * Cylindrical.
+     * 
      * @return a GeneralPath object, or null if it's not needed (which
-     * is probably most of the time, if the arc doesn't include a
-     * pole or the projection isn't Cylindrical).
+     *         is probably most of the time, if the arc doesn't
+     *         include a pole or the projection isn't Cylindrical).
      */
     public GeneralPath getPolarShapeLine() {
         return polarShapeLine;
@@ -823,12 +849,11 @@ public class OMArc extends OMGraphic implements Serializable {
     /**
      * Create alternate x,y coordinate arrays for rendering graphics
      * the encompass a pole in the Cylindrical projection.
-     * @return a two dimensional array of points.  The [0] array is
-     * the x points, the [1] is the y points.
+     * 
+     * @return a two dimensional array of points. The [0] array is the
+     *         x points, the [1] is the y points.
      */
-    private int[][] doPolarFillCorrection(int[] xpoints,
-                                          int[] ypoints,
-                                          int y1) {
+    private int[][] doPolarFillCorrection(int[] xpoints, int[] ypoints, int y1) {
         int[][] ret = new int[2][];
 
         int len = xpoints.length;
@@ -836,10 +861,10 @@ public class OMArc extends OMGraphic implements Serializable {
         int[] alt_ypts = new int[len + 2];
         System.arraycopy(xpoints, 0, alt_xpts, 0, len);
         System.arraycopy(ypoints, 0, alt_ypts, 0, len);
-        alt_xpts[len] = alt_xpts[len-1];
-        alt_xpts[len+1] = alt_xpts[0];
+        alt_xpts[len] = alt_xpts[len - 1];
+        alt_xpts[len + 1] = alt_xpts[0];
         alt_ypts[len] = y1;
-        alt_ypts[len+1] = alt_ypts[len];
+        alt_ypts[len + 1] = alt_ypts[len];
 
         ret[0] = alt_xpts;
         ret[1] = alt_ypts;
@@ -848,18 +873,20 @@ public class OMArc extends OMGraphic implements Serializable {
 
     /**
      * Paint the arc.
-     *
+     * 
      * @param g Graphics context to render into
      */
     public void render(Graphics g) {
 
-        if (!isRenderable()) return;
+        if (!isRenderable())
+            return;
 
         if (!correctFill) {
             // super will catch a null shape...
             super.render(g);
         } else {
-            // The polarShapeLine will be there only if a shape was generated.
+            // The polarShapeLine will be there only if a shape was
+            // generated.
             // This is getting kicked off because the arc is
             // encompassing a pole, so we need to handle it a little
             // differently.
@@ -870,14 +897,14 @@ public class OMArc extends OMGraphic implements Serializable {
 
             // BUG There is still a bug apparent when, in a
             // cylindrical projection, and drawing a arc around the
-            // south pole.  If the center of the arc is below any
+            // south pole. If the center of the arc is below any
             // part of the edge of the arc, with the left lower dip
             // of the arc on the screen, you get a line drawn from
-            // the right dip to the left dip.  Not sure why.  It's an
+            // the right dip to the left dip. Not sure why. It's an
             // unusual case, however.
             if (shouldRenderEdge()) {
                 setGraphicsForEdge(g);
-                ((Graphics2D)g).draw(polarShapeLine);
+                ((Graphics2D) g).draw(polarShapeLine);
             }
         }
     }

@@ -19,19 +19,19 @@ package com.bbn.openmap.examples.beanbox;
 import java.beans.*;
 
 /**
- * Custom property editor for the layout class property of a 
+ * Custom property editor for the layout class property of a
  * {@link com.bbn.openmap.examples.beanbox.SimpleBeanContainer}.
  */
 public class LayoutClassEditor extends PropertyEditorSupport {
 
-  /** returns a String array containing the class names of two
-   * layout managers: viz the NullLayout and the WallFormationLayout */
-  public String[] getTags() {
-    String result[] = {
-      "com.bbn.openmap.examples.beanbox.NullLayout",
-      "com.bbn.openmap.examples.beanbox.WallFormationLayout"};
-    return result;
-  }  
+    /**
+     * returns a String array containing the class names of two layout
+     * managers: viz the NullLayout and the WallFormationLayout
+     */
+    public String[] getTags() {
+        String result[] = { "com.bbn.openmap.examples.beanbox.NullLayout",
+                "com.bbn.openmap.examples.beanbox.WallFormationLayout" };
+        return result;
+    }
 }
-
 

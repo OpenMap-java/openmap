@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/etopo/ETOPOJarLayer.java,v $
 // $RCSfile: ETOPOJarLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,16 +27,19 @@ package com.bbn.openmap.layer.etopo;
  * Creation date: (1/12/2001 9:41:59 PM)
  * @author John Watts from nextjet.com: 
  */
+import java.awt.Color;
+import java.awt.Point;
+import java.io.BufferedInputStream;
+import java.io.EOFException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.OMRaster;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.io.FormatException;
-
-import java.awt.*;
-import java.io.*;
 
 /**
  * This subclass of ETOPOLayer reads data from jar files and *

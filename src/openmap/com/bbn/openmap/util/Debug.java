@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,29 +14,33 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/Debug.java,v $
 // $RCSfile: Debug.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.util;
 
 import java.applet.Applet;
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
 /**
  * An abstract class that presents a static interface for debugging
- * output.  It also provides a way to direct output into a log.  There
+ * output. It also provides a way to direct output into a log. There
  * are two types of output - the regular output information, and the
- * error information, and they can be handled separately.  There are
+ * error information, and they can be handled separately. There are
  * two differences between the two - the error file only gets created
  * if there is an error, and the error messages have a header and a
- * tail surrounding the messages, making them easier to spot.  If the
+ * tail surrounding the messages, making them easier to spot. If the
  * output and error file are set to be the same (setLogFile()), then
  * that file is created automatically, regardless of anything being
  * put into it.
@@ -45,9 +49,10 @@ import java.util.Properties;
  * applications, or parameters for applets.
  * <p>
  * A programmer can use code like the following:
- * <p><code><pre>
- * if (Debug.debugging("foo")) {
- *     System.out.println("Got " + nbytes + " bytes of data.");
+ * <p>
+ * <code><pre>
+ * if (Debug.debugging(&quot;foo&quot;)) {
+ *     System.out.println(&quot;Got &quot; + nbytes + &quot; bytes of data.&quot;);
  * }
  * </pre></code>
  * <p>
@@ -56,12 +61,12 @@ import java.util.Properties;
  * <p>
  * <code>&lt;param name=debug.foo value=&gt;</code>
  * <p>
- * The special token <code>debug.all</code> turns on all debugging for
- * both applets and applications.
- *
+ * The special token <code>debug.all</code> turns on all debugging
+ * for both applets and applications.
+ * 
  * @author Tom Mitchell (tmitchell@bbn.com)
  * @author $Author: dietrick $
- * @version $Revision: 1.4 $, $Date: 2004/01/26 18:18:15 $ 
+ * @version $Revision: 1.5 $, $Date: 2004/10/14 18:06:30 $
  */
 public abstract class Debug {
 
@@ -78,12 +83,13 @@ public abstract class Debug {
      */
     public static final boolean On = true;
     /**
-     * The stream where debugging output should go.  Default is System.out.
+     * The stream where debugging output should go. Default is
+     * System.out.
      */
     public static PrintStream out = System.out;
     /**
-     * The stream where debugging error messages should go.  Default
-     * is System.err.  Use the function Debug.error to write to it, in
+     * The stream where debugging error messages should go. Default is
+     * System.err. Use the function Debug.error to write to it, in
      * case you also want to direct output to a file.
      */
     protected static PrintStream err = System.err;
@@ -92,13 +98,13 @@ public abstract class Debug {
      */
     protected static File errorFile = null;
     /**
-     * The flag for whether the output stream should still be
-     * notified if logging output.
+     * The flag for whether the output stream should still be notified
+     * if logging output.
      */
     protected static boolean notifyOut = true;
     /**
-     * The flag for whether the err stream should still be
-     * notified if logging errors.
+     * The flag for whether the err stream should still be notified if
+     * logging errors.
      */
     protected static boolean notifyErr = true;
     /**
@@ -109,7 +115,7 @@ public abstract class Debug {
      * The DataOutputStream for logging errors.
      */
     protected static DataOutputStream errorLog = null;
-    /** 
+    /**
      * Flag to have the errors appended to the error log.
      */
     protected static boolean errorAppend = false;
@@ -128,27 +134,28 @@ public abstract class Debug {
     private static String debugTokenHeader = "debug.";
 
     /**
-     * Initialize debugging for the given applet.  Applets must pass
-     * an array of parameters because the applet Parameters list cannot
-     * be accessed in whole, only queried.  The parameters list looks
+     * Initialize debugging for the given applet. Applets must pass an
+     * array of parameters because the applet Parameters list cannot
+     * be accessed in whole, only queried. The parameters list looks
      * something like this:
-     * <p><pre><code>
-     * String[] debugTokens = {
-     *  "debug.debug",          // com.bbn.openmap.Debug
-     *  "debug.openmap",        // com.bbn.openmap.client.OpenMap
-     *  "debug.mappanel",       // com.bbn.openmap.awt.MapPanel
-     *  "debug.awt",            // com.bbn.openmap.awt.*
-     *  "debug.map",            // com.bbn.openmap.Map
-     *  "debug.layer",          // com.bbn.openmap.Layer
-     *  "debug.proj",           // com.bbn.openmap.proj.*
-     *  "debug.spec",           // com.bbn.openmap.spec.*
-     *  "debug.env"             // com.bbn.openmap.Environment
-     *  };
+     * <p>
+     * 
+     * <pre><code>
+     * String[] debugTokens = { &quot;debug.debug&quot;, // com.bbn.openmap.Debug
+     *         &quot;debug.openmap&quot;, // com.bbn.openmap.client.OpenMap
+     *         &quot;debug.mappanel&quot;, // com.bbn.openmap.awt.MapPanel
+     *         &quot;debug.awt&quot;, // com.bbn.openmap.awt.*
+     *         &quot;debug.map&quot;, // com.bbn.openmap.Map
+     *         &quot;debug.layer&quot;, // com.bbn.openmap.Layer
+     *         &quot;debug.proj&quot;, // com.bbn.openmap.proj.*
+     *         &quot;debug.spec&quot;, // com.bbn.openmap.spec.*
+     *         &quot;debug.env&quot; // com.bbn.openmap.Environment
+     * };
      * </code></pre>
      * 
      * @param applet The applet
-     * @param parameters The debugging flags to look for in the applet's
-     *                   parameters list
+     * @param parameters The debugging flags to look for in the
+     *        applet's parameters list
      */
     public static void init(Applet applet, String[] parameters) {
         if (applet == null) {
@@ -160,10 +167,10 @@ public abstract class Debug {
             }
         } else if (parameters != null) {
             try {
-                for (int i=0; i<parameters.length; i++) {
+                for (int i = 0; i < parameters.length; i++) {
                     String pname = parameters[i];
-                    if (pname.startsWith(debugTokenHeader) &&
-                        (applet.getParameter(parameters[i]) != null)) {
+                    if (pname.startsWith(debugTokenHeader)
+                            && (applet.getParameter(parameters[i]) != null)) {
                         String token = pname.substring(debugTokenHeader.length());
                         dbgTable.put(token, Boolean.TRUE);
                     }
@@ -180,10 +187,10 @@ public abstract class Debug {
     }
 
     /**
-     * Initialize debugging for an application.  Debugging symbols are
+     * Initialize debugging for an application. Debugging symbols are
      * detected in the given properties list, and must have the form
      * "debug.X", where X is a debug token used in the application.
-     *
+     * 
      * @param p A properties list, usually System.getProperties()
      */
     public static void init(Properties p) {
@@ -221,7 +228,7 @@ public abstract class Debug {
 
     /**
      * Indicates if the debugging for the named token is on or off.
-     *
+     * 
      * @param token a candidate token
      * @return true if debugging is on, false otherwise.
      */
@@ -229,9 +236,9 @@ public abstract class Debug {
         return Debug.On && (debugAll || dbgTable.containsKey(token));
     }
 
-    /** 
+    /**
      * Installs a new debug token
-     *
+     * 
      * @param dbgToken token name
      */
     public static void put(String dbgToken) {
@@ -240,7 +247,7 @@ public abstract class Debug {
 
     /**
      * Rremoves a debug token
-     *
+     * 
      * @param dbgToken token name
      */
     public static void remove(String dbgToken) {
@@ -248,19 +255,20 @@ public abstract class Debug {
     }
 
     /**
-     * Prints <code>message</code> if <code>dbgToken</code> debugging
-     * is on.
-     * NOTE, WARNING!: this is a potentially expensive method if you
-     * pass a message String composed of many concatenated pairs.  For
-     * example, like:<br>
-     * `onceStr+" "+uponStr+" a "+timeStr+", "+ ... +"\nThe end."'<br>
-     * Instead you should do:
-     * <code><pre>
-     *  if (Debug.debugging(dbgToken)) {
-     *      Debug.output(onceStr+" "+uponStr+" a "+timeStr+", "+ ... +"\nThe end.");
-     *  }
+     * Prints <code>message</code> if <code>dbgToken</code>
+     * debugging is on. NOTE, WARNING!: this is a potentially
+     * expensive method if you pass a message String composed of many
+     * concatenated pairs. For example, like: <br>
+     * `onceStr+" "+uponStr+" a "+timeStr+", "+ ... +"\nThe end."'
+     * <br>
+     * Instead you should do: <code><pre>
+     * 
+     *   if (Debug.debugging(dbgToken)) {
+     *       Debug.output(onceStr+&quot; &quot;+uponStr+&quot; a &quot;+timeStr+&quot;, &quot;+ ... +&quot;\nThe end.&quot;);
+     *   }
+     *  
      * </pre></code>
-     *
+     * 
      * @param dbgToken a token to be tested by debugging()
      * @param message a message to be printed
      */
@@ -272,7 +280,7 @@ public abstract class Debug {
 
     /**
      * Sets the debugging output stream to the named stream.
-     *
+     * 
      * @param out the desired debugging output stream
      */
     public static void setPrintStream(PrintStream out) {
@@ -289,72 +297,69 @@ public abstract class Debug {
     }
 
     /**
-     * Provide a file to log output.  This can be in conjunction with
-     * the ouput stream, or instead of it.  Will overwrite the file,
-     * if it exists.
-     *
+     * Provide a file to log output. This can be in conjunction with
+     * the ouput stream, or instead of it. Will overwrite the file, if
+     * it exists.
+     * 
      * @param file the file to use for the error log.
      * @param alsoToOutStream true if the out stream should still
-     * provide output, in addition to logging the ouput.  
+     *        provide output, in addition to logging the ouput.
      */
-    public static void directOutput(File file, boolean alsoToOutStream){
+    public static void directOutput(File file, boolean alsoToOutStream) {
         try {
-            directOutput(new FileOutputStream(file),
-                         alsoToOutStream);
-        } catch (IOException ioe){
+            directOutput(new FileOutputStream(file), alsoToOutStream);
+        } catch (IOException ioe) {
             // If something goes wrong, set the output to the
             // System.out only, and hope someone sees it.
             notifyOut = true;
             out = System.out;
-            error("Debug: can't set up <" + file 
-                  + "> for log file! \n" + ioe);
+            error("Debug: can't set up <" + file + "> for log file! \n" + ioe);
             return;
         }
     }
 
     /**
-     * Provide a file to log output.  This can be in conjunction with
+     * Provide a file to log output. This can be in conjunction with
      * the ouput stream, or instead of it.
-     *
+     * 
      * @param filename the file to use for the error log.
      * @param append if true, log the output at the end of the file,
-     * instead of the beginning.
+     *        instead of the beginning.
      * @param alsoToOutStream true if the out stream should still
-     * provide output, in addition to logging the ouput.  
+     *        provide output, in addition to logging the ouput.
      */
     public static void directOutput(String filename, boolean append,
-                                    boolean alsoToOutStream){
+                                    boolean alsoToOutStream) {
         try {
             directOutput(new FileOutputStream(filename, append),
-                         alsoToOutStream);
-        } catch (IOException ioe){
+                    alsoToOutStream);
+        } catch (IOException ioe) {
             // If something goes wrong, set the output to the
             // System.out only, and hope someone sees it.
             notifyOut = true;
             out = System.out;
-            error("Debug: can't set up <" + filename 
-                  + "> for log file! \n" + ioe);
+            error("Debug: can't set up <" + filename + "> for log file! \n"
+                    + ioe);
             return;
         }
     }
 
-    /** 
-     * Provide a DataOutputStream to log output.  This can be in
+    /**
+     * Provide a DataOutputStream to log output. This can be in
      * conjunction with the ouput stream, or instead of it.
-     *
+     * 
      * @param os the OutputStream that's handling outputlogging.
      * @param alsoToOutStream true if the out stream should still
-     * provide output, in addition to logging the ouput.  
+     *        provide output, in addition to logging the ouput.
      */
-    public static void directOutput(OutputStream os, 
-                                    boolean alsoToOutStream){
+    public static void directOutput(OutputStream os, boolean alsoToOutStream) {
         outputLog = new DataOutputStream(os);
         notifyOut = alsoToOutStream;
     }
 
     /**
      * Sets the error output stream to the named stream.
-     *
+     * 
      * @param err the desired error output stream
      */
     public static void setErrorStream(PrintStream err) {
@@ -371,45 +376,44 @@ public abstract class Debug {
     }
 
     /**
-     * Provide a file to log errors.  This can be in conjunction with
+     * Provide a file to log errors. This can be in conjunction with
      * the errorstream, or instead of it.
-     *
+     * 
      * @param file the file to use for the error log.
      * @param alsoToErrStream true if the err stream should still
-     * provide output, in addition to logging the errors.  
+     *        provide output, in addition to logging the errors.
      */
-    public static void directErrors(File file,  boolean alsoToErrStream){
+    public static void directErrors(File file, boolean alsoToErrStream) {
         errorFile = file;
         notifyErr = alsoToErrStream;
     }
 
     /**
-     * Provide a file to log errors.  This can be in conjunction with
+     * Provide a file to log errors. This can be in conjunction with
      * the errorstream, or instead of it.
-     *
+     * 
      * @param filename the file to use for the error log.
      * @param append if true, log the output at the end of the file,
-     * instead of the beginning.
+     *        instead of the beginning.
      * @param alsoToErrStream true if the err stream should still
-     * provide output, in addition to logging the errors.  
+     *        provide output, in addition to logging the errors.
      */
     public static void directErrors(String filename, boolean append,
-                                    boolean alsoToErrStream){
+                                    boolean alsoToErrStream) {
         errorAppend = append;
         errorFile = new File(filename);
         notifyErr = alsoToErrStream;
     }
 
     /**
-     * Provide a DataOutputStream to log errors.  This can be in
+     * Provide a DataOutputStream to log errors. This can be in
      * conjunction with the errorstream, or instead of it.
-     *
+     * 
      * @param os the DataOutputStream handling error logging.
      * @param alsoToErrStream true if the err stream should still
-     * provide output, in addition to logging the errors.  
+     *        provide output, in addition to logging the errors.
      */
-    public static void directErrors(OutputStream os, 
-                                    boolean alsoToErrStream){
+    public static void directErrors(OutputStream os, boolean alsoToErrStream) {
         errorLog = new DataOutputStream(os);
         notifyErr = alsoToErrStream;
     }
@@ -420,15 +424,15 @@ public abstract class Debug {
      * The special thing about error output is that the error is
      * framed with a header and a tail, hopefully to make it easier
      * for someone to spot in the log.
-     *
-     * @param errorString the string to write as an error.  
+     * 
+     * @param errorString the string to write as an error.
      */
-    public static void error(String errorString){
+    public static void error(String errorString) {
 
         try {
-            if (errorLog == null){
+            if (errorLog == null) {
                 // If no errors have happened yet, this will get run.
-                if (errorFile != null){
+                if (errorFile != null) {
                     FileOutputStream log = new FileOutputStream(errorFile.getPath(), errorAppend);
                     errorLog = new DataOutputStream(log);
 
@@ -437,8 +441,8 @@ public abstract class Debug {
                     errorLog.writeBytes("\n");
                     errorLog.writeBytes(getMapBeanMessage());
                     errorLog.writeBytes("\n");
-                    errorLog.writeBytes("ERROR log file - " + 
-                                        java.util.Calendar.getInstance().getTime());
+                    errorLog.writeBytes("ERROR log file - "
+                            + java.util.Calendar.getInstance().getTime());
                     errorLog.writeBytes("\n");
                     errorLog.writeBytes(ERROR_TAIL);
                     errorLog.writeBytes(ERROR_TAIL);
@@ -458,24 +462,24 @@ public abstract class Debug {
                 errorLog.writeBytes("\n");
                 errorLog.writeBytes(errorString);
                 errorLog.writeBytes("\n");
-                errorLog.writeBytes(ERROR_TAIL);                
+                errorLog.writeBytes(ERROR_TAIL);
                 errorLog.writeBytes("\n");
             }
-        } catch (IOException ioe){
+        } catch (IOException ioe) {
             // If something goes wrong, set the output to the
             // System.err only, and hope someone sees it.
             errorFile = null;
             notifyErr = true;
             err = System.err;
             err.println(ERROR_HEADER);
-            err.println("Debug: error writing <" + errorString + 
-                        "> to log! \n" + ioe);
+            err.println("Debug: error writing <" + errorString + "> to log! \n"
+                    + ioe);
             err.println(ERROR_TAIL);
             return;
         }
-        
+
         // Write to the error stream if required.
-        if (notifyErr){
+        if (notifyErr) {
             err.println(ERROR_HEADER);
             err.println(errorString);
             err.println(ERROR_TAIL);
@@ -491,9 +495,9 @@ public abstract class Debug {
         String message = "";
         try {
             Class mbClass = Class.forName("com.bbn.openmap.MapBean");
-            java.lang.reflect.Method crMessage = 
-                mbClass.getDeclaredMethod("getCopyrightMessage", null);
-            message = (String)crMessage.invoke(mbClass, null);
+            java.lang.reflect.Method crMessage = mbClass.getDeclaredMethod("getCopyrightMessage",
+                    null);
+            message = (String) crMessage.invoke(mbClass, null);
         } catch (java.lang.reflect.InvocationTargetException ite) {
             System.out.println(ite.getMessage());
         } catch (IllegalArgumentException iae) {
@@ -519,48 +523,49 @@ public abstract class Debug {
 
     /**
      * Handle output messages, buy writing them to an output log, if
-     * that has been set up, and/or to the output stream, if requested.
-     *
-     * @param outputString the string to write as output.  
+     * that has been set up, and/or to the output stream, if
+     * requested.
+     * 
+     * @param outputString the string to write as output.
      */
     public static void output(String outputString) {
 
         try {
-            if (outputLog != null){
-                outputLog.writeBytes(outputString);             
+            if (outputLog != null) {
+                outputLog.writeBytes(outputString);
                 outputLog.writeBytes("\n");
             }
-        } catch (IOException ioe){
+        } catch (IOException ioe) {
             // If something goes wrong, set the output to the
             // System.out only, and hope someone sees it.
             notifyOut = true;
             out = System.out;
-            error("Debug: output writing <" + outputString 
-                  + "> to log! \n" + ioe);
+            error("Debug: output writing <" + outputString + "> to log! \n"
+                    + ioe);
             return;
         }
-        
+
         // Write to the output stream if required.
-        if (notifyOut){
+        if (notifyOut) {
             out.println(outputString);
         }
     }
 
     /**
-     * Provide a file to log output.  This can be in conjunction with
-     * the streams, or instead of them.  This basically sets the
-     * output log and the error log to be the same thing.
-     *
+     * Provide a file to log output. This can be in conjunction with
+     * the streams, or instead of them. This basically sets the output
+     * log and the error log to be the same thing.
+     * 
      * @param file the file to use for the error log.
-     * @param alsoToStreams true if the streams should still
-     * provide output, in addition to logging the output. 
+     * @param alsoToStreams true if the streams should still provide
+     *        output, in addition to logging the output.
      */
-    public static void setLog(File file, boolean alsoToStreams){
+    public static void setLog(File file, boolean alsoToStreams) {
 
         try {
             FileOutputStream logStream = new FileOutputStream(file);
             setLog(logStream, alsoToStreams);
-        } catch (IOException ioe){
+        } catch (IOException ioe) {
             // If something goes wrong, set the output to the
             // System streams only, and hope someone sees it.
             resetOutput();
@@ -569,16 +574,16 @@ public abstract class Debug {
     }
 
     /**
-     * Provide an output stream to log output.  This can be in
-     * conjunction with the streams, or instead of them.  This
+     * Provide an output stream to log output. This can be in
+     * conjunction with the streams, or instead of them. This
      * basically sets the output log and the error log to be the same
      * thing.
-     *
+     * 
      * @param logStream the output stream for output.
-     * @param alsoToStreams true if the streams should still
-     * provide output, in addition to logging the output.  
+     * @param alsoToStreams true if the streams should still provide
+     *        output, in addition to logging the output.
      */
-    public static void setLog(OutputStream logStream, boolean alsoToStreams){
+    public static void setLog(OutputStream logStream, boolean alsoToStreams) {
         DataOutputStream dos = new DataOutputStream(logStream);
         outputLog = dos;
         errorLog = dos;
@@ -593,7 +598,7 @@ public abstract class Debug {
     /**
      * Reset the logging to the output.
      */
-    public static void resetOutput(){
+    public static void resetOutput() {
         // If something goes wrong, set the output to the
         // System streams only, and hope someone sees it.
         notifyOut = true;

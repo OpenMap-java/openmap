@@ -1,32 +1,30 @@
-/* **********************************************************************
+/*********************************************************************
  * 
- *    Use, duplication, or disclosure by the Government is subject to
- *           restricted rights as set forth in the DFARS.
- *  
- *                         BBNT Solutions LLC
- *                             A Part of 
- *                  Verizon      
- *                          10 Moulton Street
- *                         Cambridge, MA 02138
- *                          (617) 873-3000
- *
- *    Copyright (C) 2002 by BBNT Solutions, LLC
- *                 All Rights Reserved.
- * ********************************************************************** */
+ * Use, duplication, or disclosure by the Government is subject to
+ * restricted rights as set forth in the DFARS.
+ * 
+ * BBNT Solutions LLC A Part of Verizon 10 Moulton Street Cambridge,
+ * MA 02138 (617) 873-3000
+ * 
+ * Copyright (C) 2002 by BBNT Solutions, LLC All Rights Reserved.
+ * **********************************************************************
+ */
 
 package com.bbn.openmap.tools.beanbox;
 
 import java.io.*;
 import java.util.*;
 
-/* Stores a list of headers that all pertain to a particular
- * file in the archive
+/*
+ * Stores a list of headers that all pertain to a particular file in
+ * the archive
  */
 public class Manifest {
 
     private Vector entries = new Vector();
 
     static final boolean debug = false;
+
     static final void debug(String s) {
         if (debug)
             System.out.println("man> " + s);
@@ -48,7 +46,6 @@ public class Manifest {
         }
     }
 
-
     /* recursively generate manifests from directory tree */
     public Manifest(String[] files) throws IOException {
         MessageHeader globals = new MessageHeader();
@@ -63,8 +60,8 @@ public class Manifest {
 
     public MessageHeader getEntry(String name) {
         Enumeration enum = entries();
-        while(enum.hasMoreElements()) {
-            MessageHeader mh = (MessageHeader)enum.nextElement();
+        while (enum.hasMoreElements()) {
+            MessageHeader mh = (MessageHeader) enum.nextElement();
             String nameVal = mh.findValue("Name");
             if (nameVal != null && nameVal.equals(name)) {
                 return mh;
@@ -80,7 +77,7 @@ public class Manifest {
     public Enumeration entries() {
         return entries.elements();
     }
-        
+
     public void addFiles(File dir, String[] files) throws IOException {
         if (files == null)
             return;
@@ -105,18 +102,19 @@ public class Manifest {
         addEntry(mh);
     }
 
-    /* Add a manifest file at current position in a stream
+    /*
+     * Add a manifest file at current position in a stream
      */
-    public void stream(OutputStream os, Vector extraFiles) 
-    throws IOException {
+    public void stream(OutputStream os, Vector extraFiles) throws IOException {
 
-        /* the first header in the file should be the global one.
-         * It should say "Manifest-Version: x.x"; barf if not
+        /*
+         * the first header in the file should be the global one. It
+         * should say "Manifest-Version: x.x"; barf if not
          */
         MessageHeader globals = (MessageHeader) entries.elementAt(0);
         if (globals.findValue("Manifest-Version") == null) {
-            throw new IOException("Manifest file requires " +
-                            "Manifest-Version: 1.0 in 1st header");
+            throw new IOException("Manifest file requires "
+                    + "Manifest-Version: 1.0 in 1st header");
         }
 
         PrintWriter ps = new PrintWriter(os);
@@ -136,19 +134,18 @@ public class Manifest {
     }
 
     public static boolean isManifestName(String name) {
-        
+
         // remove leading /
         if (name.charAt(0) == '/') {
             name = name.substring(1, name.length());
         }
         // case insensitive
         name = name.toUpperCase();
-        
+
         if (name.equals("META-INF/MANIFEST.MF")) {
             return true;
         }
         return false;
     }
 
-                                                  
 }

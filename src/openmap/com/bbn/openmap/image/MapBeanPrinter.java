@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapBeanPrinter.java,v $
 // $RCSfile: MapBeanPrinter.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.image;
 
@@ -30,10 +29,10 @@ import javax.swing.*;
 import com.bbn.openmap.*;
 
 /**
- *
- * A simple utility class to print a MapBean and
- * rescale it to fit the printed page.
- *
+ * 
+ * A simple utility class to print a MapBean and rescale it to fit the
+ * printed page.
+ *  
  */
 public class MapBeanPrinter implements Printable {
     private MapBean MapBeanToBePrinted;
@@ -54,14 +53,14 @@ public class MapBeanPrinter implements Printable {
         if (printJob.printDialog())
             try {
                 printJob.print();
-            } catch(PrinterException pe) {
+            } catch (PrinterException pe) {
                 System.out.println("Error printing: " + pe);
             }
     }
 
     public int print(Graphics g, PageFormat pageFormat, int pageIndex) {
         if (pageIndex > 0) {
-            return(NO_SUCH_PAGE);
+            return (NO_SUCH_PAGE);
         } else {
 
             // Compute size of component to print
@@ -78,16 +77,18 @@ public class MapBeanPrinter implements Printable {
 
             // Retain smallest scale
             double scale = xScale;
-            if (yScale < xScale) scale = yScale;
+            if (yScale < xScale)
+                scale = yScale;
 
-            /* Scale and position the graphic Remark : I had to remove
-               1 from getImageable() values in order to remove an ugly
-               border that appears on the left and top of the printed
-               map. bug in the JDK?
-            */
-            Graphics2D g2d = (Graphics2D)g;
-            g2d.translate(pageFormat.getImageableX() -1.0, 
-                          pageFormat.getImageableY()-1.0);
+            /*
+             * Scale and position the graphic Remark : I had to remove
+             * 1 from getImageable() values in order to remove an ugly
+             * border that appears on the left and top of the printed
+             * map. bug in the JDK?
+             */
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.translate(pageFormat.getImageableX() - 1.0,
+                    pageFormat.getImageableY() - 1.0);
             g2d.scale(scale, scale);
 
             // Do the work now ...
@@ -95,14 +96,14 @@ public class MapBeanPrinter implements Printable {
             MapBeanToBePrinted.paint(g2d);
             enableDoubleBuffering(MapBeanToBePrinted);
 
-            return(PAGE_EXISTS);
+            return (PAGE_EXISTS);
         }
     }
 
-    /** 
-     * The speed and quality of printing suffers dramatically if
-     * any of the containers have double buffering turned on.
-     * So this turns if off globally.
+    /**
+     * The speed and quality of printing suffers dramatically if any
+     * of the containers have double buffering turned on. So this
+     * turns if off globally.
      */
     public static void disableDoubleBuffering(Component c) {
         RepaintManager currentManager = RepaintManager.currentManager(c);

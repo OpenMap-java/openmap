@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,61 +14,76 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicConstants.java,v $
 // $RCSfile: OMGraphicConstants.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics;
 
-import java.io.Serializable;
 import java.awt.Color;
-import java.awt.Graphics;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.Debug;
+
+import com.bbn.openmap.proj.LineType;
 
 /**
- * An interface that contains all the constants associated with OMGraphics.
+ * An interface that contains all the constants associated with
+ * OMGraphics.
  */
 public interface OMGraphicConstants {
 
-    /** Line type is unknown. */ 
+    /** Line type is unknown. */
     public final static int LINETYPE_UNKNOWN = 0;
     /** Line will be drawn straight between window points. */
-    public final static int LINETYPE_STRAIGHT = LineType.Straight;  
-    /** Line will be drawn on a constant bearing between two
-     * points. */
+    public final static int LINETYPE_STRAIGHT = LineType.Straight;
+    /**
+     * Line will be drawn on a constant bearing between two points.
+     */
     public final static int LINETYPE_RHUMB = LineType.Rhumb;
-    /** Line will be drawn on the shortest geographical path between
-     * two locations. */
+    /**
+     * Line will be drawn on the shortest geographical path between
+     * two locations.
+     */
     public final static int LINETYPE_GREATCIRCLE = LineType.GreatCircle;
 
     /** Render type is unknown. */
     public final static int RENDERTYPE_UNKNOWN = 0;
-    /** The graphic should be projected relative to its lat/lon
-     * position. */
+    /**
+     * The graphic should be projected relative to its lat/lon
+     * position.
+     */
     public final static int RENDERTYPE_LATLON = 1;
-    /** The graphic should be projected relative to its window
-     * position. */
+    /**
+     * The graphic should be projected relative to its window
+     * position.
+     */
     public final static int RENDERTYPE_XY = 2;
-    /** The graphic should be projected in window space relative to a
-     * lat/lon position. */
+    /**
+     * The graphic should be projected in window space relative to a
+     * lat/lon position.
+     */
     public final static int RENDERTYPE_OFFSET = 3;
 
-    /** The graphic should not be moved or be considered in the
-     * placement of other graphics. */
+    /**
+     * The graphic should not be moved or be considered in the
+     * placement of other graphics.
+     */
     public final static int DECLUTTERTYPE_NONE = 0;
-    /** The graphic should not be moved, but its position should be
-     * considered when placing other graphics. */
+    /**
+     * The graphic should not be moved, but its position should be
+     * considered when placing other graphics.
+     */
     public final static int DECLUTTERTYPE_SPACE = 1;
-    /** The graphic should be moved if it is going to share window
-     * space with another graphic. */
+    /**
+     * The graphic should be moved if it is going to share window
+     * space with another graphic.
+     */
     public final static int DECLUTTERTYPE_MOVE = 2;
-    /** The graphic should be moved if it is going to share window
+    /**
+     * The graphic should be moved if it is going to share window
      * space with another graphic, and a line should be drawn from the
-     * new position to the original position. */
+     * new position to the original position.
+     */
     public final static int DECLUTTERTYPE_LINE = 3;
 
     /** The generic graphic type. */
@@ -94,24 +109,34 @@ public interface OMGraphicConstants {
     /** An arc type - OMArc. */
     public final static int GRAPHICTYPE_ARC = 10;
 
-    /** The float coordinates are in decimal degrees. Should not be
-     *  used - switching over to com.bbn.openmap.proj.Length. */
+    /**
+     * The float coordinates are in decimal degrees. Should not be
+     * used - switching over to com.bbn.openmap.proj.Length.
+     */
     public final static int DECIMAL_DEGREES = 0;
-    /** The float coordinates are in radians.  Should not be used -
-     *  switching over to com.bbn.openmap.proj.Length. */
+    /**
+     * The float coordinates are in radians. Should not be used -
+     * switching over to com.bbn.openmap.proj.Length.
+     */
     public final static int RADIANS = 1;
 
-    /** A transparent color.*/
-    public final static Color clear =
-        com.bbn.openmap.util.ColorFactory.createColor(0, true);
+    /** A transparent color. */
+    public final static Color clear = com.bbn.openmap.util.ColorFactory.createColor(0,
+            true);
 
     /** A Basic Stroke. */
     public final static java.awt.Stroke BASIC_STROKE = new java.awt.BasicStroke();
 
-    /** The default rotation andle to use for java.awt.Graphics2D objects. */
+    /**
+     * The default rotation andle to use for java.awt.Graphics2D
+     * objects.
+     */
     public static final double DEFAULT_ROTATIONANGLE = 0.0;
 
-    /** Graphic action descriptor mask - raise the graphic on top of others. */
+    /**
+     * Graphic action descriptor mask - raise the graphic on top of
+     * others.
+     */
     public static final int RAISE_TO_TOP_GRAPHIC_MASK = 1 << 0;
     /** Graphic action descriptor mask - lower graphics below others. */
     public static final int LOWER_TO_BOTTOM_GRAPHIC_MASK = 1 << 1;
@@ -125,19 +150,25 @@ public interface OMGraphicConstants {
     public static final int DESELECTALL_GRAPHIC_MASK = 1 << 5;
     /** Graphic action descriptor mask - add a graphic. */
     public static final int ADD_GRAPHIC_MASK = 1 << 6;
-    /** Graphic action descriptor mask - update the graphic. Really
-     *  for client/server notification to update. */
+    /**
+     * Graphic action descriptor mask - update the graphic. Really for
+     * client/server notification to update.
+     */
     public static final int UPDATE_GRAPHIC_MASK = 1 << 7;
-    /** Graphic action descriptor mask - raise the graphic relative to
-     *  others by one. */
+    /**
+     * Graphic action descriptor mask - raise the graphic relative to
+     * others by one.
+     */
     public static final int RAISE_GRAPHIC_MASK = 1 << 8;
-    /** Graphic action descriptor mask - lower down relative to other
-     *  graphics by one. */
+    /**
+     * Graphic action descriptor mask - lower down relative to other
+     * graphics by one.
+     */
     public static final int LOWER_GRAPHIC_MASK = 1 << 9;
     /**
      * Graphic action descriptor mask - sort the graphics. The sorting
      * criteria depends on local criteria as implemented in the object
-     * doing the sorting. 
+     * doing the sorting.
      */
     public static final int SORT_GRAPHICS_MASK = 1 << 10;
 }

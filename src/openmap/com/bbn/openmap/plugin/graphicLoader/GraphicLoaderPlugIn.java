@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/GraphicLoaderPlugIn.java,v $
 // $RCSfile: GraphicLoaderPlugIn.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/03/15 23:47:24 $
+// $Revision: 1.8 $
+// $Date: 2004/10/14 18:06:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,11 +23,9 @@
 package com.bbn.openmap.plugin.graphicLoader;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.beans.*;
 import java.beans.beancontext.*;
 import java.util.Properties;
-import javax.swing.*;
 
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.MapMouseListener;
@@ -39,40 +37,47 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.*;
 
 /**
- * A GraphicLoaderPlugIn is a PlugIn that receives its OMGraphics
- * from some other source, at any time.  It just listens to its
+ * A GraphicLoaderPlugIn is a PlugIn that receives its OMGraphics from
+ * some other source, at any time. It just listens to its
  * GraphicLoader for updates to the OMGraphicList, and then updates
- * the map as necessary. <P> The GraphicLoaderPlugIn passes projection
- * changes onto the GraphicLoader, and if the GraphicLoader is a
- * MapMouseListener, the GraphicLoaderPlugIn will defer all
- * MouseEvents to it. <p>
- *
+ * the map as necessary.
+ * <P>
+ * The GraphicLoaderPlugIn passes projection changes onto the
+ * GraphicLoader, and if the GraphicLoader is a MapMouseListener, the
+ * GraphicLoaderPlugIn will defer all MouseEvents to it.
+ * <p>
+ * 
  * To add a GraphicLoader to the OpenMap application, you can do it
  * several ways:
- *<UL>
- *<LI>You can create a specific GraphicLoaderPlugIn that creates its
- *  own GraphicLoader, and initializes it accordingly.  You would add
- *  the GraphicLoaderPlugIn to the openmap.layers property in the
- *  openmap.properties file.
- *<LI>You can create a GraphicLoaderPlugIn by adding an entry to the
- *  openmap.layer property in the openmap.properties file, and define
- *  what kind of GraphicLoader to create in the properties for the
- *  GraphicLoaderPlugIn.<P>
+ * <UL>
+ * <LI>You can create a specific GraphicLoaderPlugIn that creates its
+ * own GraphicLoader, and initializes it accordingly. You would add
+ * the GraphicLoaderPlugIn to the openmap.layers property in the
+ * openmap.properties file.
+ * <LI>You can create a GraphicLoaderPlugIn by adding an entry to the
+ * openmap.layer property in the openmap.properties file, and define
+ * what kind of GraphicLoader to create in the properties for the
+ * GraphicLoaderPlugIn.
+ * <P>
+ * 
  * <pre>
- * graphicLoaderPlugIn.class=com.bbn.openmap.plugin.graphicLoader.GraphicLoaderPlugIn
- * graphicLoaderPlugIn.prettyName=Name of Layer
- * graphicLoaderPlugIn.graphicLoader=GraphicLoader Classname
- * graphicLoaderPlugIn.addGraphicLoaderToMapHandler=true/false (false by default)
+ * 
+ *  graphicLoaderPlugIn.class=com.bbn.openmap.plugin.graphicLoader.GraphicLoaderPlugIn
+ *  graphicLoaderPlugIn.prettyName=Name of Layer
+ *  graphicLoaderPlugIn.graphicLoader=GraphicLoader Classname
+ *  graphicLoaderPlugIn.addGraphicLoaderToMapHandler=true/false (false by default)
+ *  
  * </pre>
- *<LI>You can add a
- *  com.bbn.openmap.plugin.graphicLoader.GraphicLoaderConnector to the
- *  openmap.components property, and then add the GraphicLoader to the
- *  openmap.components property as well.  The GraphicLoaderConnector
- *  will find the GraphicLoader, and create a
- *  GraphicLoaderPlugIn/PlugInLayer for the GraphicLoader and add it to
- *  the LayerHandler on top of the map.
- *</UL>
- *
+ * 
+ * <LI>You can add a
+ * com.bbn.openmap.plugin.graphicLoader.GraphicLoaderConnector to the
+ * openmap.components property, and then add the GraphicLoader to the
+ * openmap.components property as well. The GraphicLoaderConnector
+ * will find the GraphicLoader, and create a
+ * GraphicLoaderPlugIn/PlugInLayer for the GraphicLoader and add it to
+ * the LayerHandler on top of the map.
+ * </UL>
+ *  
  */
 public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
 
@@ -101,9 +106,9 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * The getRectangle call is the main call into the PlugIn module.
      * The module is expected to fill the graphics list with objects
      * that are within the screen parameters passed.
-     *
+     * 
      * @param p projection of the screen, holding scale, center
-     * coords, height, width.
+     *        coords, height, width.
      */
     public OMGraphicList getRectangle(Projection p) {
         // Used to control the doPrepare() call in setList().
@@ -119,8 +124,8 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
         list.generate(p);
 
         if (Debug.debugging("graphicloader")) {
-            Debug.output("GraphicLoaderPlugIn returning list of " + 
-                         list.size() + " objects.");
+            Debug.output("GraphicLoaderPlugIn returning list of " + list.size()
+                    + " objects.");
         }
 
         // Used to control the doPrepare() call in setList().
@@ -136,10 +141,10 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * called on the PlugInLayer, which will result in a
      * getRectangle() being called the GraphicLoaderPlugIn, which will
      * in turn cause setProjection() to be called on the
-     * GraphicLoader.  Watch out, in the GraphicLoader, for setting
-     * the list as a result of a projection change - you can get into
-     * a loop.  The AbstractGraphicLoader checks to see if the
-     * projection has changed.
+     * GraphicLoader. Watch out, in the GraphicLoader, for setting the
+     * list as a result of a projection change - you can get into a
+     * loop. The AbstractGraphicLoader checks to see if the projection
+     * has changed.
      */
     public synchronized void setList(OMGraphicList graphics) {
         super.setList(graphics);
@@ -147,7 +152,7 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
         synchronized (lock) {
             if (!inGetRectangle) {
                 // Should be OK, launching a separate thread to
-                // come back into getRectangle.  We only want to call
+                // come back into getRectangle. We only want to call
                 // doPrepare() if setList is being called in a thread
                 // from something else controlling the GraphicLoader,
                 // like a timer or something.
@@ -164,8 +169,8 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
     }
 
     /**
-     * Set the GraphicLoader for the PlugIn.  If the GraphicLoader is
-     * a MapMouseListener, it will be used as such for this PlugIn.
+     * Set the GraphicLoader for the PlugIn. If the GraphicLoader is a
+     * MapMouseListener, it will be used as such for this PlugIn.
      */
     public void setGraphicLoader(GraphicLoader gl) {
         loader = gl;
@@ -173,14 +178,13 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
         gl.setReceiver(this);
 
         if (gl instanceof MapMouseListener) {
-            setMapMouseListener((MapMouseListener)gl);
+            setMapMouseListener((MapMouseListener) gl);
         } else {
             setMapMouseListener(this);
         }
 
-        if (needToAddGraphicLoaderToMapHandler && 
-            getBeanContext() != null && 
-            loader != null) {
+        if (needToAddGraphicLoaderToMapHandler && getBeanContext() != null
+                && loader != null) {
 
             getBeanContext().add(loader);
             needToAddGraphicLoaderToMapHandler = false;
@@ -211,13 +215,13 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      * Method for BeanContextChild interface. Adds this object as a
      * BeanContextMembership listener, set the BeanContext in this
      * objects BeanContextSupport, and receives the initial list of
-     * objects currently contained in the BeanContext.  
+     * objects currently contained in the BeanContext.
      */
-    public void setBeanContext(BeanContext in_bc) 
-        throws PropertyVetoException {
+    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
         super.setBeanContext(in_bc);
 
-        if (in_bc != null && needToAddGraphicLoaderToMapHandler && getGraphicLoader() != null) {
+        if (in_bc != null && needToAddGraphicLoaderToMapHandler
+                && getGraphicLoader() != null) {
             in_bc.add(getGraphicLoader());
             needToAddGraphicLoaderToMapHandler = false;
         }
@@ -225,6 +229,7 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
 
     /**
      * PropertyConsumer interface method.
+     * 
      * @see com.bbn.openmap.PropertyConsumer
      */
     public void setProperties(String prefix, Properties props) {
@@ -232,10 +237,14 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         String glString = props.getProperty(realPrefix + GraphicLoaderProperty);
-        addGraphicLoaderToMapHandler = LayerUtils.booleanFromProperties(props, realPrefix + AddGraphicLoaderToMapHandlerProperty, addGraphicLoaderToMapHandler);
+        addGraphicLoaderToMapHandler = LayerUtils.booleanFromProperties(props,
+                realPrefix + AddGraphicLoaderToMapHandlerProperty,
+                addGraphicLoaderToMapHandler);
 
         if (glString != null) {
-            GraphicLoader gl = (GraphicLoader) ComponentFactory.create(glString, prefix, props);
+            GraphicLoader gl = (GraphicLoader) ComponentFactory.create(glString,
+                    prefix,
+                    props);
             if (gl != null) {
                 needToAddGraphicLoaderToMapHandler = addGraphicLoaderToMapHandler;
                 setGraphicLoader(gl);
@@ -245,6 +254,7 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
 
     /**
      * PropertyConsumer interface method.
+     * 
      * @see com.bbn.openmap.PropertyConsumer
      */
     public Properties getProperties(Properties props) {
@@ -253,9 +263,10 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
 
         if (gl != null) {
             String prefix = PropUtils.getScopedPropertyPrefix(this);
-            props.setProperty(prefix + GraphicLoaderProperty, gl.getClass().getName());
+            props.setProperty(prefix + GraphicLoaderProperty, gl.getClass()
+                    .getName());
             if (gl instanceof PropertyConsumer) {
-                ((PropertyConsumer)gl).getProperties(props);
+                ((PropertyConsumer) gl).getProperties(props);
             }
         }
         return props;
@@ -263,6 +274,7 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
 
     /**
      * PropertyConsumer interface method.
+     * 
      * @see com.bbn.openmap.PropertyConsumer
      */
     public Properties getPropertyInfo(Properties props) {
@@ -271,15 +283,15 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
 
         GraphicLoader gl = getGraphicLoader();
         if (gl != null && gl instanceof PropertyConsumer) {
-            ((PropertyConsumer)gl).getPropertyInfo(props);
+            ((PropertyConsumer) gl).getPropertyInfo(props);
         }
 
         return props;
     }
 
     /**
-     * Standard PlugIn method to provide palette.  Differed to the
-     * GraphicLoader.  
+     * Standard PlugIn method to provide palette. Differed to the
+     * GraphicLoader.
      */
     public Component getGUI() {
         if (loader != null) {

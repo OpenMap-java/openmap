@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,13 +14,40 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.16 $
-// $Date: 2004/09/30 22:43:18 $
+// $Revision: 1.17 $
+// $Date: 2004/10/14 18:06:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.tools.drawing;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Vector;
+
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
@@ -28,16 +55,11 @@ import com.bbn.openmap.gui.OMToolComponent;
 import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.MapHandler;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.GraphicAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
-import javax.swing.*;
 
 /**
  * This tool is a widget that calls the OMDrawingTool to create a
@@ -52,14 +74,16 @@ import javax.swing.*;
  * <pre>
  * 
  *  
- *  
- *   # Number of launcher buttons to place in a row in that part of the
- *   # GUI. -1 (the default) is to keep them all on one line.
- *   omdtl.horizNumLoaderButtons=-1
- *  
- *   # If set to true, a text popup will be used for the OMGraphic
- *   # loaders instead of buttons (false is default).
- *   omdtl.useTextLabels=false
+ *   
+ *   
+ *    # Number of launcher buttons to place in a row in that part of the
+ *    # GUI. -1 (the default) is to keep them all on one line.
+ *    omdtl.horizNumLoaderButtons=-1
+ *   
+ *    # If set to true, a text popup will be used for the OMGraphic
+ *    # loaders instead of buttons (false is default).
+ *    omdtl.useTextLabels=false
+ *    
  *   
  *  
  * </pre>
@@ -93,10 +117,13 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     public final static String UseLoaderTextProperty = "useTextLabels";
 
     String[] rtc = {
-            i18n.get(OMDrawingToolLauncher.class, "renderingType.LatLon", "Lat/Lon"),
+            i18n.get(OMDrawingToolLauncher.class,
+                    "renderingType.LatLon",
+                    "Lat/Lon"),
             i18n.get(OMDrawingToolLauncher.class, "renderingType.XY", "X/Y"),
-            i18n.get(OMDrawingToolLauncher.class, "renderingType.XYOffset",
-                     "X/Y Offset") };
+            i18n.get(OMDrawingToolLauncher.class,
+                    "renderingType.XYOffset",
+                    "X/Y Offset") };
 
     public final static String CreateCmd = "CREATE";
 
@@ -106,9 +133,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     public OMDrawingToolLauncher() {
         super();
 
-        setWindowSupport(new WindowSupport(this, i18n
-                .get(OMDrawingToolLauncher.class, "omdrawingtoollauncher",
-                     "Drawing Tool Launcher")));
+        setWindowSupport(new WindowSupport(this, i18n.get(OMDrawingToolLauncher.class,
+                "omdrawingtoollauncher",
+                "Drawing Tool Launcher")));
         setKey(defaultKey);
         defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_LATLON);
         defaultGraphicAttributes.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
@@ -157,11 +184,11 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
                 }
             }
 
-            if (dt != null && currentCreation != null && currentRequestor != null) {
+            if (dt != null && currentCreation != null
+                    && currentRequestor != null) {
                 // Copy the default GraphicAttributes into another
                 // copy...
-                GraphicAttributes ga = (GraphicAttributes) defaultGraphicAttributes
-                        .clone();
+                GraphicAttributes ga = (GraphicAttributes) defaultGraphicAttributes.clone();
 
                 // fire it up!
                 dt.setBehaviorMask(OMDrawingTool.DEFAULT_BEHAVIOR_MASK);
@@ -173,22 +200,27 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
 
                 if (dt == null) {
                     sb.append("   No drawing tool is available!\n");
-                    em.append(i18n.get(OMDrawingToolLauncher.class, "noDrowingTool",
-                                       "   No drawing tool is available!\n"));
+                    em.append(i18n.get(OMDrawingToolLauncher.class,
+                            "noDrowingTool",
+                            "   No drawing tool is available!\n"));
                 } else {
                     sb.append("   Drawing tool OK.\n");
                 }
 
                 if (currentCreation == null) {
                     sb.append("   No valid choice of graphic to create.\n");
-                    em.append(i18n.get(OMDrawingToolLauncher.class, "noValidChoice", "   No valid choice of graphic to create.\n"));
+                    em.append(i18n.get(OMDrawingToolLauncher.class,
+                            "noValidChoice",
+                            "   No valid choice of graphic to create.\n"));
                 } else {
                     sb.append("   Graphic choice OK.\n");
                 }
 
                 if (currentRequestor == null) {
                     sb.append("   No valid receiver for the created graphic.\n");
-                    em.append(i18n.get(OMDrawingToolLauncher.class, "noValidReceiver", "   No valid receiver for the created graphic.\n"));
+                    em.append(i18n.get(OMDrawingToolLauncher.class,
+                            "noValidReceiver",
+                            "   No valid receiver for the created graphic.\n"));
                 } else {
                     sb.append("   Graphic receiver OK.\n");
                 }
@@ -198,16 +230,16 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
 
                 MapHandler mapHandler = (MapHandler) getBeanContext();
                 if (mapHandler != null) {
-                    InformationDelegator id = (InformationDelegator) mapHandler
-                            .get("com.bbn.openmap.InformationDelegator");
+                    InformationDelegator id = (InformationDelegator) mapHandler.get("com.bbn.openmap.InformationDelegator");
                     if (id != null) {
 
                         id.displayMessage(i18n.get(OMDrawingToolLauncher.class,
-                                                   "problem", "Problem"), i18n
-                                .get(OMDrawingToolLauncher.class,
-                                     "problemCreatingGraphic",
-                                     "Problem creating new graphic:\n")
-                                + em.toString());
+                                "problem",
+                                "Problem"),
+                                i18n.get(OMDrawingToolLauncher.class,
+                                        "problemCreatingGraphic",
+                                        "Problem creating new graphic:\n")
+                                        + em.toString());
                     }
                 }
             }
@@ -243,15 +275,14 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
         }
 
         for (int i = 0; i < requestorNames.length; i++) {
-            requestorNames[i] = ((DrawingToolRequestor) drawingToolRequestors
-                    .elementAt(i)).getName();
+            requestorNames[i] = ((DrawingToolRequestor) drawingToolRequestors.elementAt(i)).getName();
             if (requestorNames[i] == null) {
-                Debug
-                        .output("OMDrawingToolLauncher has a requestor that is unnamed.  Please assign a name to the requestor");
+                Debug.output("OMDrawingToolLauncher has a requestor that is unnamed.  Please assign a name to the requestor");
                 requestorNames[i] = "-- Unnamed --";
             }
             if (Debug.debugging("omdtl")) {
-                Debug.output("Adding REQUESTOR " + requestorNames[i] + " to menu");
+                Debug.output("Adding REQUESTOR " + requestorNames[i]
+                        + " to menu");
             }
         }
 
@@ -277,8 +308,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
             }
         }
 
-        JPanel panel = PaletteHelper.createPaletteJPanel(i18n
-                .get(OMDrawingToolLauncher.class, "panelSendTo", "Send To:"));
+        JPanel panel = PaletteHelper.createPaletteJPanel(i18n.get(OMDrawingToolLauncher.class,
+                "panelSendTo",
+                "Send To:"));
         panel.add(requestors);
         palette.add(panel);
 
@@ -286,9 +318,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
             Debug.output("Figuring out tools, using names");
         }
 
-        panel = PaletteHelper.createPaletteJPanel(i18n
-                .get(OMDrawingToolLauncher.class, "panelGraphicType",
-                     "Graphic Type:"));
+        panel = PaletteHelper.createPaletteJPanel(i18n.get(OMDrawingToolLauncher.class,
+                "panelGraphicType",
+                "Graphic Type:"));
         panel.add(getToolWidgets(useTextEditToolTitles));
         palette.add(panel);
 
@@ -304,45 +336,44 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
                 JComboBox jcb = (JComboBox) e.getSource();
                 String currentChoice = (String) jcb.getSelectedItem();
                 if (currentChoice == rtc[2]) {
-                    defaultGraphicAttributes
-                            .setRenderType(OMGraphic.RENDERTYPE_OFFSET);
+                    defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_OFFSET);
                 } else if (currentChoice == rtc[1]) {
                     defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_XY);
                 } else {
-                    defaultGraphicAttributes
-                            .setRenderType(OMGraphic.RENDERTYPE_LATLON);
+                    defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_LATLON);
                 }
             }
         });
 
-        renderTypeList
-                .setSelectedIndex(defaultGraphicAttributes.getRenderType() - 1);
+        renderTypeList.setSelectedIndex(defaultGraphicAttributes.getRenderType() - 1);
 
-        panel = PaletteHelper.createVerticalPanel(i18n
-                .get(OMDrawingToolLauncher.class, "panelGraphicAttributes",
-                     "Graphic Attributes:"));
+        panel = PaletteHelper.createVerticalPanel(i18n.get(OMDrawingToolLauncher.class,
+                "panelGraphicAttributes",
+                "Graphic Attributes:"));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JPanel panel2 = PaletteHelper.createVerticalPanel(i18n
-                .get(OMDrawingToolLauncher.class, "panelRenderingType",
-                     "Rendering Type:"));
+        JPanel panel2 = PaletteHelper.createVerticalPanel(i18n.get(OMDrawingToolLauncher.class,
+                "panelRenderingType",
+                "Rendering Type:"));
         panel2.add(renderTypeList);
-        JPanel panel3 = PaletteHelper.createVerticalPanel(i18n
-                .get(OMDrawingToolLauncher.class, "panelLineColorTypes",
-                     "Line Types and Colors:"));
+        JPanel panel3 = PaletteHelper.createVerticalPanel(i18n.get(OMDrawingToolLauncher.class,
+                "panelLineColorTypes",
+                "Line Types and Colors:"));
         panel3.add(defaultGraphicAttributes.getGUI());
         panel.add(panel2);
         panel.add(panel3);
         palette.add(panel);
 
-        JButton createButton = new JButton(i18n
-                .get(OMDrawingToolLauncher.class, "createButton", "Create Graphic"));
+        JButton createButton = new JButton(i18n.get(OMDrawingToolLauncher.class,
+                "createButton",
+                "Create Graphic"));
         createButton.setActionCommand(CreateCmd);
         createButton.addActionListener(this);
 
         JPanel dismissBox = new JPanel();
         JButton dismiss = new JButton(i18n.get(OMDrawingToolLauncher.class,
-                                               "dismiss", "Close"));
+                "dismiss",
+                "Close"));
         dismissBox.setLayout(new BoxLayout(dismissBox, BoxLayout.X_AXIS));
         dismissBox.setAlignmentX(Component.CENTER_ALIGNMENT);
         dismissBox.setAlignmentY(Component.BOTTOM_ALIGNMENT);
@@ -598,9 +629,8 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
         }
         if (someObj instanceof DrawingToolRequestor) {
             if (Debug.debugging("omdtl")) {
-                Debug
-                        .output("OMDrawingToolLauncher removing a DrawingToolRequestor - "
-                                + ((DrawingToolRequestor) someObj).getName());
+                Debug.output("OMDrawingToolLauncher removing a DrawingToolRequestor - "
+                        + ((DrawingToolRequestor) someObj).getName());
             }
             drawingToolRequestors.remove(someObj);
             resetGUI();
@@ -618,14 +648,14 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
         if (getUseAsTool()) {
             jtb = new com.bbn.openmap.gui.GridBagToolBar();
             //"Drawing Tool Launcher";
-            JButton drawingToolButton = new JButton(new ImageIcon(
-                    OMDrawingToolLauncher.class.getResource("Drawing.gif"), i18n
-                            .get(OMDrawingToolLauncher.class, "drawingToolButton",
-                                 I18n.TOOLTIP, "Drawing Tool Launcher")));
+            JButton drawingToolButton = new JButton(new ImageIcon(OMDrawingToolLauncher.class.getResource("Drawing.gif"), i18n.get(OMDrawingToolLauncher.class,
+                    "drawingToolButton",
+                    I18n.TOOLTIP,
+                    "Drawing Tool Launcher")));
             drawingToolButton.setToolTipText(i18n.get(OMDrawingToolLauncher.class,
-                                                      "drawingToolButton",
-                                                      I18n.TOOLTIP,
-                                                      "Drawing Tool Launcher"));
+                    "drawingToolButton",
+                    I18n.TOOLTIP,
+                    "Drawing Tool Launcher"));
             drawingToolButton.addActionListener(getActionListener());
             jtb.add(drawingToolButton);
         }
@@ -730,8 +760,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
-        maxHorNumLoaderButtons = PropUtils.intFromProperties(props, prefix
-                + HorizontalNumberOfLoaderButtonsProperty, maxHorNumLoaderButtons);
+        maxHorNumLoaderButtons = PropUtils.intFromProperties(props,
+                prefix + HorizontalNumberOfLoaderButtonsProperty,
+                maxHorNumLoaderButtons);
         useTextEditToolTitles = PropUtils.booleanFromProperties(props, prefix
                 + UseLoaderTextProperty, useTextEditToolTitles);
     }
@@ -739,34 +770,36 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-        props.put(prefix + HorizontalNumberOfLoaderButtonsProperty, Integer
-                .toString(maxHorNumLoaderButtons));
-        props.put(prefix + UseLoaderTextProperty, new Boolean(useTextEditToolTitles)
-                .toString());
+        props.put(prefix + HorizontalNumberOfLoaderButtonsProperty,
+                Integer.toString(maxHorNumLoaderButtons));
+        props.put(prefix + UseLoaderTextProperty,
+                new Boolean(useTextEditToolTitles).toString());
         return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
-        String internString = i18n
-                .get(OMDrawingToolLauncher.class,
-                     HorizontalNumberOfLoaderButtonsProperty, I18n.TOOLTIP,
-                     "Number of loader buttons to place horizontally");
+        String internString = i18n.get(OMDrawingToolLauncher.class,
+                HorizontalNumberOfLoaderButtonsProperty,
+                I18n.TOOLTIP,
+                "Number of loader buttons to place horizontally");
         props.put(HorizontalNumberOfLoaderButtonsProperty, internString);
 
         internString = i18n.get(OMDrawingToolLauncher.class,
-                                HorizontalNumberOfLoaderButtonsProperty,
-                                "# Horizontal Buttons");
+                HorizontalNumberOfLoaderButtonsProperty,
+                "# Horizontal Buttons");
         props.put(HorizontalNumberOfLoaderButtonsProperty + LabelEditorProperty,
-                  internString);
+                internString);
 
-        internString = i18n
-                .get(OMDrawingToolLauncher.class, UseLoaderTextProperty,
-                     I18n.TOOLTIP, "Use text popup for loader selection.");
+        internString = i18n.get(OMDrawingToolLauncher.class,
+                UseLoaderTextProperty,
+                I18n.TOOLTIP,
+                "Use text popup for loader selection.");
         props.put(UseLoaderTextProperty, internString);
 
-        internString = i18n.get(OMDrawingToolLauncher.class, UseLoaderTextProperty,
-                                "Use Text For Selection");
+        internString = i18n.get(OMDrawingToolLauncher.class,
+                UseLoaderTextProperty,
+                "Use Text For Selection");
         props.put(UseLoaderTextProperty + LabelEditorProperty, internString);
 
         return props;

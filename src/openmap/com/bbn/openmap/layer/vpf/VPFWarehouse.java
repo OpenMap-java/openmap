@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFWarehouse.java,v $
 // $RCSfile: VPFWarehouse.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/28 15:51:23 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
@@ -27,7 +26,8 @@ import java.awt.Component;
 import java.util.List;
 
 /**
- * Define an interface for a Graphic Factory for graphics read from VPF.
+ * Define an interface for a Graphic Factory for graphics read from
+ * VPF.
  */
 public interface VPFWarehouse {
 
@@ -46,17 +46,18 @@ public interface VPFWarehouse {
      */
     public boolean drawAreaFeatures();
 
-    /** To let the warehouse know that a new CoverageAttributeTable
-     * will be using the warehouse.  Some wharehouses need to reset
+    /**
+     * To let the warehouse know that a new CoverageAttributeTable
+     * will be using the warehouse. Some wharehouses need to reset
      * some tables for this situation.
      */
     public void resetForCAT();
 
     /**
      * Get the GUI to control different aspects of the warehouse.
-     *
+     * 
      * @param lst LibrarySelectionTable to use to get information
-     * about the data, if needed.  
+     *        about the data, if needed.
      */
     public Component getGUI(LibrarySelectionTable lst);
 
@@ -78,7 +79,7 @@ public interface VPFWarehouse {
     public List getFeatures();
 
     /**
-     * Get a library name to limit selections from.  Used by the
+     * Get a library name to limit selections from. Used by the
      * LibrarySelectionTable to find out if selection from database
      * should be limitied to tiles or feature from certain libraries.
      * Specified here instead of the LibrarySelectionTable in case the
@@ -88,12 +89,12 @@ public interface VPFWarehouse {
     public String getUseLibrary();
 
     /**
-     * Set a library name to limit selections from.  Used by the
+     * Set a library name to limit selections from. Used by the
      * LibrarySelectionTable to find out if selection from database
      * should be limitied to tiles or feature from certain libraries.
      * Specified here instead of the LibrarySelectionTable in case the
      * LST is shared among layers, since the warehouse is specific to
-     * a particular layer.  If null the warehouse should use all
+     * a particular layer. If null the warehouse should use all
      * libraries available to it to gather features.
      */
     public void setUseLibrary(String lib);

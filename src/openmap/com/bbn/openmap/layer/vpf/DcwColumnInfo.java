@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,22 +12,20 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwColumnInfo.java,v $
-// $Revision: 1.4 $ $Date: 2004/01/26 18:18:11 $ $Author: dietrick $
+// $Revision: 1.5 $ $Date: 2004/10/14 18:06:08 $ $Author: dietrick $
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.io.BinaryFile;
 
 import java.io.EOFException;
 
 /**
- * Encapsulate the information about a particular column in a vpf table.
- * This class can read both VPF V1 (MIL-STD-600006, dated 1992) and
- * VPF V2 (MIL-STD-2407, dated 1996, supercedees V1)
+ * Encapsulate the information about a particular column in a vpf
+ * table. This class can read both VPF V1 (MIL-STD-600006, dated 1992)
+ * and VPF V2 (MIL-STD-2407, dated 1996, supercedees V1)
  */
 public class DcwColumnInfo {
     /** the name of the column */
@@ -40,8 +38,10 @@ public class DcwColumnInfo {
     final private char keyType;
     /** optional text description of what the column is for */
     final private String columnDescription;
-    /** optional table that provides descriptions of what the values in this 
-     * column are */
+    /**
+     * optional table that provides descriptions of what the values in
+     * this column are
+     */
     private String valueDescriptionTable = null;
     /** name of the optional thematic index created for this column */
     private String thematicIndexName = null;
@@ -64,9 +64,11 @@ public class DcwColumnInfo {
     public static final char VPF_COLUMN_DATE = 'D';
     public static final char VPF_COLUMN_NULL = 'X';
     public static final char VPF_COLUMN_TRIPLET = 'K';
-    /** VPF Column Type Constant for a column that can be either int or short.
-     * This value will never be read from a VPF file, its a special value
-     * that is accepted by lookupSchema */
+    /**
+     * VPF Column Type Constant for a column that can be either int or
+     * short. This value will never be read from a VPF file, its a
+     * special value that is accepted by lookupSchema
+     */
     public static final char VPF_COLUMN_INT_OR_SHORT = 'i';
 
     /** VPF Column Key Type Constants */
@@ -76,27 +78,28 @@ public class DcwColumnInfo {
 
     /**
      * Construct a DcwColumnInfo from the specified input stream.
+     * 
      * @param inputFile the filestream to construct from
      * @exception EOFException when the first character read is a ';',
-     * indicating that we've reached the end of the column list; also thrown
-     * for an end of file
-     * @exception FormatException some error was detected while reading the
-     * info for the column.
+     *            indicating that we've reached the end of the column
+     *            list; also thrown for an end of file
+     * @exception FormatException some error was detected while
+     *            reading the info for the column.
      */
-    public DcwColumnInfo(BinaryFile inputFile) 
-        throws EOFException, FormatException {
-        char delim  = inputFile.readChar();
+    public DcwColumnInfo(BinaryFile inputFile) throws EOFException,
+            FormatException {
+        char delim = inputFile.readChar();
         if (delim == ';')
             throw new EOFException();
 
         StringBuffer buildstring = new StringBuffer();
         do {
-          buildstring.append(Character.toLowerCase(delim));
+            buildstring.append(Character.toLowerCase(delim));
         } while ((delim = inputFile.readChar()) != '=');
         columnName = buildstring.toString().intern();
 
         fieldType = inputFile.readChar();
-        
+
         delim = inputFile.readChar();
         if (delim != ',') { //only legal delimiter
             if (delim != ' ') { //one DCW file uses this instead
@@ -108,24 +111,26 @@ public class DcwColumnInfo {
         while ((delim = inputFile.readChar()) != ',') {
             // field length occasionally has trailing whitespace...
             if (!Character.isWhitespace(delim)) {
-                buildstring.append(delim); //assumes not like "1  4"
+                buildstring.append(delim); //assumes not like "1 4"
             }
         }
         String nEls = buildstring.toString();
         numberOfElements = (nEls.equals("*")) ? -1 : Integer.parseInt(nEls);
-    
-        // Sanity check the column schema... a few VPF primitives are not
-        // allowed to show up in arrays.  complain about that now...
+
+        // Sanity check the column schema... a few VPF primitives are
+        // not
+        // allowed to show up in arrays. complain about that now...
         if (numberOfElements != 1) {
             switch (fieldType) {
-            case VPF_COLUMN_FLOAT: 
-            case VPF_COLUMN_DOUBLE: 
-            case VPF_COLUMN_SHORT: 
-            case VPF_COLUMN_INT: 
-            case VPF_COLUMN_DATE: 
-            case VPF_COLUMN_NULL: 
-            case VPF_COLUMN_TRIPLET: 
-                throw new FormatException("Illegal array type: " + fieldType + "for column " + columnName);
+            case VPF_COLUMN_FLOAT:
+            case VPF_COLUMN_DOUBLE:
+            case VPF_COLUMN_SHORT:
+            case VPF_COLUMN_INT:
+            case VPF_COLUMN_DATE:
+            case VPF_COLUMN_NULL:
+            case VPF_COLUMN_TRIPLET:
+                throw new FormatException("Illegal array type: " + fieldType
+                        + "for column " + columnName);
             default:
                 //legal
                 break;
@@ -154,7 +159,7 @@ public class DcwColumnInfo {
         if (valueDescriptionTable.equals("-")) {
             valueDescriptionTable = null;
         } else {
-            valueDescriptionTable=valueDescriptionTable.intern();
+            valueDescriptionTable = valueDescriptionTable.intern();
         }
 
         thematicIndexName = readColumnTextLowerCase(inputFile);
@@ -183,15 +188,14 @@ public class DcwColumnInfo {
     /**
      * Reads a string until the field separator is detected, the
      * column record separator is detected, or and end-of-file is hit.
-     *
+     * 
      * @return the string read from the file
      * @param inputFile the file to read the field from
      * @param toLower convert the string to lower-case
      * @exception FormatException ReadChar IOExceptions rethrown as
-     * FormatExceptions
+     *            FormatExceptions
      */
-    private String readColumnText(BinaryFile inputFile)
-        throws FormatException {
+    private String readColumnText(BinaryFile inputFile) throws FormatException {
         StringBuffer buildretval = new StringBuffer();
         boolean skipnext = false;
         char tmp;
@@ -213,20 +217,19 @@ public class DcwColumnInfo {
         return buildretval.toString();
     }
 
-
     /**
      * Reads a string until the field separator is detected, the
      * column record separator is detected, or and end-of-file is hit,
      * and converts in to lowercase.
-     *
+     * 
      * @return the string read from the file, all in lowercase
      * @param inputFile the file to read the field from
      * @param toLower convert the string to lower-case
      * @exception FormatException ReadChar IOExceptions rethrown as
-     * FormatExceptions
+     *            FormatExceptions
      */
     private String readColumnTextLowerCase(BinaryFile inputFile)
-        throws FormatException {
+            throws FormatException {
         StringBuffer buildretval = new StringBuffer();
         boolean skipnext = false;
         char tmp;
@@ -250,38 +253,42 @@ public class DcwColumnInfo {
 
     /**
      * Claim that the column has a particular schema
-     * @param type the FieldType (datatype) this column is expected to contain
-     * legal values are specified by the VPF standard.  the non-standard value
-     * 'i' is also accepted (equivalent to 'I' or 'S'), indicating an integral
-     * type.
+     * 
+     * @param type the FieldType (datatype) this column is expected to
+     *        contain legal values are specified by the VPF standard.
+     *        the non-standard value 'i' is also accepted (equivalent
+     *        to 'I' or 'S'), indicating an integral type.
      * @param length the number of elements in this column
-     * @param strictlength false means that variable length columns can be
-     * fixed length instead
+     * @param strictlength false means that variable length columns
+     *        can be fixed length instead
      * @exception FormatException the column is not of the particular
-     * type/length
+     *            type/length
      */
-    public void assertSchema(char type, int length,
-                             boolean strictlength) throws FormatException {
-        if ((type != fieldType) && 
-            !((type == 'i') && ((fieldType == VPF_COLUMN_INT) || (fieldType == VPF_COLUMN_SHORT)))) {
+    public void assertSchema(char type, int length, boolean strictlength)
+            throws FormatException {
+        if ((type != fieldType)
+                && !((type == 'i') && ((fieldType == VPF_COLUMN_INT) || (fieldType == VPF_COLUMN_SHORT)))) {
             throw new FormatException("AssertSchema failed on fieldType!");
         }
-        if ((strictlength && (length != numberOfElements)) ||
-            (!strictlength && (length != -1) && (length != numberOfElements))) {
+        if ((strictlength && (length != numberOfElements))
+                || (!strictlength && (length != -1) && (length != numberOfElements))) {
             throw new FormatException("AssertSchema failed on length!");
         }
     }
-  
-    /** the number of bytes a field of this type takes in the input file
+
+    /**
+     * the number of bytes a field of this type takes in the input
+     * file
+     * 
      * @return the number of bytes (-1 for a variable-length field)
-     * @exception FormatException the FieldType of this Column is not a
-     * valid VPF fieldtype
+     * @exception FormatException the FieldType of this Column is not
+     *            a valid VPF fieldtype
      */
     public int fieldLength() throws FormatException {
         if (numberOfElements == -1) {
             return -1;
         }
-    
+
         switch (fieldType) {
         case VPF_COLUMN_TEXT:
         case VPF_COLUMN_TEXTL1:
@@ -311,20 +318,21 @@ public class DcwColumnInfo {
         case VPF_COLUMN_TRIPLET: //cross-tile identifiers
             return -1; //variable length
         default: {
-                throw new FormatException("Unknown field type: " + fieldType);
-            }
+            throw new FormatException("Unknown field type: " + fieldType);
+        }
         }
         //unreached
     }
 
     /**
      * get the name of the column
-     *
+     * 
      * @return the name of the column
      */
     public String getColumnName() {
         return columnName;
     }
+
     /**
      * get the VPF datatype of the column
      * 
@@ -333,14 +341,16 @@ public class DcwColumnInfo {
     public char getFieldType() {
         return fieldType;
     }
+
     /**
      * get the number of elements
-     *
+     * 
      * @return the number of elements
      */
     public int getNumberOfElements() {
         return numberOfElements;
     }
+
     /**
      * get the VPF key type (one of VPF_COLUMN_PRIMARY_KEY,
      * VPF_COLUMN_FOREIGN_KEY, or VPF_COLUMN_NON_KEY)
@@ -350,6 +360,7 @@ public class DcwColumnInfo {
     public char getKeyType() {
         return keyType;
     }
+
     /**
      * Return <code>true</code> if this column is a primary key. For
      * any valid column, exactly one of isPrimaryKey, isForeignKey and
@@ -362,57 +373,65 @@ public class DcwColumnInfo {
     public boolean isPrimaryKey() {
         return (keyType == VPF_COLUMN_PRIMARY_KEY);
     }
+
     /**
-     * Return <code>true</code> if this column is a foreign key.  For
+     * Return <code>true</code> if this column is a foreign key. For
      * any valid column, exactly one of isPrimaryKey, isForeignKey and
      * isNonKey will be <code>true</code>.
      * 
      * @return true for a foreign key, false otherwise.
      * @see #isPrimaryKey()
-     * @see #isNonKey() */
+     * @see #isNonKey()
+     */
     public boolean isForeignKey() {
         return (keyType == VPF_COLUMN_FOREIGN_KEY);
     }
+
     /**
-     * Return <code>true</code> if this column is not a key column. For any
-     * valid column, exactly one of isPrimaryKey, isForeignKey and isNonKey
-     * will be <code>true</code>.
-     *
+     * Return <code>true</code> if this column is not a key column.
+     * For any valid column, exactly one of isPrimaryKey, isForeignKey
+     * and isNonKey will be <code>true</code>.
+     * 
      * @return false for a primary or foreign key, true otherwise.
      * @see #isForeignKey()
-     * @see #isPrimaryKey() */
+     * @see #isPrimaryKey()
+     */
     public boolean isNonKey() {
         return (keyType == VPF_COLUMN_NON_KEY);
     }
 
     /**
      * Get the column description
-     *
+     * 
      * @return the column description (possibly <code>null</code>)
      */
     public String getColumnDescription() {
         return columnDescription;
     }
+
     /**
      * Get the name of the value description table
      * 
-     * @return the name of the value description table
-     * (possibly <code>null</code>). The same as getVDT()
+     * @return the name of the value description table (possibly
+     *         <code>null</code>). The same as getVDT()
      * @see #getVDT()
      */
     public String getValueDescriptionTable() {
         return valueDescriptionTable;
     }
+
     /**
      * Get the name of the value description table
      * 
-     * @return the name of the value description table
-     * (possibly <code>null</code>). The same as getValueDescriptionTable
+     * @return the name of the value description table (possibly
+     *         <code>null</code>). The same as
+     *         getValueDescriptionTable
      * @see #getValueDescriptionTable()
      */
     public String getVDT() {
         return valueDescriptionTable;
     }
+
     /**
      * get the name of the thematic index
      * 
@@ -421,10 +440,12 @@ public class DcwColumnInfo {
     public String getThematicIndexName() {
         return thematicIndexName;
     }
+
     /**
      * get the name of the narrative table
      * 
-     * @return the name of the narrative table (possibly <code>null</code>)
+     * @return the name of the narrative table (possibly
+     *         <code>null</code>)
      */
     public String getNarrativeTable() {
         return narrativeTable;
@@ -432,18 +453,20 @@ public class DcwColumnInfo {
 
     /**
      * Read an element of the type specified by the column
-     *
+     * 
      * @return the value read from the input file
-     * @exception EOFException an end-of-file was encountered before reading
-     * any of the field
-     * @exception FormatException some data-consistency check failed while
-     * reading the data, or an end-of-file condition popped up in the middle
-     * of reading a field (partial read)
+     * @exception EOFException an end-of-file was encountered before
+     *            reading any of the field
+     * @exception FormatException some data-consistency check failed
+     *            while reading the data, or an end-of-file condition
+     *            popped up in the middle of reading a field (partial
+     *            read)
      */
-    public Object parseField(BinaryFile inputFile)
-        throws EOFException, FormatException {
+    public Object parseField(BinaryFile inputFile) throws EOFException,
+            FormatException {
         // See table 56, p 79 of MIL-STD-600006 (1992 VPF Standard)
-        // See table 10, p 51 of MIL-STD-2407 (1996 VPF Standard supercedes 600006)
+        // See table 10, p 51 of MIL-STD-2407 (1996 VPF Standard
+        // supercedes 600006)
         boolean haveElements = (numberOfElements != -1);
         int numels = numberOfElements;
 
@@ -456,7 +479,8 @@ public class DcwColumnInfo {
                 return "";
             }
             String s = inputFile.readFixedLengthString(numels);
-            if (haveElements) {//Fixed Length Strings loose trailing whitespace
+            if (haveElements) {//Fixed Length Strings loose trailing
+                               // whitespace
                 s = s.trim();
             }
             return s;
@@ -470,13 +494,14 @@ public class DcwColumnInfo {
             }
             byte[] str = inputFile.readBytes(numels, false);
             try {
-              String s = new String(str, "ISO8859_1");
-              if (haveElements) {//Fixed Length Strings loose trailing whitespace
-                s = s.trim();
-              }
-              return s;
+                String s = new String(str, "ISO8859_1");
+                if (haveElements) {//Fixed Length Strings loose
+                                   // trailing whitespace
+                    s = s.trim();
+                }
+                return s;
             } catch (java.io.UnsupportedEncodingException uee) {
-              return str;
+                return str;
             }
         }
         case VPF_COLUMN_TEXTL2:
@@ -544,7 +569,7 @@ public class DcwColumnInfo {
 
     /**
      * produce a nice printed version of all our contained information
-     *
+     * 
      * @return a nice little string
      */
     public String toString() {

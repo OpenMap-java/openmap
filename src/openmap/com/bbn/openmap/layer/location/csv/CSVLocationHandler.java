@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,24 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/csv/CSVLocationHandler.java,v $
 // $RCSfile: CSVLocationHandler.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/02/02 18:49:30 $
+// $Revision: 1.10 $
+// $Date: 2004/10/14 18:06:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.location.csv;
 
-
 /*  Java  */
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -41,89 +37,95 @@ import javax.swing.JCheckBox;
 
 /*  OpenMap  */
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.SwingWorker;
 import com.bbn.openmap.util.CSVTokenizer;
 import com.bbn.openmap.util.quadtree.QuadTree;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.layer.DeclutterMatrix;
 import com.bbn.openmap.layer.location.*;
 
-/**  
+/**
  * The CSVLocationLayer is a LocationHandler designed to let you put
  * data on the map based on information from a Comma Separated
- * Value(CSV) file.  It's assumed that the each row in the file refers
+ * Value(CSV) file. It's assumed that the each row in the file refers
  * to a certain location, and that location contains a name label, a
  * latitude and a longitude (both in decimal degrees).
- *
- * <P>The individual fields must not have leading whitespace.
- *
- * <P>The CSVLocationLayer gives you some basic functionality.  The
+ * 
+ * <P>
+ * The individual fields must not have leading whitespace.
+ * 
+ * <P>
+ * The CSVLocationLayer gives you some basic functionality. The
  * properties file lets you set defaults on whether to draw the
- * locations and the names by default.  For crowded layers, having all
- * the names displayed might cause a cluttering problem.  In gesture
+ * locations and the names by default. For crowded layers, having all
+ * the names displayed might cause a cluttering problem. In gesture
  * mode, OpenMap will display the name of each location as the mouse
- * is passed over it.  Pressing the left mouse button over a location
+ * is passed over it. Pressing the left mouse button over a location
  * brings up a popup menu that lets you show/hide the name label, and
  * also to display the entire row contents of the location CSV file in
  * a Browser window that OpenMap launches.
- *
- * <P>If you want to extend the functionality of this LocationHandler,
+ * 
+ * <P>
+ * If you want to extend the functionality of this LocationHandler,
  * there are a couple of methods to focus your changes: The
  * setProperties() method lets you add properties to set from the
- * properties file.  The createData() method, by default, is a
- * one-time method that creates the graphic objects based on the CSV
- * data.  By modifying these methods, and creating a different
- * combination graphic other than the CSVLocation, you can create
- * different layer effects pretty easily.
- *
- * <P>The locationFile property should contain a URL referring to the file.
- * This can take the form of file:/myfile.csv for a local file or
- * http://somehost.org/myfile.csv for a remote file.
- *
- * <P>In the openmap.properties file (for instance):<BR>
- * <pre>
- * # In the section for the LocationLayer:
- * locationLayer.locationHandlers=csvlocationhandler
+ * properties file. The createData() method, by default, is a one-time
+ * method that creates the graphic objects based on the CSV data. By
+ * modifying these methods, and creating a different combination
+ * graphic other than the CSVLocation, you can create different layer
+ * effects pretty easily.
  * 
- * csvlocationhandler.class=com.bbn.openmap.layer.location.csv.CSVLocationHandler
- * csvlocationhandler.locationFile=/data/worldpts/WorldLocs_point.csv
- * csvlocationhandler.csvFileHasHeader=true
- * csvlocationhandler.locationColor=FF0000
- * csvlocationhandler.nameColor=008C54
- * csvlocationhandler.showNames=false
- * csvlocationhandler.showLocations=true
- * csvlocationhandler.nameIndex=0
- * csvlocationhandler.latIndex=8
- * csvlocationhandler.lonIndex=10
- * # Optional property, if you have a column in the file for URLs of
- * # images to use for an icon.
- * csvlocationhandler.iconIndex=11
- * # Optional property, URL of image to use as marker for all entries in
- * # csv file without a URL listed at the iconIndex.
- * csvlocationhandler.defaultIconURL=/data/symbols/default.gif
- * # Optional property, if the eastern hemisphere longitudes are negative.  False by default.
- * csvlocationhandler.eastIsNeg=false
+ * <P>
+ * The locationFile property should contain a URL referring to the
+ * file. This can take the form of file:/myfile.csv for a local file
+ * or http://somehost.org/myfile.csv for a remote file.
+ * 
+ * <P>
+ * In the openmap.properties file (for instance): <BR>
+ * 
+ * <pre>
+ * 
+ *  # In the section for the LocationLayer:
+ *  locationLayer.locationHandlers=csvlocationhandler
+ *  
+ *  csvlocationhandler.class=com.bbn.openmap.layer.location.csv.CSVLocationHandler
+ *  csvlocationhandler.locationFile=/data/worldpts/WorldLocs_point.csv
+ *  csvlocationhandler.csvFileHasHeader=true
+ *  csvlocationhandler.locationColor=FF0000
+ *  csvlocationhandler.nameColor=008C54
+ *  csvlocationhandler.showNames=false
+ *  csvlocationhandler.showLocations=true
+ *  csvlocationhandler.nameIndex=0
+ *  csvlocationhandler.latIndex=8
+ *  csvlocationhandler.lonIndex=10
+ *  # Optional property, if you have a column in the file for URLs of
+ *  # images to use for an icon.
+ *  csvlocationhandler.iconIndex=11
+ *  # Optional property, URL of image to use as marker for all entries in
+ *  # csv file without a URL listed at the iconIndex.
+ *  csvlocationhandler.defaultIconURL=/data/symbols/default.gif
+ *  # Optional property, if the eastern hemisphere longitudes are negative.  False by default.
+ *  csvlocationhandler.eastIsNeg=false
+ *  
  * </pre>
  */
-public class CSVLocationHandler extends AbstractLocationHandler
-    implements LocationHandler, ActionListener {
-                
+public class CSVLocationHandler extends AbstractLocationHandler implements
+        LocationHandler, ActionListener {
+
     /** The path to the primary CSV file holding the locations. */
     protected String locationFile;
     /** The property describing the locations of location data. */
     public static final String LocationFileProperty = "locationFile";
-    /** Set if the CSVFile has a header record.  Default is false. */
+    /** Set if the CSVFile has a header record. Default is false. */
     public final static String csvHeaderProperty = "csvFileHasHeader";
     /** The storage mechanism for the locations. */
     protected QuadTree quadtree = null;
-    
+
     /** The property describing whether East is a negative value. */
     public static final String eastIsNegProperty = "eastIsNeg";
     /** Are east values really negative with this file? */
     protected boolean eastIsNeg = false;
     /**
      * Flag that specifies that the first line consists of header
-     * information, and should not be mapped to a graphic. 
+     * information, and should not be mapped to a graphic.
      */
     protected boolean csvHasHeader = false;
 
@@ -132,22 +134,29 @@ public class CSVLocationHandler extends AbstractLocationHandler
 
     /** Index of column in CSV to use as name of location. */
     protected int nameIndex = -1;
-    /** Property to use to designate the column of the CSV file to use
-     * as a name. */
+    /**
+     * Property to use to designate the column of the CSV file to use
+     * as a name.
+     */
     public static final String NameIndexProperty = "nameIndex";
-
 
     ////////////////////////
     // Location Variables
-                
-    /** Property to use to designate the column of the CSV file to use
-     * as the latitude. */
+
+    /**
+     * Property to use to designate the column of the CSV file to use
+     * as the latitude.
+     */
     public static final String LatIndexProperty = "latIndex";
-    /** Property to use to designate the column of the CSV file to use
-     * as the longitude. */
+    /**
+     * Property to use to designate the column of the CSV file to use
+     * as the longitude.
+     */
     public static final String LonIndexProperty = "lonIndex";
-    /** Property to use to designate the column of the CSV file to use
-     * as an icon URL */
+    /**
+     * Property to use to designate the column of the CSV file to use
+     * as an icon URL
+     */
     public static final String IconIndexProperty = "iconIndex";
     /**
      * Property to set an URL for an icon image to use for all the
@@ -166,62 +175,63 @@ public class CSVLocationHandler extends AbstractLocationHandler
 
     protected String defaultIconURL = null;
 
-    /** 
-     * The default constructor for the Layer.  All of the attributes
+    /**
+     * The default constructor for the Layer. All of the attributes
      * are set to their default values.
      */
-    public CSVLocationHandler () {}
+    public CSVLocationHandler() {}
 
-    /** 
-     * The properties and prefix are managed and decoded here, for
-     * the standard uses of the CSVLocationHandler.
-     *
-     * @param prefix string prefix used in the properties file for this layer.
-     * @param properties the properties set in the properties file.  
+    /**
+     * The properties and prefix are managed and decoded here, for the
+     * standard uses of the CSVLocationHandler.
+     * 
+     * @param prefix string prefix used in the properties file for
+     *        this layer.
+     * @param properties the properties set in the properties file.
      */
-    public void setProperties(String prefix,
-                              java.util.Properties properties) {
+    public void setProperties(String prefix, java.util.Properties properties) {
         super.setProperties(prefix, properties);
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         locationFile = properties.getProperty(prefix + LocationFileProperty);
 
-        latIndex = PropUtils.intFromProperties(properties, 
-                                                prefix + LatIndexProperty, -1);
-        lonIndex = PropUtils.intFromProperties(properties, 
-                                                prefix + LonIndexProperty, -1);
-        iconIndex = PropUtils.intFromProperties(properties, 
-                                                prefix + IconIndexProperty, -1);
-        nameIndex = PropUtils.intFromProperties(properties, 
-                                                prefix + NameIndexProperty, -1);
-        eastIsNeg = PropUtils.booleanFromProperties(properties, 
-                                                     prefix + eastIsNegProperty, false);
+        latIndex = PropUtils.intFromProperties(properties, prefix
+                + LatIndexProperty, -1);
+        lonIndex = PropUtils.intFromProperties(properties, prefix
+                + LonIndexProperty, -1);
+        iconIndex = PropUtils.intFromProperties(properties, prefix
+                + IconIndexProperty, -1);
+        nameIndex = PropUtils.intFromProperties(properties, prefix
+                + NameIndexProperty, -1);
+        eastIsNeg = PropUtils.booleanFromProperties(properties, prefix
+                + eastIsNegProperty, false);
         defaultIconURL = properties.getProperty(prefix + DefaultIconURLProperty);
 
-        csvHasHeader = PropUtils.booleanFromProperties(properties, prefix + csvHeaderProperty, false);
+        csvHasHeader = PropUtils.booleanFromProperties(properties, prefix
+                + csvHeaderProperty, false);
 
         if (Debug.debugging("location")) {
-            Debug.output("CSVLocationHandler indexes:\n  latIndex = " + 
-                         latIndex + "\n  lonIndex = " + 
-                         lonIndex + "\n  nameIndex = " +
-                         nameIndex + "\n  has header = " + csvHasHeader);
+            Debug.output("CSVLocationHandler indexes:\n  latIndex = "
+                    + latIndex + "\n  lonIndex = " + lonIndex
+                    + "\n  nameIndex = " + nameIndex + "\n  has header = "
+                    + csvHasHeader);
         }
     }
-    
+
     /**
      * PropertyConsumer method, to fill in a Properties object,
-     * reflecting the current values of the layer.  If the layer has a
+     * reflecting the current values of the layer. If the layer has a
      * propertyPrefix set, the property keys should have that prefix
      * plus a separating '.' prepended to each propery key it uses for
      * configuration.
-     *
+     * 
      * @param props a Properties object to load the PropertyConsumer
-     * properties into.
+     *        properties into.
      * @return Properties object containing PropertyConsumer property
-     * values.  If getList was not null, this should equal getList.
-     * Otherwise, it should be the Properties object created by the
-     * PropertyConsumer.  
+     *         values. If getList was not null, this should equal
+     *         getList. Otherwise, it should be the Properties object
+     *         created by the PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
@@ -232,48 +242,63 @@ public class CSVLocationHandler extends AbstractLocationHandler
         props.put(prefix + LocationFileProperty, PropUtils.unnull(locationFile));
 
         props.put(prefix + eastIsNegProperty, new Boolean(eastIsNeg).toString());
-        props.put(prefix + NameIndexProperty, (nameIndex != -1?Integer.toString(nameIndex):""));
-        props.put(prefix + LatIndexProperty, (latIndex != -1?Integer.toString(latIndex):""));
-        props.put(prefix + LonIndexProperty, (lonIndex != -1?Integer.toString(lonIndex):""));
-        props.put(prefix + IconIndexProperty, (iconIndex != -1?Integer.toString(iconIndex):""));
-        props.put(prefix + DefaultIconURLProperty, PropUtils.unnull(defaultIconURL));
+        props.put(prefix + NameIndexProperty,
+                (nameIndex != -1 ? Integer.toString(nameIndex) : ""));
+        props.put(prefix + LatIndexProperty,
+                (latIndex != -1 ? Integer.toString(latIndex) : ""));
+        props.put(prefix + LonIndexProperty,
+                (lonIndex != -1 ? Integer.toString(lonIndex) : ""));
+        props.put(prefix + IconIndexProperty,
+                (iconIndex != -1 ? Integer.toString(iconIndex) : ""));
+        props.put(prefix + DefaultIconURLProperty,
+                PropUtils.unnull(defaultIconURL));
 
         return props;
     }
 
     /**
      * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer.  The
-     * key for each property should be the raw property name (without
-     * a prefix) with a value that is a String that describes what the
+     * the properties able to be set on this PropertyConsumer. The key
+     * for each property should be the raw property name (without a
+     * prefix) with a value that is a String that describes what the
      * property key represents, along with any other information about
      * the property that would be helpful (range, default value,
-     * etc.).  This method takes care of the basic LocationHandler
+     * etc.). This method takes care of the basic LocationHandler
      * parameters, so any LocationHandlers that extend the
      * AbstractLocationHandler should call this method, too, before
      * adding any specific properties.
-     *
+     * 
      * @param list a Properties object to load the PropertyConsumer
-     * properties into.  If getList equals null, then a new Properties
-     * object should be created.
+     *        properties into. If getList equals null, then a new
+     *        Properties object should be created.
      * @return Properties object containing PropertyConsumer property
-     * values.  If getList was not null, this should equal getList.
-     * Otherwise, it should be the Properties object created by the
-     * PropertyConsumer.  
+     *         values. If getList was not null, this should equal
+     *         getList. Otherwise, it should be the Properties object
+     *         created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
 
-        list.put("class" + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
-        list.put(LocationFileProperty, "URL of file containing location information.");
-        list .put(LocationFileProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-        list.put(eastIsNegProperty, "Flag to note that negative latitude are over the eastern hemisphere.");
-        list.put(eastIsNegProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        list.put(NameIndexProperty, "The column index, in the location file, of the location label text.");
-        list.put(LatIndexProperty, "The column index, in the location file, of the latitudes.");
-        list.put(LonIndexProperty, "The column index, in the location file, of the longitudes.");
-        list.put(IconIndexProperty, "The column index, in the location file, of the icon for locations (optional).");
-        list.put(DefaultIconURLProperty, "The URL of an image file to use as a default for the location markers (optional).");
+        list.put("class" + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
+        list.put(LocationFileProperty,
+                "URL of file containing location information.");
+        list.put(LocationFileProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        list.put(eastIsNegProperty,
+                "Flag to note that negative latitude are over the eastern hemisphere.");
+        list.put(eastIsNegProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(NameIndexProperty,
+                "The column index, in the location file, of the location label text.");
+        list.put(LatIndexProperty,
+                "The column index, in the location file, of the latitudes.");
+        list.put(LonIndexProperty,
+                "The column index, in the location file, of the longitudes.");
+        list.put(IconIndexProperty,
+                "The column index, in the location file, of the icon for locations (optional).");
+        list.put(DefaultIconURLProperty,
+                "The URL of an image file to use as a default for the location markers (optional).");
 
         return list;
     }
@@ -281,17 +306,18 @@ public class CSVLocationHandler extends AbstractLocationHandler
     public void reloadData() {
         quadtree = createData();
     }
-    
+
     /**
      * Look at the CSV file and create the QuadTree holding all the
      * Locations.
      */
     protected QuadTree createData() {
-        
+
         QuadTree qt = new QuadTree(90.0f, -180.0f, -90.0f, 180.0f, 100, 50f);
 
-        if (latIndex == -1 || lonIndex == -1){
-            Debug.error("CSVLocationHandler: createData(): Index properties for Lat/Lon/Name are not set properly! lat index:" + latIndex + ", lon index:" + lonIndex);
+        if (latIndex == -1 || lonIndex == -1) {
+            Debug.error("CSVLocationHandler: createData(): Index properties for Lat/Lon/Name are not set properly! lat index:"
+                    + latIndex + ", lon index:" + lonIndex);
             return null;
         }
         BufferedReader streamReader = null;
@@ -307,8 +333,8 @@ public class CSVLocationHandler extends AbstractLocationHandler
             // This lets the property be specified as a file name
             // even if it's not specified as file:/<name> in
             // the properties file.
-            
-            URL csvURL = PropUtils.getResourceOrFileOrURL(null, locationFile); 
+
+            URL csvURL = PropUtils.getResourceOrFileOrURL(null, locationFile);
             streamReader = new BufferedReader(new InputStreamReader(csvURL.openStream()));
             CSVTokenizer csvt = new CSVTokenizer(streamReader);
 
@@ -320,37 +346,36 @@ public class CSVLocationHandler extends AbstractLocationHandler
 
             token = csvt.token();
 
-            Debug.message("csvlocation", "CSVLocationHandler: Reading File:" 
-                          + locationFile
-                          + " NameIndex: " + nameIndex
-                          + " latIndex: " + latIndex
-                          + " lonIndex: " + lonIndex
-                          + " iconIndex: " + iconIndex
-                          + " eastIsNeg: " + eastIsNeg);
+            Debug.message("csvlocation", "CSVLocationHandler: Reading File:"
+                    + locationFile + " NameIndex: " + nameIndex + " latIndex: "
+                    + latIndex + " lonIndex: " + lonIndex + " iconIndex: "
+                    + iconIndex + " eastIsNeg: " + eastIsNeg);
 
             while (!csvt.isEOF(token)) {
                 int i = 0;
 
-                Debug.message("csvlocation", "CSVLocationHandler| Starting a line | have" + (readHeader?" ":"n't ") + "read header");
-                
-                while (!csvt.isNewline(token) && !csvt.isEOF(token)){
+                Debug.message("csvlocation",
+                        "CSVLocationHandler| Starting a line | have"
+                                + (readHeader ? " " : "n't ") + "read header");
+
+                while (!csvt.isNewline(token) && !csvt.isEOF(token)) {
 
                     if (readHeader) {
                         if (i == nameIndex) {
                             if (token instanceof Double) {
-                                name = ((Double)token).toString();
+                                name = ((Double) token).toString();
                             } else {
-                                name = (String)token;
+                                name = (String) token;
                             }
                         } else if (i == latIndex) {
-                            lat = ((Double)token).floatValue();
+                            lat = ((Double) token).floatValue();
                         } else if (i == lonIndex) {
-                            lon = ((Double)token).floatValue();
+                            lon = ((Double) token).floatValue();
                             if (eastIsNeg) {
                                 lon *= -1;
                             }
                         } else if (i == iconIndex) {
-                            iconURL = (String)token;
+                            iconURL = (String) token;
                         }
                     }
 
@@ -379,15 +404,15 @@ public class CSVLocationHandler extends AbstractLocationHandler
                 }
                 token = csvt.token();
             }
-        } catch (java.io.IOException ioe){
+        } catch (java.io.IOException ioe) {
             throw new com.bbn.openmap.util.HandleError(ioe);
-        } catch (ArrayIndexOutOfBoundsException aioobe){
+        } catch (ArrayIndexOutOfBoundsException aioobe) {
             throw new com.bbn.openmap.util.HandleError(aioobe);
-        } catch (NumberFormatException nfe){
+        } catch (NumberFormatException nfe) {
             throw new com.bbn.openmap.util.HandleError(nfe);
-        } catch (ClassCastException cce){
-            Debug.error("Problem reading entries in " + locationFile + 
-                        ", check your index settings, first column = 0.");
+        } catch (ClassCastException cce) {
+            Debug.error("Problem reading entries in " + locationFile
+                    + ", check your index settings, first column = 0.");
             throw new com.bbn.openmap.util.HandleError(cce);
         } catch (NullPointerException npe) {
             throw new com.bbn.openmap.util.HandleError(npe);
@@ -395,18 +420,17 @@ public class CSVLocationHandler extends AbstractLocationHandler
             throw new com.bbn.openmap.util.HandleError(ace);
         }
 
-        Debug.message("csvlocation",
-                      "CSVLocationHandler | Finished File:" + locationFile + 
-                      ", read " + lineCount + " locations");
+        Debug.message("csvlocation", "CSVLocationHandler | Finished File:"
+                + locationFile + ", read " + lineCount + " locations");
 
-        try {         
+        try {
             if (streamReader != null) {
                 streamReader.close();
             }
-        } catch(java.io.IOException ioe) {
+        } catch (java.io.IOException ioe) {
             throw new com.bbn.openmap.util.HandleError(ioe);
         }
-                
+
         if (lineCount == 0 && readHeader) {
             Debug.output("CSVLocationHandler has read file, but didn't find any data.\n  Check file for a header line, and make sure that the\n  properties (csvFileHasHeader) is set properly for this CSVLocationHandler. Trying again without header...");
             csvHasHeader = !csvHasHeader;
@@ -418,16 +442,18 @@ public class CSVLocationHandler extends AbstractLocationHandler
 
     /**
      * When a new Location object needs to be created from data read
-     * in the CSV file, this method is called.  This method lets you
+     * in the CSV file, this method is called. This method lets you
      * extend the CSVLocationLayer and easily set what kind of
      * Location objects to use.
+     * 
      * @param lat latitude of location, decimal degrees.
      * @param lon longitude of location, decimal degrees.
      * @param name the label of the location.
-     * @param iconURL the String for a URL for an icon.  Can be null.
+     * @param iconURL the String for a URL for an icon. Can be null.
      * @return Location object for lat/lon/name/iconURL.
      */
-    protected Location createLocation(float lat, float lon, String name, String iconURL) {
+    protected Location createLocation(float lat, float lon, String name,
+                                      String iconURL) {
 
         // This will turn into a regular location if iconURL is null.
         Location loc = new URLRasterLocation(lat, lon, name, iconURL);
@@ -450,31 +476,33 @@ public class CSVLocationHandler extends AbstractLocationHandler
         return loc;
     }
 
-    /**  
-     * @param ranFile the file to be read.  The file pointer shoutd be
-     * set to the line you want read.
+    /**
+     * @param ranFile the file to be read. The file pointer shoutd be
+     *        set to the line you want read.
      * @return Array of strings representing the values between the
-     * commas.
-     * */
-    protected String[] readCSVLineFromFile(BufferedReader ranFile, 
+     *         commas.
+     */
+    protected String[] readCSVLineFromFile(BufferedReader ranFile,
                                            String[] retPaths) {
         if (ranFile != null) {
 
             try {
                 String newLine = ranFile.readLine();
-                if (newLine == null) return null;
+                if (newLine == null)
+                    return null;
                 StringTokenizer token = new StringTokenizer(newLine, ",");
                 int numPaths = token.countTokens();
 
                 if (retPaths == null) {
                     retPaths = new String[numPaths];
-                } else numPaths = retPaths.length;
-                for (int i = 0; i < numPaths; i++){
+                } else
+                    numPaths = retPaths.length;
+                for (int i = 0; i < numPaths; i++) {
                     retPaths[i] = token.nextToken();
-                }                   
+                }
             } catch (java.io.IOException ioe) {
                 return null;
-            } catch (java.util.NoSuchElementException nsee){
+            } catch (java.util.NoSuchElementException nsee) {
                 Debug.output("CSVLocationHandler: readCSVLineFromFile: oops");
             }
         }
@@ -482,20 +510,21 @@ public class CSVLocationHandler extends AbstractLocationHandler
     }
 
     /**
-     * Prepares the graphics for the layer.  This is where the
-     * getRectangle() method call is made on the location.  <p>
-     * Occasionally it is necessary to abort a prepare call.  When
-     * this happens, the map will set the cancel bit in the
-     * LayerThread, (the thread that is running the prepare).  If this
-     * Layer needs to do any cleanups during the abort, it should do
-     * so, but return out of the prepare asap.
-     *
+     * Prepares the graphics for the layer. This is where the
+     * getRectangle() method call is made on the location.
+     * <p>
+     * Occasionally it is necessary to abort a prepare call. When this
+     * happens, the map will set the cancel bit in the LayerThread,
+     * (the thread that is running the prepare). If this Layer needs
+     * to do any cleanups during the abort, it should do so, but
+     * return out of the prepare asap.
+     *  
      */
-    public Vector get(float nwLat, float nwLon, float seLat, float seLon, 
+    public Vector get(float nwLat, float nwLon, float seLat, float seLon,
                       Vector graphicList) {
-        
+
         // IF the quadtree has not been set up yet, do it!
-        if (quadtree == null){
+        if (quadtree == null) {
             Debug.output("CSVLocationHandler: Figuring out the locations and names! (This is a one-time operation!)");
             quadtree = createData();
         }
@@ -503,8 +532,11 @@ public class CSVLocationHandler extends AbstractLocationHandler
         if (quadtree != null) {
             if (Debug.debugging("csvlocation")) {
                 Debug.output("CSVLocationHandler|CSVLocationHandler.get() ul.lon = "
-                                   + nwLon + " lr.lon = " + seLon +
-                                   " delta = " + (seLon - nwLon)); 
+                        + nwLon
+                        + " lr.lon = "
+                        + seLon
+                        + " delta = "
+                        + (seLon - nwLon));
             }
 
             quadtree.get(nwLat, nwLon, seLat, seLon, graphicList);
@@ -514,9 +546,7 @@ public class CSVLocationHandler extends AbstractLocationHandler
 
     public void fillLocationPopUpMenu(LocationPopupMenu locMenu) {
 
-        LocationCBMenuItem lcbi = new LocationCBMenuItem(LocationHandler.showname, 
-                                                         locMenu, 
-                                                         getLayer());
+        LocationCBMenuItem lcbi = new LocationCBMenuItem(LocationHandler.showname, locMenu, getLayer());
         lcbi.setState(locMenu.getLoc().isShowName());
         locMenu.add(lcbi);
         locMenu.add(new LocationMenuItem(showdetails, locMenu, getLayer()));
@@ -524,7 +554,7 @@ public class CSVLocationHandler extends AbstractLocationHandler
 
     protected Box box = null;
 
-   /** 
+    /**
      * Provides the palette widgets to control the options of showing
      * maps, or attribute text.
      * 
@@ -534,7 +564,7 @@ public class CSVLocationHandler extends AbstractLocationHandler
         if (box == null) {
             JCheckBox showCSVLocationCheck, showNameCheck, forceGlobalCheck;
             JButton rereadFilesButton;
-            
+
             showCSVLocationCheck = new JCheckBox("Show Locations", isShowLocations());
             showCSVLocationCheck.setActionCommand(showLocationsCommand);
             showCSVLocationCheck.addActionListener(this);
@@ -543,17 +573,17 @@ public class CSVLocationHandler extends AbstractLocationHandler
             showNameCheck.setActionCommand(showNamesCommand);
             showNameCheck.addActionListener(this);
             showNameCheck.setToolTipText("<HTML><BODY>Show location names on the map.</BODY></HTML>");
-            
+
             forceGlobalCheck = new JCheckBox("Override Location Settings", isForceGlobal());
             forceGlobalCheck.setActionCommand(forceGlobalCommand);
             forceGlobalCheck.addActionListener(this);
             forceGlobalCheck.setToolTipText("<HTML><BODY>Make these settings override those set<BR>on the individual map objects.</BODY></HTML>");
-            
+
             rereadFilesButton = new JButton("Reload Data From Source");
             rereadFilesButton.setActionCommand(readDataCommand);
             rereadFilesButton.addActionListener(this);
             rereadFilesButton.setToolTipText("<HTML><BODY>Reload the data file, and put these settings<br>on the individual map objects.</BODY></HTML>");
-            
+
             box = Box.createVerticalBox();
             box.add(showCSVLocationCheck);
             box.add(showNameCheck);
@@ -567,47 +597,46 @@ public class CSVLocationHandler extends AbstractLocationHandler
     // ActionListener interface implementation
     //----------------------------------------------------------------------
 
-    /** 
+    /**
      * The Action Listener method, that reacts to the palette widgets
      * actions.
      */
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
-        if (cmd == showLocationsCommand) {              
-            JCheckBox locationCheck = (JCheckBox)e.getSource();
-            setShowLocations(locationCheck.isSelected());               
-            if(Debug.debugging("location")){
+        if (cmd == showLocationsCommand) {
+            JCheckBox locationCheck = (JCheckBox) e.getSource();
+            setShowLocations(locationCheck.isSelected());
+            if (Debug.debugging("location")) {
                 Debug.output("CSVLocationHandler::actionPerformed showLocations is "
-                                   + isShowLocations());
+                        + isShowLocations());
             }
             getLayer().repaint();
         } else if (cmd == showNamesCommand) {
-            JCheckBox namesCheck = (JCheckBox)e.getSource();
+            JCheckBox namesCheck = (JCheckBox) e.getSource();
             setShowNames(namesCheck.isSelected());
-            if(Debug.debugging("location")){
+            if (Debug.debugging("location")) {
                 Debug.output("CSVLocationHandler::actionPerformed showNames is "
-                             + isShowNames());
+                        + isShowNames());
             }
 
             LocationLayer ll = getLayer();
-            if (namesCheck.isSelected() && 
-                ll.getDeclutterMatrix() != null && 
-                ll.getUseDeclutterMatrix()) {
+            if (namesCheck.isSelected() && ll.getDeclutterMatrix() != null
+                    && ll.getUseDeclutterMatrix()) {
                 ll.doPrepare();
             } else {
                 ll.repaint();
             }
         } else if (cmd == forceGlobalCommand) {
-            JCheckBox forceGlobalCheck = (JCheckBox)e.getSource();
+            JCheckBox forceGlobalCheck = (JCheckBox) e.getSource();
             setForceGlobal(forceGlobalCheck.isSelected());
             getLayer().repaint();
         } else if (cmd == readDataCommand) {
             Debug.output("Re-reading Locations file");
             quadtree = null;
             getLayer().doPrepare();
-        } else  {
-            Debug.error("Unknown action command \"" + cmd +
-                               "\" in LocationLayer.actionPerformed().");
+        } else {
+            Debug.error("Unknown action command \"" + cmd
+                    + "\" in LocationLayer.actionPerformed().");
         }
     }
 

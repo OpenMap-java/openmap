@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,26 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/InputReader.java,v $
 // $RCSfile: InputReader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.io;
 
 import java.io.*;
-import java.net.*;
-import java.util.Vector;
-import java.util.jar.*;
-import java.lang.ref.WeakReference;
-import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.util.Debug;
 
 /**
  * The InputReader is an interface that isolates the data file source
- * type from the BinaryFile.  Represents an InputStream setup, and
+ * type from the BinaryFile. Represents an InputStream setup, and
  * basic read functions.
  */
 public interface InputReader {
@@ -45,99 +38,108 @@ public interface InputReader {
 
     /**
      * Skip over n bytes in the input file
-     *
+     * 
      * @param n the number of bytes to skip
-     * @return the actual number of bytes skipped.  annoying, isn't it?
-     * @exception IOException Any IO errors that occur in skipping bytes
-     * in the underlying file
+     * @return the actual number of bytes skipped. annoying, isn't it?
+     * @exception IOException Any IO errors that occur in skipping
+     *            bytes in the underlying file
      */
     public long skipBytes(long n) throws IOException;
 
     /**
      * Get the index of the next character to be read
-     *
+     * 
      * @return the index
      * @exception IOException Any IO errors that occur in accessing
-     * the underlying file
+     *            the underlying file
      */
     public long getFilePointer() throws IOException;
 
     /**
      * Set the index of the next character to be read.
-     *
+     * 
      * @param pos the position to seek to.
      * @exception IOException Any IO Errors that occur in seeking the
-     * underlying file.
+     *            underlying file.
      */
     public void seek(long pos) throws IOException;
 
     /**
-     * Return the total byte length of the source.  May not be
-     * accurate for StreamInputReaders.
-     *
-     * @return the number of bytes remaining to be read (counted in bytes)
-     * @exception IOException Any IO errors encountered in accessing the file 
+     * Return the total byte length of the source. May not be accurate
+     * for StreamInputReaders.
+     * 
+     * @return the number of bytes remaining to be read (counted in
+     *         bytes)
+     * @exception IOException Any IO errors encountered in accessing
+     *            the file
      */
     public long length() throws IOException;
 
     /**
      * Return how many bytes left to be read in the file.
-     *
-     * @return the number of bytes remaining to be read (counted in bytes)
-     * @exception IOException Any IO errors encountered in accessing the file
+     * 
+     * @return the number of bytes remaining to be read (counted in
+     *         bytes)
+     * @exception IOException Any IO errors encountered in accessing
+     *            the file
      */
     public long available() throws IOException;
 
-    /** 
+    /**
      * Closes the underlying file.
-     *
-     * @exception IOException Any IO errors encountered in accessing the file
+     * 
+     * @exception IOException Any IO errors encountered in accessing
+     *            the file
      */
     public void close() throws IOException;
 
     /**
      * Read from the file.
-     *
-     * @return one byte from the file.  -1 for EOF
-     * @exception IOException Any IO errors encountered in reading from the file
+     * 
+     * @return one byte from the file. -1 for EOF
+     * @exception IOException Any IO errors encountered in reading
+     *            from the file
      */
     public int read() throws IOException;
 
     /**
      * Read from the file
-     *
+     * 
      * @param b The byte array to read into
      * @param off the first array position to read into
      * @param len the number of bytes to read
      * @return the number of bytes read
-     * @exception IOException Any IO errors encountered in reading from the file
+     * @exception IOException Any IO errors encountered in reading
+     *            from the file
      */
     public int read(byte b[], int off, int len) throws IOException;
 
-    /** 
+    /**
      * Read from the file.
-     *
-     * @param b the byte array to read into.  Equivelent to 
-     * <code>read(b, 0, b.length)</code>
+     * 
+     * @param b the byte array to read into. Equivelent to
+     *        <code>read(b, 0, b.length)</code>
      * @return the number of bytes read
-     * @exception IOException Any IO errors encountered in reading from the file
+     * @exception IOException Any IO errors encountered in reading
+     *            from the file
      * @see java.io.RandomAccessFile#read(byte[])
      */
     public int read(byte b[]) throws IOException;
 
-    /** 
+    /**
      * Read from the file.
-     *
+     * 
      * @param howmany the number of bytes to read
      * @param allowless if we can return fewer bytes than requested
      * @return the array of bytes read.
-     * @exception FormatException Any IO Exceptions, plus an end-of-file
-     * encountered after reading some, but now enough, bytes when allowless
-     * was <code>false</code>
-     * @exception EOFException Encountered an end-of-file while allowless 
-     * was <code>false</code>, but NO bytes had been read.
+     * @exception FormatException Any IO Exceptions, plus an
+     *            end-of-file encountered after reading some, but now
+     *            enough, bytes when allowless was <code>false</code>
+     * @exception EOFException Encountered an end-of-file while
+     *            allowless was <code>false</code>, but NO bytes
+     *            had been read.
      */
-    public byte[] readBytes(int howmany, boolean allowless) 
-        throws EOFException, FormatException;
+    public byte[] readBytes(int howmany, boolean allowless)
+            throws EOFException, FormatException;
 
 }

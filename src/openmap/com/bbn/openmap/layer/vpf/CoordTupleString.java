@@ -1,9 +1,8 @@
-
 // **********************************************************************
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -15,53 +14,73 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoordTupleString.java,v $
 // $RCSfile: CoordTupleString.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.vpf;
+
 /**
  * Describe a common schema for accessing either double or float based
  * coordinate tuple strings (arrays of tuples).
  */
 public interface CoordTupleString {
 
-    /** Accessor for the max tuple index
-     * @return the max tuple index */
+    /**
+     * Accessor for the max tuple index
+     * 
+     * @return the max tuple index
+     */
     public abstract int maxIndex();
 
-    /** Accessor to determine the actual type managed.
-     * @return a Number the most directly corresponds to the underlying
-     * managed type (Float for a float tuplestring, Double for a double
-     * tuplestring, etc)
+    /**
+     * Accessor to determine the actual type managed.
+     * 
+     * @return a Number the most directly corresponds to the
+     *         underlying managed type (Float for a float tuplestring,
+     *         Double for a double tuplestring, etc)
      */
     public abstract Number getPrimitiveType();
 
-    /** Accessor to retrieve a tuple
+    /**
+     * Accessor to retrieve a tuple
+     * 
      * @param tuple the tuple to retrieve (the first tuple is index 0)
-     * @return the tuple at index <code>tuple</code>, coereced into a float[]
+     * @return the tuple at index <code>tuple</code>, coereced into
+     *         a float[]
      */
     public abstract float[] getasFloat(int tuple);
-    /** Accessor to retrieve a tuple
+
+    /**
+     * Accessor to retrieve a tuple
+     * 
      * @param tuple the tuple to retrieve (the first tuple is index 0)
-     * @return the tuple at index <code>tuple</code>, coereced into a double[]
+     * @return the tuple at index <code>tuple</code>, coereced into
+     *         a double[]
      */
     public abstract double[] getasDouble(int tuple);
 
-    /** Accessor to retrieve a single value in a tuple
+    /**
+     * Accessor to retrieve a single value in a tuple
+     * 
      * @param tuple the tuple to retrieve (the first tuple is index 0)
-     * @param val the index of the value in the tuple (the first val is index 0)
-     * @return the tuple at index <code>tuple</code>, coereced into a float
+     * @param val the index of the value in the tuple (the first val
+     *        is index 0)
+     * @return the tuple at index <code>tuple</code>, coereced into
+     *         a float
      */
     public abstract float getasFloat(int tuple, int val);
 
-    /** Accessor to retrieve a single value in a tuple
+    /**
+     * Accessor to retrieve a single value in a tuple
+     * 
      * @param tuple the tuple to retrieve (the first tuple is index 0)
-     * @param val the index of the value in the tuple (the first val is index 0)
-     * @return the tuple at index <code>tuple</code>, coereced into a double
+     * @param val the index of the value in the tuple (the first val
+     *        is index 0)
+     * @return the tuple at index <code>tuple</code>, coereced into
+     *         a double
      */
     public abstract double getasDouble(int tuple, int val);
 }

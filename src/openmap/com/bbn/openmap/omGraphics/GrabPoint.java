@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/GrabPoint.java,v $
 // $RCSfile: GrabPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics;
 
@@ -27,7 +26,7 @@ import java.awt.Color;
 
 /**
  * A GrabPoint is used by editable graphics to show a location that
- * can be adjusted.  Some GrabPoints are limited in the direction that
+ * can be adjusted. Some GrabPoints are limited in the direction that
  * they are able to move.
  */
 public class GrabPoint extends OMPoint {

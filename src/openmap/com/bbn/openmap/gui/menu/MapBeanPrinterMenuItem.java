@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/MapBeanPrinterMenuItem.java,v $
 // $RCSfile: MapBeanPrinterMenuItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/05/10 20:43:03 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.menu;
 
@@ -33,8 +32,8 @@ import java.awt.event.ActionListener;
  * A MapBeanPrinterMenuItem is a MapHandlerMenuItem that looks for the
  * MapBean in the MapHandler and prints it when it is called.
  */
-public class MapBeanPrinterMenuItem extends MapHandlerMenuItem  
-    implements ActionListener {
+public class MapBeanPrinterMenuItem extends MapHandlerMenuItem implements
+        ActionListener {
 
     protected MapBean mapBean = null;
 
@@ -69,14 +68,13 @@ public class MapBeanPrinterMenuItem extends MapHandlerMenuItem
     public void findAndInit(Object obj) {
         super.findAndInit(obj);
         if (obj instanceof MapBean) {
-            setMapBean((MapBean)obj);
+            setMapBean((MapBean) obj);
         }
     }
-    
+
     public void findAndUndo(Object obj) {
         super.findAndUndo(obj);
-        if (obj instanceof MapBean &&
-            obj == getMapBean()) {
+        if (obj instanceof MapBean && obj == getMapBean()) {
             setMapBean(null);
         }
     }

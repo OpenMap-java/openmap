@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,42 +14,31 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/BufferedLinkLayer.java,v $
 // $RCSfile: BufferedLinkLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/05 18:15:08 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.link;
 
-
 /*  Java Core  */
-import java.awt.Container;
-import java.awt.event.*;
-import java.io.*;
-import java.net.*;
-import java.util.Enumeration;
-import java.util.Properties;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 /*  OpenMap  */
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.grid.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PaletteHelper;
-import com.bbn.openmap.util.SwingWorker;
 
 /**
- * The BufferedLinkLayer is a Swing component, and an OpenMap layer, that
- * communicates with a server via the Link protocol.  It transmits
+ * The BufferedLinkLayer is a Swing component, and an OpenMap layer,
+ * that communicates with a server via the Link protocol. It transmits
  * graphics requests and gesture information, and handles the
- * responses to those queries.  The entry in the openmap.properties
+ * responses to those queries. The entry in the openmap.properties
  * file looks like this:
- * <P><code>
+ * <P>
+ * <code>
  * # port number of server
  * link.port=3031
  * # host name of server
@@ -58,10 +47,10 @@ import com.bbn.openmap.util.SwingWorker;
  * link.propertiesURL=http://location.of.properties.file.com
  * </code>
  */
-public class BufferedLinkLayer extends LinkLayer  {
+public class BufferedLinkLayer extends LinkLayer {
 
-   /**
-     * The default constructor for the Layer.  All of the attributes
+    /**
+     * The default constructor for the Layer. All of the attributes
      * are set to their default values.
      */
     public BufferedLinkLayer() {
@@ -76,7 +65,7 @@ public class BufferedLinkLayer extends LinkLayer  {
      * @param host the hostname of the server's computer.
      * @param port the port number of the server.
      * @param propertiesURL the URL of a properties file that contains
-     * parameters for the server.
+     *        parameters for the server.
      */
     public BufferedLinkLayer(String host, int port, String propertiesURL) {
         super(host, port, propertiesURL);
@@ -84,19 +73,22 @@ public class BufferedLinkLayer extends LinkLayer  {
     }
 
     /**
-     * Prepares the graphics for the layer.  This is where the
-     * getRectangle() method call is made on the link.  <p>
-     * Occasionally it is necessary to abort a prepare call.  When
-     * this happens, the map will set the cancel bit in the
-     * LayerThread, (the thread that is running the prepare).  If this
-     * Layer needs to do any cleanups during the abort, it should do
-     * so, but return out of the prepare asap.
+     * Prepares the graphics for the layer. This is where the
+     * getRectangle() method call is made on the link.
+     * <p>
+     * Occasionally it is necessary to abort a prepare call. When this
+     * happens, the map will set the cancel bit in the LayerThread,
+     * (the thread that is running the prepare). If this Layer needs
+     * to do any cleanups during the abort, it should do so, but
+     * return out of the prepare asap.
+     * 
      * @return a list of graphics.
      */
     public synchronized OMGraphicList prepare() {
 
         if (isCancelled()) {
-            Debug.message("link", getName()+"|BufferedLinkLayer.prepare(): aborted.");
+            Debug.message("link", getName()
+                    + "|BufferedLinkLayer.prepare(): aborted.");
             return null;
         }
 
@@ -107,54 +99,58 @@ public class BufferedLinkLayer extends LinkLayer  {
             return new LinkOMGraphicList();
         }
 
-        Debug.message("basic", getName()+"|BufferedLinkLayer.prepare(): doing it");
+        Debug.message("basic", getName()
+                + "|BufferedLinkLayer.prepare(): doing it");
 
-        // Setting the OMGraphicsList for this layer.  Remember, the
-        // LinkOMGraphicList is made up of OMGraphics, which are generated
-        // (projected) when the graphics are added to the list.  So,
+        // Setting the OMGraphicsList for this layer. Remember, the
+        // LinkOMGraphicList is made up of OMGraphics, which are
+        // generated
+        // (projected) when the graphics are added to the list. So,
         // after this call, the list is ready for painting.
 
         OMGraphicList omGraphics = getList();
 
         if (omGraphics == null || omGraphics.size() == 0) {
-            
-            
+
             ////////////// Call getRectangle for server....
             try {
-                // We do want the link object here... If another thread is
+                // We do want the link object here... If another
+                // thread is
                 // using the link, wait.
                 ClientLink l = linkManager.getLink(true);
-                
+
                 if (l == null) {
                     System.err.println("BufferedLinkLayer: unable to get link in prepare().");
                     return new LinkOMGraphicList();
                 }
-                
-                synchronized(l) {
+
+                synchronized (l) {
                     omGraphics = getAllGraphics(l, projection);
                 }
-                
+
                 linkManager.finLink();
-                
+
             } catch (UnknownHostException uhe) {
                 System.err.println("BufferedLinkLayer: unknown host!");
                 omGraphics = new LinkOMGraphicList();
             } catch (java.io.IOException ioe) {
                 System.err.println("BufferedLinkLayer: IOException contacting server for map request!");
                 System.err.println(ioe);
-                
+
                 linkManager.resetLink();
-                
+
                 if (!quiet) {
-                    fireRequestMessage("Communication error between " + getName() + 
-                                       " layer\nand Link Server: Host: " + host + 
-                                       ", Port: " + port);
+                    fireRequestMessage("Communication error between "
+                            + getName() + " layer\nand Link Server: Host: "
+                            + host + ", Port: " + port);
                 }
-                
-                System.err.println("BufferedLinkLayer: Communication error between " + getName() + 
-                                   " layer\nand Link Server: Host: " + host + 
-                                   ", Port: " + port);
-                
+
+                System.err.println("BufferedLinkLayer: Communication error between "
+                        + getName()
+                        + " layer\nand Link Server: Host: "
+                        + host
+                        + ", Port: " + port);
+
                 omGraphics = new LinkOMGraphicList();
             }
         } else {
@@ -165,16 +161,17 @@ public class BufferedLinkLayer extends LinkLayer  {
         // safe quit
         int size = 0;
         if (omGraphics != null) {
-            size = omGraphics.size();   
+            size = omGraphics.size();
 
             if (Debug.debugging("basic")) {
-                System.out.println(getName() +
-                                   "|BufferedLinkLayer.prepare(): finished with " +
-                                   size + " graphics");
+                System.out.println(getName()
+                        + "|BufferedLinkLayer.prepare(): finished with " + size
+                        + " graphics");
             }
         } else {
-            Debug.message("basic", getName() +
-              "|BufferedLinkLayer.prepare(): finished with null graphics list");
+            Debug.message("basic",
+                    getName()
+                            + "|BufferedLinkLayer.prepare(): finished with null graphics list");
         }
 
         return omGraphics;
@@ -182,26 +179,29 @@ public class BufferedLinkLayer extends LinkLayer  {
 
     /**
      * Creates the LinkMapRequest, and gets the results.
-     *
+     * 
      * @param link the link to communicate over.
      * @param proj the projection to give to the graphics.
      * @return LinkOMGraphicList containing graphics from the server.
      * @throws IOException
      */
-    protected LinkOMGraphicList getAllGraphics(ClientLink link, Projection proj) 
-        throws IOException{
+    protected LinkOMGraphicList getAllGraphics(ClientLink link, Projection proj)
+            throws IOException {
 
         LinkBoundingPoly[] boundingPolys = new LinkBoundingPoly[1];
         boundingPolys[0] = new LinkBoundingPoly(-180.0f, -90f, 180f, 90);
 
         LinkMapRequest.write(proj.getCenter().getLatitude(),
-                             proj.getCenter().getLongitude(),
-                             proj.getScale(), 
-                             proj.getHeight(), proj.getWidth(),
-                             boundingPolys, args, link);
+                proj.getCenter().getLongitude(),
+                proj.getScale(),
+                proj.getHeight(),
+                proj.getWidth(),
+                boundingPolys,
+                args,
+                link);
 
         link.readAndParse(proj, currentGenerator);
-        
+
         // While we are here, check for any change in gesture query
         // requests.
         LinkActionRequest lar = link.getActionRequest();
@@ -215,7 +215,8 @@ public class BufferedLinkLayer extends LinkLayer  {
             handleMessages(lgl.getProperties());
             return lgl.getGraphics();
         } else {
-            Debug.message("link","BufferedLinkLayer: getAllGraphics(): no graphic response.");
+            Debug.message("link",
+                    "BufferedLinkLayer: getAllGraphics(): no graphic response.");
             return new LinkOMGraphicList();
         }
     }

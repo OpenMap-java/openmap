@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,23 +14,25 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/MultiDirectoryPropertyEditor.java,v $
 // $RCSfile: MultiDirectoryPropertyEditor.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/03/23 18:51:55 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:06:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.util.propertyEditor;
 
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Component;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.event.ActionEvent;
 
-/** 
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+/**
  * A PropertyEditor that brings up a JFileChooser panel to several
  * files and directories. You can enter information in the text field,
  * and pressing the add button will bring up a file chooser. Anything
@@ -38,12 +40,12 @@ import javax.swing.*;
  * the text field.
  */
 public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
-    
+
     /** The GUI component of this editor. */
     protected JTextField textField = new JTextField(15);
     protected char pathSeparator;
 
-    /** Create MultiDirectoryPropertyEditor.  */
+    /** Create MultiDirectoryPropertyEditor. */
     public MultiDirectoryPropertyEditor() {
         button = new JButton("Add");
         setPathSeparator(';');
@@ -62,8 +64,8 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
 
     public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = getFileChooser();
-        int returnVal = chooser.showOpenDialog((Component)null);
-        if (returnVal==JFileChooser.APPROVE_OPTION) {
+        int returnVal = chooser.showOpenDialog((Component) null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
             String newFilename = chooser.getSelectedFile().getAbsolutePath();
             newFilename = cleanUpName(newFilename);
             append(newFilename);
@@ -73,6 +75,7 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
 
     /**
      * Returns a JButton that will bring up a JFileChooser dialog.
+     * 
      * @return JButton button
      */
     public Component getCustomEditor() {
@@ -97,9 +100,11 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
     }
 
     /**
-     * Returns a JFileChooser that will choose a directory.  The
-     * MultiSelectionEnabled doesn't work yet, so we have to have a workaround.
-     * @return JFileChooser 
+     * Returns a JFileChooser that will choose a directory. The
+     * MultiSelectionEnabled doesn't work yet, so we have to have a
+     * workaround.
+     * 
+     * @return JFileChooser
      */
     public JFileChooser getFileChooser() {
         JFileChooser chooser = new JFileChooser();
@@ -109,7 +114,7 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
     }
 
     /**
-     * Add a path to the end of the current path.  Uses the
+     * Add a path to the end of the current path. Uses the
      * pathSeparator between paths.
      */
     public void append(String addPath) {
@@ -123,9 +128,9 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
 
     /** Sets String in JTextField. */
     public void setValue(Object string) {
-        if(!(string instanceof String))
+        if (!(string instanceof String))
             return;
-        textField.setText((String)string);
+        textField.setText((String) string);
     }
 
     /** Returns String from JTextfield. */

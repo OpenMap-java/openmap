@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,34 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/OMGraphicHandlerPlugIn.java,v $
 // $RCSfile: OMGraphicHandlerPlugIn.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.plugin;
 
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
 
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
 
 /**
  * A PlugIn that implements the OMGraphicHandler interface.
  */
-public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn
-    implements OMGraphicHandler {
+public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn implements
+        OMGraphicHandler {
 
     protected OMGraphicList list = null;
 
     protected FilterSupport filter = new FilterSupport();
-    
+
     public OMGraphicHandlerPlugIn() {
         super();
     }
@@ -51,7 +46,7 @@ public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn
     }
 
     /**
-     * Don't set to null.  This is here to let subclasses put a
+     * Don't set to null. This is here to let subclasses put a
      * more/less capable FilterSupport in place.
      */
     public void setFilter(FilterSupport fs) {
@@ -70,13 +65,13 @@ public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn
      * The getRectangle call is the main call into the PlugIn module.
      * The module is expected to fill the graphics list with objects
      * that are within the screen parameters passed.
-     *
+     * 
      * @param p projection of the screen, holding scale, center
-     * coords, height, width.
+     *        coords, height, width.
      */
     public OMGraphicList getRectangle(Projection p) {
 
-        OMGraphicList list = (OMGraphicList)getList();
+        OMGraphicList list = (OMGraphicList) getList();
         list.generate(p);
         return list;
 
@@ -91,8 +86,7 @@ public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn
     /**
      * @see OMGraphicHandler#filter(Shape, boolean).
      */
-    public OMGraphicList filter(Shape shapeBoundary, 
-                                 boolean getInsideBoundary) {
+    public OMGraphicList filter(Shape shapeBoundary, boolean getInsideBoundary) {
         return filter.filter(shapeBoundary, getInsideBoundary);
     }
 
@@ -127,7 +121,8 @@ public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn
     }
 
     /**
-     * Indicates if the OMGraphicHandler can have its OMGraphicList set.
+     * Indicates if the OMGraphicHandler can have its OMGraphicList
+     * set.
      */
     public boolean canSetList() {
         return filter.canSetList();
@@ -140,7 +135,7 @@ public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn
     public void setList(OMGraphicList omgl) {
         filter.setList(omgl);
     }
-    
+
     /**
      * Remove all filters, and reset all graphics to be visible.
      */

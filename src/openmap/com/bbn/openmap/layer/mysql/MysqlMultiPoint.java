@@ -14,26 +14,27 @@ package com.bbn.openmap.layer.mysql;
 
 /**
  * This class represents the encapsulation of a MySQL MultiPoint
- * Geometry.  Coordinate values are stored as values of double
+ * Geometry. Coordinate values are stored as values of double
  * precision in arrays as a sequence of Latitude/Longitude pairs. This
  * differs from the database where values are stored as X/Y or
  * Easting/Northing pairs.
- *
+ * 
  * <p>
- * Copyright 2003 by the Author<br>
+ * Copyright 2003 by the Author <br>
  * <p>
- * @author Uwe Baier  uwe.baier@gmx.net<br>
- * @version 1.0<br>
+ * 
+ * @author Uwe Baier uwe.baier@gmx.net <br>
+ * @version 1.0 <br>
  */
 public class MysqlMultiPoint extends MysqlMulti {
 
     public MysqlMultiPoint() {
         super();
-        this.setType(this.MULTIPOINTTYPE);
+        this.setType(MysqlGeometry.MULTIPOINTTYPE);
     }
 
     public void addElement(MysqlGeometry l) {
-        if (l.getType().equals(l.POINTTYPE)) {
+        if (l.getType().equals(MysqlGeometry.POINTTYPE)) {
             super.elements.add((MysqlPoint) l);
         }
     }

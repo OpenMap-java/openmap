@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,23 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/Wanderer.java,v $
 // $RCSfile: Wanderer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:16 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.util.wanderer;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
 
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
-/** 
+/**
  * A Wanderer is a class that traverses a directory tree and finds
- * files and directories.  It then makes a method call on the
+ * files and directories. It then makes a method call on the
  * WandererCallback class to have something done on those directories
  * or files.
  */
@@ -39,7 +38,7 @@ public class Wanderer {
     WandererCallback callback = null;
 
     public Wanderer() {
-        
+
     }
 
     public Wanderer(WandererCallback callback) {
@@ -55,11 +54,11 @@ public class Wanderer {
         return callback;
     }
 
-    /** 
+    /**
      * Given a file representing a top-level directory, start
      * wandering the tree and call handleDirectory or handleFile on
      * the WandererCallback.
-     *
+     * 
      * @param file File (directory) to start at.
      */
     public void handleEntry(File file) {
@@ -69,11 +68,11 @@ public class Wanderer {
             boolean not14 = false;
 
             try {
-                java.lang.reflect.Method method = 
-                    file.getClass().getDeclaredMethod("isDirectory", null);
+                java.lang.reflect.Method method = file.getClass()
+                        .getDeclaredMethod("isDirectory", null);
                 Object obj = method.invoke(file, null);
                 if (obj instanceof Boolean) {
-                    dirTest = ((Boolean)obj).booleanValue();
+                    dirTest = ((Boolean) obj).booleanValue();
                 }
             } catch (NoSuchMethodException nsme) {
                 not14 = true;
@@ -103,13 +102,13 @@ public class Wanderer {
         }
     }
 
-    public void handleDirectory(File directory, String[] contentNames) 
-        throws SecurityException {
+    public void handleDirectory(File directory, String[] contentNames)
+            throws SecurityException {
 
         File[] contents = new File[contentNames.length]; // file.listFiles();
-        for (int i=0; i < contents.length; i++)
+        for (int i = 0; i < contents.length; i++)
             contents[i] = new File(directory.getAbsolutePath() + File.separator, contentNames[i]);
-        
+
         for (int i = 0; i < contents.length; i++) {
             handleEntry(contents[i]);
         }
@@ -118,8 +117,9 @@ public class Wanderer {
     /**
      * Given a set of files or directories, parade through them to
      * change their case.
+     * 
      * @param argv paths to files or directories, use -h to get a
-     * usage statement.  
+     *        usage statement.
      */
     public static void main(String[] argv) {
         Debug.init();

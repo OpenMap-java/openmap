@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,21 +14,21 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfAttributes.java,v $
 // $RCSfile: RpfAttributes.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.rpf;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
+import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.io.*;
 
 /**
  * This class knows how to read the attribute section of an RPF file.
@@ -63,7 +63,7 @@ public class RpfAttributes {
     public String soundingDatumCode; // [4];
     public int navSystemCode; // ushort
     public String gridCode; // [2];
-    public float eMagChange; 
+    public float eMagChange;
     public int eMagChangeUnits; // ushort
     public float wMagChange;
     public int wMagChangeUnits; // ushort
@@ -79,27 +79,27 @@ public class RpfAttributes {
     public String dataSource; // [12];
     public long gsd; // uint
     public int dataLevel; // ushort
-    
 
     public RpfAttributes() {}
 
     /**
-     * Read the section in a file.  The method will start reading
-     * from the offset provided.
-     *
+     * Read the section in a file. The method will start reading from
+     * the offset provided.
+     * 
      * @param binFile the opened RPF file.
      * @param attributeLocation the offset of the attribute section in
-     * the file.
+     *        the file.
      */
     public boolean read(BinaryFile binFile, long attributeLocation) {
 
         try {
-            
+
             long k;
-            long j=0;
+            long j = 0;
 
             AttributeSubheader attributeSubheader = new AttributeSubheader();
-//          AttributeOffsetRecord attributeOffsetRecord = new AttributeOffsetRecord();
+            //          AttributeOffsetRecord attributeOffsetRecord = new
+            // AttributeOffsetRecord();
             AttributeOffsetRecord attributeOffsetRecord;
 
             binFile.seek(attributeLocation);
@@ -109,35 +109,35 @@ public class RpfAttributes {
                 System.out.println(attributeSubheader);
             }
 
-
-            AttributeOffsetRecord[] attributeOffsetRecords = 
-                new AttributeOffsetRecord[attributeSubheader.numAttributes];
+            AttributeOffsetRecord[] attributeOffsetRecords = new AttributeOffsetRecord[attributeSubheader.numAttributes];
 
             int i = attributeSubheader.numAttributes - 1;
 
             // OK, I know what you are thinking - two sequential
-            // loops?  It's an optimization for the binFile,
+            // loops? It's an optimization for the binFile,
             // especially if we're reading from a URL - turns this
             // into a couple of sequential reads.
 
             j = 0;
             for (int attIndex = attributeSubheader.numAttributes; attIndex > 0; attIndex--) {
                 i = attIndex - 1;
-                k = attributeLocation+10/*sizeof(attribute_subheader)*/ + 
-                    attributeSubheader.tableOffset +
-                    ((attributeSubheader.numAttributes-attIndex)*8/*sizeof(attributeOffsetRecord*/);
+                k = attributeLocation
+                        + 10/* sizeof(attribute_subheader) */
+                        + attributeSubheader.tableOffset
+                        + ((attributeSubheader.numAttributes - attIndex) * 8/* sizeof(attributeOffsetRecord */);
 
                 binFile.seek(k);
 
                 attributeOffsetRecords[i] = new AttributeOffsetRecord();
                 attributeOffsetRecords[i].read(binFile);
-                
+
                 if (Debug.debugging("rpfdetail")) {
-                    Debug.output(" ##" + (++j) + " at " + k + 
-                                 " => attrib ID '" + 
-                                 attributeOffsetRecords[i].attributeId + "'|Param ID '" +
-                                 attributeOffsetRecords[i].parameterId + "'|offset '" +
-                                 attributeOffsetRecords[i].offset + "'");
+                    Debug.output(" ##" + (++j) + " at " + k + " => attrib ID '"
+                            + attributeOffsetRecords[i].attributeId
+                            + "'|Param ID '"
+                            + attributeOffsetRecords[i].parameterId
+                            + "'|offset '" + attributeOffsetRecords[i].offset
+                            + "'");
                 }
             }
 
@@ -145,7 +145,8 @@ public class RpfAttributes {
 
                 attributeOffsetRecord = attributeOffsetRecords[i];
 
-                binFile.seek(attributeLocation+10+attributeOffsetRecord.offset);
+                binFile.seek(attributeLocation + 10
+                        + attributeOffsetRecord.offset);
                 switch (attributeOffsetRecord.attributeId) {
                 case 1:
                     currencyDate = binFile.readFixedLengthString(8);// [8];
@@ -157,25 +158,25 @@ public class RpfAttributes {
                     significantDate = binFile.readFixedLengthString(8); // [8];
                     break;
                 case 4:
-                    if ((int)attributeOffsetRecord.parameterId == 1)
+                    if ((int) attributeOffsetRecord.parameterId == 1)
                         chartSeriesCode = binFile.readFixedLengthString(10); // [10];
-                    else if ((int)attributeOffsetRecord.parameterId == 2)
+                    else if ((int) attributeOffsetRecord.parameterId == 2)
                         mapDesignationCode = binFile.readFixedLengthString(8); // [8];
-                    else if ((int)attributeOffsetRecord.parameterId == 3)
+                    else if ((int) attributeOffsetRecord.parameterId == 3)
                         oldHorDatum = binFile.readFixedLengthString(4); // [4];
-                    else if ((int)attributeOffsetRecord.parameterId == 4)
+                    else if ((int) attributeOffsetRecord.parameterId == 4)
                         edition = binFile.readFixedLengthString(7); // [7];
                     break;
                 case 5:
-                    if ((int)attributeOffsetRecord.parameterId == 1)
+                    if ((int) attributeOffsetRecord.parameterId == 1)
                         projectionCode = binFile.readFixedLengthString(2); // [2];
-                    else if ((int)attributeOffsetRecord.parameterId == 2)
+                    else if ((int) attributeOffsetRecord.parameterId == 2)
                         projectionA = binFile.readFloat();
-                    else if ((int)attributeOffsetRecord.parameterId == 3)
+                    else if ((int) attributeOffsetRecord.parameterId == 3)
                         projectionB = binFile.readFloat();
-                    else if ((int)attributeOffsetRecord.parameterId == 4)
+                    else if ((int) attributeOffsetRecord.parameterId == 4)
                         projectionC = binFile.readFloat();
-                    else if ((int)attributeOffsetRecord.parameterId == 5)
+                    else if ((int) attributeOffsetRecord.parameterId == 5)
                         projectionD = binFile.readFloat();
                     break;
                 case 6:
@@ -185,27 +186,27 @@ public class RpfAttributes {
                     horDatumCode = binFile.readFixedLengthString(4); // [4];
                     break;
                 case 8:
-                    if ((int)attributeOffsetRecord.parameterId == 1)
-                        vertAbsAccuracy = (long)binFile.readInteger();
-                    else if ((int)attributeOffsetRecord.parameterId == 2)
+                    if ((int) attributeOffsetRecord.parameterId == 1)
+                        vertAbsAccuracy = (long) binFile.readInteger();
+                    else if ((int) attributeOffsetRecord.parameterId == 2)
                         vertAbsUnits = (int) binFile.readShort(); //ushort
                     break;
                 case 9:
-                    if ((int)attributeOffsetRecord.parameterId == 1)
-                        horAbsAccuracy = (long)binFile.readInteger();
-                    else if ((int)attributeOffsetRecord.parameterId == 2)
+                    if ((int) attributeOffsetRecord.parameterId == 1)
+                        horAbsAccuracy = (long) binFile.readInteger();
+                    else if ((int) attributeOffsetRecord.parameterId == 2)
                         horAbsUnits = (int) binFile.readShort(); // ushort
                     break;
                 case 10:
-                    if ((int)attributeOffsetRecord.parameterId == 1)
-                        vertRelAccuracy = (long)binFile.readInteger();
-                    else if ((int)attributeOffsetRecord.parameterId == 2)
+                    if ((int) attributeOffsetRecord.parameterId == 1)
+                        vertRelAccuracy = (long) binFile.readInteger();
+                    else if ((int) attributeOffsetRecord.parameterId == 2)
                         vertRelUnits = (int) binFile.readShort(); // ushort
                     break;
                 case 11:
-                    if ((int)attributeOffsetRecord.parameterId == 1)
+                    if ((int) attributeOffsetRecord.parameterId == 1)
                         horRelAccuracy = (long) binFile.readInteger();
-                    else if ((int)attributeOffsetRecord.parameterId == 2)
+                    else if ((int) attributeOffsetRecord.parameterId == 2)
                         horRelUnits = (int) binFile.readShort(); // ushort
                     break;
                 case 12:
@@ -221,49 +222,49 @@ public class RpfAttributes {
                     gridCode = binFile.readFixedLengthString(2); // [2];
                     break;
                 case 16:
-                    if ((int)attributeOffsetRecord.parameterId == 1)
+                    if ((int) attributeOffsetRecord.parameterId == 1)
                         eMagChange = binFile.readFloat();
-                    else if ((int)attributeOffsetRecord.parameterId == 2)
+                    else if ((int) attributeOffsetRecord.parameterId == 2)
                         eMagChangeUnits = (int) binFile.readShort(); // ushort
                     break;
                 case 17:
-                    if ((int)attributeOffsetRecord.parameterId == 1)
+                    if ((int) attributeOffsetRecord.parameterId == 1)
                         wMagChange = binFile.readFloat();
-                    else if ((int)attributeOffsetRecord.parameterId == 2)
+                    else if ((int) attributeOffsetRecord.parameterId == 2)
                         wMagChangeUnits = (int) binFile.readShort(); // ushort
                     break;
                 case 18:
-                    if ((int)attributeOffsetRecord.parameterId == 1)
+                    if ((int) attributeOffsetRecord.parameterId == 1)
                         magAngle = binFile.readFloat();
-                    else if ((int)attributeOffsetRecord.parameterId == 2)
+                    else if ((int) attributeOffsetRecord.parameterId == 2)
                         magAngleUnits = (int) binFile.readShort(); // ushort
                     break;
                 case 19:
-                    if ((int)attributeOffsetRecord.parameterId == 1)
+                    if ((int) attributeOffsetRecord.parameterId == 1)
                         gridConver = binFile.readFloat();
-                    else if ((int)attributeOffsetRecord.parameterId == 2)
+                    else if ((int) attributeOffsetRecord.parameterId == 2)
                         gridConverUnits = (int) binFile.readShort(); // ushort
                     break;
                 case 20:
-                    if ((int)attributeOffsetRecord.parameterId == 1)
+                    if ((int) attributeOffsetRecord.parameterId == 1)
                         highElevation = binFile.readDouble();
-                    else if ((int)attributeOffsetRecord.parameterId == 2)
+                    else if ((int) attributeOffsetRecord.parameterId == 2)
                         highElevationUnits = (int) binFile.readShort(); // ushort
-                    else if ((int)attributeOffsetRecord.parameterId == 3)
+                    else if ((int) attributeOffsetRecord.parameterId == 3)
                         highLat = binFile.readDouble();
-                    else if ((int)attributeOffsetRecord.parameterId == 4)
+                    else if ((int) attributeOffsetRecord.parameterId == 4)
                         highLon = binFile.readDouble();
                     break;
                 case 21:
                     legendFileName = binFile.readFixedLengthString(12); // [12];
                     break;
                 case 22:
-                    if((int)attributeOffsetRecord.parameterId == 1)
+                    if ((int) attributeOffsetRecord.parameterId == 1)
                         dataSource = binFile.readFixedLengthString(12); // [12];
-                    else if ((int)attributeOffsetRecord.parameterId == 2)
-                        gsd = (long)binFile.readInteger(); // uint
+                    else if ((int) attributeOffsetRecord.parameterId == 2)
+                        gsd = (long) binFile.readInteger(); // uint
                     break;
-                case 23: 
+                case 23:
                     dataLevel = (int) binFile.readShort(); // ushort
                     break;
                 }
@@ -280,14 +281,14 @@ public class RpfAttributes {
 
         return true;
     }
-    
+
     public String toString() {
         StringBuffer s = new StringBuffer();
         s.append("Attribute Section:\n");
         s.append(" currency date = " + currencyDate + "\n");
         s.append(" production date = " + productionDate + "\n");
         s.append(" significant date = " + significantDate + "\n");
-        s.append(" chart series code = " + chartSeriesCode + "\n"); 
+        s.append(" chart series code = " + chartSeriesCode + "\n");
         s.append(" map designation code = " + mapDesignationCode + "\n");
         s.append(" old horizontal datum = " + oldHorDatum + "\n");
         s.append(" edition = " + edition + "\n");
@@ -296,26 +297,26 @@ public class RpfAttributes {
         s.append(" projection B = " + projectionB + "\n");
         s.append(" projection C = " + projectionC + "\n");
         s.append(" projection D = " + projectionD + "\n");
-        s.append(" vertical datum code = " + vertDatumCode + "\n"); 
+        s.append(" vertical datum code = " + vertDatumCode + "\n");
         s.append(" horizontal datum code = " + horDatumCode + "\n");
         s.append(" vertical absolute accuracy = " + vertAbsAccuracy + "\n");
         s.append(" vertical absolute units = " + vertAbsUnits + "\n");
         s.append(" horizontal absolute accuracy = " + horAbsAccuracy + "\n");
-        s.append(" horizontal absolute units = " + horAbsUnits + "\n"); 
+        s.append(" horizontal absolute units = " + horAbsUnits + "\n");
         s.append(" vertical relative accuracy = " + vertRelAccuracy + "\n");
         s.append(" vertical relative units = " + vertRelUnits + "\n");
         s.append(" horizontal relative accuracy = " + horRelAccuracy + "\n");
-        s.append(" horizontal relative units = " + horRelUnits + "\n"); 
+        s.append(" horizontal relative units = " + horRelUnits + "\n");
         s.append(" ellipoid code = " + ellipsoidCode + "\n");
         s.append(" sounding datum code = " + soundingDatumCode + "\n");
-        s.append(" nav system code = " + navSystemCode + "\n"); 
-        s.append(" grid code = " + gridCode + "\n"); 
+        s.append(" nav system code = " + navSystemCode + "\n");
+        s.append(" grid code = " + gridCode + "\n");
         s.append(" east mag change = " + eMagChange + "\n");
         s.append(" east mag change units = " + eMagChangeUnits + "\n");
         s.append(" west mag change = " + wMagChange + "\n");
         s.append(" west mag units = " + wMagChangeUnits + "\n");
         s.append(" magnetic angle = " + magAngle + "\n");
-        s.append(" magnetic angle units = " + magAngleUnits + "\n"); 
+        s.append(" magnetic angle units = " + magAngleUnits + "\n");
         s.append(" grid conversion = " + gridConver + "\n");
         s.append(" grid conversion units = " + gridConverUnits + "\n");
         s.append(" high elevation = " + highElevation + "\n");
@@ -323,30 +324,29 @@ public class RpfAttributes {
         s.append(" high latitude = " + highLat + "\n");
         s.append(" high longitude = " + highLon + "\n");
         s.append(" legend file name = " + legendFileName + "\n");
-        s.append(" data source = " + dataSource + "\n"); 
+        s.append(" data source = " + dataSource + "\n");
         s.append(" gsd = " + gsd + "\n");
         s.append(" data level = " + dataLevel + "\n");
         return s.toString();
     }
 
     /**
-     * Get the attributes from within a RPF Frame file.  Returns null
-     * if something goes wrong.  You do need to make sure that the
-     * Debug class is initialized before calling this class.  For
-     * OpenMap, it usually is. 
-     *
+     * Get the attributes from within a RPF Frame file. Returns null
+     * if something goes wrong. You do need to make sure that the
+     * Debug class is initialized before calling this class. For
+     * OpenMap, it usually is.
+     * 
      * @param filename the file path for the RPF frame file.
      * @return a RpfAttributes object.
      */
-    public static RpfAttributes getAttributes(String filename) 
-        throws IOException, FileNotFoundException {
+    public static RpfAttributes getAttributes(String filename)
+            throws IOException, FileNotFoundException {
 
         BinaryFile binFile = new BinaryBufferedFile(filename);
-//      BinaryFile binFile = new BinaryFile(filename);
-        
+
         RpfHeader head = new RpfHeader();
         head.read(binFile);
-        
+
         RpfAttributes att = getAttributes(binFile);
         binFile.close();
         head = null;
@@ -355,15 +355,15 @@ public class RpfAttributes {
 
     /**
      * Get the attributes from within a RPF Frame file, after the
-     * header has been read.  Returns null if something goes wrong.
-     * You do need to make sure that the Debug class is initialized
-     * before calling this class.  For OpenMap, it usually is.
-     *
+     * header has been read. Returns null if something goes wrong. You
+     * do need to make sure that the Debug class is initialized before
+     * calling this class. For OpenMap, it usually is.
+     * 
      * @param binFile BinaryFile.
      * @return a RpfAttributes object.
      */
-    public static RpfAttributes getAttributes(BinaryFile binFile) 
-        throws IOException, FileNotFoundException {
+    public static RpfAttributes getAttributes(BinaryFile binFile)
+            throws IOException, FileNotFoundException {
         RpfFileSections rfs = new RpfFileSections(binFile);
         RpfAttributes att = rfs.parseAttributes(binFile);
         return att;
@@ -380,9 +380,10 @@ public class RpfAttributes {
             RpfAttributes att = RpfAttributes.getAttributes(args[0]);
             Debug.output(att.toString());
         } catch (FileNotFoundException e) {
-            Debug.error("RpfAttributes: file "+ args[0] + " not found");
+            Debug.error("RpfAttributes: file " + args[0] + " not found");
         } catch (IOException ioe) {
-            Debug.error("RpfAttributes: File IO Error while handling attributes: \n" + ioe);
+            Debug.error("RpfAttributes: File IO Error while handling attributes: \n"
+                    + ioe);
         }
     }
 
@@ -393,7 +394,7 @@ public class RpfAttributes {
         int offsetRecordLength; // ushort
 
         public void read(BinaryFile binFile) {
-            try{
+            try {
                 numAttributes = (int) binFile.readShort();
                 numArealRecords = (int) binFile.readShort();
                 tableOffset = (long) binFile.readInteger();
@@ -401,7 +402,8 @@ public class RpfAttributes {
             } catch (IOException e) {
                 Debug.error("AttributeSubheader: read(): File IO Error!\n" + e);
             } catch (FormatException f) {
-                Debug.error("AttributeSubheader: read(): File IO Format error!\n" + f);
+                Debug.error("AttributeSubheader: read(): File IO Format error!\n"
+                        + f);
             }
 
         }
@@ -424,16 +426,18 @@ public class RpfAttributes {
         long offset; //ulong
 
         public void read(BinaryFile binFile) {
-            try{
+            try {
                 attributeId = (int) binFile.readShort();
                 parameterId = binFile.read();
                 sequenceNum = binFile.read();
                 offset = (long) binFile.readInteger();
             } catch (IOException e) {
-                Debug.error("AttributeOffsetRecord: read(): File IO Error!\n" + e);
+                Debug.error("AttributeOffsetRecord: read(): File IO Error!\n"
+                        + e);
             } catch (FormatException f) {
-                Debug.error("AttributeOffsetRecord: read(): File IO Format error!\n" + f);
-            }   
+                Debug.error("AttributeOffsetRecord: read(): File IO Format error!\n"
+                        + f);
+            }
         }
     }
 }

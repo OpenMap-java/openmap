@@ -1,23 +1,33 @@
+//**********************************************************************
+//
+//<copyright>
+//
+//BBN Technologies
+//10 Moulton Street
+//Cambridge, MA 02138
+//(617) 873-8000
+//
+//Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
+//</copyright>
+//**********************************************************************
+//
+//$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMSpline.java,v $
+//$RCSfile: EditableOMSpline.java,v $
+//$Revision: 1.5 $
+//$Date: 2004/10/14 18:06:11 $
+//$Author: dietrick $
+//
+//**********************************************************************
+
 package com.bbn.openmap.omGraphics;
 
-import java.util.Iterator;
-
-import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.EditableOMPoly;
-import com.bbn.openmap.omGraphics.GrabPoint;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.editable.GraphicEditState;
-import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
-import com.bbn.openmap.omGraphics.editable.PolyAddNodeState;
-import com.bbn.openmap.omGraphics.editable.PolyDeleteNodeState;
-import com.bbn.openmap.omGraphics.editable.PolyUndefinedState;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
 
 /**
- * EditableOMSpline.
- * Nothing created, code adapted from EditableOMPoly
+ * EditableOMSpline. Nothing created, code adapted from EditableOMPoly
  * We just need to edit the generating points as an OMPoly
  * 
  * @author Eric LEPICIER
@@ -34,6 +44,7 @@ public class EditableOMSpline extends EditableOMPoly {
 
     /**
      * Constructor.
+     * 
      * @param ga
      */
     public EditableOMSpline(GraphicAttributes ga) {
@@ -42,6 +53,7 @@ public class EditableOMSpline extends EditableOMPoly {
 
     /**
      * Constructor.
+     * 
      * @param omp
      */
     public EditableOMSpline(OMSpline omp) {
@@ -49,19 +61,18 @@ public class EditableOMSpline extends EditableOMPoly {
     }
 
     /**
-     *  Extendable method to create specific subclasses of OMPolys.
+     * Extendable method to create specific subclasses of OMPolys.
      */
     public OMGraphic createGraphic(int renderType, int lineType) {
         OMGraphic g = null;
         switch (renderType) {
-        case (OMGraphic.RENDERTYPE_LATLON) :
+        case (OMGraphic.RENDERTYPE_LATLON):
             g = new OMSpline(new float[0], OMGraphic.RADIANS, lineType);
             break;
-        case (OMGraphic.RENDERTYPE_OFFSET) :
-            g = new OMSpline(90f, -180f, new int[0],
-                             OMSpline.COORDMODE_ORIGIN);
+        case (OMGraphic.RENDERTYPE_OFFSET):
+            g = new OMSpline(90f, -180f, new int[0], OMSpline.COORDMODE_ORIGIN);
             break;
-        default :
+        default:
             g = new OMSpline(new int[0]);
         }
         ((OMSpline) g).setDoShapes(true);
@@ -70,7 +81,7 @@ public class EditableOMSpline extends EditableOMPoly {
 
     /**
      * Overridden to overcome some repainting unpleasantness that
-     * occurs when a point is added.  Slows things down, however.
+     * occurs when a point is added. Slows things down, however.
      */
     public int addMovingPoint(int x, int y) {
         int position = super.addMovingPoint(x, y);
@@ -80,11 +91,10 @@ public class EditableOMSpline extends EditableOMPoly {
 
     public java.net.URL getImageURL(String imageName) {
         try {
-            return Class.forName(
-                "com.bbn.openmap.omGraphics.EditableOMPoly").getResource(
-                    imageName);
+            return Class.forName("com.bbn.openmap.omGraphics.EditableOMPoly")
+                    .getResource(imageName);
+        } catch (ClassNotFoundException cnfe) {
         }
-        catch (ClassNotFoundException cnfe) {}
         return null;
     }
 

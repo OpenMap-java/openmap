@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,21 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXYView.java,v $
 // $RCSfile: LLXYView.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.proj;
 
 import java.awt.Point;
-import java.util.*;
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.Debug;
-
 
 /**
  * Implements the LLXY projection.
@@ -47,24 +43,28 @@ public class LLXYView extends LLXY {
 
     /** The "Helper" class manages user-space */
     private LLXYViewHelper helper;
-    
+
     /** User-Space Center in lat/lon */
-    protected LatLonPoint uCtr; 
-    protected float uCtrLat;    
+    protected LatLonPoint uCtr;
+    protected float uCtrLat;
     protected float uCtrLon;
 
-    /** Screen Origin in pixels (center=0,0)   */
-    protected int sCtrX, sCtrY; 
-    
-    /** User Origin in pixels 0,0 = lat/lon center    */
-    protected int uCtrX;        
-    protected int uCtrY;        
-    
-    protected int dUSX;         /** delta between U and S, X axis */
-    protected int dUSY;         /** delta between U and S, Y axis */
+    /** Screen Origin in pixels (center=0,0) */
+    protected int sCtrX, sCtrY;
+
+    /** User Origin in pixels 0,0 = lat/lon center */
+    protected int uCtrX;
+    protected int uCtrY;
+
+    protected int dUSX;
+    /** delta between U and S, X axis */
+    protected int dUSY;
+
+    /** delta between U and S, Y axis */
 
     /**
      * Construct a LLXY projection.
+     * 
      * @param center LatLonPoint center of projection
      * @param scale float scale of projection
      * @param width width of screen
@@ -75,9 +75,9 @@ public class LLXYView extends LLXY {
         computeParameters();
     }
 
-
     /**
      * Return stringified description of this projection.
+     * 
      * @return String
      * @see Projection#getProjectionID
      */
@@ -85,80 +85,79 @@ public class LLXYView extends LLXY {
         return "LLXYView[" + super.toString();
     }
 
-
     /**
      * Called when some fundamental parameters change.
      * <p>
-     * Each projection will decide how to respond to this change.
-     * For instance, they may need to recalculate "constant" paramters
-     * used in the forward() and inverse() calls.<p>
+     * Each projection will decide how to respond to this change. For
+     * instance, they may need to recalculate "constant" paramters
+     * used in the forward() and inverse() calls.
+     * <p>
      */
     protected void computeParameters() {
         Debug.message("LLXYView", "LLXYView.computeParameters()");
         super.computeParameters();
 
         // compute the offsets
-        this.hy = height/2;
-        this.wx = width/2;
+        this.hy = height / 2;
+        this.wx = width / 2;
         cLon = ProjMath.radToDeg(ctrLon);
-        
+
         // We have no way of constructing the User Space at anything
         // other than 0,0 for now.
         if (uCtr == null) {
-                uCtrLat = (float) 0.0;
-                uCtrLon = (float) 0.0;
-                uCtr = new LatLonPoint(uCtrLat, uCtrLon);
+            uCtrLat = (float) 0.0;
+            uCtrLon = (float) 0.0;
+            uCtr = new LatLonPoint(uCtrLat, uCtrLon);
         }
-        
+
         if (helper == null) {
             helper = new LLXYViewHelper(uCtr, scale, width, height);
         }
 
         synchronized (helper) {
             super.computeParameters();
-            
+
             // Screen stuff
             Point temp = new Point();
 
-
             helper.setAllParams(pixelsPerMeter,
-                                planetRadius,
-                                planetPixelRadius,
-                                planetPixelCircumference,
-                                minscale, maxscale,
-                                scale,
-                                scaled_radius,
-                                width, height,
-                                uCtrLat,
-                                uCtrLon);
+                    planetRadius,
+                    planetPixelRadius,
+                    planetPixelCircumference,
+                    minscale,
+                    maxscale,
+                    scale,
+                    scaled_radius,
+                    width,
+                    height,
+                    uCtrLat,
+                    uCtrLon);
 
-            helper.forward (ctrLat, ctrLon, temp, true);
+            helper.forward(ctrLat, ctrLon, temp, true);
             sCtrX = temp.x;
             sCtrY = temp.y;
-            
-            helper.forward (uCtrLat, uCtrLon, temp);
+
+            helper.forward(uCtrLat, uCtrLon, temp);
             uCtrX = temp.x;
             uCtrY = temp.y;
-            
+
             dUSX = sCtrX - uCtrX;
             dUSY = sCtrY - uCtrY;
-            
+
         }
 
-        Debug.message("LLXYView",
-                      "User Center LL: " + uCtrLon + "," + uCtrLat
-                      + " User Center xy: " + uCtrX + "," + uCtrY
-                      + " Screen Center LL: "
-                      + ProjMath.radToDeg(ctrLon) + ","
-                      + ProjMath.radToDeg(ctrLat)
-                      + " Screen Center xy: " + sCtrX + "," + sCtrY
-                      + " Screen wh: " + width + "x" + height
-                      + " Screen halfwh: " + this.wx + "x" + this.hy
-                      + " Delta xy: " + dUSX + "," + dUSY);
-       }
+        Debug.message("LLXYView", "User Center LL: " + uCtrLon + "," + uCtrLat
+                + " User Center xy: " + uCtrX + "," + uCtrY
+                + " Screen Center LL: " + ProjMath.radToDeg(ctrLon) + ","
+                + ProjMath.radToDeg(ctrLat) + " Screen Center xy: " + sCtrX
+                + "," + sCtrY + " Screen wh: " + width + "x" + height
+                + " Screen halfwh: " + this.wx + "x" + this.hy + " Delta xy: "
+                + dUSX + "," + dUSY);
+    }
 
     /**
      * Projects a point from Lat/Lon space to X/Y space.
+     * 
      * @param pt LatLonPoint
      * @param p Point retval
      * @return Point p
@@ -173,48 +172,46 @@ public class LLXYView extends LLXY {
         p.y = this.hy - p.y + dUSY;
 
         if (Debug.debugging("LLXYViewf")) {
-            Debug.output("LLXYView.forward(pt.lon_:" + pt.getLongitude() + 
-                         ", pt.lat_:" + pt.getLatitude() + ")\n" +
-                         "LLXYView.forward   x:" + p.x + ", y:" + p.y);
+            Debug.output("LLXYView.forward(pt.lon_:" + pt.getLongitude()
+                    + ", pt.lat_:" + pt.getLatitude() + ")\n"
+                    + "LLXYView.forward   x:" + p.x + ", y:" + p.y);
         }
         return p;
     }
 
-
     /**
      * Forward projects a lat,lon coordinates.
+     * 
      * @param lat raw latitude in decimal degrees
      * @param lon raw longitude in decimal degrees
      * @param p Resulting XY Point
      * @return Point p
      */
     public Point forward(float lat, float lon, Point p) {
-        
+
         // First translate to user-space
-        helper.forward(lat,lon,p);
+        helper.forward(lat, lon, p);
 
         // Now translate to screen-space
         p.x = p.x + this.wx - dUSX;
         p.y = this.hy - p.y + dUSY;
 
         if (Debug.debugging("LLXYViewf")) {
-            Debug.output("LLXYView.forward(lon:" + lon + 
-                         ", lat:" + lat+  ")\n" +
-                         "LLXYView.forward   x:" + p.x + ", y:" + p.y +
-                         " ctrLon:" + cLon + " wx:" + 
-                         this.wx + " hy:" + this.hy);
+            Debug.output("LLXYView.forward(lon:" + lon + ", lat:" + lat + ")\n"
+                    + "LLXYView.forward   x:" + p.x + ", y:" + p.y + " ctrLon:"
+                    + cLon + " wx:" + this.wx + " hy:" + this.hy);
         }
         return p;
     }
 
-
     /**
      * Forward projects lat,lon into XY space and returns a Point.
+     * 
      * @param lat float latitude in radians
      * @param lon float longitude in radians
      * @param p Resulting XY Point
      * @param isRadian bogus argument indicating that lat,lon
-     * arguments are in radians
+     *        arguments are in radians
      * @return Point p
      */
     public Point forward(float lat, float lon, Point p, boolean isRadian) {
@@ -224,20 +221,19 @@ public class LLXYView extends LLXY {
         // Now translate to screen-space
         p.x = p.x + this.wx - dUSX;
         p.y = this.hy - p.y + dUSY;
-        
+
         if (Debug.debugging("LLXYViewf")) {
             Debug.output("LLXYView.forward(lon:" + ProjMath.radToDeg(lon)
-                         + ", lat:" + ProjMath.radToDeg(lat) 
-                         + " isRadian:" + isRadian + ")\n" +
-                         "LLXYView.forward   x:" + p.x + ", y:" + p.y
-                         + " scale: " + (float)scale);
+                    + ", lat:" + ProjMath.radToDeg(lat) + " isRadian:"
+                    + isRadian + ")\n" + "LLXYView.forward   x:" + p.x + ", y:"
+                    + p.y + " scale: " + (float) scale);
         }
         return p;
     }
 
-
     /**
      * Inverse project a Point.
+     * 
      * @param pt x,y Point
      * @param llp resulting LatLonPoint
      * @return LatLonPoint llp
@@ -246,14 +242,14 @@ public class LLXYView extends LLXY {
         // convert from screen to user coordinates
         int x = pt.x - this.wx + dUSX;
         int y = this.hy - pt.y + dUSY;
-        
-        // now convert to world coords
-        return (helper.inverse(x,y,llp));
-    }
 
+        // now convert to world coords
+        return (helper.inverse(x, y, llp));
+    }
 
     /**
      * Inverse project x,y coordinates into a LatLonPoint.
+     * 
      * @param x integer x coordinate
      * @param y integer y coordinate
      * @param llp LatLonPoint
@@ -267,39 +263,30 @@ public class LLXYView extends LLXY {
         if (Debug.debugging("LLXYViewi")) {
             // This is only to aid printing....
             LatLonPoint tllp = helper.inverse(tx, ty, llp);
-            
-            Debug.output("xy: " + x + "," + y
-                         + " txty: " + tx + "," + ty
-                         + " llp: " + tllp.getLongitude()
-                         + "," + tllp.getLatitude());
+
+            Debug.output("xy: " + x + "," + y + " txty: " + tx + "," + ty
+                    + " llp: " + tllp.getLongitude() + "," + tllp.getLatitude());
         }
 
-        return(helper.inverse(tx, ty, llp));
+        return (helper.inverse(tx, ty, llp));
     }
 
-
-
-    /**  
+    /**
      * Helper class manages "user space"
      */
     private class LLXYViewHelper extends LLXY {
-        
-        public LLXYViewHelper(LatLonPoint center, float scale, 
-                              int width, int height) {
+
+        public LLXYViewHelper(LatLonPoint center, float scale, int width,
+                int height) {
             super(center, scale, width, height, LLXYViewType);
         }
-        
-        public void setAllParams(int hPixelsPerMeter,
-                                 float hPlanetRadius,
+
+        public void setAllParams(int hPixelsPerMeter, float hPlanetRadius,
                                  float hPlanetPixelRadius,
                                  float hPlanetPixelCircumference,
-                                 float hMinscale,
-                                 float hMaxscale,
-                                 float hScale,
-                                 float hScaled_radius,
-                                 int hWidth,
-                                 int hHeight,
-                                 float hCtrLat,
+                                 float hMinscale, float hMaxscale,
+                                 float hScale, float hScaled_radius,
+                                 int hWidth, int hHeight, float hCtrLat,
                                  float hCtrLon) {
 
             this.pixelsPerMeter = hPixelsPerMeter;
@@ -316,51 +303,45 @@ public class LLXYView extends LLXY {
             this.ctrLon = hCtrLon;
             this.computeParameters();
         }
-                        
-                            
+
         public String toString() {
             return "LLXYViewHelper[" + super.toString();
         }
 
-        /** 
+        /**
          * Forward projects a LatLonPoint into USER space.
          */
         public Point forward(LatLonPoint pt, Point p) {
             super.forward(pt, p);
 
             if (Debug.debugging("LLXYViewHelperf")) {
-                Debug.output("forward l,l,p: "
-                             + pt.getLongitude() + "," + pt.getLatitude()
-                             + " help xy: " + p.x + "," + p.y);
+                Debug.output("forward l,l,p: " + pt.getLongitude() + ","
+                        + pt.getLatitude() + " help xy: " + p.x + "," + p.y);
             }
 
             p.x = p.x - this.wx;
             p.y = this.hy - p.y;
             return p;
         }
-
 
         public Point forward(float lat, float lon, Point p) {
             super.forward(lat, lon, p);
 
             if (Debug.debugging("LLXYViewHelperf")) {
-                Debug.output("forward l,l,p: "
-                             + lon + "," + lat
-                             + " help xy: " + p.x + "," + p.y);
+                Debug.output("forward l,l,p: " + lon + "," + lat + " help xy: "
+                        + p.x + "," + p.y);
             }
             p.x = p.x - this.wx;
             p.y = this.hy - p.y;
             return p;
         }
 
-        public Point forward(float lat, float lon, Point p, boolean isRadian)
-        {
+        public Point forward(float lat, float lon, Point p, boolean isRadian) {
             super.forward(lat, lon, p, isRadian);
             if (Debug.debugging("LLXYViewHelperf")) {
-                Debug.output("forward l,l,p: " +
-                             ProjMath.radToDeg(lon) + 
-                             "," + ProjMath.radToDeg(lat) + 
-                             " help xy: " + p.x + "," + p.y);
+                Debug.output("forward l,l,p: " + ProjMath.radToDeg(lon) + ","
+                        + ProjMath.radToDeg(lat) + " help xy: " + p.x + ","
+                        + p.y);
             }
             p.x = p.x - this.wx;
             p.y = this.hy - p.y;
@@ -370,13 +351,13 @@ public class LLXYView extends LLXY {
         public LatLonPoint inverse(Point pt, LatLonPoint llp) {
             int x = pt.x + this.wx;
             int y = this.hy - pt.y;
-            
+
             if (Debug.debugging("LLXYViewHelperi")) {
                 Debug.output("inverse helper x,y: " + x + "," + y);
             }
 
             // inverse project, using LLXY.inverse
-            return(super.inverse(x,y,llp));
+            return (super.inverse(x, y, llp));
         }
 
         public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
@@ -388,7 +369,7 @@ public class LLXYView extends LLXY {
             }
 
             // inverse project using LLXY.inverse
-            return(super.inverse(x,y,llp));
+            return (super.inverse(x, y, llp));
         }
     }
 }

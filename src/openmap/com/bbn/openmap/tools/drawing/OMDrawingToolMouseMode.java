@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,23 +12,17 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolMouseMode.java,v $
-// $Revision: 1.3 $ $Date: 2004/01/26 18:18:15 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2004/10/14 18:06:26 $ $Author: dietrick $
 // **********************************************************************
-
-
 
 package com.bbn.openmap.tools.drawing;
 
 import java.awt.Cursor;
 import java.awt.event.MouseEvent;
-import java.beans.*;
-import java.beans.beancontext.*;
-import java.util.Iterator;
 
 import com.bbn.openmap.event.CoordMouseMode;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.util.Debug;
-
 
 /**
  * The OMDrawingToolMouseMode is the MapMouseMode that handles the
@@ -44,20 +38,20 @@ public class OMDrawingToolMouseMode extends CoordMouseMode {
     protected OMDrawingTool drawingTool = null;
 
     /**
-     * Construct an OMDrawingToolMouseMode.  Sets the ID of the mode
-     * to the modeID, the consume mode to true.  
+     * Construct an OMDrawingToolMouseMode. Sets the ID of the mode to
+     * the modeID, the consume mode to true.
      */
     public OMDrawingToolMouseMode() {
         super(modeID, true);
     }
 
     /**
-     * Construct a OMDrawingToolMouseMode.  Lets you set the consume
-     * mode.  If the events are consumed, then a MouseEvent is sent
+     * Construct a OMDrawingToolMouseMode. Lets you set the consume
+     * mode. If the events are consumed, then a MouseEvent is sent
      * only to the first MapMouseListener that successfully processes
-     * the event.  If they are not consumed, then all of the listeners
+     * the event. If they are not consumed, then all of the listeners
      * get a chance to act on the event.
-     *
+     * 
      * @param omdt the drawing tool for this mousemode
      */
     public OMDrawingToolMouseMode(OMDrawingTool omdt) {
@@ -67,7 +61,7 @@ public class OMDrawingToolMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Set the DrawingTool for the mouse mode.  Expected to be
+     * Set the DrawingTool for the mouse mode. Expected to be
      * self-called by the mouse mode using the BeanContext.
      */
     protected void setDrawingTool(OMDrawingTool omdt) {
@@ -82,7 +76,7 @@ public class OMDrawingToolMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Get the EditableOMGraphic from the OMDrawingTool.  Returns null
+     * Get the EditableOMGraphic from the OMDrawingTool. Returns null
      * if anything isn't set up correctly.
      */
     protected EditableOMGraphic getCurrentGraphic() {
@@ -95,7 +89,7 @@ public class OMDrawingToolMouseMode extends CoordMouseMode {
     // MouseListener and MouseMotionListener interface methods
 
     /**
-     *
+     *  
      */
     public void mousePressed(MouseEvent e) {
         Debug.message("drawingtooldetail", "DrawingTool.mousePressed");
@@ -105,9 +99,9 @@ public class OMDrawingToolMouseMode extends CoordMouseMode {
         }
         fireMouseLocation(e);
     }
- 
+
     /**
-     *
+     *  
      */
     public void mouseReleased(MouseEvent e) {
         Debug.message("drawingtooldetail", "DrawingTool.mousePressed");
@@ -124,7 +118,7 @@ public class OMDrawingToolMouseMode extends CoordMouseMode {
     }
 
     /**
-     *
+     *  
      */
     public void mouseClicked(MouseEvent e) {
         Debug.message("drawingtooldetail", "DrawingTool.mouseClicked");
@@ -133,9 +127,9 @@ public class OMDrawingToolMouseMode extends CoordMouseMode {
             graphic.mouseClicked(e);
         }
     }
-    
+
     /**
-     *
+     *  
      */
     public void mouseEntered(MouseEvent e) {
         Debug.message("drawingtooldetail", "DrawingTool.mouseEntered");
@@ -144,9 +138,9 @@ public class OMDrawingToolMouseMode extends CoordMouseMode {
             graphic.mouseEntered(e);
         }
     }
- 
+
     /**
-     *
+     *  
      */
     public void mouseExited(MouseEvent e) {
         Debug.message("drawingtooldetail", "DrawingTool.mouseExited");
@@ -157,7 +151,7 @@ public class OMDrawingToolMouseMode extends CoordMouseMode {
     }
 
     /**
-     *
+     *  
      */
     public void mouseDragged(MouseEvent e) {
         Debug.message("drawingtooldetail", "DrawingTool.mouseDragged");
@@ -169,7 +163,7 @@ public class OMDrawingToolMouseMode extends CoordMouseMode {
     }
 
     /**
-     *
+     *  
      */
     public void mouseMoved(MouseEvent e) {
         Debug.message("drawingtooldetail", "DrawingTool.mouseMoved");

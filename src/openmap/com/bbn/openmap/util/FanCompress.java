@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,13 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/FanCompress.java,v $
 // $RCSfile: FanCompress.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
-
 
 package com.bbn.openmap.util;
 
@@ -31,11 +29,12 @@ import com.bbn.openmap.MoreMath;
  * <p>
  * <h3>FAN COMPRESSION</h3>
  * <ul>
- * <li>R.A. Fowell, and D.D. McNeil, Faster Plots by Fan Data-Compression, IEEE
- * Computer Graphics &amp; Applications, 1989, 58-66.
- * <li>See also, J.G. Dunham, Optimum uniformr piecewise linear approximation of
- * planar curves, IEEE Trans. Pat. Anal and Mach. Intel, Vol, PAMI-8, No 1,
- * 1986, p. 67-75.
+ * <li>R.A. Fowell, and D.D. McNeil, Faster Plots by Fan
+ * Data-Compression, IEEE Computer Graphics &amp; Applications, 1989,
+ * 58-66.
+ * <li>See also, J.G. Dunham, Optimum uniformr piecewise linear
+ * approximation of planar curves, IEEE Trans. Pat. Anal and Mach.
+ * Intel, Vol, PAMI-8, No 1, 1986, p. 67-75.
  * </ul>
  */
 public abstract class FanCompress {
@@ -53,25 +52,27 @@ public abstract class FanCompress {
         private int read = 0;
         private int write = 0;
         protected float[] array;
-        protected float zero_eps=0.0001f;
+        protected float zero_eps = 0.0001f;
 
         /**
          * Construct a FanCompress object which deals in floats.
+         * 
          * @param array float[] array of coordinate pairs.
          */
-        public FloatCompress (float[] array) {
+        public FloatCompress(float[] array) {
             this.array = array;
         }
 
         /**
          * Get the next point.
+         * 
          * @param p FanPoint
          * @return boolean false if no more points.
          */
-        public boolean next_point (FanPoint p) {
-            if (read+1 < array.length) {
-                p.x = (double)array[read++];
-                p.y = (double)array[read++];
+        public boolean next_point(FanPoint p) {
+            if (read + 1 < array.length) {
+                p.x = (double) array[read++];
+                p.y = (double) array[read++];
                 return true;
             } else {
                 return false;
@@ -79,103 +80,101 @@ public abstract class FanCompress {
         }
 
         /**
-         * Save coordinates.
-         * This routine coalesces adjacent points which have the same
-         * coordinates.
+         * Save coordinates. This routine coalesces adjacent points
+         * which have the same coordinates.
+         * 
          * @param x coordinate
          * @param y coordinate
          */
-        public void save_point (double x, double y) {
-            if (write+1 < read) {
+        public void save_point(double x, double y) {
+            if (write + 1 < read) {
                 // coalesce points
-                if ((write>1) &&
-                        MoreMath.approximately_equal(
-                            (float)x, array[write-2], zero_eps) &&
-                        MoreMath.approximately_equal(
-                            (float)y, array[write-1], zero_eps))
-                {
+                if ((write > 1)
+                        && MoreMath.approximately_equal((float) x,
+                                array[write - 2],
+                                zero_eps)
+                        && MoreMath.approximately_equal((float) y,
+                                array[write - 1],
+                                zero_eps)) {
                     return;
                 }
-                array[write++] = (float)x;
-                array[write++] = (float)y;
+                array[write++] = (float) x;
+                array[write++] = (float) y;
             } else {
-                System.err.println(
-                        "FanCompress.FloatCompress.save_point(): "+
-                        "ignoring extra...");
+                System.err.println("FanCompress.FloatCompress.save_point(): "
+                        + "ignoring extra...");
             }
         }
 
         /**
-         * Save only unique coordinates.
-         * If several points are the same, then coalesce them into one
-         * point.
+         * Save only unique coordinates. If several points are the
+         * same, then coalesce them into one point.
+         * 
          * @param epsilon threshold used to determine uniqueness of
-         * coordinates.
+         *        coordinates.
          */
-        public void set_coalesce_points (double epsilon) {
-            zero_eps = (float)epsilon;
+        public void set_coalesce_points(double epsilon) {
+            zero_eps = (float) epsilon;
         }
 
         /**
-         * Return a copy of the internal array.
-         * Invoke this method after running
-         * <code>fan_compress()</code> on this object.
+         * Return a copy of the internal array. Invoke this method
+         * after running <code>fan_compress()</code> on this object.
+         * 
          * @return float[]
          */
-        public float[] getArray () {
+        public float[] getArray() {
             float[] ret_val = new float[write];
             System.arraycopy(array, 0, ret_val, 0, write);
             return ret_val;
         }
     }
 
-
     /**
      * Get the next point.
+     * 
      * @param p FanPoint
      * @return boolean false if no more points.
      */
-    public abstract boolean next_point (FanPoint p);
-
+    public abstract boolean next_point(FanPoint p);
 
     /**
      * Save coordinates.
+     * 
      * @param x coordinate
      * @param y coordinate
      */
-    public abstract void save_point (double x, double y);
-
+    public abstract void save_point(double x, double y);
 
     /**
-     * Save only unique coordinates.
-     * If several points are the same, then coalesce them into one
-     * point.
+     * Save only unique coordinates. If several points are the same,
+     * then coalesce them into one point.
+     * 
      * @param epsilon threshold used to determine uniqueness of
-     * coordinates.
+     *        coordinates.
      */
-    public abstract void set_coalesce_points (double epsilon);
-
+    public abstract void set_coalesce_points(double epsilon);
 
     /**
-     * Perform fan compression.
-     * IF there is only 1 point, save-point will be run on it twice,
-     * sorry.
+     * Perform fan compression. IF there is only 1 point, save-point
+     * will be run on it twice, sorry.
+     * 
      * @param fan FanCompress object
      * @param epsilon double
      */
-    public static final void fan_compress (FanCompress fan, double epsilon) {
-        double epsilon_squared;     /* epsilon * epsilon */
-        double p0x, p0y;                /* Start of segment. */
+    public static final void fan_compress(FanCompress fan, double epsilon) {
+        double epsilon_squared; /* epsilon * epsilon */
+        double p0x, p0y; /* Start of segment. */
         FanPoint p = new FanPoint();
-//      double px, py;          /* Current point x,y */
+        //      double px, py; /* Current point x,y */
 
         epsilon_squared = epsilon * epsilon;
 
         if (!fan.next_point(p)) /* Get first point */
             return;
 
-        fan.save_point(p.x, p.y);               /* Save it. */
-        p0x = p.x;                      /* p0 <- p. */
+        fan.save_point(p.x, p.y); /* Save it. */
+        p0x = p.x; /* p0 <- p. */
         p0y = p.y;
 
         while (true) {
@@ -200,8 +199,8 @@ public abstract class FanCompress {
                     break;
 
                 if (!fan.next_point(p)) {
-//                  goto finish;
-                    fan.save_point(p.x, p.y);           /* Save last point. */
+                    //                  goto finish;
+                    fan.save_point(p.x, p.y); /* Save last point. */
                     return;
                 }
 
@@ -209,30 +208,30 @@ public abstract class FanCompress {
 
             distance = Math.sqrt(distance);
 
-            pu = distance;              /* U component of p. */
+            pu = distance; /* U component of p. */
 
-            ux = (p.x - p0x) / pu;      /* U unit vector. */
+            ux = (p.x - p0x) / pu; /* U unit vector. */
             uy = (p.y - p0y) / pu;
 
-            vx = -uy;           /* V unit vector. */
+            vx = -uy; /* V unit vector. */
             vy = ux;
 
-            f1 = pu;            /* Region. */
+            f1 = pu; /* Region. */
             f2 = epsilon / pu;
 
             f3 = -f2;
 
-            xok = p.x;  /* Last point we know is OK. */
+            xok = p.x; /* Last point we know is OK. */
             yok = p.y;
 
             while (true) {
                 double dx, dy;
-                double /*pu,*/ pv;
+                double /* pu, */pv;
                 boolean keep;
 
                 if (!fan.next_point(p)) {
-//                  goto finish;
-                    fan.save_point(p.x, p.y);           /* Save last point. */
+                    //                  goto finish;
+                    fan.save_point(p.x, p.y); /* Save last point. */
                     return;
                 }
 
@@ -254,7 +253,7 @@ public abstract class FanCompress {
                         /* Still in region? */
                         double dslope;
 
-                        dslope = epsilon/pu;
+                        dslope = epsilon / pu;
 
                         keep = false;
 
@@ -274,7 +273,7 @@ public abstract class FanCompress {
                 if (keep) {
                     fan.save_point(xok, yok);
 
-                    p0x = xok;  /* p0 <- pOK. */
+                    p0x = xok; /* p0 <- pOK. */
                     p0y = yok;
 
                     break;
@@ -285,11 +284,11 @@ public abstract class FanCompress {
             }
         }
 
-//      System.out.println("should not reach here");
+        //      System.out.println("should not reach here");
 
-//      finish:
-//      
-//      save_point(p.x, p.y);           /* Save last point. */
-//             return;
+        //      finish:
+        //      
+        //      save_point(p.x, p.y); /* Save last point. */
+        //             return;
     }
 }

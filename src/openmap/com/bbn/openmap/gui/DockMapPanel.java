@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/DockMapPanel.java,v $
 // $RCSfile: DockMapPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
@@ -29,25 +28,21 @@ import java.awt.Component;
 import javax.swing.JComponent;
 
 import com.bbn.openmap.MapBean;
-import com.bbn.openmap.MapHandler;
-import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.PropertyHandler;
-import com.bbn.openmap.gui.menu.MenuList;
 import com.bbn.openmap.gui.dock.DockPanel;
 import com.bbn.openmap.gui.dock.BasicDockPanel;
 import com.bbn.openmap.gui.dock.DockConstraint;
-import com.bbn.openmap.util.Debug;
 
 /**
  * The DockMapPanel is a MapPanel that uses a DockPanel for its
- * layout.  
- * <P> 
- * Like BasicMapPanel, the Panel creates a MapBean for
- * its center area.  It creates a MapHandler to use to hold all of its
- * OpenMap components, and uses the PropertyHandler given to it in its
+ * layout.
+ * <P>
+ * Like BasicMapPanel, the Panel creates a MapBean for its center
+ * area. It creates a MapHandler to use to hold all of its OpenMap
+ * components, and uses the PropertyHandler given to it in its
  * constructor to create and configure all of the application
- * components.  The best way to add components to the MapPanel is to
- * get the MapHandler from it and add the component to that.  The
+ * components. The best way to add components to the MapPanel is to
+ * get the MapHandler from it and add the component to that. The
  * DockMapPanel also adds itself to its MapHandler
  */
 public class DockMapPanel extends BasicMapPanel implements DockPanel {
@@ -65,10 +60,11 @@ public class DockMapPanel extends BasicMapPanel implements DockPanel {
     }
 
     /**
-     * Create a MapPanel with the option of delaying the search for properties
-     * until the <code>create()</code> call is made.
-     * @param delayCreation true to let the MapPanel know that the artful 
-     * programmer will call <code>create()</code>
+     * Create a MapPanel with the option of delaying the search for
+     * properties until the <code>create()</code> call is made.
+     * 
+     * @param delayCreation true to let the MapPanel know that the
+     *        artful programmer will call <code>create()</code>
      */
     public DockMapPanel(boolean delayCreation) {
         this(null, delayCreation);
@@ -88,11 +84,11 @@ public class DockMapPanel extends BasicMapPanel implements DockPanel {
      * contained in the PropertyHandler provided, and with the option
      * of delaying the search for properties until the
      * <code>create()</code> call is made.
-     * @param delayCreation true to let the MapPanel know that the artful 
-     * programmer will call <code>create()</code>
+     * 
+     * @param delayCreation true to let the MapPanel know that the
+     *        artful programmer will call <code>create()</code>
      */
-    public DockMapPanel(PropertyHandler propertyHandler, 
-                         boolean delayCreation) {
+    public DockMapPanel(PropertyHandler propertyHandler, boolean delayCreation) {
         super(propertyHandler, delayCreation);
     }
 
@@ -118,11 +114,12 @@ public class DockMapPanel extends BasicMapPanel implements DockPanel {
      */
     protected void addMapPanelChild(MapPanelChild mpc) {
         //For now, just dock it somewhere... really we need to
-        //determine constraints for it some how (maybe by asking it for them?
+        //determine constraints for it some how (maybe by asking it
+        // for them?
         //mps.getPreferredLocation()
         //Debug.output("Adding MapPanelChild: " + mpc);
-        dockPanel.add((JComponent)mpc);
-        dockPanel.dockSomewhere((JComponent)mpc);
+        dockPanel.add((JComponent) mpc);
+        dockPanel.dockSomewhere((JComponent) mpc);
     }
 
     //From DockablePanel:
@@ -219,7 +216,7 @@ public class DockMapPanel extends BasicMapPanel implements DockPanel {
     public void dockSouth(JComponent child, int idx) {
         dockPanel.dockSouth(child, idx);
     }
-   
+
     public void dockEast(JComponent child) {
         dockPanel.dockEast(child);
     }
@@ -259,28 +256,28 @@ public class DockMapPanel extends BasicMapPanel implements DockPanel {
     //Overwrite from Component:
     ///////////////////////////
 
-    /** 
+    /**
      * We need to handle adding the component specially.
      */
     public Component add(Component comp) {
         return dockPanel.add(comp);
     }
 
-    /** 
+    /**
      * We need to handle adding the component specially.
      */
     public void add(Component comp, Object constraints) {
         dockPanel.add(comp, constraints);
     }
 
-    /** 
+    /**
      * We need to handle removing the component specially.
      */
     public void remove(Component comp) {
         dockPanel.remove(comp);
     }
 
-    /** 
+    /**
      * We need to handle removing all components specially.
      */
     public void removeAll() {

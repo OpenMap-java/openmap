@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/GeneratorLoader.java,v $
 // $RCSfile: GeneratorLoader.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/01/24 03:38:44 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.grid;
 
@@ -32,8 +31,8 @@ import com.bbn.openmap.util.PropUtils;
 
 /**
  * A GeneratorLoader is a component that can provide an
- * OMGridGenerator.  It can provide a GUI to control the settings on
- * the next generator it provides.  This is a basic GeneratorLoader
+ * OMGridGenerator. It can provide a GUI to control the settings on
+ * the next generator it provides. This is a basic GeneratorLoader
  * that doesn't do anything.
  */
 public class GeneratorLoader extends OMComponent {
@@ -59,13 +58,15 @@ public class GeneratorLoader extends OMComponent {
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
-        setPrettyName(props.getProperty(prefix + com.bbn.openmap.Layer.PrettyNameProperty, ""));
+        setPrettyName(props.getProperty(prefix
+                + com.bbn.openmap.Layer.PrettyNameProperty, ""));
     }
 
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-        props.put(prefix + com.bbn.openmap.Layer.PrettyNameProperty, PropUtils.unnull(getPrettyName()));
+        props.put(prefix + com.bbn.openmap.Layer.PrettyNameProperty,
+                PropUtils.unnull(getPrettyName()));
 
         return props;
     }

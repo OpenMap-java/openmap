@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,20 +14,18 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NodeCache.java,v $
 // $RCSfile: NodeCache.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/24 21:50:32 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.graphicLoader.netmap;
 
-import java.awt.*;
 import java.util.*;
 
 /**
- * A holder for all the nodes on the map.  Cache is smart enough to
+ * A holder for all the nodes on the map. Cache is smart enough to
  * modify or add a node based on a description.
  */
 public class NodeCache {
@@ -38,22 +36,18 @@ public class NodeCache {
         nodeTable = new Hashtable();
     }
 
-
     NodeCache(int initialCapacity) {
         nodeTable = new Hashtable(initialCapacity);
     }
 
-
     public void flush() {
         for (Enumeration list = elements(); list.hasMoreElements();)
-            delete((Node)list.nextElement());
+            delete((Node) list.nextElement());
     }
-
 
     public Enumeration elements() {
         return nodeTable.elements();
     }
-
 
     public Node add(String label, int index, int shape, int menu, int color) {
         Node node = null;
@@ -62,32 +56,30 @@ public class NodeCache {
             return node;
 
         node = new Node(label, index, shape, menu, color);
-        nodeTable.put(label, (Object)node);
+        nodeTable.put(label, (Object) node);
 
         return node;
     }
 
-
     public Node get(int index) {
         Enumeration list = nodeTable.elements();
 
-        if (list == null) return null;
+        if (list == null)
+            return null;
         while (list.hasMoreElements()) {
-            Node node = (Node)list.nextElement();
+            Node node = (Node) list.nextElement();
 
             if (node.getIndex() == index) {
-                return(node);
+                return (node);
             }
         }
 
         return null;
     }
 
-
     public Node get(String label) {
-        return (Node)nodeTable.get((Object)label);
+        return (Node) nodeTable.get((Object) label);
     }
-
 
     public void del(String label) {
         delete(get(label));
@@ -104,7 +96,8 @@ public class NodeCache {
     // Delete a node from the internal cache
     //
     private void delete(Node node) {
-        if (node == null) return;
+        if (node == null)
+            return;
 
         nodeTable.remove(node.getLabel());
     }

@@ -56,7 +56,8 @@ public class DDFModule implements DDFConstants {
     protected DDFRecord poRecord;
 
     /**
-     * The constructor.  Need to call open() if this constuctor is used.
+     * The constructor. Need to call open() if this constuctor is
+     * used.
      */
     public DDFModule() {
         paoFieldDefns = null;
@@ -69,7 +70,7 @@ public class DDFModule implements DDFConstants {
     }
 
     /**
-     * Close an ISO 8211 file.  Just close the file pointer to the
+     * Close an ISO 8211 file. Just close the file pointer to the
      * file.
      */
     public void close() {
@@ -91,19 +92,20 @@ public class DDFModule implements DDFConstants {
         close();
 
         // Cleanup the working record.
-        poRecord = null;    
+        poRecord = null;
         // Cleanup the field definitions.
         paoFieldDefns = null;
     }
 
     /**
-     * Open a ISO 8211 (DDF) file for reading, and read the DDR record to
-     * build the field definitions.
-     *
-     * If the open succeeds the data descriptive record (DDR) will have been
-     * read, and all the field and subfield definitions will be available.
-     *
-     * @param pszFilename   The name of the file to open.
+     * Open a ISO 8211 (DDF) file for reading, and read the DDR record
+     * to build the field definitions.
+     * 
+     * If the open succeeds the data descriptive record (DDR) will
+     * have been read, and all the field and subfield definitions will
+     * be available.
+     * 
+     * @param pszFilename The name of the file to open.
      */
     public BinaryFile open(String pszFilename) throws IOException {
 
@@ -113,12 +115,12 @@ public class DDFModule implements DDFConstants {
 
         // Read the 24 byte leader.
         byte[] achLeader = new byte[DDF_LEADER_SIZE];
-    
+
         if (fpDDF.read(achLeader) != DDF_LEADER_SIZE) {
             destroy();
             if (Debug.debugging("iso8211")) {
-                Debug.output("DDFModule: Leader is short on DDF file " + 
-                             pszFilename);
+                Debug.output("DDFModule: Leader is short on DDF file "
+                        + pszFilename);
             }
             return null;
         }
@@ -127,7 +129,7 @@ public class DDFModule implements DDFConstants {
         int i;
         boolean bValid = true;
 
-        for(i = 0; i < (int)DDF_LEADER_SIZE; i++) {
+        for (i = 0; i < (int) DDF_LEADER_SIZE; i++) {
             if (achLeader[i] < 32 || achLeader[i] > 126) {
                 bValid = false;
             }
@@ -155,21 +157,21 @@ public class DDFModule implements DDFConstants {
             _appIndicator = achLeader[9];
             _fieldControlLength = Integer.parseInt(new String(achLeader, 10, 2));
             _fieldAreaStart = Integer.parseInt(new String(achLeader, 12, 5));
-            _extendedCharSet = new String((char)achLeader[17] + "" +
-                                          (char)achLeader[18] + "" + 
-                                          (char)achLeader[19]);
+            _extendedCharSet = new String((char) achLeader[17] + ""
+                    + (char) achLeader[18] + "" + (char) achLeader[19]);
             _sizeFieldLength = Integer.parseInt(new String(achLeader, 20, 1));
             _sizeFieldPos = Integer.parseInt(new String(achLeader, 21, 1));
             _sizeFieldTag = Integer.parseInt(new String(achLeader, 23, 1));
 
             if (_recLength < 12 || _fieldControlLength == 0
-                || _fieldAreaStart < 24 || _sizeFieldLength == 0
-                || _sizeFieldPos == 0 || _sizeFieldTag == 0) {
+                    || _fieldAreaStart < 24 || _sizeFieldLength == 0
+                    || _sizeFieldPos == 0 || _sizeFieldTag == 0) {
                 bValid = false;
             }
 
             if (Debug.debugging("iso8211")) {
-                Debug.output("bValid = " + bValid + ", from " + new String(achLeader));
+                Debug.output("bValid = " + bValid + ", from "
+                        + new String(achLeader));
                 Debug.output(toString());
             }
         }
@@ -180,8 +182,8 @@ public class DDFModule implements DDFConstants {
             destroy();
 
             if (Debug.debugging("iso8211")) {
-                Debug.error("DDFModule: File " + pszFilename + 
-                            " does not appear to have a valid ISO 8211 header.");
+                Debug.error("DDFModule: File " + pszFilename
+                        + " does not appear to have a valid ISO 8211 header.");
             }
             return null;
         }
@@ -192,7 +194,7 @@ public class DDFModule implements DDFConstants {
         }
 
         /* -------------------------------------------------------------------- */
-        /*      Read the whole record into memory.                              */
+        /* Read the whole record into memory. */
         /* -------------------------------------------------------------------- */
         byte[] pachRecord = new byte[_recLength];
 
@@ -201,10 +203,10 @@ public class DDFModule implements DDFConstants {
 
         if (fpDDF.read(pachRecord, achLeader.length, numNewRead) != numNewRead) {
             if (Debug.debugging("iso8211")) {
-                Debug.error("DDFModule: Header record is short on DDF file " +
-                            pszFilename);
+                Debug.error("DDFModule: Header record is short on DDF file "
+                        + pszFilename);
             }
-        
+
             return null;
         }
 
@@ -215,32 +217,36 @@ public class DDFModule implements DDFConstants {
         for (i = DDF_LEADER_SIZE; i < _recLength; i += nFieldEntryWidth) {
             if (pachRecord[i] == DDF_FIELD_TERMINATOR)
                 break;
-            
+
             nFieldDefnCount++;
         }
 
         /* Allocate, and read field definitions. */
         paoFieldDefns = new Vector();
-    
-        for(i = 0; i < nFieldDefnCount; i++) {
+
+        for (i = 0; i < nFieldDefnCount; i++) {
             if (Debug.debugging("iso8211")) {
                 Debug.output("DDFModule.open: Reading field " + i);
             }
 
             byte[] szTag = new byte[128];
-            int nEntryOffset = DDF_LEADER_SIZE + i*nFieldEntryWidth;
+            int nEntryOffset = DDF_LEADER_SIZE + i * nFieldEntryWidth;
             int nFieldLength, nFieldPos;
-        
+
             System.arraycopy(pachRecord, nEntryOffset, szTag, 0, _sizeFieldTag);
 
             nEntryOffset += _sizeFieldTag;
             nFieldLength = Integer.parseInt(new String(pachRecord, nEntryOffset, _sizeFieldLength));
-        
+
             nEntryOffset += _sizeFieldLength;
             nFieldPos = Integer.parseInt(new String(pachRecord, nEntryOffset, _sizeFieldLength));
-        
+
             byte[] subPachRecord = new byte[nFieldLength];
-            System.arraycopy(pachRecord, _fieldAreaStart+nFieldPos, subPachRecord, 0, nFieldLength);
+            System.arraycopy(pachRecord,
+                    _fieldAreaStart + nFieldPos,
+                    subPachRecord,
+                    0,
+                    nFieldLength);
 
             paoFieldDefns.add(new DDFFieldDefinition(this, new String(szTag, 0, _sizeFieldTag), subPachRecord));
         }
@@ -248,28 +254,28 @@ public class DDFModule implements DDFConstants {
         // Free the memory...
         achLeader = null;
         pachRecord = null;
-    
+
         // Record the current file offset, the beginning of the first
         // data record.
         nFirstRecordOffset = fpDDF.getFilePointer();
-    
+
         return fpDDF;
     }
 
     /**
      * Write out module info to debugging file.
-     *
-     * A variety of information about the module is written to the debugging
-     * file.  This includes all the field and subfield definitions read from
-     * the header. 
+     * 
+     * A variety of information about the module is written to the
+     * debugging file. This includes all the field and subfield
+     * definitions read from the header.
      */
     public String toString() {
         StringBuffer buf = new StringBuffer("DDFModule:\n");
         buf.append("    _recLength = " + _recLength + "\n");
         buf.append("    _interchangeLevel = " + _interchangeLevel + "\n");
-        buf.append("    _leaderIden = " + (char)_leaderIden + "\n");
-        buf.append("    _inlineCodeExtensionIndicator = " + 
-                   _inlineCodeExtensionIndicator + "\n");
+        buf.append("    _leaderIden = " + (char) _leaderIden + "\n");
+        buf.append("    _inlineCodeExtensionIndicator = "
+                + _inlineCodeExtensionIndicator + "\n");
         buf.append("    _versionNumber = " + _versionNumber + "\n");
         buf.append("    _appIndicator = " + _appIndicator + "\n");
         buf.append("    _extendedCharSet = " + _extendedCharSet + "\n");
@@ -286,39 +292,42 @@ public class DDFModule implements DDFConstants {
 
         DDFRecord poRecord;
         int iRecord = 0;
-        while((poRecord = readRecord()) != null) {
-            buf.append("  Record " + (iRecord++) + "(" + poRecord.getDataSize() + " bytes)\n");
-            
-            for (Iterator it = poRecord.iterator(); it.hasNext(); 
-                 buf.append(((DDFField)it.next()).toString())) {}
+        while ((poRecord = readRecord()) != null) {
+            buf.append("  Record " + (iRecord++) + "(" + poRecord.getDataSize()
+                    + " bytes)\n");
+
+            for (Iterator it = poRecord.iterator(); it.hasNext(); buf.append(((DDFField) it.next()).toString())) {
+            }
         }
         return buf.toString();
     }
 
     /**
      * Fetch the definition of the named field.
-     *
-     * This function will scan the DDFFieldDefn's on this module, to find
-     * one with the indicated field name.
-     *
-     * @param pszFieldName The name of the field to search for.  The comparison is
-     *                     case insensitive.
-     *
-     * @return A pointer to the request DDFFieldDefn object is returned, or null
-     * if none matching the name are found.  The return object remains owned by
-     * the DDFModule, and should not be deleted by application code.
+     * 
+     * This function will scan the DDFFieldDefn's on this module, to
+     * find one with the indicated field name.
+     * 
+     * @param pszFieldName The name of the field to search for. The
+     *        comparison is case insensitive.
+     * 
+     * @return A pointer to the request DDFFieldDefn object is
+     *         returned, or null if none matching the name are found.
+     *         The return object remains owned by the DDFModule, and
+     *         should not be deleted by application code.
      */
     public DDFFieldDefinition findFieldDefn(String pszFieldName) {
 
         for (Iterator it = paoFieldDefns.iterator(); it.hasNext();) {
-            DDFFieldDefinition ddffd = (DDFFieldDefinition)it.next();
+            DDFFieldDefinition ddffd = (DDFFieldDefinition) it.next();
             String pszThisName = ddffd.getName();
 
             if (Debug.debugging("iso8211detail")) {
-                Debug.output("DDFModule.findFieldDefn(" + pszFieldName + ":" + pszFieldName.length() + 
-                             ") checking against [" + pszThisName + ":" + pszThisName.length() + "]");
+                Debug.output("DDFModule.findFieldDefn(" + pszFieldName + ":"
+                        + pszFieldName.length() + ") checking against ["
+                        + pszThisName + ":" + pszThisName.length() + "]");
             }
-        
+
             if (pszFieldName.equalsIgnoreCase(pszThisName)) {
                 return ddffd;
             }
@@ -328,15 +337,17 @@ public class DDFModule implements DDFConstants {
     }
 
     /**
-     * Read one record from the file, and return to the               
-     * application.  The returned record is owned by the module, 
-     * and is reused from call to call in order to preserve headers
-     * when they aren't being re-read from record to record.
-     *
-     * @return A pointer to a DDFRecord object is returned, or null if a read
-     * error, or end of file occurs.  The returned record is owned by the
-     * module, and should not be deleted by the application.  The record is
-     * only valid untill the next ReadRecord() at which point it is overwritten.
+     * Read one record from the file, and return to the application.
+     * The returned record is owned by the module, and is reused from
+     * call to call in order to preserve headers when they aren't
+     * being re-read from record to record.
+     * 
+     * @return A pointer to a DDFRecord object is returned, or null if
+     *         a read error, or end of file occurs. The returned
+     *         record is owned by the module, and should not be
+     *         deleted by the application. The record is only valid
+     *         untill the next ReadRecord() at which point it is
+     *         overwritten.
      */
     public DDFRecord readRecord() {
         if (poRecord == null) {
@@ -351,9 +362,12 @@ public class DDFModule implements DDFConstants {
     }
 
     /**
-     * Method for other components to call to get the DDFModule to read bytes into the provided array.
+     * Method for other components to call to get the DDFModule to
+     * read bytes into the provided array.
+     * 
      * @param toData the bytes to put data into.
-     * @param offset the byte offset to start reading from, whereever the pointer currently is.
+     * @param offset the byte offset to start reading from, whereever
+     *        the pointer currently is.
      * @param length the number of bytes to read.
      * @return the number of bytes read.
      */
@@ -368,9 +382,15 @@ public class DDFModule implements DDFConstants {
             } catch (IOException ioe) {
                 Debug.error("DDFModule.read(): IOException caught");
             } catch (ArrayIndexOutOfBoundsException aioobe) {
-                Debug.error("DDFModule.read(): " + aioobe.getMessage() + 
-                            " reading from " + offset + " to " + length + 
-                            " into " + (toData == null?"null byte[]":"byte[" + toData.length + "]"));
+                Debug.error("DDFModule.read(): "
+                        + aioobe.getMessage()
+                        + " reading from "
+                        + offset
+                        + " to "
+                        + length
+                        + " into "
+                        + (toData == null ? "null byte[]" : "byte["
+                                + toData.length + "]"));
                 aioobe.printStackTrace();
             }
         }
@@ -378,9 +398,9 @@ public class DDFModule implements DDFConstants {
     }
 
     /**
-     * Convenience method to read a byte from the data file.  Assumes
+     * Convenience method to read a byte from the data file. Assumes
      * that you know what you are doing based on the parameters read
-     * in the data file.  For DDFFields that haven't loaded their
+     * in the data file. For DDFFields that haven't loaded their
      * subfields.
      */
     public int read() {
@@ -401,8 +421,9 @@ public class DDFModule implements DDFConstants {
     /**
      * Convenience method to seek to a location in the data file.
      * Assumes that you know what you are doing based on the
-     * parameters read in the data file.  For DDFFields that haven't
+     * parameters read in the data file. For DDFFields that haven't
      * loaded their subfields.
+     * 
      * @param pos the byte position to reposition the file pointer to.
      */
     public void seek(long pos) throws IOException {
@@ -419,26 +440,29 @@ public class DDFModule implements DDFConstants {
 
     /**
      * Fetch a field definition by index.
-     *
+     * 
      * @param i (from 0 to GetFieldCount() - 1.
-     * @return the returned field pointer or null if the index is out of range.
+     * @return the returned field pointer or null if the index is out
+     *         of range.
      */
     public DDFFieldDefinition getField(int i) {
         if (i >= 0 || i < paoFieldDefns.size()) {
-            return (DDFFieldDefinition)paoFieldDefns.elementAt(i);
+            return (DDFFieldDefinition) paoFieldDefns.elementAt(i);
         }
 
         return null;
     }
-    
+
     /**
      * Return to first record.
      * 
-     * The next call to ReadRecord() will read the first data record in the file.
-     *
-     * @param nOffset the offset in the file to return to.  By default this is
-     * -1, a special value indicating that reading should return to the first
-     * data record.  Otherwise it is an absolute byte offset in the file.
+     * The next call to ReadRecord() will read the first data record
+     * in the file.
+     * 
+     * @param nOffset the offset in the file to return to. By default
+     *        this is -1, a special value indicating that reading
+     *        should return to the first data record. Otherwise it is
+     *        an absolute byte offset in the file.
      */
     public void rewind(long nOffset) throws IOException {
         if (nOffset == -1) {
@@ -453,7 +477,7 @@ public class DDFModule implements DDFConstants {
                 poRecord.clear();
             }
         }
-        
+
     }
 
     public void reopen() {

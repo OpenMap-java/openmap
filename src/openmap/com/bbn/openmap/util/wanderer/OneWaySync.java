@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,25 +14,28 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/OneWaySync.java,v $
 // $RCSfile: OneWaySync.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/01/27 01:49:42 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.util.wanderer;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
-/** 
+/**
  * The OneWaySync is a class that copies files from one directory to
  * another, skipping specified extensions or only copying files and
- * directories with specified extensions.  It's used by the OpenMap
+ * directories with specified extensions. It's used by the OpenMap
  * team to keep the internal CVS tree in sync with the external one.
  * The main() function has the avoid/limit suffixes hard-coded, you
  * can extend or change the settings in a different class.
@@ -96,8 +99,8 @@ public class OneWaySync extends Wanderer implements WandererCallback {
     }
 
     /**
-     * Check to see if a source file name should be skipped,
-     * based on the avoid and limit list.
+     * Check to see if a source file name should be skipped, based on
+     * the avoid and limit list.
      */
     protected boolean checkToSkipFile(String name) {
         if (fileSuffixAvoids != null) {
@@ -139,8 +142,10 @@ public class OneWaySync extends Wanderer implements WandererCallback {
         if (!checkToSkipDirectory(newDirName)) {
             File newDir = getTargetFile(newDirName);
             if (!newDir.exists()) {
-                if (verbose) Debug.output("Creating " + newDir);
-                if (!fakeit && overwrite) newDir.mkdir();
+                if (verbose)
+                    Debug.output("Creating " + newDir);
+                if (!fakeit && overwrite)
+                    newDir.mkdir();
             }
             super.handleDirectory(directory, contentNames);
         } else {
@@ -162,8 +167,10 @@ public class OneWaySync extends Wanderer implements WandererCallback {
 
         if (!checkToSkipFile(newFileName)) {
             File newFile = getTargetFile(newFileName);
-            if (verbose) Debug.output("Copying " + file + " to " + newFile);
-            if (!fakeit && overwrite) copy(file, newFile);
+            if (verbose)
+                Debug.output("Copying " + file + " to " + newFile);
+            if (!fakeit && overwrite)
+                copy(file, newFile);
         } else {
             notCopiedList.add(file);
         }
@@ -186,7 +193,8 @@ public class OneWaySync extends Wanderer implements WandererCallback {
             fos.close();
 
         } catch (IOException ioe) {
-                Debug.error("Exception reading from " + fromFile + " and writing to " + toFile);
+            Debug.error("Exception reading from " + fromFile
+                    + " and writing to " + toFile);
         }
     }
 
@@ -206,25 +214,25 @@ public class OneWaySync extends Wanderer implements WandererCallback {
         return subtractPathFromDirectory(tgt, file);
     }
 
-    /** 
+    /**
      * Tack the file path onto the source directory.
      */
     public File getSourceFile(String relativePath) {
         return new File(src, relativePath);
     }
 
-    /** 
+    /**
      * Tack the file path onto the target directory.
      */
     public File getTargetFile(String relativePath) {
         return new File(tgt, relativePath);
     }
 
-    /** 
+    /**
      * Print out the files/directories not copied.
      */
     public void writeUnsynched() {
-        for (Iterator it = notCopiedList.iterator();it.hasNext();) {
+        for (Iterator it = notCopiedList.iterator(); it.hasNext();) {
             Debug.output("  " + it.next());
         }
     }
@@ -256,11 +264,12 @@ public class OneWaySync extends Wanderer implements WandererCallback {
             try {
                 String relative = name.substring(index + dirName.length() + 1);
                 if (Debug.debugging("sync")) {
-                    Debug.output("From " + file + ", returning " + relative );
+                    Debug.output("From " + file + ", returning " + relative);
                 }
                 return relative;
             } catch (StringIndexOutOfBoundsException sioobe) {
-                Debug.output("Problem clipping first " + (dirName.length() + 1) + " characters off " + file);
+                Debug.output("Problem clipping first " + (dirName.length() + 1)
+                        + " characters off " + file);
                 return null;
             }
         } else {
@@ -278,25 +287,26 @@ public class OneWaySync extends Wanderer implements WandererCallback {
         if (src == null) {
             errorMessage = "OneWaySync:  Source directory unspecified";
         } else if (!src.exists()) {
-            errorMessage = "OneWaySync:  Source directory (" + src + 
-                ") doesn't exist!";
+            errorMessage = "OneWaySync:  Source directory (" + src
+                    + ") doesn't exist!";
         }
 
         if (tgt != null) {
             if (!tgt.exists()) {
                 if (verbose) {
-                    Debug.output("OneWaySync:  target directory (" + tgt + 
-                                 ") doesn't exist, creating...");
+                    Debug.output("OneWaySync:  target directory (" + tgt
+                            + ") doesn't exist, creating...");
                 }
 
                 try {
                     if (!fakeit && !tgt.mkdir()) {
-                        errorMessage = "OneWaySync:  target directory (" + tgt + 
-                            ") can't be created.";
+                        errorMessage = "OneWaySync:  target directory (" + tgt
+                                + ") can't be created.";
                     }
                 } catch (SecurityException se) {
-                    errorMessage = "OneWaySync:  creating target directory (" + tgt + 
-                        ") isn't allowed, Security Exception: " + se.getMessage();
+                    errorMessage = "OneWaySync:  creating target directory ("
+                            + tgt + ") isn't allowed, Security Exception: "
+                            + se.getMessage();
                     se.printStackTrace();
                 }
             }
@@ -351,11 +361,18 @@ public class OneWaySync extends Wanderer implements WandererCallback {
         boolean toUpper = true;
 
         ArgParser ap = new ArgParser("OneWaySync");
-        ap.add("source", "The source directory to copy files and directories from.", 1);
-        ap.add("target", "The target directory to receive the updated files and directories.", 1);
-        ap.add("verbose", "Announce all changes, failures will still be reported.");
-        ap.add("fakeit", "Just print what would happen, don't really do anything.");
-        ap.add("report", "Print out what didn't get copied, and what files exist only on the target side.");
+        ap.add("source",
+                "The source directory to copy files and directories from.",
+                1);
+        ap.add("target",
+                "The target directory to receive the updated files and directories.",
+                1);
+        ap.add("verbose",
+                "Announce all changes, failures will still be reported.");
+        ap.add("fakeit",
+                "Just print what would happen, don't really do anything.");
+        ap.add("report",
+                "Print out what didn't get copied, and what files exist only on the target side.");
 
         if (argv.length < 4) {
             ap.bail("", true);
@@ -385,7 +402,8 @@ public class OneWaySync extends Wanderer implements WandererCallback {
         String[] sourceDir;
         sourceDir = ap.getArgValues("source");
         if (sourceDir != null || sourceDir.length < 1) {
-            if (verbose) Debug.output("Source directory is " + sourceDir[0]);
+            if (verbose)
+                Debug.output("Source directory is " + sourceDir[0]);
         } else {
             ap.bail("OneWaySync needs path to source directory", false);
         }
@@ -393,7 +411,8 @@ public class OneWaySync extends Wanderer implements WandererCallback {
         String[] targetDir;
         targetDir = ap.getArgValues("target");
         if (targetDir != null || targetDir.length < 1) {
-            if (verbose) Debug.output("Target directory is " + targetDir[0]);
+            if (verbose)
+                Debug.output("Target directory is " + targetDir[0]);
         } else {
             ap.bail("OneWaySync needs path to source directory", false);
         }
@@ -401,9 +420,9 @@ public class OneWaySync extends Wanderer implements WandererCallback {
         OneWaySync cc = new OneWaySync(sourceDir[0], targetDir[0]);
         cc.setVerbose(verbose);
         cc.setFakeit(fakeit);
-        cc.setDirSuffixAvoids(new String[] {"CVS"});
-        cc.setFileSuffixLimits(new String[] {".java", "Makefile", ".cvsignore",
-                                             ".html", ".properties", ".txt", ".c", ".h"});
+        cc.setDirSuffixAvoids(new String[] { "CVS" });
+        cc.setFileSuffixLimits(new String[] { ".java", "Makefile",
+                ".cvsignore", ".html", ".properties", ".txt", ".c", ".h" });
         cc.start();
         if (report) {
             Debug.output("-------- Not Copied --------");
@@ -423,7 +442,7 @@ public class OneWaySync extends Wanderer implements WandererCallback {
                 verbose = true;
             }
             start();
-            
+
             Debug.output("-------- Only In Target Directory--------");
             writeUnsynched();
             Debug.output("-----------------------------------------");

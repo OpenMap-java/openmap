@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,45 +12,37 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PointStateMachine.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PointStateMachine.java,v
+// $
 // $RCSfile: PointStateMachine.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
-
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.net.URL;
-import java.util.*;
-import javax.swing.ImageIcon;
-
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.util.Debug;
 
 public class PointStateMachine extends EOMGStateMachine {
 
-    public PointStateMachine(EditableOMPoint point){
+    public PointStateMachine(EditableOMPoint point) {
         super(point);
     }
 
-
-    protected State[] init(){
+    protected State[] init() {
         State[] states = super.init();
         Debug.message("eomg", "PointStateMachine.init()");
 
         //  These are the only two states that need something special
         //  to happen.
-        states[GRAPHIC_EDIT] = new PointEditState((EditableOMPoint)graphic);
-        states[GRAPHIC_UNDEFINED] = new PointUndefinedState((EditableOMPoint)graphic);
-        states[GRAPHIC_SETOFFSET] = new PointSetOffsetState((EditableOMPoint)graphic);
+        states[GRAPHIC_EDIT] = new PointEditState((EditableOMPoint) graphic);
+        states[GRAPHIC_UNDEFINED] = new PointUndefinedState((EditableOMPoint) graphic);
+        states[GRAPHIC_SETOFFSET] = new PointSetOffsetState((EditableOMPoint) graphic);
         return states;
     }
 }

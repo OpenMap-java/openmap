@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,39 +14,30 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerStatusPane.java,v $
 // $RCSfile: LayerStatusPane.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.gui;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.io.Serializable;
 import java.net.URL;
-import java.util.*;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.event.*;
-import javax.accessibility.*;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.event.LayerStatusEvent;
 import com.bbn.openmap.event.LayerStatusListener;
-import com.bbn.openmap.util.Debug;
 
-/** 
+/**
  * A LayerStatusPane is an extension to the LayerPane, where it is a
  * listener to the Layer and shows the layer status in the GUI.
  */
-public class LayerStatusPane extends LayerPane 
-    implements LayerStatusListener {
+public class LayerStatusPane extends LayerPane implements LayerStatusListener {
 
     // the icons
     protected static transient ImageIcon layerWorking;
@@ -62,17 +53,18 @@ public class LayerStatusPane extends LayerPane
     static {
         URL working = LayerStatusPane.class.getResource("BulbWorking.gif");
         layerWorking = new ImageIcon(working, "layer working");
-        URL done  = LayerStatusPane.class.getResource("BulbDone.gif");
+        URL done = LayerStatusPane.class.getResource("BulbDone.gif");
         layerDone = new ImageIcon(done, "layer displayed");
     }
 
     /**
-     *  @param layer the layer to be represented by the pane.
-     *  @param bg the buttongroup for the layer
-     *  @param layerHandler the LayerHandler that contains information
-     *  about the Layers. 
+     * @param layer the layer to be represented by the pane.
+     * @param bg the buttongroup for the layer
+     * @param layerHandler the LayerHandler that contains information
+     *        about the Layers.
      */
-    public LayerStatusPane(Layer layer, LayerHandler layerHandler, ButtonGroup bg) {
+    public LayerStatusPane(Layer layer, LayerHandler layerHandler,
+            ButtonGroup bg) {
         super(layer, layerHandler, bg);
         getLayer().addLayerStatusListener(this);
     }
@@ -83,6 +75,7 @@ public class LayerStatusPane extends LayerPane
 
     /**
      * Update the Layer status. LayerStatusListener interface method.
+     * 
      * @param evt LayerStatusEvent
      */
     public void updateLayerStatus(LayerStatusEvent evt) {

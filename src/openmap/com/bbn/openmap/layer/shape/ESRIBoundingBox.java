@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,30 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIBoundingBox.java,v $
 // $RCSfile: ESRIBoundingBox.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.shape;
 
 /**
- * A bounding box is a rectangle that fully encloses some number
- * of shapes.  The rectangle is represented as four doubles, xmin
- * ymin, xmax, and ymax.
- *
- *
+ * A bounding box is a rectangle that fully encloses some number of
+ * shapes. The rectangle is represented as four doubles, xmin ymin,
+ * xmax, and ymax.
+ * 
+ * 
  * <H2>To Do</H2>
  * <UL>
- * <LI> Make addPoint take two doubles to avoid unnecessarily
- *      consing ESRIPoints to add to the box.</LI>
+ * <LI>Make addPoint take two doubles to avoid unnecessarily consing
+ * ESRIPoints to add to the box.</LI>
  * </UL>
- *
+ * 
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.2 $ $Date: 2004/01/26 18:18:11 $
+ * @version $Revision: 1.3 $ $Date: 2004/10/14 18:06:04 $
  */
 public class ESRIBoundingBox {
 
@@ -48,15 +47,15 @@ public class ESRIBoundingBox {
     public ESRIPoint max;
 
     /**
-     * Initialize a null bounding box.  All coordinates are set to zero.
+     * Initialize a null bounding box. All coordinates are set to
+     * zero.
      */
-    public ESRIBoundingBox() {
-    }
+    public ESRIBoundingBox() {}
 
     /**
-     * Initialize a bounding box from a point.  The bounding box
-     * is initialized to encompass the given point.
-     *
+     * Initialize a bounding box from a point. The bounding box is
+     * initialized to encompass the given point.
+     * 
      * @param point the point to enclose
      */
     public ESRIBoundingBox(ESRIPoint point) {
@@ -64,9 +63,10 @@ public class ESRIBoundingBox {
     }
 
     /**
-     * Initialize a bounding box from two doubles representing a point.
-     * The bounding box is initialized to encompass the given location.
-     *
+     * Initialize a bounding box from two doubles representing a
+     * point. The bounding box is initialized to encompass the given
+     * location.
+     * 
      * @param x the x coordinate
      * @param y the y coordinate
      */
@@ -76,9 +76,9 @@ public class ESRIBoundingBox {
 
     /**
      * Initialize a bounding box to encompass a minimum and maximum
-     * point.  The bounding box is initialized to fully encompass
-     * both points.
-     *
+     * point. The bounding box is initialized to fully encompass both
+     * points.
+     * 
      * @param _min a point to enclose
      * @param _max another point to enclose
      */
@@ -88,9 +88,9 @@ public class ESRIBoundingBox {
     }
 
     /**
-     * Increase the extents of this bounding box to enclose
-     * the given bounding box.
-     *
+     * Increase the extents of this bounding box to enclose the given
+     * bounding box.
+     * 
      * @param bb a bounding box to be enclosed
      */
     public void addBounds(ESRIBoundingBox bb) {
@@ -99,9 +99,9 @@ public class ESRIBoundingBox {
     }
 
     /**
-     * Increase the extents of this bounding box to enclose all of
-     * the given points.
-     *
+     * Increase the extents of this bounding box to enclose all of the
+     * given points.
+     * 
      * @param points a set of points to enclose
      */
     public void addPoints(ESRIPoint[] points) {
@@ -111,9 +111,9 @@ public class ESRIBoundingBox {
     }
 
     /**
-     * Increase the extents of this bounding box to enclose
-     * the given point.
-     *
+     * Increase the extents of this bounding box to enclose the given
+     * point.
+     * 
      * @param point a point to enclose
      */
     public void addPoint(ESRIPoint point) {
@@ -121,7 +121,7 @@ public class ESRIBoundingBox {
     }
 
     /**
-     *
+     *  
      */
     public void addPoint(double x, double y) {
         if (min == null) {
@@ -141,10 +141,10 @@ public class ESRIBoundingBox {
 
     /**
      * Determines equality with another bounding box
-     *
+     * 
      * @param obj a candidate object
      * @return <code>true</code> if <code>obj</code> is of type
-     *         <code>ESRIBoundingBox</code> <b><i>and</i></b> the
+     *         <code>ESRIBoundingBox</code> <b><i>and </i> </b> the
      *         extents of that bounding box match this box's extents.
      *         <code>false</code> otherwise.
      */

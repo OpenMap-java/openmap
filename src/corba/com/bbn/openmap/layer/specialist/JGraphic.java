@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,22 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JGraphic.java,v $
 // $RCSfile: JGraphic.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.specialist;
 
-
 import com.bbn.openmap.CSpecialist.CColorPackage.EColor;
-import com.bbn.openmap.CSpecialist.EComp;
 import com.bbn.openmap.CSpecialist.GraphicPackage.*;
-import com.bbn.openmap.CSpecialist.UGraphic;
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.Projection;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.Serializable;
@@ -43,25 +38,24 @@ public class JGraphic implements Serializable {
     public final static int GRAPHICTYPE_NEW = 11;
     public final static int GRAPHICTYPE_REORDER = 12;
 
-
     private JGraphic() {}
 
     public static void fillOMGraphicParams(OMGraphic newbie, EGraphic egraphic) {
 
-//      newbie.setGraphicID(egraphic.gID);
+        //      newbie.setGraphicID(egraphic.gID);
         newbie.setLineType(getOMGraphicLineType(egraphic.lType.value()));
         newbie.setRenderType(getOMGraphicRenderType(egraphic.rType.value()));
-//      newbie.setGraphicType(getOMGraphicType(egraphic.gType.value()));
+        //      newbie.setGraphicType(getOMGraphicType(egraphic.gType.value()));
         newbie.setStroke(new BasicStroke(egraphic.lineWidth));
         newbie.setDeclutterType(egraphic.dcType.value());
         newbie.setLinePaint(getColor(egraphic.color));
         newbie.setFillPaint(getColor(egraphic.fillColor));
 
         if (newbie instanceof JObjectHolder)
-            ((JObjectHolder)newbie).setObject(egraphic.obj);
+            ((JObjectHolder) newbie).setObject(egraphic.obj);
     }
 
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
     /** getRenderType() */
     public static int getOMGraphicRenderType(int cRenderType) {
@@ -73,7 +67,7 @@ public class JGraphic implements Serializable {
         case RenderType._RT_Offset:
             rType = OMGraphic.RENDERTYPE_OFFSET;
             break;
-        default:                                // default to XY
+        default: // default to XY
             rType = OMGraphic.RENDERTYPE_XY;
             break;
         }
@@ -112,7 +106,7 @@ public class JGraphic implements Serializable {
         case DeclutterType._DC_Line:
             dcType = OMGraphic.DECLUTTERTYPE_LINE;
             break;
-        default: 
+        default:
             dcType = OMGraphic.DECLUTTERTYPE_NONE;
             break;
         }
@@ -150,13 +144,13 @@ public class JGraphic implements Serializable {
         case GraphicType._GT_Raster:
             gtype = OMGraphic.GRAPHICTYPE_RASTER;
             break;
-          case GraphicType._GT_ForceArrow:
+        case GraphicType._GT_ForceArrow:
             gtype = GRAPHICTYPE_FORCEARROW;
             break;
-          case GraphicType._GT_NewGraphic:
+        case GraphicType._GT_NewGraphic:
             gtype = GRAPHICTYPE_NEW;
             break;
-          case GraphicType._GT_ReorderGraphic:
+        case GraphicType._GT_ReorderGraphic:
             gtype = GRAPHICTYPE_REORDER;
             break;
         default:
@@ -170,122 +164,109 @@ public class JGraphic implements Serializable {
     public static Color getColor(EColor color) {
         Color ret;
         if (color != null) {
-            if ((color.red == 0) &&
-                (color.green == 0) &&
-                (color.blue == 0) &&
-                (color.color == null))
-            {
+            if ((color.red == 0) && (color.green == 0) && (color.blue == 0)
+                    && (color.color == null)) {
                 ret = null;
+            } else {
+                ret = new Color(((color.red >> 8) & 0x00FF), ((color.green >> 8) & 0x00FF), ((color.blue >> 8) & 0x00FF));
             }
-            else{
-                ret = new Color(  ((color.red >> 8) & 0x00FF),
-                                  ((color.green >> 8) & 0x00FF),
-                                  ((color.blue >> 8) & 0x00FF));
-            }
-        }
-        else {
+        } else {
             ret = null;
         }
         return ret;
     }
 
-//    public static OMStipple getOMStipple(
-//      com.bbn.openmap.CSpecialist.CStipplePackage.EStipple estip)
-//    {
-//      System.err.println("EGraphic.getOMStipple: unimplemented");
-//      return (OMStipple) null;
-//    }
+    //    public static OMStipple getOMStipple(
+    //      com.bbn.openmap.CSpecialist.CStipplePackage.EStipple estip)
+    //    {
+    //      System.err.println("EGraphic.getOMStipple: unimplemented");
+    //      return (OMStipple) null;
+    //    }
 
+    //////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////
+    /**
+     * constructGesture() - constructs a CSpecialist.MouseEvent from a
+     * MapGesture
+     */
+    protected static com.bbn.openmap.CSpecialist.MouseEvent constructGesture(
+                                                                             MapGesture gest) {
 
-
-    /** constructGesture() - constructs a CSpecialist.MouseEvent from
-        a MapGesture */
-    protected static com.bbn.openmap.CSpecialist.MouseEvent constructGesture(MapGesture gest) {
-
-        com.bbn.openmap.CSpecialist.Mouse mouse =
-            new com.bbn.openmap.CSpecialist.Mouse();
+        com.bbn.openmap.CSpecialist.Mouse mouse = new com.bbn.openmap.CSpecialist.Mouse();
 
         // set the mouse parameters
-        mouse.point = new com.bbn.openmap.CSpecialist.XYPoint(
-            (short)gest.point.x, (short)gest.point.y);
-        mouse.llpoint = new com.bbn.openmap.CSpecialist.LLPoint(
-            gest.llpoint.getLatitude(), gest.llpoint.getLongitude());
+        mouse.point = new com.bbn.openmap.CSpecialist.XYPoint((short) gest.point.x, (short) gest.point.y);
+        mouse.llpoint = new com.bbn.openmap.CSpecialist.LLPoint(gest.llpoint.getLatitude(), gest.llpoint.getLongitude());
         mouse.press = gest.press;
         mouse.mousebutton = gest.mousebutton;
-        mouse.modifiers = new com.bbn.openmap.CSpecialist.key_modifiers(
-            gest.alt, gest.shift, gest.control);
-//      mouse.modifiers.meta = gest.meta;
+        mouse.modifiers = new com.bbn.openmap.CSpecialist.key_modifiers(gest.alt, gest.shift, gest.control);
+        //      mouse.modifiers.meta = gest.meta;
 
         // construct the CSpecialist.MouseEvent
-        com.bbn.openmap.CSpecialist.MouseEvent event =
-            new com.bbn.openmap.CSpecialist.MouseEvent();
+        com.bbn.openmap.CSpecialist.MouseEvent event = new com.bbn.openmap.CSpecialist.MouseEvent();
         switch (gest.event_type) {
-          case com.bbn.openmap.CSpecialist.MouseType._ClickEvent:
-              event.click(mouse);
-              break;
-          case com.bbn.openmap.CSpecialist.MouseType._MotionEvent:
-              event.motion(mouse);
-              break;
-          case com.bbn.openmap.CSpecialist.MouseType._KeyEvent:
-              event.keypress(new com.bbn.openmap.CSpecialist.Keypress(
-                  mouse.point, gest.key, mouse.modifiers));
-              break;
-          default:
-              System.err.println("JGraphic.constructGesture() - invalid type");
+        case com.bbn.openmap.CSpecialist.MouseType._ClickEvent:
+            event.click(mouse);
+            break;
+        case com.bbn.openmap.CSpecialist.MouseType._MotionEvent:
+            event.motion(mouse);
+            break;
+        case com.bbn.openmap.CSpecialist.MouseType._KeyEvent:
+            event.keypress(new com.bbn.openmap.CSpecialist.Keypress(mouse.point, gest.key, mouse.modifiers));
+            break;
+        default:
+            System.err.println("JGraphic.constructGesture() - invalid type");
         }
         return event;
     }
 
-
-    public static void update(JObjectHolder graphic,
+    public static void update(
+                              JObjectHolder graphic,
                               com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
 
         // do the updates, but don't rerender just yet
         switch (update.discriminator().value()) {
 
-              // mousable object changed
-          case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_object:
-              graphic.setObject(update.obj());
-              break;
+        // mousable object changed
+        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_object:
+            graphic.setObject(update.obj());
+            break;
 
-              // line type changed
-          case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_lType:
-              ((OMGraphic)graphic).setLineType(update.lType().value());
-              break;
+        // line type changed
+        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_lType:
+            ((OMGraphic) graphic).setLineType(update.lType().value());
+            break;
 
-              // render type changed
-          case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_rType:
-              ((OMGraphic)graphic).setRenderType(update.rType().value());
-              break;
+        // render type changed
+        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_rType:
+            ((OMGraphic) graphic).setRenderType(update.rType().value());
+            break;
 
-          case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_color:
-              ((OMGraphic)graphic).setLinePaint(getColor(update.color()));
-              break;
+        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_color:
+            ((OMGraphic) graphic).setLinePaint(getColor(update.color()));
+            break;
 
-          case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_fillColor:
-              ((OMGraphic)graphic).setFillPaint(getColor(update.fillColor()));
-              break;
+        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_fillColor:
+            ((OMGraphic) graphic).setFillPaint(getColor(update.fillColor()));
+            break;
 
-          case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_lineWidth:
-              ((OMGraphic)graphic).setStroke(new BasicStroke(update.lineWidth()));
-              break;
+        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_lineWidth:
+            ((OMGraphic) graphic).setStroke(new BasicStroke(update.lineWidth()));
+            break;
 
-          case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_stipple:
-              System.err.println("ignoring stipple");
-//            ((OMGraphic)graphic).setStipple(getOMStipple(update.stipple()));
-              break;
+        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_stipple:
+            System.err.println("ignoring stipple");
+            //            ((OMGraphic)graphic).setStipple(getOMStipple(update.stipple()));
+            break;
 
-          case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_fillStipple:
-              System.err.println("ignoring fill stipple");
-//            ((OMGraphic)graphic).setFillStipple(getOMStipple(update.fillStipple()));
-              break;
+        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_fillStipple:
+            System.err.println("ignoring fill stipple");
+            //            ((OMGraphic)graphic).setFillStipple(getOMStipple(update.fillStipple()));
+            break;
 
-          default:
-              System.err.println(
-                  "JGraphic.update: invalid graphic update");
-              break;
+        default:
+            System.err.println("JGraphic.update: invalid graphic update");
+            break;
         }
     }
 }

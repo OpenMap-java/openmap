@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.14 $
-// $Date: 2004/09/17 19:34:33 $
+// $Revision: 1.15 $
+// $Date: 2004/10/14 18:05:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,12 +29,9 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
 import java.util.Properties;
-
 import java.util.List;
 import java.util.ArrayList;
-import java.awt.MenuItem;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -45,8 +42,6 @@ import com.bbn.openmap.omGraphics.awt.TextShapeDecoration;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.omGraphics.awt.*;
-import com.bbn.openmap.omGraphics.event.*;
-import com.bbn.openmap.omGraphics.geom.*;
 import com.bbn.openmap.omGraphics.labeled.LabeledOMSpline;
 import com.bbn.openmap.omGraphics.meteo.*;
 import com.bbn.openmap.proj.Length;
@@ -59,21 +54,22 @@ import com.bbn.openmap.util.PaletteHelper;
 /**
  * This layer demonstrates interactive capabilities of OpenMap.
  * Instantiating this layer should show an icon loaded using HTTP
- * Protocol, which represents Boston, MA in USA.  Above Boston it
+ * Protocol, which represents Boston, MA in USA. Above Boston it
  * should show a square that would change color when mouse is moved
- * over it in 'Gesture' mode.  Also clicking once brings up a message
- * box and more than once brings up browser.  <P>
- *
+ * over it in 'Gesture' mode. Also clicking once brings up a message
+ * box and more than once brings up browser.
+ * <P>
+ * 
  * The DemoLayer has also been modified to demonstrate the first uses
- * of the OMDrawingTool.  The Palette has buttons that can be used to
+ * of the OMDrawingTool. The Palette has buttons that can be used to
  * start the tool in several different ways.
  * 
  * @see com.bbn.openmap.layer.DemoLayer
  * 
  * Just added some decorated splines to test them. EL
  */
-public class DemoLayer extends OMGraphicHandlerLayer
-        implements DrawingToolRequestor {
+public class DemoLayer extends OMGraphicHandlerLayer implements
+        DrawingToolRequestor {
 
     protected JPanel legend;
 
@@ -84,14 +80,14 @@ public class DemoLayer extends OMGraphicHandlerLayer
         // received.
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this, true));
         // Making the setting so this layer receives events from the
-        // SelectMouseMode, which has a modeID of "Gestures".  Other
+        // SelectMouseMode, which has a modeID of "Gestures". Other
         // IDs can be added as needed.
-        setMouseModeIDsForEvents(new String[] {"Gestures"});
+        setMouseModeIDsForEvents(new String[] { "Gestures" });
     }
 
     public void paint(java.awt.Graphics g) {
         // Super calls the RenderPolicy that makes decisions on how to
-        // paint the OMGraphicList.  The only reason we have this
+        // paint the OMGraphicList. The only reason we have this
         // method overridden is to paint the legend if it exists.
         super.paint(g);
         if (legend != null) {
@@ -102,18 +98,19 @@ public class DemoLayer extends OMGraphicHandlerLayer
     public void init() {
 
         // This layer has a set OMGraphicList, created when the layer
-        // is created.  It uses the StandardPCPolicy for new
+        // is created. It uses the StandardPCPolicy for new
         // projections, which keeps the list intact and simply calls
         // generate() on it with the new projection, and repaint()
-        // which calls paint().  If you want a more dynamic layer,
+        // which calls paint(). If you want a more dynamic layer,
         // don't bother creating your list right away - Override the
         // prepare() method, which gets called by the
-        // ProjectionChangePolicy when the projection changes.  See
+        // ProjectionChangePolicy when the projection changes. See
         // OMGraphicHandlerLayer.
 
         OMGraphicList omList = (OMGraphicList) getList();
 
-        //      Location loc = new URLRasterLocation(42.3583f,-71.06f,"Boston,Massachusetts,USA","http://javamap.bbn.com:4711/appletimages/city.gif");
+        //      Location loc = new
+        // URLRasterLocation(42.3583f,-71.06f,"Boston,Massachusetts,USA","http://javamap.bbn.com:4711/appletimages/city.gif");
         //      //loc.setLocationColor(Color.blue);
         //      loc.setShowLocation(true);
         //      loc.setShowName(true);
@@ -156,43 +153,36 @@ public class DemoLayer extends OMGraphicHandlerLayer
         llPointsy[4] = 84;
         llPointsx[4] = 369;
 
-        LabeledOMSpline spline =
-            new LabeledOMSpline(
-                40f,
-                -72,
-                llPointsx,
-                llPointsy,
-                OMPoly.COORDMODE_ORIGIN);
+        LabeledOMSpline spline = new LabeledOMSpline(40f, -72, llPointsx, llPointsy, OMPoly.COORDMODE_ORIGIN);
         spline.setText("Testing");
         spline.setLocateAtCenter(true);
-//      spline.setIndex(2);
+        //      spline.setIndex(2);
         omList.add(spline);
 
         OMSpline spline2 = new OMSpline(llPointsx, llPointsy);
         omList.add(spline2);
 
-        float[] llPoints =
-            { 55.0f, -10.0f, 50.0f, -5.0f, 45.0f, -7.0f, 43.0f, -12.0f, 55.0f, -10.0f};
-        OMDecoratedSpline omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES,
-                                                       OMSpline.LINETYPE_STRAIGHT);
+        float[] llPoints = { 55.0f, -10.0f, 50.0f, -5.0f, 45.0f, -7.0f, 43.0f,
+                -12.0f, 55.0f, -10.0f };
+        OMDecoratedSpline omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         ShapeDecorator sd = new ShapeDecorator();
         sd.addDecoration(new LineShapeDecoration(5, com.bbn.openmap.omGraphics.OMColor.clear));
         sd.addDecoration(new IceAreaShapeDecoration(7, 7, IceAreaShapeDecoration.RIGHT));
         omds.setDecorator(sd);
         omList.add(omds);
 
-        llPoints = new float[] { 56.0f, -11.0f, 51.0f, -6.0f, 46.0f, -8.0f, 44.0f, -13.0f, 56.0f, -11.0f };
-        omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES,
-                                     OMSpline.LINETYPE_STRAIGHT);
+        llPoints = new float[] { 56.0f, -11.0f, 51.0f, -6.0f, 46.0f, -8.0f,
+                44.0f, -13.0f, 56.0f, -11.0f };
+        omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         sd = new ShapeDecorator();
         sd.addDecoration(new LineShapeDecoration(3, com.bbn.openmap.omGraphics.OMColor.clear));
         sd.addDecoration(new CircleShapeDecoration(5, 5, Color.blue));
         omds.setDecorator(sd);
         omList.add(omds);
 
-        llPoints = new float[] { 57.0f, -12.0f, 52.0f, -7.0f, 47.0f, -9.0f, 45.0f, -14.0f, 57.0f, -12.0f };
-        omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES,
-                                     OMSpline.LINETYPE_STRAIGHT);
+        llPoints = new float[] { 57.0f, -12.0f, 52.0f, -7.0f, 47.0f, -9.0f,
+                45.0f, -14.0f, 57.0f, -12.0f };
+        omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         sd = new ShapeDecorator();
         sd.addDecoration(new LineShapeDecoration(2, com.bbn.openmap.omGraphics.OMColor.clear));
         sd.addDecoration(new CircleShapeDecoration(5, 5, Color.red));
@@ -201,85 +191,62 @@ public class DemoLayer extends OMGraphicHandlerLayer
         omds.setDecorator(sd);
         omList.add(omds);
 
-        float[] llPoints2 =
-            { 55.0f, -12.0f, 50.0f, -7.0f, 45.0f, -9.0f, 43.0f, -14.0f };
-        OMHotSurfaceFront hf =
-            new OMHotSurfaceFront(
-                llPoints2,
-                OMSpline.DECIMAL_DEGREES,
-                OMSpline.LINETYPE_STRAIGHT);
+        float[] llPoints2 = { 55.0f, -12.0f, 50.0f, -7.0f, 45.0f, -9.0f, 43.0f,
+                -14.0f };
+        OMHotSurfaceFront hf = new OMHotSurfaceFront(llPoints2, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         omList.add(hf);
-        float[] llPoints3 =
-            { 55.0f, -14.0f, 50.0f, -9.0f, 45.0f, -11.0f, 43.0f, -16.0f };
-        OMOcclusion oc =
-            new OMOcclusion(
-                llPoints3,
-                OMSpline.DECIMAL_DEGREES,
-                OMSpline.LINETYPE_STRAIGHT);
+        float[] llPoints3 = { 55.0f, -14.0f, 50.0f, -9.0f, 45.0f, -11.0f,
+                43.0f, -16.0f };
+        OMOcclusion oc = new OMOcclusion(llPoints3, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         omList.add(oc);
 
-        float[] llPoints4 =
-            { 55.0f, -16.0f, 50.0f, -11.0f, 45.0f, -13.0f, 43.0f, -18.0f };
-        OMSpline spline3 =
-            new OMDecoratedSpline(
-                llPoints4,
-                OMSpline.DECIMAL_DEGREES,
-                OMSpline.LINETYPE_STRAIGHT) {
-                protected void initDecorations() {
+        float[] llPoints4 = { 55.0f, -16.0f, 50.0f, -11.0f, 45.0f, -13.0f,
+                43.0f, -18.0f };
+        OMSpline spline3 = new OMDecoratedSpline(llPoints4,
+                OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT) {
+            protected void initDecorations() {
 
-                    getDecorator().addDecoration(
-                        new TextShapeDecoration(
-                            " This one has a text ",
-                            new Font("arial", Font.PLAIN, 10),
-                            TextShapeDecoration.LEFT_TO_RIGHT
-                            + TextShapeDecoration.FOLLOW_POLY,
-                            TextShapeDecoration.CENTER));
-                }
-            };
-//      omList.add(spline3);
+                getDecorator().addDecoration(new TextShapeDecoration(" This one has a text ", new Font("arial", Font.PLAIN, 10), TextShapeDecoration.LEFT_TO_RIGHT
+                        + TextShapeDecoration.FOLLOW_POLY, TextShapeDecoration.CENTER));
+            }
+        };
+        //      omList.add(spline3);
 
-        OMLine line =
-            new OMLine(40f, -75f, 42f, -70f, OMGraphic.LINETYPE_STRAIGHT);
-//      line.addArrowHead(true);
+        OMLine line = new OMLine(40f, -75f, 42f, -70f, OMGraphic.LINETYPE_STRAIGHT);
+        //      line.addArrowHead(true);
         line.addArrowHead(OMArrowHead.ARROWHEAD_DIRECTION_BOTH);
         line.setStroke(new BasicStroke(2));
         omList.add(line);
 
         OMGraphicList pointList = new OMGraphicList();
         for (int i = 0; i < 100; i++) {
-            point =
-                new OMPoint(
-                    (float) (Math.random() * 89f),
-                    (float) (Math.random() * -179f),
-                    3);
+            point = new OMPoint((float) (Math.random() * 89f), (float) (Math.random() * -179f), 3);
             point.setSelectPaint(Color.yellow);
             pointList.add(point);
         }
         omList.add(pointList);
 
-        OMEllipse ell = new OMEllipse(new LatLonPoint(60f, -110), 
-                                      1000, 300, Length.NM,
-                                      com.bbn.openmap.MoreMath.HALF_PI/2.0);
+        OMEllipse ell = new OMEllipse(new LatLonPoint(60f, -110), 1000, 300, Length.NM, com.bbn.openmap.MoreMath.HALF_PI / 2.0);
 
         ell.setLinePaint(Color.blue);
         //      ell.setFillPaint(Color.yellow);
         omList.add(ell);
 
-        ell = new OMEllipse(new LatLonPoint(40f, -75), 
-                            800, 250, Length.MILE, 0);
+        ell = new OMEllipse(new LatLonPoint(40f, -75), 800, 250, Length.MILE, 0);
 
         ell.setFillPaint(Color.yellow);
         omList.add(ell);
 
-        float[] llp2 = new float[] {0.41789755f, -1.435303f, 0.41813868f, -1.3967744f};
+        float[] llp2 = new float[] { 0.41789755f, -1.435303f, 0.41813868f,
+                -1.3967744f };
 
         OMPoly p2 = new OMPoly(llp2, OMGraphic.RADIANS, OMGraphic.LINETYPE_RHUMB);
         p2.setLinePaint(Color.yellow);
         omList.add(p2);
 
-//      OMArc arc = new OMArc(40f, 65f, 750f, Length.MILE, 20f, 95f);
-        OMArc arc = new OMArc((float)40.0, (float)65.0, 
-                              (float)750.0, Length.MILE, (float)20.0, (float)95.0);
+        //      OMArc arc = new OMArc(40f, 65f, 750f, Length.MILE, 20f,
+        // 95f);
+        OMArc arc = new OMArc((float) 40.0, (float) 65.0, (float) 750.0, Length.MILE, (float) 20.0, (float) 95.0);
         arc.setLinePaint(Color.red);
         arc.setFillPaint(new Color(120, 0, 0, 128));
         arc.setArcType(java.awt.geom.Arc2D.PIE);
@@ -289,21 +256,26 @@ public class DemoLayer extends OMGraphicHandlerLayer
 
         combo.addOMGraphic(new OMLine((float) 50.453333, (float) 5.223889, (float) 50.375278, (float) 4.873889, 2));
         combo.addOMGraphic(new OMLine((float) 50.375278, (float) 4.873889, (float) 50.436944, (float) 4.860556, 2));
-//      combo.addOMGraphic(new OMLine((float) 50.436944, (float) 4.860556, (float) 50.436667, (float) 4.860833, 2));
-//      combo.addOMGraphic(new OMLine((float) 50.436667, (float) 4.860833, (float) 50.490833, (float) 4.847778, 2));
-//      combo.addOMGraphic(new OMLine((float) 50.491269, (float) 4.704239, (float) 50.490833, (float) 4.847778, 3));
-        combo.addOMGraphic(new OMArc((float) 50.491269, (float) 4.704239, (float) 0.09168520552327833, 
-                                     (float) (28.201865385183652 + 90.21758717585848), 
-                                     (float) -90.21758717585848));
+        //      combo.addOMGraphic(new OMLine((float) 50.436944, (float)
+        // 4.860556, (float) 50.436667, (float) 4.860833, 2));
+        //      combo.addOMGraphic(new OMLine((float) 50.436667, (float)
+        // 4.860833, (float) 50.490833, (float) 4.847778, 2));
+        //      combo.addOMGraphic(new OMLine((float) 50.491269, (float)
+        // 4.704239, (float) 50.490833, (float) 4.847778, 3));
+        combo.addOMGraphic(new OMArc((float) 50.491269, (float) 4.704239, (float) 0.09168520552327833, (float) (28.201865385183652 + 90.21758717585848), (float) -90.21758717585848));
         combo.addOMGraphic(new OMLine((float) 50.534167, (float) 4.831111, (float) 50.640833, (float) 4.832222, 2));
         combo.addOMGraphic(new OMLine((float) 50.640833, (float) 4.832222, (float) 50.547778, (float) 5.223889, 2));
         combo.addOMGraphic(new OMLine((float) 50.547778, (float) 5.223889, (float) 50.453333, (float) 5.223889, 2));
 
-//      combo.setConnectParts(true);
-//      combo.addOMGraphic(new OMLine(30f, -125f, 30f, -100f, OMGraphic.LINETYPE_RHUMB));
-//      combo.addOMGraphic(new OMLine(30f, -100f, 40f, -95f, OMGraphic.LINETYPE_GREATCIRCLE));
-//      combo.addOMGraphic(new OMLine(40f, -95f, 50f, -145f, OMGraphic.LINETYPE_GREATCIRCLE));
-//      combo.addOMGraphic(new OMLine(50f, -145f, 30f, -125f, OMGraphic.LINETYPE_STRAIGHT));
+        //      combo.setConnectParts(true);
+        //      combo.addOMGraphic(new OMLine(30f, -125f, 30f, -100f,
+        // OMGraphic.LINETYPE_RHUMB));
+        //      combo.addOMGraphic(new OMLine(30f, -100f, 40f, -95f,
+        // OMGraphic.LINETYPE_GREATCIRCLE));
+        //      combo.addOMGraphic(new OMLine(40f, -95f, 50f, -145f,
+        // OMGraphic.LINETYPE_GREATCIRCLE));
+        //      combo.addOMGraphic(new OMLine(50f, -145f, 30f, -125f,
+        // OMGraphic.LINETYPE_STRAIGHT));
         combo.setLinePaint(Color.blue);
         combo.setFillPaint(Color.green);
         omList.add(combo);
@@ -326,12 +298,11 @@ public class DemoLayer extends OMGraphicHandlerLayer
         combo1.setFillPaint(Color.red);
         omList.add(combo1);
 
-//         OMArc arc1 = new OMArc(100, 100, 200, 200, 0f, -45f); 
-//         arc1.setLinePaint(Color.blue);
-//         arc1.setFillPaint(Color.yellow);
-//         arc1.setArcType(java.awt.geom.Arc2D.PIE);
-//         omList.add(arc1);
-
+        //         OMArc arc1 = new OMArc(100, 100, 200, 200, 0f, -45f);
+        //         arc1.setLinePaint(Color.blue);
+        //         arc1.setFillPaint(Color.yellow);
+        //         arc1.setArcType(java.awt.geom.Arc2D.PIE);
+        //         omList.add(arc1);
 
         OMText text = new OMText(30f, 80f, "Testing FontSizer", OMText.JUSTIFY_CENTER);
         text.setFontSizer(new FontSizer(30000000f, 1, 5, 40));
@@ -346,11 +317,12 @@ public class DemoLayer extends OMGraphicHandlerLayer
     }
 
     /**
-     * Overriding the OMGraphicHandlerMethod, creating a list if it's null.
+     * Overriding the OMGraphicHandlerMethod, creating a list if it's
+     * null.
      */
     public OMGraphicList getList() {
         // This isn't the default behavior of the
-        // OMGraphicHandlerLayer.  Normally, if the list is null, we
+        // OMGraphicHandlerLayer. Normally, if the list is null, we
         // leave it null because a null list can be easily used as a
         // flag that work has to be done in the prepare() method to
         // contact the data source and create OMGraphics.
@@ -362,8 +334,7 @@ public class DemoLayer extends OMGraphicHandlerLayer
         return list;
     }
 
-    protected final com.bbn.openmap.tools.drawing.DrawingToolRequestor layer =
-        this;
+    protected final com.bbn.openmap.tools.drawing.DrawingToolRequestor layer = this;
 
     protected final static String internalKey = "ik";
     protected final static String externalKey = "ek";
@@ -375,17 +346,11 @@ public class DemoLayer extends OMGraphicHandlerLayer
             filterGA.setLinePaint(Color.red);
             filterGA.setRenderType(OMGraphic.RENDERTYPE_LATLON);
             filterGA.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
-            BasicStroke filterStroke =
-                new BasicStroke(
-                    1f,
-                    BasicStroke.CAP_SQUARE,
-                    BasicStroke.JOIN_MITER,
-                    10f,
-                    new float[] { 3, 3 },
-                    0f);
+            BasicStroke filterStroke = new BasicStroke(1f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10f, new float[] {
+                    3, 3 }, 0f);
             filterGA.setStroke(filterStroke);
         }
-        return (GraphicAttributes)filterGA.clone();
+        return (GraphicAttributes) filterGA.clone();
     }
 
     public java.awt.Component getGUI() {
@@ -394,7 +359,7 @@ public class DemoLayer extends OMGraphicHandlerLayer
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         panel.setLayout(gridbag);
-        
+
         JPanel box = PaletteHelper.createVerticalPanel(" Create Filters for Map ");
         box.setLayout(new java.awt.GridLayout(0, 1));
 
@@ -409,12 +374,12 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //                      line.setLinePaint(java.awt.Color.red);
         //                      line.setFillPaint(java.awt.Color.green);
 
-        //                      line  = (OMLine) getDrawingTool().edit(line, layer);
+        //                      line = (OMLine) getDrawingTool().edit(line, layer);
         //                      if (line != null) {
         //                          getList().add(line);
         //                      } else {
         //                          Debug.error("DemoLayer: Drawing tool can't create OMLine");
-        //                      } 
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -432,12 +397,12 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //                      line.setLinePaint(java.awt.Color.blue);
         //                      line.setFillPaint(java.awt.Color.green);
 
-        //                      line  = (OMLine) getDrawingTool().edit(line, layer);
+        //                      line = (OMLine) getDrawingTool().edit(line, layer);
         //                      if (line != null) {
         //                          getList().add(line);
         //                      } else {
         //                          Debug.error("DemoLayer: Drawing tool can't create OMLine");
-        //                      } 
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -450,18 +415,18 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //              public void actionPerformed(ActionEvent event) {
         //                  DrawingTool dt = getDrawingTool();
         //                  if (dt != null) {
-        //                      OMLine line = new OMLine(30f, -60f, 42f, -72f, 
+        //                      OMLine line = new OMLine(30f, -60f, 42f, -72f,
         //                                               OMGraphic.LINETYPE_GREATCIRCLE);
         //                      line.setStroke(new java.awt.BasicStroke(5));
         //                      line.setLinePaint(java.awt.Color.red);
         //                      line.setFillPaint(java.awt.Color.green);
 
-        //                      line  = (OMLine) getDrawingTool().edit(line, layer, false);
+        //                      line = (OMLine) getDrawingTool().edit(line, layer, false);
         //                      if (line != null) {
         //                          getList().add(line);
         //                      } else {
         //                          Debug.error("DemoLayer: Drawing tool can't create OMLine");
-        //                      } 
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -474,12 +439,14 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //              public void actionPerformed(ActionEvent event) {
         //                  DrawingTool dt = getDrawingTool();
         //                  if (dt != null) {
-        //                      OMLine line  = (OMLine) getDrawingTool().create("com.bbn.openmap.omGraphics.OMLine", layer);
+        //                      OMLine line = (OMLine)
+        // getDrawingTool().create("com.bbn.openmap.omGraphics.OMLine",
+        // layer);
         //                      if (line != null) {
         //                          getList().add(line);
         //                      } else {
         //                          Debug.error("DemoLayer: Drawing tool can't create OMLine");
-        //                      } 
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -494,12 +461,14 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //                  GraphicAttributes ga = new GraphicAttributes();
         //                  ga.setRenderType(OMGraphic.RENDERTYPE_OFFSET);
         //                  if (dt != null) {
-        //                      OMLine line  = (OMLine) getDrawingTool().create("com.bbn.openmap.omGraphics.OMLine", ga, layer);
+        //                      OMLine line = (OMLine)
+        // getDrawingTool().create("com.bbn.openmap.omGraphics.OMLine",
+        // ga, layer);
         //                      if (line != null) {
         //                          getList().add(line);
         //                      } else {
         //                          Debug.error("DemoLayer: Drawing tool can't create OMLine");
-        //                      } 
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -514,12 +483,15 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //                  GraphicAttributes ga = new GraphicAttributes();
         //                  ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
         //                  if (dt != null) {
-        //                      OMCircle circle  = (OMCircle) getDrawingTool().create("com.bbn.openmap.omGraphics.OMCircle", ga, layer);
+        //                      OMCircle circle = (OMCircle)
+        // getDrawingTool().create("com.bbn.openmap.omGraphics.OMCircle",
+        // ga, layer);
         //                      if (circle != null) {
         //                          getList().add(circle);
         //                      } else {
-        //                          Debug.error("DemoLayer: Drawing tool can't create OMCircle");
-        //                      } 
+        //                          Debug.error("DemoLayer: Drawing tool can't create
+        // OMCircle");
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -534,12 +506,15 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //                  GraphicAttributes ga = new GraphicAttributes();
         //                  ga.setRenderType(OMGraphic.RENDERTYPE_XY);
         //                  if (dt != null) {
-        //                      OMCircle circle  = (OMCircle) getDrawingTool().create("com.bbn.openmap.omGraphics.OMCircle", ga, layer);
+        //                      OMCircle circle = (OMCircle)
+        // getDrawingTool().create("com.bbn.openmap.omGraphics.OMCircle",
+        // ga, layer);
         //                      if (circle != null) {
         //                          getList().add(circle);
         //                      } else {
-        //                          Debug.error("DemoLayer: Drawing tool can't create OMCircle");
-        //                      } 
+        //                          Debug.error("DemoLayer: Drawing tool can't create
+        // OMCircle");
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -555,12 +530,15 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //                  ga.setRenderType(OMGraphic.RENDERTYPE_OFFSET);
         //                  ga.setFillPaint(Color.red);
         //                  if (dt != null) {
-        //                      OMCircle circle  = (OMCircle) getDrawingTool().create("com.bbn.openmap.omGraphics.OMCircle", ga, layer);
+        //                      OMCircle circle = (OMCircle)
+        // getDrawingTool().create("com.bbn.openmap.omGraphics.OMCircle",
+        // ga, layer);
         //                      if (circle != null) {
         //                          getList().add(circle);
         //                      } else {
-        //                          Debug.error("DemoLayer: Drawing tool can't create OMCircle");
-        //                      } 
+        //                          Debug.error("DemoLayer: Drawing tool can't create
+        // OMCircle");
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -570,100 +548,87 @@ public class DemoLayer extends OMGraphicHandlerLayer
 
         JButton button = new JButton("Create Containing Rectangle Filter");
         button.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    DrawingTool dt = getDrawingTool();
-                    if (dt != null) {
-                        GraphicAttributes fga = getFilterGA();
-                        fga.setFillPaint(new OMColor(0x0c0a0a0a));
+            public void actionPerformed(ActionEvent event) {
+                DrawingTool dt = getDrawingTool();
+                if (dt != null) {
+                    GraphicAttributes fga = getFilterGA();
+                    fga.setFillPaint(new OMColor(0x0c0a0a0a));
 
-                        OMRect rect =
-                            (OMRect) getDrawingTool().create(
-                                "com.bbn.openmap.omGraphics.OMRect",
-                                fga,
-                                layer,
-                                false);
-                        if (rect != null) {
-                            rect.setAppObject(internalKey);
-                        }
-                        else {
-                            Debug.error(
-                                "DemoLayer: Drawing tool can't create OMRect");
-                        }
+                    OMRect rect = (OMRect) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect",
+                            fga,
+                            layer,
+                            false);
+                    if (rect != null) {
+                        rect.setAppObject(internalKey);
+                    } else {
+                        Debug.error("DemoLayer: Drawing tool can't create OMRect");
                     }
-                    else {
-                        Debug.output("DemoLayer can't find a drawing tool");
-                    }
+                } else {
+                    Debug.output("DemoLayer can't find a drawing tool");
                 }
-            });
+            }
+        });
         box.add(button);
 
         button = new JButton("Create Containing Polygon Filter");
         button.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    DrawingTool dt = getDrawingTool();
-                    if (dt != null) {
-                        GraphicAttributes fga = getFilterGA();
-                        fga.setFillPaint(OMColor.clear);
+            public void actionPerformed(ActionEvent event) {
+                DrawingTool dt = getDrawingTool();
+                if (dt != null) {
+                    GraphicAttributes fga = getFilterGA();
+                    fga.setFillPaint(OMColor.clear);
 
-                        EditableOMPoly eomp = new EditableOMPoly(fga);
-                        eomp.setEnclosed(true);
-                        eomp.setShowGUI(false);
+                    EditableOMPoly eomp = new EditableOMPoly(fga);
+                    eomp.setEnclosed(true);
+                    eomp.setShowGUI(false);
 
-                        dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
-                        OMPoly poly = (OMPoly) getDrawingTool().edit(eomp, layer);
+                    dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
+                    OMPoly poly = (OMPoly) getDrawingTool().edit(eomp, layer);
 
-                        if (poly != null) {
-                            poly.setIsPolygon(true);
-                            poly.setAppObject(internalKey);
-                        }
-                        else {
-                            Debug.error(
-                                "DemoLayer: Drawing tool can't create OMPoly");
-                        }
+                    if (poly != null) {
+                        poly.setIsPolygon(true);
+                        poly.setAppObject(internalKey);
+                    } else {
+                        Debug.error("DemoLayer: Drawing tool can't create OMPoly");
                     }
-                    else {
-                        Debug.output("DemoLayer can't find a drawing tool");
-                    }
+                } else {
+                    Debug.output("DemoLayer can't find a drawing tool");
                 }
-            });
+            }
+        });
         box.add(button);
 
         button = new JButton("Create Excluding Rectangle Filter");
         button.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    DrawingTool dt = getDrawingTool();
-                    if (dt != null) {
-                        GraphicAttributes fga = getFilterGA();
-                        fga.setFillPaint(OMColor.clear);
+            public void actionPerformed(ActionEvent event) {
+                DrawingTool dt = getDrawingTool();
+                if (dt != null) {
+                    GraphicAttributes fga = getFilterGA();
+                    fga.setFillPaint(OMColor.clear);
 
-                        OMRect rect =
-                            (OMRect) getDrawingTool().create(
-                                "com.bbn.openmap.omGraphics.OMRect",
-                                fga,
-                                layer,
-                                false);
-                        if (rect != null) {
-                            rect.setAppObject(externalKey);
-                        }
-                        else {
-                            Debug.error(
-                                "DemoLayer: Drawing tool can't create OMRect");
-                        }
+                    OMRect rect = (OMRect) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect",
+                            fga,
+                            layer,
+                            false);
+                    if (rect != null) {
+                        rect.setAppObject(externalKey);
+                    } else {
+                        Debug.error("DemoLayer: Drawing tool can't create OMRect");
                     }
-                    else {
-                        Debug.output("DemoLayer can't find a drawing tool");
-                    }
+                } else {
+                    Debug.output("DemoLayer can't find a drawing tool");
                 }
-            });
+            }
+        });
         box.add(button);
 
         button = new JButton("Reset filter");
         button.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    resetFiltering();
-                    repaint();
-                }
-            });
+            public void actionPerformed(ActionEvent event) {
+                resetFiltering();
+                repaint();
+            }
+        });
         box.add(button);
 
         //      button = new JButton("Create XY Rect");
@@ -673,12 +638,14 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //                  GraphicAttributes ga = new GraphicAttributes();
         //                  ga.setRenderType(OMGraphic.RENDERTYPE_XY);
         //                  if (dt != null) {
-        //                      OMRect rect  = (OMRect) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect", ga, layer);
+        //                      OMRect rect = (OMRect)
+        // getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect",
+        // ga, layer);
         //                      if (rect != null) {
         //                          getList().add(rect);
         //                      } else {
         //                          Debug.error("DemoLayer: Drawing tool can't create OMRect");
-        //                      } 
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -694,12 +661,14 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //                  ga.setRenderType(OMGraphic.RENDERTYPE_OFFSET);
         //                  ga.setFillPaint(Color.red);
         //                  if (dt != null) {
-        //                      OMRect rect  = (OMRect) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect", ga, layer);
+        //                      OMRect rect = (OMRect)
+        // getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect",
+        // ga, layer);
         //                      if (rect != null) {
         //                          getList().add(rect);
         //                      } else {
         //                          Debug.error("DemoLayer: Drawing tool can't create OMRect");
-        //                      } 
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -714,12 +683,15 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //                  GraphicAttributes ga = new GraphicAttributes();
         //                  ga.setLinePaint(Color.yellow);
         //                  if (dt != null) {
-        //                      OMRangeRings rr  = (OMRangeRings) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRangeRings", ga, layer);
+        //                      OMRangeRings rr = (OMRangeRings)
+        // getDrawingTool().create("com.bbn.openmap.omGraphics.OMRangeRings",
+        // ga, layer);
         //                      if (rr != null) {
-        //  //                              rr.setInterval(25, Length.MILE);
+        //  // rr.setInterval(25, Length.MILE);
         //                      } else {
-        //                          Debug.error("DemoLayer: Drawing tool can't create OMRangeRings");
-        //                      } 
+        //                          Debug.error("DemoLayer: Drawing tool can't create
+        // OMRangeRings");
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -736,11 +708,13 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //                  ga.setLinePaint(Color.red);
         //                  ga.setFillPaint(Color.red);
         //                  if (dt != null) {
-        //                      OMPoly point  = (OMPoly) getDrawingTool().create("com.bbn.openmap.omGraphics.OMPoly", ga, layer);
+        //                      OMPoly point = (OMPoly)
+        // getDrawingTool().create("com.bbn.openmap.omGraphics.OMPoly",
+        // ga, layer);
         //                      if (point != null) {
         //                      } else {
         //                          Debug.error("DemoLayer: Drawing tool can't create OMPoly");
-        //                      } 
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -758,15 +732,17 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //                  ga.setFillPaint(Color.green);
         //                  if (dt != null) {
 
-        //                      LabeledOMPoly point  = (LabeledOMPoly) getDrawingTool().create("com.bbn.openmap.omGraphics.labeled.LabeledOMPoly", ga, layer);
+        //                      LabeledOMPoly point = (LabeledOMPoly)
+        // getDrawingTool().create("com.bbn.openmap.omGraphics.labeled.LabeledOMPoly",
+        // ga, layer);
 
         //                      if (point != null) {
-        //  //                              point.setOval(true);
-        //  //                              point.setRadius(8);
+        //  // point.setOval(true);
+        //  // point.setRadius(8);
         //                          point.setText("Active Testing");
         //                      } else {
         //                          Debug.error("DemoLayer: Drawing tool can't create OMPoly");
-        //                      } 
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -783,12 +759,14 @@ public class DemoLayer extends OMGraphicHandlerLayer
         //                  ga.setLinePaint(Color.green);
         //                  ga.setFillPaint(Color.green);
         //                  if (dt != null) {
-        //                      OMPoly point  = (OMPoly) getDrawingTool().create("com.bbn.openmap.omGraphics.OMPoly", ga, layer);
+        //                      OMPoly point = (OMPoly)
+        // getDrawingTool().create("com.bbn.openmap.omGraphics.OMPoly",
+        // ga, layer);
         //                      if (point != null) {
-        //  //                              rr.setInterval(25, Length.MILE);
+        //  // rr.setInterval(25, Length.MILE);
         //                      } else {
         //                          Debug.error("DemoLayer: Drawing tool can't create OMPoly");
-        //                      } 
+        //                      }
         //                  } else {
         //                      Debug.output("DemoLayer can't find a drawing tool");
         //                  }
@@ -822,14 +800,15 @@ public class DemoLayer extends OMGraphicHandlerLayer
 
         Object obj = omg.getAppObject();
 
-        if (obj != null
-            && (obj == internalKey || obj == externalKey)
-            && !action.isMask(OMGraphicConstants.DELETE_GRAPHIC_MASK)) {
+        if (obj != null && (obj == internalKey || obj == externalKey)
+                && !action.isMask(OMGraphicConstants.DELETE_GRAPHIC_MASK)) {
 
             java.awt.Shape filterShape = omg.getShape();
-            OMGraphicList filteredList = filter(filterShape, (omg.getAppObject() == internalKey));
+            OMGraphicList filteredList = filter(filterShape,
+                    (omg.getAppObject() == internalKey));
             if (Debug.debugging("demo")) {
-                Debug.output("DemoLayer filter: " + filteredList.getDescription());
+                Debug.output("DemoLayer filter: "
+                        + filteredList.getDescription());
             }
         } else {
             getList().doAction(omg, action);
@@ -840,9 +819,9 @@ public class DemoLayer extends OMGraphicHandlerLayer
 
     /**
      * Called when a component that is needed, and not available with
-     * an appropriate interator from the BeanContext.  This lets this
-     * object hook up with what it needs.  For Layers, this method
-     * doesn't do anything by default.  If you need your layer to get
+     * an appropriate interator from the BeanContext. This lets this
+     * object hook up with what it needs. For Layers, this method
+     * doesn't do anything by default. If you need your layer to get
      * ahold of another object, then you can use the Iterator to go
      * through the objects to look for the one you need.
      */
@@ -854,9 +833,9 @@ public class DemoLayer extends OMGraphicHandlerLayer
     }
 
     /**
-     * BeanContextMembershipListener method.  Called when a new object
-     * is removed from the BeanContext of this object.  For the Layer,
-     * this method doesn't do anything.  If your layer does something
+     * BeanContextMembershipListener method. Called when a new object
+     * is removed from the BeanContext of this object. For the Layer,
+     * this method doesn't do anything. If your layer does something
      * with the childrenAdded method, or findAndInit, you should take
      * steps in this method to unhook the layer from the object used
      * in those methods.
@@ -871,7 +850,7 @@ public class DemoLayer extends OMGraphicHandlerLayer
 
     /**
      * Query that an OMGraphic can be highlighted when the mouse moves
-     * over it.  If the answer is true, then highlight with this
+     * over it. If the answer is true, then highlight with this
      * OMGraphics will be called.
      */
     public boolean isHighlightable(OMGraphic omg) {
@@ -890,7 +869,7 @@ public class DemoLayer extends OMGraphicHandlerLayer
      * Query for what text should be placed over the information bar
      * when the mouse is over a particular OMGraphic.
      */
-    public String getInfoText(OMGraphic omg) {  
+    public String getInfoText(OMGraphic omg) {
         DrawingTool dt = getDrawingTool();
         if (dt != null && dt.canEdit(omg.getClass())) {
             return "Click to edit graphic.";
@@ -909,8 +888,8 @@ public class DemoLayer extends OMGraphicHandlerLayer
 
     /**
      * Called if isSelectable(OMGraphic) was true, so the list has the
-     * OMGraphic.  A list is used in case underlying code is written
-     * to handle more than one OMGraphic being selected at a time.
+     * OMGraphic. A list is used in case underlying code is written to
+     * handle more than one OMGraphic being selected at a time.
      */
     public void select(OMGraphicList list) {
         if (list != null && list.size() > 0) {

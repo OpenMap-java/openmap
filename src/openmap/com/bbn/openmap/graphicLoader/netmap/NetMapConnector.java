@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapConnector.java,v $
 // $RCSfile: NetMapConnector.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.graphicLoader.netmap;
 
@@ -38,31 +37,35 @@ import com.bbn.openmap.util.PropUtils;
 /**
  * The NetMapConnector is the bridge between the parser from the
  * output of the NetMap server (NetMapReader), and whoever wants the
- * OMGraphicList that is being mananged.  It forwards the list on to
+ * OMGraphicList that is being mananged. It forwards the list on to
  * the NetMapListReceiver that wants the list. The NetMapConnector
- * will create it's NetMapReader to control and use.  If you have a
+ * will create it's NetMapReader to control and use. If you have a
  * component that wants to receive updates from the reader, then you
  * can register as an NetMapListener with the NetMapConnector.
- *
+ * 
  * The NetMapConnector can be used in conjunction with the
- * NetMapConnectionHandler.  The NetMapConnectionHandler will look for
+ * NetMapConnectionHandler. The NetMapConnectionHandler will look for
  * NetMapConnectors in the BeanContext (MapHandler), and create a
- * NetMapGraphicLoader for it.  That will set off the GraphicLoader ->
+ * NetMapGraphicLoader for it. That will set off the GraphicLoader ->
  * GraphicLoaderConnector -> GraphicLoaderPlugIn -> PlugInLayer
  * creation chain, if the GraphicLoaderConnector is also in the
  * MapHandler.
- *
- * The following properties can be set:<pre>
- *
- * server=hostname of the NetMap server
- * port=port of NetMap server
- * defaultView=default view for NetMap server stream
- * </pre> 
+ * 
+ * The following properties can be set:
+ * 
+ * <pre>
+ * 
+ * 
+ *  server=hostname of the NetMap server
+ *  port=port of NetMap server
+ *  defaultView=default view for NetMap server stream
+ *  
+ * </pre>
  */
-public class NetMapConnector 
-    implements ActionListener, NetMapConstants, PropertyConsumer {
+public class NetMapConnector implements ActionListener, NetMapConstants,
+        PropertyConsumer {
 
-    public final static String ServerConnectCmd = "Connect"; 
+    public final static String ServerConnectCmd = "Connect";
     public final static String ServerDisconnectCmd = "Disconnect";
     public final static String LoadViewCmd = "Load View";
     public final static String GetViewsCmd = "Get Network Views";
@@ -90,7 +93,7 @@ public class NetMapConnector
 
     /**
      * The NetMap server has a notion of views that represent nodes
-     * and links, and these are names.  If using a GUI, the view names
+     * and links, and these are names. If using a GUI, the view names
      * will show up because they are received from the NetMap server.
      * Programmatically, you can set what the default view should be.
      */
@@ -99,7 +102,8 @@ public class NetMapConnector
     protected String propertyPrefix = null;
 
     /**
-     * The component that listens to the NetMap server and parses the stream.
+     * The component that listens to the NetMap server and parses the
+     * stream.
      */
     NetMapReader reader = null;
 
@@ -197,14 +201,15 @@ public class NetMapConnector
             viewList = getViews();
 
             if (viewList == null) {
-                Debug.message("netmap", "Can't get view list from " + server + ":" + port);
+                Debug.message("netmap", "Can't get view list from " + server
+                        + ":" + port);
                 disconnect();
             }
 
         } else if (cmd == ServerDisconnectCmd) {
 
-            Debug.message("netmap", "Disconnecting from server " +
-                          server + ":" + port);
+            Debug.message("netmap", "Disconnecting from server " + server + ":"
+                    + port);
             disconnect();
 
         } else if (cmd == LoadViewCmd) {
@@ -216,7 +221,7 @@ public class NetMapConnector
                 return;
             }
 
-            String view = ((String)ci.value()).trim();
+            String view = ((String) ci.value()).trim();
 
             Debug.message("netmap", "Loading view " + view);
             connect(view);
@@ -269,7 +274,9 @@ public class NetMapConnector
 
     /**
      * Gets a list of possible views.
-     * @return ChoiceList of possible views retrieved from the NetMap server.
+     * 
+     * @return ChoiceList of possible views retrieved from the NetMap
+     *         server.
      */
     public ChoiceList getViews() {
 
@@ -312,11 +319,12 @@ public class NetMapConnector
     }
 
     /**
-     * Connects to the NetMap server to get messages about the given view.
+     * Connects to the NetMap server to get messages about the given
+     * view.
      */
     public void connect(String view) {
         try {
-            
+
             reader = new NetMapReader(server, port, this, view);
             reader.start();
 
@@ -337,7 +345,7 @@ public class NetMapConnector
     /**
      * Complete disconnect, sends clear command to NetMapListeners,
      * resets GUI if it's being used.
-     */     
+     */
     public void reset() {
         disconnect();
 
@@ -352,7 +360,8 @@ public class NetMapConnector
     }
 
     /**
-     * Gets the GUI control for the NetMapReader, creates it if it doesn't exist.
+     * Gets the GUI control for the NetMapReader, creates it if it
+     * doesn't exist.
      */
     public Component getGUI() {
         if (serverPanel != null) {
@@ -366,7 +375,7 @@ public class NetMapConnector
         /*
          * Make the NETMAP Server address entry field
          */
-        JPanel serverAddrPanel = new JPanel(new GridLayout(0,2));
+        JPanel serverAddrPanel = new JPanel(new GridLayout(0, 2));
         serverAddrPanel.add(new JLabel("Name or IP Addr: "));
         serverAddrPanel.add(serverAddrField);
         /*
@@ -382,10 +391,10 @@ public class NetMapConnector
         connectedStatus = new JLabel(STATUS_IDLE);
         JButton resetButton = new JButton("Reset");
         resetButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    reset();
-                }
-            });
+            public void actionPerformed(ActionEvent ae) {
+                reset();
+            }
+        });
 
         statusPanel.add(connectedStatus);
         statusPanel.add(resetButton);
@@ -393,16 +402,16 @@ public class NetMapConnector
         /*
          * Make the toplevel input panel
          */
-//      JPanel netmapPanel = new JPanel(new GridLayout(0, 1));
+        //      JPanel netmapPanel = new JPanel(new GridLayout(0, 1));
         JPanel netmapPanel = PaletteHelper.createVerticalPanel("Server Settings");
-        
+
         netmapPanel.add(serverAddrPanel);
         netmapPanel.add(serverPortPanel);
 
         /*
          * Make the "Load View" panel
          */
-        viewChoice= new Choice();
+        viewChoice = new Choice();
         viewList = new ChoiceList();
         viewChoice.setEnabled(false);
 
@@ -410,7 +419,7 @@ public class NetMapConnector
         controlButton.setActionCommand(GetViewsCmd);
         controlButton.addActionListener(this);
 
-//      JPanel viewPanel = new JPanel(new GridLayout(0, 1));
+        //      JPanel viewPanel = new JPanel(new GridLayout(0, 1));
         JPanel viewPanel = PaletteHelper.createVerticalPanel(null);
 
         viewPanel.add(new JLabel("Available Views"));
@@ -428,33 +437,33 @@ public class NetMapConnector
     }
 
     /**
-     * Method to set the properties in the PropertyConsumer.  It is
+     * Method to set the properties in the PropertyConsumer. It is
      * assumed that the properties do not have a prefix associated
      * with them, or that the prefix has already been set.
-     *
+     * 
      * @param setList a properties object that the PropertyConsumer
-     * can use to retrieve expected properties it can use for
-     * configuration.
+     *        can use to retrieve expected properties it can use for
+     *        configuration.
      */
     public void setProperties(Properties setList) {
         setProperties(null, setList);
     }
 
     /**
-     * Method to set the properties in the PropertyConsumer.  The
+     * Method to set the properties in the PropertyConsumer. The
      * prefix is a string that should be prepended to each property
      * key (in addition to a separating '.') in order for the
-     * PropertyConsumer to uniquely identify properties meant for it, in
-     * the midst of of Properties meant for several objects.
-     *
+     * PropertyConsumer to uniquely identify properties meant for it,
+     * in the midst of of Properties meant for several objects.
+     * 
      * @param prefix a String used by the PropertyConsumer to prepend
-     * to each property value it wants to look up -
-     * setList.getProperty(prefix.propertyKey).  If the prefix had
-     * already been set, then the prefix passed in should replace that
-     * previous value.
+     *        to each property value it wants to look up -
+     *        setList.getProperty(prefix.propertyKey). If the prefix
+     *        had already been set, then the prefix passed in should
+     *        replace that previous value.
      * @param setList a Properties object that the PropertyConsumer
-     * can use to retrieve expected properties it can use for
-     * configuration.  
+     *        can use to retrieve expected properties it can use for
+     *        configuration.
      */
     public void setProperties(String prefix, Properties setList) {
         setPropertyPrefix(prefix);
@@ -474,18 +483,18 @@ public class NetMapConnector
 
     /**
      * Method to fill in a Properties object, reflecting the current
-     * values of the PropertyConsumer.  If the PropertyConsumer has a
+     * values of the PropertyConsumer. If the PropertyConsumer has a
      * prefix set, the property keys should have that prefix plus a
      * separating '.' prepended to each property key it uses for
-     * configuration. 
-     *
+     * configuration.
+     * 
      * @param list a Properties object to load the PropertyConsumer
-     * properties into.  If getList equals null, then a new Properties
-     * object should be created.
+     *        properties into. If getList equals null, then a new
+     *        Properties object should be created.
      * @return Properties object containing PropertyConsumer property
-     * values.  If getList was not null, this should equal getList.
-     * Otherwise, it should be the Properties object created by the
-     * PropertyConsumer.
+     *         values. If getList was not null, this should equal
+     *         getList. Otherwise, it should be the Properties object
+     *         created by the PropertyConsumer.
      */
     public Properties getProperties(Properties list) {
         if (list == null) {
@@ -500,20 +509,20 @@ public class NetMapConnector
 
     /**
      * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer.  The
-     * key for each property should be the raw property name (without
-     * a prefix) with a value that is a String that describes what the
+     * the properties able to be set on this PropertyConsumer. The key
+     * for each property should be the raw property name (without a
+     * prefix) with a value that is a String that describes what the
      * property key represents, along with any other information about
      * the property that would be helpful (range, default value,
      * etc.).
-     *
+     * 
      * @param list a Properties object to load the PropertyConsumer
-     * properties into.  If getList equals null, then a new Properties
-     * object should be created.
+     *        properties into. If getList equals null, then a new
+     *        Properties object should be created.
      * @return Properties object containing PropertyConsumer property
-     * values.  If getList was not null, this should equal getList.
-     * Otherwise, it should be the Properties object created by the
-     * PropertyConsumer.  
+     *         values. If getList was not null, this should equal
+     *         getList. Otherwise, it should be the Properties object
+     *         created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         if (list == null) {
@@ -527,10 +536,10 @@ public class NetMapConnector
 
     /**
      * Set the property key prefix that should be used by the
-     * PropertyConsumer.  The prefix, along with a '.', should be
+     * PropertyConsumer. The prefix, along with a '.', should be
      * prepended to the property keys known by the PropertyConsumer.
-     *
-     * @param prefix the prefix String.  
+     * 
+     * @param prefix the prefix String.
      */
     public void setPropertyPrefix(String prefix) {
         propertyPrefix = prefix;
@@ -539,7 +548,7 @@ public class NetMapConnector
     /**
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
-     *
+     * 
      * @return the property prefix
      */
     public String getPropertyPrefix() {

@@ -1,9 +1,8 @@
-
 // **********************************************************************
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -15,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFUtil.java,v $
 // $RCSfile: VPFUtil.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/03/31 21:17:58 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:06:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
@@ -34,9 +32,10 @@ public class VPFUtil {
      * all methods are static, no reason to construct
      */
     private VPFUtil() {};
-  
+
     /**
      * returns a string with the elements of l separated by spaces
+     * 
      * @param l the list to stringize
      * @return the string version of the list
      * @deprecated use listToString(List) instead
@@ -47,6 +46,7 @@ public class VPFUtil {
 
     /**
      * returns a string with the elements of l separated by spaces
+     * 
      * @param l the list to stringize
      * @return the string version of the list
      */
@@ -55,25 +55,27 @@ public class VPFUtil {
         for (Iterator i = l.iterator(); i.hasNext();) {
             row.append(i.next().toString()).append(" ");
         }
-        return(row.toString());
+        return (row.toString());
     }
-    
+
     /**
      * get the value contained in the object.
-     * @param val returns the value of Shorts and Integers as an int.  VPF
-     * null values get returned as Integer.MIN_VALUE, as do all other types
+     * 
+     * @param val returns the value of Shorts and Integers as an int.
+     *        VPF null values get returned as Integer.MIN_VALUE, as do
+     *        all other types
      * @return the value contained in val
      */
     public static final int objectToInt(Object val) {
         int v = Integer.MIN_VALUE;
         if (val instanceof Integer) {
-            v = ((Integer)val).intValue();
-            if (v == Integer.MIN_VALUE+1) {
+            v = ((Integer) val).intValue();
+            if (v == Integer.MIN_VALUE + 1) {
                 v = Integer.MIN_VALUE;
             }
         } else if (val instanceof Short) {
-            v = ((Short)val).shortValue();
-            if (v == Short.MIN_VALUE+1) {
+            v = ((Short) val).shortValue();
+            if (v == Short.MIN_VALUE + 1) {
                 v = Integer.MIN_VALUE;
             }
         }
@@ -90,9 +92,9 @@ public class VPFUtil {
     public final static String CPoint = "CPoint";
 
     /**
-     * Parses dynamic args passed by specialist client.  A
-     * <code>Hashtable</code> is returned as a unified holder
-     * of all dynamic arguments.
+     * Parses dynamic args passed by specialist client. A
+     * <code>Hashtable</code> is returned as a unified holder of all
+     * dynamic arguments.
      */
     public static Hashtable parseDynamicArgs(String args) {
         Hashtable dynArgs = new Hashtable();
@@ -109,18 +111,19 @@ public class VPFUtil {
     }
 
     /**
-     * If <code>arg</code> maps to a <code>Boolean</code> in the Hashtable,
-     * that value is returned,  <code>false</code> otherwise.
+     * If <code>arg</code> maps to a <code>Boolean</code> in the
+     * Hashtable, that value is returned, <code>false</code>
+     * otherwise.
+     * 
      * @param dynArgs the Hashtable to look in
      * @param arg the argument to return
      */
-    public static boolean getHashedValueAsBoolean(Hashtable dynArgs,
-                                                  String arg) {
+    public static boolean getHashedValueAsBoolean(Hashtable dynArgs, String arg) {
         Object obj = dynArgs.get(arg);
         if (obj == null) {
             return false;
         } else if (obj instanceof Boolean) {
-            return ((Boolean)obj).booleanValue();
+            return ((Boolean) obj).booleanValue();
         } else {
             return false;
         }
@@ -143,11 +146,11 @@ public class VPFUtil {
                 return VPFUtil.Text;
             }
 
-//             if (lastLetter == 'p') {
-//                 // Can't tell at this point, it shouldn't matter for
-//                 // the feature cache stuff since the points are
-//                 return VPFUtil.EPoint;
-//             }
+            //             if (lastLetter == 'p') {
+            //                 // Can't tell at this point, it shouldn't matter for
+            //                 // the feature cache stuff since the points are
+            //                 return VPFUtil.EPoint;
+            //             }
         }
 
         return null;

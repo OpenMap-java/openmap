@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,21 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXY.java,v $
 // $RCSfile: LLXY.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/03/31 21:11:43 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:06:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.proj;
 
 import java.awt.Point;
-import java.util.*;
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.Debug;
-
 
 /**
  * Implements the LLXY projection, which is basically something where
@@ -52,28 +48,26 @@ public class LLXY extends Cylindrical implements EqualArc {
     protected float cLat;
     /** Pixel per degree */
     protected float ppd;
-    
+
     /**
      * Construct a LLXY projection.
-     *
+     * 
      * @param center LatLonPoint center of projection
      * @param scale float scale of projection
      * @param width width of screen
      * @param height height of screen
      */
-    public LLXY (LatLonPoint center, float scale, 
-                 int width, int height) {
+    public LLXY(LatLonPoint center, float scale, int width, int height) {
         super(center, scale, width, height, LLXYType);
     }
 
-    public LLXY (LatLonPoint center, float scale, 
-                 int width, int height, int type) {
+    public LLXY(LatLonPoint center, float scale, int width, int height, int type) {
         super(center, scale, width, height, type);
     }
 
-//      protected void finalize() {
-//      Debug.message("gc", "LLXY finalized");
-//      }
+    //      protected void finalize() {
+    //      Debug.message("gc", "LLXY finalized");
+    //      }
 
     /**
      * Return stringified description of this projection.
@@ -88,8 +82,8 @@ public class LLXY extends Cylindrical implements EqualArc {
     /**
      * Called when some fundamental parameters change.
      * 
-     * Each projection will decide how to respond to this change.
-     * For instance, they may need to recalculate "constant" paramters
+     * Each projection will decide how to respond to this change. For
+     * instance, they may need to recalculate "constant" paramters
      * used in the forward() and inverse() calls.
      */
     protected void computeParameters() {
@@ -97,14 +91,14 @@ public class LLXY extends Cylindrical implements EqualArc {
         super.computeParameters();
 
         // compute the offsets
-        hy = height/2;
-        wx = width/2;
+        hy = height / 2;
+        wx = width / 2;
         // Degrees longitude of the center of the projection.
         cLon = ProjMath.radToDeg(ctrLon);
         cLat = ProjMath.radToDeg(ctrLat);
-        ppd = world.x/360f;
+        ppd = world.x / 360f;
 
-        float latLimit = 90f - ((float)hy / ppd);
+        float latLimit = 90f - ((float) hy / ppd);
 
         //Add check for zoom allowing more than 90 degrees viewable
         if (latLimit < 0.0f)
@@ -119,17 +113,17 @@ public class LLXY extends Cylindrical implements EqualArc {
         }
 
         if (Debug.debugging("llxy")) {
-            Debug.output("LLXY.computeParameters: with center lat:" + cLat +
-                         ", lon:" + cLon + " | width:" + width +
-                         ", height:" + height + " | scale:" + scale);
+            Debug.output("LLXY.computeParameters: with center lat:" + cLat
+                    + ", lon:" + cLon + " | width:" + width + ", height:"
+                    + height + " | scale:" + scale);
         }
     }
 
     /**
-     * Sets radian latitude to something sane.  This is an abstract
+     * Sets radian latitude to something sane. This is an abstract
      * function since some projections don't deal well with extreme
      * latitudes.
-     *
+     * 
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
      * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
@@ -186,29 +180,29 @@ public class LLXY extends Cylindrical implements EqualArc {
      * @param lon float longitude in radians
      * @param p Resulting XY Point
      * @param isRadian bogus argument indicating that lat,lon
-     * arguments are in radians
+     *        arguments are in radians
      * @return Point p
      */
-    public Point forward(float lat, float lon, 
-                         Point p, boolean isRadian) {
+    public Point forward(float lat, float lon, Point p, boolean isRadian) {
         if (isRadian) {
             lat = ProjMath.radToDeg(normalize_latitude(lat));
             lon = ProjMath.radToDeg(lon);
         } else {
-        lat = Length.DECIMAL_DEGREE.fromRadians(normalize_latitude(Length.DECIMAL_DEGREE.toRadians(lat)));
+            lat = Length.DECIMAL_DEGREE.fromRadians(normalize_latitude(Length.DECIMAL_DEGREE.toRadians(lat)));
         }
 
-        float newLon = Length.DECIMAL_DEGREE.fromRadians(wrap_longitude(Length.DECIMAL_DEGREE.toRadians(lon - cLon)));
+        float newLon = Length.DECIMAL_DEGREE.fromRadians(wrap_longitude(Length.DECIMAL_DEGREE.toRadians(lon
+                - cLon)));
 
         p.x = wx + Math.round(newLon * ppd);
         p.y = hy - Math.round((lat - cLat) * ppd);
 
         if (Debug.debugging("llxydetail")) {
-            Debug.output("LLXY.forward(lon:" + ProjMath.radToDeg(lon) +
-                         ", lat:" + ProjMath.radToDeg(lat) + 
-                         " isRadian:" + isRadian + ")");
-            Debug.output("LLXY.forward   x:" + p.x + ", y:" + p.y + 
-                         " scale: " + (float)scale);
+            Debug.output("LLXY.forward(lon:" + ProjMath.radToDeg(lon)
+                    + ", lat:" + ProjMath.radToDeg(lat) + " isRadian:"
+                    + isRadian + ")");
+            Debug.output("LLXY.forward   x:" + p.x + ", y:" + p.y + " scale: "
+                    + (float) scale);
         }
         return p;
     }
@@ -237,8 +231,8 @@ public class LLXY extends Cylindrical implements EqualArc {
 
         // convert from screen to world coordinates, and then
         // basically undo the math from the forward method.
-        llp.setLongitude(((x - wx)/ppd) + cLon);
-        llp.setLatitude(((hy - y)/ppd) + cLat);
+        llp.setLongitude(((x - wx) / ppd) + cLon);
+        llp.setLatitude(((hy - y) / ppd) + cLat);
 
         return llp;
     }
@@ -252,20 +246,20 @@ public class LLXY extends Cylindrical implements EqualArc {
 
     /**
      * Returns the x pixel constant of the projection. This was
-     * calcuated when the projection was created.  Represents the
+     * calcuated when the projection was created. Represents the
      * number of pixels around the earth (360 degrees).
      */
     public double getXPixConstant() {
-        return (double)ppd * 360;
+        return (double) ppd * 360;
     }
 
     /**
      * Returns the y pixel constant of the projection. This was
-     * calcuated when the projection was created.  Represents the
+     * calcuated when the projection was created. Represents the
      * number of pixels from 0 to 90 degrees.
      */
     public double getYPixConstant() {
-        return (double)ppd * 90;
+        return (double) ppd * 90;
     }
 
 }

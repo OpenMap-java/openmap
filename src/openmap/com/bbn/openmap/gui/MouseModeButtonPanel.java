@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MouseModeButtonPanel.java,v $
 // $RCSfile: MouseModeButtonPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
@@ -27,7 +26,6 @@ import javax.swing.*;
 
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
-import com.bbn.openmap.gui.*;
 
 import java.beans.*;
 import java.util.HashMap;
@@ -36,17 +34,19 @@ import java.util.HashMap;
  * The MouseModeButtonPanel is an alternative to the MouseModePanel.
  * Instead of providing an option menu listing all the MouseModes, a
  * series of buttons for all the MouseModes is displayed.
- *
+ * 
  * The MouseModeButtonPanel asks the MapMouseModes for their GUI
- * icons.  If they don't have one, their ID Strin will be used.
+ * icons. If they don't have one, their ID Strin will be used.
  */
 public class MouseModeButtonPanel extends MouseModePanel {
 
     private JToolBar toolBar = null;
     /** for intialization, false */
     protected boolean floatable = false;
-    /** to turn a button on when the active mouse mode changes behind
-     *  the scenes. */
+    /**
+     * to turn a button on when the active mouse mode changes behind
+     * the scenes.
+     */
     protected HashMap buttonSet = new HashMap();
 
     protected JToggleButton enabledButton = null;
@@ -59,8 +59,8 @@ public class MouseModeButtonPanel extends MouseModePanel {
     }
 
     /**
-     * Method overrides MouseModePane.setPanel.  Construct the toolbar
-     * buttons from the mouse modes that are handled by the delegator.  
+     * Method overrides MouseModePane.setPanel. Construct the toolbar
+     * buttons from the mouse modes that are handled by the delegator.
      */
     protected void setPanel(MouseDelegator md) {
         if (toolBar != null) {
@@ -104,18 +104,18 @@ public class MouseModeButtonPanel extends MouseModePanel {
 
         this.add(toolBar);
         this.revalidate();
-    }   // End of setPanel()
+    } // End of setPanel()
 
     /**
      * actionPerformed - Handle the mouse clicks on the button(s)
      */
     public void actionPerformed(java.awt.event.ActionEvent e) {
-        
+
         if (mouseDelegator == null) {
             return;
         } else {
             mouseDelegator.setActiveMouseModeWithID(e.getActionCommand());
-        }       
+        }
     }
 
     /**
@@ -136,14 +136,14 @@ public class MouseModeButtonPanel extends MouseModePanel {
     ////////////////////////////////////////////////////////////////////////////
     /**
      * propertyChange - Listen for changes to the active mouse mode
-     * and for any changes to the list of available mouse modes.  
+     * and for any changes to the list of available mouse modes.
      */
     public void propertyChange(PropertyChangeEvent evt) {
 
         if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
-            String mmID = ((MapMouseMode)evt.getNewValue()).getID();
+            String mmID = ((MapMouseMode) evt.getNewValue()).getID();
 
-            JToggleButton btn = (JToggleButton)buttonSet.get(mmID);
+            JToggleButton btn = (JToggleButton) buttonSet.get(mmID);
             if (btn != null) {
                 btn.setSelected(true);
                 enabledButton = btn;
@@ -154,4 +154,4 @@ public class MouseModeButtonPanel extends MouseModePanel {
             setPanel(mouseDelegator);
         }
     } // End of propertyChange()
-} 
+}

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,31 +14,18 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkActionConstants.java,v $
 // $RCSfile: LinkActionConstants.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
-
-import java.awt.Color;
-import java.awt.Image;
-import java.io.*;
-import java.util.Vector;
-import java.net.Socket;
-import javax.swing.ImageIcon;
-
-/** 
- * The LinkActionConstants interface contains all the constants
- * needed for the LinkActionList and LinkActionRequest that are
- * defined by the Link Protocol.
+/**
+ * The LinkActionConstants interface contains all the constants needed
+ * for the LinkActionList and LinkActionRequest that are defined by
+ * the Link Protocol.
  */
 public interface LinkActionConstants {
 
@@ -51,7 +38,10 @@ public interface LinkActionConstants {
     /** Action identifier - center/zoom/change projection of map. */
     public static final int ACTION_MAP = 2;
 
-    /** Graphic action descriptor mask - raise the graphic on top of others. */
+    /**
+     * Graphic action descriptor mask - raise the graphic on top of
+     * others.
+     */
     public static final int MODIFY_RAISE_GRAPHIC_MASK = 1 << 0;
     /** Graphic action descriptor mask - lower graphics below others. */
     public static final int MODIFY_LOWER_GRAPHIC_MASK = 1 << 1;
@@ -70,34 +60,57 @@ public interface LinkActionConstants {
 
     ///////// LinkActionResponse constants. ///////////////
 
-    /** Gesture descriptor mask - Set if the mouse buttons were pressed and released. */
+    /**
+     * Gesture descriptor mask - Set if the mouse buttons were pressed
+     * and released.
+     */
     public static final int MOUSE_CLICKED_MASK = 1 << 0;
     /** Gesture descriptor mask - Set if the mouse button was pressed. */
     public static final int MOUSE_PRESSED_MASK = 1 << 1;
     /** Gesture descriptor mask - Set if the mouse button was released. */
     public static final int MOUSE_RELEASED_MASK = 1 << 2;
-    /** Gesture descriptor mask - Set if the mouse moved with no buttons pressed. */
-    public static final int MOUSE_MOVED_MASK = 1 << 3; 
-    /** Gesture descriptor mask - Set if the mouse cursor has entered the map window. */
+    /**
+     * Gesture descriptor mask - Set if the mouse moved with no
+     * buttons pressed.
+     */
+    public static final int MOUSE_MOVED_MASK = 1 << 3;
+    /**
+     * Gesture descriptor mask - Set if the mouse cursor has entered
+     * the map window.
+     */
     public static final int MOUSE_ENTERED_MASK = 1 << 4;
-    /** Gesture descriptor mask - Set if the mouse cursor has left the map window. */
-    public static final int MOUSE_EXITED_MASK = 1 << 5; 
-    /** Gesture descriptor mask - Set if the mouse moved with a button down. */
+    /**
+     * Gesture descriptor mask - Set if the mouse cursor has left the
+     * map window.
+     */
+    public static final int MOUSE_EXITED_MASK = 1 << 5;
+    /**
+     * Gesture descriptor mask - Set if the mouse moved with a button
+     * down.
+     */
     public static final int MOUSE_DRAGGED_MASK = 1 << 6;
     /** Gesture descriptor mask - Set if a keyboard button was pressed. */
-    public static final int KEY_PRESSED_MASK = 1 << 7; 
-    /** Gesture descriptor mask - Set if a keyboard button was released. */
+    public static final int KEY_PRESSED_MASK = 1 << 7;
+    /**
+     * Gesture descriptor mask - Set if a keyboard button was
+     * released.
+     */
     public static final int KEY_RELEASED_MASK = 1 << 8;
-    /** Gesture descriptor mask - Set if a gesture is affiliated with a
-     *  particular graphic.  The graphic ID will be available via the
-     *  getGraphicID() method. */
+    /**
+     * Gesture descriptor mask - Set if a gesture is affiliated with a
+     * particular graphic. The graphic ID will be available via the
+     * getGraphicID() method.
+     */
     public static final int GRAPHIC_ID_MASK = 1 << 9;
-    /** Gesture descriptor mask - Set if the integer is being sent to the
-     *  client to tell it what types of events the server is
-     *  interested in receiving. */
+    /**
+     * Gesture descriptor mask - Set if the integer is being sent to
+     * the client to tell it what types of events the server is
+     * interested in receiving.
+     */
     public static final int CLIENT_NOTIFICATION_MASK = 1 << 10;
-    /** Gesture descriptor mask - Set if the server is interested in
-     *  receiving events even if a graphic gesture is handled
-     *  locally. */
+    /**
+     * Gesture descriptor mask - Set if the server is interested in
+     * receiving events even if a graphic gesture is handled locally.
+     */
     public static final int SERVER_NOTIFICATION_MASK = 1 << 11;
 }

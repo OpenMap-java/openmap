@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ZoomPanel.java,v $
 // $RCSfile: ZoomPanel.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
@@ -28,24 +27,22 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
-import java.beans.*;
 import java.io.Serializable;
 import java.net.URL;
 
-import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
 
 /**
  * Bean to zoom the Map.
  * <p>
- * This bean is a source for ZoomEvents.  It is a simple widget with a ZoomIn
- * button and a ZoomOut button.  When a button is pressed, the appropriate
- * zoom event is fired to all registered listeners.
+ * This bean is a source for ZoomEvents. It is a simple widget with a
+ * ZoomIn button and a ZoomOut button. When a button is pressed, the
+ * appropriate zoom event is fired to all registered listeners.
+ * 
  * @see #addZoomListener
  */
-public class ZoomPanel extends OMToolComponent
-    implements ActionListener, Serializable {
+public class ZoomPanel extends OMToolComponent implements ActionListener,
+        Serializable {
 
     public final static transient String zoomInCmd = "zoomin";
     public final static transient String zoomOutCmd = "zoomout";
@@ -71,8 +68,8 @@ public class ZoomPanel extends OMToolComponent
     public ZoomPanel() {
         super();
         setKey(defaultKey);
-//      setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-//      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        //      setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        //      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setOpaque(false);
 
         JPanel panel = new JPanel();
@@ -97,72 +94,71 @@ public class ZoomPanel extends OMToolComponent
 
     /**
      * Get the Zoom In Factor.
-     * @return float the degree by which map scale will be multiplied when 
-     * zoom in button is pressed
+     * 
+     * @return float the degree by which map scale will be multiplied
+     *         when zoom in button is pressed
      */
     public float getZoomInFactor() {
         return zoomInFactor;
     }
 
     /**
-     * Sets the Zoom In factor.
-     * The factor must be &lt; 1.0.  (otherwise it would make ZoomIn into
-     * a ZoomOut).
-     * @param factor the degree by which map scale should be multiplied
+     * Sets the Zoom In factor. The factor must be &lt; 1.0.
+     * (otherwise it would make ZoomIn into a ZoomOut).
+     * 
+     * @param factor the degree by which map scale should be
+     *        multiplied
      */
     public void setZoomInFactor(float factor) {
-        if (factor < 1.0f){
-            zoomInFactor=factor;
-            zoomInButton.setToolTipText("zoom in X" +zoomInFactor);
-        }
-        else {
-            throw new IllegalArgumentException(
-                    "Zoom In factor too large (must be < 1.0)");
+        if (factor < 1.0f) {
+            zoomInFactor = factor;
+            zoomInButton.setToolTipText("zoom in X" + zoomInFactor);
+        } else {
+            throw new IllegalArgumentException("Zoom In factor too large (must be < 1.0)");
         }
     }
 
     /**
      * Get the Zoom Out Factor.
-     * @return float the degree by which map scale will be multiplied when 
-     * zoom out button is pressed
+     * 
+     * @return float the degree by which map scale will be multiplied
+     *         when zoom out button is pressed
      */
     public float getZoomOutFactor() {
         return zoomOutFactor;
     }
 
     /**
-     * Sets the Zoom Out Factor.
-     * The factor must be &gt; 1.0 (otherwise it would turn ZoomOut into
-     * ZoomIn).
-     * @param factor the degree by which map scale should be multiplied.
+     * Sets the Zoom Out Factor. The factor must be &gt; 1.0
+     * (otherwise it would turn ZoomOut into ZoomIn).
+     * 
+     * @param factor the degree by which map scale should be
+     *        multiplied.
      */
     public void setZoomOutFactor(float factor) {
         if (factor > 1.0f) {
-            zoomOutFactor=factor;
-            zoomOutButton.setToolTipText("zoom out X" +zoomOutFactor);
-        }
-        else {
-            throw new IllegalArgumentException(
-                    "Zoom In factor too small (must be > 1.0)");
+            zoomOutFactor = factor;
+            zoomOutButton.setToolTipText("zoom out X" + zoomOutFactor);
+        } else {
+            throw new IllegalArgumentException("Zoom In factor too small (must be > 1.0)");
         }
     }
 
     /**
      * Add the named button to the panel.
-     *
+     * 
      * @param name GIF image name
      * @param info ToolTip text
      * @param command String command name
-     *
+     *  
      */
     protected JButton getButton(String name, String info, String command) {
         URL url = ZoomPanel.class.getResource(name + ".gif");
         ImageIcon icon = new ImageIcon(url, info);
         JButton b = new JButton(icon);
-        b.setPreferredSize(new Dimension(icon.getIconWidth(), 
-                                         icon.getIconHeight()));
+        b.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
         b.setToolTipText(info);
-        b.setMargin(new Insets(0,0,0,0));
+        b.setMargin(new Insets(0, 0, 0, 0));
         b.setActionCommand(command);
         b.addActionListener(this);
         b.setBorderPainted(Debug.debugging("layout"));
@@ -172,8 +168,8 @@ public class ZoomPanel extends OMToolComponent
 
     /**
      * Add a ZoomListener from the listener list.
-     *
-     * @param listener  The ZoomListener to be added
+     * 
+     * @param listener The ZoomListener to be added
      */
     public synchronized void addZoomListener(ZoomListener listener) {
         zoomDelegate.addZoomListener(listener);
@@ -181,8 +177,8 @@ public class ZoomPanel extends OMToolComponent
 
     /**
      * Remove a ZoomListener from the listener list.
-     *
-     * @param listener  The ZoomListener to be removed
+     * 
+     * @param listener The ZoomListener to be removed
      */
     public synchronized void removeZoomListener(ZoomListener listener) {
         zoomDelegate.removeZoomListener(listener);
@@ -190,6 +186,7 @@ public class ZoomPanel extends OMToolComponent
 
     /**
      * ActionListener interface.
+     * 
      * @param e ActionEvent
      */
     public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -197,8 +194,7 @@ public class ZoomPanel extends OMToolComponent
 
         if (command.equals(zoomInCmd)) {
             zoomDelegate.fireZoom(ZoomEvent.RELATIVE, zoomInFactor);
-        }
-        else if (command.equals(zoomOutCmd)) {
+        } else if (command.equals(zoomOutCmd)) {
             zoomDelegate.fireZoom(ZoomEvent.RELATIVE, zoomOutFactor);
         }
     }
@@ -214,19 +210,19 @@ public class ZoomPanel extends OMToolComponent
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    ////   OMComponentPanel methods to make the tool work with 
-    ////   the MapHandler to find objects it needs.
+    //// OMComponentPanel methods to make the tool work with
+    //// the MapHandler to find objects it needs.
     ///////////////////////////////////////////////////////////////////////////
 
     public void findAndInit(Object obj) {
         if (obj instanceof ZoomListener) {
-            addZoomListener((ZoomListener)obj);
+            addZoomListener((ZoomListener) obj);
         }
     }
 
     public void findAndUndo(Object obj) {
         if (obj instanceof ZoomListener) {
-            removeZoomListener((ZoomListener)obj);
+            removeZoomListener((ZoomListener) obj);
         }
     }
 }

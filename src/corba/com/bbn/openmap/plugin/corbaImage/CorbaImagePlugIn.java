@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/plugin/corbaImage/CorbaImagePlugIn.java,v $
 // $RCSfile: CorbaImagePlugIn.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,15 +23,11 @@
 
 package com.bbn.openmap.plugin.corbaImage;
 
-import java.awt.Component;
 import java.io.*;
 import java.net.*;
 import java.util.Properties;
-import java.util.Vector;
 import javax.swing.ImageIcon;
 
-import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.*;
@@ -40,14 +36,6 @@ import com.bbn.openmap.plugin.corbaImage.corbaImageServer.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.propertyEditor.Inspector;
-
-/*  CORBA  */
-import org.omg.CORBA.ORB;
-import org.omg.CORBA.BooleanHolder;
-import org.omg.CORBA.ShortHolder;
-import org.omg.CORBA.StringHolder;
-import org.omg.CosNaming.*;
 
 /** 
  *

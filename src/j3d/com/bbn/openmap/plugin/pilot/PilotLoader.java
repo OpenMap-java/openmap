@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/PilotLoader.java,v $
 // $RCSfile: PilotLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:05 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.plugin.pilot;
 
@@ -30,22 +29,17 @@ import java.util.Iterator;
 import javax.swing.*;
 
 import com.bbn.openmap.MapHandler;
-import com.bbn.openmap.MapHandlerChild;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.DrawUtil;
 import com.bbn.openmap.tools.drawing.*;
-import com.bbn.openmap.tools.terrain.LOSGenerator;
 import com.bbn.openmap.util.Debug;
 
 /**
  * The PilotLoader is a managing object that pushes Pilots and
  * PilotPaths to the PilotLoaderPlugIn for display on the map.
  */
-public class PilotLoader extends MMLGraphicLoader 
-    implements ActionListener, DrawingToolRequestor {
+public class PilotLoader extends MMLGraphicLoader implements ActionListener,
+        DrawingToolRequestor {
 
     protected OMDrawingTool dt = null;
 
@@ -62,8 +56,8 @@ public class PilotLoader extends MMLGraphicLoader
         this();
 
         this.receiver = receiver;
-//      getTimer().start();
-//      Debug.message("pilotLoader", "PilotLoader starting timer");
+        //      getTimer().start();
+        //      Debug.message("pilotLoader", "PilotLoader starting timer");
     }
 
     public void manageGraphics() {
@@ -73,24 +67,26 @@ public class PilotLoader extends MMLGraphicLoader
         Pilot mp;
 
         while (it.hasNext()) {
-            mp = (Pilot)it.next();
+            mp = (Pilot) it.next();
             mp.move(40f);
             mp.resetConnected();
             list.add(mp);
         }
 
         if (receiver != null) {
-            Debug.message("pilotloader", "PilotLoader.manageGraphics: Updating graphics.");
+            Debug.message("pilotloader",
+                    "PilotLoader.manageGraphics: Updating graphics.");
             receiver.setList(list);
         } else {
-            Debug.message("pilotloader", "PilotLoader.manageGraphics: no receiver to notify.");
+            Debug.message("pilotloader",
+                    "PilotLoader.manageGraphics: no receiver to notify.");
         }
     }
 
-    public void actionPerformed(java.awt.event.ActionEvent ae){
+    public void actionPerformed(java.awt.event.ActionEvent ae) {
         String cmd = ae.getActionCommand();
         if (cmd == TimerCmd) {
-            JCheckBox check = (JCheckBox)ae.getSource();
+            JCheckBox check = (JCheckBox) ae.getSource();
             if (check.isSelected()) {
                 timer.restart();
             } else {
@@ -100,7 +96,10 @@ public class PilotLoader extends MMLGraphicLoader
             if (dt != null) {
                 GraphicAttributes ga = new GraphicAttributes();
                 ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
-                OMPoint pt = (OMPoint) dt.create("com.bbn.openmap.omGraphics.OMPoint", ga, this, false);
+                OMPoint pt = (OMPoint) dt.create("com.bbn.openmap.omGraphics.OMPoint",
+                        ga,
+                        this,
+                        false);
                 if (pt != null) {
                     getTimer().stop();
                     pt.setRadius(5);
@@ -115,20 +114,23 @@ public class PilotLoader extends MMLGraphicLoader
                 GraphicAttributes ga = new GraphicAttributes();
                 ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
                 ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
-                OMPoly poly = (OMPoly) dt.create("com.bbn.openmap.omGraphics.OMPoly", ga, this, true);
+                OMPoly poly = (OMPoly) dt.create("com.bbn.openmap.omGraphics.OMPoly",
+                        ga,
+                        this,
+                        true);
                 if (poly != null) {
                     getTimer().stop();
                     BasicStrokeEditor bse = new BasicStrokeEditor();
-                    bse.setDash(new float[] {5, 5});
+                    bse.setDash(new float[] { 5, 5 });
                     ga.setStroke(bse.getBasicStroke());
                     ga.setLinePaint(Color.yellow);
 
-//                  addNodeButton.setEnabled(false);
+                    //                  addNodeButton.setEnabled(false);
                     addPathButton.setEnabled(false);
                 }
             }
         }
-        
+
         manageGraphics();
     }
 
@@ -137,8 +139,9 @@ public class PilotLoader extends MMLGraphicLoader
      */
     public void findAndInit(Object obj) {
         if (obj instanceof OMDrawingTool) {
-            Debug.message("graphicloader", "LOSGraphicLoader: found OMDrawingTool");
-            setDrawingTool((OMDrawingTool)obj);
+            Debug.message("graphicloader",
+                    "LOSGraphicLoader: found OMDrawingTool");
+            setDrawingTool((OMDrawingTool) obj);
         }
     }
 
@@ -147,7 +150,8 @@ public class PilotLoader extends MMLGraphicLoader
      */
     public void findAndUndo(Object obj) {
         if (obj instanceof OMDrawingTool) {
-            Debug.message("graphicloader", "LOSGraphicLoader: removing OMDrawingTool");
+            Debug.message("graphicloader",
+                    "LOSGraphicLoader: removing OMDrawingTool");
             OMDrawingTool odt = getDrawingTool();
             if (odt == obj) {
                 setDrawingTool(null);
@@ -193,13 +197,13 @@ public class PilotLoader extends MMLGraphicLoader
     public Component getGUI() {
         JPanel panel = new JPanel(new GridLayout(0, 1));
 
-//      if (addNodeButton == null) {
-//          addNodeButton = new JButton("Add Node...");
-//          addNodeButton.addActionListener(this);
-//          addNodeButton.setActionCommand(AddNodeCmd);
-//      }
+        //      if (addNodeButton == null) {
+        //          addNodeButton = new JButton("Add Node...");
+        //          addNodeButton.addActionListener(this);
+        //          addNodeButton.setActionCommand(AddNodeCmd);
+        //      }
 
-//      addNodeButton.setEnabled(getDrawingTool() != null);
+        //      addNodeButton.setEnabled(getDrawingTool() != null);
 
         if (addPathButton == null) {
             addPathButton = new JButton("Add Path for Pilot");
@@ -214,7 +218,7 @@ public class PilotLoader extends MMLGraphicLoader
             addPathButton.setToolTipText("Click to use Drawing Tool to create Pilot path.");
         }
 
-//      panel.add(addNodeButton);
+        //      panel.add(addNodeButton);
         panel.add(addPathButton);
 
         // Only want to do this once...
@@ -243,7 +247,7 @@ public class PilotLoader extends MMLGraphicLoader
         if (omg instanceof OMPoint) {
 
             OMPoint p = (OMPoint) omg;
-            
+
             Pilot mp = new Pilot(p.getLat(), p.getLon(), p.getRadius(), true);
             mp.setName("Added Node " + (pointCount++));
             mp.setStationary(true);
@@ -257,18 +261,18 @@ public class PilotLoader extends MMLGraphicLoader
             pmp.setStationary(true);
             pmp.showPalette();
             points.put(pmp.getName(), pmp);
-            pmp.setMapHandler((MapHandler)getBeanContext());
+            pmp.setMapHandler((MapHandler) getBeanContext());
             manageGraphics();
         }
 
-//      addNodeButton.setEnabled(true);
+        //      addNodeButton.setEnabled(true);
         addPathButton.setEnabled(true);
     }
 
     /**
      * Needed to fill in a GUI with a receiver's name, to enable the
-     * user to send a graphic to a specific object.  Should be a
-     * pretty name, suitable to let a user know what it is.
+     * user to send a graphic to a specific object. Should be a pretty
+     * name, suitable to let a user know what it is.
      */
     public String getName() {
         return "";

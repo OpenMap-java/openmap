@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/05/15 02:27:19 $
+// $Revision: 1.11 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
@@ -34,8 +33,8 @@ import java.util.Properties;
 import java.util.Vector;
 import javax.swing.*;
 
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.gui.menu.DataBoundsViewMenuItem;
 import com.bbn.openmap.gui.menu.OMBasicMenu;
@@ -43,7 +42,6 @@ import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.layer.util.LayerUtils;
@@ -51,39 +49,43 @@ import com.bbn.openmap.layer.util.LayerUtils;
 /**
  * Menu that keeps track of different saved map views (lat/lon, scale
  * and projection type), and provides a way to set the map projection
- * to those views.  There is a set of optional default views, but new
- * views can be added.  If these views are added to the properties
+ * to those views. There is a set of optional default views, but new
+ * views can be added. If these views are added to the properties
  * file, they will be added to the menu automatically for later uses.
- * This menu can understand a set of properties: <pre>
- *
- * gotoMenu.class=com.bbn.openmap.gui.GoToMenu
- * #Add the default, world view option
- * gotoMenu.addDefaults=true
- * #Add the menu for DataBoundsProviders
- * gotoMenu.addDataViews=true
- * #Additional views
- * goto.views=Argentina India United_States Caspian_Sea
- * Argentina.latitude=-39.760445
- * Argentina.longitude=-65.92294
- * Argentina.name=Argentina
- * Argentina.projection=Mercator
- * Argentina.scale=5.0E7
- * India.latitude=20.895763
- * India.longitude=80.437485
- * India.name=India
- * India.projection=Mercator
- * India.scale=3.86688E7
- * United_States.latitude=38.82259
- * United_States.longitude=-96.74999
- * United_States.name=United States
- * United_States.projection=Mercator
- * United_States.scale=5.186114E7
- * Caspian_Sea.name=Caspian Sea
- * Caspian_Sea.latitude=40f
- * Caspian_Sea.longitude=47f
- * Caspian_Sea.scale=1000000
- * Caspian_Sea.projection=CADRG
- *
+ * This menu can understand a set of properties:
+ * 
+ * <pre>
+ * 
+ * 
+ *  gotoMenu.class=com.bbn.openmap.gui.GoToMenu
+ *  #Add the default, world view option
+ *  gotoMenu.addDefaults=true
+ *  #Add the menu for DataBoundsProviders
+ *  gotoMenu.addDataViews=true
+ *  #Additional views
+ *  goto.views=Argentina India United_States Caspian_Sea
+ *  Argentina.latitude=-39.760445
+ *  Argentina.longitude=-65.92294
+ *  Argentina.name=Argentina
+ *  Argentina.projection=Mercator
+ *  Argentina.scale=5.0E7
+ *  India.latitude=20.895763
+ *  India.longitude=80.437485
+ *  India.name=India
+ *  India.projection=Mercator
+ *  India.scale=3.86688E7
+ *  United_States.latitude=38.82259
+ *  United_States.longitude=-96.74999
+ *  United_States.name=United States
+ *  United_States.projection=Mercator
+ *  United_States.scale=5.186114E7
+ *  Caspian_Sea.name=Caspian Sea
+ *  Caspian_Sea.latitude=40f
+ *  Caspian_Sea.longitude=47f
+ *  Caspian_Sea.scale=1000000
+ *  Caspian_Sea.projection=CADRG
+ * 
+ *  
  * </pre>
  */
 public class GoToMenu extends AbstractOpenMapMenu {
@@ -112,7 +114,10 @@ public class GoToMenu extends AbstractOpenMapMenu {
     public final static String ProjectionTypeProperty = "projection";
     /** Flag to use to add default views (World, each continent. */
     public final static String AddDefaultListProperty = "addDefaults";
-    /** Flag to use to enable/disable the gathering of DataBoundsProviders.*/
+    /**
+     * Flag to use to enable/disable the gathering of
+     * DataBoundsProviders.
+     */
     public final static String AddDataViewsProperty = "addDataViews";
 
     protected boolean addDefaults = true;
@@ -121,26 +126,25 @@ public class GoToMenu extends AbstractOpenMapMenu {
     public GoToMenu() {
         super();
         setText(i18n.get(this, "goto", defaultText));
-        setMnemonic(i18n.get
-                    (this, "goto", i18n.MNEMONIC, defaultMnemonic).charAt(0));
+        setMnemonic(i18n.get(this, "goto", I18n.MNEMONIC, defaultMnemonic).charAt(0));
 
         dataBoundsMenu = new OMBasicMenu("Go Over Data");
         add(new AddNewViewButton("Add Saved View..."));
         add(dataBoundsMenu);
         add(new JSeparator());
     }
-  
+
     public void findAndUndo(Object someObj) {
         super.findAndUndo(someObj);
         if (someObj instanceof MapBean) {
             // do the initializing that need to be done here
-            if (getMap() == (MapBean)someObj) {
+            if (getMap() == (MapBean) someObj) {
                 setMap(null);
             }
         }
 
         if (someObj instanceof DataBoundsProvider) {
-            removeDataBoundsProvider((DataBoundsProvider)someObj);
+            removeDataBoundsProvider((DataBoundsProvider) someObj);
         }
     }
 
@@ -148,11 +152,11 @@ public class GoToMenu extends AbstractOpenMapMenu {
         super.findAndInit(someObj);
         if (someObj instanceof MapBean) {
             // do the initializing that need to be done here
-            setMap((MapBean)someObj);
+            setMap((MapBean) someObj);
         }
 
         if (someObj instanceof DataBoundsProvider) {
-            addDataBoundsProvider((DataBoundsProvider)someObj);
+            addDataBoundsProvider((DataBoundsProvider) someObj);
         }
     }
 
@@ -171,10 +175,12 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        addDefaults = LayerUtils.booleanFromProperties(props, prefix + AddDefaultListProperty, addDefaults);
+        addDefaults = LayerUtils.booleanFromProperties(props, prefix
+                + AddDefaultListProperty, addDefaults);
 
-        addDataViews = LayerUtils.booleanFromProperties(props, prefix + AddDataViewsProperty, addDataViews);
-        
+        addDataViews = LayerUtils.booleanFromProperties(props, prefix
+                + AddDataViewsProperty, addDataViews);
+
         dataBoundsMenu.setVisible(addDataViews);
 
         if (addDefaults) {
@@ -188,7 +194,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
             Vector views = PropUtils.parseSpacedMarkers(locationList);
             Enumeration things = views.elements();
             while (things.hasMoreElements()) {
-                String viewPrefix = (String)things.nextElement();
+                String viewPrefix = (String) things.nextElement();
                 addLocationItem(viewPrefix, props);
             }
         }
@@ -200,29 +206,30 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        props.put(prefix + AddDefaultListProperty, new Boolean(addDefaults).toString());
-        props.put(prefix + AddDataViewsProperty, new Boolean(addDataViews).toString());
+        props.put(prefix + AddDefaultListProperty,
+                new Boolean(addDefaults).toString());
+        props.put(prefix + AddDataViewsProperty,
+                new Boolean(addDataViews).toString());
 
         StringBuffer viewList = new StringBuffer();
 
         Enumeration cv = customViews.elements();
         while (cv.hasMoreElements()) {
-            GoToButton gtb = (GoToButton)cv.nextElement();
+            GoToButton gtb = (GoToButton) cv.nextElement();
 
-            String sanitizedName = gtb.getText().replace(' ','_');
+            String sanitizedName = gtb.getText().replace(' ', '_');
             viewList.append(" " + sanitizedName);
 
             sanitizedName = PropUtils.getScopedPropertyPrefix(sanitizedName);
 
             props.put(sanitizedName + NameProperty, gtb.getText());
             props.put(sanitizedName + LatProperty,
-                      new Float(gtb.latitude).toString());
+                    new Float(gtb.latitude).toString());
             props.put(sanitizedName + LonProperty,
-                      new Float(gtb.longitude).toString());
+                    new Float(gtb.longitude).toString());
             props.put(sanitizedName + ScaleProperty,
-                      new Float(gtb.scale).toString());
-            props.put(sanitizedName + ProjectionTypeProperty,
-                      gtb.projectionID);
+                    new Float(gtb.scale).toString());
+            props.put(sanitizedName + ProjectionTypeProperty, gtb.projectionID);
 
         }
 
@@ -230,16 +237,21 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
         return props;
     }
-    
+
     /** PropertyConsumer interface method. */
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
 
-        props.put(ViewListProperty, "Space-separated marker list of different views");
-        props.put(AddDefaultListProperty, "Flag to add default views (true/false).");
-        props.put(AddDefaultListProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        props.put(AddDataViewsProperty, "Flag to add views from some data components.");
-        props.put(AddDataViewsProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(ViewListProperty,
+                "Space-separated marker list of different views");
+        props.put(AddDefaultListProperty,
+                "Flag to add default views (true/false).");
+        props.put(AddDefaultListProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(AddDataViewsProperty,
+                "Flag to add views from some data components.");
+        props.put(AddDataViewsProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
         props.put(NameProperty, "The formal name of the view for the user.");
         props.put(LatProperty, "The latitude of the center of the view.");
         props.put(LonProperty, "The longitude of the center of the view.");
@@ -251,8 +263,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
     /** Add the default views to the menu. */
     public void addDefaultLocations() {
-        add(new GoToButton("World", 0, 0, Float.MAX_VALUE, 
-                           Mercator.MercatorName));
+        add(new GoToButton("World", 0, 0, Float.MAX_VALUE, Mercator.MercatorName));
     }
 
     Vector customViews = new Vector();
@@ -270,9 +281,9 @@ public class GoToMenu extends AbstractOpenMapMenu {
         String projID = props.getProperty(prefix + ProjectionTypeProperty);
 
         if (Debug.debugging("goto")) {
-            Debug.output("GoToMenu: adding view - " + locationName + ", " +
-                         latString + ", " + lonString  + ", " +
-                         scaleString + ", " + projID);
+            Debug.output("GoToMenu: adding view - " + locationName + ", "
+                    + latString + ", " + lonString + ", " + scaleString + ", "
+                    + projID);
         }
 
         try {
@@ -299,8 +310,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
     }
 
     public void removeDataBoundsProvider(DataBoundsProvider provider) {
-        JMenuItem item = 
-            (DataBoundsViewMenuItem)dataBoundsProviders.get(provider);
+        JMenuItem item = (DataBoundsViewMenuItem) dataBoundsProviders.get(provider);
         if (item != null) {
             dataBoundsMenu.remove(item);
         }
@@ -320,11 +330,10 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
     /**
      * This is the button that will bring up the dialog to actually
-     * name a new view being added.  The new view will be the current
+     * name a new view being added. The new view will be the current
      * projection of the map.
      */
-    public class AddNewViewButton extends JMenuItem
-        implements ActionListener {
+    public class AddNewViewButton extends JMenuItem implements ActionListener {
 
         public AddNewViewButton(String title) {
             super(title);
@@ -335,10 +344,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
             if (map != null) {
                 Projection proj = map.getProjection();
                 LatLonPoint llp = proj.getCenter();
-                GoToButton gtb = new GoToButton(llp.getLatitude(),
-                                                llp.getLongitude(),
-                                                proj.getScale(),
-                                                proj.getName());
+                GoToButton gtb = new GoToButton(llp.getLatitude(), llp.getLongitude(), proj.getScale(), proj.getName());
             }
         }
     }
@@ -346,8 +352,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
     /**
      * This button contains the trigger for a saved view.
      */
-    public class GoToButton extends JMenuItem 
-        implements ActionListener {
+    public class GoToButton extends JMenuItem implements ActionListener {
 
         public float latitude;
         public float longitude;
@@ -356,8 +361,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
         GoToMenu menu;
 
-        public GoToButton(String title,
-                          float lat, float lon, float s, String projID) {
+        public GoToButton(String title, float lat, float lon, float s,
+                String projID) {
             super(title);
             init(lat, lon, s, projID);
         }
@@ -375,32 +380,37 @@ public class GoToMenu extends AbstractOpenMapMenu {
             projectionID = projID;
             this.addActionListener(this);
         }
-        
+
         public void setNameAndAdd(String name) {
             this.setText(name);
             parent.addView(this);
         }
-        
+
         public void actionPerformed(ActionEvent ae) {
             if (map != null) {
                 Projection oldProj = map.getProjection();
+                Class projClass = ProjectionFactory.getProjClassForName(projectionID);
+                
+                if (projClass == null) {
+                        projClass = com.bbn.openmap.proj.Mercator.class;
+                }
 
-                int projType = ProjectionFactory.getProjType(projectionID);
-
-                Projection newProj = ProjectionFactory.makeProjection(
-                    projType, latitude, longitude,
-                    scale, oldProj.getWidth(), oldProj.getHeight());
+                Projection newProj = ProjectionFactory.makeProjection(projClass,
+                        latitude,
+                        longitude,
+                        scale,
+                        oldProj.getWidth(),
+                        oldProj.getHeight());
 
                 map.setProjection(newProj);
             }
         }
     }
 
-    /** 
+    /**
      * Brings up a GUI to name a new view.
      */
-    public class NameFetcher extends JDialog
-        implements ActionListener {
+    public class NameFetcher extends JDialog implements ActionListener {
 
         JTextField nameField;
         JLabel label;
@@ -444,11 +454,11 @@ public class GoToMenu extends AbstractOpenMapMenu {
             buttonPanel.add(closebutton);
 
             palette.add(buttonPanel);
-            
+
             this.getContentPane().add(palette);
             this.pack();
         }
-        
+
         public void actionPerformed(ActionEvent event) {
             if (event.getSource() == applybutton) {
                 String newName = nameField.getText();

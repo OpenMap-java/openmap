@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFFeatureWarehouse.java,v $
 // $RCSfile: VPFFeatureWarehouse.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/01 21:21:59 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
@@ -27,47 +26,39 @@ import java.util.*;
 import com.bbn.openmap.LatLonPoint;
 
 /**
- * Define an interface for a Graphic Factory for graphics read from VPF.
+ * Define an interface for a Graphic Factory for graphics read from
+ * VPF.
  */
 public interface VPFFeatureWarehouse extends VPFWarehouse {
 
-    public boolean needToFetchTileContents(String currentFeature, TileDirectory currentTile);
+    public boolean needToFetchTileContents(String currentFeature,
+                                           TileDirectory currentTile);
 
     /**
-     *
+     *  
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
-                           List facevec,
-                           LatLonPoint ll1,
-                           LatLonPoint ll2,
-                           float dpplat,
-                           float dpplon,
-                           String featureType);
+                           List facevec, LatLonPoint ll1, LatLonPoint ll2,
+                           float dpplat, float dpplon, String featureType);
 
     /**
-     *
+     *  
      */
-    public void createEdge(CoverageTable c, EdgeTable edgetable,
-                           List edgevec,
-                           LatLonPoint ll1,
-                           LatLonPoint ll2,
-                           float dpplat,
-                           float dpplon,
-                           CoordFloatString coords,
+    public void createEdge(CoverageTable c, EdgeTable edgetable, List edgevec,
+                           LatLonPoint ll1, LatLonPoint ll2, float dpplat,
+                           float dpplon, CoordFloatString coords,
                            String featureType);
 
     /**
-     *
+     *  
      */
-    public void createText(CoverageTable c, TextTable texttable,
-                           List textvec,
-                           float latitude,
-                           float longitude,
-                           String text,
+    public void createText(CoverageTable c, TextTable texttable, List textvec,
+                           float latitude, float longitude, String text,
                            String featureType);
 
     /**
-     * Method called by the VPF reader code to construct a node feature.
+     * Method called by the VPF reader code to construct a node
+     * feature.
      */
     public void createNode(CoverageTable c, NodeTable t, List nodeprim,
                            float latitude, float longitude,

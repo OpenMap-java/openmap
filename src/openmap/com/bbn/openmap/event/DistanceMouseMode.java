@@ -27,22 +27,14 @@ import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.beans.*;
-import java.beans.beancontext.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.text.*;
 import java.util.*;
 
 /**
@@ -50,31 +42,39 @@ import java.util.*;
  * mouse click as the mouse is moved and displays the cumulative
  * distance in nautical miles (nm), kilometers (km), statute miles
  * (miles) and the azimuth angle in decimal degrees from north on the
- * status bar.  Several distance segments are allowed. To erase
+ * status bar. Several distance segments are allowed. To erase
  * (terminate) double click the mouse.
  * <p>
- * To use this mouse mode in the OpenMap demo (in setWidgets):
- * create the mouse mode, such as <p>
- *   DistanceMouseMode distMode = new DistanceMouseMode(true, id, DistanceMouseMode.DISTANCE_ALL);
- * <p>Add the distance mouse mode to the mouse delegator
- *   md.addMouseMode(distMode);
+ * To use this mouse mode in the OpenMap demo (in setWidgets): create
+ * the mouse mode, such as
+ * <p>
+ * DistanceMouseMode distMode = new DistanceMouseMode(true, id,
+ * DistanceMouseMode.DISTANCE_ALL);
+ * <p>
+ * Add the distance mouse mode to the mouse delegator
+ * md.addMouseMode(distMode);
  * <p>
  * This class can easily be extended, for example to create waypoints
  * for objects.
  * <p>
  * NOTE: If some lines are not properly erased (because the mouse went
- * outside the map for example), just use the redraw from the menu.<P>
- *
- * You can set the units used for measurements by setting the property:
+ * outside the map for example), just use the redraw from the menu.
+ * <P>
+ * 
+ * You can set the units used for measurements by setting the
+ * property:
+ * 
  * <pre>
- * prefix.units= &lt name for Length.java (km, miles, meters, nm) &gt
+ * 
+ *  prefix.units= &amp;lt name for Length.java (km, miles, meters, nm) &amp;gt
+ *  
  * </pre>
  */
 public class DistanceMouseMode extends CoordMouseMode {
 
     /**
-     * Mouse mode identifier, is "Distance".
-     * This is returned on getID()
+     * Mouse mode identifier, is "Distance". This is returned on
+     * getID()
      */
     public final static transient String modeID = "Distance".intern();
     public final static String UnitProperty = "units";
@@ -95,7 +95,8 @@ public class DistanceMouseMode extends CoordMouseMode {
      */
     public boolean mousePressed = false;
     /**
-     * Vector to store all distance segments, first point and last point pairs
+     * Vector to store all distance segments, first point and last
+     * point pairs
      */
     public Vector segments = new Vector();
     /**
@@ -109,8 +110,8 @@ public class DistanceMouseMode extends CoordMouseMode {
 
     /**
      * The line type to be displayed, see OMGraphic.
-     * LINETYPE_GREATCIRCLE, LINETYPE_RHUMB, LINETYPE_STRAIGHT
-     * default LINETYPE_GREATCIRCLE
+     * LINETYPE_GREATCIRCLE, LINETYPE_RHUMB, LINETYPE_STRAIGHT default
+     * LINETYPE_GREATCIRCLE
      */
     public static int lineType = OMGraphic.LINETYPE_GREATCIRCLE;
 
@@ -131,10 +132,10 @@ public class DistanceMouseMode extends CoordMouseMode {
     MapBean theMap;
 
     /**
-     * Construct a DistanceMouseMode.  Default constructor.  Sets the
-     * ID to the modeID, and the consume mode to true.  You need to
+     * Construct a DistanceMouseMode. Default constructor. Sets the ID
+     * to the modeID, and the consume mode to true. You need to
      * setInfoDelegator, setUnit and setLineType if you use this
-     * constructor.  
+     * constructor.
      */
     public DistanceMouseMode() {
         this(true);
@@ -143,29 +144,31 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Construct a DistanceMouseMode.  Lets you set the consume
-     * mode. If the events are consumed, then a MouseEvent is sent
-     * only to the first MapMouseListener that successfully processes
-     * the event. If they are not consumed, then all of the listeners
-     * get a chance to act on the event.  You need to
-     * setInfoDelegator, setUnit and setLineType if you use this
-     * constructor.
-     * @param consumeEvents the mode setting.  
+     * Construct a DistanceMouseMode. Lets you set the consume mode.
+     * If the events are consumed, then a MouseEvent is sent only to
+     * the first MapMouseListener that successfully processes the
+     * event. If they are not consumed, then all of the listeners get
+     * a chance to act on the event. You need to setInfoDelegator,
+     * setUnit and setLineType if you use this constructor.
+     * 
+     * @param consumeEvents the mode setting.
      */
     public DistanceMouseMode(boolean consumeEvents) {
         super(modeID, consumeEvents);
         // if you really want to change the cursor shape
         // setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
     }
-    
+
     /**
-     * Construct an DistanceMouseMode. For convenience for derived classes.
+     * Construct an DistanceMouseMode. For convenience for derived
+     * classes.
+     * 
      * @param name the ID of the mode.
      * @param consumeEvents if true, events are propagated to the
-     * first MapMouseListener that successfully processes the event,
-     * if false, events are propagated to all MapMouseListeners.  You
-     * need to setInfoDelegator, setUnit and setLineType if you use
-     * this constructor.  
+     *        first MapMouseListener that successfully processes the
+     *        event, if false, events are propagated to all
+     *        MapMouseListeners. You need to setInfoDelegator, setUnit
+     *        and setLineType if you use this constructor.
      */
     public DistanceMouseMode(String name, boolean consumeEvents) {
         super(name, consumeEvents);
@@ -174,19 +177,21 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Construct a DistanceMouseMode.
-     * Lets you set the consume mode. If the events are consumed,
-     * then a MouseEvent is sent only to the first MapMouseListener
-     * that successfully processes the event. If they are not
-     * consumed, then all of the listeners get a chance to act on the event.
-     * You need to the setLineType if you use this constructor.
+     * Construct a DistanceMouseMode. Lets you set the consume mode.
+     * If the events are consumed, then a MouseEvent is sent only to
+     * the first MapMouseListener that successfully processes the
+     * event. If they are not consumed, then all of the listeners get
+     * a chance to act on the event. You need to the setLineType if
+     * you use this constructor.
+     * 
      * @param consumeEvents the mode setting.
      * @param id the calling object's info delegator.
      * @param units the unit of distance that will be displayed, such
-     * as Length.NM, Length.KM or Length.MILE.  If null, display all of them.
+     *        as Length.NM, Length.KM or Length.MILE. If null, display
+     *        all of them.
      */
-    public DistanceMouseMode(boolean consumeEvents, InformationDelegator id, 
-                             Length units) {
+    public DistanceMouseMode(boolean consumeEvents, InformationDelegator id,
+            Length units) {
         super(modeID, consumeEvents);
         // if you really want to change the cursor shape
         //  setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
@@ -195,21 +200,23 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Construct a DistanceMouseMode.
-     * Lets you set the consume mode. If the events are consumed,
-     * then a MouseEvent is sent only to the first MapMouseListener
-     * that successfully processes the event. If they are not
-     * consumed, then all of the listeners get a chance to act on the event.
-     * You need to the setLineType if you use this constructor.
+     * Construct a DistanceMouseMode. Lets you set the consume mode.
+     * If the events are consumed, then a MouseEvent is sent only to
+     * the first MapMouseListener that successfully processes the
+     * event. If they are not consumed, then all of the listeners get
+     * a chance to act on the event. You need to the setLineType if
+     * you use this constructor.
+     * 
      * @param consumeEvents the mode setting.
      * @param id the calling object's info delegator.
      * @param units the unit of distance that will be displayed, such
-     * as Length.NM, Length.KM or Length.MILE.  If null, display all of them.
+     *        as Length.NM, Length.KM or Length.MILE. If null, display
+     *        all of them.
      * @param lType the line type that will be dispalyed such as
-     *      LINETYPE_GREATCIRCLE, LINETYPE_RHUMB, LINETYPE_STRAIGHT
+     *        LINETYPE_GREATCIRCLE, LINETYPE_RHUMB, LINETYPE_STRAIGHT
      */
     public DistanceMouseMode(boolean consumeEvents, InformationDelegator id,
-                             Length units, int lType) {
+            Length units, int lType) {
         super(modeID, consumeEvents);
         // if you really want to change the cursor shape
         //  setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
@@ -219,11 +226,12 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Construct a DistanceMouseMode.
-     * Lets you set the consume mode. If the events are consumed,
-     * then a MouseEvent is sent only to the first MapMouseListener
-     * that successfully processes the event. If they are not
-     * consumed, then all of the listeners get a chance to act on the event.
+     * Construct a DistanceMouseMode. Lets you set the consume mode.
+     * If the events are consumed, then a MouseEvent is sent only to
+     * the first MapMouseListener that successfully processes the
+     * event. If they are not consumed, then all of the listeners get
+     * a chance to act on the event.
+     * 
      * @param consumeEvents the mode setting.
      * @param id the calling object's info delegator.
      */
@@ -233,19 +241,21 @@ public class DistanceMouseMode extends CoordMouseMode {
         //  setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
         infoDelegator = id;
     }
-    
+
     /**
-     * Construct a DistanceMouseMode. For convenience for derived classes.
-     * Lets you set the consume mode. If the events are consumed,
-     * then a MouseEvent is sent only to the first MapMouseListener
-     * that successfully processes the event. If they are not
-     * consumed, then all of the listeners get a chance to act on the event.
+     * Construct a DistanceMouseMode. For convenience for derived
+     * classes. Lets you set the consume mode. If the events are
+     * consumed, then a MouseEvent is sent only to the first
+     * MapMouseListener that successfully processes the event. If they
+     * are not consumed, then all of the listeners get a chance to act
+     * on the event.
+     * 
      * @param name the ID of the mode.
      * @param consumeEvents the mode setting.
      * @param id the calling object's info delegator.
      */
-    public DistanceMouseMode(String name, boolean consumeEvents, 
-                             InformationDelegator id) {
+    public DistanceMouseMode(String name, boolean consumeEvents,
+            InformationDelegator id) {
         super(name, consumeEvents);
         // if you really want to change the cursor shape
         //  setModeCursor(cursor.getPredefinedCursor(cursor.CROSSHAIR_CURSOR));
@@ -253,8 +263,9 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Process a mouseClicked event.
-     * Erase all drawn lines and circles upon a double mouse click
+     * Process a mouseClicked event. Erase all drawn lines and circles
+     * upon a double mouse click
+     * 
      * @param e mouse event.
      */
     public void mouseClicked(MouseEvent e) {
@@ -271,7 +282,7 @@ public class DistanceMouseMode extends CoordMouseMode {
                     // erase the last circle
                     eraseCircle();
                 } else {
-                    ((MapBean)e.getSource()).repaint();
+                    ((MapBean) e.getSource()).repaint();
                 }
                 // cleanup
                 cleanUp();
@@ -280,9 +291,9 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Process a mouse pressed event.
-     * Add the mouse location to the segment vector.
-     * Calculate the cumulative total distance.
+     * Process a mouse pressed event. Add the mouse location to the
+     * segment vector. Calculate the cumulative total distance.
+     * 
      * @param e mouse event.
      */
     public void mousePressed(MouseEvent e) {
@@ -301,13 +312,14 @@ public class DistanceMouseMode extends CoordMouseMode {
             segments.addElement(rPoint1);
             // add the distance to the total distance
             totalDistance = totalDistance + distance;
-        }   
+        }
     }
 
     /**
      * Draw a rubberband line and circle as the mouse is moved.
      * Calculate distance and azimuth angle as the mouse moves.
      * Display distance and azimuth angle in on the infoDelegator.
+     * 
      * @param e mouse event.
      */
     public void mouseMoved(MouseEvent e) {
@@ -316,38 +328,44 @@ public class DistanceMouseMode extends CoordMouseMode {
             if (mousePressed) {
                 float lat1, lat2, long1, long2;
                 // set the map bean
-                theMap = (MapBean)(e.getSource());
+                theMap = (MapBean) (e.getSource());
                 // erase the old line and circle first
                 paintRubberband(rPoint1, rPoint2);
                 // get the current mouse location in latlon
                 rPoint2 = theMap.getProjection().inverse(e.getPoint());
-                // paint the new line and circle up to the current mouse location
+                // paint the new line and circle up to the current
+                // mouse location
                 paintRubberband(rPoint1, rPoint2);
 
                 if (infoDelegator != null) {
-                    Debug.message("mousemodedetail", 
-                                  "DistanceMouseMode: firing mouse location");
+                    Debug.message("mousemodedetail",
+                            "DistanceMouseMode: firing mouse location");
                     // lat, lon of anchor point
-                    lat1  = rPoint1.getLatitude();
+                    lat1 = rPoint1.getLatitude();
                     long1 = rPoint1.getLongitude();
                     // lat, lon of current mouse position
-                    lat2  = rPoint2.getLatitude();
+                    lat2 = rPoint2.getLatitude();
                     long2 = rPoint2.getLongitude();
                     // calculate great circle distance in nm
-//                     distance = getGreatCircleDist(lat1, long1, 
-//                                                   lat2, long2, Length.NM);
-                    distance = (double)GreatCircle.spherical_distance(ProjMath.degToRad(lat1),
-                                                                      ProjMath.degToRad(long1),
-                                                                      ProjMath.degToRad(lat2),
-                                                                      ProjMath.degToRad(long2));
-                    
-                    
+                    //                     distance = getGreatCircleDist(lat1, long1,
+                    //                                                   lat2, long2, Length.NM);
+                    distance = (double) GreatCircle.spherical_distance(ProjMath.degToRad(lat1),
+                            ProjMath.degToRad(long1),
+                            ProjMath.degToRad(lat2),
+                            ProjMath.degToRad(long2));
+
                     // calculate azimuth angle dec deg
-                    float azimuth = getSphericalAzimuth(lat1, long1, lat2, long2);
+                    float azimuth = getSphericalAzimuth(lat1,
+                            long1,
+                            lat2,
+                            long2);
                     // convert total distance into all distance units
-//                     String distNM   = df.format(totalDistance+distance);
-                    double tmpDistance = totalDistance+distance;
-                    String infoLine = createDistanceInformationLine(rPoint2,tmpDistance,azimuth);
+                    //                     String distNM =
+                    // df.format(totalDistance+distance);
+                    double tmpDistance = totalDistance + distance;
+                    String infoLine = createDistanceInformationLine(rPoint2,
+                            tmpDistance,
+                            azimuth);
                     // setup the info event
                     InfoDisplayEvent info = new InfoDisplayEvent(this, infoLine, InformationDelegator.COORDINATE_INFO_LINE);
                     // ask the infoDelegator to display the info
@@ -358,25 +376,28 @@ public class DistanceMouseMode extends CoordMouseMode {
             }
         }
     }
-    
-    protected String createDistanceInformationLine(LatLonPoint llp, double distance, double azimuth) {
+
+    protected String createDistanceInformationLine(LatLonPoint llp,
+                                                   double distance,
+                                                   double azimuth) {
         // setup the distance info to be displayed
         String unitInfo = null;
         // what unit is asked for
         if (unit == null) {
-            unitInfo = df.format(Length.NM.fromRadians((float)distance)) +
-                Length.NM.getAbbr() + ",  " +
-                df.format(Length.KM.fromRadians((float)distance)) +
-                Length.KM.getAbbr() + ",  " +
-                df.format(Length.MILE.fromRadians((float)distance)) +
-                Length.MILE.getAbbr() + "  ";
+            unitInfo = df.format(Length.NM.fromRadians((float) distance))
+                    + Length.NM.getAbbr() + ",  "
+                    + df.format(Length.KM.fromRadians((float) distance))
+                    + Length.KM.getAbbr() + ",  "
+                    + df.format(Length.MILE.fromRadians((float) distance))
+                    + Length.MILE.getAbbr() + "  ";
         } else {
-            unitInfo = unit.fromRadians((float)distance) + " " + unit.getAbbr();
+            unitInfo = unit.fromRadians((float) distance) + " "
+                    + unit.getAbbr();
         }
 
         // add the mouse lat, lon
-        String infoLine = "Lat, Lon (" + df.format(llp.getLatitude()) +
-            ", " + df.format(llp.getLongitude())  + "), distance (";
+        String infoLine = "Lat, Lon (" + df.format(llp.getLatitude()) + ", "
+                + df.format(llp.getLongitude()) + "), distance (";
 
         // add the units
         infoLine = infoLine + unitInfo + ")";
@@ -388,23 +409,25 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Process a mouseEntered event.
-     * Record the mouse source object, a map bean.
+     * Process a mouseEntered event. Record the mouse source object, a
+     * map bean.
+     * 
      * @param e mouse event.
      */
     public void mouseEntered(MouseEvent e) {
         // get the map bean
         if (e.getSource() instanceof MapBean)
-            theMap = (MapBean)(e.getSource());
+            theMap = (MapBean) (e.getSource());
     }
 
     /**
-     * Process a mouseExited event.
-     * If a line is being drawn (and mouse go off the map), it will be
-     * erased.  The anchor point rPoint1 is kept in case the mouse
-     * comes back on the screen. Then, a new line will be drawn with
-     * the original mouse press position.
-     * @param e mouse event.  
+     * Process a mouseExited event. If a line is being drawn (and
+     * mouse go off the map), it will be erased. The anchor point
+     * rPoint1 is kept in case the mouse comes back on the screen.
+     * Then, a new line will be drawn with the original mouse press
+     * position.
+     * 
+     * @param e mouse event.
      */
     public void mouseExited(MouseEvent e) {
         if (e.getSource() instanceof MapBean) {
@@ -419,6 +442,7 @@ public class DistanceMouseMode extends CoordMouseMode {
 
     /**
      * Draw a rubberband line between two points
+     * 
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
      */
@@ -429,22 +453,20 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Draw a rubberband line between two points into the Graphics object.
+     * Draw a rubberband line between two points into the Graphics
+     * object.
+     * 
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
      * @param graphics a java.awt.Graphics object to render into.
      */
     public void paintLine(LatLonPoint pt1, LatLonPoint pt2, Graphics graphics) {
-        Graphics2D g = (Graphics2D)graphics;
+        Graphics2D g = (Graphics2D) graphics;
         g.setXORMode(java.awt.Color.lightGray);
         g.setColor(java.awt.Color.darkGray);
         if (pt1 != null && pt2 != null) {
             // the line connecting the segments
-            OMLine cLine = new OMLine(pt1.getLatitude(),
-                                      pt1.getLongitude(),
-                                      pt2.getLatitude(),
-                                      pt2.getLongitude(),
-                                      lineType);
+            OMLine cLine = new OMLine(pt1.getLatitude(), pt1.getLongitude(), pt2.getLatitude(), pt2.getLongitude(), lineType);
             // get the map projection
             Projection proj = theMap.getProjection();
             // prepare the line for rendering
@@ -456,6 +478,7 @@ public class DistanceMouseMode extends CoordMouseMode {
 
     /**
      * Draw a rubberband circle between two points
+     * 
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
      */
@@ -467,6 +490,7 @@ public class DistanceMouseMode extends CoordMouseMode {
 
     /**
      * Draw a rubberband circle between two points
+     * 
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
      * @param graphics a java.awt.Graphics object to render into.
@@ -474,7 +498,7 @@ public class DistanceMouseMode extends CoordMouseMode {
     public void paintCircle(LatLonPoint pt1, LatLonPoint pt2, Graphics graphics) {
         // do all this only if want to display the rubberband circle
         if (displayCircle) {
-            Graphics2D g = (Graphics2D)graphics;
+            Graphics2D g = (Graphics2D) graphics;
             g.setXORMode(java.awt.Color.lightGray);
             g.setColor(java.awt.Color.darkGray);
             if (pt1 != null && pt2 != null) {
@@ -484,9 +508,12 @@ public class DistanceMouseMode extends CoordMouseMode {
                 float radphi = ProjMath.degToRad(pt2.getLatitude());
                 float radlambda = ProjMath.degToRad(pt2.getLongitude());
                 // calculate the circle radius
-                double dRad = GreatCircle.spherical_distance(radphi1, radlambda0,  radphi, radlambda);
+                double dRad = GreatCircle.spherical_distance(radphi1,
+                        radlambda0,
+                        radphi,
+                        radlambda);
                 // convert into decimal degrees
-                float rad = (float)ProjMath.radToDeg(dRad);
+                float rad = (float) ProjMath.radToDeg(dRad);
                 // make the circle
                 OMCircle circle = new OMCircle(pt1.getLatitude(), pt1.getLongitude(), rad);
                 // get the map projection
@@ -501,6 +528,7 @@ public class DistanceMouseMode extends CoordMouseMode {
 
     /**
      * Draw a rubberband line and circle between two points
+     * 
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
      */
@@ -512,6 +540,7 @@ public class DistanceMouseMode extends CoordMouseMode {
 
     /**
      * Draw a rubberband line and circle between two points
+     * 
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
      * @param g a java.awt.Graphics object to render into.
@@ -525,9 +554,9 @@ public class DistanceMouseMode extends CoordMouseMode {
      * Erase all line segments.
      */
     public void eraseLines() {
-        for (int i=0; i<segments.size()-1; i++) {
-            paintLine((LatLonPoint)(segments.elementAt(i)),
-                      (LatLonPoint)(segments.elementAt(i+1)));
+        for (int i = 0; i < segments.size() - 1; i++) {
+            paintLine((LatLonPoint) (segments.elementAt(i)),
+                    (LatLonPoint) (segments.elementAt(i + 1)));
         }
     }
 
@@ -551,15 +580,16 @@ public class DistanceMouseMode extends CoordMouseMode {
 
     /**
      * Return the distance in the chosen unit between two points (in
-     * decimal degrees).  Based on spherical arc distance between two
+     * decimal degrees). Based on spherical arc distance between two
      * points. See class GreatCircle.java
+     * 
      * @param phi1 latitude in decimal degrees of start point
      * @param lambda0 longitude in decimal degrees of start point
      * @param phi latitude in decimal degrees of end point
      * @param lambda longitude in decimal degrees of end point
      * @param units the unit of distance, DISTANCE_NM, DISTANCE_KM,
-     * DISTANCE_MILE or all 3 types DISTANCE_ALL
-     * @return double distance in chosen unit 
+     *        DISTANCE_MILE or all 3 types DISTANCE_ALL
+     * @return double distance in chosen unit
      */
     public double getGreatCircleDist(float phi1, float lambda0, float phi,
                                      float lambda, int units) {
@@ -569,44 +599,54 @@ public class DistanceMouseMode extends CoordMouseMode {
         float radlambda0 = ProjMath.degToRad(lambda0);
         float radphi = ProjMath.degToRad(phi);
         float radlambda = ProjMath.degToRad(lambda);
-        // get the spherical distance in radians between the two points
-        double distRad = (double)GreatCircle.spherical_distance(radphi1, radlambda0,
-                                                                radphi, radlambda);
+        // get the spherical distance in radians between the two
+        // points
+        double distRad = (double) GreatCircle.spherical_distance(radphi1,
+                radlambda0,
+                radphi,
+                radlambda);
         // in the chosen unit
         if (units == 0)
-            dist = distRad * Planet.wgs84_earthEquatorialCircumferenceNMiles / MoreMath.TWO_PI;
+            dist = distRad * Planet.wgs84_earthEquatorialCircumferenceNMiles
+                    / MoreMath.TWO_PI;
         if (units == 1)
-            dist = distRad * Planet.wgs84_earthEquatorialCircumferenceKM / MoreMath.TWO_PI;
+            dist = distRad * Planet.wgs84_earthEquatorialCircumferenceKM
+                    / MoreMath.TWO_PI;
         if (units == 2)
-            dist = distRad * Planet.wgs84_earthEquatorialCircumferenceMiles / MoreMath.TWO_PI;
+            dist = distRad * Planet.wgs84_earthEquatorialCircumferenceMiles
+                    / MoreMath.TWO_PI;
 
         return dist;
     }
 
     /**
-     * Return the azimuth angle in decimal degrees from north.
-     * Based on spherical_azimuth. See class GreatCircle.java
+     * Return the azimuth angle in decimal degrees from north. Based
+     * on spherical_azimuth. See class GreatCircle.java
+     * 
      * @param phi1 latitude in decimal degrees of start point
      * @param lambda0 longitude in decimal degrees of start point
      * @param phi latitude in decimal degrees of end point
      * @param lambda longitude in decimal degrees of end point
      * @return float azimuth angle in degrees
      */
-    public float getSphericalAzimuth(float phi1, float lambda0, 
-                                     float phi, float lambda) {
+    public float getSphericalAzimuth(float phi1, float lambda0, float phi,
+                                     float lambda) {
         // convert arguments to radians
         float radphi1 = ProjMath.degToRad(phi1);
         float radlambda0 = ProjMath.degToRad(lambda0);
         float radphi = ProjMath.degToRad(phi);
         float radlambda = ProjMath.degToRad(lambda);
         // get the spherical azimuth in radians between the two points
-        float az = GreatCircle.spherical_azimuth(radphi1, radlambda0, 
-                                                 radphi, radlambda);
+        float az = GreatCircle.spherical_azimuth(radphi1,
+                radlambda0,
+                radphi,
+                radlambda);
         return ProjMath.radToDeg(az);
     }
 
     /**
      * Set the map bean.
+     * 
      * @param aMap a map bean
      */
     public void setMapBean(MapBean aMap) {
@@ -621,8 +661,8 @@ public class DistanceMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Set the unit of distance to be displayed: Length.NM,
-     * Length.KM or Length.MILE.  If null, displays all of them.
+     * Set the unit of distance to be displayed: Length.NM, Length.KM
+     * or Length.MILE. If null, displays all of them.
      */
     public void setUnit(Length units) {
         unit = units;
@@ -630,7 +670,7 @@ public class DistanceMouseMode extends CoordMouseMode {
 
     /**
      * Return the unit of distance being displayed: Length.NM,
-     * Length.KM or Length.MILE.  If null, displays all of them.
+     * Length.KM or Length.MILE. If null, displays all of them.
      */
     public Length getUnit() {
         return unit;
@@ -638,7 +678,9 @@ public class DistanceMouseMode extends CoordMouseMode {
 
     /**
      * Switch the display of the azimuth angle on or off.
-     * @param onOff true to display the azimuth angle, false to turn off
+     * 
+     * @param onOff true to display the azimuth angle, false to turn
+     *        off
      */
     public void showAzimuth(boolean onOff) {
         showAngle = onOff;
@@ -653,14 +695,17 @@ public class DistanceMouseMode extends CoordMouseMode {
 
     /**
      * Set the line type to be drawn see also OMGraphic
-     * @param lype either LINETYPE_GREATCIRCLE, LINETYPE_RHUMB, LINETYPE_STRAIGHT
+     * 
+     * @param lype either LINETYPE_GREATCIRCLE, LINETYPE_RHUMB,
+     *        LINETYPE_STRAIGHT
      */
     public void setLineType(int lype) {
         lineType = lype;
     }
+
     /**
-     * Return the line type
-     * either LINETYPE_GREATCIRCLE, LINETYPE_RHUMB, LINETYPE_STRAIGHT
+     * Return the line type either LINETYPE_GREATCIRCLE,
+     * LINETYPE_RHUMB, LINETYPE_STRAIGHT
      */
     public int getLineType() {
         return lineType;
@@ -668,6 +713,7 @@ public class DistanceMouseMode extends CoordMouseMode {
 
     /**
      * Set the drawing of the rubberband circle on/off.
+     * 
      * @param onOff true or false
      */
     public void showCircle(boolean onOff) {
@@ -694,7 +740,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      */
     public void setProperties(String prefix, Properties setList) {
         super.setProperties(prefix, setList);
-                
+
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         String name = setList.getProperty(prefix + UnitProperty);
@@ -705,9 +751,12 @@ public class DistanceMouseMode extends CoordMouseMode {
             }
         }
 
-        showCircle(LayerUtils.booleanFromProperties(setList, prefix + ShowCircleProperty, true));
-        showAzimuth(LayerUtils.booleanFromProperties(setList, prefix + ShowAngleProperty, true));
-        setRepaintToClean(LayerUtils.booleanFromProperties(setList, prefix + RepaintToCleanProperty, false));
+        showCircle(LayerUtils.booleanFromProperties(setList, prefix
+                + ShowCircleProperty, true));
+        showAzimuth(LayerUtils.booleanFromProperties(setList, prefix
+                + ShowAngleProperty, true));
+        setRepaintToClean(LayerUtils.booleanFromProperties(setList, prefix
+                + RepaintToCleanProperty, false));
     }
 
     /**
@@ -721,9 +770,12 @@ public class DistanceMouseMode extends CoordMouseMode {
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         getList.put(prefix + UnitProperty, unit.toString());
-        getList.put(prefix + ShowCircleProperty, new Boolean(getShowCircle()).toString());
-        getList.put(prefix + ShowAngleProperty, new Boolean(getShowAzimuth()).toString());
-        getList.put(prefix + RepaintToCleanProperty, new Boolean(getRepaintToClean()).toString());
+        getList.put(prefix + ShowCircleProperty,
+                new Boolean(getShowCircle()).toString());
+        getList.put(prefix + ShowAngleProperty,
+                new Boolean(getShowAzimuth()).toString());
+        getList.put(prefix + RepaintToCleanProperty,
+                new Boolean(getRepaintToClean()).toString());
         return getList;
     }
 
@@ -733,10 +785,14 @@ public class DistanceMouseMode extends CoordMouseMode {
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
 
-        list.put(UnitProperty, "Units to use for measurements, from Length.name possibilities.");
-        list.put(ShowCircleProperty, "Flag to set whether the range circle is drawn at the end of the line (true/false).");
-        list.put(ShowAngleProperty, "Flag to note the azimuth angle of the line in the information line (true/false).");
-        list.put(RepaintToCleanProperty, "Flag to tell the map to repaint to clean up on a double click (true/false).");
+        list.put(UnitProperty,
+                "Units to use for measurements, from Length.name possibilities.");
+        list.put(ShowCircleProperty,
+                "Flag to set whether the range circle is drawn at the end of the line (true/false).");
+        list.put(ShowAngleProperty,
+                "Flag to note the azimuth angle of the line in the information line (true/false).");
+        list.put(RepaintToCleanProperty,
+                "Flag to tell the map to repaint to clean up on a double click (true/false).");
         return list;
     }
 
@@ -745,10 +801,10 @@ public class DistanceMouseMode extends CoordMouseMode {
      * know when to update itself on the map. PaintListener interface.
      */
     public void listenerPaint(java.awt.Graphics g) {
-        for (int i=0; i<segments.size()-1; i++) {
-            paintLine((LatLonPoint)(segments.elementAt(i)),
-                      (LatLonPoint)(segments.elementAt(i+1)),
-                      g);
+        for (int i = 0; i < segments.size() - 1; i++) {
+            paintLine((LatLonPoint) (segments.elementAt(i)),
+                    (LatLonPoint) (segments.elementAt(i + 1)),
+                    g);
         }
         paintRubberband(rPoint1, rPoint2, g);
     }

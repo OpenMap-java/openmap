@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,15 +14,13 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/Location.java,v $
 // $RCSfile: Location.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/05/10 21:13:07 $
+// $Revision: 1.8 $
+// $Date: 2004/10/14 18:05:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.location;
-
 
 /*  Java Core  */
 import java.awt.*;
@@ -38,40 +36,51 @@ import com.bbn.openmap.layer.DeclutterMatrix;
 import com.bbn.openmap.proj.Projection;
 
 /**
- * A Location is a place.  It can be thought of as a lat/lon place,
- * with or without an pixel offset, or a place on the screen.  A
+ * A Location is a place. It can be thought of as a lat/lon place,
+ * with or without an pixel offset, or a place on the screen. A
  * location is basically thought of as having a name, which get
- * represented as a label, and some graphical represenation.  It is
+ * represented as a label, and some graphical represenation. It is
  * abstract because it doesn't really know what kind of markers or
  * labels are being used or how they are being positioned around the
- * particular point.  Therefore, it should be extended, and the
+ * particular point. Therefore, it should be extended, and the
  * setGraphicLocations methods implemented to position the marker and
- * text as desired.<P>
+ * text as desired.
+ * <P>
  */
 public abstract class Location extends OMGraphic {
 
-    /** The main latitude of object, in decimal degrees, for
-     *  RENDERTYPE_LATLON and RENDERTYPE_OFFSET locations. */
+    /**
+     * The main latitude of object, in decimal degrees, for
+     * RENDERTYPE_LATLON and RENDERTYPE_OFFSET locations.
+     */
     public float lat = 0.0f;
-    /** The main longitude of object, in decimal degrees, for
-     *  RENDERTYPE_LATLON and RENDERTYPE_OFFSET locations. */
+    /**
+     * The main longitude of object, in decimal degrees, for
+     * RENDERTYPE_LATLON and RENDERTYPE_OFFSET locations.
+     */
     public float lon = 0.0f;
-    /** The x pixel offset from the longitude, for RENDERTYPE_OFFSET
-     *  locations. */
+    /**
+     * The x pixel offset from the longitude, for RENDERTYPE_OFFSET
+     * locations.
+     */
     public int xOffset = 0;
-    /** The y pixel offset from the latitude, for RENDERTYPE_OFFSET
-     *  locations. */
+    /**
+     * The y pixel offset from the latitude, for RENDERTYPE_OFFSET
+     * locations.
+     */
     public int yOffset = 0;
-    /** The x object location, in pixels, for RENDERTYPE_XY locations.*/
+    /** The x object location, in pixels, for RENDERTYPE_XY locations. */
     public int x = 0;
-    /** The y object location, in pixels, for RENDERTYPE_XY locations.*/
+    /** The y object location, in pixels, for RENDERTYPE_XY locations. */
     public int y = 0;
     /** The name of the location. */
     public String name = null;
-    /** The LocationHandler that is handling the location. Need this
-     *  to check for more global settings for rendering.*/
+    /**
+     * The LocationHandler that is handling the location. Need this to
+     * check for more global settings for rendering.
+     */
     public LocationHandler handler;
-    
+
     public final static int DECLUTTER_LOCALLY = -1;
     public final static int DECLUTTER_ANYWHERE = -2;
 
@@ -85,58 +94,69 @@ public abstract class Location extends OMGraphic {
     protected boolean showLocation = true;
     /** The flag for displaying the name label. */
     protected boolean showName = true;
-    /** The original offset/y location, kept for resetting the
-     *  placement of the label after decluttering and/or location
-     *  placement. */
+    /**
+     * The original offset/y location, kept for resetting the
+     * placement of the label after decluttering and/or location
+     * placement.
+     */
     public int origYLabelOffset = 0;
-    /** The original offset/x location, kept for resetting the
-     *  placement of the label after decluttering and/or location
-     *  placement. */
+    /**
+     * The original offset/x location, kept for resetting the
+     * placement of the label after decluttering and/or location
+     * placement.
+     */
     public int origXLabelOffset = 0;
-    /** the default distance away a label should be placed from a
-     *  location marker. */
+    /**
+     * the default distance away a label should be placed from a
+     * location marker.
+     */
     public final static int DEFAULT_SPACING = 6;
-    /** The pixel limit where the delcutter matrix won't draw the
-     *  name, if it can't put the name at least this close to the
-     *  original place.  DECLUTTER_LOCALLY keeps the limit to twice
-     *  the height of the label.  DECLUTTER_ANYWHERE will place the
-     *  thing anywhere it fits. Anything else is the pixel limit. */
+    /**
+     * The pixel limit where the delcutter matrix won't draw the name,
+     * if it can't put the name at least this close to the original
+     * place. DECLUTTER_LOCALLY keeps the limit to twice the height of
+     * the label. DECLUTTER_ANYWHERE will place the thing anywhere it
+     * fits. Anything else is the pixel limit.
+     */
     protected int declutterLimit = DECLUTTER_LOCALLY;
     /** Set whether you want this location label decluttered. */
     protected boolean allowDecluttering = true;
-    /** The horizontal pixel distance you want to place the text away
-     *  from the actual location - to put space between the
-     *  graphic. */
+    /**
+     * The horizontal pixel distance you want to place the text away
+     * from the actual location - to put space between the graphic.
+     */
     protected int horizontalLabelBuffer = 0;
 
-    /** 
+    /**
      * A plain contructor if you are planning on setting everything
-     * yourself.  
+     * yourself.
      */
     public Location() {}
 
     /**
-     * Create a location at a latitude/longitude.  If the
+     * Create a location at a latitude/longitude. If the
      * locationMarker is null, a small rectangle (dot) will be created
      * to mark the location.
-     *
-     * @param latitude the latitude, in decimal degrees, of the location.
-     * @param longitude the longitude, in decimal degrees, of the location.
+     * 
+     * @param latitude the latitude, in decimal degrees, of the
+     *        location.
+     * @param longitude the longitude, in decimal degrees, of the
+     *        location.
      * @param name the name of the location, also used in the label.
-     * @param locationMarker the OMGraphic to use for the location mark.  
+     * @param locationMarker the OMGraphic to use for the location
+     *        mark.
      */
-    public Location(float latitude, float longitude, String name, 
-                    OMGraphic locationMarker) {
-        
+    public Location(float latitude, float longitude, String name,
+            OMGraphic locationMarker) {
+
         setLocation(latitude, longitude);
         this.name = name;
-        
+
         if (Debug.debugging("locationdetail")) {
-            Debug.output("Location Lat/Lon("
-                         + latitude + ", " + longitude + ", "
-                         + name + ")");
+            Debug.output("Location Lat/Lon(" + latitude + ", " + longitude
+                    + ", " + name + ")");
         }
-        
+
         if (locationMarker == null) {
             location = new OMPoint(lat, lon);
         } else {
@@ -147,34 +167,34 @@ public abstract class Location extends OMGraphic {
         // vertical offset later, when we can figure out the height of
         // the text and can line the middle of the text up with the
         // location.
-        
+
         // If the caller has supplied a substitute graphic for
         // the location spot, it's up to them to horizontally
         // offset the label appropriately. They should do that
         // here, or in an extended class.
         label = new OMText(lat, lon, 0, 0, name, OMText.JUSTIFY_LEFT);
     }
-    
+
     /**
-     * Create a location at a map location.  If the
-     * locationMarker is null, a small rectangle (dot) will be created
-     * to mark the location.
-     *
-     * @param x the pixel location of the object from the let of the map.
-     * @param y the pixel location of the object from the top of the map
+     * Create a location at a map location. If the locationMarker is
+     * null, a small rectangle (dot) will be created to mark the
+     * location.
+     * 
+     * @param x the pixel location of the object from the let of the
+     *        map.
+     * @param y the pixel location of the object from the top of the
+     *        map
      * @param name the name of the location, also used in the label.
-     * @param locationMarker the OMGraphic to use for the location mark.  
+     * @param locationMarker the OMGraphic to use for the location
+     *        mark.
      */
-    public Location(int x, int y, String name, 
-                    OMGraphic locationMarker) {
-        
+    public Location(int x, int y, String name, OMGraphic locationMarker) {
+
         setLocation(x, y);
         this.name = name;
-        
+
         if (Debug.debugging("locationdetail")) {
-            Debug.output("Location XY("
-                         + x + ", " + y + ", "
-                         + name + ")"); 
+            Debug.output("Location XY(" + x + ", " + y + ", " + name + ")");
         }
 
         if (locationMarker == null) {
@@ -187,7 +207,7 @@ public abstract class Location extends OMGraphic {
         // vertical offset later, when we can figure out the height of
         // the text and can line the middle of the text up with the
         // location.
-        
+
         // If the caller has supplied a substitute graphic for
         // the location spot, it's up to them to horizontally
         // offset the label appropriately. They should do that
@@ -199,25 +219,27 @@ public abstract class Location extends OMGraphic {
      * Create a location at a pixel offset from a latitude/longitude.
      * If the locationMarker is null, a small rectangle (dot) will be
      * created to mark the location.
-     *
-     * @param latitude the latitude, in decimal degrees, of the location.
-     * @param longitude the longitude, in decimal degrees, of the location.
-     * @param xOffset the pixel location of the object from the longitude.
-     * @param yOffset the pixel location of the object from the latitude.
+     * 
+     * @param latitude the latitude, in decimal degrees, of the
+     *        location.
+     * @param longitude the longitude, in decimal degrees, of the
+     *        location.
+     * @param xOffset the pixel location of the object from the
+     *        longitude.
+     * @param yOffset the pixel location of the object from the
+     *        latitude.
      * @param name the name of the location, also used in the label.
-     * @param locationMarker the OMGraphic to use for the location mark.
+     * @param locationMarker the OMGraphic to use for the location
+     *        mark.
      */
-    public Location(float latitude, float longitude,
-                    int xOffset, int yOffset, String name, 
-                    OMGraphic locationMarker) {
+    public Location(float latitude, float longitude, int xOffset, int yOffset,
+            String name, OMGraphic locationMarker) {
         setLocation(latitude, longitude, xOffset, yOffset);
         this.name = name;
 
         if (Debug.debugging("locationdetail")) {
-            Debug.output("Location("
-                         + latitude + ", " + longitude + ", offset "
-                         + x + ", " + y + ", "
-                         + name + ")");
+            Debug.output("Location(" + latitude + ", " + longitude
+                    + ", offset " + x + ", " + y + ", " + name + ")");
         }
 
         if (locationMarker == null) {
@@ -230,13 +252,12 @@ public abstract class Location extends OMGraphic {
         // vertical offset later, when we can figure out the height of
         // the text and can line the middle of the text up with the
         // location.
-        
+
         // If the caller has supplied a substitute graphic for
         // the location spot, it's up to them to horizontally
         // offset the label appropriately. They should do that
         // here, or in an extended class.
-        label = new OMText(lat, lon, xOffset, yOffset, 
-                           name, OMText.JUSTIFY_LEFT);
+        label = new OMText(lat, lon, xOffset, yOffset, name, OMText.JUSTIFY_LEFT);
     }
 
     /** Set the placement of the location. */
@@ -268,8 +289,8 @@ public abstract class Location extends OMGraphic {
     }
 
     /** Set the placement of the location. */
-    public void setLocation(float latitude, float longitude, 
-                            int xOffset, int yOffset) {
+    public void setLocation(float latitude, float longitude, int xOffset,
+                            int yOffset) {
         lat = latitude;
         lon = longitude;
         this.xOffset = xOffset;
@@ -305,8 +326,10 @@ public abstract class Location extends OMGraphic {
         case RENDERTYPE_OFFSET:
             if (proj != null) {
                 llp = proj.inverse(x, y);
-                setLocation(llp.getLatitude(), llp.getLongitude(), 
-                            this.xOffset, this.yOffset);
+                setLocation(llp.getLatitude(),
+                        llp.getLongitude(),
+                        this.xOffset,
+                        this.yOffset);
             } else {
                 Debug.error("Location can't set lat/lon coordinates without a projection");
             }
@@ -317,12 +340,14 @@ public abstract class Location extends OMGraphic {
     }
 
     public abstract void setGraphicLocations(float latitude, float longitude);
+
     public abstract void setGraphicLocations(int x, int y);
+
     public abstract void setGraphicLocations(float latitude, float longitude,
                                              int offsetX, int offsetY);
 
     /**
-     * Set the location handler for the location. 
+     * Set the location handler for the location.
      */
     public void setLocationHandler(LocationHandler lh) {
         handler = lh;
@@ -335,7 +360,7 @@ public abstract class Location extends OMGraphic {
         return handler;
     }
 
-    /** 
+    /**
      * Set the edge java.awt.Paint for the marker graphic.
      */
     public void setLocationPaint(Paint locationPaint) {
@@ -350,22 +375,22 @@ public abstract class Location extends OMGraphic {
     public OMText getLabel() {
         return label;
     }
-    
-    /** 
+
+    /**
      * Set the label for the location.
      */
     public void setLabel(OMText lable) {
         label = lable;
     }
-    
+
     /**
      * Get the location marker for this location.
      */
     public OMGraphic getLocationMarker() {
         return location;
     }
-    
-    /** 
+
+    /**
      * Set the graphic for the location.
      */
     public void setLocationMarker(OMGraphic graphic) {
@@ -373,8 +398,8 @@ public abstract class Location extends OMGraphic {
     }
 
     /**
-     * Set whether this location should be shown on an
-     * individual basis.  
+     * Set whether this location should be shown on an individual
+     * basis.
      */
     public void setShowLocation(boolean showLocations) {
         showLocation = showLocations;
@@ -410,33 +435,35 @@ public abstract class Location extends OMGraphic {
         }
     }
 
-    /** 
-     * Set the details for the location.  This should be the contents
-     * to be displayed in a web browser. 
+    /**
+     * Set the details for the location. This should be the contents
+     * to be displayed in a web browser.
      */
     public void setDetails(String det) {
         details = det;
     }
 
-    /** 
-     * Get the details for the location. 
+    /**
+     * Get the details for the location.
      */
     public String getDetails() {
         return details;
     }
 
-    /** 
+    /**
      * Fire a browser to display the location details.
      */
     public void showDetails(Layer layer) {
-        if (details != null) layer.fireRequestBrowserContent(details);
+        if (details != null)
+            layer.fireRequestBrowserContent(details);
     }
 
     /**
      * Set whether you want to allow the label for this location to be
      * decluttered.
+     * 
      * @param allow if true, label will be decluttered if declutter
-     * matrix is available.  
+     *        matrix is available.
      */
     public void setAllowDecluttering(boolean allow) {
         allowDecluttering = allow;
@@ -449,31 +476,31 @@ public abstract class Location extends OMGraphic {
         return allowDecluttering;
     }
 
-    /** 
+    /**
      * Set the pixel distance that the label will be moved to the
-     * right, to clear space for the graphic marking the location.  
+     * right, to clear space for the graphic marking the location.
      */
     public void setHorizontalLabelBuffer(int buffer) {
         horizontalLabelBuffer = buffer;
     }
 
-    /** 
+    /**
      * Get the pixel distance that the label will be moved to the
-     * right, to clear space for the graphic marking the location.  
+     * right, to clear space for the graphic marking the location.
      */
     public int getHorizontalLabelBuffer() {
         return horizontalLabelBuffer;
     }
 
     ////////////////////////////////////////////////////
-    ///////////  OMGraphic methods  ////////////////////
+    /////////// OMGraphic methods ////////////////////
     ////////////////////////////////////////////////////
 
     /**
      * Generate the location, and use the declutter matrix to place
      * the label is a spot so that it doesn't interset with other
-     * labels. 
-     *
+     * labels.
+     * 
      * @param proj projection of the map.
      * @param declutterMatrix DeclutterMatrix for the map.
      */
@@ -483,16 +510,16 @@ public abstract class Location extends OMGraphic {
         // set. Then, declutter the text.
         boolean ret = generate(proj);
 
-        if(declutterMatrix != null && label != null && allowDecluttering) {
+        if (declutterMatrix != null && label != null && allowDecluttering) {
             declutterLabel(declutterMatrix, proj);
         }
         return ret;
     }
 
-    /**  
-     * Set the pixel distance that us used by the declutter matrix
-     * in trying to find a place for the label.  If it can't find a
-     * place within this pixel limit, it woun't draw it. 
+    /**
+     * Set the pixel distance that us used by the declutter matrix in
+     * trying to find a place for the label. If it can't find a place
+     * within this pixel limit, it woun't draw it.
      */
     public void setDeclutterLimit(int value) {
         if (value < 0 && value != DECLUTTER_LOCALLY) {
@@ -502,7 +529,7 @@ public abstract class Location extends OMGraphic {
         }
     }
 
-    /** 
+    /**
      * Get the declutter pixel distance limit.
      */
     public int getDeclutterLimit() {
@@ -512,17 +539,17 @@ public abstract class Location extends OMGraphic {
     protected int currentFontDescent = 0;
 
     /**
-     * Prepare the graphic for rendering.
-     * This must be done before calling <code>render()</code>!  If a
-     * vector graphic has lat-lon components, then we project these
-     * vertices into x-y space.  For raster graphics we prepare in a
-     * different fashion.
+     * Prepare the graphic for rendering. This must be done before
+     * calling <code>render()</code>! If a vector graphic has
+     * lat-lon components, then we project these vertices into x-y
+     * space. For raster graphics we prepare in a different fashion.
      * <p>
      * If the generate is unsuccessful, it's usually because of some
-     * oversight, (for instance if <code>proj</code> is null), and if
-     * debugging is enabled, a message may be output to the controlling
-     * terminal.
+     * oversight, (for instance if <code>proj</code> is null), and
+     * if debugging is enabled, a message may be output to the
+     * controlling terminal.
      * <p>
+     * 
      * @param proj Projection
      * @return boolean true if successful, false if not.
      */
@@ -537,35 +564,37 @@ public abstract class Location extends OMGraphic {
             g.setFont(label.getFont());
             // Now set the vertical offset to the original place based
             // off the height of the label, so that the location place
-            // is halfway up the text.  That way, it looks like a
+            // is halfway up the text. That way, it looks like a
             // label.
             int height = g.getFontMetrics().getAscent();
             currentFontDescent = g.getFontMetrics().getDescent();
             label.setX(label.getX() + horizontalLabelBuffer);
-            label.setY(label.getY() + (height/2) - 2);
+            label.setY(label.getY() + (height / 2) - 2);
         }
 
         if (label != null) {
-            label.generate(proj);       
+            label.generate(proj);
             label.prepareForRender(g);
         }
-        if (location != null) location.generate(proj);
+        if (location != null)
+            location.generate(proj);
 
         return true;
     }
 
-   /**
-     * Paint the graphic and the name of the location.  This should
+    /**
+     * Paint the graphic and the name of the location. This should
      * only be used if the locations are pretty spread out from each
-     * other.  If you think you need to declutter, you should render
+     * other. If you think you need to declutter, you should render
      * all the graphics, and then render the names, so that the
      * graphics don't cover up the names.
      * <P>
-     * This paints the graphic into the Graphics context.  This is
+     * This paints the graphic into the Graphics context. This is
      * similar to <code>paint()</code> function of
-     * java.awt.Components.  Note that if the graphic has not been
-     * generated, it will not be rendered.  This render will take into
+     * java.awt.Components. Note that if the graphic has not been
+     * generated, it will not be rendered. This render will take into
      * account the layer showNames and showLocations settings.
+     * 
      * @param g Graphics context to render into.
      */
     public void render(Graphics g) {
@@ -573,14 +602,14 @@ public abstract class Location extends OMGraphic {
         renderName(g);
     }
 
-
-   /**
-     * Paint the graphic label (name) only.
-     * This paints the graphic into the Graphics context.  This is
-     * similar to <code>paint()</code> function of
-     * java.awt.Components.  Note that if the graphic has not been
-     * generated, it will not be rendered.  This render will take into
-     * account the layer showNames and showLocations settings.
+    /**
+     * Paint the graphic label (name) only. This paints the graphic
+     * into the Graphics context. This is similar to
+     * <code>paint()</code> function of java.awt.Components. Note
+     * that if the graphic has not been generated, it will not be
+     * rendered. This render will take into account the layer
+     * showNames and showLocations settings.
+     * 
      * @param g Graphics context to render into.
      */
     public void renderName(Graphics g) {
@@ -591,22 +620,22 @@ public abstract class Location extends OMGraphic {
             forceGlobal = handler.isForceGlobal();
         }
 
-        if (label != null &&
-            ((forceGlobal && globalShowNames) ||
-             (!forceGlobal && showName))) {
+        if (label != null
+                && ((forceGlobal && globalShowNames) || (!forceGlobal && showName))) {
 
-//      if (showName && label != null) {
+            //      if (showName && label != null) {
             label.render(g);
         }
     }
 
-   /**
-     * Paint the graphic location graphic only.
-     * This paints the graphic into the Graphics context.  This is
-     * similar to <code>paint()</code> function of
-     * java.awt.Components.  Note that if the graphic has not been
-     * generated, it will not be rendered.  This render will take into
-     * account the layer showNames and showLocations settings.
+    /**
+     * Paint the graphic location graphic only. This paints the
+     * graphic into the Graphics context. This is similar to
+     * <code>paint()</code> function of java.awt.Components. Note
+     * that if the graphic has not been generated, it will not be
+     * rendered. This render will take into account the layer
+     * showNames and showLocations settings.
+     * 
      * @param g Graphics context to render into.
      */
     public void renderLocation(Graphics g) {
@@ -617,17 +646,17 @@ public abstract class Location extends OMGraphic {
             forceGlobal = handler.isForceGlobal();
         }
 
-        if (location != null &&
-            ((forceGlobal && globalShowLocations) ||
-             (!forceGlobal && showLocation))) {
+        if (location != null
+                && ((forceGlobal && globalShowLocations) || (!forceGlobal && showLocation))) {
 
-//      if (showLocation && location != null) {
+            //      if (showLocation && location != null) {
             location.render(g);
         }
     }
 
     /**
      * Return the shortest distance from the graphic to an XY-point.
+     * 
      * @param x X coordinate of the point.
      * @param y Y coordinate of the point.
      * @return float distance from graphic to the point
@@ -651,62 +680,60 @@ public abstract class Location extends OMGraphic {
             labelDist = label.distance(x, y);
         }
 
-        return (locationDist > labelDist?labelDist:locationDist);
+        return (locationDist > labelDist ? labelDist : locationDist);
     }
-    
-    
+
     /**
-     * Given the label is this location has a height and width, find
-     *  a clean place on the map for it.  Assumes label is not null.
-     *
+     * Given the label is this location has a height and width, find a
+     * clean place on the map for it. Assumes label is not null.
+     * 
      * @param declutter the DeclutterMatrix for the map.
      */
     protected void declutterLabel(DeclutterMatrix declutter, Projection proj) {
 
         if (Debug.debugging("locationdetail")) {
-            Debug.output("\nLocation::RepositionText => " + 
-                               label.getData());    
+            Debug.output("\nLocation::RepositionText => " + label.getData());
         }
 
         // Right now, I think this method takes some presumptutous
         // actions, assuming that you want the graphics to take up
-        // space in the declutter mattrix.  We might want to delete
+        // space in the declutter mattrix. We might want to delete
         // this showLocation code, and let people create their own
         // location subclasses that define how the graphic should be
         // handled in the declutter matrix.
 
-        // I think I will.  This stuff is commented out for the
+        // I think I will. This stuff is commented out for the
         // reasons stated above.
 
-//      if (isShowLocation()) {
-//          Point lp;
-//          // Take up space with the label
-//          if (location instanceof OMRasterObject) {
-//              lp = ((OMRasterObject)location).getMapLocation();
-//              // This location is the upper left location of the
-//              // declutter matrix.  The decutter matrix works from
-//              // lower left to upper right.
-//              if (lp != null) {
-//                  int locHeight = ((OMRasterObject)location).getHeight();
-//                  int locWidth = ((OMRasterObject)location).getWidth();
-//                  // Need to get this right for the DeclutterMatrix
-//                  // space, but changing lp changes where the
-//                  // location will appear - fix this later.
-//                  lp.y += locHeight;
-//                  declutter.setTaken(lp, locWidth, locHeight);
-//                  // Reset it to the original projected location.
-//                  lp.y -= locHeight;
-//              }
-//          } else if (renderType != RENDERTYPE_XY) {
-//              lp = proj.forward(lat,lon);
-//              lp.x += xOffset-1;
-//              lp.y += yOffset-1;
-//              declutter.setTaken(lp, 3, 3);
-//          } else {
-//              lp = new Point(x-1, y-1);
-//              declutter.setTaken(lp, 3, 3);
-//          }
-//      }
+        //      if (isShowLocation()) {
+        //          Point lp;
+        //          // Take up space with the label
+        //          if (location instanceof OMRasterObject) {
+        //              lp = ((OMRasterObject)location).getMapLocation();
+        //              // This location is the upper left location of the
+        //              // declutter matrix. The decutter matrix works from
+        //              // lower left to upper right.
+        //              if (lp != null) {
+        //                  int locHeight = ((OMRasterObject)location).getHeight();
+        //                  int locWidth = ((OMRasterObject)location).getWidth();
+        //                  // Need to get this right for the DeclutterMatrix
+        //                  // space, but changing lp changes where the
+        //                  // location will appear - fix this later.
+        //                  lp.y += locHeight;
+        //                  declutter.setTaken(lp, locWidth, locHeight);
+        //                  // Reset it to the original projected location.
+        //                  lp.y -= locHeight;
+        //              }
+        //          } else if (renderType != RENDERTYPE_XY) {
+        //              lp = proj.forward(lat,lon);
+        //              lp.x += xOffset-1;
+        //              lp.y += yOffset-1;
+        //              declutter.setTaken(lp, 3, 3);
+        //          } else {
+        //              lp = new Point(x-1, y-1);
+        //              declutter.setTaken(lp, 3, 3);
+        //          }
+        //      }
 
         if (isShowName() || handler.isShowNames()) {
 
@@ -716,33 +743,30 @@ public abstract class Location extends OMGraphic {
             }
 
             Rectangle bounds = label.getPolyBounds().getBounds();
-            int height = (int)((float)(bounds.getHeight() - currentFontDescent/2));
-            int width = (int)bounds.getWidth();
+            int height = (int) ((float) (bounds.getHeight() - currentFontDescent / 2));
+            int width = (int) bounds.getWidth();
             // Projected location of label on the screen
             Point p = label.getMapLocation();
-            
-            if(Debug.debugging("locationdetail")) {
-                Debug.output("old point X Y =>" + p.x + " " + p.y + 
-                                   "    height = " + height + 
-                                   " width = " + width);
+
+            if (Debug.debugging("locationdetail")) {
+                Debug.output("old point X Y =>" + p.x + " " + p.y
+                        + "    height = " + height + " width = " + width);
             }
-            
+
             int limit;
             if (declutterLimit == DECLUTTER_LOCALLY) {
                 limit = height * 2;
             } else {
                 limit = declutterLimit;
             }
-            
+
             // newpoint is the new place on the map to put the label
-            Point newpoint = declutter.setNextOpen(p, width, height, 
-                                                   limit);
-            
-            if(Debug.debugging("locationdetail")) {
-                Debug.output("new point X Y =>" + 
-                                   newpoint.x +" "+ newpoint.y);
+            Point newpoint = declutter.setNextOpen(p, width, height, limit);
+
+            if (Debug.debugging("locationdetail")) {
+                Debug.output("new point X Y =>" + newpoint.x + " " + newpoint.y);
             }
-            
+
             label.setMapLocation(newpoint);
         }
     }
@@ -751,30 +775,33 @@ public abstract class Location extends OMGraphic {
      * A simple conversion method for the common String represention
      * of decimal degree coordinates, which is a letter denoting the
      * globle hemisphere (N or S for latitudes, W or E for longitudes,
-     * and then a number string.  For latitudes, the first two numbers
+     * and then a number string. For latitudes, the first two numbers
      * represent the whole degree value, and the rest of the numbers
-     * represent the fractional protion.  For longitudes, the first
-     * three numbers represent the whole degree value.  For instance
+     * represent the fractional protion. For longitudes, the first
+     * three numbers represent the whole degree value. For instance
      * N2443243 equals 24.43243 degrees North, and S2443243 results in
-     * -24.43243 degrees.  Likewise, w12423443 results in -124.23443
+     * -24.43243 degrees. Likewise, w12423443 results in -124.23443
      * degrees.
+     * 
      * @param coord the coordinate string representing the decimal
-     * degree value, following the format [NSEW]XXXXXXXXX.
-     * @return the decimal degrees for the string.  There is no
-     * notation for you to know whether it's a latitude or longitude
-     * value.  
+     *        degree value, following the format [NSEW]XXXXXXXXX.
+     * @return the decimal degrees for the string. There is no
+     *         notation for you to know whether it's a latitude or
+     *         longitude value.
      */
     public static float convertCoordinateString(String coord)
-        throws NumberFormatException {
+            throws NumberFormatException {
 
         float ret = 0f;
         String mantissa;
         char direction = coord.charAt(0);
-        if (direction == 'N' || direction == 'S' || direction == 'n' || direction == 's') {
+        if (direction == 'N' || direction == 'S' || direction == 'n'
+                || direction == 's') {
             float whole = new Float(coord.substring(1, 3)).floatValue();
             ret += whole;
             mantissa = coord.substring(3);
-        } else if (direction == 'W' || direction == 'E' || direction == 'w' || direction == 'e') {
+        } else if (direction == 'W' || direction == 'E' || direction == 'w'
+                || direction == 'e') {
             ret += new Float(coord.substring(1, 4)).floatValue();
             mantissa = coord.substring(4);
         } else {
@@ -782,8 +809,10 @@ public abstract class Location extends OMGraphic {
             throw new NumberFormatException("Location.convertCoordinateString wants <[NSWE]XXXXXXXX>, not getting it.");
         }
 
-        ret += new Float(mantissa).floatValue()/(float)(Math.pow(10, mantissa.length()));
-        if (direction == 'W' || direction == 'S' || direction == 'w' || direction == 's') {
+        ret += new Float(mantissa).floatValue()
+                / (float) (Math.pow(10, mantissa.length()));
+        if (direction == 'W' || direction == 'S' || direction == 'w'
+                || direction == 's') {
             ret *= -1f;
         }
 
@@ -792,7 +821,7 @@ public abstract class Location extends OMGraphic {
 
     /**
      * We're using the main function for Location to test the
-     * convertCoordinateString function.  
+     * convertCoordinateString function.
      */
     public static void main(String[] args) {
         if (args.length < 1) {

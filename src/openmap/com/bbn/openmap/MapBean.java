@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,23 +14,54 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.14 $
-// $Date: 2004/09/30 22:32:51 $
+// $Revision: 1.15 $
+// $Date: 2004/10/14 18:05:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.LayoutManager;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Vector;
 
+import javax.swing.JComponent;
+import javax.swing.OverlayLayout;
+
+import com.bbn.openmap.event.CenterEvent;
+import com.bbn.openmap.event.CenterListener;
+import com.bbn.openmap.event.LayerEvent;
+import com.bbn.openmap.event.LayerListener;
+import com.bbn.openmap.event.PaintListener;
+import com.bbn.openmap.event.PaintListenerSupport;
+import com.bbn.openmap.event.PanEvent;
+import com.bbn.openmap.event.PanListener;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.event.ProjectionListener;
+import com.bbn.openmap.event.ProjectionSupport;
+import com.bbn.openmap.event.ZoomEvent;
+import com.bbn.openmap.event.ZoomListener;
+import com.bbn.openmap.proj.Mercator;
+import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.proj.*;
 import com.bbn.openmap.LatLonPoint;
 
 /**
@@ -123,9 +154,7 @@ public class MapBean extends JComponent implements ComponentListener,
 
     protected int minWidth = 100;
 
-    protected Proj projection = new Mercator(new LatLonPoint(
-            DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON), DEFAULT_SCALE,
-            DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    protected Proj projection = new Mercator(new LatLonPoint(DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON), DEFAULT_SCALE, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
     protected ProjectionSupport projectionSupport;
 
@@ -176,8 +205,7 @@ public class MapBean extends JComponent implements ComponentListener,
      */
     protected MapBeanRepaintPolicy repaintPolicy = null;
 
-    public final static Color DEFAULT_BACKGROUND_COLOR = new Color(191, 239,
-            255);
+    public final static Color DEFAULT_BACKGROUND_COLOR = new Color(191, 239, 255);
 
     /**
      * Return the OpenMap Copyright message.
@@ -217,8 +245,7 @@ public class MapBean extends JComponent implements ComponentListener,
         //----------------------------------------
         if (java.beans.Beans.isDesignTime()) {
             add(new Layer() {
-                public void projectionChanged(ProjectionEvent e) {
-                }
+                public void projectionChanged(ProjectionEvent e) {}
 
                 public Dimension getPreferredSize() {
                     return new Dimension(100, 100);
@@ -226,8 +253,7 @@ public class MapBean extends JComponent implements ComponentListener,
             });
         }
 
-        setPreferredSize(new Dimension(projection.getWidth(), projection
-                .getHeight()));
+        setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
     }
 
     /**
@@ -257,8 +283,7 @@ public class MapBean extends JComponent implements ComponentListener,
         if (comp instanceof Layer) {
             super.addImpl(comp, constraints, index);
         } else {
-            throw new IllegalArgumentException(
-                    "only Layers can be added to a MapBean");
+            throw new IllegalArgumentException("only Layers can be added to a MapBean");
         }
     }
 
@@ -329,8 +354,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * 
      * @param e ComponentEvent
      */
-    public void componentMoved(ComponentEvent e) {
-    }
+    public void componentMoved(ComponentEvent e) {}
 
     /**
      * ComponentListener interface method. Should not be called
@@ -338,8 +362,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * 
      * @param e ComponentEvent
      */
-    public void componentShown(ComponentEvent e) {
-    }
+    public void componentShown(ComponentEvent e) {}
 
     /**
      * ComponentListener interface method. Should not be called
@@ -347,8 +370,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * 
      * @param e ComponentEvent
      */
-    public void componentHidden(ComponentEvent e) {
-    }
+    public void componentHidden(ComponentEvent e) {}
 
     /*----------------------------------------------------------------------
      * 
@@ -511,10 +533,12 @@ public class MapBean extends JComponent implements ComponentListener,
         int oldType = projection.getProjectionType();
         if (oldType != newType) {
             LatLonPoint ctr = projection.getCenter();
-            setProjection((Proj) (ProjectionFactory
-                    .makeProjection(newType, ctr.getLatitude(), ctr
-                            .getLongitude(), projection.getScale(), projection
-                            .getWidth(), projection.getHeight())));
+            setProjection((Proj) (ProjectionFactory.makeProjection(newType,
+                    ctr.getLatitude(),
+                    ctr.getLongitude(),
+                    projection.getScale(),
+                    projection.getWidth(),
+                    projection.getHeight())));
         }
     }
 
@@ -605,8 +629,7 @@ public class MapBean extends JComponent implements ComponentListener,
         if (aProjection != null) {
             setBufferDirty(true);
             projection = (Proj) aProjection;
-            setPreferredSize(new Dimension(projection.getWidth(), projection
-                    .getHeight()));
+            setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
             fireProjectionChanged();
         }
     }
@@ -817,12 +840,9 @@ public class MapBean extends JComponent implements ComponentListener,
      */
     public void addPropertyChangeListener(PropertyChangeListener pcl) {
         super.addPropertyChangeListener(pcl);
-        pcl.propertyChange(new PropertyChangeEvent(this, LayersProperty,
-                currentLayers, currentLayers));
-        pcl.propertyChange(new PropertyChangeEvent(this, CursorProperty, this
-                .getCursor(), this.getCursor()));
-        pcl.propertyChange(new PropertyChangeEvent(this, BackgroundProperty,
-                this.getBckgrnd(), this.getBckgrnd()));
+        pcl.propertyChange(new PropertyChangeEvent(this, LayersProperty, currentLayers, currentLayers));
+        pcl.propertyChange(new PropertyChangeEvent(this, CursorProperty, this.getCursor(), this.getCursor()));
+        pcl.propertyChange(new PropertyChangeEvent(this, BackgroundProperty, this.getBckgrnd(), this.getBckgrnd()));
     }
 
     protected final void debugmsg(String msg) {
@@ -1114,8 +1134,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * 
      * @param value boolean
      */
-    public void setBufferDirty(boolean value) {
-    }
+    public void setBufferDirty(boolean value) {}
 
     /**
      * Checks whether the image buffer should be repainted.

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/FileInputReader.java,v $
 // $RCSfile: FileInputReader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -94,9 +94,11 @@ public class FileInputReader implements InputReader {
         try {
             name = f.getName();
             inputFile = new RandomAccessFile(f, "r");
-        } catch (FileNotFoundException fnfe) {
-            throw fnfe;
         } catch (IOException i) {
+            if (i instanceof FileNotFoundException) {
+                throw i;
+            }
+            
             if (f.canRead()) {
                 BinaryFile.closeClosable();
                 inputFile = new RandomAccessFile(f, "r");

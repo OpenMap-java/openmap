@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,36 +12,38 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/cacheHandler/CacheObject.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/cacheHandler/CacheObject.java,v
+// $
 // $RCSfile: CacheObject.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.util.cacheHandler;
 
 public class CacheObject {
 
-  public Object obj = null;
-  public int cachedTime = 0;
-  public String id = null;
-  
-  /** New object, set the local clock to zero
-   */
-  public CacheObject(String identifier, Object cachedObject){
-      id = identifier;
-      obj = cachedObject;
-  }
+    public Object obj = null;
+    public int cachedTime = 0;
+    public String id = null;
 
-  public boolean match(String queryID){
-    return (queryID.equals(id));
-  }
+    /**
+     * New object, set the local clock to zero
+     */
+    public CacheObject(String identifier, Object cachedObject) {
+        id = identifier;
+        obj = cachedObject;
+    }
 
-  public boolean older(int time){
-    return (cachedTime < time);
-  }
+    public boolean match(String queryID) {
+        return (queryID.equals(id));
+    }
+
+    public boolean older(int time) {
+        return (cachedTime < time);
+    }
 }
 

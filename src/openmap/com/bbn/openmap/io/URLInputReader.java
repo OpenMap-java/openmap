@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,20 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/URLInputReader.java,v $
 // $RCSfile: URLInputReader.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.io;
 
 import java.io.*;
 import java.net.*;
-import java.util.Vector;
-import java.lang.ref.WeakReference;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -48,11 +44,11 @@ public class URLInputReader extends StreamInputReader {
         inputURL = url;
         reopen();
         name = url.getProtocol() + "://" + url.getHost() + url.getFile();
-    } 
+    }
 
     /**
      * Reset the InputStream to the beginning, by closing the current
-     * connection and reopening it.  
+     * connection and reopening it.
      */
     public void reopen() throws IOException {
         super.reopen();

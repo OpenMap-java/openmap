@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,18 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMControlPanel.java,v $
 // $RCSfile: OMControlPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Insets;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Properties;
@@ -36,15 +34,14 @@ import javax.swing.JPanel;
 
 import com.bbn.openmap.LightMapHandlerChild;
 import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
  * The OMControlPanel is an all-in-one panel that holds an overview
  * map, pan and zoom buttons, projection stack buttons, scale text
- * field and a LayersPanel.  All of the sub-components share the same
+ * field and a LayersPanel. All of the sub-components share the same
  * property prefix as the OMControlPanel, all have access to
- * components in the MapHandler.  The sub-components are not given to
+ * components in the MapHandler. The sub-components are not given to
  * the MapHandler themselves, however.
  */
 public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
@@ -124,8 +121,9 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
                 // Each property prefix will be set with the marker
                 // name for the OMControlPanel plus the class name
                 // already set as property prefix in the constructor.
-                String newPrefix = prefix + ((PropertyConsumer)obj).getPropertyPrefix();
-                ((PropertyConsumer)obj).setProperties(newPrefix, props);
+                String newPrefix = prefix
+                        + ((PropertyConsumer) obj).getPropertyPrefix();
+                ((PropertyConsumer) obj).setProperties(newPrefix, props);
             }
         }
     }
@@ -133,14 +131,14 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
 
-        props.put(PropUtils.getScopedPropertyPrefix(this) + 
-                  PreferredLocationProperty, getPreferredLocation());
+        props.put(PropUtils.getScopedPropertyPrefix(this)
+                + PreferredLocationProperty, getPreferredLocation());
 
         Iterator it = children.iterator();
         while (it.hasNext()) {
             Object obj = it.next();
             if (obj instanceof PropertyConsumer) {
-                ((PropertyConsumer)obj).getProperties(props);
+                ((PropertyConsumer) obj).getProperties(props);
             }
         }
         return props;
@@ -149,13 +147,14 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
 
-        props.put(PreferredLocationProperty, "The preferred BorderLayout direction to place this component.");
+        props.put(PreferredLocationProperty,
+                "The preferred BorderLayout direction to place this component.");
 
         Iterator it = children.iterator();
         while (it.hasNext()) {
             Object obj = it.next();
             if (obj instanceof PropertyConsumer) {
-                ((PropertyConsumer)obj).getPropertyInfo(props);
+                ((PropertyConsumer) obj).getPropertyInfo(props);
             }
         }
         return props;
@@ -166,7 +165,7 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
         while (it.hasNext()) {
             Object obj = it.next();
             if (obj instanceof LightMapHandlerChild) {
-                ((LightMapHandlerChild)obj).findAndInit(someObj);
+                ((LightMapHandlerChild) obj).findAndInit(someObj);
             }
         }
     }
@@ -176,11 +175,10 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
         while (it.hasNext()) {
             Object obj = it.next();
             if (obj instanceof LightMapHandlerChild) {
-                ((LightMapHandlerChild)obj).findAndUndo(someObj);
+                ((LightMapHandlerChild) obj).findAndUndo(someObj);
             }
         }
     }
-
 
     /**
      * BorderLayout.WEST by default for this class.
@@ -194,8 +192,8 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
         preferredLocation = value;
     }
 
-    /** 
-     * MapPanelChild method. 
+    /**
+     * MapPanelChild method.
      */
     public String getPreferredLocation() {
         return preferredLocation;

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/MapHandlerMenuItem.java,v $
 // $RCSfile: MapHandlerMenuItem.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.menu;
 
@@ -31,15 +30,15 @@ import javax.swing.JMenuItem;
 
 /**
  * A MapHandlerMenuItem is a JMenuItem that uses the MapHandler to
- * find objects it needs to operate.  It's a LightMapHandlerChild so
+ * find objects it needs to operate. It's a LightMapHandlerChild so
  * that it's parent AbstractOpenMapMenu will provide the MapHandler
- * and other MapHandler objects to it.  The MapHandlerMenuItem doesn't
+ * and other MapHandler objects to it. The MapHandlerMenuItem doesn't
  * really need to be added to the MapHandler unless something else
- * needs to find it from the MapHandler.  Instead, it will see
+ * needs to find it from the MapHandler. Instead, it will see
  * everything else in the MapHandler.
  */
-public abstract class MapHandlerMenuItem extends JMenuItem
-    implements LightMapHandlerChild {
+public abstract class MapHandlerMenuItem extends JMenuItem implements
+        LightMapHandlerChild {
 
     protected MapHandler mapHandler = null;
 
@@ -49,7 +48,7 @@ public abstract class MapHandlerMenuItem extends JMenuItem
 
     public void setMapHandler(BeanContext in_mapHandler) {
         if (in_mapHandler instanceof MapHandler) {
-            mapHandler = (MapHandler)in_mapHandler;
+            mapHandler = (MapHandler) in_mapHandler;
         }
         setEnabled(mapHandler != null);
     }

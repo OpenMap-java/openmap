@@ -1,3 +1,25 @@
+//**********************************************************************
+//
+//<copyright>
+//
+//BBN Technologies
+//10 Moulton Street
+//Cambridge, MA 02138
+//(617) 873-8000
+//
+//Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
+//</copyright>
+//**********************************************************************
+//
+//$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMDecoratedSpline.java,v $
+//$RCSfile: OMDecoratedSpline.java,v $
+//$Revision: 1.6 $
+//$Date: 2004/10/14 18:06:12 $
+//$Author: dietrick $
+//
+//**********************************************************************
+
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Graphics;
@@ -9,10 +31,10 @@ import com.bbn.openmap.omGraphics.awt.Revertable;
 import com.bbn.openmap.omGraphics.awt.ShapeDecorator;
 
 /**
- * A decorated splined OMPoly.
- * Decoration list is empty, but accessible via getDecorator()
- * Code from OMPoly, few changes : render() just need to delegate
- * the drawing of the polyline to the ShapeDecorator
+ * A decorated splined OMPoly. Decoration list is empty, but
+ * accessible via getDecorator() Code from OMPoly, few changes :
+ * render() just need to delegate the drawing of the polyline to the
+ * ShapeDecorator
  * 
  * @author Eric LEPICIER
  * @version 27 juil. 2002
@@ -31,6 +53,7 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
 
     /**
      * Constructor.
+     * 
      * @param llPoints
      * @param units
      * @param lType
@@ -42,22 +65,20 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
 
     /**
      * Constructor.
+     * 
      * @param llPoints
      * @param units
      * @param lType
      * @param nsegs
      */
-    public OMDecoratedSpline(
-        float[] llPoints,
-        int units,
-        int lType,
-        int nsegs) {
+    public OMDecoratedSpline(float[] llPoints, int units, int lType, int nsegs) {
         super(llPoints, units, lType, nsegs);
         initDecorations();
     }
 
     /**
      * Constructor.
+     * 
      * @param xypoints
      */
     public OMDecoratedSpline(int[] xypoints) {
@@ -67,6 +88,7 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
 
     /**
      * Constructor.
+     * 
      * @param xPoints
      * @param yPoints
      */
@@ -77,44 +99,38 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
 
     /**
      * Constructor.
+     * 
      * @param latPoint
      * @param lonPoint
      * @param xypoints
      * @param cMode
      */
-    public OMDecoratedSpline(
-        float latPoint,
-        float lonPoint,
-        int[] xypoints,
-        int cMode) {
+    public OMDecoratedSpline(float latPoint, float lonPoint, int[] xypoints,
+            int cMode) {
         super(latPoint, lonPoint, xypoints, cMode);
         initDecorations();
     }
 
     /**
      * Constructor.
+     * 
      * @param latPoint
      * @param lonPoint
      * @param xPoints
      * @param yPoints
      * @param cMode
      */
-    public OMDecoratedSpline(
-        float latPoint,
-        float lonPoint,
-        int[] xPoints,
-        int[] yPoints,
-        int cMode) {
+    public OMDecoratedSpline(float latPoint, float lonPoint, int[] xPoints,
+            int[] yPoints, int cMode) {
         super(latPoint, lonPoint, xPoints, yPoints, cMode);
         initDecorations();
     }
 
     /**
-     * Paint the poly. 
-     * This works if generate() has been successful.
-     * Same code than OMPoly, just delegates the drawing
-     * of the polyline to the ShapeDecorator
-     *
+     * Paint the poly. This works if generate() has been successful.
+     * Same code than OMPoly, just delegates the drawing of the
+     * polyline to the ShapeDecorator
+     * 
      * @param g java.awt.Graphics to paint the poly onto.
      */
     public void render(Graphics g) {
@@ -162,7 +178,8 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
                     // only draw outline if different color
                     if (!isLineClear || !edgeMatchesFill) {
                         setGraphicsForEdge(g);
-                        // for some reason, this used to be drawPolygon
+                        // for some reason, this used to be
+                        // drawPolygon
                         decorator.draw(g, _x, _y);
                     }
                 }
@@ -176,13 +193,14 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
             }
         } catch (Exception e) {
             // Trying to catch any clipping problems from within a JRE
-            Debug.output(
-                "OMDecoratedSpline: caught Java rendering exception\n" + e.getMessage());
+            Debug.output("OMDecoratedSpline: caught Java rendering exception\n"
+                    + e.getMessage());
         }
     }
 
     /**
      * Returns the decorator.
+     * 
      * @return ShapeDecorator
      */
     public ShapeDecorator getDecorator() {
@@ -191,12 +209,13 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
 
     /**
      * Sets the decorator.
+     * 
      * @param decorator The decorator to set
      */
     public void setDecorator(ShapeDecorator decorator) {
         this.decorator = decorator;
     }
-        
+
     /**
      * Called by constructor, may be overriden.
      */

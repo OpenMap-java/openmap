@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameUtil.java,v $
 // $RCSfile: DTEDFrameUtil.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/12 17:13:44 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -109,11 +109,11 @@ public class DTEDFrameUtil {
      */
     public static String latToFileString(float lat, int level) {
         // if (level > 1) {
-            // OLD HACK, since fixed. Crazy dted file names - levels 1
-            // and higher used to be named
-            // named .dt1 rather than .dt{level}. Seems like that's
-            // been fixed, removing this hack.
-            // level = 1;
+        // OLD HACK, since fixed. Crazy dted file names - levels 1
+        // and higher used to be named
+        // named .dt1 rather than .dt{level}. Seems like that's
+        // been fixed, removing this hack.
+        // level = 1;
         //}
 
         String direction;

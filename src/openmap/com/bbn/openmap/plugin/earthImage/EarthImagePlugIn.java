@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/earthImage/EarthImagePlugIn.java,v $
 // $RCSfile: EarthImagePlugIn.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.plugin.earthImage;
 
@@ -34,9 +33,6 @@ import java.net.MalformedURLException;
 import java.util.Properties;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.layer.util.LayerUtils;
@@ -45,28 +41,28 @@ import com.bbn.openmap.plugin.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.propertyEditor.Inspector;
 
-/** 
+/**
  * This class takes an image of the earth, and creates a background
- * image from it that matches an OpenMap projection.  It currently
+ * image from it that matches an OpenMap projection. It currently
  * assumes that the degrees/pixel ratios are constant in both
  * directions, the coordinate system origins in both directions are at
  * the center of the picture, and that the left an right edges of the
  * images are at -180/180 degrees longitude, and that the top and
- * bottom of the edges are at 90/-90 degrees latitude.  I think the
+ * bottom of the edges are at 90/-90 degrees latitude. I think the
  * code will work for images that do not cover the entire earth in
  * this manner, as long as the degree/pixel ratios are the same, but
  * the ImageTranslator limies would have to be adjusted to fit the
  * source image.
- *
+ * 
  * #For the pluging layer
  * pluginlayer.class=com.bbn.openmap.plugin.PlugInLayer
  * pluginlayer.prettyName=Whatever
  * pluginlayer.plugin=com.bbn.openmap.plugin.earthImage.EarthImagePlugIn
- * pluginlayer.plugin.image=path to file, URL or resource.  
+ * pluginlayer.plugin.image=path to file, URL or resource.
  */
-public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConstants {
+public class EarthImagePlugIn extends AbstractPlugIn implements
+        ImageServerConstants {
 
     protected BufferedImage bi = null;
     protected ImageTranslator it = null;
@@ -81,15 +77,15 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
 
     /**
      * @param p projection of the screen, holding scale, center
-     * coords, height, width.  
+     *        coords, height, width.
      * @return an OMGraphicList containing an OMRaster with the image
-     * to be displayed.
+     *         to be displayed.
      */
     public OMGraphicList getRectangle(Projection p) {
         OMGraphicList list = new OMGraphicList();
 
         // The first time through with a good bi, the it will be
-        // created later.  This routine will only be executed if the
+        // created later. This routine will only be executed if the
         // image icon is no good.
         if (bi == null && it == null) {
             return list;
@@ -99,7 +95,7 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
 
         if (it == null) {
             it = new ImageTranslator(bi);
-            bi = null;  // don't hold onto it.
+            bi = null; // don't hold onto it.
         }
 
         ras = it.getImage(p);
@@ -113,20 +109,20 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
     }
 
     /**
-     * Method to set the properties in the PropertyConsumer.  The
+     * Method to set the properties in the PropertyConsumer. The
      * prefix is a string that should be prepended to each property
      * key (in addition to a separating '.') in order for the
-     * PropertyConsumer to uniquely identify properies meant for it, in
-     * the midst of of Properties meant for several objects.
-     *
+     * PropertyConsumer to uniquely identify properies meant for it,
+     * in the midst of of Properties meant for several objects.
+     * 
      * @param prefix a String used by the PropertyConsumer to prepend
-     * to each property value it wants to look up -
-     * setList.getProperty(prefix.propertyKey).  If the prefix had
-     * already been set, then the prefix passed in should replace that
-     * previous value.
+     *        to each property value it wants to look up -
+     *        setList.getProperty(prefix.propertyKey). If the prefix
+     *        had already been set, then the prefix passed in should
+     *        replace that previous value.
      * @param setList a Properties object that the PropertyConsumer
-     * can use to retrieve expected properties it can use for
-     * configuration.  
+     *        can use to retrieve expected properties it can use for
+     *        configuration.
      */
     public void setProperties(String prefix, Properties setList) {
         super.setProperties(prefix, setList);
@@ -140,23 +136,22 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
             Debug.output(setList.toString());
             return;
         } else if (Debug.debugging("earthimage")) {
-            Debug.output("EarthImagePlugIn:  fetching " + 
-                         realPrefix + ImageProperty +
-                         " : " + imageString);
+            Debug.output("EarthImagePlugIn:  fetching " + realPrefix
+                    + ImageProperty + " : " + imageString);
         }
         try {
             URL url = LayerUtils.getResourceOrFileOrURL(this, imageString);
             bi = BufferedImageHelper.getBufferedImage(url, 0, 0, -1, -1);
-            
+
             if (Debug.debugging("earthimage") && bi != null) {
                 Debug.output("EarthImagePlugIn: buffered image OK");
             }
         } catch (MalformedURLException murle) {
-            Debug.error("EarthImagePlugIn: image path is not good: " + 
-                        imageString);
+            Debug.error("EarthImagePlugIn: image path is not good: "
+                    + imageString);
         } catch (InterruptedException ie) {
-            Debug.error("EarthImagePlugIn: problem reading image from path: " + 
-                        imageString);
+            Debug.error("EarthImagePlugIn: problem reading image from path: "
+                    + imageString);
         }
     }
 
@@ -165,8 +160,8 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        props.put(prefix + ImageProperty, 
-                  (imageString == null?"":imageString));
+        props.put(prefix + ImageProperty, (imageString == null ? ""
+                : imageString));
 
         return props;
     }
@@ -174,8 +169,8 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
         props.put(ImageProperty, "Path to image file (URL, resource or file)");
-        props.put(ImageProperty + ScopedEditorProperty, 
-                  "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        props.put(ImageProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
         props.put(initPropertiesProperty, ImageProperty);
 
@@ -183,8 +178,8 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
     }
 
     /**
-     * The ImageTranslator is the object that takes the BufferedImage and
-     * creates the OMRaster from it based on a Projection object.  
+     * The ImageTranslator is the object that takes the BufferedImage
+     * and creates the OMRaster from it based on a Projection object.
      */
     public class ImageTranslator {
 
@@ -194,47 +189,53 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
         public int iwidth;
         /** Image Icon height, */
         public int iheight;
-        /** Horizontal degrees/pixel in the source BufferedImage.  Assumed
-         *  to be constant across the image. */
+        /**
+         * Horizontal degrees/pixel in the source BufferedImage.
+         * Assumed to be constant across the image.
+         */
         public float hor_dpp;
-        /** Vertical degrees/pixel in the source BufferedImage.  Assumed
-         *  to be constant across the image. */
+        /**
+         * Vertical degrees/pixel in the source BufferedImage. Assumed
+         * to be constant across the image.
+         */
         public float ver_dpp;
-        /** The vertical origin pixel location in the source image for
-         *  the coordinate system origin (0 degrees latitude). */
+        /**
+         * The vertical origin pixel location in the source image for
+         * the coordinate system origin (0 degrees latitude).
+         */
         public int verOrigin;
-        /** The horizontal origin pixel location in the source image for
-         *  the coordinate system origin (0 degrees longitude). */
+        /**
+         * The horizontal origin pixel location in the source image
+         * for the coordinate system origin (0 degrees longitude).
+         */
         public int horOrigin;
 
         /**
-         *  Create an image translator for an image assumed to be
-         *  world wide coverage, with the top at 90 degrees, the
-         *  bottom at -90, the left side at -180 and the right side at
-         *  180.  Assumes the origin point is in the middle of the
-         *  image.
+         * Create an image translator for an image assumed to be world
+         * wide coverage, with the top at 90 degrees, the bottom at
+         * -90, the left side at -180 and the right side at 180.
+         * Assumes the origin point is in the middle of the image.
          */
         public ImageTranslator(BufferedImage bi) {
             if (bi != null) {
                 iwidth = bi.getWidth();
                 iheight = bi.getHeight();
 
-                verOrigin = iheight/2;
-                horOrigin = iwidth/2;
+                verOrigin = iheight / 2;
+                horOrigin = iwidth / 2;
 
-                hor_dpp = 360f/(float)iwidth;
-                ver_dpp = 180f/(float)iheight;
+                hor_dpp = 360f / (float) iwidth;
+                ver_dpp = 180f / (float) iheight;
 
                 if (Debug.debugging("earthimage")) {
-                    Debug.output("ImageTranslator: getting image pixels w:" + iwidth +
-                                 ", h:" + iheight + 
-                                 "\n     hor dpp:" + hor_dpp + 
-                                 ", ver dpp:" + ver_dpp);
+                    Debug.output("ImageTranslator: getting image pixels w:"
+                            + iwidth + ", h:" + iheight + "\n     hor dpp:"
+                            + hor_dpp + ", ver dpp:" + ver_dpp);
                 }
 
                 pixels = getPixels(bi, 0, 0, iwidth, iheight);
 
-                // See if this saves on memory.  Seems to.
+                // See if this saves on memory. Seems to.
                 bi = null;
             }
         }
@@ -260,18 +261,23 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
 
                 ///////////////////////////////////
                 // For Testing...
-//              LatLonPoint ul = p.getUpperLeft();
-//              LatLonPoint lr = p.getLowerRight();
+                //              LatLonPoint ul = p.getUpperLeft();
+                //              LatLonPoint lr = p.getLowerRight();
 
-//              int ulhorIndex = horOrigin + (int)(ul.getLongitude()/hor_dpp);
-//              int ulverIndex = verOrigin - (int)(ul.getLatitude()/ver_dpp);
-                
-//              int lrhorIndex = horOrigin + (int)(lr.getLongitude()/hor_dpp);
-//              int lrverIndex = verOrigin - (int)(lr.getLatitude()/ver_dpp);
-                
-//              Debug.output("The image file will be referenced from:\n     " +
-//                           ulhorIndex + ", " + ulverIndex + "\n     " +
-//                           lrhorIndex + ", " + lrverIndex);
+                //              int ulhorIndex = horOrigin +
+                // (int)(ul.getLongitude()/hor_dpp);
+                //              int ulverIndex = verOrigin -
+                // (int)(ul.getLatitude()/ver_dpp);
+
+                //              int lrhorIndex = horOrigin +
+                // (int)(lr.getLongitude()/hor_dpp);
+                //              int lrverIndex = verOrigin -
+                // (int)(lr.getLatitude()/ver_dpp);
+
+                //              Debug.output("The image file will be referenced
+                // from:\n " +
+                //                           ulhorIndex + ", " + ulverIndex + "\n " +
+                //                           lrhorIndex + ", " + lrverIndex);
                 ///////////////////////////////////
 
                 int imageHIndex;
@@ -288,10 +294,10 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
                         p.inverse(i, j, llp);
 
                         // index into the OMRaster pixel array
-                        int tmpIndex = i + (j*projWidth);
+                        int tmpIndex = i + (j * projWidth);
 
                         // If the llp calculated isn't on the map,
-                        // don't bother drawing it.  Could be a space
+                        // don't bother drawing it. Could be a space
                         // point in Orthographic projection, for
                         // instance.
                         if (llp.equals(center)) {
@@ -302,13 +308,16 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
                             }
                         }
 
-                        // Find the corresponding pixel location in the source image.
-                        int horIndex = horOrigin + (int)(llp.getLongitude()/hor_dpp);
-                        int verIndex = verOrigin - (int)(llp.getLatitude()/ver_dpp);
+                        // Find the corresponding pixel location in
+                        // the source image.
+                        int horIndex = horOrigin
+                                + (int) (llp.getLongitude() / hor_dpp);
+                        int verIndex = verOrigin
+                                - (int) (llp.getLatitude() / ver_dpp);
 
-                        if (horIndex < 0 || horIndex >= iwidth ||
-                            verIndex < 0 || verIndex >= iheight) {
-                            // pixel not on the source image.  This
+                        if (horIndex < 0 || horIndex >= iwidth || verIndex < 0
+                                || verIndex >= iheight) {
+                            // pixel not on the source image. This
                             // happens if the image doesn't cover the
                             // entire earth.
                             continue;
@@ -318,16 +327,20 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
 
                         if (imageIndex >= 0 && imageIndex < pixels.length) {
                             tmpPixels[tmpIndex] = pixels[imageIndex];
-//                      } else {
-//                          Debug.message("earthimage", "ImageTranslator: outside pixel range");
+                            //                      } else {
+                            //                          Debug.message("earthimage",
+                            // "ImageTranslator: outside pixel
+                            // range");
                         }
                     }
                 }
 
-                Debug.message("earthimage", "ImageTranslator: finished creating image");
+                Debug.message("earthimage",
+                        "ImageTranslator: finished creating image");
                 return new OMRaster(0, 0, projWidth, projHeight, tmpPixels);
             } else {
-                Debug.message("earthimage", "ImageTranslator: problem creating image");
+                Debug.message("earthimage",
+                        "ImageTranslator: problem creating image");
             }
 
             // If you get here, something's not right.
@@ -335,7 +348,7 @@ public class EarthImagePlugIn extends AbstractPlugIn implements ImageServerConst
         }
 
         /**
-         * Get the pixels from the BufferedImage.  If anything goes
+         * Get the pixels from the BufferedImage. If anything goes
          * wrong, returns a int[0].
          */
         protected int[] getPixels(Image img, int x, int y, int w, int h) {

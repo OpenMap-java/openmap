@@ -17,8 +17,8 @@
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/RoadFinder.java,v $
  * $RCSfile: RoadFinder.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/02/13 17:16:33 $
+ * $Revision: 1.2 $
+ * $Date: 2004/10/14 18:06:28 $
  * $Author: dietrick $
  *
  * **********************************************************************
@@ -26,77 +26,28 @@
 
 package com.bbn.openmap.tools.roads;
 
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.MapBean;
-import com.bbn.openmap.MouseDelegator;
-import com.bbn.openmap.event.MapMouseListener;
-import com.bbn.openmap.event.MapMouseAdapter;
 import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.event.MapMouseMode;
-import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMGeometry;
-
 import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.omGraphics.geom.BasicGeometry;
-
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.ProjectionFactory;
-import com.bbn.openmap.util.SwingWorker;
 import com.bbn.openmap.util.quadtree.QuadTree;
 
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Shape;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
-
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-
-import java.io.CharArrayWriter;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JSlider;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 
 /**
  * Gives road access to a shape or vpf layer.
@@ -115,7 +66,10 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
 
     protected Vector removedRoads = new Vector();
 
-    /** how far (in lat-lon space) from lat,lon point to look in quad tree for nearest road **/
+    /**
+     * how far (in lat-lon space) from lat,lon point to look in quad
+     * tree for nearest road *
+     */
     protected float halo;
 
     Logger logger = Logger.getLogger(this.getClass().getName());
@@ -131,7 +85,8 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
     boolean showLines = true;
     int roadsMade = 0;
 
-    public RoadFinder(LayerView layer, boolean drawIntersections, boolean drawResults) {
+    public RoadFinder(LayerView layer, boolean drawIntersections,
+            boolean drawResults) {
         initRoadClasses();
 
         this.drawIntersections = drawIntersections;
@@ -152,18 +107,19 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
     public void projectionChanged(ProjectionEvent e) {
         try {
             getData();
-        } catch (Exception ee ) { 
+        } catch (Exception ee) {
             logger.warning("Got exception " + ee);
             ee.printStackTrace();
         }
     }
 
     /**
-     * Take the shape data on the layer and use it to populate our roads and
-     * intersections.
-     *
-     * Clears lists of roads and intersections first, and after calculating the
-     * roads, tells the RoadLayer what extra graphics to display, if any.
+     * Take the shape data on the layer and use it to populate our
+     * roads and intersections.
+     * 
+     * Clears lists of roads and intersections first, and after
+     * calculating the roads, tells the RoadLayer what extra graphics
+     * to display, if any.
      */
     protected synchronized void getData() throws Exception {
         logger.info("get Data called.");
@@ -175,44 +131,44 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         checkIntegrity();
         logger.info("showing " + toDraw.size() + " extra graphics.");
         layer.setExtraGraphics(toDraw);
-        halo = 0.05f*(getProjection().getScale()/20000f);
+        halo = 0.05f * (getProjection().getScale() / 20000f);
     }
 
     /**
-     * Take the shape data on the layer and use it to populate our roads and
-     * intersections.
-     *
+     * Take the shape data on the layer and use it to populate our
+     * roads and intersections.
+     *  
      */
     protected void getRoads() throws Exception {
         roadsMade = 0;
         List rectangle = layer.getGraphicList();
-        int [] xPoints = new int [1024];
-        int [] yPoints = new int [1024];
+        int[] xPoints = new int[1024];
+        int[] yPoints = new int[1024];
         interQuadTree = new QuadTree();
         graphicToRoad = new HashMap();
 
         int height = getProjection().getHeight();
-        int width  = getProjection().getWidth();
+        int width = getProjection().getWidth();
         int skipped = 0;
 
         synchronized (rectangle) {
-            double [] points = new double [6];
+            double[] points = new double[6];
             if (logger.isLoggable(Level.INFO))
                 logger.info("iterating over rectangle contents.");
 
             int num = 0;
             int made = 0;
-            for (Iterator iter = rectangle.iterator(); iter.hasNext(); ) {
+            for (Iterator iter = rectangle.iterator(); iter.hasNext();) {
                 double lastXOff = 0;
                 double lastYOff = 0;
 
                 num++;
-                OMGeometry graphic = (OMGeometry) iter.next(); 
+                OMGeometry graphic = (OMGeometry) iter.next();
 
                 if (logger.isLoggable(Level.FINE))
                     logger.fine("examining " + graphic);
 
-                Shape     shape   = graphic.getShape();
+                Shape shape = graphic.getShape();
                 if (shape == null)
                     continue;
 
@@ -226,74 +182,92 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
                     itemsInPath++;
                     boolean offScreen = false;
                     if (points[0] < 0 || points[0] >= width) {
-                        //logger.warning("skipping x point " + points[0] + " b/c it's off the map.");
+                        //logger.warning("skipping x point " +
+                        // points[0] + " b/c it's off the map.");
                         offScreen = true;
                     }
                     if (points[1] < 0 || points[1] >= height) {
-                        // logger.warning("skipping y point " + points[1] + " b/c it's off the map.");
+                        // logger.warning("skipping y point " +
+                        // points[1] + " b/c it's off the map.");
                         offScreen = true;
                     }
 
                     switch (type) {
-                    case PathIterator.SEG_CLOSE :
+                    case PathIterator.SEG_CLOSE:
                         logger.warning("got close");
                         break;
-                    case PathIterator.SEG_CUBICTO :
+                    case PathIterator.SEG_CUBICTO:
                         logger.warning("got cubic to");
                         break;
-                    case PathIterator.SEG_LINETO :
+                    case PathIterator.SEG_LINETO:
                         if (offScreen) {
                             if (segment > 0) {
-                                // BOZO 
-                                // should reexamine whether this is legal - there should be
-                                // a one-to-one mapping between graphic and road object,
-                                // but this will throw away the original entry
+                                // BOZO
+                                // should reexamine whether this is
+                                // legal - there should be
+                                // a one-to-one mapping between
+                                // graphic and road object,
+                                // but this will throw away the
+                                // original entry
 
                                 if (doInterp) {
-                                    Point interpPt = interp(xPoints[segment-1], yPoints[segment-1], points[0], points[1], width, height);
-                                    xPoints[segment]   = interpPt.x;
+                                    Point interpPt = interp(xPoints[segment - 1],
+                                            yPoints[segment - 1],
+                                            points[0],
+                                            points[1],
+                                            width,
+                                            height);
+                                    xPoints[segment] = interpPt.x;
                                     yPoints[segment++] = interpPt.y;
 
-                                    makeRoad(shape, graphic, made++, xPoints, yPoints, segment);
+                                    makeRoad(shape,
+                                            graphic,
+                                            made++,
+                                            xPoints,
+                                            yPoints,
+                                            segment);
                                     lastXOff = 0;
                                     lastYOff = 0;
-                                    segment  = 0;
+                                    segment = 0;
                                 }
-                            }
-                            else {
+                            } else {
                                 lastXOff = points[0];
                                 lastYOff = points[1];
                             }
-                        }
-                        else { // onscreen
+                        } else { // onscreen
                             if (lastXOff != 0 || lastYOff != 0) {
-                                Point interpPt = interp(points[0], points[1], lastXOff, lastYOff, width, height);
-                                xPoints[segment]   = interpPt.x;
+                                Point interpPt = interp(points[0],
+                                        points[1],
+                                        lastXOff,
+                                        lastYOff,
+                                        width,
+                                        height);
+                                xPoints[segment] = interpPt.x;
                                 yPoints[segment++] = interpPt.y;
                             }
 
-                            xPoints[segment]   = (int) points[0];
+                            xPoints[segment] = (int) points[0];
                             yPoints[segment++] = (int) points[1];
                             lastXOff = 0;
                             lastYOff = 0;
                         }
 
                         if (logger.isLoggable(Level.FINE))
-                            logger.fine(" line to " + points[0] + ", " + points[1]);
+                            logger.fine(" line to " + points[0] + ", "
+                                    + points[1]);
 
                         break;
-                    case PathIterator.SEG_MOVETO :
+                    case PathIterator.SEG_MOVETO:
                         if (offScreen) {
                             lastXOff = points[0];
                             lastYOff = points[1];
-                        }
-                        else {
+                        } else {
                             if (segment == 0) {
-                                xPoints[segment]   = (int) points[0];
+                                xPoints[segment] = (int) points[0];
                                 yPoints[segment++] = (int) points[1];
-                            }
-                            else {
-                                // we got a second move to in the list - this is not valid
+                            } else {
+                                // we got a second move to in the list
+                                // - this is not valid
                                 pathValid = false;
                                 logger.info("got invalid path.");
                             }
@@ -303,23 +277,23 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
                         }
 
                         if (logger.isLoggable(Level.FINE))
-                            logger.fine(" moving to " + points[0] + ", " + points[1]);
+                            logger.fine(" moving to " + points[0] + ", "
+                                    + points[1]);
 
                         break;
-                    case PathIterator.SEG_QUADTO :
+                    case PathIterator.SEG_QUADTO:
                         logger.warning("got quad to");
                         break;
-                    default :
+                    default:
                         logger.warning("got another type : " + type);
                         break;
                     }
                 }
-	  
+
                 if (segment < 2) {
                     skipped++;
                     logger.fine("Skipping line that doesn't have an end point");
-                }
-                else {
+                } else {
                     if (logger.isLoggable(Level.INFO))
                         logger.info("items in path " + itemsInPath);
 
@@ -329,108 +303,119 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
             }
 
             if (logger.isLoggable(Level.INFO))
-                logger.info("num items " + num + " skipped " +skipped);
+                logger.info("num items " + num + " skipped " + skipped);
         }
     }
 
-    /** 
-     * find a point between x1,y1 and x2, y2 that is within the visible map 
-     *
+    /**
+     * find a point between x1,y1 and x2, y2 that is within the
+     * visible map
+     * 
      * @param width of visible map
      * @param height of visible map
      * @return Point between x1,y1 and x2, y2
      */
-    protected Point interp(double x1, double y1, double x2, double y2, int width, int height) {
-        double deltaY   = y2 - y1;
-        double deltaX   = x2 - x1;
-        double slope = deltaY/deltaX;
+    protected Point interp(double x1, double y1, double x2, double y2,
+                           int width, int height) {
+        double deltaY = y2 - y1;
+        double deltaX = x2 - x1;
+        double slope = deltaY / deltaX;
         double newX = x2;
         double newY = y2;
 
         if (newX < 0) {
             newX = 0;
-            newY = Math.round( slope *(newX - x1) + y1);
+            newY = Math.round(slope * (newX - x1) + y1);
+        } else if (newX >= width) {
+            newX = width - 1;
+            newY = Math.round(slope * (newX - x1) + y1);
         }
-        else if (newX >= width) {
-            newX = width-1;
-            newY = Math.round( slope * (newX - x1) + y1);
-        }
-    
+
         if (newY < 0) {
             newY = 0;
-            newX = Math.round( x1  + (newY - y1)/slope);
-        }
-        else if (newY >= height) {
-            newY = height-1;
-            newX = Math.round( x1  + (newY - y1)/slope);
+            newX = Math.round(x1 + (newY - y1) / slope);
+        } else if (newY >= height) {
+            newY = height - 1;
+            newX = Math.round(x1 + (newY - y1) / slope);
         }
 
         int intX = (int) newX;
         int intY = (int) newY;
 
         if (intX < 0) {
-            logger.warning("new x is "  + intX);
+            logger.warning("new x is " + intX);
             intX = 0;
         }
         if (intX >= width) {
-            logger.warning("new x is "  + intX);
-            intX = width-1;
+            logger.warning("new x is " + intX);
+            intX = width - 1;
         }
         if (intY < 0) {
-            logger.warning("new y is "  + intY);
+            logger.warning("new y is " + intY);
             intY = 0;
         }
         if (intY >= height) {
-            logger.warning("new y is "  + intY);
-            intY = height-1;
+            logger.warning("new y is " + intY);
+            intY = height - 1;
         }
 
         if (logger.isLoggable(Level.INFO)) {
-            logger.info("from " + x1 + "," + y1 + " to " + x2 + "," + y2 + "w " + width + " h " + height + " interp " + intX + "," + intY);
+            logger.info("from " + x1 + "," + y1 + " to " + x2 + "," + y2 + "w "
+                    + width + " h " + height + " interp " + intX + "," + intY);
         }
 
         return new Point(intX, intY);
     }
 
     /**
-     * Makes a road object given the points on the shape that are within the visible box
-     *
+     * Makes a road object given the points on the shape that are
+     * within the visible box
+     * 
      * Stores it in a quadTree
      */
-    protected void makeRoad(Shape shape, OMGeometry graphic, int num, int [] xPoints, int [] yPoints, int segment) {
+    protected void makeRoad(Shape shape, OMGeometry graphic, int num,
+                            int[] xPoints, int[] yPoints, int segment) {
         RoadObject road = createRoadFromPoints(num, xPoints, yPoints, segment);
     }
 
     /**
-     * Makes a road object given the points on the shape that are within the visible box
+     * Makes a road object given the points on the shape that are
+     * within the visible box
      * 
      * @param nPoints in the xpoints and ypoints arrays
      */
-    protected RoadObject createRoadFromPoints(int id, int [] xpoints, int [] ypoints, int nPoints) {
-        RoadPoint[]  roadPoints = new RoadPoint[nPoints - 2];
-        Intersection from       = findIntersection(xpoints[0], ypoints[0]);
+    protected RoadObject createRoadFromPoints(int id, int[] xpoints,
+                                              int[] ypoints, int nPoints) {
+        RoadPoint[] roadPoints = new RoadPoint[nPoints - 2];
+        Intersection from = findIntersection(xpoints[0], ypoints[0]);
         int fromBefore = from.getRoadCount();
-        Intersection to         = findIntersection(xpoints[nPoints - 1], ypoints[nPoints - 1]);
-        int toBefore   = to.getRoadCount();
+        Intersection to = findIntersection(xpoints[nPoints - 1],
+                ypoints[nPoints - 1]);
+        int toBefore = to.getRoadCount();
 
         if (from == null) {
-            logger.warning ("no from intersection for " + xpoints[0] + ", " +  ypoints[0]);
+            logger.warning("no from intersection for " + xpoints[0] + ", "
+                    + ypoints[0]);
         }
         if (to == null) {
-            logger.warning("no to intersection for " + xpoints[nPoints-1] + ", " +  ypoints[nPoints-1]);
+            logger.warning("no to intersection for " + xpoints[nPoints - 1]
+                    + ", " + ypoints[nPoints - 1]);
         }
 
         String name = "road";
         Road road = createRoad(id, name + "-" + id, from, to, defaultRoadClass);
         if (fromBefore + 1 != from.getRoadCount())
-            logger.severe("huh? " +from + " had " + fromBefore +" roads before and now " + from.getRoadCount());
+            logger.severe("huh? " + from + " had " + fromBefore
+                    + " roads before and now " + from.getRoadCount());
         if (toBefore + 1 != to.getRoadCount())
-            logger.severe("huh? " +to + " had " + toBefore +" roads before and now " + to.getRoadCount());
+            logger.severe("huh? " + to + " had " + toBefore
+                    + " roads before and now " + to.getRoadCount());
         int width = roadsMade % 5;
         roadsMade++;
 
         if (logger.isLoggable(Level.INFO)) {
-            logger.info("road # " + roadsMade + " " + road + " has " + nPoints + " points");
+            logger.info("road # " + roadsMade + " " + road + " has " + nPoints
+                    + " points");
         }
 
         if (!showLines && drawIntersections) {
@@ -439,17 +424,16 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         }
 
         for (int i = 1; i < nPoints - 1; i++) {
-            roadPoints[i-1] = new RoadPoint(road, createLatLonPoint(xpoints[i], ypoints[i]), this);
+            roadPoints[i - 1] = new RoadPoint(road, createLatLonPoint(xpoints[i],
+                    ypoints[i]), this);
             if (drawIntersections) {
                 if (showLines) {
-                    OMLine line = new YellowLine(xpoints[i-1], ypoints[i-1], xpoints[i], ypoints[i], width);
+                    OMLine line = new YellowLine(xpoints[i - 1], ypoints[i - 1], xpoints[i], ypoints[i], width);
                     toDraw.add(line);
-                    toDraw.add(new OMText((xpoints[i-1] - xpoints[i])/2 + xpoints[i-1],
-                                          (ypoints[i-1] - ypoints[i])/2 + ypoints[i-1]-5,
-                                          "" + roadsMade, 0
-                                          ));
-                }
-                else {
+                    toDraw.add(new OMText((xpoints[i - 1] - xpoints[i]) / 2
+                            + xpoints[i - 1], (ypoints[i - 1] - ypoints[i]) / 2
+                            + ypoints[i - 1] - 5, "" + roadsMade, 0));
+                } else {
                     OMPoint point = new YellowPoint(xpoints[i], ypoints[i], 10);
                     toDraw.add(point);
                 }
@@ -458,17 +442,14 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
 
         if (drawIntersections) {
             if (showLines) {
-                OMLine line = new YellowLine(xpoints[nPoints-2], ypoints[nPoints-2], xpoints[nPoints-1], ypoints[nPoints-1], 
-                                             width);
+                OMLine line = new YellowLine(xpoints[nPoints - 2], ypoints[nPoints - 2], xpoints[nPoints - 1], ypoints[nPoints - 1], width);
                 toDraw.add(line);
-                toDraw.add(new OMText((xpoints[nPoints-2] - xpoints[nPoints-1])/2 + xpoints[nPoints-2],
-                                      (ypoints[nPoints-2] - ypoints[nPoints-1])/2 + ypoints[nPoints-2]-5,
-                                      "" + roadsMade, 0
-                                      ));
+                toDraw.add(new OMText((xpoints[nPoints - 2] - xpoints[nPoints - 1])
+                        / 2 + xpoints[nPoints - 2], (ypoints[nPoints - 2] - ypoints[nPoints - 1])
+                        / 2 + ypoints[nPoints - 2] - 5, "" + roadsMade, 0));
                 line.addArrowHead(true);
-            }
-            else {
-                OMPoint point = new YellowPoint(xpoints[nPoints-1], ypoints[nPoints-1], 10);
+            } else {
+                OMPoint point = new YellowPoint(xpoints[nPoints - 1], ypoints[nPoints - 1], 10);
                 toDraw.add(point);
             }
         }
@@ -481,13 +462,16 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         road.setRoadPoints(roadPoints);
 
         if (!road.getFirstIntersection().equals(from))
-            logger.severe("huh? " +road + " first inter " + road.getFirstIntersection() + " not " + from);
+            logger.severe("huh? " + road + " first inter "
+                    + road.getFirstIntersection() + " not " + from);
 
         if (!road.getSecondIntersection().equals(to))
-            logger.severe("huh? " +road + " second inter " + road.getSecondIntersection() + " not " + to);
+            logger.severe("huh? " + road + " second inter "
+                    + road.getSecondIntersection() + " not " + to);
 
         if (road.getPoints().length < 2)
-            logger.warning("Error : somehow made a road " + road + " with too few points.");
+            logger.warning("Error : somehow made a road " + road
+                    + " with too few points.");
         else if (logger.isLoggable(Level.INFO)) {
             //logger.info("made " + road);
         }
@@ -500,6 +484,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         public YellowPoint(int x, int y, int radius) {
             super(x, y, radius);
         }
+
         public void render(Graphics g) {
             setGraphicsColor(g, Color.YELLOW);
             draw(g);
@@ -509,23 +494,22 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
     /** a yellow line for display routes between intersections */
     protected class YellowLine extends OMLine {
         int width;
+
         public YellowLine(int x, int y, int x2, int y2, int width) {
             super(x, y, x2, y2);
             this.width = width;
         }
+
         public void render(Graphics g) {
-            float [] dash1 = new float [width + 1];
+            float[] dash1 = new float[width + 1];
             dash1[0] = 10.f;
 
-            for(int i = 1; i < width; i++) {
+            for (int i = 1; i < width; i++) {
                 dash1[i] = 2.0f;
             }
 
-            BasicStroke dashed = new BasicStroke(5.0f, 
-                                                 BasicStroke.CAP_BUTT, 
-                                                 BasicStroke.JOIN_MITER, 
-                                                 10.0f, dash1, 0.0f);
-            ((Graphics2D)g).setStroke(dashed);
+            BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+            ((Graphics2D) g).setStroke(dashed);
             setGraphicsColor(g, Color.YELLOW);
             draw(g);
         }
@@ -541,24 +525,30 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         Intersection intersection = intersections.get(name);
         if (intersection != null) {
             LatLonPoint foundLoc = intersection.getLocation();
-            float distance = (Math.abs(foundLoc.getLatitude() - loc.getLatitude()) +
-                              Math.abs(foundLoc.getLongitude() - loc.getLongitude()));
+            float distance = (Math.abs(foundLoc.getLatitude()
+                    - loc.getLatitude()) + Math.abs(foundLoc.getLongitude()
+                    - loc.getLongitude()));
             if (distance * Intersection.GRID > 0.1f) {
-                intersection = findIntersection(loc); // Ignore the name, it's too far away.
-                System.out.println("Using " + intersection.getName() + " instead of " + name + " distance = " + distance);
+                intersection = findIntersection(loc); // Ignore the
+                                                      // name, it's
+                                                      // too far away.
+                System.out.println("Using " + intersection.getName()
+                        + " instead of " + name + " distance = " + distance);
                 return intersection;
             }
         } else {
             intersection = new Intersection(loc, name, this);
             intersections.put(intersection);
-            interQuadTree.put(intersection.getLatitude(), intersection.getLongitude(), intersection);
+            interQuadTree.put(intersection.getLatitude(),
+                    intersection.getLongitude(),
+                    intersection);
         }
         return intersection;
     }
 
     protected Intersection findIntersection(int x, int y) {
-        LatLonPoint  fromLoc = createLatLonPoint(x, y);
-        Intersection from    = findIntersection(fromLoc);
+        LatLonPoint fromLoc = createLatLonPoint(x, y);
+        Intersection from = findIntersection(fromLoc);
         return from;
     }
 
@@ -569,12 +559,15 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
             if (logger.isLoggable(Level.FINE))
                 logger.fine("making new intersection for " + loc);
             intersection = new Intersection(loc, name, this);
-            interQuadTree.put(intersection.getLatitude(), intersection.getLongitude(), intersection);
+            interQuadTree.put(intersection.getLatitude(),
+                    intersection.getLongitude(),
+                    intersection);
             intersections.put(intersection);
-        }
-        else {
+        } else {
             if (logger.isLoggable(Level.FINE))
-                logger.fine("found existing intersection for " + loc + " with " + intersection.getRoadCount() + " roads coming out of it.");
+                logger.fine("found existing intersection for " + loc + " with "
+                        + intersection.getRoadCount()
+                        + " roads coming out of it.");
         }
         return intersection;
     }
@@ -585,20 +578,15 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         intersections.remove(intersection);
     }
 
-    /** 
-     * called from Intersection 
-     * Implemented for RoadLayer interface
+    /**
+     * called from Intersection Implemented for RoadLayer interface
      */
     public Road createRoad(Intersection from) {
         return createRoad(-1, null, from, null, null);
     }
 
-    protected Road createRoad(int id,
-                              String name,
-                              Intersection from,
-                              Intersection to,
-                              RoadClass cl_ss)
-    {
+    protected Road createRoad(int id, String name, Intersection from,
+                              Intersection to, RoadClass cl_ss) {
         if (id < 0)
             id = findUnusedRoadID();
         if (name == null)
@@ -626,22 +614,24 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
             deleteIntersection(intersection1);
         if (intersection2.getRoadCount() == 0)
             deleteIntersection(intersection2);
-        if (intersection1.getRoadCount() == 2 &&
-            intersection1.getRoad(0).getRoadClass() == intersection1.getRoad(1).getRoadClass())
+        if (intersection1.getRoadCount() == 2
+                && intersection1.getRoad(0).getRoadClass() == intersection1.getRoad(1)
+                        .getRoadClass())
             joinRoads(intersection1);
-        if (intersection2.getRoadCount() == 2 &&
-            intersection2.getRoad(0).getRoadClass() == intersection2.getRoad(1).getRoadClass())
+        if (intersection2.getRoadCount() == 2
+                && intersection2.getRoad(0).getRoadClass() == intersection2.getRoad(1)
+                        .getRoadClass())
             joinRoads(intersection2);
         removedRoads.addElement(road);
         roads.remove(road);
     }
 
     /**
-     * Split a road into two roads at one of its corners.
-     * An intersection is created where the corner was and the
-     * segments before the corner become the segments of the original
-     * road. The segments after the corner become the segments of a
-     * new road between the new intersection and the
+     * Split a road into two roads at one of its corners. An
+     * intersection is created where the corner was and the segments
+     * before the corner become the segments of the original road. The
+     * segments after the corner become the segments of a new road
+     * between the new intersection and the
      */
     public Intersection splitRoad(Road road, RoadPoint rp) {
         RoadPoint[] pointsBefore = road.getPointsBefore(rp);
@@ -653,8 +643,11 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         road.setRoadPoints(pointsBefore);
         secondIntersection.removeRoad(road);
         newIntersection.addRoad(road);
-        Road newRoad =
-            createRoad(-1, null, newIntersection, secondIntersection, road.getRoadClass());
+        Road newRoad = createRoad(-1,
+                null,
+                newIntersection,
+                secondIntersection,
+                road.getRoadClass());
         newRoad.setRoadPoints(pointsAfter);
         return newIntersection;
     }
@@ -690,12 +683,13 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         roads.remove(road1);
         RoadPoint[] road0Points = road0.getRoadPoints();
         RoadPoint[] road1Points = road1.getRoadPoints();
-        RoadPoint[] innerPoints = new RoadPoint[road0Points.length + road1Points.length + 1];
+        RoadPoint[] innerPoints = new RoadPoint[road0Points.length
+                + road1Points.length + 1];
         int j = 0;
         Intersection firstIntersection;
         if (intersection == road0.getFirstIntersection()) {
             firstIntersection = road0.getSecondIntersection();
-            for (int i = road0Points.length; --i >= 0; )
+            for (int i = road0Points.length; --i >= 0;)
                 innerPoints[j++] = road0Points[i];
         } else {
             firstIntersection = road0.getFirstIntersection();
@@ -711,7 +705,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
             System.arraycopy(road1Points, 0, innerPoints, j, road1Points.length);
             j += road1Points.length;
         } else {
-            for (int i = road1Points.length; --i >= 0; )
+            for (int i = road1Points.length; --i >= 0;)
                 innerPoints[j++] = road1Points[i];
         }
         road0.setRoadPoints(innerPoints);
@@ -735,13 +729,14 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
 
     /**
      * The main public method!
-     *
-     * find closest intersection to start and end
-     * find path from start intersection to end intersection 
-     *
+     * 
+     * find closest intersection to start and end find path from start
+     * intersection to end intersection
+     * 
      * @param start from start point on map
-     * @param end   to end point on map
-     * @param segments as side effect, populated with PathSegments between returned WayPoints
+     * @param end to end point on map
+     * @param segments as side effect, populated with PathSegments
+     *        between returned WayPoints
      * @return List of WayPoints
      * @see com.bbn.apa.genome.WayPoint
      */
@@ -754,7 +749,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
                 toDraw.add(point);
                 point = new RedPoint(end.x, end.y, 5);
                 toDraw.add(point);
-	
+
                 return null;
             }
 
@@ -771,7 +766,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
             if (drawResults) {
                 Point last = null;
                 Point first = null;
-                for (Iterator iter = newPoints.iterator(); iter.hasNext(); ) {
+                for (Iterator iter = newPoints.iterator(); iter.hasNext();) {
                     Point pt = (Point) iter.next();
                     if (last != null) {
                         OMLine line = new BlueLine(last.x, last.y, pt.x, pt.y);
@@ -797,11 +792,15 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         return newPoints;
     }
 
-    /** a red point for displaying when we can't find a route between two points */
+    /**
+     * a red point for displaying when we can't find a route between
+     * two points
+     */
     protected class RedPoint extends OMPoint {
         public RedPoint(int x, int y, int radius) {
             super(x, y, radius);
         }
+
         public void render(Graphics g) {
             setGraphicsColor(g, Color.RED);
             draw(g);
@@ -811,55 +810,55 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
     /** a blue line to indicate the found route */
     protected class BlueLine extends OMLine {
         int width;
+
         public BlueLine(int x, int y, int x2, int y2) {
             super(x, y, x2, y2);
             this.width = 5;
         }
+
         public void render(Graphics g) {
-            float [] dash1 = new float [width + 1];
+            float[] dash1 = new float[width + 1];
             dash1[0] = 10.f;
 
-            for(int i = 1; i < width; i++) {
+            for (int i = 1; i < width; i++) {
                 dash1[i] = 2.0f;
             }
 
-            BasicStroke dashed = new BasicStroke(5.0f, 
-                                                 BasicStroke.CAP_BUTT, 
-                                                 BasicStroke.JOIN_MITER, 
-                                                 10.0f, dash1, 0.0f);
-            ((Graphics2D)g).setStroke(dashed);
+            BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+            ((Graphics2D) g).setStroke(dashed);
             setGraphicsColor(g, Color.BLUE);
             draw(g);
         }
     }
 
-    /** 
-     * get Route between two points 
-     *
+    /**
+     * get Route between two points
+     * 
      * @return Route between two points
      */
     public Route getRouteBetweenPoints(Point start, Point end) {
         Intersection startTemp = findClosestIntersection(start.x, start.y);
-        Intersection endTemp   = findClosestIntersection(end.x, end.y);
-    
+        Intersection endTemp = findClosestIntersection(end.x, end.y);
+
         Route bestRoute = null;
 
         if (startTemp != null && endTemp != null) {
             if (roadClasses == null)
                 logger.warning("huh? road classes is null???");
 
-            bestRoute = Route.getBestRoute(startTemp, endTemp,
-                                           roadClasses.getBestConvoySpeed(),
-                                           roadClasses.getWorstConvoySpeed());
+            bestRoute = Route.getBestRoute(startTemp,
+                    endTemp,
+                    roadClasses.getBestConvoySpeed(),
+                    roadClasses.getWorstConvoySpeed());
         }
 
         if (bestRoute == null) {
             if (logger.isLoggable(Level.INFO))
                 logger.info("no route from " + startTemp + " to " + endTemp);
-        }
-        else {
+        } else {
             if (logger.isLoggable(Level.INFO))
-                logger.info("route from " + startTemp + " to " + endTemp + " is " + bestRoute);
+                logger.info("route from " + startTemp + " to " + endTemp
+                        + " is " + bestRoute);
         }
 
         // post condition check
@@ -870,22 +869,26 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
                 length += road.getLengthInKilometers();
             }
 
-            logger.info("best route from " + bestRoute.getOriginIntersection() + " - start " + start + 
-                        " to " + bestRoute.getDestinationIntersection() + " - end " + end + " was " + length + " kilometers.");
+            logger.info("best route from " + bestRoute.getOriginIntersection()
+                    + " - start " + start + " to "
+                    + bestRoute.getDestinationIntersection() + " - end " + end
+                    + " was " + length + " kilometers.");
         }
 
         return bestRoute;
     }
 
     /**
-     * Look in intersection Quad Tree for closest intersection to point x,y
+     * Look in intersection Quad Tree for closest intersection to
+     * point x,y
+     * 
      * @return Intersection closest
      */
     protected Intersection findClosestIntersection(int x, int y) {
         LatLonPoint latLon = createLatLonPoint(x, y);
-      
-        Intersection inter = (Intersection) interQuadTree.get(latLon.getLatitude(), 
-                                                              latLon.getLongitude());
+
+        Intersection inter = (Intersection) interQuadTree.get(latLon.getLatitude(),
+                latLon.getLongitude());
         if (inter == null)
             logger.warning("no intersection at " + latLon);
 
@@ -894,18 +897,19 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
 
     /**
      * Iterates over route, populating points and segments lists.
-     * Worries about sequence order of from and to points, i.e. end of one
-     * road should be the start of the next.  This is not guaranteed by the route,
-     * so we have to check.
-     *
+     * Worries about sequence order of from and to points, i.e. end of
+     * one road should be the start of the next. This is not
+     * guaranteed by the route, so we have to check.
+     * 
      * @param newPoint populated with points on the route
      * @param segments populated with Segments
      */
-    protected void populatePointsAndSegments(Route bestRoute, List newPoints, List segments) {
+    protected void populatePointsAndSegments(Route bestRoute, List newPoints,
+                                             List segments) {
         Projection proj = getProjection();
 
         Intersection origin = bestRoute.getOriginIntersection();
-        Intersection dest   = bestRoute.getDestinationIntersection();
+        Intersection dest = bestRoute.getDestinationIntersection();
 
         if (logger.isLoggable(Level.INFO))
             logger.info("adding " + bestRoute.roads.length + " new roads.");
@@ -923,9 +927,10 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         for (int i = 0; i < bestRoute.roads.length; i++) {
             road = bestRoute.roads[i];
 
-            if (!from.equals(road.getFirstIntersection()) && 
-                !from.equals(road.getSecondIntersection())) {
-                logger.severe("huh? " + from + " is not an intersection on road "+ road);
+            if (!from.equals(road.getFirstIntersection())
+                    && !from.equals(road.getSecondIntersection())) {
+                logger.severe("huh? " + from
+                        + " is not an intersection on road " + road);
             }
 
             Point pt = createPoint(proj.forward(from.getLocation()));
@@ -946,7 +951,8 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
                 loopSet.add(to);
             }
 
-            // check to see if we need to reverse the order of the road points, 
+            // check to see if we need to reverse the order of the
+            // road points,
             // which may not be ordered the same as the previous road
 
             boolean reverse = from.equals(road.getSecondIntersection());
@@ -955,7 +961,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
             if (logger.isLoggable(Level.INFO))
                 logger.info("created path " + path);
 
-            segments.add (path);
+            segments.add(path);
 
             from = to;
         }
@@ -968,25 +974,26 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         newPoints.add(pt);
 
         if (logger.isLoggable(Level.INFO))
-            logger.info(" now " + newPoints.size() + " points and " + segments.size() + " segments.");
+            logger.info(" now " + newPoints.size() + " points and "
+                    + segments.size() + " segments.");
     }
 
     /**
-     * Converts a road into a path segment - reverse parameter guarantees the ordering of the 
-     * points is consistent across multiple path segments in the whole route.
-     *
+     * Converts a road into a path segment - reverse parameter
+     * guarantees the ordering of the points is consistent across
+     * multiple path segments in the whole route.
+     * 
      * @return PathSegment converted from a road
      */
     protected Segment getPathSegment(Projection proj, Road road, boolean reverse) {
-        RoadPoint [] roadPoints = road.getRoadPoints();
+        RoadPoint[] roadPoints = road.getRoadPoints();
 
         List newPoints = new ArrayList();
         if (reverse) {
-            for (int i = roadPoints.length-1; i > 0; i--) {
+            for (int i = roadPoints.length - 1; i > 0; i--) {
                 newPoints.add(createPoint(proj.forward(roadPoints[i].getLocation())));
             }
-        }
-        else {
+        } else {
             for (int i = 0; i < roadPoints.length; i++) {
                 newPoints.add(createPoint(proj.forward(roadPoints[i].getLocation())));
             }
@@ -1010,30 +1017,28 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
     }
 
     public Projection getProjection() {
-        return layer.getProjection(); 
+        return layer.getProjection();
     }
 
     /**
      * Check the integrity of our data structures.
-     *
-     * Scan the known intersections.
-     * Note intersections with no roads.
-     * Scan the roads of the intersection:
-     *    Each road has two intersections. If the road has already
-     *    been encountered, then we recorded its "other" intersection
-     *    and that must match this intersection. If it doesn't match,
-     *    record an error. If it does match reset its recorded other
-     *    intersection to be a special marker indicating that both
-     *    ends of the road have been accounted for. If the road has
-     *    not already been encountered, then record its "other"
-     *    intersection.
-     * Scan the known roads. Every road should accounted for in the
-     * "other" intersection table and should be marked as having both
-     * intersections accounted for. Note the roads which were not
-     * found in the first scan and the roads which were found, but for
-     * which both intersections were not found. Remark every road.
-     * Finally scan the other intersection table for entries which
-     * were not marked as being in the roads vector.
+     * 
+     * Scan the known intersections. Note intersections with no roads.
+     * Scan the roads of the intersection: Each road has two
+     * intersections. If the road has already been encountered, then
+     * we recorded its "other" intersection and that must match this
+     * intersection. If it doesn't match, record an error. If it does
+     * match reset its recorded other intersection to be a special
+     * marker indicating that both ends of the road have been
+     * accounted for. If the road has not already been encountered,
+     * then record its "other" intersection. Scan the known roads.
+     * Every road should accounted for in the "other" intersection
+     * table and should be marked as having both intersections
+     * accounted for. Note the roads which were not found in the first
+     * scan and the roads which were found, but for which both
+     * intersections were not found. Remark every road. Finally scan
+     * the other intersection table for entries which were not marked
+     * as being in the roads vector.
      */
     protected void checkIntegrity() {
         // 	CharArrayWriter errorWriter = new CharArrayWriter();
@@ -1042,8 +1047,8 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         Hashtable otherIntersections = new Hashtable();
         Object bothIntersections = new Object();
         Object inRoadsVector = new Object();
-        for (Enumeration e = intersections.elements(); e.hasMoreElements(); ) {
-            Intersection intersection =(Intersection) e.nextElement();
+        for (Enumeration e = intersections.elements(); e.hasMoreElements();) {
+            Intersection intersection = (Intersection) e.nextElement();
             int nRoads = intersection.getRoadCount();
             if (nRoads == 0) {
                 errors.println("Dangling intersection");
@@ -1054,7 +1059,8 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
                 Road road = intersection.getRoad(i);
                 Object other = otherIntersections.get(road);
                 if (other == null) {
-                    otherIntersections.put(road, road.getOtherIntersection(intersection));
+                    otherIntersections.put(road,
+                            road.getOtherIntersection(intersection));
                 } else if (other == intersection) {
                     otherIntersections.put(road, bothIntersections);
                 } else {
@@ -1066,7 +1072,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
             }
         }
 
-        for (Enumeration e = roads.elements(); e.hasMoreElements(); ) {
+        for (Enumeration e = roads.elements(); e.hasMoreElements();) {
             Road road = (Road) e.nextElement();
             Object other = otherIntersections.get(road);
             if (other == null) {
@@ -1082,7 +1088,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
             }
             otherIntersections.put(road, inRoadsVector);
         }
-        for (Enumeration e = otherIntersections.keys(); e.hasMoreElements(); ) {
+        for (Enumeration e = otherIntersections.keys(); e.hasMoreElements();) {
             Road road = (Road) e.nextElement();
             Object other = otherIntersections.get(road);
             if (other != inRoadsVector) {
@@ -1102,7 +1108,8 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         // 		dialog.dispose();
         // 	    }
         // 	});
-        // 	dialog.getContentPane().add(scrollPane, BorderLayout.CENTER);
+        // 	dialog.getContentPane().add(scrollPane,
+        // BorderLayout.CENTER);
         // 	dialog.getContentPane().add(ok, BorderLayout.SOUTH);
         // 	dialog.setSize(new java.awt.Dimension(640, 480));
         // 	dialog.setVisible(true);
@@ -1112,12 +1119,14 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
         Road[] roads = new Road[0];
         private int look = 0;
         private int roadCount = 0;
+
         public void clear() {
             for (int i = 0; i < roads.length; i++)
                 roads[i] = null;
             look = 0;
             roadCount = 0;
         }
+
         public void add(Road r) {
             int id = r.getID();
             if (id >= roads.length) {
@@ -1155,21 +1164,22 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
 
         public Enumeration elements() {
             return new Enumeration() {
-                    private int i = 0;
+                private int i = 0;
 
-                    public boolean hasMoreElements() {
-                        for (; i < roads.length; i++) {
-                            if (roads[i] != null)
-                                return true;
-                        }
-                        return false;
+                public boolean hasMoreElements() {
+                    for (; i < roads.length; i++) {
+                        if (roads[i] != null)
+                            return true;
                     }
+                    return false;
+                }
 
-                    public Object nextElement() {
-                        return roads[i++];
-                    }
-                };
+                public Object nextElement() {
+                    return roads[i++];
+                }
+            };
         }
+
         public int size() {
             return roadCount;
         }
@@ -1217,6 +1227,7 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
     public static class RoadClasses extends Hashtable {
         float bestConvoySpeed = 0.0f;
         float worstConvoySpeed = Float.MAX_VALUE;
+
         public void put(RoadClass roadClass) {
             put(roadClass.getName(), roadClass);
             if (roadClass.getConvoySpeed() > bestConvoySpeed)
@@ -1224,14 +1235,18 @@ public class RoadFinder implements ProjectionListener, RoadLayer {
             if (roadClass.getConvoySpeed() < worstConvoySpeed)
                 worstConvoySpeed = roadClass.getConvoySpeed();
         }
+
         public float getBestConvoySpeed() {
             return bestConvoySpeed;
         }
+
         public float getWorstConvoySpeed() {
             return worstConvoySpeed;
         }
     };
 
     /** BOZO remove me */
-    public boolean isEditing () { return false; }
+    public boolean isEditing() {
+        return false;
+    }
 }

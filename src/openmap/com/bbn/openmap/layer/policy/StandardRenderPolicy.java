@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardRenderPolicy.java,v $
 // $RCSfile: StandardRenderPolicy.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/02/06 00:02:26 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:06:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.policy;
 
@@ -32,12 +31,12 @@ import java.awt.Graphics;
 
 /**
  * The StandardRenderPolicy is a RenderPolicy that simply paints the
- * current graphic list.  No conditions or deviations are considered.
+ * current graphic list. No conditions or deviations are considered.
  */
 public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
 
     /**
-     * Don't let this be null, nothing will happen.  At all.
+     * Don't let this be null, nothing will happen. At all.
      */
     protected OMGraphicHandlerLayer layer;
 
@@ -46,7 +45,7 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
     public StandardRenderPolicy() {
         DEBUG = Debug.debugging("layer") || Debug.debugging("policy");
     }
-    
+
     /**
      * Don't pass in a null layer.
      */
@@ -82,7 +81,8 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
 
                 list.render(g);
             } else if (DEBUG) {
-                Debug.output(layer.getName() + ".paint(): NULL list, skipping...");
+                Debug.output(layer.getName()
+                        + ".paint(): NULL list, skipping...");
             }
         } else {
             Debug.error("RenderPolicy.paint():  NULL layer, skipping...");

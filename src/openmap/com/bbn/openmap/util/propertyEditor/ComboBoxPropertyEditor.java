@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,24 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/ComboBoxPropertyEditor.java,v $
 // $RCSfile: ComboBoxPropertyEditor.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/05/25 02:29:06 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.util.propertyEditor;
 
 import com.bbn.openmap.util.Debug;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-
 import javax.swing.JComboBox;
 
 /**
- * The ComboBoxPropertyEditor provides a set of options within a JComboBox.
+ * The ComboBoxPropertyEditor provides a set of options within a
+ * JComboBox.
+ * 
  * @see OptionPropertyEditor
  */
 public class ComboBoxPropertyEditor extends OptionPropertyEditor {
@@ -50,14 +48,15 @@ public class ComboBoxPropertyEditor extends OptionPropertyEditor {
         if (combo != null) {
             combo.setSelectedItem(string);
         } else {
-            Debug.output("Setting " + string + " before ComboBoxPropertyEditor is ready");
+            Debug.output("Setting " + string
+                    + " before ComboBoxPropertyEditor is ready");
         }
     }
 
     /** Returns String from option choices. */
     public String getAsText() {
         if (combo != null) {
-            return (String)combo.getSelectedItem();
+            return (String) combo.getSelectedItem();
         } else {
             return "";
         }

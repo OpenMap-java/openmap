@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ProjectionStackTool.java,v $
 // $RCSfile: ProjectionStackTool.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
@@ -28,8 +27,6 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
 
@@ -37,17 +34,17 @@ import com.bbn.openmap.util.Debug;
  * The ProjectionStackTool contains buttons that can trigger a
  * ProjectionStack to change a projection of a MapBean to a previous
  * projection, or to a later projection if the active projection is in
- * the middle of the stack.  The OpenMap ProjectionStack will look for
+ * the middle of the stack. The OpenMap ProjectionStack will look for
  * one of these, and connect itself to it if it finds one.
  */
-public class ProjectionStackTool extends OMToolComponent
-    implements ProjectionStackTrigger {
-    
+public class ProjectionStackTool extends OMToolComponent implements
+        ProjectionStackTrigger {
+
     protected Vector listeners;
 
     protected JButton backButton;
     protected JButton forwardButton;
-//      protected JButton clearButton;
+    //      protected JButton clearButton;
 
     protected static transient String backName = "backproj.gif";
     protected static transient String forwardName = "forwardproj.gif";
@@ -72,20 +69,20 @@ public class ProjectionStackTool extends OMToolComponent
         resetButtons(!dimBackButton, !dimForwardButton);
         add(backButton);
         add(forwardButton);
-//      add(clearButton);
+        //      add(clearButton);
     }
 
     /**
      * Add an ActionListener for events that trigger events to shift
-     * the Projection stack.  If you are hooking up a ProjectionStack,
-     * you don't need to call this.  The ProjectionStack will call
-     * this when you can addProjectionStackTrigger on it.
+     * the Projection stack. If you are hooking up a ProjectionStack,
+     * you don't need to call this. The ProjectionStack will call this
+     * when you can addProjectionStackTrigger on it.
      */
     public void addActionListener(ActionListener al) {
         if (backButton != null && forwardButton != null) {
             backButton.addActionListener(al);
             forwardButton.addActionListener(al);
-//          clearButton.addActionListener(al);
+            //          clearButton.addActionListener(al);
         } else {
             if (listeners == null) {
                 listeners = new Vector();
@@ -96,8 +93,8 @@ public class ProjectionStackTool extends OMToolComponent
 
     /**
      * Remove an ActionListener that receives events that trigger
-     * events to shift the Projection stack.  If you are hooking up a
-     * ProjectionStack, you don't need to call this.  The
+     * events to shift the Projection stack. If you are hooking up a
+     * ProjectionStack, you don't need to call this. The
      * ProjectionStack will call this when you can
      * removeProjectionStackTrigger on it.
      */
@@ -105,7 +102,7 @@ public class ProjectionStackTool extends OMToolComponent
         if (backButton != null && forwardButton != null) {
             backButton.removeActionListener(al);
             forwardButton.removeActionListener(al);
-//          clearButton.removeActionListener(al);
+            //          clearButton.removeActionListener(al);
         } else if (listeners != null) {
             listeners.remove(al);
         }
@@ -115,12 +112,12 @@ public class ProjectionStackTool extends OMToolComponent
      * To receive a status to let the trigger know if any projections
      * in the forward or backward stacks exist, possibly to disable
      * any gui widgets.
-     *
+     * 
      * @param containsBackProjections there is at least one past
-     * projection in the back cache.  
+     *        projection in the back cache.
      * @param containsForwardProjections there is at least one future
-     * projection in the forward cache.  Used when a past projection
-     * is being used. 
+     *        projection in the forward cache. Used when a past
+     *        projection is being used.
      */
     public void updateProjectionStackStatus(boolean containsBackProjections,
                                             boolean containsForwardProjections) {
@@ -129,9 +126,9 @@ public class ProjectionStackTool extends OMToolComponent
         resetButtons(containsBackProjections, containsForwardProjections);
     }
 
-    public void resetButtons(boolean enableBackButton, 
+    public void resetButtons(boolean enableBackButton,
                              boolean enableForwardButton) {
-        
+
         java.net.URL url;
         JButton b;
 
@@ -169,13 +166,13 @@ public class ProjectionStackTool extends OMToolComponent
 
         if (backButton == null) {
             backButton = new JButton(active);
-            backButton.setMargin(new Insets(0,0,0,0));
+            backButton.setMargin(new Insets(0, 0, 0, 0));
             backButton.setBorderPainted(false);
             backButton.setActionCommand(ProjectionStack.BackProjCmd);
             if (listeners != null) {
                 size = listeners.size();
                 for (int i = 0; i < size; i++) {
-                    backButton.addActionListener((ActionListener)listeners.elementAt(i));
+                    backButton.addActionListener((ActionListener) listeners.elementAt(i));
                 }
             }
 
@@ -194,14 +191,14 @@ public class ProjectionStackTool extends OMToolComponent
 
         if (forwardButton == null) {
             forwardButton = new JButton(active);
-            forwardButton.setMargin(new Insets(0,0,0,0));
+            forwardButton.setMargin(new Insets(0, 0, 0, 0));
             forwardButton.setBorderPainted(false);
             forwardButton.setActionCommand(ProjectionStack.ForwardProjCmd);
 
             if (listeners != null) {
                 size = listeners.size();
                 for (int i = 0; i < size; i++) {
-                    forwardButton.addActionListener((ActionListener)listeners.elementAt(i));
+                    forwardButton.addActionListener((ActionListener) listeners.elementAt(i));
                 }
             }
         } else {
@@ -209,32 +206,34 @@ public class ProjectionStackTool extends OMToolComponent
         }
         forwardButton.setToolTipText(toolTip);
 
-//      if (clearButton == null) {
-//          clearButton = new JButton("Clear Stack");
-//          clearButton.setMargin(new Insets(0,0,0,0));
-//          clearButton.setBorderPainted(false);
-//          clearButton.setActionCommand(ProjectionStack.ClearStacksCmd);
+        //      if (clearButton == null) {
+        //          clearButton = new JButton("Clear Stack");
+        //          clearButton.setMargin(new Insets(0,0,0,0));
+        //          clearButton.setBorderPainted(false);
+        //          clearButton.setActionCommand(ProjectionStack.ClearStacksCmd);
 
-//          if (listeners != null) {
-//              size = listeners.size();
-//              for (int i = 0; i < size; i++) {
-//                  clearButton.addActionListener((ActionListener)listeners.elementAt(i));
-//              }
-//          }
-//      }
+        //          if (listeners != null) {
+        //              size = listeners.size();
+        //              for (int i = 0; i < size; i++) {
+        //                  clearButton.addActionListener((ActionListener)listeners.elementAt(i));
+        //              }
+        //          }
+        //      }
     }
-    
+
     public void findAndInit(Object someObj) {
         if (someObj instanceof ProjectionStack) {
-            Debug.message("projectionstacktrigger","ProjectionStackTrigger adding a ProjectionStack");
-            ((ProjectionStack)someObj).addProjectionStackTrigger(this);
+            Debug.message("projectionstacktrigger",
+                    "ProjectionStackTrigger adding a ProjectionStack");
+            ((ProjectionStack) someObj).addProjectionStackTrigger(this);
         }
     }
 
     public void findAndUndo(Object someObj) {
         if (someObj instanceof ProjectionStack) {
-            Debug.message("projectionstacktrigger","ProjectionStackTrigger removing a ProjectionStack");
-            ((ProjectionStack)someObj).removeProjectionStackTrigger(this);
+            Debug.message("projectionstacktrigger",
+                    "ProjectionStackTrigger removing a ProjectionStack");
+            ((ProjectionStack) someObj).removeProjectionStackTrigger(this);
         }
     }
 }

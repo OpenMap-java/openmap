@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,19 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/LayerEvent.java,v $
 // $RCSfile: LayerEvent.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
 import com.bbn.openmap.Layer;
 
 /**
- * An event to request that layers be added, removed, or shuffled around.
+ * An event to request that layers be added, removed, or shuffled
+ * around.
  */
 public class LayerEvent extends java.util.EventObject {
 
@@ -40,6 +40,7 @@ public class LayerEvent extends java.util.EventObject {
 
     /**
      * Construct a LayerEvent.
+     * 
      * @param source Object
      * @param type type of LayerEvent
      * @param layers Layer[]
@@ -52,6 +53,7 @@ public class LayerEvent extends java.util.EventObject {
 
     /**
      * Get the Layers affected by this event.
+     * 
      * @return Layer[]
      */
     public Layer[] getLayers() {
@@ -60,6 +62,7 @@ public class LayerEvent extends java.util.EventObject {
 
     /**
      * Get the type of LayerEvent.
+     * 
      * @return int type
      */
     public int getType() {

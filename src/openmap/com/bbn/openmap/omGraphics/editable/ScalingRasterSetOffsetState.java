@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,25 +12,21 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/ScalingRasterSetOffsetState.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/ScalingRasterSetOffsetState.java,v
+// $
 // $RCSfile: ScalingRasterSetOffsetState.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/09/22 20:49:20 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.editable.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
-import com.bbn.openmap.util.Debug;
 
 public class ScalingRasterSetOffsetState extends GraphicSetOffsetState {
 
@@ -39,7 +35,7 @@ public class ScalingRasterSetOffsetState extends GraphicSetOffsetState {
     }
 
     protected void setGrabPoint(MouseEvent e) {
-        OffsetGrabPoint ogb = (OffsetGrabPoint)graphic.getGrabPoint(EditableOMScalingRaster.OFFSET_POINT_INDEX);
+        OffsetGrabPoint ogb = (OffsetGrabPoint) graphic.getGrabPoint(EditableOMScalingRaster.OFFSET_POINT_INDEX);
         ogb.set(e.getX(), e.getY());
         ogb.updateOffsets();
 

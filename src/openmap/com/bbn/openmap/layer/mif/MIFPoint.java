@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFPoint.java,v $
 // $RCSfile: MIFPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.mif;
 
@@ -33,15 +32,16 @@ import com.bbn.openmap.proj.Projection;
  * screen will not become cluttered This extension of OMPoint defines
  * a property visibleScale. visibleScale is the OpenMap maximum scale
  * at which the point will be rendered all scale values after the
- * visibleScale value will result in the point to be rendered. <P>
+ * visibleScale value will result in the point to be rendered.
+ * <P>
  * 
  * if visible scale is set to -1 the point will be rendered all all
  * scale levels.
  * 
  * @author Simon Bowen
  */
-public class MIFPoint extends OMPoint
-    implements MIFGraphic, java.io.Serializable {
+public class MIFPoint extends OMPoint implements MIFGraphic,
+        java.io.Serializable {
 
     /**
      * default visibleScale value is -1
@@ -52,9 +52,9 @@ public class MIFPoint extends OMPoint
 
     /**
      * @param lat the latitude to display the text string
-     * @param lon the longitude to display the text string 
+     * @param lon the longitude to display the text string
      * @param visibleScale if visible scale is set to -1 the text will
-     * be rendered all all scale levels.
+     *        be rendered all all scale levels.
      */
     public MIFPoint(float lat, float lon, float visibleScale) {
         super(lat, lon);
@@ -62,8 +62,8 @@ public class MIFPoint extends OMPoint
     }
 
     /**
-     * sets the scale at which the graphic becomes visible, if set to -1
-     * the graphic is viaible at all scale levels.
+     * sets the scale at which the graphic becomes visible, if set to
+     * -1 the graphic is viaible at all scale levels.
      * 
      * @param scale
      */
@@ -74,15 +74,14 @@ public class MIFPoint extends OMPoint
     public float getVisibleScale() {
         return this.visibleScale;
     }
-    
+
     /**
      * Overriden from OMPoint so that we can handle a flag
-     * <code>renderPoint</code> to signal to the render method if the
-     * scale is appropiate to render the point or not.
+     * <code>renderPoint</code> to signal to the render method if
+     * the scale is appropiate to render the point or not.
      */
     public synchronized boolean generate(Projection proj) {
-        if ((proj.getScale() <= getVisibleScale()) 
-            || (getVisibleScale() == -1)) {
+        if ((proj.getScale() <= getVisibleScale()) || (getVisibleScale() == -1)) {
             this.renderPoint = true;
         } else {
             this.renderPoint = false;
@@ -102,4 +101,4 @@ public class MIFPoint extends OMPoint
         }
     }
 }
-/** Last line of file **/
+/** Last line of file * */

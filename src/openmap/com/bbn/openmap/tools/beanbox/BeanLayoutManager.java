@@ -16,36 +16,34 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-
-import java.util.*;
-
 /**
- * A BeanLayoutManager is a bean that manages the layout of a BeanContainer.
+ * A BeanLayoutManager is a bean that manages the layout of a
+ * BeanContainer.
  */
-public abstract class BeanLayoutManager implements java.io.Serializable
-{
-  /** BeanContainer whose contents are layed out using this layout manager. */
-  protected BeanContainer _container;
+public abstract class BeanLayoutManager implements java.io.Serializable {
+    /**
+     * BeanContainer whose contents are layed out using this layout
+     * manager.
+     */
+    protected BeanContainer _container;
 
-  /** default constructor needed for beanification. */
-  public BeanLayoutManager ()
-  {
-  }
+    /** default constructor needed for beanification. */
+    public BeanLayoutManager() {}
 
-  /** Called by the container to layout its contents.
-   * Default method does nothing. */
-  public abstract void layoutContainer ();
+    /**
+     * Called by the container to layout its contents. Default method
+     * does nothing.
+     */
+    public abstract void layoutContainer();
 
-  /** sets the container. */
-  public void setContainer (BeanContainer c)
-  {
-    _container = c;
-  }
+    /** sets the container. */
+    public void setContainer(BeanContainer c) {
+        _container = c;
+    }
 
-  /** Gets the container associated with this layout manager. */
-  public BeanContainer getContainer ()
-  {
-    return _container;
-  }  
+    /** Gets the container associated with this layout manager. */
+    public BeanContainer getContainer() {
+        return _container;
+    }
 
 }

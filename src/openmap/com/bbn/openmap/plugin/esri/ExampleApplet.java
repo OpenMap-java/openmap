@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,23 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/ExampleApplet.java,v $
 // $RCSfile: ExampleApplet.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.plugin.esri;
 
 import java.awt.BorderLayout;
 import java.awt.event.*;
-import java.io.*;
 import java.net.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.table.*;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
@@ -44,20 +41,20 @@ import com.bbn.openmap.gui.ToolPanel;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.layer.GraticuleLayer;
 import com.bbn.openmap.dataAccess.shape.*;
-import com.bbn.openmap.dataAccess.shape.input.*;
-import com.bbn.openmap.dataAccess.shape.output.*;
 
 /**
- * ExampleApplet is an example of how to use the EsriLayer in a JApplet.
- * When the user clicks on the "Add Layers" button, three sets of shape
- * files are streamed from a web server to the clients web browser.  After
- * the shape files have been streamed to the client's browser, the user
- * may click on the "View Table" button.  Clicking this button will display
- * a new JFrame containing a JTable.  This JTable will contain data from
- * a corresponding layer's .dbf file.  To enable the user to run this applet
- * as an application the user may check off a box reading "Running Locally".
- * Checking this box, will cause the applet to load files from the local file
+ * ExampleApplet is an example of how to use the EsriLayer in a
+ * JApplet. When the user clicks on the "Add Layers" button, three
+ * sets of shape files are streamed from a web server to the clients
+ * web browser. After the shape files have been streamed to the
+ * client's browser, the user may click on the "View Table" button.
+ * Clicking this button will display a new JFrame containing a JTable.
+ * This JTable will contain data from a corresponding layer's .dbf
+ * file. To enable the user to run this applet as an application the
+ * user may check off a box reading "Running Locally". Checking this
+ * box, will cause the applet to load files from the local file
  * system.
+ * 
  * @author Doug Van Auken
  */
 public class ExampleApplet extends JApplet {
@@ -97,24 +94,31 @@ public class ExampleApplet extends JApplet {
     }
 
     /**
-     * Provides a dialog box from which the user can pick the layer that they
-     * would like to view table data for
+     * Provides a dialog box from which the user can pick the layer
+     * that they would like to view table data for
+     * 
      * @return The layer that user has selected
      */
     private EsriLayer pickEsriLayer() {
         Layer[] layers = _layerHandler.getLayers();
         Vector vector = new Vector();
-        for(int n=0; n<=layers.length -1; n++) {
+        for (int n = 0; n <= layers.length - 1; n++) {
             String name = layers[n].getName();
             vector.add(name);
         }
         Object[] objects = vector.toArray();
-        String selectedValue = (String)JOptionPane.showInputDialog(null, "Choose one", "Input", JOptionPane.INFORMATION_MESSAGE, null, objects, objects[0]);
+        String selectedValue = (String) JOptionPane.showInputDialog(null,
+                "Choose one",
+                "Input",
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                objects,
+                objects[0]);
 
-        for(int n=0; n<=layers.length -1; n++) {
+        for (int n = 0; n <= layers.length - 1; n++) {
             String name = layers[n].getName();
             if (name.equalsIgnoreCase(selectedValue)) {
-                return (EsriLayer)layers[n];
+                return (EsriLayer) layers[n];
             }
         }
         return null;
@@ -158,76 +162,74 @@ public class ExampleApplet extends JApplet {
 
         _cmdAddLayers = new JButton("Add Layers");
         _cmdAddLayers.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    try{
-                        EsriLayer rivers = null;
-                        EsriLayer cities = null;
-                        EsriLayer states = null;
-                        URL dbf = null;
-                        URL shx = null;
-                        URL shp = null;
+            public void actionPerformed(ActionEvent event) {
+                try {
+                    EsriLayer rivers = null;
+                    EsriLayer cities = null;
+                    EsriLayer states = null;
+                    URL dbf = null;
+                    URL shx = null;
+                    URL shp = null;
 
-                        if (_runningLocally.isSelected()) {
-                            dbf = new URL("file://localhost/c:/data/rivers.dbf");
-                            shp = new URL("file://localhost/c:/data/rivers.shp");
-                            shx = new URL("file://localhost/c:/data/rivers.shx");
-                            rivers = new EsriLayer("Southwest", dbf, shp, shx);
+                    if (_runningLocally.isSelected()) {
+                        dbf = new URL("file://localhost/c:/data/rivers.dbf");
+                        shp = new URL("file://localhost/c:/data/rivers.shp");
+                        shx = new URL("file://localhost/c:/data/rivers.shx");
+                        rivers = new EsriLayer("Southwest", dbf, shp, shx);
 
-                            dbf = new URL("file://localhost/c:/data/cities.dbf");
-                            shp = new URL("file://localhost/c:/data/cities.shp");
-                            shx = new URL("file://localhost/c:/data/cities.shx");
-                            cities = new EsriLayer("Cities", dbf, shp, shx);
+                        dbf = new URL("file://localhost/c:/data/cities.dbf");
+                        shp = new URL("file://localhost/c:/data/cities.shp");
+                        shx = new URL("file://localhost/c:/data/cities.shx");
+                        cities = new EsriLayer("Cities", dbf, shp, shx);
 
-                            dbf = new URL("file://localhost/c:/data/states.dbf");
-                            shp = new URL("file://localhost/c:/data/states.shp");
-                            shx = new URL("file://localhost/c:/data/states.shx");
-                            states = new EsriLayer("States", dbf, shp, shx);
-                        }
-                        else{
-                            dbf = new URL(getCodeBase(), "resources/rivers.dbf");
-                            shp = new URL(getCodeBase(), "resources/rivers.shp");
-                            shx = new URL(getCodeBase(), "resources/rivers.shx");
-                            rivers = new EsriLayer("Rivers", dbf, shp, shx);
+                        dbf = new URL("file://localhost/c:/data/states.dbf");
+                        shp = new URL("file://localhost/c:/data/states.shp");
+                        shx = new URL("file://localhost/c:/data/states.shx");
+                        states = new EsriLayer("States", dbf, shp, shx);
+                    } else {
+                        dbf = new URL(getCodeBase(), "resources/rivers.dbf");
+                        shp = new URL(getCodeBase(), "resources/rivers.shp");
+                        shx = new URL(getCodeBase(), "resources/rivers.shx");
+                        rivers = new EsriLayer("Rivers", dbf, shp, shx);
 
-                            dbf = new URL(getCodeBase(), "resources/cities.dbf");
-                            shp = new URL(getCodeBase(), "resources/cities.shp");
-                            shx = new URL(getCodeBase(), "resources/cities.shx");
-                            cities = new EsriLayer("Cities", dbf, shp, shx);
+                        dbf = new URL(getCodeBase(), "resources/cities.dbf");
+                        shp = new URL(getCodeBase(), "resources/cities.shp");
+                        shx = new URL(getCodeBase(), "resources/cities.shx");
+                        cities = new EsriLayer("Cities", dbf, shp, shx);
 
-                            dbf = new URL(getCodeBase(), "resources/states.dbf");
-                            shp = new URL(getCodeBase(), "resources/states.shp");
-                            shx = new URL(getCodeBase(), "resources/states.shx");
-                            states = new EsriLayer("States", dbf, shp, shx);
-                        }
-
-                        _layerHandler.addLayer(rivers);
-                        _layerHandler.addLayer(cities);
-                        _layerHandler.addLayer(states);
-                        _cmdAddLayers.setEnabled(false);
-                        _cmdShowTable.setEnabled(true);
+                        dbf = new URL(getCodeBase(), "resources/states.dbf");
+                        shp = new URL(getCodeBase(), "resources/states.shp");
+                        shx = new URL(getCodeBase(), "resources/states.shx");
+                        states = new EsriLayer("States", dbf, shp, shx);
                     }
-                    catch(Exception exception) {
-                        exception.printStackTrace();
-                    }
+
+                    _layerHandler.addLayer(rivers);
+                    _layerHandler.addLayer(cities);
+                    _layerHandler.addLayer(states);
+                    _cmdAddLayers.setEnabled(false);
+                    _cmdShowTable.setEnabled(true);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
-            });
+            }
+        });
 
         _cmdShowTable = new JButton("View Table");
         _cmdShowTable.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    Layer[] layers = _layerHandler.getMapLayers();
-                    if (layers.length >= 4) {
-                        EsriLayer layer = pickEsriLayer();
-                        showTable(layer);
-                        _cmdAddLayers.setEnabled(false);
-                    }
+            public void actionPerformed(ActionEvent event) {
+                Layer[] layers = _layerHandler.getMapLayers();
+                if (layers.length >= 4) {
+                    EsriLayer layer = pickEsriLayer();
+                    showTable(layer);
+                    _cmdAddLayers.setEnabled(false);
                 }
-            });
+            }
+        });
 
         _toolPanel.add(_runningLocally);
         _toolPanel.add(_cmdAddLayers, 0);
         _toolPanel.add(_cmdShowTable, 1);
-        _toolPanel.add((Tool)_omts);
+        _toolPanel.add((Tool) _omts);
 
         getContentPane().add(_toolPanel, BorderLayout.NORTH);
         getContentPane().add(_mapBean, BorderLayout.CENTER);
@@ -235,7 +237,9 @@ public class ExampleApplet extends JApplet {
     }
 
     /**
-     * Displays a new window containing the tabular data for the passed-in layer
+     * Displays a new window containing the tabular data for the
+     * passed-in layer
+     * 
      * @param layer The layer whose data is to be displayed
      */
     public void showTable(final EsriLayer layer) {
@@ -247,37 +251,37 @@ public class ExampleApplet extends JApplet {
 
         ListSelectionModel lsm = table.getSelectionModel();
         lsm.addListSelectionListener(new ListSelectionListener() {
-                public void valueChanged(ListSelectionEvent e) {
-                    //Ignore extra messages.
-                    if (e.getValueIsAdjusting()) {
-                        return;
-                    }
-                    ListSelectionModel lsm2 = (ListSelectionModel)e.getSource();
-                    if (lsm2.isSelectionEmpty()) {
-                        //no rows are selected
-                    }
-                    else {
-                        int index = lsm2.getMinSelectionIndex();
-                        EsriGraphicList list = layer.getEsriGraphicList();
-                        OMGraphic graphic = list.getOMGraphicAt(index);
-                        graphic.select();
-                        list.generate(_mapBean.getProjection());
-                        layer.repaint();
-                    }
+            public void valueChanged(ListSelectionEvent e) {
+                //Ignore extra messages.
+                if (e.getValueIsAdjusting()) {
+                    return;
                 }
-            });
+                ListSelectionModel lsm2 = (ListSelectionModel) e.getSource();
+                if (lsm2.isSelectionEmpty()) {
+                    //no rows are selected
+                } else {
+                    int index = lsm2.getMinSelectionIndex();
+                    EsriGraphicList list = layer.getEsriGraphicList();
+                    OMGraphic graphic = list.getOMGraphicAt(index);
+                    graphic.select();
+                    list.generate(_mapBean.getProjection());
+                    layer.repaint();
+                }
+            }
+        });
         frame.setSize(400, 300);
         frame.setVisible(true);
     }
 
     /**
-     * Main method to facilitate testing and to run as stand alone application.
+     * Main method to facilitate testing and to run as stand alone
+     * application.
      */
     public static void main(String args[]) {
         ExampleApplet example = new ExampleApplet();
         JFrame frame = new JFrame();
         frame.getContentPane().add(example);
-        frame.setSize(800,600);
+        frame.setSize(800, 600);
         frame.setVisible(true);
     }
 }

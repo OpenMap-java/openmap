@@ -67,9 +67,9 @@
 	<target name="debug" depends="init.openmap">
 	     <mkdir dir="${openmap.classes}"/>
 	     <javac srcdir="${openmap.src}" 
-	            destdir="${openmap.classes}"    
-		    debug="on"
-	            includes="com/bbn/openmap/util/Debug.java"/>
+	      	destdir="${openmap.classes}"    
+		    	debug="on"
+	        	includes="com/bbn/openmap/util/Debug.java"/>
 	</target>
 
   <!--  ############################

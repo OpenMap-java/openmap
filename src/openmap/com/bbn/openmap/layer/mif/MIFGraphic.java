@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFGraphic.java,v $
 // $RCSfile: MIFGraphic.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.mif;
 
@@ -31,8 +30,8 @@ package com.bbn.openmap.layer.mif;
  */
 public interface MIFGraphic {
     /**
-     * sets the scale at which the graphic becomes visible, if set to -1
-     * the graphic is viaible at all scale levels.
+     * sets the scale at which the graphic becomes visible, if set to
+     * -1 the graphic is viaible at all scale levels.
      * 
      * @param scale
      */
@@ -41,4 +40,4 @@ public interface MIFGraphic {
     public float getVisibleScale();
 
 }
-/** Last line of file **/
+/** Last line of file * */

@@ -16,12 +16,14 @@ import java.util.Vector;
 
 /**
  * This abstract class represents the base class of compound Mysql
- * Geometry Objects. <p>
- * 
- * Copyright 2003 by the Author<br>
+ * Geometry Objects.
  * <p>
- * @author Uwe Baier  uwe.baier@gmx.net<br>
- * @version 1.0<br>
+ * 
+ * Copyright 2003 by the Author <br>
+ * <p>
+ * 
+ * @author Uwe Baier uwe.baier@gmx.net <br>
+ * @version 1.0 <br>
  */
 abstract public class MysqlMulti extends MysqlGeometry {
 

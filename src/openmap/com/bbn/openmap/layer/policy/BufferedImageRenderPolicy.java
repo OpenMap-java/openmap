@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/BufferedImageRenderPolicy.java,v $
 // $RCSfile: BufferedImageRenderPolicy.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/09/17 19:34:33 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:06:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.policy;
 
@@ -35,10 +34,10 @@ import java.awt.geom.AffineTransform;
 
 /**
  * The BufferedImageRenderPolicy is a RenderPolicy that creates and
- * uses an image buffer based on the painting times for the layer.  If
+ * uses an image buffer based on the painting times for the layer. If
  * the time to paint exceeds the bufferTiggerDelay, an image buffer
  * for the layer is used for paints as long as the projection doesn't
- * change.  A new buffer is used for a projection change because we
+ * change. A new buffer is used for a projection change because we
  * need the image buffer to be transparent for parts of the map that
  * are not used by the layer.
  */
@@ -87,7 +86,7 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
         OMGraphicList list = layer.getList();
 
         if (list != null) {
-        
+
             if (isUseImageBuffer() && getBuffer() == null) {
                 setBuffer(createAndPaintImageBuffer(list));
             }
@@ -102,10 +101,11 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
                     g.setClip(0, 0, proj.getWidth(), proj.getHeight());
                 }
 
-                ((Graphics2D)g).drawRenderedImage((BufferedImage)bufferedImage,
-                                                  new AffineTransform());
+                ((Graphics2D) g).drawRenderedImage((BufferedImage) bufferedImage,
+                        new AffineTransform());
                 if (Debug.debugging("policy")) {
-                    Debug.output("RenderingPolicy:" + layer.getName() + ": rendering buffer");
+                    Debug.output("RenderingPolicy:" + layer.getName()
+                            + ": rendering buffer");
                 }
 
                 if (!isUseImageBuffer()) {
@@ -122,8 +122,9 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
                 }
 
                 if (Debug.debugging("policy")) {
-                    Debug.output("RenderingPolicy:" + layer.getName() + 
-                                 ": rendering list, buffer(" + isUseImageBuffer() + ")");
+                    Debug.output("RenderingPolicy:" + layer.getName()
+                            + ": rendering list, buffer(" + isUseImageBuffer()
+                            + ")");
                 }
             }
         }
@@ -146,18 +147,18 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
             int w = layer.getProjection().getWidth();
             int h = layer.getProjection().getHeight();
             bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = (Graphics2D)bufferedImage.getGraphics();
+            Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
             super.setRenderingHints(g2d);
             long startPaint = System.currentTimeMillis();
             list.render(g2d);
             long endPaint = System.currentTimeMillis();
             if (Debug.debugging("policy")) {
-                Debug.output("RenderingPolicy:" + layer.getName() + 
-                             ": rendering list into buffer");
+                Debug.output("RenderingPolicy:" + layer.getName()
+                        + ": rendering list into buffer");
             }
             if (endPaint - startPaint < bufferTriggerDelay) {
-                // OK, paint didn't take that long, don't use buffer 
-                // on the next time around.  Since we've gone through
+                // OK, paint didn't take that long, don't use buffer
+                // on the next time around. Since we've gone through
                 // the effort of creating an image that's painted, use
                 // it.
                 setUseImageBuffer(false);

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/PPMFormatter.java,v $
 // $RCSfile: PPMFormatter.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.image;
 
@@ -29,19 +28,20 @@ import java.util.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
-/** 
+/**
  * A simple formatter to create PPM images.
- *<P>
+ * <P>
  * I got a simple definition of a PPM image an wrote something to make
- * that.  XV complains about the P3 image, but still draws it.  No
- * complaints for the P6.  
+ * that. XV complains about the P3 image, but still draws it. No
+ * complaints for the P6.
  */
 public class PPMFormatter extends AbstractImageFormatter {
 
     public static final String RawBitsProperty = "rawbits";
     public static final String regularMagicNumber = "P3";
     public static final String rawbitsMagicNumber = "P6";
-    public static final int HEADER_BUFFER_SIZE = 50; // approximate, no big deal
+    public static final int HEADER_BUFFER_SIZE = 50; // approximate,
+                                                     // no big deal
     public static final int MAX_COLOR_VALUE = 255; // I guess
 
     protected boolean rawbits;
@@ -49,9 +49,9 @@ public class PPMFormatter extends AbstractImageFormatter {
     public PPMFormatter() {}
 
     public void setProperties(String prefix, Properties props) {
-        rawbits = LayerUtils.booleanFromProperties(props,
-                                                   (prefix == null?"":prefix) + RawBitsProperty,
-                                                   true);
+        rawbits = LayerUtils.booleanFromProperties(props, (prefix == null ? ""
+                : prefix)
+                + RawBitsProperty, true);
     }
 
     public ImageFormatter makeClone() {
@@ -72,14 +72,14 @@ public class PPMFormatter extends AbstractImageFormatter {
 
         int height = bi.getHeight();
         int width = bi.getWidth();
-        
-        int[] data =  new int[width*height];
+
+        int[] data = new int[width * height];
         bi.getRGB(0, 0, width, height, data, 0, width);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
-        try{
+        try {
             int pixel, count, i, lastCount;
             if (!rawbits) {
                 dos.writeBytes(regularMagicNumber);
@@ -88,8 +88,9 @@ public class PPMFormatter extends AbstractImageFormatter {
                 dos.writeBytes(" " + MAX_COLOR_VALUE + "\n");
                 count = 0; // Keep lines less that 70 characters long
 
-                // Keep track of the number of characters added per pass
-                lastCount = 0; 
+                // Keep track of the number of characters added per
+                // pass
+                lastCount = 0;
 
                 Debug.output("PPMFormatter: Header is " + dos.size() + " bytes");
                 Debug.output("PPMFormatter: Height = " + height);
@@ -110,7 +111,7 @@ public class PPMFormatter extends AbstractImageFormatter {
                         dos.writeBytes("\n");
                         count = 0;
                     } else {
-                        count+=dos.size() - lastCount;
+                        count += dos.size() - lastCount;
                     }
                     lastCount = dos.size();
                 }
@@ -129,8 +130,6 @@ public class PPMFormatter extends AbstractImageFormatter {
                 }
             }
 
-            
-
             return baos.toByteArray();
 
         } catch (java.io.IOException ioe) {
@@ -140,7 +139,7 @@ public class PPMFormatter extends AbstractImageFormatter {
     }
 
     /**
-     * Get the Image Type created by the ImageFormatter.  These
+     * Get the Image Type created by the ImageFormatter. These
      * responses should adhere to the OGC WMT standard format labels.
      * Some are listed in the WMTConstants interface file.
      */

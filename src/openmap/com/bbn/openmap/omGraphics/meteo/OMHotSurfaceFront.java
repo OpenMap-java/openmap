@@ -1,17 +1,32 @@
+//**********************************************************************
+//
+//<copyright>
+//
+//BBN Technologies
+//10 Moulton Street
+//Cambridge, MA 02138
+//(617) 873-8000
+//
+//Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
+//</copyright>
+//**********************************************************************
+//
+//$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/meteo/OMHotSurfaceFront.java,v $
+//$RCSfile: OMHotSurfaceFront.java,v $
+//$Revision: 1.3 $
+//$Date: 2004/10/14 18:06:19 $
+//$Author: dietrick $
+//
+//**********************************************************************
+
 package com.bbn.openmap.omGraphics.meteo;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.Point2D;
-
-import com.bbn.openmap.omGraphics.awt.AbstractShapeDecoration;
 import com.bbn.openmap.omGraphics.awt.LineShapeDecoration;
 import com.bbn.openmap.omGraphics.OMDecoratedSpline;
 
 /**
- * OMHotSurfaceFront
- * Just need to init the decorations.
+ * OMHotSurfaceFront Just need to init the decorations.
  * 
  * @author Eric LEPICIER
  * @version 28 juil. 2002
@@ -31,6 +46,7 @@ public class OMHotSurfaceFront extends OMDecoratedSpline {
 
     /**
      * Constructor.
+     * 
      * @param llPoints
      * @param units
      * @param lType
@@ -41,21 +57,19 @@ public class OMHotSurfaceFront extends OMDecoratedSpline {
 
     /**
      * Constructor.
+     * 
      * @param llPoints
      * @param units
      * @param lType
      * @param nsegs
      */
-    public OMHotSurfaceFront(
-        float[] llPoints,
-        int units,
-        int lType,
-        int nsegs) {
+    public OMHotSurfaceFront(float[] llPoints, int units, int lType, int nsegs) {
         super(llPoints, units, lType, nsegs);
     }
 
     /**
      * Constructor.
+     * 
      * @param xypoints
      */
     public OMHotSurfaceFront(int[] xypoints) {
@@ -64,6 +78,7 @@ public class OMHotSurfaceFront extends OMDecoratedSpline {
 
     /**
      * Constructor.
+     * 
      * @param xPoints
      * @param yPoints
      */
@@ -73,33 +88,28 @@ public class OMHotSurfaceFront extends OMDecoratedSpline {
 
     /**
      * Constructor.
+     * 
      * @param latPoint
      * @param lonPoint
      * @param xypoints
      * @param cMode
      */
-    public OMHotSurfaceFront(
-        float latPoint,
-        float lonPoint,
-        int[] xypoints,
-        int cMode) {
+    public OMHotSurfaceFront(float latPoint, float lonPoint, int[] xypoints,
+            int cMode) {
         super(latPoint, lonPoint, xypoints, cMode);
     }
 
     /**
      * Constructor.
+     * 
      * @param latPoint
      * @param lonPoint
      * @param xPoints
      * @param yPoints
      * @param cMode
      */
-    public OMHotSurfaceFront(
-        float latPoint,
-        float lonPoint,
-        int[] xPoints,
-        int[] yPoints,
-        int cMode) {
+    public OMHotSurfaceFront(float latPoint, float lonPoint, int[] xPoints,
+            int[] yPoints, int cMode) {
         super(latPoint, lonPoint, xPoints, yPoints, cMode);
     }
 
@@ -108,11 +118,7 @@ public class OMHotSurfaceFront extends OMDecoratedSpline {
      */
     protected void initDecorations() {
         getDecorator().addDecoration(new LineShapeDecoration(SPACING, HotFrontShapeDecoration.COLOR));
-        getDecorator().addDecoration(
-            new HotFrontShapeDecoration(
-                LENGTH,
-                WIDTH,
-                HotFrontShapeDecoration.LEFT));
+        getDecorator().addDecoration(new HotFrontShapeDecoration(LENGTH, WIDTH, HotFrontShapeDecoration.LEFT));
     }
 
 }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,19 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SaveAsImageFileChooser.java,v $
 // $RCSfile: SaveAsImageFileChooser.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.gui.menu;
 
 import java.awt.*;
-import java.io.File;
 import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
 
 import com.bbn.openmap.util.PaletteHelper;
 
@@ -36,8 +33,7 @@ import com.bbn.openmap.util.PaletteHelper;
  */
 public class SaveAsImageFileChooser extends JFileChooser {
 
-    SaveAsImageFileChooser.DimensionQueryPanel dqp = 
-        new SaveAsImageFileChooser.DimensionQueryPanel();
+    SaveAsImageFileChooser.DimensionQueryPanel dqp = new SaveAsImageFileChooser.DimensionQueryPanel();
 
     /**
      * Create file chooser with the image size fields filled in.
@@ -51,7 +47,7 @@ public class SaveAsImageFileChooser extends JFileChooser {
         imageSizePanel.add(dqp, BorderLayout.CENTER);
         setAccessory(imageSizePanel);
     }
-    
+
     /**
      * Set the value of the image width setting from the GUI.
      */
@@ -72,6 +68,7 @@ public class SaveAsImageFileChooser extends JFileChooser {
     public void setImageHeight(int h) {
         dqp.setImageHeight(h);
     }
+
     /**
      * Get the value of the image height setting from the GUI.
      */
@@ -87,7 +84,7 @@ public class SaveAsImageFileChooser extends JFileChooser {
         private JLabel vtext;
         private JLabel ptext1;
         private JLabel ptext2;
-        
+
         public DimensionQueryPanel() {
             this(0, 0);
         }
@@ -98,13 +95,13 @@ public class SaveAsImageFileChooser extends JFileChooser {
             htext.setHorizontalAlignment(SwingConstants.RIGHT);
             vtext = new JLabel("Height: ");
             vtext.setHorizontalAlignment(SwingConstants.RIGHT);
-            hfield = new JTextField(Integer.toString(width),5);
-            vfield = new JTextField(Integer.toString(height),5);
+            hfield = new JTextField(Integer.toString(width), 5);
+            vfield = new JTextField(Integer.toString(height), 5);
             ptext1 = new JLabel(" pixels");
             ptext2 = new JLabel(" pixels");
             layoutPanel();
         }
-        
+
         public void setImageWidth(int width) {
             hfield.setText(Integer.toString(width));
         }
@@ -134,7 +131,7 @@ public class SaveAsImageFileChooser extends JFileChooser {
             c.weightx = 0;
             c.anchor = GridBagConstraints.EAST;
 
-            gb.setConstraints(htext,c);
+            gb.setConstraints(htext, c);
             add(htext);
 
             c.gridx = 1;
@@ -142,13 +139,13 @@ public class SaveAsImageFileChooser extends JFileChooser {
             c.weightx = 1f;
             c.anchor = GridBagConstraints.WEST;
 
-            gb.setConstraints(hfield,c);
+            gb.setConstraints(hfield, c);
             add(hfield);
 
             c.gridx = 2;
             c.fill = GridBagConstraints.NONE;
             c.weightx = 0;
-            gb.setConstraints(ptext1,c);
+            gb.setConstraints(ptext1, c);
             add(ptext1);
 
             // Next row
@@ -159,7 +156,7 @@ public class SaveAsImageFileChooser extends JFileChooser {
             c.weightx = 0;
             c.anchor = GridBagConstraints.EAST;
 
-            gb.setConstraints(vtext,c);
+            gb.setConstraints(vtext, c);
             add(vtext);
 
             c.gridx = 1;
@@ -167,13 +164,13 @@ public class SaveAsImageFileChooser extends JFileChooser {
             c.weightx = 1f;
             c.anchor = GridBagConstraints.WEST;
 
-            gb.setConstraints(vfield,c);
+            gb.setConstraints(vfield, c);
             add(vfield);
 
             c.gridx = 2;
             c.fill = GridBagConstraints.NONE;
             c.weightx = 0;
-            gb.setConstraints(ptext2,c);
+            gb.setConstraints(ptext2, c);
             add(ptext2);
         }
     }

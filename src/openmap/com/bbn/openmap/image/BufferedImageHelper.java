@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,19 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/BufferedImageHelper.java,v $
 // $RCSfile: BufferedImageHelper.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.image;
 
-import com.sun.image.codec.jpeg.*;
 import java.awt.*;
 import java.awt.image.*;
-import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -37,8 +34,9 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * This class provides some utility methods for creating a
- * BufferedImage.  It will check to see if the Java Advanced Image
+ * BufferedImage. It will check to see if the Java Advanced Image
  * package is available and use it if it can.
+ * 
  * @author dietrick - original implemenation and reflection mods.
  * @author Fredrik Lyden - JAI inspiration and initial code.
  */
@@ -74,12 +72,12 @@ public class BufferedImageHelper {
     /**
      * Run the operation on JAI to create BufferedImage. Uses
      * reflection to determine if JAI is available.
-     *
+     * 
      * @param opName JAI opName, like "file" or "url"
      * @param param JAI object to use for operation, like the file
-     * path (String) or URL.
+     *        path (String) or URL.
      * @return BufferedImage if JAI can be used to create it, null if
-     * anything goes wrong.
+     *         anything goes wrong.
      */
     public static BufferedImage getJAIBufferedImage(String opName, Object param) {
         boolean DEBUG = Debug.debugging("bufferedimage");
@@ -95,48 +93,59 @@ public class BufferedImageHelper {
         }
 
         try {
-            // Do a little reflection to run methods on classes we might not know about.
-            Class[] createArgs = new Class[] {Class.forName("java.lang.String"), 
-                                              Class.forName("java.lang.Object")};
+            // Do a little reflection to run methods on classes we
+            // might not know about.
+            Class[] createArgs = new Class[] {
+                    Class.forName("java.lang.String"),
+                    Class.forName("java.lang.Object") };
 
-            Method createMethod = jai.getClass().getDeclaredMethod("create", createArgs);
+            Method createMethod = jai.getClass().getDeclaredMethod("create",
+                    createArgs);
 
-            Object[] createParams = new Object[] {opName, param};
+            Object[] createParams = new Object[] { opName, param };
             Object planarImageObject = createMethod.invoke(jai, createParams);
 
             if (planarImageObject != null) {
-                Method getBufferedImageMethod = planarImageObject.getClass().getMethod("getAsBufferedImage", null);
+                Method getBufferedImageMethod = planarImageObject.getClass()
+                        .getMethod("getAsBufferedImage", null);
 
-                return (BufferedImage) getBufferedImageMethod.invoke(planarImageObject, null);
+                return (BufferedImage) getBufferedImageMethod.invoke(planarImageObject,
+                        null);
             }
 
         } catch (ClassNotFoundException cnfe) {
             if (DEBUG) {
-                Debug.error("BufferedImageHelper.getJAIBufferedImage() ClassNotFoundException error: \n" + cnfe.getMessage());
+                Debug.error("BufferedImageHelper.getJAIBufferedImage() ClassNotFoundException error: \n"
+                        + cnfe.getMessage());
             }
         } catch (IllegalAccessException iae) {
             if (DEBUG) {
-                Debug.error("BufferedImageHelper.getJAIBufferedImage() IllegalAccessException error: \n" + iae.getMessage());
+                Debug.error("BufferedImageHelper.getJAIBufferedImage() IllegalAccessException error: \n"
+                        + iae.getMessage());
             }
         } catch (InvocationTargetException ite) {
             if (DEBUG) {
-                Debug.error("BufferedImageHelper.getJAIBufferedImage() InvocationTargetException error: \n" + ite.getMessage());
+                Debug.error("BufferedImageHelper.getJAIBufferedImage() InvocationTargetException error: \n"
+                        + ite.getMessage());
             }
         } catch (NoSuchMethodException nsme) {
             if (DEBUG) {
-                Debug.error("BufferedImageHelper.getJAIBufferedImage() NoSuchMethodException error: " + nsme.toString());
+                Debug.error("BufferedImageHelper.getJAIBufferedImage() NoSuchMethodException error: "
+                        + nsme.toString());
                 nsme.printStackTrace();
             }
         } catch (SecurityException se) {
             if (DEBUG) {
-                Debug.error("BufferedImageHelper.getJAIBufferedImage() SecurityException error: \n" + se.getMessage());
+                Debug.error("BufferedImageHelper.getJAIBufferedImage() SecurityException error: \n"
+                        + se.getMessage());
             }
         }
 
         return null;
         // All this above to replace this:
-//      PlanarImage planarImage = JAI.create(opName, param);
-//      return getBufferedImage(planarImage.getAsBufferedImage(), x, y, w, h);
+        //      PlanarImage planarImage = JAI.create(opName, param);
+        //      return getBufferedImage(planarImage.getAsBufferedImage(),
+        // x, y, w, h);
     }
 
     /**
@@ -144,21 +153,22 @@ public class BufferedImageHelper {
      * reflection to determine if JAI is available. If x or y is not
      * zero, or w and h are not the image dimensions, the image
      * returned will be cropped/translated to match the values.
-     *
+     * 
      * @param opName JAI opName, like "file" or "url"
      * @param param JAI object to use for operation, like the file
-     * path (String) or URL.
+     *        path (String) or URL.
      * @param x x start pixel
      * @param y y start pixel
      * @param w crop width (-1 uses image width)
      * @param h crop height (-1 uses image height)
      * @return BufferedImage if JAI can be used to create it, null if
-     * anything goes wrong.
+     *         anything goes wrong.
      * @throws InterruptedException
      */
-    public static BufferedImage getJAIBufferedImage(String opName, Object param, 
-                                                    int x, int y, int w, int h) 
-        throws InterruptedException {
+    public static BufferedImage getJAIBufferedImage(String opName,
+                                                    Object param, int x, int y,
+                                                    int w, int h)
+            throws InterruptedException {
 
         BufferedImage bi = getJAIBufferedImage(opName, param);
 
@@ -171,37 +181,38 @@ public class BufferedImageHelper {
             }
 
             return getBufferedImage(bi, x, y, w, h, imageType);
-        } 
+        }
         // else return null or the original image.
         return bi;
     }
 
     /**
      * Return a BufferedImage loaded from a URL.
-     * @return BufferedImage if it can be created, null if
-     * anything goes wrong.
+     * 
+     * @return BufferedImage if it can be created, null if anything
+     *         goes wrong.
      * @throws InterruptedException
      */
-    public static BufferedImage getBufferedImage(URL url) 
-        throws InterruptedException {
+    public static BufferedImage getBufferedImage(URL url)
+            throws InterruptedException {
         return getBufferedImage(url, 0, 0, -1, -1);
     }
 
     /**
      * Return a BufferedImage loaded from a URL.
+     * 
      * @param url the source URL
      * @param x x start pixel
      * @param y y start pixel
      * @param w crop width (-1 uses image width)
      * @param h crop height (-1 uses image height)
-     * @return BufferedImage if it can be created, null if
-     * anything goes wrong.
+     * @return BufferedImage if it can be created, null if anything
+     *         goes wrong.
      * @throws InterruptedException
      */
-    public static BufferedImage getBufferedImage(URL url,
-                                                 int x, int y,
-                                                 int w, int h) 
-        throws InterruptedException {
+    public static BufferedImage getBufferedImage(URL url, int x, int y, int w,
+                                                 int h)
+            throws InterruptedException {
 
         BufferedImage bi = getJAIBufferedImage("url", url, x, y, w, h);
 
@@ -215,40 +226,47 @@ public class BufferedImageHelper {
 
         // if JAI is not installed....
         ImageIcon ii = new ImageIcon(url);
-        if (w <= 0) w = ii.getIconWidth();
-        if (h <= 0) h = ii.getIconHeight();
-        return getBufferedImage(ii.getImage(), x, y, w, h,
-                                BufferedImage.TYPE_INT_ARGB);
+        if (w <= 0)
+            w = ii.getIconWidth();
+        if (h <= 0)
+            h = ii.getIconHeight();
+        return getBufferedImage(ii.getImage(),
+                x,
+                y,
+                w,
+                h,
+                BufferedImage.TYPE_INT_ARGB);
     }
 
     /**
      * Return a BufferedImage loaded from a file path.
-     * @return BufferedImage if it can be created, null if
-     * anything goes wrong.
+     * 
+     * @return BufferedImage if it can be created, null if anything
+     *         goes wrong.
      * @throws InterruptedException
      */
-    public static BufferedImage getBufferedImage(String path) 
-        throws InterruptedException {
+    public static BufferedImage getBufferedImage(String path)
+            throws InterruptedException {
         return getBufferedImage(path, 0, 0, -1, -1);
     }
 
     /**
      * Return a BufferedImage loaded from an image file path.
+     * 
      * @param path file path to the image
      * @param x x start pixel
      * @param y y start pixel
      * @param w crop width (-1 uses image width)
      * @param h crop height (-1 uses image height)
-     * @return BufferedImage if it can be created, null if
-     * anything goes wrong.
+     * @return BufferedImage if it can be created, null if anything
+     *         goes wrong.
      * @throws InterruptedException
      */
-    public static BufferedImage getBufferedImage(String path,
-                                                 int x, int y,
-                                                 int w, int h) 
-        throws InterruptedException {
+    public static BufferedImage getBufferedImage(String path, int x, int y,
+                                                 int w, int h)
+            throws InterruptedException {
 
-        BufferedImage bi =  getJAIBufferedImage("file", path, x, y, w, h);
+        BufferedImage bi = getJAIBufferedImage("file", path, x, y, w, h);
 
         if (bi != null) {
             return bi;
@@ -260,62 +278,70 @@ public class BufferedImageHelper {
 
         // if JAI is not installed....
         ImageIcon ii = new ImageIcon(path);
-        if (w <= 0) w = ii.getIconWidth();
-        if (h <= 0) h = ii.getIconHeight();
-        return getBufferedImage(ii.getImage(), x, y, w, h, 
-                                BufferedImage.TYPE_INT_ARGB);
+        if (w <= 0)
+            w = ii.getIconWidth();
+        if (h <= 0)
+            h = ii.getIconHeight();
+        return getBufferedImage(ii.getImage(),
+                x,
+                y,
+                w,
+                h,
+                BufferedImage.TYPE_INT_ARGB);
     }
 
-    /** 
-     * Return a BufferedImage loaded from a Image.  The type of image
-     * is BufferedImage.Type_INT_RGB.  If you know the height and
+    /**
+     * Return a BufferedImage loaded from a Image. The type of image
+     * is BufferedImage.Type_INT_RGB. If you know the height and
      * width, use them because it's slower to have the class figure it
      * out.
-     *
+     * 
      * @param image the source Image
      * @param x x start pixel
      * @param y y start pixel
      * @param w crop width (-1 uses image width)
-     * @param h crop height (-1 uses image height) 
-     * @return BufferedImage if it can be created, null if
-     * anything goes wrong.
+     * @param h crop height (-1 uses image height)
+     * @return BufferedImage if it can be created, null if anything
+     *         goes wrong.
      * @throws InterruptedException
      */
-    public static BufferedImage getBufferedImage(Image image,
-                                                 int x, int y,
-                                                 int w, int h) 
-        throws InterruptedException {
+    public static BufferedImage getBufferedImage(Image image, int x, int y,
+                                                 int w, int h)
+            throws InterruptedException {
         return getBufferedImage(image, x, y, w, h, BufferedImage.TYPE_INT_RGB);
     }
 
     /**
-     * Return a BufferedImage loaded from a Image. If you know the height and
-     * width, use them because it's slower to have the class figure it
-     * out.
-     *
+     * Return a BufferedImage loaded from a Image. If you know the
+     * height and width, use them because it's slower to have the
+     * class figure it out.
+     * 
      * @param image the source Image
      * @param x x start pixel - the horizontal pixel location in the
-     * returned image that the provided image will be set.
+     *        returned image that the provided image will be set.
      * @param y y start pixel - the vertical pixel location in the
-     * returned image that the provided image will be set.
+     *        returned image that the provided image will be set.
      * @param w crop width (-1 uses image width)
      * @param h crop height (-1 uses image height)
-     * @param imageType the image color model.  See BufferedImage.
-     * @return BufferedImage if it can be created, null if
-     * anything goes wrong.
+     * @param imageType the image color model. See BufferedImage.
+     * @return BufferedImage if it can be created, null if anything
+     *         goes wrong.
      * @throws InterruptedException
      */
-    public static BufferedImage getBufferedImage(Image image,
-                                                 int x, int y,
-                                                 int w, int h,
-                                                 int imageType) 
-        throws InterruptedException {
+    public static BufferedImage getBufferedImage(Image image, int x, int y,
+                                                 int w, int h, int imageType)
+            throws InterruptedException {
 
         if (w <= 0 || h <= 0) {
             if (Debug.debugging("bufferedimage")) {
                 Debug.output("BufferedImageHelper.getBufferedImage() don't know h/w, using pixel grabber");
             }
-            return getBufferedImageFromPixelGrabber(image, x, y, w, h, imageType);
+            return getBufferedImageFromPixelGrabber(image,
+                    x,
+                    y,
+                    w,
+                    h,
+                    imageType);
         } else {
             BufferedImage bufferedImage = new BufferedImage(w, h, imageType);
             Graphics2D g2d = bufferedImage.createGraphics();
@@ -327,20 +353,20 @@ public class BufferedImageHelper {
 
     /**
      * Return a BufferedImage loaded from a Image, using a
-     * PixelGrabber.  Good for when you have an Image, not a
-     * BufferedImage, and don't know the width and height.  There is a
+     * PixelGrabber. Good for when you have an Image, not a
+     * BufferedImage, and don't know the width and height. There is a
      * performance penalty with this method, though.
-     *
+     * 
      * @param image the source Image
      * @param x x start pixel - the horizontal pixel location in the
-     * returned image that the provided image will be set.
+     *        returned image that the provided image will be set.
      * @param y y start pixel - the vertical pixel location in the
-     * returned image that the provided image will be set.
+     *        returned image that the provided image will be set.
      * @param w crop width (-1 uses image width)
      * @param h crop height (-1 uses image height)
-     * @param imageType the image color model.  See BufferedImage.
-     * @return BufferedImage if it can be created, null if
-     * anything goes wrong.
+     * @param imageType the image color model. See BufferedImage.
+     * @return BufferedImage if it can be created, null if anything
+     *         goes wrong.
      */
     public static BufferedImage getBufferedImageFromPixelGrabber(Image image,
                                                                  int x, int y,
@@ -350,7 +376,7 @@ public class BufferedImageHelper {
         PixelGrabber pg = new PixelGrabber(image, x, y, w, h, true);
         int[] pixels = ImageHelper.grabPixels(pg);
 
-        if (pixels == null){
+        if (pixels == null) {
             return null;
         }
 
@@ -359,13 +385,13 @@ public class BufferedImageHelper {
         pg = null;
 
         BufferedImage bi = new BufferedImage(w, h, imageType);
-        if (Debug.debugging("imagehelper")){
+        if (Debug.debugging("imagehelper")) {
             Debug.output("BufferedImageHelper.getBufferedImage(): Got buffered image...");
         }
 
         bi.setRGB(0, 0, w, h, pixels, 0, w);
 
-        if (Debug.debugging("imagehelper")){
+        if (Debug.debugging("imagehelper")) {
             Debug.output("BufferedImageHelper.getBufferedImage(): set pixels in image...");
         }
 

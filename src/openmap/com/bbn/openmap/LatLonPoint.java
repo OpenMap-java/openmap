@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,28 +14,31 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LatLonPoint.java,v $
 // $RCSfile: LatLonPoint.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/09/29 21:43:34 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
+package com.bbn.openmap;
 
-package  com.bbn.openmap;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
 
-import  java.io.*;
-import  com.bbn.openmap.proj.*;
-import  com.bbn.openmap.util.Assert;
-
+import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.util.Assert;
 
 /**
  * Encapsulates latitude and longitude coordinates in decimal degrees.
  * Normalizes the internal representation of latitude and longitude.
  * <p>
- * <strong>Normalized Latitude:</strong><br>
+ * <strong>Normalized Latitude: </strong> <br>
  * &minus;90&deg; &lt;= &phi; &lt;= 90&deg;
  * <p>
- * <strong>Normalized Longitude:</strong><br>
+ * <strong>Normalized Longitude: </strong> <br>
  * &minus;180&deg; &le; &lambda; &le; 180&deg;
  */
 public class LatLonPoint implements Cloneable, Serializable {
@@ -54,12 +57,12 @@ public class LatLonPoint implements Cloneable, Serializable {
     /**
      * Construct a default LatLonPoint.
      */
-    public LatLonPoint() {
-    }
+    public LatLonPoint() {}
 
     /**
-     * Construct a LatLonPoint from raw float lat/lon in decimal degrees.
-     *
+     * Construct a LatLonPoint from raw float lat/lon in decimal
+     * degrees.
+     * 
      * @param lat latitude in decimal degrees
      * @param lon longitude in decimal degrees
      */
@@ -69,7 +72,7 @@ public class LatLonPoint implements Cloneable, Serializable {
 
     /**
      * Construct a LatLonPoint from raw float lat/lon in radians.
-     *
+     * 
      * @param lat latitude in radians
      * @param lon longitude in radians
      * @param isRadian placeholder indicates radians
@@ -80,7 +83,7 @@ public class LatLonPoint implements Cloneable, Serializable {
 
     /**
      * Copy construct a LatLonPoint.
-     *
+     * 
      * @param pt LatLonPoint
      */
     public LatLonPoint(LatLonPoint pt) {
@@ -92,43 +95,45 @@ public class LatLonPoint implements Cloneable, Serializable {
 
     /**
      * Construct a LatLonPoint from raw double lat/lon.
-     *
+     * 
      * @param lat latitude in decimal degrees
      * @param lon longitude in decimal degrees
      */
     public LatLonPoint(double lat, double lon) {
-        this((float)lat, (float)lon);
+        this((float) lat, (float) lon);
     }
 
-    /* uncomment to see how many are being used and thrown away...
-     protected void finalize() {
-     Debug.output("finalized " + this);
-     }
+    /*
+     * uncomment to see how many are being used and thrown away...
+     * protected void finalize() { Debug.output("finalized " + this); }
      */
 
     /**
      * Returns a string representation of the object.
+     * 
      * @return String representation
      */
     public String toString() {
-        return  "LatLonPoint[lat=" + lat_ + ",lon=" + lon_ + "]";
+        return "LatLonPoint[lat=" + lat_ + ",lon=" + lon_ + "]";
     }
 
     /**
      * Clone the LatLonPoint.
+     * 
      * @return clone
      */
     public Object clone() {
         try {
-            return  super.clone();
+            return super.clone();
         } catch (CloneNotSupportedException e) {
             Assert.assertExp(false, "LatLonPoint: internal error!");
-            return  null;       // statement not reached
+            return null; // statement not reached
         }
     }
 
     /**
      * Set latitude.
+     * 
      * @param lat latitude in decimal degrees
      */
     public void setLatitude(float lat) {
@@ -138,6 +143,7 @@ public class LatLonPoint implements Cloneable, Serializable {
 
     /**
      * Set longitude.
+     * 
      * @param lon longitude in decimal degrees
      */
     public void setLongitude(float lon) {
@@ -147,6 +153,7 @@ public class LatLonPoint implements Cloneable, Serializable {
 
     /**
      * Set latitude and longitude.
+     * 
      * @param lat latitude in decimal degrees
      * @param lon longitude in decimal degrees
      */
@@ -159,6 +166,7 @@ public class LatLonPoint implements Cloneable, Serializable {
 
     /**
      * Set latitude and longitude.
+     * 
      * @param lat latitude in radians
      * @param lon longitude in radians
      * @param isRadian placeholder indicates radians
@@ -176,6 +184,7 @@ public class LatLonPoint implements Cloneable, Serializable {
 
     /**
      * Set LatLonPoint.
+     * 
      * @param llpt LatLonPoint
      */
     public void setLatLon(LatLonPoint llpt) {
@@ -187,47 +196,56 @@ public class LatLonPoint implements Cloneable, Serializable {
 
     /**
      * Get normalized latitude.
-     * @return float latitude in decimal degrees
-     * (&minus;90&deg; &le; &phi; &le; 90&deg;)
+     * 
+     * @return float latitude in decimal degrees (&minus;90&deg; &le;
+     *         &phi; &le; 90&deg;)
      */
     public float getLatitude() {
-        return  lat_;
+        return lat_;
     }
 
     /**
      * Get wrapped longitude.
-     * @return float longitude in decimal degrees
-     * (&minus;180&deg; &le; &lambda; &le; 180&deg;)
+     * 
+     * @return float longitude in decimal degrees (&minus;180&deg;
+     *         &le; &lambda; &le; 180&deg;)
      */
     public float getLongitude() {
-        return  lon_;
+        return lon_;
     }
 
     /**
      * Determines whether two LatLonPoints are equal.
+     * 
      * @param obj Object
      * @return Whether the two points are equal up to a tolerance of
-     * 10<sup>-5</sup> degrees in latitude and longitude.
+     *         10 <sup>-5 </sup> degrees in latitude and longitude.
      */
     public boolean equals(Object obj) {
         if (obj instanceof LatLonPoint) {
-            LatLonPoint pt = (LatLonPoint)obj;
-            return  (MoreMath.approximately_equal(lat_, pt.lat_, EQUIVALENT_TOLERANCE) && MoreMath.approximately_equal(lon_, pt.lon_, EQUIVALENT_TOLERANCE));
+            LatLonPoint pt = (LatLonPoint) obj;
+            return (MoreMath.approximately_equal(lat_,
+                    pt.lat_,
+                    EQUIVALENT_TOLERANCE) && MoreMath.approximately_equal(lon_,
+                    pt.lon_,
+                    EQUIVALENT_TOLERANCE));
         }
-        return  false;
+        return false;
     }
 
     /**
      * Hash the lat/lon value.
      * <p>
+     * 
      * @return int hash value
      */
     public int hashCode() {
-        return  ProjMath.hashLatLon(lat_, lon_);
+        return ProjMath.hashLatLon(lat_, lon_);
     }
 
     /**
      * Write object.
+     * 
      * @param s DataOutputStream
      */
     public void write(DataOutputStream s) throws IOException {
@@ -237,9 +255,10 @@ public class LatLonPoint implements Cloneable, Serializable {
     }
 
     /**
-     * Read object.  Assumes that the floats read off the stream will
-     * be in decimal degrees.  Latitude read off the stream first,
-     * then longitude.
+     * Read object. Assumes that the floats read off the stream will
+     * be in decimal degrees. Latitude read off the stream first, then
+     * longitude.
+     * 
      * @param s DataInputStream
      */
     public void read(DataInputStream s) throws IOException {
@@ -247,11 +266,13 @@ public class LatLonPoint implements Cloneable, Serializable {
     }
 
     /**
-     * Read object.  Latitude read off the stream first, then longitude.
+     * Read object. Latitude read off the stream first, then
+     * longitude.
+     * 
      * @param s DataInputStream
      * @param inRadians if true, the floats read off stream will be
-     * considered to be radians.  Otherwise, they will be considered
-     * to be decimal degrees.
+     *        considered to be radians. Otherwise, they will be
+     *        considered to be decimal degrees.
      */
     public void read(DataInputStream s, boolean inRadians) throws IOException {
         if (inRadians) {
@@ -263,9 +284,10 @@ public class LatLonPoint implements Cloneable, Serializable {
 
     /**
      * Sets latitude to something sane.
+     * 
      * @param lat latitude in decimal degrees
      * @return float normalized latitude in decimal degrees
-     * (&minus;90&deg; &le; &phi; &le; 90&deg;)
+     *         (&minus;90&deg; &le; &phi; &le; 90&deg;)
      */
     final public static float normalize_latitude(float lat) {
         if (lat > NORTH_POLE) {
@@ -274,105 +296,127 @@ public class LatLonPoint implements Cloneable, Serializable {
         if (lat < SOUTH_POLE) {
             lat = SOUTH_POLE;
         }
-        return  lat;
+        return lat;
     }
 
     /**
      * Sets longitude to something sane.
+     * 
      * @param lon longitude in decimal degrees
      * @return float wrapped longitude in decimal degrees
-     * (&minus;180&deg; &le; &lambda; &le; 180&deg;)
+     *         (&minus;180&deg; &le; &lambda; &le; 180&deg;)
      */
     final public static float wrap_longitude(float lon) {
         if ((lon < -DATELINE) || (lon > DATELINE)) {
-            //System.out.print("LatLonPoint: wrapping longitude " + lon);
+            //System.out.print("LatLonPoint: wrapping longitude " +
+            // lon);
             lon += DATELINE;
-            lon = lon%LON_RANGE;
+            lon = lon % LON_RANGE;
             lon = (lon < 0) ? DATELINE + lon : -DATELINE + lon;
             //Debug.output(" to " + lon);
         }
-        return  lon;
+        return lon;
     }
 
     /**
-     * Check if latitude is bogus.
-     * Latitude is invalid if lat &gt; 90&deg; or if lat &lt; &minus;90&deg;.
+     * Check if latitude is bogus. Latitude is invalid if lat &gt;
+     * 90&deg; or if lat &lt; &minus;90&deg;.
+     * 
      * @param lat latitude in decimal degrees
      * @return boolean true if latitude is invalid
      */
     public static boolean isInvalidLatitude(float lat) {
-        return  ((lat > NORTH_POLE) || (lat < SOUTH_POLE));
+        return ((lat > NORTH_POLE) || (lat < SOUTH_POLE));
     }
 
     /**
-     * Check if longitude is bogus.
-     * Longitude is invalid if lon &gt; 180&deg; or if lon &lt; &minus;180&deg;.
+     * Check if longitude is bogus. Longitude is invalid if lon &gt;
+     * 180&deg; or if lon &lt; &minus;180&deg;.
+     * 
      * @param lon longitude in decimal degrees
      * @return boolean true if longitude is invalid
      */
     public static boolean isInvalidLongitude(float lon) {
-        return  ((lon < -DATELINE) || (lon > DATELINE));
+        return ((lon < -DATELINE) || (lon > DATELINE));
     }
 
     /**
      * Calculate the <code>radlat_</code> and <code>radlon_</code>
-     * instance variables upon deserialization.
-     * Also, check <code>lat_</code> and <code>lon_</code> for safety;
-     * someone may have tampered with the stream.
-     * @param stream Stream to read <code>lat_</code> and <code>lon_</code> from.
+     * instance variables upon deserialization. Also, check
+     * <code>lat_</code> and <code>lon_</code> for safety; someone
+     * may have tampered with the stream.
+     * 
+     * @param stream Stream to read <code>lat_</code> and
+     *        <code>lon_</code> from.
      */
-    private void readObject(java.io.ObjectInputStream stream) throws IOException,
-            ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream stream)
+            throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
         lat_ = normalize_latitude(lat_);
         lon_ = wrap_longitude(lon_);
         radlat_ = ProjMath.degToRad(lat_);
         radlon_ = ProjMath.degToRad(lon_);
     }
-    
-	/**
-	 * Find a LatLonPoint a distance and direction away from this
-	 * point, based on the sphercal earth model.
-	 * @param dist distance, in radians.
-	 * @param az radians of azimuth (direction) east of north (-PI &lt;= Az &lt; PI)
-	 * @return LatLonPoint result
-	 */
+
+    /**
+     * Find a LatLonPoint a distance and direction away from this
+     * point, based on the sphercal earth model.
+     * 
+     * @param dist distance, in radians.
+     * @param az radians of azimuth (direction) east of north (-PI
+     *        &lt;= Az &lt; PI)
+     * @return LatLonPoint result
+     */
     public LatLonPoint getPoint(float dist, float az) {
-		return GreatCircle.spherical_between(radlat_, radlon_, dist, az);
+        return GreatCircle.spherical_between(radlat_, radlon_, dist, az);
     }
 
     /**
-     * Find the distance to another LatLonPoint, based on a earth spherical model.
-     * @param toPoint LatLonPoint
-     * @return distance, in radians.  You can use an com.bbn.openmap.proj.Length 
-     * to convert the radians to other units. 
-     */
-    	public float distance(LatLonPoint toPoint) {
-    		return GreatCircle.spherical_distance(radlat_, radlon_, toPoint.radlat_, toPoint.radlon_);
-    	}
-    	
-    /**
-     * Find the azimuth to another point, based on the sphercal earth model.
-     * @param toPoint LatLonPoint
-     * @return the azimuth `Az' east of north from this point 
-     * bearing toward the one provided as an argument.(-PI &lt;= Az &lt;= PI).
+     * Find the distance to another LatLonPoint, based on a earth
+     * spherical model.
      * 
+     * @param toPoint LatLonPoint
+     * @return distance, in radians. You can use an
+     *         com.bbn.openmap.proj.Length to convert the radians to
+     *         other units.
+     */
+    public float distance(LatLonPoint toPoint) {
+        return GreatCircle.spherical_distance(radlat_,
+                radlon_,
+                toPoint.radlat_,
+                toPoint.radlon_);
+    }
+
+    /**
+     * Find the azimuth to another point, based on the sphercal earth
+     * model.
+     * 
+     * @param toPoint LatLonPoint
+     * @return the azimuth `Az' east of north from this point bearing
+     *         toward the one provided as an argument.(-PI &lt;= Az
+     *         &lt;= PI).
+     *  
      */
     public float azimuth(LatLonPoint toPoint) {
-    		return GreatCircle.spherical_azimuth(radlat_, radlon_, toPoint.radlat_, toPoint.radlon_);
+        return GreatCircle.spherical_azimuth(radlat_,
+                radlon_,
+                toPoint.radlat_,
+                toPoint.radlon_);
     }
-    
+
     /**
-     * Used by the projection code for read-only quick access.
-     * This is meant for quick backdoor access by the projection library.
+     * Used by the projection code for read-only quick access. This is
+     * meant for quick backdoor access by the projection library.
      * Modify at your own risk!
+     * 
      * @see #lat_
      */
     public transient float radlat_ = 0.0f;
     /**
-     * Used by the projection code for read-only quick access.
-     * This is meant for quick backdoor access by the projection library.
+     * Used by the projection code for read-only quick access. This is
+     * meant for quick backdoor access by the projection library.
      * Modify at your own risk!
+     * 
      * @see #lon_
      */
     public transient float radlon_ = 0.0f;

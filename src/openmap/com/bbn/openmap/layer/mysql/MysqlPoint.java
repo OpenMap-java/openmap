@@ -18,12 +18,13 @@ package com.bbn.openmap.layer.mysql;
  * arrays as a sequence of Latitude/Longitude pairs. This differs from
  * tha database where values are stored as X/Y or Easting/Northing
  * pairs.
- *
+ * 
  * <p>
- * Copyright 2003 by the Author<br>
+ * Copyright 2003 by the Author <br>
  * <p>
- * @author Uwe Baier  uwe.baier@gmx.net<br>
- * @version 1.0<br>
+ * 
+ * @author Uwe Baier uwe.baier@gmx.net <br>
+ * @version 1.0 <br>
  */
 public class MysqlPoint extends MysqlGeometry {
 
@@ -32,11 +33,12 @@ public class MysqlPoint extends MysqlGeometry {
 
     public MysqlPoint() {
         super();
-        this.setType(this.POINTTYPE);
+        this.setType(MysqlGeometry.POINTTYPE);
     }
 
     /**
      * Returns the eastings.
+     * 
      * @return double
      */
     public double getEastings() {
@@ -45,6 +47,7 @@ public class MysqlPoint extends MysqlGeometry {
 
     /**
      * Returns the northings.
+     * 
      * @return double
      */
     public double getNorthings() {
@@ -53,6 +56,7 @@ public class MysqlPoint extends MysqlGeometry {
 
     /**
      * Sets the eastings.
+     * 
      * @param eastings The eastings to set
      */
     public void setEastings(double eastings) {
@@ -61,6 +65,7 @@ public class MysqlPoint extends MysqlGeometry {
 
     /**
      * Sets the northings.
+     * 
      * @param northings The northings to set
      */
     public void setNorthings(double northings) {

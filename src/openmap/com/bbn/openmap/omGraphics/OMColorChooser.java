@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -13,8 +13,8 @@
 // **********************************************************************
 // 
 // $RCSfile: OMColorChooser.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/05/10 20:45:59 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:06:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,25 +29,26 @@ import javax.swing.colorchooser.*;
 import javax.swing.event.*;
 
 /**
- * A wrapper class that pops up a modified JColorChooser class.  The
+ * A wrapper class that pops up a modified JColorChooser class. The
  * modification involves replacing the preview panel with a slider
  * that modifies the alpha transparency part of the color.
+ * 
  * @author dietrick
- * @author Oliver Hinds added preview panel to see color with transparency.
+ * @author Oliver Hinds added preview panel to see color with
+ *         transparency.
  */
 public class OMColorChooser {
 
     /**
-     * Displays a dialog that lets you change a color.  Locks up the
+     * Displays a dialog that lets you change a color. Locks up the
      * application until a choice is made, returning the chosen color,
      * or null if nothing was chosen.
-     *
+     * 
      * @param component the source component.
      * @param title the String title for the window.
      * @param startingColor the initial color.
      */
-    public static Color showDialog(Component component,
-                                   String title, 
+    public static Color showDialog(Component component, String title,
                                    Color startingColor) {
         Color initColor = startingColor != null ? startingColor : Color.white;
 
@@ -56,56 +57,61 @@ public class OMColorChooser {
 
         jcc.getSelectionModel().addChangeListener(ok);
         jcc.setPreviewPanel(ok.getTransparancyAdjustment(initColor.getAlpha()));
-        JDialog colorDialog = JColorChooser.createDialog(component, title,
-                                                         true, jcc,
-                                                         ok, null);
+        JDialog colorDialog = JColorChooser.createDialog(component,
+                title,
+                true,
+                jcc,
+                ok,
+                null);
         colorDialog.show();
         return ok.getColor();
     }
 
     public static void main(String[] argv) {
         Color testColor = showDialog(null, "Choose a Color", Color.white);
-        System.out.println("Color: " + testColor + 
-                           ", hex value: " + Integer.toHexString(testColor.getRGB()));
+        System.out.println("Color: " + testColor + ", hex value: "
+                + Integer.toHexString(testColor.getRGB()));
         System.exit(0);
     }
 }
 
 /**
- * A modified ActionListener used by the JColorChooser.  Based on
- * the one used in javax.swing.JColorChooser, but with the
- * extended capability to handle transparancy.
+ * A modified ActionListener used by the JColorChooser. Based on the
+ * one used in javax.swing.JColorChooser, but with the extended
+ * capability to handle transparancy.
  */
-class ColorTracker 
-    implements ActionListener, ChangeListener, Serializable {
-    
+
+class ColorTracker implements ActionListener, ChangeListener, Serializable {
+
     ColorRect preview;
     JColorChooser chooser;
     Color color;
     int transparency;
-    
+
     public ColorTracker(JColorChooser c) {
         chooser = c;
         preview = new ColorRect(chooser.getColor());
     }
 
-    /** 
-     * ActionListener interface.  Sets the color from the JColorChooser.
+    /**
+     * ActionListener interface. Sets the color from the
+     * JColorChooser.
      */
     public void actionPerformed(ActionEvent e) {
         color = chooser.getColor();
         setPreviewColor(color);
     }
-    
-    /** 
+
+    /**
      * ChangeListener interface. Called when the color changes
      */
     public void stateChanged(ChangeEvent e) {
-        if(!(e.getSource() instanceof ColorSelectionModel)) return;
+        if (!(e.getSource() instanceof ColorSelectionModel))
+            return;
 
         setPreviewColor(((ColorSelectionModel) e.getSource()).getSelectedColor());
     }
-    
+
     /**
      * sets the preview color
      */
@@ -117,15 +123,12 @@ class ColorTracker
     }
 
     /**
-     * Get the Color set in the JColorChooser, and set the alpha
-     * value based on the transparency slider.
+     * Get the Color set in the JColorChooser, and set the alpha value
+     * based on the transparency slider.
      */
     public Color getColor() {
         if (color != null) {
-            color =  new Color(color.getRed(),
-                               color.getGreen(),
-                               color.getBlue(),
-                               transparency);
+            color = new Color(color.getRed(), color.getGreen(), color.getBlue(), transparency);
         }
         return color;
     }
@@ -133,7 +136,7 @@ class ColorTracker
     /**
      * Create the Swing components that let you change the
      * transparency of the color received from the JColorChooser.
-     *
+     * 
      * @param initialValue the starting alpha value for the color.
      * @return JComponent to adjust the transparency value.
      */
@@ -143,10 +146,8 @@ class ColorTracker
         setPreviewColor(preview.getColor());
         JPanel slidePanel = new JPanel();
         Box slideBox = Box.createHorizontalBox();
-    
-        JSlider opaqueSlide = new JSlider(
-            JSlider.HORIZONTAL, 0/*min*/, 255/*max*/, 
-            initialValue/*inital*/);
+
+        JSlider opaqueSlide = new JSlider(JSlider.HORIZONTAL, 0/* min */, 255/* max */, initialValue/* inital */);
         java.util.Hashtable dict = new java.util.Hashtable();
         dict.put(new Integer(50), new JLabel("clear"));
         dict.put(new Integer(200), new JLabel("opaque"));
@@ -154,17 +155,17 @@ class ColorTracker
         opaqueSlide.setPaintLabels(true);
         opaqueSlide.setMajorTickSpacing(50);
         opaqueSlide.setPaintTicks(true);
-        opaqueSlide.addChangeListener(new ChangeListener(){
-                public void stateChanged(ChangeEvent ce){
-                    JSlider slider = (JSlider) ce.getSource();
-                    if (slider.getValueIsAdjusting()){
-                        transparency = slider.getValue();
-                    }
-                    // This sets transparency in preview...
-                    setPreviewColor(preview.getColor());
+        opaqueSlide.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent ce) {
+                JSlider slider = (JSlider) ce.getSource();
+                if (slider.getValueIsAdjusting()) {
+                    transparency = slider.getValue();
                 }
-            });
-        
+                // This sets transparency in preview...
+                setPreviewColor(preview.getColor());
+            }
+        });
+
         preview.setPreferredSize(new Dimension(100, slideBox.getHeight()));
         slideBox.add(preview);
         slideBox.add(Box.createGlue());
@@ -172,7 +173,7 @@ class ColorTracker
         slideBox.add(Box.createGlue());
         slidePanel.add(slideBox);
         // You know what, it just has to be something, so the
-        // UIManager will think it's valid.  It will get resized as
+        // UIManager will think it's valid. It will get resized as
         // appropriate when the JDialog gets packed.
         slidePanel.setSize(new Dimension(50, 50));
         return slidePanel;
@@ -180,6 +181,7 @@ class ColorTracker
 }
 
 // class to display the currently selected color
+
 class ColorRect extends JPanel {
     Color c; // color to display
 
@@ -193,6 +195,7 @@ class ColorRect extends JPanel {
 
     /**
      * set the color to tht specified
+     * 
      * @param c color to paint
      */
     public void setColor(Color _c) {
@@ -213,6 +216,6 @@ class ColorRect extends JPanel {
         super.paint(g);
 
         g.setColor(c);
-        ((Graphics2D)g).fill(g.getClip());
+        ((Graphics2D) g).fill(g.getClip());
     }
 }

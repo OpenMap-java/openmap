@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/OpenMapAppPartCollection.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/OpenMapAppPartCollection.java,v
+// $
 // $RCSfile: OpenMapAppPartCollection.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/09/17 19:10:16 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.icon;
 
@@ -41,7 +42,7 @@ public class OpenMapAppPartCollection extends IconPartCollection {
         }
         return omparts;
     }
-    
+
     protected void init() {
         add(BIG_BOX.getEntry());
         add(SMALL_BOX.getEntry());
@@ -52,22 +53,21 @@ public class OpenMapAppPartCollection extends IconPartCollection {
         add(UL_LR_LINE.getEntry());
     }
 
-    public final static OpenMapAppPart BIG_BOX = new OpenMapAppPart(
-        "BIG_BOX", "BIG_BOX", new int[] {10, 10, 90, 90, 10}, new int[] {10, 90, 90, 10, 10});
-    public final static OpenMapAppPart SMALL_BOX = new OpenMapAppPart(
-        "SMALL_BOX", "SMALL_BOX", new int[] {30, 30, 70, 70, 30}, new int[] {30, 70, 70, 30, 30});
-    public final static OpenMapAppPart FILL_BOX = new OpenMapAppPart(
-        "FILL_BOX", "FILL_BOX", 
-        new int[] {10, 10, 50, 50, 30, 30, 70, 70, 50, 50, 90, 90, 10},
-        new int[] {10, 90, 90, 70, 70, 30, 30, 70, 70, 90, 90, 10, 10});
-    public final static OpenMapAppPart UL_TRI = new OpenMapAppPart(
-        "UL_TRI", "UL_TRI", new int[] {10, 10, 75, 10}, new int[] {10, 75, 10, 10});
-    public final static OpenMapAppPart LR_TRI = new OpenMapAppPart(
-        "LR_TRI", "LR_TRI", new int[] {25, 90, 90, 25}, new int[] {90, 90, 25, 90});
-    public final static OpenMapAppPart LL_UR_LINE = new OpenMapAppPart(
-        "LL_UR_LINE", "LL_UR_LINE", new int[] {10, 90}, new int[] {90, 10});
-    public final static OpenMapAppPart UL_LR_LINE = new OpenMapAppPart(
-        "UL_LR_LINE", "UL_LR_LINE", new int[] {10, 90}, new int[] {10, 90});
+    public final static OpenMapAppPart BIG_BOX = new OpenMapAppPart("BIG_BOX", "BIG_BOX", new int[] {
+            10, 10, 90, 90, 10 }, new int[] { 10, 90, 90, 10, 10 });
+    public final static OpenMapAppPart SMALL_BOX = new OpenMapAppPart("SMALL_BOX", "SMALL_BOX", new int[] {
+            30, 30, 70, 70, 30 }, new int[] { 30, 70, 70, 30, 30 });
+    public final static OpenMapAppPart FILL_BOX = new OpenMapAppPart("FILL_BOX", "FILL_BOX", new int[] {
+            10, 10, 50, 50, 30, 30, 70, 70, 50, 50, 90, 90, 10 }, new int[] {
+            10, 90, 90, 70, 70, 30, 30, 70, 70, 90, 90, 10, 10 });
+    public final static OpenMapAppPart UL_TRI = new OpenMapAppPart("UL_TRI", "UL_TRI", new int[] {
+            10, 10, 75, 10 }, new int[] { 10, 75, 10, 10 });
+    public final static OpenMapAppPart LR_TRI = new OpenMapAppPart("LR_TRI", "LR_TRI", new int[] {
+            25, 90, 90, 25 }, new int[] { 90, 90, 25, 90 });
+    public final static OpenMapAppPart LL_UR_LINE = new OpenMapAppPart("LL_UR_LINE", "LL_UR_LINE", new int[] {
+            10, 90 }, new int[] { 90, 10 });
+    public final static OpenMapAppPart UL_LR_LINE = new OpenMapAppPart("UL_LR_LINE", "UL_LR_LINE", new int[] {
+            10, 90 }, new int[] { 10, 90 });
 
     public static class OpenMapAppPart {
         int[] xpoints;
@@ -80,7 +80,8 @@ public class OpenMapAppPartCollection extends IconPartCollection {
             this(n, d, xp, yp, null);
         }
 
-        public OpenMapAppPart(String n, String d, int[] xp, int[] yp, AffineTransform affTrans) {
+        public OpenMapAppPart(String n, String d, int[] xp, int[] yp,
+                AffineTransform affTrans) {
             name = n;
             description = d;
             xpoints = xp;
@@ -89,8 +90,7 @@ public class OpenMapAppPartCollection extends IconPartCollection {
         }
 
         public IconPartCollectionEntry getEntry() {
-            return new IconPartCollectionEntry(
-                name, description, new BasicIconPart(new Polygon(xpoints, ypoints, xpoints.length), af));
+            return new IconPartCollectionEntry(name, description, new BasicIconPart(new Polygon(xpoints, ypoints, xpoints.length), af));
         }
     }
 }

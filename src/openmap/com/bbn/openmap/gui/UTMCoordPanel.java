@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/UTMCoordPanel.java,v $
 // $RCSfile: UTMCoordPanel.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/09/22 14:56:43 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
@@ -34,7 +33,6 @@ import com.bbn.openmap.event.CenterSupport;
 import com.bbn.openmap.proj.coords.UTMPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.Environment;
 
 /**
  * UTMCoordPanel is a simple gui with entry boxes and labels for Zone
@@ -45,112 +43,124 @@ import com.bbn.openmap.Environment;
 public class UTMCoordPanel extends CoordPanel implements Serializable {
 
     protected transient JTextField zoneLetter, zoneNumber, easting, northing;
-    
+
     /**
-     *  Creates the panel.
+     * Creates the panel.
      */
     public UTMCoordPanel() {
-	super();
+        super();
     }
 
     /**
-     *  Creates the panel.
+     * Creates the panel.
      */
     public UTMCoordPanel(CenterSupport support) {
-	super(support);
+        super(support);
     }
 
     /**
-     *  Creates and adds the labels and entry fields for latitude and longitude
+     * Creates and adds the labels and entry fields for latitude and
+     * longitude
      */
     protected void makeWidgets() {
         String locText;
-	GridBagLayout gridbag = new GridBagLayout();
-	GridBagConstraints c = new GridBagConstraints();
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
 
-	setLayout(gridbag);
-        locText = i18n.get(UTMCoordPanel.class,"border","Zone Number|Hemisphere|Easting|Northing");
-	setBorder(new TitledBorder(new EtchedBorder(), locText));
+        setLayout(gridbag);
+        locText = i18n.get(UTMCoordPanel.class,
+                "border",
+                "Zone Number|Hemisphere|Easting|Northing");
+        setBorder(new TitledBorder(new EtchedBorder(), locText));
 
-        locText = i18n.get(UTMCoordPanel.class,"utmLabel","UTM: ");
-	JLabel utmLabel = new JLabel(locText);
-	c.gridx = 0;
-	gridbag.setConstraints(utmLabel, c);
-	add(utmLabel);
+        locText = i18n.get(UTMCoordPanel.class, "utmLabel", "UTM: ");
+        JLabel utmLabel = new JLabel(locText);
+        c.gridx = 0;
+        gridbag.setConstraints(utmLabel, c);
+        add(utmLabel);
 
-	c.gridx = GridBagConstraints.RELATIVE;
-	zoneNumber = new JTextField(3);
-        zoneNumber.setToolTipText(i18n.get(UTMCoordPanel.class, "zone", I18n.TOOLTIP, "Zone Number: 0-60"));
-	gridbag.setConstraints(zoneNumber, c);
-	add(zoneNumber);
+        c.gridx = GridBagConstraints.RELATIVE;
+        zoneNumber = new JTextField(3);
+        zoneNumber.setToolTipText(i18n.get(UTMCoordPanel.class,
+                "zone",
+                I18n.TOOLTIP,
+                "Zone Number: 0-60"));
+        gridbag.setConstraints(zoneNumber, c);
+        add(zoneNumber);
 
-	zoneLetter = new JTextField(2);
-        zoneLetter.setToolTipText(i18n.get(UTMCoordPanel.class, "hemi", I18n.TOOLTIP, "Hemisphere: N or S"));	
+        zoneLetter = new JTextField(2);
+        zoneLetter.setToolTipText(i18n.get(UTMCoordPanel.class,
+                "hemi",
+                I18n.TOOLTIP,
+                "Hemisphere: N or S"));
         gridbag.setConstraints(zoneLetter, c);
-	add(zoneLetter);
+        add(zoneLetter);
 
-	easting = new JTextField(8);
-	gridbag.setConstraints(easting, c);
-	add(easting);
+        easting = new JTextField(8);
+        gridbag.setConstraints(easting, c);
+        add(easting);
 
-	northing = new JTextField(8);
-	gridbag.setConstraints(northing, c);
-	add(northing);
+        northing = new JTextField(8);
+        gridbag.setConstraints(northing, c);
+        add(northing);
     }
 
     /**
-     *  @return the LatLonPoint represented by contents of the entry boxes
+     * @return the LatLonPoint represented by contents of the entry
+     *         boxes
      */
     public LatLonPoint getLatLon() {
-	float fnorthing, feasting;
-	int iZoneNumber;
-	char cZoneLetter;
+        float fnorthing, feasting;
+        int iZoneNumber;
+        char cZoneLetter;
 
-	try {
-	    // Allow blank minutes and seconds fields to represent zero
-	    iZoneNumber = Float.valueOf(zoneNumber.getText()).intValue();
-	    cZoneLetter = zoneLetter.getText().charAt(0);
+        try {
+            // Allow blank minutes and seconds fields to represent
+            // zero
+            iZoneNumber = Float.valueOf(zoneNumber.getText()).intValue();
+            cZoneLetter = zoneLetter.getText().charAt(0);
 
-	    float minEasting = easting.getText().equals("") ? 0f :
-	        Float.valueOf(easting.getText()).floatValue();
-	    easting.setText(Float.toString(Math.abs(minEasting)));
+            float minEasting = easting.getText().equals("") ? 0f
+                    : Float.valueOf(easting.getText()).floatValue();
+            easting.setText(Float.toString(Math.abs(minEasting)));
 
-	    float minNorthing = northing.getText().equals("") ? 0 :
-	        Float.valueOf(northing.getText()).floatValue();
-	    northing.setText(Float.toString(Math.abs(minNorthing)));
+            float minNorthing = northing.getText().equals("") ? 0
+                    : Float.valueOf(northing.getText()).floatValue();
+            northing.setText(Float.toString(Math.abs(minNorthing)));
 
-	    UTMPoint utm = new UTMPoint(minNorthing, minEasting, iZoneNumber, cZoneLetter);
-	    return utm.toLatLonPoint();
+            UTMPoint utm = new UTMPoint(minNorthing, minEasting, iZoneNumber, cZoneLetter);
+            return utm.toLatLonPoint();
 
-	} catch (NumberFormatException except) {
-  	    Debug.output(except.toString());
-	    clearTextBoxes();
-	}
-	return null;
+        } catch (NumberFormatException except) {
+            Debug.output(except.toString());
+            clearTextBoxes();
+        }
+        return null;
     }
 
     /**
-     *  Sets the contents of the latitude and longitude entry boxes
-     *  @param llpoint the object containing the coordinates that
-     *  should go in the boxes.
+     * Sets the contents of the latitude and longitude entry boxes
+     * 
+     * @param llpoint the object containing the coordinates that
+     *        should go in the boxes.
      */
-     public void setLatLon(LatLonPoint llpoint) {
-	 if (llpoint == null) {
-	     clearTextBoxes();
-	     return;
-	 }
+    public void setLatLon(LatLonPoint llpoint) {
+        if (llpoint == null) {
+            clearTextBoxes();
+            return;
+        }
 
-	 UTMPoint utm = new UTMPoint(llpoint);
-	 northing.setText(Float.toString(utm.northing));
-	 easting.setText(Float.toString(utm.easting));
-	 zoneNumber.setText(Integer.toString(utm.zone_number));
-	 zoneLetter.setText((char)utm.zone_letter + "");
-     }
+        UTMPoint utm = new UTMPoint(llpoint);
+        northing.setText(Float.toString(utm.northing));
+        easting.setText(Float.toString(utm.easting));
+        zoneNumber.setText(Integer.toString(utm.zone_number));
+        zoneLetter.setText((char) utm.zone_letter + "");
+    }
 
     protected void clearTextBoxes() {
-	northing.setText("");
-	easting.setText("");
-	zoneLetter.setText("");
-	zoneNumber.setText("");
+        northing.setText("");
+        easting.setText("");
+        zoneLetter.setText("");
+        zoneNumber.setText("");
     }
 }

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayer.java,v $
 // $RCSfile: EditorLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/09/30 22:39:29 $
+// $Revision: 1.12 $
+// $Date: 2004/10/14 18:05:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,17 +23,21 @@
 package com.bbn.openmap.layer.editor;
 
 import com.bbn.openmap.InformationDelegator;
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.gui.Tool;
 import com.bbn.openmap.layer.DrawingToolLayer;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
-import com.bbn.openmap.tools.drawing.*;
-import com.bbn.openmap.util.*;
+import com.bbn.openmap.tools.drawing.DrawingTool;
+import com.bbn.openmap.util.ComponentFactory;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
-import java.awt.*;
+import java.awt.Container;
 import java.util.Properties;
-import javax.swing.*;
+
+import javax.swing.JPanel;
 
 /**
  * The EditorLayer is a layer that provides a specific set of tools to
@@ -45,8 +49,10 @@ import javax.swing.*;
  * 
  * <pre>
  * 
- *  # could be com.bbn.openmap.layer.editor.DrawingEditorTool, for instance
- *  editorLayer.editor=EditorTool class
+ *  
+ *   # could be com.bbn.openmap.layer.editor.DrawingEditorTool, for instance
+ *   editorLayer.editor=EditorTool class
+ *   
  *  
  * </pre>
  */
@@ -88,13 +94,15 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
                 Object[] objArgs = { this };
 
                 editorTool = (EditorTool) ComponentFactory.create(editorClassName,
-                                                                  objArgs, prefix,
-                                                                  props);
+                        objArgs,
+                        prefix,
+                        props);
 
                 if (editorTool == null) {
                     // OK, try to create with an empty constructor.
-                    editorTool = (EditorTool) ComponentFactory
-                            .create(editorClassName, prefix, props);
+                    editorTool = (EditorTool) ComponentFactory.create(editorClassName,
+                            prefix,
+                            props);
                 }
 
                 if (editorTool == null) {
@@ -103,7 +111,8 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
                         additionalInfo = ", although an editor tool class ("
                                 + editorClassName + ") was defined.";
                     }
-                    Debug.error(getName() + " doesn't have a EditorTool defined"
+                    Debug.error(getName()
+                            + " doesn't have a EditorTool defined"
                             + additionalInfo);
                 }
             }
@@ -254,8 +263,8 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
 
     /**
      * The retrieval key for this tool. We use the property prefix for
-     * the key. If the property prefix is not set then the name
-     * is used, which may not be that unique.
+     * the key. If the property prefix is not set then the name is
+     * used, which may not be that unique.
      * 
      * @return String The key for this tool.
      */

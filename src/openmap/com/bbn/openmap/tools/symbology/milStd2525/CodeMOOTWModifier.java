@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,24 +14,21 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeMOOTWModifier.java,v $
 // $RCSfile: CodeMOOTWModifier.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.tools.symbology.milStd2525;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import com.bbn.openmap.util.PropUtils;
 
 /**
  * A CodeMOOTWCategory is similar to the CodeModifier CodeCategory,
- * but it applies to the MOOTW symbol set instead.  This CodePosition
+ * but it applies to the MOOTW symbol set instead. This CodePosition
  * notes the 11 and 12 characters in MOOTW symbol codes.
  */
 public class CodeMOOTWModifier extends CodePosition {
@@ -42,7 +39,7 @@ public class CodeMOOTWModifier extends CodePosition {
 
     /**
      * Starts looking for property 1, creates SymbolParts until the
-     * numbers run out.  If there are limits to what properties should
+     * numbers run out. If there are limits to what properties should
      * be read, this method should be overriden.
      */
     public void parsePositions(String prefix, Properties props) {

@@ -13,30 +13,32 @@
 package com.bbn.openmap.layer.mysql;
 
 /**
- * This class represents the base class of MySQL Geometry.  Coordinate
+ * This class represents the base class of MySQL Geometry. Coordinate
  * values are stored as values of double precision in arrays as a
  * sequence of Latitude/Longitude pairs. This differs from the
  * database where values are stored as X/Y or Easting/Northing pairs.
  * 
- * Copyright 2003 by the Author<br>
+ * Copyright 2003 by the Author <br>
  * <p>
- * @author Uwe Baier  uwe.baier@gmx.net<br>
- * @version 1.0<br>
+ * 
+ * @author Uwe Baier uwe.baier@gmx.net <br>
+ * @version 1.0 <br>
  */
 public class MysqlGeometry {
 
     private String type;
 
-    public static String POINTTYPE = "POINT";
-    public static String LINESTRINGTYPE = "LINESTRING";
-    public static String POLYGONTTYPE = "POLYGON";
-    public static String MULTIPOINTTYPE = "MULTIPOINT";
-    public static String MULTILINESTRINGTYPE = "MULTILINESTRING";
-    public static String MULTIPOLYGONTYPE = "MULTIPOLYGON";
-    public static String GEOMETRYCOLLECTIONTYPE = "GEOMETRYCOLLECTION";
+    public final static String POINTTYPE = "POINT";
+    public final static String LINESTRINGTYPE = "LINESTRING";
+    public final static String POLYGONTTYPE = "POLYGON";
+    public final static String MULTIPOINTTYPE = "MULTIPOINT";
+    public final static String MULTILINESTRINGTYPE = "MULTILINESTRING";
+    public final static String MULTIPOLYGONTYPE = "MULTIPOLYGON";
+    public final static String GEOMETRYCOLLECTIONTYPE = "GEOMETRYCOLLECTION";
 
     /**
      * Returns the type.
+     * 
      * @return String
      */
     public String getType() {
@@ -45,6 +47,7 @@ public class MysqlGeometry {
 
     /**
      * Sets the type.
+     * 
      * @param type The type to set
      */
     public void setType(String type) {

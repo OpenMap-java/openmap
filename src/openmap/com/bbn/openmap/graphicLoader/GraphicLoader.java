@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/GraphicLoader.java,v $
 // $RCSfile: GraphicLoader.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:05:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.graphicLoader;
 
@@ -37,6 +36,7 @@ public interface GraphicLoader {
      * The method that calls the GUI that controls the GraphicLoader.
      */
     public Component getGUI();
+
     /**
      * Let the GraphicLoader know what the projection is.
      */

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/Link.java,v $
 // $RCSfile: Link.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.link;
 
@@ -28,26 +27,26 @@ import com.bbn.openmap.omGraphics.grid.*;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.util.Debug;
 
-import java.awt.Color;
 import java.io.*;
 import java.net.Socket;
 
 /**
  * The Link object is the main mechanism for communications between a
- * LinkClient (most likely a LinkLayer) and a LinkServer.  This class
+ * LinkClient (most likely a LinkLayer) and a LinkServer. This class
  * should only be used directly by a server - clients should use the
- * ClientLink object.  This object defines the communications that
- * either side can make.<P>
- *
+ * ClientLink object. This object defines the communications that
+ * either side can make.
+ * <P>
+ * 
  * The ClientLink adds some control methods that the client should
  * use. The client needs to make sure that several queries are not
- * sent to the server at the same time.  The ClientLink contains a
- * lock that can be checked, and set.  It is up to the client to
- * manage the lock.  The ClientLink also provides the method to close
- * the link down, since it makes that decision.  The server should
- * remain connected until the client is finished.  The server can
- * request to be disconnected, however, and the ClientLink provides a
- * method for the client to check if that request has been made.
+ * sent to the server at the same time. The ClientLink contains a lock
+ * that can be checked, and set. It is up to the client to manage the
+ * lock. The ClientLink also provides the method to close the link
+ * down, since it makes that decision. The server should remain
+ * connected until the client is finished. The server can request to
+ * be disconnected, however, and the ClientLink provides a method for
+ * the client to check if that request has been made.
  */
 public class Link implements LinkConstants {
     /** The apparent maximum size of a header. */
@@ -60,8 +59,8 @@ public class Link implements LinkConstants {
     protected char[] charArray = new char[MAX_HEADER_LENGTH];
     /**
      * Set for the client, by the server, to indicate whether the
-     * socket should be closed.  By default, this will be false,
-     * Used when the server wants to run in a stateless mode, and doesn't
+     * socket should be closed. By default, this will be false, Used
+     * when the server wants to run in a stateless mode, and doesn't
      * care to maintain a connection with the client. It's included in
      * the Link object because the server knows about it and sets it
      * in the client.
@@ -69,52 +68,52 @@ public class Link implements LinkConstants {
     protected boolean closeLink = false;
     /**
      * Used to retrieve any potential graphics queries that came in
-     * over the link. 
+     * over the link.
      */
     protected LinkMapRequest mapRequest = null;
     /**
      * Used to retrieve any potential graphics responses that came in
-     * over the link. 
+     * over the link.
      */
     protected LinkGraphicList graphicList = null;
     /**
      * Used to retrieve any potential gesture queries that came in
-     * over the link. 
+     * over the link.
      */
     protected LinkActionRequest actionRequest = null;
     /**
      * Used to retrieve any potential gesture responses that came in
-     * over the link. 
+     * over the link.
      */
     protected LinkActionList actionList = null;
     /**
-     * Used to retrieve any potential GUI queries that came in
-     * over the link. 
+     * Used to retrieve any potential GUI queries that came in over
+     * the link.
      */
     protected LinkGUIRequest guiRequest = null;
     /**
-     * Used to retrieve any potential GUI responses that came in
-     * over the link. 
+     * Used to retrieve any potential GUI responses that came in over
+     * the link.
      */
     protected LinkGUIList guiList = null;
     /** The socket used for the link. Kept for convenience. */
     protected Socket socket = null;
     /**
      * The lock. This should only be changed within a syhchronized
-     * block of code, synchronized on the link object.!!  Otherwise,
+     * block of code, synchronized on the link object.!! Otherwise,
      * race conditions can result.
      */
     protected boolean locked = false;
     /**
      * Flag to control whether this side of the link will adhere to
-     * shutdown commands issued from other side of the link.  False by
+     * shutdown commands issued from other side of the link. False by
      * default.
      */
     protected boolean obeyCommandToExit = false;
 
-    /** 
-     * Open up a link over a socket. 
-     *
+    /**
+     * Open up a link over a socket.
+     * 
      * @param socket the socket to open the Link on.
      * @throws IOException
      */
@@ -123,7 +122,7 @@ public class Link implements LinkConstants {
         InputStream is = socket.getInputStream();
         BufferedInputStream bis = new BufferedInputStream(is);
         this.dis = new DataInputStream(bis);
-        
+
         OutputStream os = socket.getOutputStream();
         BufferedOutputStream bos = new BufferedOutputStream(os);
         this.dos = new LinkOutputStream(bos);
@@ -137,34 +136,35 @@ public class Link implements LinkConstants {
         try {
             this.dis.close();
             this.dos.close();
-        } catch (IOException ioe) {}
-        
+        } catch (IOException ioe) {
+        }
+
         this.dis = null;
         this.dos = null;
     }
 
-    /** 
+    /**
      * The method to call at the beginning of a request or response.
-     * It writes the header given to the link.  This header is
-     * expected on the other side of the link. 
-     *
+     * It writes the header given to the link. This header is expected
+     * on the other side of the link.
+     * 
      * @param messageHeader Header string, defined in the Link object,
-     * that describes the tranmission.  
+     *        that describes the tranmission.
      * @throws IOException
      */
     public void start(String messageHeader) throws IOException {
         dos.write(messageHeader.getBytes());
     }
 
-    /**  
+    /**
      * The method that needs to be called at the end of a
-     * request/response or section.  This places the END_TOTAL symbol
+     * request/response or section. This places the END_TOTAL symbol
      * on the link to let the other side know that the transmission is
-     * done, and it also flushes the output stream buffer.  
-     *
+     * done, and it also flushes the output stream buffer.
+     * 
      * @param endType use END_SECTION if you want to add more types of
-     * responses.  Use END_TOTAL at the end of the total
-     * transmission.
+     *        responses. Use END_TOTAL at the end of the total
+     *        transmission.
      * @throws IOException
      */
     public void end(String endType) throws IOException {
@@ -178,12 +178,13 @@ public class Link implements LinkConstants {
      * Called to begin reading the information coming off the link.
      * Since the information can be coming in different sections, this
      * method figures out how to read the different sections and get
-     * ready for requests on what was read.  After the link is read,
+     * ready for requests on what was read. After the link is read,
      * you can then request the link to find out what was sent back -
-     * for graphics, GUI components, or actions.  When this method is
+     * for graphics, GUI components, or actions. When this method is
      * called, the link resets the objects that are returned by
-     * getGraphics(), getGUI and getActions().  These methods are
-     * meant to be used after read() to find out what was returned.
+     * getGraphics(), getGUI and getActions(). These methods are meant
+     * to be used after read() to find out what was returned.
+     * 
      * @throws IOException
      */
     public void readAndParse() throws IOException {
@@ -195,26 +196,27 @@ public class Link implements LinkConstants {
      * 
      * @param proj a projection for graphics
      * @param generator an OMGridGenerator that knows how to render
-     * grid objects.
+     *        grid objects.
      * @throws IOException
      */
-    public void readAndParse(Projection proj, OMGridGenerator generator) 
-        throws IOException {
+    public void readAndParse(Projection proj, OMGridGenerator generator)
+            throws IOException {
         readAndParse(proj, generator, null);
     }
 
     /**
      * Called to begin reading the information coming off the link.
-     *
+     * 
      * @param proj pass in a projection if you are expecting graphics
-     * to arrive, and they will be projected as they come off the link.
+     *        to arrive, and they will be projected as they come off
+     *        the link.
      * @param generator an OMGridGenerator that knows how to render
-     * grid objects.
+     *        grid objects.
      * @param layer a layer that is interested in gesture reactions.
-     * @throws IOException 
+     * @throws IOException
      */
-    public void readAndParse(Projection proj, OMGridGenerator generator, Layer layer) 
-        throws IOException {
+    public void readAndParse(Projection proj, OMGridGenerator generator,
+                             Layer layer) throws IOException {
 
         // Reset everything //
 
@@ -231,12 +233,13 @@ public class Link implements LinkConstants {
         closeLink = false;
 
         String delimiter = null;
-        
+
         if (Debug.debugging("link")) {
             System.out.println("Link|readAndParse: listening to link:");
-            System.out.println((proj == null?" without ":" with ") +
-                               "a projection and");
-            System.out.println((layer == null?" without ":" with ") + "a layer");
+            System.out.println((proj == null ? " without " : " with ")
+                    + "a projection and");
+            System.out.println((layer == null ? " without " : " with ")
+                    + "a layer");
         }
 
         while (true) {
@@ -275,7 +278,7 @@ public class Link implements LinkConstants {
             } else if (delimiter == GUI_REQUEST_HEADER) {
                 guiRequest = new LinkGUIRequest(this);
                 delimiter = guiRequest.getLinkStatus();
-            } else if (delimiter == PING_REQUEST_HEADER){
+            } else if (delimiter == PING_REQUEST_HEADER) {
                 start(PING_RESPONSE_HEADER);
                 end(END_TOTAL);
                 delimiter = readDelimiter(false);
@@ -298,7 +301,7 @@ public class Link implements LinkConstants {
     /**
      * After a readAndParse() has been called on a link, this can be
      * called to retrieve a graphics request, if one was sent.
-     *
+     * 
      * @return LinkMapRequest containing the request.
      */
     public LinkMapRequest getMapRequest() {
@@ -309,9 +312,9 @@ public class Link implements LinkConstants {
      * After a readAndParse() has been called on a link, this can be
      * called to retrieve graphics in an LinkOMGraphicList, if any
      * graphics were sent.
-     *
-     * @return GraphicLinkRsponse containing the information.  If no
-     * graphics were sent the list will be empty.
+     * 
+     * @return GraphicLinkRsponse containing the information. If no
+     *         graphics were sent the list will be empty.
      */
     public LinkGraphicList getGraphicList() {
         return graphicList;
@@ -319,8 +322,9 @@ public class Link implements LinkConstants {
 
     /**
      * After a readAndParse() has been called on a link, this can be
-     * called to retrieve a gesture notification/request, if one was sent.
-     *
+     * called to retrieve a gesture notification/request, if one was
+     * sent.
+     * 
      * @return LinkActionRequest containing the request.
      */
     public LinkActionRequest getActionRequest() {
@@ -330,7 +334,7 @@ public class Link implements LinkConstants {
     /**
      * After a readAndParse() has been called on a link, this can be
      * called to retrieve the gesture response.
-     *
+     * 
      * @return LinkActionList containing the information.
      */
     public LinkActionList getActionList() {
@@ -339,8 +343,9 @@ public class Link implements LinkConstants {
 
     /**
      * After a readAndParse() has been called on a link, this can be
-     * called to retrieve a gesture notification/request, if one was sent.
-     *
+     * called to retrieve a gesture notification/request, if one was
+     * sent.
+     * 
      * @return LinkGUIRequest containing the request.
      */
     public LinkGUIRequest getGUIRequest() {
@@ -349,65 +354,66 @@ public class Link implements LinkConstants {
 
     /**
      * After a readAndParse() has been called on a link, this can be
-     * called to retrieve the GUI response, if any
-     * GUI components were sent.
-     *
+     * called to retrieve the GUI response, if any GUI components were
+     * sent.
+     *  
      */
     public LinkGUIList getGUIList() {
         return guiList;
     }
 
     /**
-     * readDelimiter is a function designed to read a header string off
-     * the data input stream in the Link object.  It expects that the
-     * next byte off the link will be a '<' in the stream, and then
-     * reads through the stream until it finds the '>' expected at the
-     * end of the string. It will also return a string version of
-     * END_TOTAL or END_SECTION if it is encountered instead. If
+     * readDelimiter is a function designed to read a header string
+     * off the data input stream in the Link object. It expects that
+     * the next byte off the link will be a ' <' in the stream, and
+     * then reads through the stream until it finds the '>' expected
+     * at the end of the string. It will also return a string version
+     * of END_TOTAL or END_SECTION if it is encountered instead. If
      * desired, an intern version of the string is returned.
-     *
+     * 
      * @param returnString if true, an intern String version of the
-     * characters is returned.
+     *        characters is returned.
      * @throws IOException
      * @throws ArrayIndexOutOfBoundsException
      */
-    protected String readDelimiter(boolean returnString)
-        throws IOException, ArrayIndexOutOfBoundsException {
+    protected String readDelimiter(boolean returnString) throws IOException,
+            ArrayIndexOutOfBoundsException {
         String ret = END_TOTAL;
 
         char END_TOTAL_CHAR = END_TOTAL.charAt(0);
         char END_SECTION_CHAR = END_SECTION.charAt(0);
 
-        char c = (char)dis.readByte();
+        char c = (char) dis.readByte();
 
         // NOTE: possibility of early exits here...
         if (c == END_TOTAL_CHAR) {
-            Debug.message("link","Link|readDelimiter: Found END_TOTAL");
+            Debug.message("link", "Link|readDelimiter: Found END_TOTAL");
             return END_TOTAL;
         } else if (c == END_SECTION_CHAR) {
-            Debug.message("link","Link|readDelimiter: Found END_SECTION");
+            Debug.message("link", "Link|readDelimiter: Found END_SECTION");
             return END_SECTION;
         } else if (c != '<') {
             if (Debug.debugging("link")) {
-                System.out.println("Link|readDelimiter: unexpected protocol data read '" + c + "'");
+                System.out.println("Link|readDelimiter: unexpected protocol data read '"
+                        + c + "'");
             }
             throw new IOException("readDelimiter: unexpected protocol data read.");
         }
 
         // The byte read does indeed equal '<'
         int charCount = 0;
-        
+
         // c should == '<'
         charArray[charCount++] = c;
         // Get the rest of the header information
-        c = (char)dis.readByte();               
+        c = (char) dis.readByte();
         while (c != '>' && charCount < MAX_HEADER_LENGTH - 1) {
             charArray[charCount++] = c;
-            c = (char)dis.readByte();
+            c = (char) dis.readByte();
         }
 
         // c should == '>' or uh-oh - too many characters between
-        // them.  Exit with a faulty return if this is the case.
+        // them. Exit with a faulty return if this is the case.
         if (c != '>') {
             throw new IOException("readDelimiter: header is too long.");
         }
@@ -422,9 +428,10 @@ public class Link implements LinkConstants {
         }
         return ret;
     }
-    
-    /** 
+
+    /**
      * Other threads can check to see if the link is in use.
+     * 
      * @return true if link in use and unavailable.
      */
     public boolean isLocked() {
@@ -432,11 +439,11 @@ public class Link implements LinkConstants {
     }
 
     /**
-     * Set the lock.  Should only be called in a synchronized block of
+     * Set the lock. Should only be called in a synchronized block of
      * code, where you have control over the link.
-     *
+     * 
      * @param set true if the lock should be turned on, false if the
-     * link should be released.
+     *        link should be released.
      */
     public synchronized boolean setLocked(boolean set) {
         if (set == true) {
@@ -444,7 +451,7 @@ public class Link implements LinkConstants {
                 // The lock was NOT set for the caller - unsuccessful.
                 return false;
             } else {
-                locked =  true;
+                locked = true;
                 // The lock was set for the caller, successfully.
                 return true;
             }
@@ -456,15 +463,15 @@ public class Link implements LinkConstants {
     }
 
     /**
-     * This method is provided for those who want to optimize how
-     * they write the graphical objects to the output stream.  Look in
-     * the Link<graphics> API to find out the order of the pieces for
-     * each graphic type.  Not recommended for the faint of heart.
+     * This method is provided for those who want to optimize how they
+     * write the graphical objects to the output stream. Look in the
+     * Link <graphics>API to find out the order of the pieces for
+     * each graphic type. Not recommended for the faint of heart.
      */
     public DataOutput getDOS() {
         return dos;
     }
-    
+
     /**
      * This method complements getDOS().
      */

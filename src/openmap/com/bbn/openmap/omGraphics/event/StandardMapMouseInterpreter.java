@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/09/17 19:19:26 $
+// $Revision: 1.14 $
+// $Date: 2004/10/14 18:06:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.event;
 
@@ -33,7 +32,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import com.bbn.openmap.event.MapMouseEvent;
-import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -42,51 +40,54 @@ import com.bbn.openmap.util.Debug;
 /**
  * The StandardMapMouseInterpreter is a basic implementation of the
  * MapMouseInterpreter, working with an OMGraphicHandlerLayer to
- * handle MouseEvents on it.  This class allows the
+ * handle MouseEvents on it. This class allows the
  * OMGraphicHandlerLayer, which implements the GestureResponsePolicy,
  * to not have to deal with MouseEvents and the OMGraphicList, but to
- * just react to the meanings of the user's gestures.<p>
- *
+ * just react to the meanings of the user's gestures.
+ * <p>
+ * 
  * The StandardMapMouseInterpreter uses highlighing to indicate that
  * mouse movement is occuring over an OMGraphic, and gives the layer
- * three ways to react to that movement.  After finding out if the
+ * three ways to react to that movement. After finding out if the
  * OMGraphic is highlightable, the SMMI will tell the layer to
  * highlight the OMGraphic (which usually means to call select() on
  * it), provide a tool tip string for the OMGraphic, and provide a
- * string to use on the InformationDelegator info line.  The layer can
+ * string to use on the InformationDelegator info line. The layer can
  * reply or ignore any and all of these notifications, depending on
- * how it's supposed to act.<p>
- *
+ * how it's supposed to act.
+ * <p>
+ * 
  * For left mouse clicks, the SMMI uses selection as a notification
  * that the user is choosing an OMGraphic, and that the OMGraphic
- * should be prepared to be moved, modified or deleted.  For a single
+ * should be prepared to be moved, modified or deleted. For a single
  * OMGraphic, this is usually handled by handing the OMGraphic off to
- * the OMDrawingTool.  However the GestureResponsPolicy handles the
+ * the OMDrawingTool. However the GestureResponsPolicy handles the
  * situation where the selection is of multiple OMGraphics, and the
  * layer should prepare to handle those situations as movment or
- * deletion notifications.  This usually means to change the
+ * deletion notifications. This usually means to change the
  * OMGraphic's display to indicate that the OMGraphics have been
- * selected.  Selection notifications can come in series, and the
+ * selected. Selection notifications can come in series, and the
  * GestureResponsePolicy is expected to keep track of which OMGraphics
- * it has been told are selected.  Deselection notifications may come
+ * it has been told are selected. Deselection notifications may come
  * as well, or other action notifications such as cut or copy may
- * arrive.  For cut and copy notifications, the OMGraphics should be
- * removed from any selection list.  For pastings, the OMGraphics
- * should be added to the selection list.<p>
- *
+ * arrive. For cut and copy notifications, the OMGraphics should be
+ * removed from any selection list. For pastings, the OMGraphics
+ * should be added to the selection list.
+ * <p>
+ * 
  * For right mouse clicks, the layer will be provided with a
  * JPopupMenu to use to populate with options for actions over a
- * OMGraphic or over the map.<p>
- *
+ * OMGraphic or over the map.
+ * <p>
+ * 
  * The StandardMapMouseInterpreter uses a timer to pace how mouse
- * movement actions are responded to.  Highlight reactions only occur
+ * movement actions are responded to. Highlight reactions only occur
  * after the mouse has paused over the map for the timer interval, so
  * the application doesn't try to respond to constantly changing mouse
- * locations.  You can disable this delay by setting the timer
- * interval to zero.
+ * locations. You can disable this delay by setting the timer interval
+ * to zero.
  */
-public class StandardMapMouseInterpreter 
-    implements MapMouseInterpreter {
+public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 
     protected boolean DEBUG = false;
     protected OMGraphicHandlerLayer layer = null;
@@ -157,7 +158,7 @@ public class StandardMapMouseInterpreter
         public boolean sameButton(MouseEvent me) {
             return button == getButton(me);
         }
-        
+
         /**
          * Return the OMGraphic of interest.
          */
@@ -184,8 +185,8 @@ public class StandardMapMouseInterpreter
             // as in me.getButton, shouldn't make a difference.
             if (SwingUtilities.isLeftMouseButton(me)) {
                 return 0;
-            } else if (SwingUtilities.isRightMouseButton(me) || 
-                       me.isControlDown()) {
+            } else if (SwingUtilities.isRightMouseButton(me)
+                    || me.isControlDown()) {
                 return 1;
             } else {
                 return 2;
@@ -202,10 +203,10 @@ public class StandardMapMouseInterpreter
 
     /**
      * A flag to tell the interpreter to be selfish about consuming
-     * MouseEvents it receives.  If set to true, it will consume
-     * events so that other MapMouseListeners will not receive the
-     * events.  If false, lower layers will also receive events, which
-     * will let them react too.  Intended to let other layers provide
+     * MouseEvents it receives. If set to true, it will consume events
+     * so that other MapMouseListeners will not receive the events. If
+     * false, lower layers will also receive events, which will let
+     * them react too. Intended to let other layers provide
      * information about what the mouse is over when editing is
      * occuring.
      */
@@ -227,7 +228,7 @@ public class StandardMapMouseInterpreter
 
     /**
      * Set the ID's of the mouse modes that this interpreter should be
-     * listening to.  If set to null, this SMMI won't receive
+     * listening to. If set to null, this SMMI won't receive
      * MouseEvents.
      */
     public void setMouseModeServiceList(String[] list) {
@@ -235,7 +236,7 @@ public class StandardMapMouseInterpreter
     }
 
     /**
-     * A method to set how a left mouse button is interpreted.  We
+     * A method to set how a left mouse button is interpreted. We
      * count control-clicks as not a left mouse click.
      */
     public boolean isLeftMouseButton(MouseEvent me) {
@@ -244,7 +245,7 @@ public class StandardMapMouseInterpreter
 
     /**
      * Return a list of the modes that are interesting to the
-     * MapMouseListener.  You MUST override this with the modes you're
+     * MapMouseListener. You MUST override this with the modes you're
      * interested in, or set the mouse mode service list, or you won't
      * receive mouse events.
      */
@@ -270,7 +271,7 @@ public class StandardMapMouseInterpreter
 
     /**
      * Set the GeometryOfInterest for something that the mouse is
-     * over.  Prevents excessive modifications of the GUI if this
+     * over. Prevents excessive modifications of the GUI if this
      * remains constant.
      */
     protected void setMovementInterest(GeometryOfInterest goi) {
@@ -279,7 +280,7 @@ public class StandardMapMouseInterpreter
 
     /**
      * Get the GeometryOfInterest for something that the mouse is
-     * over.  Prevents excessive modifications of the GUI if this
+     * over. Prevents excessive modifications of the GUI if this
      * remains constant.
      */
     protected GeometryOfInterest getMovementInterest() {
@@ -316,11 +317,12 @@ public class StandardMapMouseInterpreter
 
     /**
      * Invoked when a mouse button has been pressed on a component.
+     * 
      * @param e MouseEvent
      * @return false if nothing was pressed over, or the consumeEvents
-     * setting if something was.
+     *         setting if something was.
      */
-    public boolean mousePressed(MouseEvent e) { 
+    public boolean mousePressed(MouseEvent e) {
         if (DEBUG) {
             Debug.output("SMMI: mousePressed()");
         }
@@ -355,6 +357,7 @@ public class StandardMapMouseInterpreter
 
     /**
      * Invoked when a mouse button has been released on a component.
+     * 
      * @param e MouseEvent
      * @return false
      */
@@ -364,8 +367,9 @@ public class StandardMapMouseInterpreter
     }
 
     /**
-     * Invoked when the mouse has been clicked.  Notifies the left,
+     * Invoked when the mouse has been clicked. Notifies the left,
      * right click methods for the applicable OMGraphic or the map.
+     * 
      * @param e MouseEvent
      * @return the consumeEvents setting.
      */
@@ -394,6 +398,7 @@ public class StandardMapMouseInterpreter
 
     /**
      * Invoked when the mouse enters a component.
+     * 
      * @param e MouseEvent
      */
     public void mouseEntered(MouseEvent e) {
@@ -402,6 +407,7 @@ public class StandardMapMouseInterpreter
 
     /**
      * Invoked when the mouse exits a component.
+     * 
      * @param e MouseEvent
      */
     public void mouseExited(MouseEvent e) {
@@ -412,12 +418,12 @@ public class StandardMapMouseInterpreter
     ///////////////////////////////
 
     /**
-     * Invoked when a mouse button has been pressed and is
-     * moving. Resets the click geometry of interest to null.
+     * Invoked when a mouse button has been pressed and is moving.
+     * Resets the click geometry of interest to null.
      * 
      * @param e MouseEvent
      * @return the result from mouseMoved (also called from this
-     * method) combined with the consumeEvents setting.
+     *         method) combined with the consumeEvents setting.
      */
     public boolean mouseDragged(MouseEvent e) {
         setCurrentMouseEvent(e);
@@ -430,18 +436,19 @@ public class StandardMapMouseInterpreter
     }
 
     /**
-     * Invoked when the mouse has been moved.  Sets the movement
+     * Invoked when the mouse has been moved. Sets the movement
      * geometry of interest and updates the movement timer.
-     *
+     * 
      * @param e MouseEvent
      * @return the result of updateMouseMoved() if the timer isn't
-     * being used, or false.
+     *         being used, or false.
      */
     public boolean mouseMoved(MouseEvent e) {
         setCurrentMouseEvent(e);
         boolean ret = false;
 
-        if ((noTimerOverOMGraphic && getMovementInterest() != null) || mouseTimerInterval <= 0) {
+        if ((noTimerOverOMGraphic && getMovementInterest() != null)
+                || mouseTimerInterval <= 0) {
             return updateMouseMoved(e);
         } else {
             if (mouseTimer == null) {
@@ -459,7 +466,7 @@ public class StandardMapMouseInterpreter
 
     /**
      * Set whether to ignore the timer when movement is occuring over
-     * an OMGraphic.  Sometimes unhighlight can be inappropriately
+     * an OMGraphic. Sometimes unhighlight can be inappropriately
      * delayed when timer is enabled.
      */
     public void setNoTimerOverOMGraphic(boolean val) {
@@ -481,7 +488,7 @@ public class StandardMapMouseInterpreter
 
     /**
      * Set the time interval that the mouse timer waits before calling
-     * upateMouseMoved.  A negative number or zero will disable the
+     * upateMouseMoved. A negative number or zero will disable the
      * timer.
      */
     public void setMouseTimerInterval(int interval) {
@@ -515,7 +522,7 @@ public class StandardMapMouseInterpreter
         }
 
         public synchronized void actionPerformed(ActionEvent ae) {
-            if (event != null) {            
+            if (event != null) {
                 updateMouseMoved(event);
             }
         }
@@ -525,9 +532,9 @@ public class StandardMapMouseInterpreter
      * The real mouseMoved call, called when mouseMoved is called and,
      * if there is a mouse timer interval set, that interval time has
      * passed.
-     *
+     * 
      * @return the consumeEvents setting of the mouse event concerns
-     * an OMGraphic, false if it didn't.
+     *         an OMGraphic, false if it didn't.
      */
     protected boolean updateMouseMoved(MouseEvent e) {
         boolean ret = false;
@@ -563,7 +570,7 @@ public class StandardMapMouseInterpreter
 
     /**
      * Handle notification that another layer consumed a mouse moved
-     * event.  Sets movement interest to null.
+     * event. Sets movement interest to null.
      */
     public void mouseMoved() {
         GeometryOfInterest goi = getMovementInterest();
@@ -574,7 +581,8 @@ public class StandardMapMouseInterpreter
     }
 
     /**
-     * Handle a left-click on the map.  Does nothing by default.
+     * Handle a left-click on the map. Does nothing by default.
+     * 
      * @return false
      */
     public boolean leftClick(MouseEvent me) {
@@ -582,7 +590,8 @@ public class StandardMapMouseInterpreter
             Debug.output("leftClick(MAP) at " + me.getX() + ", " + me.getY());
         }
 
-        if (grp != null && grp.receivesMapEvents() && me instanceof MapMouseEvent) {
+        if (grp != null && grp.receivesMapEvents()
+                && me instanceof MapMouseEvent) {
             return grp.leftClick((MapMouseEvent) me);
         }
 
@@ -591,12 +600,13 @@ public class StandardMapMouseInterpreter
 
     /**
      * Handle a left-click on an OMGraphic. Does nothing by default.
+     * 
      * @return true
      */
     public boolean leftClick(OMGraphic omg, MouseEvent me) {
         if (DEBUG) {
-            Debug.output("leftClick(" + omg.getClass().getName() + ") at " + 
-                         me.getX() + ", " + me.getY());
+            Debug.output("leftClick(" + omg.getClass().getName() + ") at "
+                    + me.getX() + ", " + me.getY());
         }
 
         return false;
@@ -606,12 +616,13 @@ public class StandardMapMouseInterpreter
      * Notification that the user clicked on something else other than
      * the provided OMGraphic that was previously left-clicked on.
      * Calls deselect(omg).
+     * 
      * @return false
      */
     public boolean leftClickOff(OMGraphic omg, MouseEvent me) {
         if (DEBUG) {
-            Debug.output("leftClickOff(" + omg.getClass().getName() + ") at " + 
-                         me.getX() + ", " + me.getY());
+            Debug.output("leftClickOff(" + omg.getClass().getName() + ") at "
+                    + me.getX() + ", " + me.getY());
         }
 
         deselect(omg);
@@ -621,6 +632,7 @@ public class StandardMapMouseInterpreter
 
     /**
      * Notification that the map was right-clicked on.
+     * 
      * @return false
      */
     public boolean rightClick(MouseEvent me) {
@@ -629,7 +641,7 @@ public class StandardMapMouseInterpreter
         }
 
         if (me instanceof MapMouseEvent) {
-            return displayPopup(grp.getItemsForMapMenu((MapMouseEvent)me), me);
+            return displayPopup(grp.getItemsForMapMenu((MapMouseEvent) me), me);
         }
 
         return false;
@@ -637,12 +649,13 @@ public class StandardMapMouseInterpreter
 
     /**
      * Notification that an OMGraphic was right-clicked on.
+     * 
      * @return true
      */
     public boolean rightClick(OMGraphic omg, MouseEvent me) {
         if (DEBUG) {
-            Debug.output("rightClick(" + omg.getClass().getName() + ") at " + 
-                         me.getX() + ", " + me.getY());
+            Debug.output("rightClick(" + omg.getClass().getName() + ") at "
+                    + me.getX() + ", " + me.getY());
         }
 
         return displayPopup(grp.getItemsForOMGraphicMenu(omg), me);
@@ -651,6 +664,7 @@ public class StandardMapMouseInterpreter
     /**
      * Create a popup menu from GRP requests, over the mouse event
      * location.
+     * 
      * @return true if popup was presented, false if not.
      */
     protected boolean displayPopup(List contents, MouseEvent me) {
@@ -663,10 +677,10 @@ public class StandardMapMouseInterpreter
             while (it.hasNext()) {
                 Object obj = it.next();
                 if (obj instanceof java.awt.Component) {
-                    jpm.add((java.awt.Component)obj);
+                    jpm.add((java.awt.Component) obj);
                 }
             }
-            jpm.show((java.awt.Component)me.getSource(), me.getX(), me.getY());
+            jpm.show((java.awt.Component) me.getSource(), me.getX(), me.getY());
             return true;
         }
         return false;
@@ -675,12 +689,13 @@ public class StandardMapMouseInterpreter
     /**
      * Notification that the user clicked on something else other than
      * the provided OMGraphic that was previously right-clicked on.
+     * 
      * @return false
      */
     public boolean rightClickOff(OMGraphic omg, MouseEvent me) {
         if (DEBUG) {
-            Debug.output("rightClickOff(" + omg.getClass().getName() + ") at " + 
-                         me.getX() + ", " + me.getY());
+            Debug.output("rightClickOff(" + omg.getClass().getName() + ") at "
+                    + me.getX() + ", " + me.getY());
         }
 
         return false;
@@ -689,13 +704,15 @@ public class StandardMapMouseInterpreter
     /**
      * Notification that the mouse is not over an OMGraphic, but over
      * the map at some location.
+     * 
      * @return false
      */
     public boolean mouseOver(MouseEvent me) {
         if (DEBUG) {
             Debug.output("mouseOver(MAP) at " + me.getX() + ", " + me.getY());
         }
-        if (grp != null && grp.receivesMapEvents() && me instanceof MapMouseEvent) {
+        if (grp != null && grp.receivesMapEvents()
+                && me instanceof MapMouseEvent) {
             return grp.mouseOver((MapMouseEvent) me);
         }
 
@@ -703,14 +720,15 @@ public class StandardMapMouseInterpreter
     }
 
     /**
-     * Notification that the mouse is over an OMGraphic.  Makes all
-     * the highlight calls.
+     * Notification that the mouse is over an OMGraphic. Makes all the
+     * highlight calls.
+     * 
      * @return true
      */
     public boolean mouseOver(OMGraphic omg, MouseEvent me) {
         if (DEBUG) {
-            Debug.output("mouseOver(" + omg.getClass().getName() + ") at " + 
-                         me.getX() + ", " + me.getY());
+            Debug.output("mouseOver(" + omg.getClass().getName() + ") at "
+                    + me.getX() + ", " + me.getY());
         }
 
         if (grp != null) {
@@ -746,7 +764,7 @@ public class StandardMapMouseInterpreter
      */
     protected void handleInfoLine(String line) {
         if (layer != null) {
-            layer.fireRequestInfoLine((line==null)?"":line);
+            layer.fireRequestInfoLine((line == null) ? "" : line);
         }
     }
 
@@ -767,8 +785,8 @@ public class StandardMapMouseInterpreter
     }
 
     /**
-     * Notify the GRP that the OMGraphic has been selected.  Wraps
-     * the OMGraphic in an OMGraphicList.
+     * Notify the GRP that the OMGraphic has been selected. Wraps the
+     * OMGraphic in an OMGraphicList.
      */
     public void select(OMGraphic omg) {
         if (grp != null && grp.isSelectable(omg)) {
@@ -779,7 +797,7 @@ public class StandardMapMouseInterpreter
     }
 
     /**
-     * Notify the GRP that the OMGraphic has been deselected.  Wraps
+     * Notify the GRP that the OMGraphic has been deselected. Wraps
      * the OMGraphic in an OMGraphicList.
      */
     public void deselect(OMGraphic omg) {

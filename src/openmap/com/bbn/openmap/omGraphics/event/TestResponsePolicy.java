@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/TestResponsePolicy.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/TestResponsePolicy.java,v
+// $
 // $RCSfile: TestResponsePolicy.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/05/10 20:48:08 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:06:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.event;
 
@@ -61,7 +62,7 @@ public class TestResponsePolicy implements GestureResponsePolicy {
     }
 
     ////// Reactions
- 
+
     /** Fleeting change of appearance. */
     public void highlight(OMGraphic omg) {
         Debug.output("highlight(" + omg.getClass().getName() + ")");
@@ -71,7 +72,7 @@ public class TestResponsePolicy implements GestureResponsePolicy {
         Debug.output("unhighlight(" + omg.getClass().getName() + ")");
     }
 
-   public void select(OMGraphicList omgl) {
+    public void select(OMGraphicList omgl) {
         Debug.output("select(" + omgl.getDescription() + ")");
         selected = omgl;
     }

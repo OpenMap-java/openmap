@@ -22,50 +22,47 @@ import java.util.*;
 
 import com.bbn.openmap.tools.beanbox.BeanLayoutEditor;
 
-/** A BeanInfo for the 
-  * {@link com.bbn.openmap.examples.beanbox.SimpleBeanContainer} bean
-  */
+/**
+ * A BeanInfo for the
+ * {@link com.bbn.openmap.examples.beanbox.SimpleBeanContainer}bean
+ */
 public class SimpleBeanContainerBeanInfo extends SimpleBeanObjectBeanInfo {
-  
-  public PropertyDescriptor[] getPropertyDescriptors () {
- 
-   ArrayList list = new ArrayList(8);
 
-    PropertyDescriptor[] pds = super.getPropertyDescriptors();
-    list.addAll(Arrays.asList(pds));
+    public PropertyDescriptor[] getPropertyDescriptors() {
 
-    try {
-      list.add(new PropertyDescriptor("widthInNM", SimpleBeanContainer.class));
-      list.add(new PropertyDescriptor("heightInNM", SimpleBeanContainer.class));
-      PropertyDescriptor pd = 
-        new PropertyDescriptor("layoutClass", SimpleBeanContainer.class);
-      pd.setPropertyEditorClass(LayoutClassEditor.class);
-      list.add(pd);
+        ArrayList list = new ArrayList(8);
 
-      pd = 
-        new PropertyDescriptor("layoutManager", SimpleBeanContainer.class, 
-                               "getLayout", "setLayout");
+        PropertyDescriptor[] pds = super.getPropertyDescriptors();
+        list.addAll(Arrays.asList(pds));
 
-      // since layoutManager property is itself a bean 
-      // (of type BeanLayoutManager), use the
-      // general purpose BeanLayoutEditor class provided in the tools.beanbox
-      // package as the editor class of this bean property.
-      pd.setPropertyEditorClass(BeanLayoutEditor.class);
+        try {
+            list.add(new PropertyDescriptor("widthInNM", SimpleBeanContainer.class));
+            list.add(new PropertyDescriptor("heightInNM", SimpleBeanContainer.class));
+            PropertyDescriptor pd = new PropertyDescriptor("layoutClass", SimpleBeanContainer.class);
+            pd.setPropertyEditorClass(LayoutClassEditor.class);
+            list.add(pd);
 
-      list.add(pd);
-    } catch (IntrospectionException e) {
-      e.printStackTrace();
+            pd = new PropertyDescriptor("layoutManager", SimpleBeanContainer.class, "getLayout", "setLayout");
+
+            // since layoutManager property is itself a bean
+            // (of type BeanLayoutManager), use the
+            // general purpose BeanLayoutEditor class provided in the
+            // tools.beanbox
+            // package as the editor class of this bean property.
+            pd.setPropertyEditorClass(BeanLayoutEditor.class);
+
+            list.add(pd);
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        }
+
+        return (PropertyDescriptor[]) list.toArray(new PropertyDescriptor[0]);
     }
-    
-    return (PropertyDescriptor[])list.toArray(new PropertyDescriptor [0]);
-  }
 
+    public Image getIcon(int iconKind) {
 
-  public Image getIcon (int iconKind) {
+        Image image = loadImage("/com/bbn/openmap/examples/beanbox/simplebeancontainer.gif");
 
-    Image image = 
-      loadImage("/com/bbn/openmap/examples/beanbox/simplebeancontainer.gif");
-
-    return image;
-  }
+        return image;
+    }
 }

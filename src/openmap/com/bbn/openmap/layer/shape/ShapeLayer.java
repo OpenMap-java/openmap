@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.16 $
-// $Date: 2004/10/12 17:13:44 $
+// $Revision: 1.17 $
+// $Date: 2004/10/14 18:06:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,24 +53,26 @@ import com.bbn.openmap.util.PropUtils;
  * 
  *  
  *   
- *    ############################
- *    # Properties for a shape layer
- *    shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
- *    shapeLayer.prettyName=Name_for_Menu
- *    shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
- *    shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
- *    shapeLayer.lineColor=ff000000
- *    shapeLayer.fillColor=ff000000
- *    # plus any other properties used by the DrawingAttributes object.
- *    shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
- *    ############################
+ *    
+ *     ############################
+ *     # Properties for a shape layer
+ *     shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
+ *     shapeLayer.prettyName=Name_for_Menu
+ *     shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
+ *     shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
+ *     shapeLayer.lineColor=ff000000
+ *     shapeLayer.fillColor=ff000000
+ *     # plus any other properties used by the DrawingAttributes object.
+ *     shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
+ *     ############################
+ *     
  *    
  *   
  *  
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.16 $ $Date: 2004/10/12 17:13:44 $
+ * @version $Revision: 1.17 $ $Date: 2004/10/14 18:06:05 $
  * @see SpatialIndex
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements

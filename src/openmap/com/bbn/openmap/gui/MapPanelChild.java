@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,20 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MapPanelChild.java,v $
 // $RCSfile: MapPanelChild.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/08 16:27:19 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.gui;
-
-import java.awt.BorderLayout;
 
 /**
  * A simple interface to let an object know it wants to be added to
- * the MapPanel, and where it would like to be placed.  The MapPanel
+ * the MapPanel, and where it would like to be placed. The MapPanel
  * can look for these components in the MapHandler.
  */
 public interface MapPanelChild {
@@ -36,14 +33,14 @@ public interface MapPanelChild {
 
     /**
      * Should be provided with BorderLayout.NORTH, BorderLayout.SOUTH,
-     * BorderLayout.EAST or BorderLayout.WEST.  BorderLayout.Center is
+     * BorderLayout.EAST or BorderLayout.WEST. BorderLayout.Center is
      * generally reserved for the MapBean.
      */
     public void setPreferredLocation(String string);
 
     /**
      * Should return BorderLayout.NORTH, BorderLayout.SOUTH,
-     * BorderLayout.EAST or BorderLayout.WEST.  BorderLayout.Center is
+     * BorderLayout.EAST or BorderLayout.WEST. BorderLayout.Center is
      * generally reserved for the MapBean.
      */
     public String getPreferredLocation();

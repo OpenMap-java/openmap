@@ -22,8 +22,8 @@ import java.beans.*;
 import javax.swing.*;
 
 /**
- * Provides support to the GenericPropertySheet for displaying a custom
- * PropertyEditor.
+ * Provides support to the GenericPropertySheet for displaying a
+ * custom PropertyEditor.
  */
 class PropertyDialog extends Dialog implements ActionListener {
 
@@ -37,19 +37,18 @@ class PropertyDialog extends Dialog implements ActionListener {
         setLayout(null);
         body = pe.getCustomEditor();
 
-    if (body instanceof Window) {
-      if (!((Container)body).isVisible())
-        ((Container)body).setVisible(true);
-    }
-    else {
-      setLayout(new BorderLayout());
-          add(body, BorderLayout.CENTER);
-          doneButton = new Button("Done");
-          doneButton.addActionListener(this);
-          add(doneButton, BorderLayout.SOUTH);
-          setLocation(x, y);
-          setVisible(true);
-    }
+        if (body instanceof Window) {
+            if (!((Container) body).isVisible())
+                ((Container) body).setVisible(true);
+        } else {
+            setLayout(new BorderLayout());
+            add(body, BorderLayout.CENTER);
+            doneButton = new Button("Done");
+            doneButton.addActionListener(this);
+            add(doneButton, BorderLayout.SOUTH);
+            setLocation(x, y);
+            setVisible(true);
+        }
     }
 
     public void actionPerformed(ActionEvent evt) {
@@ -62,16 +61,19 @@ class PropertyDialog extends Dialog implements ActionListener {
         Dimension bodySize = body.getPreferredSize();
         Dimension buttonSize = doneButton.getPreferredSize();
 
-        int width = ins.left + 2*hPad + ins.right + bodySize.width;
-        int height = ins.top + 3*vPad + ins.bottom + bodySize.height +
-                                                        buttonSize.height;
+        int width = ins.left + 2 * hPad + ins.right + bodySize.width;
+        int height = ins.top + 3 * vPad + ins.bottom + bodySize.height
+                + buttonSize.height;
 
-        body.setBounds(ins.left+hPad, ins.top+vPad,
-                                bodySize.width, bodySize.height);
+        body.setBounds(ins.left + hPad,
+                ins.top + vPad,
+                bodySize.width,
+                bodySize.height);
 
-        doneButton.setBounds((width-buttonSize.width)/2,
-                                ins.top+(2*hPad) + bodySize.height,
-                                buttonSize.width, buttonSize.height);
+        doneButton.setBounds((width - buttonSize.width) / 2,
+                ins.top + (2 * hPad) + bodySize.height,
+                buttonSize.width,
+                buttonSize.height);
 
         setSize(width, height);
 

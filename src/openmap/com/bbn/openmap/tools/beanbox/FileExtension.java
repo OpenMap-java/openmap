@@ -30,7 +30,7 @@ public class FileExtension implements FilenameFilter {
     public FileExtension(String ext) {
         this.extension = ext;
     }
-    
+
     /**
      * Accept file name if it has the stored extension.
      */

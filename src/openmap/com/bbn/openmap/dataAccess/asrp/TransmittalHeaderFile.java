@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,20 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/TransmittalHeaderFile.java,v $
 // $RCSfile: TransmittalHeaderFile.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/03/05 02:25:58 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.dataAccess.asrp;
 
 import com.bbn.openmap.dataAccess.iso8211.*;
 
-import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -36,10 +33,11 @@ import java.util.List;
 
 /**
  * The transmitter header file contains information about various ASRP
- * directories, their names and coverages.  This object can be used to
+ * directories, their names and coverages. This object can be used to
  * coordinate the display of ASRP images from different directories.
  */
-public class TransmittalHeaderFile extends GeneralASRPFile implements ASRPConstants {
+public class TransmittalHeaderFile extends GeneralASRPFile implements
+        ASRPConstants {
 
     public final static String TRANSMITTAL_RECORD = "VDR";
     public final static String DATA_SET_DESCRIPTION = "FDR";
@@ -51,12 +49,12 @@ public class TransmittalHeaderFile extends GeneralASRPFile implements ASRPConsta
     public TransmittalHeaderFile(String fileName) throws IOException {
         DDFModule mod = load(fileName);
         rootDir = fileName.substring(0, fileName.indexOf(TRANS));
-        
+
         if (mod != null) {
             DDFRecord record;
             while ((record = mod.readRecord()) != null) {
-                for (Iterator it = record.iterator(); it.hasNext(); 
-                     addField((DDFField)it.next())) {}
+                for (Iterator it = record.iterator(); it.hasNext(); addField((DDFField) it.next())) {
+                }
             }
         }
     }
@@ -70,22 +68,23 @@ public class TransmittalHeaderFile extends GeneralASRPFile implements ASRPConsta
     }
 
     /**
-     * Return a java.util.List of ASRPDirectories known by this THF file.
+     * Return a java.util.List of ASRPDirectories known by this THF
+     * file.
      */
     public List getASRPDirectories() {
         LinkedList asrpDirs = new LinkedList();
         List fields = getFields(TransmittalHeaderFile.DATA_SET_DESCRIPTION);
-        for (Iterator it = fields.iterator();it.hasNext();) {
+        for (Iterator it = fields.iterator(); it.hasNext();) {
             DDFField ddf = (DDFField) it.next();
             if (ddf.getFieldDefn().getName().equals("FDR")) {
                 List datasets = ddf.getSubfields("NAM");
-        
-                for (Iterator it2 = datasets.iterator(); it2.hasNext(); ) {
-                    DDFSubfield ddfs = (DDFSubfield)it2.next();
+
+                for (Iterator it2 = datasets.iterator(); it2.hasNext();) {
+                    DDFSubfield ddfs = (DDFSubfield) it2.next();
                     String asrpdString = rootDir + "ASRP/" + ddfs.stringValue();
                     if (Debug.debugging("asrp")) {
-                        Debug.output("TransmittalHeaderFile creating " + asrpdString + 
-                                     " from " + rootDir + TRANS);
+                        Debug.output("TransmittalHeaderFile creating "
+                                + asrpdString + " from " + rootDir + TRANS);
                     }
                     asrpDirs.add(new ASRPDirectory(asrpdString));
                 }
@@ -95,14 +94,13 @@ public class TransmittalHeaderFile extends GeneralASRPFile implements ASRPConsta
         return asrpDirs;
     }
 
-
     public static void main(String[] argv) {
         Debug.init();
 
         if (argv.length < 1) {
             Debug.output("Usage: TransmittalHeaderFile filename");
         }
-        
+
         try {
             TransmittalHeaderFile thf = new TransmittalHeaderFile(argv[0]);
             thf.dumpFields();

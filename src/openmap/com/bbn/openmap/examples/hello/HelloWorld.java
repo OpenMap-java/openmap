@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/hello/HelloWorld.java,v $
 // $RCSfile: HelloWorld.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/05/10 20:41:12 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.examples.hello;
 
@@ -45,9 +44,10 @@ import com.bbn.openmap.gui.OMToolSet;
 import com.bbn.openmap.event.NavMouseMode;
 
 /**
- * A sample application incorporating the <code>MapHandler</code> and
- * <code>MapBean</code>. <p>Uses a properties file to configure the
- * layers.
+ * A sample application incorporating the <code>MapHandler</code>
+ * and <code>MapBean</code>.
+ * <p>
+ * Uses a properties file to configure the layers.
  */
 public class HelloWorld extends JFrame {
 
@@ -61,21 +61,21 @@ public class HelloWorld extends JFrame {
     public static String message = "Hello, World!";
 
     /**
-     * Create a default HelloWorld instance.  The instance
-     * will use the default properties.
+     * Create a default HelloWorld instance. The instance will use the
+     * default properties.
      */
     public HelloWorld() throws MultipleSoloMapComponentException {
         this(new Properties());
     }
 
     /**
-     * Create a HelloWorld instance with the given properties.  The
+     * Create a HelloWorld instance with the given properties. The
      * properties override the defaults.
-     *
+     * 
      * @param props The override properties
      */
-    public HelloWorld(Properties props) 
-        throws MultipleSoloMapComponentException {
+    public HelloWorld(Properties props)
+            throws MultipleSoloMapComponentException {
 
         // Initialize the parent class (JFrame)
         super("HelloWorld Example");
@@ -87,7 +87,8 @@ public class HelloWorld extends JFrame {
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 quit();
-            }});
+            }
+        });
 
         System.out.println("Creating MapHandler");
         // Create the BeanContext, known as the MapHandler.
@@ -105,40 +106,38 @@ public class HelloWorld extends JFrame {
         // Add the map to the JFrame
         getContentPane().add(map, BorderLayout.CENTER);
 
-
         System.out.println("Adding MouseEvent support...");
-        // Add Mouse handling objects.  The MouseDelegator manages the
+        // Add Mouse handling objects. The MouseDelegator manages the
         // MouseModes, controlling which one receives events from the
-        // MapBean.  The active MouseMode sends events to the layers
-        // that want to receive events from it.  The MouseDelegator
+        // MapBean. The active MouseMode sends events to the layers
+        // that want to receive events from it. The MouseDelegator
         // will find the MapBean in the MapHandler, and hook itself up
         // to it.
         mapHandler.add(new MouseDelegator());
 
-        // Add MouseMode.  The MouseDelegator will find it via the
+        // Add MouseMode. The MouseDelegator will find it via the
         // MapHandler.
 
         //  Adding NavMouseMode first makes it active.
-        mapHandler.add(new NavMouseMode()); 
+        mapHandler.add(new NavMouseMode());
 
         System.out.println("Creating ToolPanel...");
         // Add the standard panning and zoom GUI to the JFrame.
         // Create the tool...
         mapHandler.add(new OMToolSet());
-        // Create the ToolPanel.  It will find the OMToolSet in the
+        // Create the ToolPanel. It will find the OMToolSet in the
         // MapHandler.
         ToolPanel toolPanel = new ToolPanel();
         mapHandler.add(toolPanel);
-        
+
         // Add the ToolPanel to the right place in this JFrame.
         getContentPane().add(toolPanel, BorderLayout.NORTH);
 
-        
         System.out.println("Creating Layers...");
         Layer[] layers = getLayers(props);
 
         // Use the LayerHandler to manage all layers, whether they are
-        // on the map or not.  You can add a layer to the map by
+        // on the map or not. You can add a layer to the map by
         // setting layer.setVisible(true).
         LayerHandler layerHandler = new LayerHandler();
         for (int i = 0; i < layers.length; i++) {
@@ -158,9 +157,9 @@ public class HelloWorld extends JFrame {
     }
 
     /**
-     * Launches the application.  Reads the resource file, instantiates
+     * Launches the application. Reads the resource file, instantiates
      * a application, sizes it and displays it.
-     *
+     * 
      * @param args command line arguments -- ignored
      */
     public static void main(String[] args) {
@@ -168,14 +167,14 @@ public class HelloWorld extends JFrame {
 
         loadResource(helloResources, helloProps);
         try {
-            HelloWorld hello =  new HelloWorld(helloProps);
+            HelloWorld hello = new HelloWorld(helloProps);
             hello.setSize(700, 500);
             hello.pack();
             hello.show();
         } catch (MultipleSoloMapComponentException msmce) {
             // The MapHandler is only allowed to have one of certain
-            // items.  These items implement the SoloMapComponent
-            // interface.  The MapHandler can have a policy that
+            // items. These items implement the SoloMapComponent
+            // interface. The MapHandler can have a policy that
             // determines what to do when duplicate instances of the
             // same type of object are added - replace or ignore.
 
@@ -186,11 +185,12 @@ public class HelloWorld extends JFrame {
     }
 
     /**
-     * This method, called from main(), bundles functionality that once
-     * was being called twice, because there were two resource files
-     * being loaded, not just one, as is currently the case.  Rather
-     * than put this code back into main(), it's been kept as a separate
-     * method in case we use more than one resource file again.
+     * This method, called from main(), bundles functionality that
+     * once was being called twice, because there were two resource
+     * files being loaded, not just one, as is currently the case.
+     * Rather than put this code back into main(), it's been kept as a
+     * separate method in case we use more than one resource file
+     * again.
      */
     private static void loadResource(String resources, Properties props) {
         InputStream in = HelloWorld.class.getResourceAsStream(resources);
@@ -201,8 +201,8 @@ public class HelloWorld extends JFrame {
             try {
                 props.load(in);
             } catch (java.io.IOException e) {
-                System.err.println("Caught IOException loading resources: " +
-                                   resources);
+                System.err.println("Caught IOException loading resources: "
+                        + resources);
                 System.err.println("Using default resources.");
             }
         }
@@ -212,9 +212,9 @@ public class HelloWorld extends JFrame {
      * Gets the names of the Layers to be loaded from the properties
      * passed in, initializes them, and returns them.
      * 
-     * @param p the properties, among them the property represented
-     *   by the String layersProperty above, which will tell us
-     *   which Layers need to be loaded
+     * @param p the properties, among them the property represented by
+     *        the String layersProperty above, which will tell us
+     *        which Layers need to be loaded
      * @return an array of Layers ready to be added to the map bean
      * @see #layersProperty
      */
@@ -227,7 +227,7 @@ public class HelloWorld extends JFrame {
         // Didn't find it if it's null.
         if (layersValue == null) {
             System.err.println("No property \"" + layersProperty
-                               + "\" found in application properties.");
+                    + "\" found in application properties.");
             return null;
         }
         // OK, parse the list
@@ -241,21 +241,22 @@ public class HelloWorld extends JFrame {
 
         // For each layer marker name, find that layer's properties.
         // The marker name is used to scope those properties that
-        // apply to a particular layer.  If you parse the layers'
+        // apply to a particular layer. If you parse the layers'
         // properties from a file, you can add/remove layers from the
-        // application without re-compiling.  You could hard-code all
+        // application without re-compiling. You could hard-code all
         // the properties being set if you'd rather...
 
         for (int i = 0; i < nLayerNames; i++) {
-            String layerName = (String)layerNames.elementAt(i);
+            String layerName = (String) layerNames.elementAt(i);
 
-            // Find the .class property to know what kind of layer to create.
+            // Find the .class property to know what kind of layer to
+            // create.
             String classProperty = layerName + ".class";
             String className = p.getProperty(classProperty);
             if (className == null) {
                 // Skip it if you don't find it.
                 System.err.println("Failed to locate property \""
-                                   + classProperty + "\"");
+                        + classProperty + "\"");
                 System.err.println("Skipping layer \"" + layerName + "\"");
                 continue;
             }
@@ -266,19 +267,19 @@ public class HelloWorld extends JFrame {
                     Layer l = (Layer) obj;
                     // All layers have a setProperties method, and
                     // should intialize themselves with proper
-                    // settings here.  If a property is not set, a
+                    // settings here. If a property is not set, a
                     // default should be used, or a big, graceful
                     // complaint should be issued.
                     l.setProperties(layerName, p);
                     layers.addElement(l);
                 }
             } catch (java.lang.ClassNotFoundException e) {
-                System.err.println("Layer class not found: \""
-                                   + className + "\"");
+                System.err.println("Layer class not found: \"" + className
+                        + "\"");
                 System.err.println("Skipping layer \"" + layerName + "\"");
             } catch (java.io.IOException e) {
                 System.err.println("IO Exception instantiating class \""
-                                   + className + "\"");
+                        + className + "\"");
                 System.err.println("Skipping layer \"" + layerName + "\"");
             }
         }

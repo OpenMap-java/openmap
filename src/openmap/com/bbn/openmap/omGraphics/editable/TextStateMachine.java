@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,20 +12,20 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/TextStateMachine.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/TextStateMachine.java,v
+// $
 // $RCSfile: TextStateMachine.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics.editable;
 
 import com.bbn.openmap.omGraphics.EditableOMText;
 import com.bbn.openmap.layer.util.stateMachine.State;
-import com.bbn.openmap.util.Debug;
 
 public class TextStateMachine extends EOMGStateMachine {
 
@@ -33,14 +33,14 @@ public class TextStateMachine extends EOMGStateMachine {
         super(text);
     }
 
-
     protected State[] init() {
         State[] states = super.init();
 
-        //  These are the only three states that need something special to happen.
-        states[GRAPHIC_UNDEFINED] = new TextUndefinedState((EditableOMText)graphic);
-        states[GRAPHIC_EDIT] = new TextEditState((EditableOMText)graphic);
-        states[GRAPHIC_SETOFFSET] = new TextSetOffsetState((EditableOMText)graphic);
+        //  These are the only three states that need something special
+        // to happen.
+        states[GRAPHIC_UNDEFINED] = new TextUndefinedState((EditableOMText) graphic);
+        states[GRAPHIC_EDIT] = new TextEditState((EditableOMText) graphic);
+        states[GRAPHIC_SETOFFSET] = new TextSetOffsetState((EditableOMText) graphic);
         return states;
     }
 }

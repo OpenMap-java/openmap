@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/GLPoint.java,v $
 // $RCSfile: GLPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.graphicLoader;
 
@@ -36,12 +35,11 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 
 /**
- * A GLPoint is a location on the map.  It can move around randomly
- * if it's not set to be stationary, and will change color if it can
- * see any other point.
+ * A GLPoint is a location on the map. It can move around randomly if
+ * it's not set to be stationary, and will change color if it can see
+ * any other point.
  */
-public class GLPoint extends OMPoint 
-    implements ActionListener, FocusListener {
+public class GLPoint extends OMPoint implements ActionListener, FocusListener {
 
     public static Color CONNECTED_COLOR = Color.green;
     public static Color DISCONNECTED_COLOR = Color.red;
@@ -57,7 +55,7 @@ public class GLPoint extends OMPoint
     public void resetConnected() {
         setFillPaint(DISCONNECTED_COLOR);
     }
-    
+
     public void connected(boolean connected) {
         if (connected) {
             setFillPaint(CONNECTED_COLOR);
@@ -68,8 +66,8 @@ public class GLPoint extends OMPoint
         double hor = Math.random() - .5;
         double vert = Math.random() - .5;
 
-        setLat(getLat() + (float)vert*factor);
-        setLon(getLon() + (float)hor*factor);
+        setLat(getLat() + (float) vert * factor);
+        setLon(getLon() + (float) hor * factor);
     }
 
     public void move(float factor) {
@@ -79,10 +77,10 @@ public class GLPoint extends OMPoint
     }
 
     public void move(int distance, Length units, float Az) {
-        LatLonPoint newLocation = GreatCircle.spherical_between(
-            ProjMath.degToRad(getLat()),
-            ProjMath.degToRad(getLon()),
-            units.toRadians(distance), Az);
+        LatLonPoint newLocation = GreatCircle.spherical_between(ProjMath.degToRad(getLat()),
+                ProjMath.degToRad(getLon()),
+                units.toRadians(distance),
+                Az);
 
         setLat(newLocation.getLatitude());
         setLon(newLocation.getLongitude());
@@ -113,8 +111,7 @@ public class GLPoint extends OMPoint
             heightField.setText(Integer.toString(h));
         }
         if (Debug.debugging("graphicloader")) {
-            Debug.output("GLPoint: " + getName() + 
-                         " setting height to : " + h);
+            Debug.output("GLPoint: " + getName() + " setting height to : " + h);
         }
     }
 
@@ -125,24 +122,22 @@ public class GLPoint extends OMPoint
     protected transient java.awt.Container palette = null;
 
     /**
-     * Make the palette visible.  Will automatically determine if
-     * we're running in an applet environment and will use a
-     * JInternalFrame over a JFrame if necessary.
+     * Make the palette visible. Will automatically determine if we're
+     * running in an applet environment and will use a JInternalFrame
+     * over a JFrame if necessary.
      */
     public void showPalette() {
-        if (Environment.getBoolean(Environment.UseInternalFrames)){
+        if (Environment.getBoolean(Environment.UseInternalFrames)) {
 
-            final JLayeredPane desktop = 
-                Environment.getInternalFrameDesktop();
+            final JLayeredPane desktop = Environment.getInternalFrameDesktop();
 
             // get the window
-            palette = PaletteHelper.getPaletteInternalWindow(
-                getGUI(),
-                getName(),
-                new InternalFrameAdapter() {
+            palette = PaletteHelper.getPaletteInternalWindow(getGUI(),
+                    getName(),
+                    new InternalFrameAdapter() {
                         public void internalFrameClosed(InternalFrameEvent e) {
                             if (desktop != null) {
-                                desktop.remove((JInternalFrame)palette);
+                                desktop.remove((JInternalFrame) palette);
                                 desktop.repaint();
                             }
                             palette = null;
@@ -155,20 +150,19 @@ public class GLPoint extends OMPoint
             }
         } else {
             if (palette == null) {
-                palette = PaletteHelper.getPaletteWindow(
-                    getGUI(), 
-                    getName(),
-                    new ComponentAdapter(){  
-                            public void componentHidden(ComponentEvent e){
-//                              firePaletteEvent(false);
+                palette = PaletteHelper.getPaletteWindow(getGUI(),
+                        getName(),
+                        new ComponentAdapter() {
+                            public void componentHidden(ComponentEvent e) {
+                            //                              firePaletteEvent(false);
                             };
-                        } );
+                        });
             }
             palette.setVisible(true);
-            ((JFrame)palette).setState(java.awt.Frame.NORMAL);
+            ((JFrame) palette).setState(java.awt.Frame.NORMAL);
         }
     }
-    
+
     /**
      * Hide the GLPoint's palette.
      */
@@ -177,13 +171,13 @@ public class GLPoint extends OMPoint
             return;
         }
 
-        if (Environment.getBoolean(Environment.UseInternalFrames)){
+        if (Environment.getBoolean(Environment.UseInternalFrames)) {
             // close the palette
-            try { 
-                ((JInternalFrame)palette).setClosed(true); 
+            try {
+                ((JInternalFrame) palette).setClosed(true);
             } catch (java.beans.PropertyVetoException evt) {
-                com.bbn.openmap.util.Assert.assertExp(
-                    false, "GLPoint.hidePalette(): internal error!");
+                com.bbn.openmap.util.Assert.assertExp(false,
+                        "GLPoint.hidePalette(): internal error!");
             }
         } else {
             palette.setVisible(false);
@@ -194,10 +188,10 @@ public class GLPoint extends OMPoint
     JTextField heightField = null;
 
     /**
-     * Gets the gui controls associated with the GLPoint.
-     * This default implementation returns null indicating
-     * that the GLPoint has no gui controls.
-     *
+     * Gets the gui controls associated with the GLPoint. This default
+     * implementation returns null indicating that the GLPoint has no
+     * gui controls.
+     * 
      * @return java.awt.Component or null
      */
     public java.awt.Component getGUI() {
@@ -223,19 +217,18 @@ public class GLPoint extends OMPoint
         }
         heightPanel.add(heightField);
         heightPanel.add(new JLabel(" meters"));
-        
-        panel.add(heightPanel);
 
+        panel.add(heightPanel);
 
         return panel;
     }
 
     public final static String MoveCmd = "MoveCommand";
 
-    public void actionPerformed(java.awt.event.ActionEvent ae){
+    public void actionPerformed(java.awt.event.ActionEvent ae) {
         String cmd = ae.getActionCommand();
         if (cmd == MoveCmd) {
-            JCheckBox check = (JCheckBox)ae.getSource();
+            JCheckBox check = (JCheckBox) ae.getSource();
             setStationary(check.isSelected());
         } else {
             try {
@@ -247,9 +240,10 @@ public class GLPoint extends OMPoint
     }
 
     public void focusGained(FocusEvent e) {}
+
     public void focusLost(FocusEvent e) {
         try {
-            setHeight(Integer.parseInt(((JTextField)(e.getSource())).getText()));
+            setHeight(Integer.parseInt(((JTextField) (e.getSource())).getText()));
         } catch (NumberFormatException nfe) {
             setHeight(0);
         }

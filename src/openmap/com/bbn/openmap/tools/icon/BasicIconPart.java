@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/BasicIconPart.java,v $
 // $RCSfile: BasicIconPart.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.icon;
 
@@ -32,9 +31,9 @@ import java.awt.geom.GeneralPath;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 
 /**
- * The BasicIconPart is an implementation of the IconPart.  In
- * addition to the geometry and DrawingAttributes adjustments that can
- * be done on an IconPart, the BasicIconPart also lets you use an
+ * The BasicIconPart is an implementation of the IconPart. In addition
+ * to the geometry and DrawingAttributes adjustments that can be done
+ * on an IconPart, the BasicIconPart also lets you use an
  * AffineTransform to rotate, translate or scale the geometrym and
  * will create GradientPaints for the Colors from the
  * DrawingAttribtues if desired.
@@ -64,7 +63,8 @@ public class BasicIconPart implements IconPart {
     protected boolean gradient = false;
 
     /**
-     * Create a BasicIconPart with a java.awt.Shape object for a geometry.
+     * Create a BasicIconPart with a java.awt.Shape object for a
+     * geometry.
      */
     public BasicIconPart(Shape shape) {
         this(shape, null);
@@ -87,9 +87,10 @@ public class BasicIconPart implements IconPart {
 
     /**
      * Get the DrawingAttributes that should be used for rendering.
+     * 
      * @param da DrawingAttributes passed in that may affect rendering
-     * choices.  Can be null, and the IconPart may decide to ignore
-     * it.
+     *        choices. Can be null, and the IconPart may decide to
+     *        ignore it.
      * @return DrawingAttribute for this part.
      */
     protected DrawingAttributes getAttributesForRendering(DrawingAttributes da) {
@@ -110,13 +111,14 @@ public class BasicIconPart implements IconPart {
      * @param width pixel width of icon, used to scale geometry.
      * @param height pixel height of icon, used to scale geometry.
      * @param appDA drawing attributes to use under certain
-     * conditions.  Certain IconParts on this list may use these
-     * drawing attributes if they want/should.  May be null.
+     *        conditions. Certain IconParts on this list may use these
+     *        drawing attributes if they want/should. May be null.
      */
-    public void render(Graphics g, int width, int height, 
+    public void render(Graphics g, int width, int height,
                        DrawingAttributes appDA) {
 
-        AffineTransform transform = AffineTransform.getScaleInstance((double)width/100, (double)height/100);
+        AffineTransform transform = AffineTransform.getScaleInstance((double) width / 100,
+                (double) height / 100);
         transform.concatenate(baseTransform);
 
         // Handle clip area in Graphics, first
@@ -126,7 +128,7 @@ public class BasicIconPart implements IconPart {
         }
 
         Shape shape = new GeneralPath(geometry).createTransformedShape(transform);
-        getAttributesForRendering(appDA).render((Graphics2D)g, shape, gradient);
+        getAttributesForRendering(appDA).render((Graphics2D) g, shape, gradient);
     }
 
     /**

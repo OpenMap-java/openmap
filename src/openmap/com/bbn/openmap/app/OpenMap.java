@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/09/28 14:24:26 $
+// $Revision: 1.13 $
+// $Date: 2004/10/14 18:05:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.app;
 
@@ -37,24 +36,24 @@ import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The OpenMap application framework.  This class creates a
+ * The OpenMap application framework. This class creates a
  * PropertyHandler that searches the classpath, config directory and
  * user's home directory for an openmap.properties file, and creates
- * the application based on the contents of the properties files.  It
+ * the application based on the contents of the properties files. It
  * also creates an MapPanel and an OpenMapFrame to be used for the
  * application and adds them to the MapHandler contained in the
- * MapPanel.  All other components are added to that MapHandler as
+ * MapPanel. All other components are added to that MapHandler as
  * well, and they use the MapHandler to locate, connect and
  * communicate with each other.
  */
 public class OpenMap {
-  
+
     protected MapPanel mapPanel;
 
     /**
      * Create a new OpenMap framework object - creates a MapPanel,
      * OpenMapFrame, and brings up the layer palettes that are being
-     * told to be open at startup.  The MapPanel will create a
+     * told to be open at startup. The MapPanel will create a
      * PropertiesHandler that will search for an openmap.properties
      * file.
      */
@@ -65,7 +64,7 @@ public class OpenMap {
     /**
      * Create a new OpenMap framework object - creates a MapPanel,
      * OpenMapFrame, and brings up the layer palettes that are being
-     * told to be open at startup.  The properties in the
+     * told to be open at startup. The properties in the
      * PropertyHandler will be used to configure the application.
      * PropertyHandler may be null.
      */
@@ -92,22 +91,22 @@ public class OpenMap {
 
     /**
      * A method called to set the WindowListener behavior on an
-     * OpenMapFrame used for the OpenMap application.  By default,
-     * this method adds a WindowAdapter that calls System.exit(0),
-     * killing java.  You can extend this to add a WindowListener to
-     * the OpenMapFrame that does nothing or something else.
+     * OpenMapFrame used for the OpenMap application. By default, this
+     * method adds a WindowAdapter that calls System.exit(0), killing
+     * java. You can extend this to add a WindowListener to the
+     * OpenMapFrame that does nothing or something else.
      */
     public void setWindowListenerOnFrame(OpenMapFrame omf) {
         omf.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    System.exit(0);
-                }
-             });
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
     }
 
     /**
      * Get the MapHandler used for the OpenMap object.
-     */      
+     */
     public MapHandler getMapHandler() {
         return mapPanel.getMapHandler();
     }
@@ -121,9 +120,10 @@ public class OpenMap {
 
     /**
      * Create and return an OpenMap object that uses a standard
-     * PropertyHandler to configure itself.  The OpenMap object has a
+     * PropertyHandler to configure itself. The OpenMap object has a
      * MapHandler that you can use to gain access to all the
      * components.
+     * 
      * @return OpenMap
      * @see #getMapHandler
      */
@@ -133,9 +133,10 @@ public class OpenMap {
 
     /**
      * Create and return an OpenMap object that uses a standard
-     * PropertyHandler to configure itself.  The OpenMap object has a
+     * PropertyHandler to configure itself. The OpenMap object has a
      * MapHandler that you can use to gain access to all the
      * components.
+     * 
      * @return OpenMap
      * @see #getMapHandler
      */
@@ -168,10 +169,12 @@ public class OpenMap {
 
         ArgParser ap = new ArgParser("OpenMap");
         String propArgs = null;
-        ap.add("properties","A resource, file path or URL to properties file\n Ex: http://myhost.com/xyz.props or file:/myhome/abc.pro\n See Java Documentation for java.net.URL class for more details",1);
+        ap.add("properties",
+                "A resource, file path or URL to properties file\n Ex: http://myhost.com/xyz.props or file:/myhome/abc.pro\n See Java Documentation for java.net.URL class for more details",
+                1);
 
         ap.parse(args);
-        
+
         String[] arg = ap.getArgValues("properties");
         if (arg != null) {
             propArgs = arg[0];

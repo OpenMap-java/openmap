@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPointList.java,v $
 // $RCSfile: EsriPointList.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/09 13:33:36 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.dataAccess.shape;
 
@@ -28,8 +27,10 @@ import com.bbn.openmap.util.Debug;
 import java.util.Iterator;
 
 /**
- * An EsriGraphicList ensures that only EsriPoints are added to its list.
- * @author Doug Van Auken 
+ * An EsriGraphicList ensures that only EsriPoints are added to its
+ * list.
+ * 
+ * @author Doug Van Auken
  * @author Don Dietrick
  */
 public class EsriPointList extends EsriGraphicList {
@@ -37,7 +38,8 @@ public class EsriPointList extends EsriGraphicList {
     /**
      * Over-ride the add( ) method to trap for inconsistent shape
      * geometry.
-     * @param shape the non-null OMGraphic to add 
+     * 
+     * @param shape the non-null OMGraphic to add
      */
     public void add(OMGraphic shape) {
         try {
@@ -47,24 +49,26 @@ public class EsriPointList extends EsriGraphicList {
             }
 
             if (shape instanceof EsriPointList) {
-                OMGraphicList list = (OMGraphicList)shape;
-                EsriGraphic graphic = (EsriGraphic)list.getOMGraphicAt(0);
-                
-                if (graphic instanceof EsriPoint ||
-                    graphic instanceof EsriPointList) {
+                OMGraphicList list = (OMGraphicList) shape;
+                EsriGraphic graphic = (EsriGraphic) list.getOMGraphicAt(0);
+
+                if (graphic instanceof EsriPoint
+                        || graphic instanceof EsriPointList) {
                     graphics.add(shape);
-                    addExtents(((EsriGraphicList)shape).getExtents());
+                    addExtents(((EsriGraphicList) shape).getExtents());
                 } else if (graphic instanceof OMGraphic) {
                     // Try recursively...
-                    add((OMGraphic)graphic);
+                    add((OMGraphic) graphic);
                 } else {
-                    Debug.message("esri", "EsriPointList.add()- graphic list isn't EsriPointList, can't add.");
+                    Debug.message("esri",
+                            "EsriPointList.add()- graphic list isn't EsriPointList, can't add.");
                 }
             } else if (shape instanceof EsriPoint) {
                 graphics.add(shape);
-                addExtents(((EsriPoint)shape).getExtents());
+                addExtents(((EsriPoint) shape).getExtents());
             } else {
-                Debug.message("esri", "EsriPointList.add()- graphic isn't an EsriPoint, can't add.");
+                Debug.message("esri",
+                        "EsriPointList.add()- graphic isn't an EsriPoint, can't add.");
                 return;
             }
         } catch (ClassCastException cce) {
@@ -84,22 +88,22 @@ public class EsriPointList extends EsriGraphicList {
     public EsriPointList() {
         super();
     }
-    
+
     /**
-     * Construct an EsriPointList with an initial capacity. 
-     *
-     * @param initialCapacity the initial capacity of the list 
+     * Construct an EsriPointList with an initial capacity.
+     * 
+     * @param initialCapacity the initial capacity of the list
      */
     public EsriPointList(int initialCapacity) {
         super(initialCapacity);
     }
 
     /**
-     * Construct an EsriPointList with an initial capacity and
-     * a standard increment value.
-     *
-     * @param initialCapacity the initial capacity of the list 
-     * @param capacityIncrement the capacityIncrement for resizing 
+     * Construct an EsriPointList with an initial capacity and a
+     * standard increment value.
+     * 
+     * @param initialCapacity the initial capacity of the list
+     * @param capacityIncrement the capacityIncrement for resizing
      * @deprecated capacityIncrement doesn't do anything.
      */
     public EsriPointList(int initialCapacity, int capacityIncrement) {
@@ -109,9 +113,9 @@ public class EsriPointList extends EsriGraphicList {
     public EsriGraphic shallowCopy() {
         EsriPointList ret = new EsriPointList(size());
         ret.setAppObject(getAppObject());
-        for (Iterator iter = iterator(); iter.hasNext(); ) {
-            EsriGraphic g = (EsriGraphic)iter.next();
-            ret.add((OMGraphic)g.shallowCopy());
+        for (Iterator iter = iterator(); iter.hasNext();) {
+            EsriGraphic g = (EsriGraphic) iter.next();
+            ret.add((OMGraphic) g.shallowCopy());
         }
         return ret;
     }

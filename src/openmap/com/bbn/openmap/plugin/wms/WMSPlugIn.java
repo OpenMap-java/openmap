@@ -1,7 +1,7 @@
 /* **********************************************************************
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/wms/WMSPlugIn.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/06 00:05:52 $
+ * $Revision: 1.4 $
+ * $Date: 2004/10/14 18:06:21 $
  * $Author: dietrick $
  *
  * Code provided by Raj Singh, raj@rajsingh.org
@@ -14,17 +14,10 @@
 
 package com.bbn.openmap.plugin.wms;
 
-import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
-import javax.swing.*;
 
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.image.WMTConstants;
-import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.plugin.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
@@ -35,23 +28,29 @@ import com.bbn.openmap.util.PropUtils;
  * Server (WMS). Make sure that OpenMap is using the LLXY projection,
  * because this plugin is only asking for images that are in the
  * Spatial Reference System EPS 4326 projection, and anything else
- * won't match up.  This class will be growing to be more interactive
+ * won't match up. This class will be growing to be more interactive
  * with the WMS.
- *
- * It has some properties that you can set in the openmap.properties file:
+ * 
+ * It has some properties that you can set in the openmap.properties
+ * file:
+ * 
  * <pre>
- * #For the plugin layer, add wms_plugin to openmap.layers list
- * wms_plugin=com.bbn.openmap.plugin.wms.WMSPlugIn
- * wms_plugin.wmsserver=A URL for the WMS server (eg. http://host.domain.name/servlet/com.esri.wms.Esrimap)
- * wms_plugin.wmsversion=OpenGIS WMS version number (eg. 1.1.0)
- * wms_plugin.format=image format (eg. JPEG, GIF, PNG from WMTConstants.java)
- * wms_plugin.transparent=true or false, depends on imageformat
- * wms_plugin.backgroundcolor=RGB hex string (RRGGBB)
- * wms_plugin.layers=comma separated list of map layer names (eg. SDE.SASAUS_BND_COASTL,SDE.SASAUS_BND_POLBNDL)
- * wms_plugin.styles=comma separated list of layer rendering styles corresponding to the layers listed
- * wms_plugin.vendorspecificnames=comma separated list of vendor specific parameter names in order (eg. SERVICENAME)
- * wms_plugin.vendorspecificvalues=comma separated list of vendor specific parameter values in order (eg. default)
- * </pre><p>
+ * 
+ *  #For the plugin layer, add wms_plugin to openmap.layers list
+ *  wms_plugin=com.bbn.openmap.plugin.wms.WMSPlugIn
+ *  wms_plugin.wmsserver=A URL for the WMS server (eg. http://host.domain.name/servlet/com.esri.wms.Esrimap)
+ *  wms_plugin.wmsversion=OpenGIS WMS version number (eg. 1.1.0)
+ *  wms_plugin.format=image format (eg. JPEG, GIF, PNG from WMTConstants.java)
+ *  wms_plugin.transparent=true or false, depends on imageformat
+ *  wms_plugin.backgroundcolor=RGB hex string (RRGGBB)
+ *  wms_plugin.layers=comma separated list of map layer names (eg. SDE.SASAUS_BND_COASTL,SDE.SASAUS_BND_POLBNDL)
+ *  wms_plugin.styles=comma separated list of layer rendering styles corresponding to the layers listed
+ *  wms_plugin.vendorspecificnames=comma separated list of vendor specific parameter names in order (eg. SERVICENAME)
+ *  wms_plugin.vendorspecificvalues=comma separated list of vendor specific parameter values in order (eg. default)
+ *  
+ * </pre>
+ * 
+ * <p>
  * One of the best demo WMS servers can be found at:
  * http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi
  */
@@ -61,7 +60,10 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     protected String wmsServer = null;
     /** GIF, PNG, JPEG, etc. (anything the server supports) */
     protected String imageFormat = null;
-    /** If using a lossy image format, such as jpeg, set this to high, medium or low */
+    /**
+     * If using a lossy image format, such as jpeg, set this to high,
+     * medium or low
+     */
     protected String imageQuality = "MEDIUM";
     /** Specify the color for non-data areas of the image in r,g,b */
     protected String backgroundColor = null;
@@ -83,8 +85,8 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     protected String mapRequestName = WMTConstants.GETMAP;
     /**
      * Keyword for error handling. Changes to INIMAGE for WMS version
-     * under 1.1.0.  Changes to application/vnd.ogc.se+inimage for
-     * versions greater than 1.1.1 
+     * under 1.1.0. Changes to application/vnd.ogc.se+inimage for
+     * versions greater than 1.1.1
      */
     protected String errorHandling = "application/vnd.ogc.se_inimage";
 
@@ -119,16 +121,16 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
      */
     public void addLayers(String[] ls, String[] st) {
 
-        //DFD - do they have to be the same length?  How about we just
+        //DFD - do they have to be the same length? How about we just
         //use the styles we have for that number of layers, and let
         //the defaults take over for the rest.
 
-//      if (ls.length != st.length) {
-//          return null;
-//      }
+        //      if (ls.length != st.length) {
+        //          return null;
+        //      }
 
-        for (int j=0; j < ls.length; j++) {
-            layers += ","+ls[j];
+        for (int j = 0; j < ls.length; j++) {
+            layers += "," + ls[j];
 
             // Put some other checks in here instead of the length
             // check above.
@@ -155,31 +157,30 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         String width = "undefined";
 
         if (p != null) {
-            bbox = Float.toString(p.getUpperLeft().getLongitude()) + "," +
-            Float.toString(p.getLowerRight().getLatitude()) + "," +
-            Float.toString(p.getLowerRight().getLongitude()) + "," +
-            Float.toString(p.getUpperLeft().getLatitude());
+            bbox = Float.toString(p.getUpperLeft().getLongitude()) + ","
+                    + Float.toString(p.getLowerRight().getLatitude()) + ","
+                    + Float.toString(p.getLowerRight().getLongitude()) + ","
+                    + Float.toString(p.getUpperLeft().getLatitude());
             height = Integer.toString(p.getHeight());
             width = Integer.toString(p.getWidth());
         }
 
         StringBuffer buf = new StringBuffer(queryHeader);
-        buf.append("?" + "VERSION" + "=" + wmsVersion +
-                   "&" + WMTConstants.REQUEST + "=" + mapRequestName +
-                   "&" + WMTConstants.SRS + "=" + "EPSG:4326" +
-                   "&" + WMTConstants.BBOX + "=" + bbox +
-                   "&" + WMTConstants.HEIGHT + "=" + height +
-                   "&" + WMTConstants.WIDTH + "=" + width +
-                   "&" + WMTConstants.EXCEPTIONS + "=" + errorHandling);
+        buf.append("?" + "VERSION" + "=" + wmsVersion + "&"
+                + WMTConstants.REQUEST + "=" + mapRequestName + "&"
+                + WMTConstants.SRS + "=" + "EPSG:4326" + "&"
+                + WMTConstants.BBOX + "=" + bbox + "&" + WMTConstants.HEIGHT
+                + "=" + height + "&" + WMTConstants.WIDTH + "=" + width + "&"
+                + WMTConstants.EXCEPTIONS + "=" + errorHandling);
 
         if (imageFormat != null) {
             buf.append("&" + FORMAT + "=" + imageFormat);
 
             String baseImageFormat = imageFormat;
-            if ( baseImageFormat.indexOf('/') > 0 )
-              baseImageFormat = baseImageFormat.substring(baseImageFormat.indexOf('/'));
-            if ( baseImageFormat.equals(WMTConstants.IMAGEFORMAT_JPEG) ) {
-                buf.append("&quality="+imageQuality);
+            if (baseImageFormat.indexOf('/') > 0)
+                baseImageFormat = baseImageFormat.substring(baseImageFormat.indexOf('/'));
+            if (baseImageFormat.equals(WMTConstants.IMAGEFORMAT_JPEG)) {
+                buf.append("&quality=" + imageQuality);
             }
         }
 
@@ -200,12 +201,13 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         }
 
         if (Debug.debugging("wms")) {
-            Debug.output("query string: "+buf);
+            Debug.output("query string: " + buf);
         }
 
         /*
-         * Included to allow for one or more vendor specific parameters to be
-         * specified such as ESRI's ArcIMS's "ServiceName" parameter.
+         * Included to allow for one or more vendor specific
+         * parameters to be specified such as ESRI's ArcIMS's
+         * "ServiceName" parameter.
          */
         if (vendorSpecificNames != null) {
             if (vendorSpecificValues != null) {
@@ -217,11 +219,12 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
                     try {
                         paramName = nameTokenizer.nextToken();
                         paramValue = valueTokenizer.nextToken();
-                        buf.append("&" + paramName +  "=" + paramValue);
+                        buf.append("&" + paramName + "=" + paramValue);
                     } catch (NoSuchElementException e) {
                         if (Debug.debugging("wms")) {
-                            Debug.output("WMSPlugIn.getRectangle(): " +
-                                "parameter \"" + paramName + "\" has no value");
+                            Debug.output("WMSPlugIn.getRectangle(): "
+                                    + "parameter \"" + paramName
+                                    + "\" has no value");
                         }
                     }
                 }
@@ -234,18 +237,18 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
      * Method to set the properties in the PropertyConsumer. The
      * prefix is a string that should be prepended to each property
      * key (in addition to a separating '.') in order for the
-     * PropertyConsumer to uniquely identify properies meant for it, in
-     * the midst of Properties meant for several objects.
-     *
+     * PropertyConsumer to uniquely identify properies meant for it,
+     * in the midst of Properties meant for several objects.
+     * 
      * @param prefix a String used by the PropertyConsumer to prepend
-     * to each property value it wants to look up -
-     * setList.getProperty(prefix.propertyKey). If the prefix had
-     * already been set, then the prefix passed in should replace that
-     * previous value.
-     *
+     *        to each property value it wants to look up -
+     *        setList.getProperty(prefix.propertyKey). If the prefix
+     *        had already been set, then the prefix passed in should
+     *        replace that previous value.
+     * 
      * @param setList a Properties object that the PropertyConsumer
-     * can use to retrieve expected properties it can use for
-     * configuration.
+     *        can use to retrieve expected properties it can use for
+     *        configuration.
      */
     public void setProperties(String prefix, Properties setList) {
         super.setProperties(prefix, setList);
@@ -271,7 +274,8 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         }
 
         if (Debug.debugging("wms")) {
-            Debug.output("WMSPlugIn: set up with header \"" + queryHeader + "\"");
+            Debug.output("WMSPlugIn: set up with header \"" + queryHeader
+                    + "\"");
         }
 
         java.util.StringTokenizer st = new java.util.StringTokenizer(wmsVersion, ".");
@@ -280,21 +284,21 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         int minorVersion = Integer.parseInt(st.nextToken());
 
         // set the REQUEST parameter
-        if ( majorVersion == 1 && midVersion == 0 && minorVersion < 3 ) {
+        if (majorVersion == 1 && midVersion == 0 && minorVersion < 3) {
             mapRequestName = WMTConstants.MAP;
         }
 
         // set the image type parameter
-        if ( majorVersion == 1 && minorVersion > 7 ) {
+        if (majorVersion == 1 && minorVersion > 7) {
             imageFormat = "image/" + imageFormat;
         }
 
         // set the error handling parameter
-        if ( majorVersion == 1 && midVersion == 0 ) {
+        if (majorVersion == 1 && midVersion == 0) {
             errorHandling = "INIMAGE";
-        } else if ( majorVersion == 1 && midVersion >= 1 && minorVersion > 1 ) {
+        } else if (majorVersion == 1 && midVersion >= 1 && minorVersion > 1) {
             errorHandling = "application/vnd.ogc.se+inimage";
-        } else if ( majorVersion > 1  ) {
+        } else if (majorVersion > 1) {
             errorHandling = "application/vnd.ogc.se+inimage";
         }
 
@@ -304,8 +308,10 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         /**
          * Include for vendor specific parameters
          */
-        vendorSpecificNames = setList.getProperty(prefix + VendorSpecificNamesProperty);
-        vendorSpecificValues = setList.getProperty(prefix + VendorSpecificValuesProperty);
+        vendorSpecificNames = setList.getProperty(prefix
+                + VendorSpecificNamesProperty);
+        vendorSpecificValues = setList.getProperty(prefix
+                + VendorSpecificValuesProperty);
 
     } //end setProperties
 
@@ -317,31 +323,44 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         props.put(prefix + WMSServerProperty, PropUtils.unnull(wmsServer));
         props.put(prefix + ImageFormatProperty, PropUtils.unnull(imageFormat));
         props.put(prefix + TransparentProperty, PropUtils.unnull(transparent));
-        props.put(prefix + BackgroundColorProperty, PropUtils.unnull(backgroundColor));
+        props.put(prefix + BackgroundColorProperty,
+                PropUtils.unnull(backgroundColor));
         props.put(prefix + WMSVersionProperty, PropUtils.unnull(wmsVersion));
         props.put(prefix + LayersProperty, PropUtils.unnull(layers));
         props.put(prefix + StylesProperty, PropUtils.unnull(styles));
-        props.put(prefix + VendorSpecificNamesProperty, PropUtils.unnull(vendorSpecificNames));
-        props.put(prefix + VendorSpecificValuesProperty, PropUtils.unnull(vendorSpecificValues));
+        props.put(prefix + VendorSpecificNamesProperty,
+                PropUtils.unnull(vendorSpecificNames));
+        props.put(prefix + VendorSpecificValuesProperty,
+                PropUtils.unnull(vendorSpecificValues));
         return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
 
-        props.put(initPropertiesProperty, WMSServerProperty + " " + WMSVersionProperty + " " + LayersProperty + " " + StylesProperty + " " + VendorSpecificNamesProperty + " " + VendorSpecificValuesProperty + " " + ImageFormatProperty + " " + TransparentProperty + " " + BackgroundColorProperty);
+        props.put(initPropertiesProperty, WMSServerProperty + " "
+                + WMSVersionProperty + " " + LayersProperty + " "
+                + StylesProperty + " " + VendorSpecificNamesProperty + " "
+                + VendorSpecificValuesProperty + " " + ImageFormatProperty
+                + " " + TransparentProperty + " " + BackgroundColorProperty);
 
-        props.put(WMSServerProperty, "URL to the server script that responds to WMS map requests");
+        props.put(WMSServerProperty,
+                "URL to the server script that responds to WMS map requests");
         props.put(ImageFormatProperty, "Image format (GIF, PNG, JPEG)");
-        props.put(TransparentProperty, "Flag to indicate that background of image should be tranparent");
-        props.put(TransparentProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(TransparentProperty,
+                "Flag to indicate that background of image should be tranparent");
+        props.put(TransparentProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
         props.put(BackgroundColorProperty, "The Background color for the image");
-        props.put(BackgroundColorProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        props.put(BackgroundColorProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
         props.put(WMSVersionProperty, "The WMS specification version");
         props.put(LayersProperty, "A list of layers to use in the query");
         props.put(StylesProperty, "A list of layer styles to use inthe query");
-        props.put(VendorSpecificNamesProperty, "Vendor-specific capability names to use in the query");
-        props.put(VendorSpecificValuesProperty, "Vendor-specific capability values for the names");
+        props.put(VendorSpecificNamesProperty,
+                "Vendor-specific capability names to use in the query");
+        props.put(VendorSpecificValuesProperty,
+                "Vendor-specific capability values for the names");
         return props;
     }
 
@@ -352,27 +371,27 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     public void setImageFormat(String newImageFormat) {
         // check without a potential heading 'image/'
         String checkImageFormat = newImageFormat;
-        if ( newImageFormat.indexOf('/') > 0 )
-          checkImageFormat = newImageFormat.substring(newImageFormat.indexOf('/'));
+        if (newImageFormat.indexOf('/') > 0)
+            checkImageFormat = newImageFormat.substring(newImageFormat.indexOf('/'));
 
-        if (checkImageFormat.equals(WMTConstants.IMAGEFORMAT_GIF) ||
-            checkImageFormat.equals(WMTConstants.IMAGEFORMAT_JPEG) ||
-            checkImageFormat.equals(WMTConstants.IMAGEFORMAT_PNG)) {
+        if (checkImageFormat.equals(WMTConstants.IMAGEFORMAT_GIF)
+                || checkImageFormat.equals(WMTConstants.IMAGEFORMAT_JPEG)
+                || checkImageFormat.equals(WMTConstants.IMAGEFORMAT_PNG)) {
             imageFormat = newImageFormat;
         }
     }
 
     public void setImageQuality(int newImageQuality) {
-      if ( newImageQuality == this.LOSSY_IMAGE_QUALITY_HIGH )
-        imageQuality = "HIGH";
-      else if ( newImageQuality == this.LOSSY_IMAGE_QUALITY_MEDIUM )
-        imageQuality = "MEDIUM";
-      else if ( newImageQuality == this.LOSSY_IMAGE_QUALITY_LOW )
-        imageQuality = "LOW";
+        if (newImageQuality == WMSPlugIn.LOSSY_IMAGE_QUALITY_HIGH)
+            imageQuality = "HIGH";
+        else if (newImageQuality == WMSPlugIn.LOSSY_IMAGE_QUALITY_MEDIUM)
+            imageQuality = "MEDIUM";
+        else if (newImageQuality == WMSPlugIn.LOSSY_IMAGE_QUALITY_LOW)
+            imageQuality = "LOW";
     }
 
-    // make this better! 
-   public String getServerName() {
+    // make this better!
+    public String getServerName() {
         return wmsServer;
     }
 

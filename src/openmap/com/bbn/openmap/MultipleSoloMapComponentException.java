@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MultipleSoloMapComponentException.java,v $
 // $RCSfile: MultipleSoloMapComponentException.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/09 13:33:36 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap;
 
@@ -38,6 +37,7 @@ public class MultipleSoloMapComponentException extends RuntimeException {
 
     /**
      * Constuct an exception with a reason string.
+     * 
      * @param s the reason for the exception
      */
     public MultipleSoloMapComponentException(String s) {
@@ -45,8 +45,9 @@ public class MultipleSoloMapComponentException extends RuntimeException {
     }
 
     /**
-     * Construct an exception, generating a reason from the conflicting
-     * classes.
+     * Construct an exception, generating a reason from the
+     * conflicting classes.
+     * 
      * @param c1 the class that was being added
      * @param c2 the class that already exists in the BeanContext
      */

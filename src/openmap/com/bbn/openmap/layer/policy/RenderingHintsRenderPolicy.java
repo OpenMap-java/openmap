@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/RenderingHintsRenderPolicy.java,v $
 // $RCSfile: RenderingHintsRenderPolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.policy;
 
@@ -31,8 +30,6 @@ import java.util.Properties;
 import java.util.Vector;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -40,37 +37,53 @@ import com.bbn.openmap.util.PropUtils;
  * The RenderingHintsRenderPolicy is a StandardRenderPolicy that lets
  * you set RenderingHints on the java.awt.Graphics object before the
  * layer is painted, and then simply paints the current graphic list.
- * No conditions or deviations are considered.  This class can be set
+ * No conditions or deviations are considered. This class can be set
  * with properties.
  * <P>
- * The properties have to look like: <pre>
- *
- * prefix.renderingHints=RENDERINGHINTS_KEY1 RENDERINGHINTS_KEY2
- * prefix.RENDERINGHINTS_KEY1=RENDERINGHINTS_VALUE1
- * prefix.RENDERINGHINTS_KEY2=RENDERINGHINTS_VALUE2
- *
- * </pre> For example, for a GraticuleLayer in the properties file
- * with a 'graticule' prefix: <pre>
+ * The properties have to look like:
  * 
- * graticule.renderPolicy=textAliasing
- * graticule.textAliasing.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
- * graticule.textAliasing.renderingHints=KEY_TEXT_ANTIALIASING
- * graticule.textAliasing.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
+ * <pre>
  * 
- * </pre> The HintsMapBeanRepaintPolicy uses a
- * RenderingHintsRenderPolicy with properties that look like these,
- * where 'repaintPolicy' is the prefix for the
- * RenderingHintsRenderPolicy: <pre>
- *
- * repaintPolicy.class=com.bbn.openmap.HintsMapBeanRepaintPolicy
- * repaintPolicy.renderingHints=KEY_ANTIALIASING
- * repaintPolicy.KEY_ANTIALIASING=VALUE_ANTIALIAS_ON
- * repaintPolicy.KEY_RENDERING=VALUE_RENDER_SPEED
  * 
+ *  prefix.renderingHints=RENDERINGHINTS_KEY1 RENDERINGHINTS_KEY2
+ *  prefix.RENDERINGHINTS_KEY1=RENDERINGHINTS_VALUE1
+ *  prefix.RENDERINGHINTS_KEY2=RENDERINGHINTS_VALUE2
+ * 
+ *  
  * </pre>
- * See the java.awt.RenderingHints javadocs for the key-value
- * pairs that can be used.
  * 
+ * For example, for a GraticuleLayer in the properties file with a
+ * 'graticule' prefix:
+ * 
+ * <pre>
+ * 
+ *  
+ *  graticule.renderPolicy=textAliasing
+ *  graticule.textAliasing.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
+ *  graticule.textAliasing.renderingHints=KEY_TEXT_ANTIALIASING
+ *  graticule.textAliasing.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
+ *  
+ *  
+ * </pre>
+ * 
+ * The HintsMapBeanRepaintPolicy uses a RenderingHintsRenderPolicy
+ * with properties that look like these, where 'repaintPolicy' is the
+ * prefix for the RenderingHintsRenderPolicy:
+ * 
+ * <pre>
+ * 
+ * 
+ *  repaintPolicy.class=com.bbn.openmap.HintsMapBeanRepaintPolicy
+ *  repaintPolicy.renderingHints=KEY_ANTIALIASING
+ *  repaintPolicy.KEY_ANTIALIASING=VALUE_ANTIALIAS_ON
+ *  repaintPolicy.KEY_RENDERING=VALUE_RENDER_SPEED
+ *  
+ *  
+ * </pre>
+ * 
+ * See the java.awt.RenderingHints javadocs for the key-value pairs
+ * that can be used.
+ *  
  */
 public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
 
@@ -85,7 +98,7 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
         super();
         setRenderingHints(new RenderingHints(null));
     }
-    
+
     public RenderingHintsRenderPolicy(OMGraphicHandlerLayer layer) {
         super(layer);
         setRenderingHints(new RenderingHints(null));
@@ -121,7 +134,7 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
 
     public void setRenderingHints(Graphics g) {
         if (renderingHints != null && g instanceof Graphics2D) {
-            ((Graphics2D)g).setRenderingHints(renderingHints);
+            ((Graphics2D) g).setRenderingHints(renderingHints);
         }
     }
 
@@ -129,31 +142,33 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        String renderingHintsString = 
-            props.getProperty(prefix + RenderingHintsProperty);
+        String renderingHintsString = props.getProperty(prefix
+                + RenderingHintsProperty);
 
         if (DEBUG) {
-            Debug.output("RHRP: decoding rendering hints: " + renderingHintsString);
+            Debug.output("RHRP: decoding rendering hints: "
+                    + renderingHintsString);
         }
 
-        Vector renderingHintsVector = 
-            PropUtils.parseSpacedMarkers(renderingHintsString);
+        Vector renderingHintsVector = PropUtils.parseSpacedMarkers(renderingHintsString);
 
         if (renderingHintsVector != null) {
             Iterator it = renderingHintsVector.iterator();
             while (it.hasNext()) {
-                String renderingHintKeyString = (String)it.next();
+                String renderingHintKeyString = (String) it.next();
                 if (renderingHintKeyString != null) {
-                    String renderingHintValueString = 
-                        props.getProperty(prefix + renderingHintKeyString);
+                    String renderingHintValueString = props.getProperty(prefix
+                            + renderingHintKeyString);
 
                     if (renderingHintValueString != null) {
                         Object key = null;
                         Object value = null;
 
                         try {
-                            key = RenderingHints.class.getField(renderingHintKeyString).get(null);
-                            value = RenderingHints.class.getField(renderingHintValueString).get(null);
+                            key = RenderingHints.class.getField(renderingHintKeyString)
+                                    .get(null);
+                            value = RenderingHints.class.getField(renderingHintValueString)
+                                    .get(null);
                         } catch (NoSuchFieldException nsfe) {
                         } catch (IllegalAccessException iae) {
                         }
@@ -164,15 +179,21 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
                             }
                             renderingHints.put(key, value);
                             if (DEBUG) {
-                                Debug.output("RHRP+++ adding " + renderingHintKeyString + " | " + renderingHintValueString);
+                                Debug.output("RHRP+++ adding "
+                                        + renderingHintKeyString + " | "
+                                        + renderingHintValueString);
                             }
                         } else {
                             if (DEBUG) {
-                                Debug.output("RHRP--- NOT adding " + renderingHintKeyString + " (" + key + ") | " + renderingHintValueString + " (" + value + ")");
+                                Debug.output("RHRP--- NOT adding "
+                                        + renderingHintKeyString + " (" + key
+                                        + ") | " + renderingHintValueString
+                                        + " (" + value + ")");
                             }
                         }
                     } else if (DEBUG) {
-                        Debug.output("RHRP--- NOT adding " + renderingHintKeyString);
+                        Debug.output("RHRP--- NOT adding "
+                                + renderingHintKeyString);
                     }
                 }
             }

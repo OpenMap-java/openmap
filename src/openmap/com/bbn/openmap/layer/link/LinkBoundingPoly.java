@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,73 +14,72 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkBoundingPoly.java,v $
 // $RCSfile: LinkBoundingPoly.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.link;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
-import java.util.Properties;
 import java.io.IOException;
 import java.io.DataOutput;
 import java.io.DataInput;
 
-/** 
+/**
  * LinkBoundingPoly objects are used to describe simple polygons that
- * cover a certain area.  If the area described is in coordinates, the
+ * cover a certain area. If the area described is in coordinates, the
  * polygon should not be sued for areas covering a pole or straddling
- * the dateline.  More than one LinkBoundingPolys should be used for
+ * the dateline. More than one LinkBoundingPolys should be used for
  * areas like that.
  */
-public class LinkBoundingPoly{
-    
+public class LinkBoundingPoly {
+
     public float maxX;
     public float maxY;
     public float minX;
     public float minY;
     protected float[] points;
-    
-    /** 
-     * The constructor to use when reading the bounding polygon off
-     * an input stream. 
+
+    /**
+     * The constructor to use when reading the bounding polygon off an
+     * input stream.
+     * 
      * @param dis DataInputStream to read from.
      */
     public LinkBoundingPoly(DataInput dis) throws IOException {
         read(dis);
     }
 
-    /**  
-     * The constructor to use to create a LinkBoundingPoly to write
-     * to an output stream.
-     *
-     * @param poly a series of alternating x, y points describing a polygon.
+    /**
+     * The constructor to use to create a LinkBoundingPoly to write to
+     * an output stream.
+     * 
+     * @param poly a series of alternating x, y points describing a
+     *        polygon.
      */
-    public LinkBoundingPoly(float[] poly){
+    public LinkBoundingPoly(float[] poly) {
         points = poly;
     }
 
     /**
-     * Create a LinkBoundingPoly out of minimum and max x, y, values. 
-     *
+     * Create a LinkBoundingPoly out of minimum and max x, y, values.
+     * 
      * @param minX minimum X value.
      * @param minY minimum Y value.
      * @param maxX maximum X value.
      * @param maxY maximum Y value.
      */
-    public LinkBoundingPoly(float minX, float minY, 
-                            float maxX, float maxY){
+    public LinkBoundingPoly(float minX, float minY, float maxX, float maxY) {
         points = new float[10];
-        
-        Debug.message("link", "LinkBoundingPoly: Creating link bounding poly with " +
-                      minX + ", " + minY + 
-                      ", " + maxX + ", "+ maxY);
-        
+
+        Debug.message("link",
+                "LinkBoundingPoly: Creating link bounding poly with " + minX
+                        + ", " + minY + ", " + maxX + ", " + maxY);
+
         points[0] = minY;
         points[1] = minX;
         points[2] = maxY;
@@ -93,25 +92,25 @@ public class LinkBoundingPoly{
         points[9] = minX;
     }
 
-    /** 
-     * Write the polygon on the output stream.  If the number of
-     * points is an odd number, the last number will be left off.
-     *
-     * @param dos the DataOutput to write to. 
+    /**
+     * Write the polygon on the output stream. If the number of points
+     * is an odd number, the last number will be left off.
+     * 
+     * @param dos the DataOutput to write to.
      */
     public void write(DataOutput dos) throws IOException {
         // round down to a multiple of two.
-        int length = (points.length/2)*2;
-        
+        int length = (points.length / 2) * 2;
+
         dos.writeInt(length);
-        for (int i = 0; i < length; i++){
+        for (int i = 0; i < length; i++) {
             dos.writeFloat(points[i]);
         }
     }
 
     /**
      * Read the bounding polygon off the input stream.
-     *
+     * 
      * @param dis DataInputStream to read from.
      */
     public void read(DataInput dis) throws IOException {
@@ -122,7 +121,7 @@ public class LinkBoundingPoly{
         points = new float[polyLength];
         float x, y;
 
-        for (int i = 0; i < points.length; i+=2){
+        for (int i = 0; i < points.length; i += 2) {
             y = dis.readFloat();
             x = dis.readFloat();
 
@@ -134,48 +133,53 @@ public class LinkBoundingPoly{
             }
 
             points[i] = y;
-            points[i+1] = x;
+            points[i + 1] = x;
 
-            if (x < minX) minX = x;
-            if (x > maxX) maxX = x;
-            if (y < minY) minY = y;
-            if (y > maxY) maxY = y;
+            if (x < minX)
+                minX = x;
+            if (x > maxX)
+                maxX = x;
+            if (y < minY)
+                minY = y;
+            if (y > maxY)
+                maxY = y;
         }
     }
 
-    /** 
+    /**
      * Return the polygon points, as a series of alternating x and y
      * values.
-     *
-     * @return float[] of alternating x, y, points. 
+     * 
+     * @return float[] of alternating x, y, points.
      */
-    public float[] getPoints(){
+    public float[] getPoints() {
         return points;
     }
 
     /**
-     * Convert the points to Lat/Lon points.  There is no guarantee
+     * Convert the points to Lat/Lon points. There is no guarantee
      * that the points really translate into latitude and longitude
      * points.
-     *
-     * @return LatLonPoints 
+     * 
+     * @return LatLonPoints
      */
-    public LatLonPoint[] getLatLonPoints(){
-        LatLonPoint[] boundingPoly = new LatLonPoint[points.length/2];
+    public LatLonPoint[] getLatLonPoints() {
+        LatLonPoint[] boundingPoly = new LatLonPoint[points.length / 2];
         float lat, lon;
-        for (int i = 0; i < points.length; i+=2){
+        for (int i = 0; i < points.length; i += 2) {
             lat = points[i];
-            lon = points[i+1];
+            lon = points[i + 1];
             boundingPoly[i] = new LatLonPoint(lat, lon);
         }
         return boundingPoly;
     }
 
-    public String toString(){
+    public String toString() {
         StringBuffer s = new StringBuffer();
-        s.append("  LinkBoundingPoly has " + points.length/2 + " points.");
-        for (int i = 0; i < points.length; i+=2){
-            s.append("\n    |Lat = " + points[i] + ", Lon = " + points[i+1] + "|");
+        s.append("  LinkBoundingPoly has " + points.length / 2 + " points.");
+        for (int i = 0; i < points.length; i += 2) {
+            s.append("\n    |Lat = " + points[i] + ", Lon = " + points[i + 1]
+                    + "|");
         }
         return s.toString();
     }

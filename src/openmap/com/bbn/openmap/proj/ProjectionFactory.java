@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionFactory.java,v $
 // $RCSfile: ProjectionFactory.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/01 20:44:47 $
+// $Revision: 1.9 $
+// $Date: 2004/10/14 18:06:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -132,9 +132,8 @@ public class ProjectionFactory extends OMComponent {
         int nProjections = factory.numProjections();
         String projNames[] = new String[nProjections];
         int i = 0;
-        for (Iterator it = factory.iterator(); 
-            it.hasNext(); 
-            projNames[i++] = ((ProjectionLoader) it.next()).getPrettyName());
+        for (Iterator it = factory.iterator(); it.hasNext(); projNames[i++] = ((ProjectionLoader) it.next()).getPrettyName())
+            ;
 
         return projNames;
     }
@@ -142,19 +141,32 @@ public class ProjectionFactory extends OMComponent {
     /**
      * Return the Projection Class with the given pretty name.
      * 
-     * @param name the name of the projection, set in the pretty name of it's ProjectionLoader.
+     * @param name the name of the projection, set in the pretty name
+     *        of it's ProjectionLoader.
      * @return Class of Projection, or null if not found.
      */
     public static Class getProjClassForName(String name) {
-        for (Iterator it = getInstance().iterator(); it.hasNext();) {
-            ProjectionLoader loader = (ProjectionLoader) it.next();
-            if (name.equalsIgnoreCase(loader.getPrettyName())) {
-                return loader.getProjectionClass();
+        if (name != null) {
+            for (Iterator it = getInstance().iterator(); it.hasNext();) {
+                ProjectionLoader loader = (ProjectionLoader) it.next();
+                if (name.equalsIgnoreCase(loader.getPrettyName())) {
+                    return loader.getProjectionClass();
+                }
             }
+
+            // If there wasn't a class with the pretty name, check to
+            // make sure it wasn't a class name itself. If it fails,
+            // return null. We just want to do this in case people
+            // start using class names for pretty names.
+            try {
+                return Class.forName(name);
+            } catch (ClassNotFoundException cnfe) {
+            }
+
         }
         return null;
     }
-    
+
     /**
      * Return an int representing the OpenMap projection, given the
      * name of the projection. Useful for setting a projection based
@@ -576,7 +588,8 @@ public class ProjectionFactory extends OMComponent {
     }
 
     /**
-     * Convenience method to load default projections into a ProjectionFactory.
+     * Convenience method to load default projections into a
+     * ProjectionFactory.
      * 
      * @param pf
      * @return ProjectionFactory

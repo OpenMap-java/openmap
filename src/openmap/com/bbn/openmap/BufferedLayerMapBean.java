@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,46 +14,41 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/BufferedLayerMapBean.java,v $
 // $RCSfile: BufferedLayerMapBean.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/24 03:31:35 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.beans.beancontext.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Paint;
+import java.awt.event.ContainerEvent;
 
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.LatLonPoint;
-
+import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.layer.BufferedLayer;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The BufferedLayerMapBean is a BufferedMapBean with an additional
- * image buffer that holds Layers designated as background layers.
- * The additional image buffer is a BufferedLayer that this MapBean
+ * image buffer that holds Layers designated as background layers. The
+ * additional image buffer is a BufferedLayer that this MapBean
  * manages, and all background layers are added to the BufferedLayer,
- * which is automatically added to the bottom of the map.  When layers
+ * which is automatically added to the bottom of the map. When layers
  * are added to the MapBean via the setLayers() method, the
  * Layer.getAddAsBackground() flag is checked, and if that is true for
- * a layer, it is added to the BufferedLayer.  The background layers
- * do not receive mouse events. <P> 
- *
+ * a layer, it is added to the BufferedLayer. The background layers do
+ * not receive mouse events.
+ * <P>
+ * 
  * It should be cautioned that the appearance of the map may not match
  * the layer stack as it is delivered to the MapBean because of this
- * flag.  If, for example, layers 1 and 4 are marked as background
+ * flag. If, for example, layers 1 and 4 are marked as background
  * layers, while layers 2 and 3 are not (in a 4 layer stack), then the
  * map will show layers 2, 3, 1, 4, with layers 1 and 4 being
- * displayed from the BufferedLayer.  Something to think about when it
+ * displayed from the BufferedLayer. Something to think about when it
  * comes to designing GUI elements.
  */
 public class BufferedLayerMapBean extends BufferedMapBean {
@@ -71,10 +66,10 @@ public class BufferedLayerMapBean extends BufferedMapBean {
     }
 
     /**
-     * Set the background color of the map.  Actually sets the
+     * Set the background color of the map. Actually sets the
      * background color of the projection, and calls repaint().
-     *
-     * @param color java.awt.Color.  
+     * 
+     * @param color java.awt.Color.
      */
     public void setBackgroundColor(Color color) {
         super.setBackground(color);
@@ -101,14 +96,14 @@ public class BufferedLayerMapBean extends BufferedMapBean {
     }
 
     /**
-     * Set the MapBeanRepaintPolicy used by the MapBean.  This method
+     * Set the MapBeanRepaintPolicy used by the MapBean. This method
      * is overriden in order to pass the policy on to the MapBean
      * stored in the internal BufferedLayer.
      */
     public void setMapBeanRepaintPolicy(MapBeanRepaintPolicy mbrp) {
         super.setMapBeanRepaintPolicy(mbrp);
 
-        MapBeanRepaintPolicy mbrp2 = (MapBeanRepaintPolicy)mbrp.clone();
+        MapBeanRepaintPolicy mbrp2 = (MapBeanRepaintPolicy) mbrp.clone();
         MapBean mb = getBufferedLayer().getMapBean();
         if (mb != null) {
             mb.setMapBeanRepaintPolicy(mbrp2);
@@ -117,9 +112,9 @@ public class BufferedLayerMapBean extends BufferedMapBean {
     }
 
     /**
-     * LayerListener interface method.
-     * A list of layers will be added, removed, or replaced based on
-     * on the type of LayerEvent.
+     * LayerListener interface method. A list of layers will be added,
+     * removed, or replaced based on on the type of LayerEvent.
+     * 
      * @param evt a LayerEvent
      */
     public void setLayers(LayerEvent evt) {
@@ -147,31 +142,32 @@ public class BufferedLayerMapBean extends BufferedMapBean {
             bufLayer = getBufferedLayer();
         }
 
-        // use LayerEvent.REPLACE when you want to remove all current layers
+        // use LayerEvent.REPLACE when you want to remove all current
+        // layers
         // add a new set
-        if (type==LayerEvent.REPLACE) {
+        if (type == LayerEvent.REPLACE) {
             if (DEBUG) {
                 debugmsg("Replacing all layers");
             }
             removeAll();
             bufLayer.clearLayers();
 
-            for (int i=0; i<layers.length; i++) {
+            for (int i = 0; i < layers.length; i++) {
                 // @HACK is this cool?:
                 if (layers[i] == null) {
-                    System.err.println("MapBean.setLayers(): layer " + 
-                                       i + " is null");
+                    System.err.println("MapBean.setLayers(): layer " + i
+                            + " is null");
                     continue;
                 }
 
                 if (DEBUG) {
-                    debugmsg("Adding layer[" +i+"]= " +layers[i].getName());
+                    debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
                 }
 
                 if (layers[i].getAddAsBackground()) {
                     if (DEBUG) {
-                        Debug.output("Adding layer[" +i+"]= " +layers[i].getName() + 
-                                     " to background");
+                        Debug.output("Adding layer[" + i + "]= "
+                                + layers[i].getName() + " to background");
                     }
 
                     bufLayer.addLayer(layers[i]);
@@ -195,18 +191,18 @@ public class BufferedLayerMapBean extends BufferedMapBean {
             if (DEBUG) {
                 debugmsg("Adding new layers");
             }
-            for (int i=0; i<layers.length; i++) {
+            for (int i = 0; i < layers.length; i++) {
                 if (DEBUG) {
-                    debugmsg("Adding layer[" +i+"]= " +layers[i].getName());
+                    debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
                 }
 
-//              add(layers[i]);
+                //              add(layers[i]);
                 layers[i].setVisible(true);
 
                 if (layers[i].getAddAsBackground()) {
                     if (DEBUG) {
-                        Debug.output("Adding layer[" +i+"]= " +layers[i].getName() + 
-                                     " to background");
+                        Debug.output("Adding layer[" + i + "]= "
+                                + layers[i].getName() + " to background");
                     }
                     bufLayer.addLayer(layers[i]);
                 } else {
@@ -218,15 +214,17 @@ public class BufferedLayerMapBean extends BufferedMapBean {
                 add(bufLayer);
             }
         }
-        
-        // use LayerEvent.REMOVE when you want to delete layers from the map
+
+        // use LayerEvent.REMOVE when you want to delete layers from
+        // the map
         else if (type == LayerEvent.REMOVE) {
             if (DEBUG) {
                 debugmsg("Removing layers");
             }
-            for (int i=0; i<layers.length; i++) {
+            for (int i = 0; i < layers.length; i++) {
                 if (DEBUG) {
-                    debugmsg("Removing layer[" +i+"]= " +layers[i].getName());
+                    debugmsg("Removing layer[" + i + "]= "
+                            + layers[i].getName());
                 }
                 remove(layers[i]);
                 bufLayer.removeLayer(layers[i]);
@@ -243,10 +241,10 @@ public class BufferedLayerMapBean extends BufferedMapBean {
     }
 
     /**
-     * ContainerListener Interface method.
-     * Should not be called directly.  Part of the ContainerListener
-     * interface, and it's here to make the MapBean a good Container
-     * citizen. 
+     * ContainerListener Interface method. Should not be called
+     * directly. Part of the ContainerListener interface, and it's
+     * here to make the MapBean a good Container citizen.
+     * 
      * @param e ContainerEvent
      */
     protected void changeLayers(ContainerEvent e) {
@@ -276,14 +274,19 @@ public class BufferedLayerMapBean extends BufferedMapBean {
         // Take 1 off for the bufLayer
         Layer[] newLayers = new Layer[ncomponents + nBufLayerComponents - 1];
         System.arraycopy(comps, 0, newLayers, 0, ncomponents - 1);
-        System.arraycopy(bufLayers, 0, newLayers, ncomponents - 1, nBufLayerComponents);
+        System.arraycopy(bufLayers,
+                0,
+                newLayers,
+                ncomponents - 1,
+                nBufLayerComponents);
 
-        if (DEBUG) debugmsg("changeLayers() - firing change");
+        if (DEBUG)
+            debugmsg("changeLayers() - firing change");
         firePropertyChange(LayersProperty, currentLayers, newLayers);
 
         // Tell the new layers that they have been added
-        for (int i=0; i<addedLayers.size(); i++) {
-            ((Layer)addedLayers.elementAt(i)).added(this);
+        for (int i = 0; i < addedLayers.size(); i++) {
+            ((Layer) addedLayers.elementAt(i)).added(this);
         }
         addedLayers.removeAllElements();
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,10 +12,12 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/FileUtils.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/FileUtils.java,v
+// $
 // $RCSfile: FileUtils.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/09/17 19:07:27 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +36,8 @@ public class FileUtils {
         String ret = null;
         try {
             //setup the file chooser
-            File startingPoint = new File(Environment.get("lastchosendirectory", System.getProperty("user.home")));
+            File startingPoint = new File(Environment.get("lastchosendirectory",
+                    System.getProperty("user.home")));
             JFileChooser chooser = new JFileChooser(startingPoint);
 
             chooser.setDialogTitle(title);
@@ -44,8 +47,8 @@ public class FileUtils {
             //for some reason, the APPROVE_OPTION said it was a
             //boolean during compile and didn't work in this next
             //statement
-            if ((state != JFileChooser.CANCEL_OPTION) && 
-                (state != JFileChooser.ERROR_OPTION)) {
+            if ((state != JFileChooser.CANCEL_OPTION)
+                    && (state != JFileChooser.ERROR_OPTION)) {
 
                 ret = chooser.getSelectedFile().getCanonicalPath();
 
@@ -53,7 +56,10 @@ public class FileUtils {
                 Environment.set("lastchosendirectory", ret);
             }
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(null, ioe.getMessage(), "Error picking file", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    ioe.getMessage(),
+                    "Error picking file",
+                    JOptionPane.ERROR_MESSAGE);
             ioe.printStackTrace();
         }
 

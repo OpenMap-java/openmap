@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/FormatException.java,v $
 // $RCSfile: FormatException.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.io;
 
@@ -27,8 +26,8 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**
- * This class is used for exceptions that result from some format errors
- * of the data when using the BinaryFile.
+ * This class is used for exceptions that result from some format
+ * errors of the data when using the BinaryFile.
  */
 public class FormatException extends Exception {
     /** nested exception that caused this one */
@@ -41,18 +40,21 @@ public class FormatException extends Exception {
         super();
         rootCause = null;
     }
+
     /**
      * Construct a FormatException with a detail message.
-     *
+     * 
      * @param s the detail message
      */
     public FormatException(String s) {
         super(s);
         rootCause = null;
     }
+
     /**
-     * Construct a FormatException with a detail message and root cause.
-     *
+     * Construct a FormatException with a detail message and root
+     * cause.
+     * 
      * @param s the detail message
      * @param rootCause the root cause (not null)
      */
@@ -63,7 +65,7 @@ public class FormatException extends Exception {
 
     /**
      * Returns the exception that caused this one.
-     *
+     * 
      * @return the root exception, or null if there isn't one
      */
     public Throwable getRootCause() {
@@ -85,7 +87,7 @@ public class FormatException extends Exception {
     /**
      * Prints a backtrace of this exception and the rootCause (if any)
      * to a stream.
-     *
+     * 
      * @param ps the stream to print to
      */
     public void printStackTrace(PrintStream ps) {
@@ -99,7 +101,7 @@ public class FormatException extends Exception {
     /**
      * Prints a backtrace of this exception and the rootCause (if any)
      * to a writer.
-     *
+     * 
      * @param pw the writer to print to
      */
     public void printStackTrace(PrintWriter pw) {

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,21 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLine.java,v $
 // $RCSfile: LinkLine.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.link;
 
 import com.bbn.openmap.omGraphics.OMLine;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 
-import java.awt.BasicStroke;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -38,10 +34,10 @@ import java.io.IOException;
  */
 public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
 
-    /** 
-     * Write a line using lat/lon endpoints.  The lat/lons are in
-     * decimal degrees.
-     *.
+    /**
+     * Write a line using lat/lon endpoints. The lat/lons are in
+     * decimal degrees. .
+     * 
      * @param lat_1 latitude of placement of start of line.
      * @param lon_1 longitude of placement of start of line.
      * @param lat_2 latitude of placement of end of line.
@@ -49,37 +45,42 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param lineType type of line - straight, rhumb, great circle..
      * @param properties Properties containing attributes.
      * @param dos DataOutputStream to write to.
-     * @throws IOException 
+     * @throws IOException
      */
-    public static void write (float lat_1, float lon_1, 
-                              float lat_2, float lon_2, 
-                              int lineType,
-                              LinkProperties properties,
-                              DataOutputStream dos) throws IOException {
-        LinkLine.write(lat_1, lon_1, lat_2, lon_2, lineType, -1, properties, dos);
+    public static void write(float lat_1, float lon_1, float lat_2,
+                             float lon_2, int lineType,
+                             LinkProperties properties, DataOutputStream dos)
+            throws IOException {
+        LinkLine.write(lat_1,
+                lon_1,
+                lat_2,
+                lon_2,
+                lineType,
+                -1,
+                properties,
+                dos);
     }
 
-    /** 
-     * Write a line using lat/lon endpoints.  The lat/lons are in
-     * decimal degrees.  This method gives you the option of
-     * specifying a number of segments to use in approximating a
-     * curved line.
-     *
+    /**
+     * Write a line using lat/lon endpoints. The lat/lons are in
+     * decimal degrees. This method gives you the option of specifying
+     * a number of segments to use in approximating a curved line.
+     * 
      * @param lat_1 latitude of placement of start of line.
      * @param lon_1 longitude of placement of start of line.
      * @param lat_2 latitude of placement of end of line.
      * @param lon_2 longitude of placement of end of line.
      * @param lineType type of line - straight, rhumb, great circle..
-     * @param nsegs number of points to use to approximate curved line..
+     * @param nsegs number of points to use to approximate curved
+     *        line..
      * @param properties Properties containing attributes.
      * @param dos DataOutputStream to write to.
-     * @throws IOException 
+     * @throws IOException
      */
-    public static void write (float lat_1, float lon_1, 
-                              float lat_2, float lon_2, 
-                              int lineType, int nsegs,
-                              LinkProperties properties,
-                              DataOutputStream dos) throws IOException {
+    public static void write(float lat_1, float lon_1, float lat_2,
+                             float lon_2, int lineType, int nsegs,
+                             LinkProperties properties, DataOutputStream dos)
+            throws IOException {
 
         dos.write(Link.LINE_HEADER.getBytes());
         dos.writeInt(GRAPHICTYPE_LINE);
@@ -93,7 +94,9 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
         properties.write(dos);
     }
 
-    /** Write a line with x/y pixel endpoints.
+    /**
+     * Write a line with x/y pixel endpoints.
+     * 
      * @param x1 Horizontal pixel placement of start of line.
      * @param y1 Vertical pixel placement of start of line.
      * @param x2 Horizontal pixel placement of end of line.
@@ -102,10 +105,9 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param dos DataOutputStream to write to.
      * @throws IOException
      */
-    public static void write (int x1, int y1, 
-                              int x2, int y2,
-                              LinkProperties properties,
-                              DataOutputStream dos) throws IOException {
+    public static void write(int x1, int y1, int x2, int y2,
+                             LinkProperties properties, DataOutputStream dos)
+            throws IOException {
 
         dos.write(Link.LINE_HEADER.getBytes());
         dos.writeInt(GRAPHICTYPE_LINE);
@@ -118,7 +120,9 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
     }
 
     /**
-     * Write a line located at an x/y pixel offset from a lat/lon location.
+     * Write a line located at an x/y pixel offset from a lat/lon
+     * location.
+     * 
      * @param lat_1 latitude of placement of line.
      * @param lon_1 longitude of placement of line.
      * @param x1 Horizontal pixel offset of start of line.
@@ -129,12 +133,10 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param dos DataOutputStream to write to.
      * @throws IOException
      */
-    public static void write (float lat_1, float lon_1, 
-                              int x1, int y1, 
-                              int x2, int y2, 
-                              LinkProperties properties,
-                              DataOutputStream dos) throws IOException {
-        
+    public static void write(float lat_1, float lon_1, int x1, int y1, int x2,
+                             int y2, LinkProperties properties,
+                             DataOutputStream dos) throws IOException {
+
         dos.write(Link.LINE_HEADER.getBytes());
         dos.writeInt(GRAPHICTYPE_LINE);
         dos.writeInt(RENDERTYPE_OFFSET);
@@ -147,19 +149,23 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
         properties.write(dos);
     }
 
-
     /**
      * Write an OMLine to the link.
      */
     public static void write(OMLine line, Link link, LinkProperties props)
-        throws IOException {
+            throws IOException {
 
         switch (line.getRenderType()) {
         case OMLine.RENDERTYPE_LATLON:
             float[] ll = line.getLL();
-            LinkLine.write(ll[0], ll[1], ll[2], ll[3], 
-                           line.getLineType(), line.getNumSegs(),
-                           props, link.dos);
+            LinkLine.write(ll[0],
+                    ll[1],
+                    ll[2],
+                    ll[3],
+                    line.getLineType(),
+                    line.getNumSegs(),
+                    props,
+                    link.dos);
             break;
         case OMLine.RENDERTYPE_XY:
             int[] pts = line.getPts();
@@ -168,23 +174,31 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
         case OMLine.RENDERTYPE_OFFSET:
             ll = line.getLL();
             pts = line.getPts();
-            LinkLine.write(ll[0], ll[1], pts[0], pts[1], pts[2], pts[3],
-                           props, link.dos);
+            LinkLine.write(ll[0],
+                    ll[1],
+                    pts[0],
+                    pts[1],
+                    pts[2],
+                    pts[3],
+                    props,
+                    link.dos);
             break;
         default:
             Debug.error("LinkLine.write: line rendertype unknown.");
         }
     }
 
-    /**  
-     * Read the line Link protocol off a DataInputStream, and create an
-     * OMLine from it.  Assumes that the header has already been read.
+    /**
+     * Read the line Link protocol off a DataInputStream, and create
+     * an OMLine from it. Assumes that the header has already been
+     * read.
+     * 
      * @param dis DataInputStream to read from.
      * @return OMLine
      * @throws IOException
-     * @see com.bbn.openmap.omGraphics.OMLine 
+     * @see com.bbn.openmap.omGraphics.OMLine
      */
-    public static OMLine read (DataInputStream dis) throws IOException {
+    public static OMLine read(DataInputStream dis) throws IOException {
 
         OMLine line = null;
 
@@ -200,7 +214,7 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
         int nsegs = -1;
 
         int renderType = dis.readInt();
-        
+
         switch (renderType) {
         case RENDERTYPE_LATLON:
             int lineType = dis.readInt();
@@ -209,16 +223,15 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
             lat_2 = dis.readFloat();
             lon_2 = dis.readFloat();
             nsegs = dis.readInt();
-            
-            line = new OMLine(lat_1, lon_1, lat_2, lon_2, 
-                              lineType, nsegs);
+
+            line = new OMLine(lat_1, lon_1, lat_2, lon_2, lineType, nsegs);
             break;
         case RENDERTYPE_XY:
             x1 = dis.readInt();
             y1 = dis.readInt();
             x2 = dis.readInt();
             y2 = dis.readInt();
-            
+
             line = new OMLine(x1, y1, x2, y2);
             break;
         case RENDERTYPE_OFFSET:
@@ -228,7 +241,7 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
             y1 = dis.readInt();
             x2 = dis.readInt();
             y2 = dis.readInt();
-            
+
             line = new OMLine(lat_1, lon_1, x1, y1, x2, y2);
             break;
         default:

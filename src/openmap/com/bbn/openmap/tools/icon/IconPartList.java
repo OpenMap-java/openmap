@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconPartList.java,v $
 // $RCSfile: IconPartList.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.icon;
 
@@ -35,9 +34,9 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 
 /**
  * An IconPartList is a group of IconParts that can be rendered
- * together.  If you ask an IconPartList for it's geometry, it will
+ * together. If you ask an IconPartList for it's geometry, it will
  * combine all its parts into one geometry, and use its
- * DrawingAttributes to render that combined shape.  The IconPartList
+ * DrawingAttributes to render that combined shape. The IconPartList
  * is itself an IconPart, so the recursive possibilities are endless.
  */
 public class IconPartList implements IconPart {
@@ -60,7 +59,7 @@ public class IconPartList implements IconPart {
     }
 
     /**
-     * First in drawn on bottom.  Last in on top.
+     * First in drawn on bottom. Last in on top.
      */
     public void add(IconPart part) {
         getList().add(part);
@@ -80,10 +79,10 @@ public class IconPartList implements IconPart {
 
     /**
      * @param appDA drawing attributes to use under certain
-     * conditions.  Certain IconParts on this list may use these
-     * drawing attributes if they want/should.  May be null.
+     *        conditions. Certain IconParts on this list may use these
+     *        drawing attributes if they want/should. May be null.
      */
-    public void render(Graphics g, int width, int height, 
+    public void render(Graphics g, int width, int height,
                        DrawingAttributes appDA) {
 
         // Handle clip area in Graphics, first
@@ -94,7 +93,7 @@ public class IconPartList implements IconPart {
 
         DrawingAttributes da = getRenderingAttributes();
         DrawingAttributes tmpDA = null;
-        
+
         Iterator it = iterator();
         while (it.hasNext()) {
             IconPart part = (IconPart) it.next();
@@ -104,7 +103,7 @@ public class IconPartList implements IconPart {
                 part.setRenderingAttributes(da);
             }
 
-            Graphics2D g2 = (Graphics2D)g.create();
+            Graphics2D g2 = (Graphics2D) g.create();
             part.render(g2, width, height);
             g2.dispose();
 
@@ -132,8 +131,8 @@ public class IconPartList implements IconPart {
 
     /**
      * If you ask a IconPartList for its geometry, it will combine all
-     * its parts to make one Shape object.  All the rendering
-     * attributes from the individual parts will be ignored.  The
+     * its parts to make one Shape object. All the rendering
+     * attributes from the individual parts will be ignored. The
      * contributions will be kept geometrically separate
      * (disconnected) and their clipping areas will be ignored.
      */
@@ -170,8 +169,8 @@ public class IconPartList implements IconPart {
         IconPartList clone = new IconPartList();
         Iterator it = iterator();
         while (it.hasNext()) {
-            IconPart ip = (IconPart)it.next();
-            clone.add((IconPart)ip.clone());
+            IconPart ip = (IconPart) it.next();
+            clone.add((IconPart) ip.clone());
         }
 
         clone.setRenderingAttributes(getRenderingAttributes());

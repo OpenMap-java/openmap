@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,16 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/ScenarioGraphic.java,v $
 // $RCSfile: ScenarioGraphic.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:05:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.graphicLoader.scenario;
 
-import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
 
 /**
@@ -33,11 +31,11 @@ import com.bbn.openmap.proj.Projection;
 public interface ScenarioGraphic {
 
     /**
-     * Query the ScenarioGraphic according to it's name.  The string
+     * Query the ScenarioGraphic according to it's name. The string
      * should be interned.
      */
     public boolean thisIsYou(String name);
-    
+
     /**
      * Add a location at a time.
      */
@@ -60,7 +58,8 @@ public interface ScenarioGraphic {
     public void generateSnapshot(Projection p, long time);
 
     /**
-     * Prepare the ScenarioPoint to display its overall scenario movements.
+     * Prepare the ScenarioPoint to display its overall scenario
+     * movements.
      */
     public void generateTotalScenario(Projection p);
 

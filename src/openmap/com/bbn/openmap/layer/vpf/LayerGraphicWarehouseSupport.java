@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,22 +12,18 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LayerGraphicWarehouseSupport.java,v $
-// $Revision: 1.8 $ $Date: 2004/09/17 19:34:34 $ $Author: dietrick $
+// $Revision: 1.9 $ $Date: 2004/10/14 18:06:08 $ $Author: dietrick $
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.FanCompress;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.io.FormatException;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.util.*;
 
@@ -36,14 +32,13 @@ import java.util.*;
  * 
  * @see com.bbn.openmap.omGraphics.OMGraphic
  */
-public abstract class LayerGraphicWarehouseSupport
-    implements VPFGraphicWarehouse {
+public abstract class LayerGraphicWarehouseSupport implements
+        VPFGraphicWarehouse {
 
     protected DrawingAttributes drawingAttributes = new DrawingAttributes();
 
     /** HACK around antarctica display problem. */
-    final transient protected static float antarcticaThreshold =
-        ProjMath.degToRad(-89.9f);
+    final transient protected static float antarcticaThreshold = ProjMath.degToRad(-89.9f);
 
     /** hang on to the graphics that we build */
     protected OMGraphicList graphics;
@@ -59,8 +54,10 @@ public abstract class LayerGraphicWarehouseSupport
     /** remember if we draw connected point features */
     private boolean drawCPointFeatures;
 
-    /** thinning variables.  note that thinning is meant to be done
-      offline, so this is not optimized... */
+    /**
+     * thinning variables. note that thinning is meant to be done
+     * offline, so this is not optimized...
+     */
     private static boolean doThinning = false;
     private static double fan_eps = 0.01f;
 
@@ -71,9 +68,10 @@ public abstract class LayerGraphicWarehouseSupport
         graphics = new OMGraphicList();
         graphics.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
     }
-                               
+
     /**
      * Get the current graphics list.
+     * 
      * @return the OMGraphicList.
      */
     public synchronized OMGraphicList getGraphics() {
@@ -114,11 +112,10 @@ public abstract class LayerGraphicWarehouseSupport
     public void setDrawingAttributes(DrawingAttributes da) {
         drawingAttributes = da;
     }
-    
-    /** 
-     * Lets the warehouse know that a different
-     * CoverageAttributeTable will be using it.  Default action is to
-     * do nothing.  
+
+    /**
+     * Lets the warehouse know that a different CoverageAttributeTable
+     * will be using it. Default action is to do nothing.
      */
     public void resetForCAT() {}
 
@@ -129,8 +126,8 @@ public abstract class LayerGraphicWarehouseSupport
     private String useLibrary = null;
 
     /**
-     * Set the VPF library to use.  If null, all libraries will be
-     * searched.  Null is default.
+     * Set the VPF library to use. If null, all libraries will be
+     * searched. Null is default.
      */
     public void setUseLibrary(String lib) {
         useLibrary = lib;
@@ -144,12 +141,12 @@ public abstract class LayerGraphicWarehouseSupport
     }
 
     /**
-     * Return the GUI for certain warehouse attributes.  By default,
+     * Return the GUI for certain warehouse attributes. By default,
      * return the GUI for the DrawingAttributes object being used for
-     * rendering attributes of the graphics.  
-     *
+     * rendering attributes of the graphics.
+     * 
      * @param lst LibrarySelectionTable to use to get information
-     * about the data, if needed.  Not needed here.
+     *        about the data, if needed. Not needed here.
      */
     public Component getGUI(LibrarySelectionTable lst) {
         if (drawingAttributes != null) {
@@ -193,7 +190,7 @@ public abstract class LayerGraphicWarehouseSupport
         }
         areaSubList.add(area);
     }
-    
+
     protected void addEdge(OMGraphic edge) {
         if (edgeSubList == null) {
             edgeSubList = new OMGraphicList();
@@ -217,7 +214,9 @@ public abstract class LayerGraphicWarehouseSupport
 
     /**
      * set if we draw edge features
-     * @param newvalue <code>true</code> for drawing, false otherwise
+     * 
+     * @param newvalue <code>true</code> for drawing, false
+     *        otherwise
      */
     public void setEdgeFeatures(boolean newvalue) {
         drawEdgeFeatures = newvalue;
@@ -232,7 +231,9 @@ public abstract class LayerGraphicWarehouseSupport
 
     /**
      * set if we draw text features
-     * @param newvalue <code>true</code> for drawing, false otherwise
+     * 
+     * @param newvalue <code>true</code> for drawing, false
+     *        otherwise
      */
     public void setTextFeatures(boolean newvalue) {
         drawTextFeatures = newvalue;
@@ -244,10 +245,12 @@ public abstract class LayerGraphicWarehouseSupport
     public boolean drawTextFeatures() {
         return drawTextFeatures;
     }
-  
+
     /**
      * set if we draw area features
-     * @param newvalue <code>true</code> for drawing, false otherwise
+     * 
+     * @param newvalue <code>true</code> for drawing, false
+     *        otherwise
      */
     public void setAreaFeatures(boolean newvalue) {
         drawAreaFeatures = newvalue;
@@ -262,7 +265,9 @@ public abstract class LayerGraphicWarehouseSupport
 
     /**
      * set if we draw entity point features
-     * @param newvalue <code>true</code> for drawing, false otherwise
+     * 
+     * @param newvalue <code>true</code> for drawing, false
+     *        otherwise
      */
     public void setEPointFeatures(boolean newvalue) {
         drawEPointFeatures = newvalue;
@@ -277,7 +282,9 @@ public abstract class LayerGraphicWarehouseSupport
 
     /**
      * set if we draw connected point features
-     * @param newvalue <code>true</code> for drawing, false otherwise
+     * 
+     * @param newvalue <code>true</code> for drawing, false
+     *        otherwise
      */
     public void setCPointFeatures(boolean newvalue) {
         drawCPointFeatures = newvalue;
@@ -291,11 +298,15 @@ public abstract class LayerGraphicWarehouseSupport
     }
 
     /**
-     * Sets the features (lines, areas, text, points) that get displayed
-     * @param features a whitespace-separated list of features to display
+     * Sets the features (lines, areas, text, points) that get
+     * displayed
+     * 
+     * @param features a whitespace-separated list of features to
+     *        display
      */
     public void setFeatures(String features) {
-        // If someone gives us a list of features, we need to make sure thats
+        // If someone gives us a list of features, we need to make
+        // sure thats
         // what we use.
         setAreaFeatures(false);
         setEdgeFeatures(false);
@@ -313,10 +324,11 @@ public abstract class LayerGraphicWarehouseSupport
                 setEPointFeatures(true);
             } else if (token.equalsIgnoreCase(VPFUtil.CPoint)) {
                 setCPointFeatures(true);
-            } else if (token.equalsIgnoreCase(VPFUtil.Text)) { 
+            } else if (token.equalsIgnoreCase(VPFUtil.Text)) {
                 setTextFeatures(true);
             } else {
-                Debug.output("LayerGraphicsWarehouseSupport: ignoring feature: " + token);
+                Debug.output("LayerGraphicsWarehouseSupport: ignoring feature: "
+                        + token);
             }
         }
 
@@ -325,22 +337,28 @@ public abstract class LayerGraphicWarehouseSupport
     public String getFeatureString() {
         StringBuffer features = new StringBuffer();
 
-        if (drawAreaFeatures) features.append(VPFUtil.Area.toLowerCase() + " ");
-        if (drawEdgeFeatures) features.append(VPFUtil.Edge.toLowerCase() + " ");
-        if (drawEPointFeatures) features.append(VPFUtil.EPoint.toLowerCase() + " ");
-        if (drawCPointFeatures) features.append(VPFUtil.CPoint.toLowerCase() + " ");
-        if (drawTextFeatures) features.append(VPFUtil.Text.toLowerCase() + " ");
+        if (drawAreaFeatures)
+            features.append(VPFUtil.Area.toLowerCase() + " ");
+        if (drawEdgeFeatures)
+            features.append(VPFUtil.Edge.toLowerCase() + " ");
+        if (drawEPointFeatures)
+            features.append(VPFUtil.EPoint.toLowerCase() + " ");
+        if (drawCPointFeatures)
+            features.append(VPFUtil.CPoint.toLowerCase() + " ");
+        if (drawTextFeatures)
+            features.append(VPFUtil.Text.toLowerCase() + " ");
         return features.toString();
     }
-      
+
     /**
      * set drawing attribute properties
+     * 
      * @param prefix the prefix for our properties
      * @param props the Properties object we use to look up valuse
      */
     public void setProperties(String prefix, Properties props) {
         String features;
-        
+
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         features = props.getProperty(realPrefix + VPFLayer.featureTypesProperty);
@@ -353,115 +371,127 @@ public abstract class LayerGraphicWarehouseSupport
 
     /**
      * set drawing attribute properties
+     * 
      * @param props the Properties object.
      */
     public Properties getProperties(Properties props) {
         if (props == null) {
             props = new Properties();
         }
-        
+
         String features;
-        
+
         String realPrefix = PropUtils.getScopedPropertyPrefix(drawingAttributes);
 
-        props.put(realPrefix + VPFLayer.featureTypesProperty, getFeatureString());
+        props.put(realPrefix + VPFLayer.featureTypesProperty,
+                getFeatureString());
         drawingAttributes.getProperties(props);
         return props;
     }
 
     /**
      * create a filled polygon
+     * 
      * @param ipts a list of CoordFloatString objects
      * @param totalSize the total number of points
-     * @param dpplat threshold for latitude thinning (passed to warehouse)
-     * @param dpplon threshold for longitude thinngin (passed to warehouse)
+     * @param dpplat threshold for latitude thinning (passed to
+     *        warehouse)
+     * @param dpplon threshold for longitude thinngin (passed to
+     *        warehouse)
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
-     * @param doAntarcticaWorkaround hack for funny DCW antarctica data
-     * (passed to warehouse)
+     * @param doAntarcticaWorkaround hack for funny DCW antarctica
+     *        data (passed to warehouse)
      */
     public static OMPoly createAreaOMPoly(List ipts, int totalSize,
                                           LatLonPoint ll1, LatLonPoint ll2,
                                           float dpplat, float dpplon,
                                           boolean doAntarcticaWorkaround) {
         int i, j, size = ipts.size();
-        int npts=0;
+        int npts = 0;
 
         // thin the data
-//      if (doThinning) {
-//          totalSize = doThinning(ipts);
-//      }
+        //      if (doThinning) {
+        //          totalSize = doThinning(ipts);
+        //      }
 
         // *2 for pairs
-        float [] llpts = new float[totalSize*2];
+        float[] llpts = new float[totalSize * 2];
 
         // only do it if we're in the vicinity
         if (doAntarcticaWorkaround) {
             doAntarcticaWorkaround = (ll2.getLatitude() < -62f);
         }
 
-        for (j=0; j<size; j++) {
-            CoordFloatString cfs = (CoordFloatString)ipts.get(j);
+        for (j = 0; j < size; j++) {
+            CoordFloatString cfs = (CoordFloatString) ipts.get(j);
             int cfscnt = cfs.tcount;
             int cfssz = cfs.tsize;
             float cfsvals[] = cfs.vals;
-            if (cfscnt > 0) {   // normal
-                for (i=0; i < cfscnt; i++) {
-                    llpts[npts++] = ProjMath.degToRad(cfsvals[i*cfssz+1]);//lat
-                    llpts[npts++] = ProjMath.degToRad(cfsvals[i*cfssz]);//lon
+            if (cfscnt > 0) { // normal
+                for (i = 0; i < cfscnt; i++) {
+                    llpts[npts++] = ProjMath.degToRad(cfsvals[i * cfssz + 1]);//lat
+                    llpts[npts++] = ProjMath.degToRad(cfsvals[i * cfssz]);//lon
                 }
-            } else {            // reverse
+            } else { // reverse
                 cfscnt *= -1;
-                for (i=cfscnt-1; i>=0; i--) {
-                    llpts[npts++] = ProjMath.degToRad(cfsvals[i*cfssz+1]);//lat
-                    llpts[npts++] = ProjMath.degToRad(cfsvals[i*cfssz]);//lon
+                for (i = cfscnt - 1; i >= 0; i--) {
+                    llpts[npts++] = ProjMath.degToRad(cfsvals[i * cfssz + 1]);//lat
+                    llpts[npts++] = ProjMath.degToRad(cfsvals[i * cfssz]);//lon
                 }
             }
         }
 
-        // HACK: we will rewrite the data for the Antarctica polygon so that
+        // HACK: we will rewrite the data for the Antarctica polygon
+        // so that
         // it will display "correctly" in the cylindrical projections.
-        //only check if bottom edge of screen below a certain latitude
+        //only check if bottom edge of screen below a certain
+        // latitude
         if (doAntarcticaWorkaround) {
             float[] newllpts = new float[llpts.length];
-            for (i=0; i < newllpts.length; i+=2) {
+            for (i = 0; i < newllpts.length; i += 2) {
                 newllpts[i] = llpts[i];
-                newllpts[i+1] = llpts[i+1];
+                newllpts[i + 1] = llpts[i + 1];
 
-                if (newllpts[i] < antarcticaThreshold)
-                {
-                    Debug.message("vpf", "AreaTable.generateOMPoly(): Antarctica!");
-                    //HACK: we're assuming data is going from west to east,
+                if (newllpts[i] < antarcticaThreshold) {
+                    Debug.message("vpf",
+                            "AreaTable.generateOMPoly(): Antarctica!");
+                    //HACK: we're assuming data is going from west to
+                    // east,
                     //so we wrap the other way
-                    newllpts[  i] = ProjMath.degToRad(-89.99f); newllpts[++i] = ProjMath.degToRad(179.99f);
-                    newllpts[++i] = ProjMath.degToRad(-89.99f); newllpts[++i] = ProjMath.degToRad(90f);
-                    newllpts[++i] = ProjMath.degToRad(-89.99f); newllpts[++i] = ProjMath.degToRad(0f);
-                    newllpts[++i] = ProjMath.degToRad(-89.99f); newllpts[++i] = ProjMath.degToRad(-90f);
-                    newllpts[++i] = ProjMath.degToRad(-89.99f); newllpts[++i] = ProjMath.degToRad(-179.99f);
+                    newllpts[i] = ProjMath.degToRad(-89.99f);
+                    newllpts[++i] = ProjMath.degToRad(179.99f);
+                    newllpts[++i] = ProjMath.degToRad(-89.99f);
+                    newllpts[++i] = ProjMath.degToRad(90f);
+                    newllpts[++i] = ProjMath.degToRad(-89.99f);
+                    newllpts[++i] = ProjMath.degToRad(0f);
+                    newllpts[++i] = ProjMath.degToRad(-89.99f);
+                    newllpts[++i] = ProjMath.degToRad(-90f);
+                    newllpts[++i] = ProjMath.degToRad(-89.99f);
+                    newllpts[++i] = ProjMath.degToRad(-179.99f);
                     ++i;//lat
                     //HACK: advance to western hemisphere where we
                     //pick up the real data again
-                    while (llpts[i+1] > 0) {//lon
+                    while (llpts[i + 1] > 0) {//lon
                         newllpts[i] = ProjMath.degToRad(-89.99f);
                         newllpts[++i] = ProjMath.degToRad(-179.99f);
                         ++i;//lat
                     }
-                    i-=2;
+                    i -= 2;
                 }
             }
             llpts = newllpts;
         }
 
         // create polygon - change to OMPoly for jdk 1.1.x compliance.
-        OMPoly py = new OMPoly(llpts,
-                               OMGraphic.RADIANS,
-                               OMGraphic.LINETYPE_STRAIGHT);
+        OMPoly py = new OMPoly(llpts, OMGraphic.RADIANS, OMGraphic.LINETYPE_STRAIGHT);
 
         return py;
-  }
+    }
 
     /**
      * Create an OMPoly corresponding to a VPF edge feature
+     * 
      * @param coords the coordinates to use for the poly
      * @param ll1 upper left, used for clipping
      * @param ll2 lower right, used for clipping
@@ -470,14 +500,13 @@ public abstract class LayerGraphicWarehouseSupport
      */
     public static OMPoly createEdgeOMPoly(CoordFloatString coords,
                                           LatLonPoint ll1, LatLonPoint ll2,
-                                          float dpplat, float dpplon)
-    {
+                                          float dpplat, float dpplon) {
         // thin the data
-//      if (doThinning) {
-//          List ipts = new ArrayList(1);
-//          ipts.add(coords);
-//          doThinning(ipts);
-//      }
+        //      if (doThinning) {
+        //          List ipts = new ArrayList(1);
+        //          ipts.add(coords);
+        //          doThinning(ipts);
+        //      }
 
         float[] llpts = coords.vals; //NOTE: lon,lat order!
 
@@ -485,65 +514,64 @@ public abstract class LayerGraphicWarehouseSupport
         // lon/lats.
         if (coords.tsize > 2) {// assume 3
             /*
-            if (Debug.debugging("vpf")) {
-                Debug.output("EdgeTable.drawTile: big tuple size: "
-                             + coords.tsize);
-            }
-            */
-            float[] newllpts = new float[coords.tcount*2];//*2 for pairs
+             * if (Debug.debugging("vpf")) {
+             * Debug.output("EdgeTable.drawTile: big tuple size: " +
+             * coords.tsize); }
+             */
+            float[] newllpts = new float[coords.tcount * 2];//*2 for
+                                                            // pairs
             int len = newllpts.length;
-            for (int i=0, j=0; i<len; i+=2, j+=3) {
-                newllpts[i] = ProjMath.degToRad(llpts[j+1]);//lat
-                newllpts[i+1] = ProjMath.degToRad(llpts[j]);//lon
+            for (int i = 0, j = 0; i < len; i += 2, j += 3) {
+                newllpts[i] = ProjMath.degToRad(llpts[j + 1]);//lat
+                newllpts[i + 1] = ProjMath.degToRad(llpts[j]);//lon
             }
             llpts = newllpts;
         } else {
             float lon;
             int len = llpts.length;
-            for (int i=0; i<len; i+=2) {
+            for (int i = 0; i < len; i += 2) {
                 lon = ProjMath.degToRad(llpts[i]);
-                llpts[i] = ProjMath.degToRad(llpts[i+1]);//lat
-                llpts[i+1] = lon;//lon
+                llpts[i] = ProjMath.degToRad(llpts[i + 1]);//lat
+                llpts[i + 1] = lon;//lon
             }
         }
 
-        // create polyline - change to OMPoly for jdk 1.1.x compliance.
-        OMPoly py = new OMPoly(llpts,
-                               OMGraphic.RADIANS,
-                               OMGraphic.LINETYPE_STRAIGHT);
+        // create polyline - change to OMPoly for jdk 1.1.x
+        // compliance.
+        OMPoly py = new OMPoly(llpts, OMGraphic.RADIANS, OMGraphic.LINETYPE_STRAIGHT);
         return py;
     }
 
-
     /**
      * Set doThinning.
+     * 
      * @param value boolean
      */
     public static void setDoThinning(boolean value) {
         doThinning = value;
     }
 
-
     /**
      * Are we thinning?.
+     * 
      * @return boolean
      */
     public static boolean isDoThinning() {
         return doThinning;
     }
 
-
     /**
      * Set fan compression epsilon.
+     * 
      * @param value double
      */
     public static void setFanEpsilon(double value) {
         fan_eps = value;
     }
 
-
     /**
      * Get fan compression epsilon.
+     * 
      * @return double
      */
     public static double getFanEpsilon() {
@@ -555,11 +583,11 @@ public abstract class LayerGraphicWarehouseSupport
      */
     protected static int doThinning(List ipts) {
         int size = ipts.size();
-        int totalSize=0;
-        for (int j=0; j<size; j++) {
+        int totalSize = 0;
+        for (int j = 0; j < size; j++) {
 
             // get poly
-            CoordFloatString cfs = (CoordFloatString)ipts.get(j);
+            CoordFloatString cfs = (CoordFloatString) ipts.get(j);
             int cfscnt = cfs.tcount;
             int cfssz = cfs.tsize;
             float[] cfsvals = cfs.vals;
@@ -572,10 +600,10 @@ public abstract class LayerGraphicWarehouseSupport
             }
 
             // copy points
-            float[] llpts = new float[cfscnt<<1];
-            for (int i=0; i < cfscnt; i++) {
-                llpts[npts++] = cfsvals[i*cfssz];//lon
-                llpts[npts++] = cfsvals[i*cfssz+1];//lat
+            float[] llpts = new float[cfscnt << 1];
+            for (int i = 0; i < cfscnt; i++) {
+                llpts[npts++] = cfsvals[i * cfssz];//lon
+                llpts[npts++] = cfsvals[i * cfssz + 1];//lat
             }
 
             // thin points
@@ -583,10 +611,11 @@ public abstract class LayerGraphicWarehouseSupport
             FanCompress.fan_compress(fan, fan_eps);
 
             // install new points
-            cfs.vals = fan.getArray();  // install thinned 2-tuple array
-            cfs.tcount = cfs.vals.length>>>1;// num pairs
+            cfs.vals = fan.getArray(); // install thinned 2-tuple
+                                       // array
+            cfs.tcount = cfs.vals.length >>> 1;// num pairs
             cfs.tsize = 2;// HACK lossy...
-            totalSize+=cfs.tcount;
+            totalSize += cfs.tcount;
             if (rev) {
                 cfs.tcount *= -1;
             }
@@ -596,20 +625,21 @@ public abstract class LayerGraphicWarehouseSupport
 
     /**
      * Create an OMText object corresponding to a VPF text feature
+     * 
      * @param text the text
      * @param latitude the latitude of where to place the text
      * @param longitude the longitude of where to place the text
      */
-    public static OMText createOMText(String text,
-                                      float latitude, float longitude) {
+    public static OMText createOMText(String text, float latitude,
+                                      float longitude) {
 
-        OMText txt = new OMText(latitude, longitude,
-                                text, OMText.JUSTIFY_LEFT);
+        OMText txt = new OMText(latitude, longitude, text, OMText.JUSTIFY_LEFT);
         return txt;
     }
 
     /**
      * Create an OMPoint object corresponding to a VPF node feature
+     * 
      * @param latitude the latitude of where to place the text
      * @param longitude the longitude of where to place the text
      */

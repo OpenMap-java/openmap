@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,84 +14,86 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/E00Parser.java,v $
 // $RCSfile: E00Parser.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.e00;
 
 import com.bbn.openmap.layer.location.BasicLocation;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.util.Debug;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
-import java.io.*;
-import java.net.URL;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
- * A parser for an E00 file.
- * Description of the Class parses an E00 file and provides as result
- * an OMGraphicList containing up to 3 OMGraphicLists:
+ * A parser for an E00 file. Description of the Class parses an E00
+ * file and provides as result an OMGraphicList containing up to 3
+ * OMGraphicLists:
+ * 
  * <pre>
- *  - arcs : OMPoly read in ARC records
- *  - labs : BasicLocations read in LAB records
- *  - tx7  : OMPolys and BasicLocation read in TX7 records
+ * 
+ *   - arcs : OMPoly read in ARC records
+ *   - labs : BasicLocations read in LAB records
+ *   - tx7  : OMPolys and BasicLocation read in TX7 records
+ *  
  * </pre>
- *  PAl,LOG,SIN,PRJ,TOL records are ignored. <br>
- *  From IFO records (if available) :<br>
- *  - each arc gets an AppObject including the type and a value (generally an altitude)<br>
- *  - each lab gets an AppObject including the type, 2 values and the
- * String to display if available - the type is used to decide the
- * color, from the Color array.  Color and String may be also
- * extracted from PAT or AAT records. <br>
- *
- * This software is provided as it is.  No warranty of any kind, and
- * in particular I don't know at all if it meets e00 file
- * specification.  It works quite good on files from GIS data depot .
- *
- *
- * @author     paricaud
- * @created    16 décembre 2002
- * made with jEdit    :  visit www.jedit.org.
+ * 
+ * PAl,LOG,SIN,PRJ,TOL records are ignored. <br>
+ * From IFO records (if available) :<br>- each arc gets an AppObject
+ * including the type and a value (generally an altitude) <br>- each
+ * lab gets an AppObject including the type, 2 values and the String
+ * to display if available - the type is used to decide the color,
+ * from the Color array. Color and String may be also extracted from
+ * PAT or AAT records. <br>
+ * 
+ * This software is provided as it is. No warranty of any kind, and in
+ * particular I don't know at all if it meets e00 file specification.
+ * It works quite good on files from GIS data depot .
+ * 
+ * 
+ * @author paricaud
+ * @created 16 décembre 2002 made with jEdit : visit www.jedit.org.
  */
 public class E00Parser {
-    OMGraphicList labs, arcs, tx7;
-    BufferedReader isr;
-    String prefix;
-    int narc = 1, npoint = 1, unClosedCount = 0;
-    Paint[] ArcColors = defaultColors;
-    Paint[] LabColors = defaultColors;
-    Paint tx7Color;
-    Paint SelectTX7Color, SelectLabColor, SelectArcColor, LabTextColor;
-    Font labFont, tx7Font;
-    OMGraphic LabMarker;
-    Color defaultcolor = Color.blue;
-    static Color[] defaultColors = {Color.black, Color.blue, Color.cyan, Color.darkGray,
-                                    Color.gray, Color.green, Color.lightGray, Color.magenta, Color.orange,
-                                    Color.pink, Color.red, Color.white, Color.yellow
-    };
+    protected OMGraphicList labs, arcs, tx7;
+    protected BufferedReader isr;
+    protected String prefix;
+    protected int narc = 1, npoint = 1, unClosedCount = 0;
+    protected Paint[] ArcColors = defaultColors;
+    protected Paint[] LabColors = defaultColors;
+    protected Paint tx7Color;
+    protected Paint SelectTX7Color, SelectLabColor, SelectArcColor, LabTextColor;
+    protected Font labFont, tx7Font;
+    protected OMGraphic LabMarker;
+    protected Color defaultcolor = Color.blue;
+    public final static Color[] defaultColors = { Color.black, Color.blue, Color.cyan,
+            Color.darkGray, Color.gray, Color.green, Color.lightGray,
+            Color.magenta, Color.orange, Color.pink, Color.red, Color.white,
+            Color.yellow };
 
-    static E00Record infoRecord = new E00Record(
-        new int[]{0, 30, 34, 38, 42, 46, 56},
-        new int[]{20, 20, 50, 50, 50, 50},
-        null
-        );
-    static E00Record itemRecord = new E00Record(
-        new int[]{0, 14, 19, 21, 26, 28, 32, 34, 37, 39, 43, 47, 49, 69},
-        new int[]{20, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50},
-        null
-        );
-
+    protected static E00Record infoRecord = new E00Record(new int[] { 0, 30, 34, 38, 42,
+            46, 56 }, new int[] { 20, 20, 50, 50, 50, 50 }, null);
+    protected static E00Record itemRecord = new E00Record(new int[] { 0, 14, 19, 21, 26,
+            28, 32, 34, 37, 39, 43, 47, 49, 69 }, new int[] { 20, 50, 50, 50,
+            50, 50, 50, 50, 50, 50, 50, 50, 50 }, null);
 
     /**
-     *Constructor for the E00Parser object
-     *
-     * @param  mdname           File Name to parse
-     * @exception  IOException
+     * Constructor for the E00Parser object
+     * 
+     * @param mdname File Name to parse
+     * @exception IOException
      * @since
      */
     public E00Parser(String mdname) throws IOException {
@@ -99,12 +101,11 @@ public class E00Parser {
         setPrefix(mdname);
     }
 
-
     /**
-     *Constructor for the E00Parser object
-     *
-     * @param  f                File to parse
-     * @exception  IOException
+     * Constructor for the E00Parser object
+     * 
+     * @param f File to parse
+     * @exception IOException
      * @since
      */
     public E00Parser(File f) throws IOException {
@@ -112,11 +113,10 @@ public class E00Parser {
         setPrefix(f.getName());
     }
 
-
     /**
-     *  Sets the Prefix attribute of the E00Parser object
-     *
-     * @param  S  The new Prefix value
+     * Sets the Prefix attribute of the E00Parser object
+     * 
+     * @param S The new Prefix value
      * @since
      */
     public void setPrefix(String S) {
@@ -127,24 +127,22 @@ public class E00Parser {
             prefix = S.substring(0, n).toUpperCase();
     }
 
-
     /**
-     *  Sets the Colors attribute of the E00Parser object
-     *
-     * @param  ArcColors       Paint array for arcs 
-     * @param  LabColors       Paint array for labs marker
-     * @param  tx7Color        Paint for tx7 
-     * @param  SelectTX7Color  Paint for tx7 when selected
-     * @param  SelectLabColor  Paint for labs when selected (not working ?)
-     * @param  SelectArcColor  Paint for arcs when selected
-     * @param  LabTextColor    Paint for labs text . If null, text has same
-     *                               paint as marker
+     * Sets the Colors attribute of the E00Parser object
+     * 
+     * @param ArcColors Paint array for arcs
+     * @param LabColors Paint array for labs marker
+     * @param tx7Color Paint for tx7
+     * @param SelectTX7Color Paint for tx7 when selected
+     * @param SelectLabColor Paint for labs when selected (not working ?)
+     * @param SelectArcColor Paint for arcs when selected
+     * @param LabTextColor Paint for labs text . If null, text has
+     *        same paint as marker
      * @since
      */
-    public void setPaints(Paint[] ArcColors, Paint[] LabColors, 
-                          Paint tx7Color, Paint SelectTX7Color, 
-                          Paint SelectLabColor, Paint SelectArcColor,
-                          Paint LabTextColor) {
+    public void setPaints(Paint[] ArcColors, Paint[] LabColors, Paint tx7Color,
+                          Paint SelectTX7Color, Paint SelectLabColor,
+                          Paint SelectArcColor, Paint LabTextColor) {
 
         this.ArcColors = (ArcColors == null) ? defaultColors : ArcColors;
         this.LabColors = (LabColors == null) ? defaultColors : LabColors;
@@ -155,12 +153,11 @@ public class E00Parser {
         this.LabTextColor = LabTextColor;
     }
 
-
     /**
-     *  Sets the Fonts attribute of the E00Parser object
-     *
-     * @param  labFont  font for labs text
-     * @param  tx7Font  font for tx7 text 
+     * Sets the Fonts attribute of the E00Parser object
+     * 
+     * @param labFont font for labs text
+     * @param tx7Font font for tx7 text
      * @since
      */
     public void setFonts(Font labFont, Font tx7Font) {
@@ -168,23 +165,21 @@ public class E00Parser {
         this.tx7Font = tx7Font;
     }
 
-
     /**
-     *  Sets the LabMarker attribute of the E00Parser object
-     *
-     * @param  marker  The new LabMarker value
+     * Sets the LabMarker attribute of the E00Parser object
+     * 
+     * @param marker The new LabMarker value
      * @since
      */
     public void setLabMarker(OMGraphic marker) {
         LabMarker = marker;
     }
 
-
     /**
-     *  Gets the result of the parse process
-     *
-     * @return                  The OMGraphics value
-     * @exception  IOException
+     * Gets the result of the parse process
+     * 
+     * @return The OMGraphics value
+     * @exception IOException
      * @since
      */
     public OMGraphicList getOMGraphics() throws IOException {
@@ -220,40 +215,39 @@ public class E00Parser {
             //System.out.println("E00 "+S+" fin");
         }
 
-        if (arcs != null) {
-            arcs.setAppObject("ARCS");
-            WV.add(arcs);
-        }
         if (labs != null) {
             labs.setAppObject("LABS");
             WV.add(labs);
+        }
+        if (arcs != null) {
+            arcs.setAppObject("ARCS");
+            WV.add(arcs);
         }
         if (tx7 != null) {
             tx7.setAppObject("TX7");
             WV.add(tx7);
         }
+
         return WV;
     }
 
-
     /**
-     *  Gets the LabMarker attribute of the E00Parser object
-     *
-     * @return    The LabMarker value
+     * Gets the LabMarker attribute of the E00Parser object
+     * 
+     * @return The LabMarker value
      * @since
      */
     public OMGraphic getLabMarker() {
         return LabMarker;
     }
 
-
     /**
-     *  read from a string an array of int
-     *  each float being represented by l characters
-     *
-     * @param  S  the String to parse
-     * @param  l  the length of int representation
-     * @param  I  Description of Parameter
+     * read from a string an array of int each float being represented
+     * by l characters
+     * 
+     * @param S the String to parse
+     * @param l the length of int representation
+     * @param I Description of Parameter
      * @since
      */
     void parseString(String S, int[] I, int l) {
@@ -262,13 +256,12 @@ public class E00Parser {
             I[i++] = Integer.parseInt(S.substring(j, j + l).trim());
     }
 
-
     /**
-     *  read from a string an array of float
-     *  each float being represented by 14 characters
-     *
-     * @param  S  the String to parse
-     * @param  F  the float array receiving the result
+     * read from a string an array of float each float being
+     * represented by 14 characters
+     * 
+     * @param S the String to parse
+     * @param F the float array receiving the result
      * @since
      */
     void parseString(String S, float[] F) {
@@ -278,11 +271,10 @@ public class E00Parser {
 
     }
 
-
     /**
-     *  read SIN records (in fact does nothing)
-     *
-     * @exception  IOException
+     * read SIN records (in fact does nothing)
+     * 
+     * @exception IOException
      * @since
      */
     void readSIN() throws IOException {
@@ -295,11 +287,10 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  read CNT records (in fact does nothing)
-     *
-     * @exception  IOException
+     * read CNT records (in fact does nothing)
+     * 
+     * @exception IOException
      * @since
      */
     void readCNT() throws IOException {
@@ -317,11 +308,10 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  read TOL records (in fact does nothing)
-     *
-     * @exception  IOException
+     * read TOL records (in fact does nothing)
+     * 
+     * @exception IOException
      * @since
      */
     void readTOL() throws IOException {
@@ -336,11 +326,10 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  read PAL records (in fact does nothing)
-     *
-     * @exception  IOException
+     * read PAL records (in fact does nothing)
+     * 
+     * @exception IOException
      * @since
      */
     void readPAL() throws IOException {
@@ -358,11 +347,10 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  read TX7 records
-     *
-     * @exception  IOException
+     * read TX7 records
+     * 
+     * @exception IOException
      * @since
      */
     void readTX7() throws IOException {
@@ -393,16 +381,14 @@ public class E00Parser {
             }
             S = isr.readLine();
             /*
-             *  OMPoly P = new OMPoly(llpoints,
-             *  OMGraphic.DECIMAL_DEGREES,
-             *  OMGraphic.LINETYPE_STRAIGHT);
-             *  / llpoints is so transformed to radians
-             *  P.setLinePaint(Color.red);
-             *  tx7.add(P);
-             *  BasicLocation bl = new BasicLocation(coords[1], coords[0], S, null);
-             *  bl.setShowLocation(true);
-             *  bl.setShowName(true);
-             *  tx7.add(bl);
+             * OMPoly P = new OMPoly(llpoints,
+             * OMGraphic.DECIMAL_DEGREES,
+             * OMGraphic.LINETYPE_STRAIGHT); / llpoints is so
+             * transformed to radians P.setLinePaint(Color.red);
+             * tx7.add(P); BasicLocation bl = new
+             * BasicLocation(coords[1], coords[0], S, null);
+             * bl.setShowLocation(true); bl.setShowName(true);
+             * tx7.add(bl);
              */
             TX7 t = new TX7(llpoints, S, false, tx7Font);
             // decimal degrees
@@ -415,11 +401,10 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  read LOG records (in fact does nothing)
-     *
-     * @exception  IOException
+     * read LOG records (in fact does nothing)
+     * 
+     * @exception IOException
      * @since
      */
     void readLOG() throws IOException {
@@ -432,11 +417,10 @@ public class E00Parser {
         }
     }
 
-
     /**
      * read PRJ records (in fact does nothing)
-     *
-     * @exception  IOException
+     * 
+     * @exception IOException
      * @since
      */
     void readPRJ() throws IOException {
@@ -449,11 +433,10 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  read LAB records
-     *
-     * @exception  IOException
+     * read LAB records
+     * 
+     * @exception IOException
      * @since
      */
     void readLAB() throws IOException {
@@ -474,8 +457,7 @@ public class E00Parser {
                 break;
             parseString(S, coords);
             //System.out.println("E00: point n° "+header[0]);
-            BasicLocation bl = new BasicLocation(coords[1], coords[0],
-                                                 "", LabMarker);
+            BasicLocation bl = new BasicLocation(coords[1], coords[0], "", LabMarker);
             setLocationColor(bl, 0);
             bl.setShowLocation(true);
             labs.add(bl);
@@ -483,11 +465,10 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  read ARC records
-     *
-     * @exception  IOException
+     * read ARC records
+     * 
+     * @exception IOException
      * @since
      */
     void readARC() throws IOException {
@@ -522,8 +503,7 @@ public class E00Parser {
             }
             //System.out.print("f ");
             //System.out.println(" # "+narc++ +" nb:"+npoint);
-            OMPoly P = new OMPoly(llpoints, OMGraphic.DECIMAL_DEGREES,
-                                  OMGraphic.LINETYPE_STRAIGHT);
+            OMPoly P = new OMPoly(llpoints, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
             P.setLinePaint(getArcPaint(0));
             if (SelectArcColor != null)
                 P.setSelectPaint(SelectArcColor);
@@ -533,11 +513,10 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  read AAT records
-     *
-     * @exception  IOException
+     * read AAT records
+     * 
+     * @exception IOException
      * @since
      */
     void readAAT() throws IOException {
@@ -561,11 +540,10 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  read PAT records
-     *
-     * @exception  IOException
+     * read PAT records
+     * 
+     * @exception IOException
      * @since
      */
     void readPAT() throws IOException {
@@ -600,11 +578,10 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  read IFO information
-     *
-     * @exception  IOException
+     * read IFO information
+     * 
+     * @exception IOException
      * @since
      */
     void readIFO() throws IOException {
@@ -634,13 +611,12 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  read other  records from IFO  (does nothing else)
-     *
-     * @param  r                record structure
-     * @param  n                number of records
-     * @exception  IOException
+     * read other records from IFO (does nothing else)
+     * 
+     * @param r record structure
+     * @param n number of records
+     * @exception IOException
      * @since
      */
     void readANY(E00Record r, int n) throws IOException {
@@ -648,15 +624,13 @@ public class E00Parser {
             r.read(isr);
     }
 
-
     /**
-     *  read form IFO,  PAT records
-     *  extract data from them and put this data in an E00data structure
-     *  associated with the graphic object
-     *
-     * @param  r                PTT/IFO structure
-     * @param  n                record number to read
-     * @exception  IOException
+     * read form IFO, PAT records extract data from them and put this
+     * data in an E00data structure associated with the graphic object
+     * 
+     * @param r PTT/IFO structure
+     * @param n record number to read
+     * @exception IOException
      * @since
      */
     void readPAT(E00Record r, int n) throws IOException {
@@ -676,8 +650,7 @@ public class E00Parser {
                 Debug.message("e00", S);
                 bl.setName(S);
                 bl.setShowName(true);
-            }
-            else
+            } else
                 bl.setLabel(null);
             E00Data d = (E00Data) bl.getAppObject();
             if (itype != -1)
@@ -693,15 +666,13 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  read form IFO,  AAT records
-     *  extract data from them and put this data in an E00data structure
-     *  associated with the graphic object
-     *
-     * @param  r                AAT/IFO structure
-     * @param  n                record number to read
-     * @exception  IOException
+     * read form IFO, AAT records extract data from them and put this
+     * data in an E00data structure associated with the graphic object
+     * 
+     * @param r AAT/IFO structure
+     * @param n record number to read
+     * @exception IOException
      * @since
      */
     void readAAT(E00Record r, int n) throws IOException {
@@ -736,12 +707,11 @@ public class E00Parser {
         }
     }
 
-
     /**
-     *  Sets the Location Color anf font attributes
-     *
-     * @param  bl  basic location
-     * @param  t   color index 
+     * Sets the Location Color anf font attributes
+     * 
+     * @param bl basic location
+     * @param t color index
      * @since
      */
     private void setLocationColor(BasicLocation bl, int t) {
@@ -762,12 +732,11 @@ public class E00Parser {
             bl.setSelectPaint(SelectLabColor);
     }
 
-
     /**
-     *  get the arc color associated with a type value .
-     *
-     * @param  i  the type value
-     * @return    The Color value
+     * get the arc color associated with a type value .
+     * 
+     * @param i the type value
+     * @return The Color value
      * @since
      */
     private Paint getArcPaint(int i) {
@@ -778,12 +747,11 @@ public class E00Parser {
         return ArcColors[i];
     }
 
-
     /**
-     *  get the lab color associated with a type value .
-     *
-     * @param  i  the type value
-     * @return    The Color value
+     * get the lab color associated with a type value .
+     * 
+     * @param i the type value
+     * @return The Color value
      * @since
      */
     private Paint getLabPaint(int i) {
@@ -794,12 +762,11 @@ public class E00Parser {
         return LabColors[i];
     }
 
-
     /**
-     *  set the itemRecord structure from the data read with infoRecord
-     *
-     * @return                  The itemRecord set
-     * @exception  IOException
+     * set the itemRecord structure from the data read with infoRecord
+     * 
+     * @return The itemRecord set
+     * @exception IOException
      * @since
      */
     private E00Record getRecord() throws IOException {
@@ -829,17 +796,15 @@ public class E00Parser {
         return new E00Record(positions, types, names);
     }
 
-
     /**
-     *  Description of the Class
-     *
-     * a class used to
-     *  - describe the structure  of records (fixed columns)
-     *  - parse  records according to the structure
-     *  - deliver data on le last persed record
-     *
-     * @author     tparicau
-     * @created    16 décembre 2002
+     * Description of the Class
+     * 
+     * a class used to - describe the structure of records (fixed
+     * columns) - parse records according to the structure - deliver
+     * data on le last persed record
+     * 
+     * @author tparicau
+     * @created 16 décembre 2002
      */
     static class E00Record {
         String[] itemName;
@@ -849,13 +814,12 @@ public class E00Parser {
         private float[] floatField;
         private int[] intField;
 
-
         /**
-         *Constructor for the E00Record object
-         *
-         * @param  positions  Description of Parameter
-         * @param  types      Description of Parameter
-         * @param  names      Description of Parameter
+         * Constructor for the E00Record object
+         * 
+         * @param positions Description of Parameter
+         * @param types Description of Parameter
+         * @param names Description of Parameter
          * @since
          */
         E00Record(int[] positions, int[] types, String[] names) {
@@ -873,12 +837,11 @@ public class E00Parser {
             //print();
         }
 
-
         /**
-         *  delivers the int in fth position
-         *
-         * @param  f  the position
-         * @return    The int value
+         * delivers the int in fth position
+         * 
+         * @param f the position
+         * @return The int value
          * @since
          */
         int getIntField(int f) {
@@ -887,12 +850,11 @@ public class E00Parser {
             return intField[f];
         }
 
-
         /**
-         *  delivers the float  in fth position
-         *
-         * @param  f  the position
-         * @return    The float value
+         * delivers the float in fth position
+         * 
+         * @param f the position
+         * @return The float value
          * @since
          */
         float getFloatField(int f) {
@@ -901,12 +863,11 @@ public class E00Parser {
             return floatField[f];
         }
 
-
         /**
-         *  delivers the String in fth position
-         *
-         * @param  f  the position
-         * @return    The String
+         * delivers the String in fth position
+         * 
+         * @param f the position
+         * @return The String
          * @since
          */
 
@@ -916,12 +877,11 @@ public class E00Parser {
             return stringField[f];
         }
 
-
         /**
-         *  Gets the ItemIndex attribute of the E00Record object
-         *
-         * @param  S  the name of item
-         * @return    the index of item
+         * Gets the ItemIndex attribute of the E00Record object
+         * 
+         * @param S the name of item
+         * @return the index of item
          * @since
          */
         int getItemIndex(String S) {
@@ -933,12 +893,12 @@ public class E00Parser {
             return -1;
         }
 
-
         /**
-         *  read a record according with the structure described in thi E00record
-         *
-         * @param  isr              reader where to read data
-         * @exception  IOException
+         * read a record according with the structure described in thi
+         * E00record
+         * 
+         * @param isr reader where to read data
+         * @exception IOException
          * @since
          */
         void read(BufferedReader isr) throws IOException {
@@ -985,8 +945,9 @@ public class E00Parser {
                     }
                 } catch (NumberFormatException e) {
                     if (!Line.startsWith("EOI")) {
-                        Debug.message("e00", "E00:parserr " + i + " " + fieldPosition[i] + " " +
-                                      fieldPosition[i + 1] + " " + S);
+                        Debug.message("e00", "E00:parserr " + i + " "
+                                + fieldPosition[i] + " " + fieldPosition[i + 1]
+                                + " " + S);
                         Debug.message("e00", ">" + Line);
                     }
                 }
@@ -994,10 +955,9 @@ public class E00Parser {
 
         }
 
-
         /**
-         *  Print the record structure
-         *
+         * Print the record structure
+         * 
          * @since
          */
         void print() {
@@ -1012,6 +972,27 @@ public class E00Parser {
 
             System.out.println();
         }
+    }
+
+    /**
+     * @return
+     */
+    public OMGraphicList getArcList() {
+        return arcs;
+    }
+
+    /**
+     * @return
+     */
+    public OMGraphicList getLabList() {
+        return labs;
+    }
+
+    /**
+     * @return
+     */
+    public OMGraphicList getTx7List() {
+        return tx7;
     }
 }
 

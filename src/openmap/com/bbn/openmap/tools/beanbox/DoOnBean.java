@@ -24,6 +24,8 @@ import java.beans.*;
 
 public interface DoOnBean {
     void action(JarInfo ji, BeanInfo bi, Class beanClass, String beanName);
-    void error(String msg);     // display an error message
+
+    void error(String msg); // display an error message
+
     void error(String msg, Exception ex); // ditto, with an exception
 }

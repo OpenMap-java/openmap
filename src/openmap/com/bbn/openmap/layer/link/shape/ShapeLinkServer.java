@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,25 +14,21 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ShapeLinkServer.java,v $
 // $RCSfile: ShapeLinkServer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.link.shape;
 
-import java.util.*;
-import java.net.*;
-import java.io.*;
 import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Vector;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 
@@ -40,21 +36,29 @@ import com.bbn.openmap.layer.link.*;
 import com.bbn.openmap.layer.shape.*;
 
 /**
- * This LinkServer provides graphics from ShapeFiles.  The LinkLayer
+ * This LinkServer provides graphics from ShapeFiles. The LinkLayer
  * can provide several properties that can control how these graphics
- * are to be rendered (defined in the .propertiesURL file for the layer):<P>
- *<pre>
- *# Graphic edge color
- *lineColor=AARRGGBB
- *# Graphic fill Color
- *fillColor=AARRGGBB
- *# Graphic selected edge color
- *highlightColor=AARRGGBB
- *# Graphic edge pixel width
- *lineWidth=pixel width
- *</pre>
+ * are to be rendered (defined in the .propertiesURL file for the
+ * layer):
+ * <P>
+ * 
+ * <pre>
+ * 
+ *  
+ *  # Graphic edge color
+ *  lineColor=AARRGGBB
+ *  # Graphic fill Color
+ *  fillColor=AARRGGBB
+ *  # Graphic selected edge color
+ *  highlightColor=AARRGGBB
+ *  # Graphic edge pixel width
+ *  lineWidth=pixel width
+ *  
+ *  
+ * </pre>
  */
-public class ShapeLinkServer extends LinkServer implements LinkPropertiesConstants {
+public class ShapeLinkServer extends LinkServer implements
+        LinkPropertiesConstants {
 
     protected LinkSpatialIndex spatialIndex;
 
@@ -63,11 +67,11 @@ public class ShapeLinkServer extends LinkServer implements LinkPropertiesConstan
 
     /** The color to fill the shapes. */
     protected Color fillColor = ColorFactory.createColor(0, 0, 0, 0, true);
-    
+
     protected LinkProperties lineProperties;
 
-    public ShapeLinkServer(Socket socket,
-                           String shapeFile,String spatialIndexFile){
+    public ShapeLinkServer(Socket socket, String shapeFile,
+            String spatialIndexFile) {
         super(socket);
         locateAndSetShapeData(shapeFile, spatialIndexFile);
     }
@@ -78,9 +82,9 @@ public class ShapeLinkServer extends LinkServer implements LinkPropertiesConstan
         }
     }
 
-    /** 
-     * handleClient is a method that listens to the link to a
-     * client, and responds to requests that are made.
+    /**
+     * handleClient is a method that listens to the link to a client,
+     * and responds to requests that are made.
      */
     public void handleClient() throws IOException {
         boolean validQuery;
@@ -88,24 +92,25 @@ public class ShapeLinkServer extends LinkServer implements LinkPropertiesConstan
             while (true) {
                 link.readAndParse();
                 validQuery = false;
-                
+
                 // For instance, you could do something like this...
-                
+
                 LinkMapRequest graphicsQuery = link.getMapRequest();
-                //          LinkActionRequest gestureQuery = link.getActionRequest();
-                
-                if (graphicsQuery != null){
+                //          LinkActionRequest gestureQuery =
+                // link.getActionRequest();
+
+                if (graphicsQuery != null) {
                     getRectangle(graphicsQuery, link);
                     validQuery = true;
-                } 
+                }
                 graphicsQuery = null;
 
-//              if (gestureQuery != null){
-//                  handleGesture(gestureQuery, link);
-//                  validQuery = true;
-//              }
-            
-                if (!validQuery){
+                //              if (gestureQuery != null){
+                //                  handleGesture(gestureQuery, link);
+                //                  validQuery = true;
+                //              }
+
+                if (!validQuery) {
                     huh(link);
                 }
             }
@@ -118,76 +123,85 @@ public class ShapeLinkServer extends LinkServer implements LinkPropertiesConstan
         }
     }
 
-    public void setFillColor(Color fColor){
+    public void setFillColor(Color fColor) {
         fillColor = fColor;
     }
 
-    public void setLineColor(Color lColor){
+    public void setLineColor(Color lColor) {
         lineColor = lColor;
     }
 
-    public Color getFillColor(){
+    public Color getFillColor() {
         return fillColor;
     }
 
-    public Color getLineColor(){
+    public Color getLineColor() {
         return lineColor;
     }
 
-    public void getRectangle(LinkMapRequest query, Link link) 
-        throws IOException {
+    public void getRectangle(LinkMapRequest query, Link link)
+            throws IOException {
         String value;
-        
-        if (spatialIndex == null) link.end(Link.END_TOTAL);
+
+        if (spatialIndex == null)
+            link.end(Link.END_TOTAL);
 
         LinkProperties args = query.getProperties();
         LinkGraphicList lgl = new LinkGraphicList(link, args);
-//      System.out.println(args);
+        //      System.out.println(args);
         lineProperties = new LinkProperties();
         value = args.getProperty(LPC_LINECOLOR);
-        if (value != null) lineProperties.setProperty(LPC_LINECOLOR, value);
+        if (value != null)
+            lineProperties.setProperty(LPC_LINECOLOR, value);
         value = args.getProperty(LPC_FILLCOLOR);
-        if (value != null) lineProperties.setProperty(LPC_FILLCOLOR, value);
+        if (value != null)
+            lineProperties.setProperty(LPC_FILLCOLOR, value);
         value = args.getProperty(LPC_HIGHLIGHTCOLOR);
-        if (value != null) lineProperties.setProperty(LPC_HIGHLIGHTCOLOR, value);
+        if (value != null)
+            lineProperties.setProperty(LPC_HIGHLIGHTCOLOR, value);
         value = args.getProperty(LPC_LINEWIDTH);
-        if (value != null) lineProperties.setProperty(LPC_LINEWIDTH, value);
-        
+        if (value != null)
+            lineProperties.setProperty(LPC_LINEWIDTH, value);
+
         LinkBoundingPoly[] bounds = query.getBoundingPolys();
 
-        for (int i = 0; i < bounds.length; i++){
-            fetchGraphics((double)bounds[i].minX, (double)bounds[i].minY, 
-                          (double)bounds[i].maxX, (double)bounds[i].maxY, 
-                          lgl, lineProperties);
+        for (int i = 0; i < bounds.length; i++) {
+            fetchGraphics((double) bounds[i].minX,
+                    (double) bounds[i].minY,
+                    (double) bounds[i].maxX,
+                    (double) bounds[i].maxY,
+                    lgl,
+                    lineProperties);
         }
 
         lgl.end(Link.END_TOTAL);
     }
 
     /**
-     *
+     *  
      */
-    protected void fetchGraphics(double xmin, double ymin,
-                                 double xmax, double ymax,
-                                 LinkGraphicList lgl, LinkProperties properties)
-        throws IOException {
+    protected void fetchGraphics(double xmin, double ymin, double xmax,
+                                 double ymax, LinkGraphicList lgl,
+                                 LinkProperties properties) throws IOException {
 
-        Debug.message("shape","fetchGraphics: " + xmin + ", " + ymin + ", " +
-                      xmax + ", " + ymax);
+        Debug.message("shape", "fetchGraphics: " + xmin + ", " + ymin + ", "
+                + xmax + ", " + ymax);
 
         try {
-            ESRIRecord records[] = spatialIndex.locateRecords(xmin, ymin,
-                                                              xmax, ymax);
+            ESRIRecord records[] = spatialIndex.locateRecords(xmin,
+                    ymin,
+                    xmax,
+                    ymax);
             int nRecords = records.length;
             ESRILinkRecord rec;
             for (int i = 0; i < nRecords; i++) {
-                if (records[i] instanceof ESRILinkRecord){
-                    rec = (ESRILinkRecord)records[i];
+                if (records[i] instanceof ESRILinkRecord) {
+                    rec = (ESRILinkRecord) records[i];
                     rec.writeLinkGraphics(lgl, properties);
                 }
             }
         } catch (java.io.IOException ex) {
-            if (Debug.debugging("shape")){
+            if (Debug.debugging("shape")) {
                 ex.printStackTrace();
             }
             return;
@@ -203,17 +217,16 @@ public class ShapeLinkServer extends LinkServer implements LinkPropertiesConstan
         File spatialIndexFile = new File(spatialIndexFileName);
 
         if (spatialIndexFile.isAbsolute()) {
-//          System.out.println("Absolute!");
+            //          System.out.println("Absolute!");
             try {
-                spatialIndex = new LinkSpatialIndex(spatialIndexFileName,
-                                                    shapeFileName);
+                spatialIndex = new LinkSpatialIndex(spatialIndexFileName, shapeFileName);
             } catch (java.io.IOException e) {
-                if (Debug.debugging("shape")){
+                if (Debug.debugging("shape")) {
                     e.printStackTrace();
                 }
             }
         } else {
-//          System.out.println("Relative!");
+            //          System.out.println("Relative!");
             Vector dirs = Environment.getClasspathDirs();
             int nDirs = dirs.size();
             if (nDirs > 0) {
@@ -223,30 +236,27 @@ public class ShapeLinkServer extends LinkServer implements LinkPropertiesConstan
                     if (sif.isFile()) {
                         File sf = new File(dir, shapeFileName);
                         try {
-//                          System.out.println(sif.toString());
-//                          System.out.println(sf.toString());
-                            spatialIndex = new LinkSpatialIndex(sif.toString(),
-                                                                sf.toString());
+                            //                          System.out.println(sif.toString());
+                            //                          System.out.println(sf.toString());
+                            spatialIndex = new LinkSpatialIndex(sif.toString(), sf.toString());
                             break;
                         } catch (java.io.IOException e) {
-                            if (Debug.debugging("shape")){
+                            if (Debug.debugging("shape")) {
                                 e.printStackTrace();
                             }
                         }
                     }
                 }
                 if (spatialIndex == null) {
+                    System.err.println("Unable to find file: " + shapeFileName);
                     System.err.println("Unable to find file: "
-                                       + shapeFileName);
-                    System.err.println("Unable to find file: "
-                                       + spatialIndexFileName);
+                            + spatialIndexFileName);
                 }
             } else {
                 System.err.println("No directories in CLASSPATH!");
+                System.err.println("Unable to locate file: " + shapeFileName);
                 System.err.println("Unable to locate file: "
-                                   + shapeFileName);
-                System.err.println("Unable to locate file: "
-                                   + spatialIndexFileName);
+                        + spatialIndexFileName);
             }
         }
     }

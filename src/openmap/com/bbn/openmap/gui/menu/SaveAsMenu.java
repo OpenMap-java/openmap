@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SaveAsMenu.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SaveAsMenu.java,v
+// $
 // $RCSfile: SaveAsMenu.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.menu;
 
@@ -45,11 +46,13 @@ public class SaveAsMenu extends AbstractOpenMapMenu {
     }
 
     /**
-     * Creates a menuitem that knows how to save MapBean as a virtual JPEG
-     * image, where the image size is independent of the view presented
-     * to the user.
-     *
-     * @return JMenuItem 
+     * Creates a menuitem that knows how to save MapBean as a virtual
+     * JPEG image, where the image size is independent of the view
+     * presented to the user.
+     * 
+     * @deprecated SaveAsVirtualImageMenuItem functionality has been
+     *             merged into regular SaveAsImageMenuItem.
+     * @return JMenuItem
      */
     public JMenuItem createSaveAsVirtualJpegMenuItem() {
         SunJPEGFormatter formatter = new SunJPEGFormatter();
@@ -65,9 +68,8 @@ public class SaveAsMenu extends AbstractOpenMapMenu {
 
     /**
      * Method checks to see if the SVGFormatter can be created, and if
-     * it can, adds it to the FileMenu->Save As menu.  The
-     * SVGFormatter needs the right Batik jars in the classpath to
-     * compile.
+     * it can, adds it to the FileMenu->Save As menu. The SVGFormatter
+     * needs the right Batik jars in the classpath to compile.
      */
     public void addSVGMenuItem(JMenu menu) {
         try {
@@ -75,11 +77,12 @@ public class SaveAsMenu extends AbstractOpenMapMenu {
 
             if (obj != null) {
                 // This is a test to see if the batik package is
-                // available.  If it isn't, this statement should
+                // available. If it isn't, this statement should
                 // throw an exception, and the SVG option will not be
                 // added to the SaveAs Menu item.
-                Object batikTest =  Class.forName("org.apache.batik.swing.JSVGCanvas").newInstance();
-                menu.add(new SaveAsImageMenuItem("SVG", (AbstractImageFormatter)obj));
+                Object batikTest = Class.forName("org.apache.batik.swing.JSVGCanvas")
+                        .newInstance();
+                menu.add(new SaveAsImageMenuItem("SVG", (AbstractImageFormatter) obj));
                 return;
             }
         } catch (ClassNotFoundException cnfe) {

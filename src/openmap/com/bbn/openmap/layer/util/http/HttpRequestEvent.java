@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/HttpRequestEvent.java,v $
 // $RCSfile: HttpRequestEvent.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:06:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.util.http;
 
@@ -27,7 +26,7 @@ import java.io.*;
 
 /**
  * An event corresponding to a single HTTP request ("GET" command).
- *
+ * 
  * @author Tom Mitchell
  * @version 1.0, 06/13/97
  */
@@ -39,26 +38,26 @@ public class HttpRequestEvent extends java.util.EventObject {
 
     /**
      * Creates an http request event.
-     *
+     * 
      * @param source the source object
      * @param request the parsed target of the "GET" command
      * @param out the http client output stream
      */
-    public HttpRequestEvent(Object source,
-                            String request,
-                            OutputStream out) {
+    public HttpRequestEvent(Object source, String request, OutputStream out) {
         super(source);
         this.request = request;
         this.output = out;
     }
 
     /**
-     * Gets the http request, which is the target of the "GET" command.
+     * Gets the http request, which is the target of the "GET"
+     * command.
      * <p>
-     * For the URL <code>http://www.bbn.com/openmap/docs/index.html</code>
+     * For the URL
+     * <code>http://www.bbn.com/openmap/docs/index.html</code>
      * <p>
      * the request string is <code>/openmap/docs/index.html</code>
-     *
+     * 
      * @return the request string
      */
     public String getRequest() {
@@ -67,7 +66,7 @@ public class HttpRequestEvent extends java.util.EventObject {
 
     /**
      * Gets the output stream connected to the http client.
-     *
+     * 
      * @return the OutputStream associated with the http client.
      */
     public OutputStream getOutputStream() {
@@ -76,9 +75,9 @@ public class HttpRequestEvent extends java.util.EventObject {
 
     /**
      * Get a Writer associated with the output stream connected to the
-     * http client.  If a writer hasn't been created, then one will be.
-     *
-     * @return the Writer associated with the http client.  
+     * http client. If a writer hasn't been created, then one will be.
+     * 
+     * @return the Writer associated with the http client.
      * @see java.io.Writer
      */
     public Writer getWriter() {
@@ -89,12 +88,12 @@ public class HttpRequestEvent extends java.util.EventObject {
     }
 
     /**
-     * Find out if anyone used the writer.  If it has been used, then,
+     * Find out if anyone used the writer. If it has been used, then,
      * as a HttpServer, you can assume that the listeners were all
      * contributing text into the writer, and you now need to take the
      * Writer buffer, create a string, and write the contents as
-     * output.  
-     *
+     * output.
+     * 
      * @return true if the writer has been created.
      */
     public boolean isWriterUsed() {

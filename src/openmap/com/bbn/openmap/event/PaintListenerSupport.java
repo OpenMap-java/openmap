@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/PaintListenerSupport.java,v $
 // $RCSfile: PaintListenerSupport.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.6 $
+// $Date: 2004/10/14 18:05:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
@@ -30,8 +29,8 @@ import java.util.Iterator;
 /**
  * This is a utility class that can be used by beans that need support
  * for handling PaintListeners and calling the PaintListener.paint()
- * method.  You can use an instance of this class as a member field of
- * your bean and delegate work to it.  
+ * method. You can use an instance of this class as a member field of
+ * your bean and delegate work to it.
  */
 public class PaintListenerSupport extends ListenerSupport {
 
@@ -44,6 +43,7 @@ public class PaintListenerSupport extends ListenerSupport {
 
     /**
      * Construct a PaintListenerSupport.
+     * 
      * @param source source Object
      */
     public PaintListenerSupport(Object source) {
@@ -52,6 +52,7 @@ public class PaintListenerSupport extends ListenerSupport {
 
     /**
      * Add a PaintListener.
+     * 
      * @param l PaintListener
      */
     public void addPaintListener(PaintListener l) {
@@ -60,6 +61,7 @@ public class PaintListenerSupport extends ListenerSupport {
 
     /**
      * Remove a PaintListener.
+     * 
      * @param l PaintListener
      */
     public void removePaintListener(PaintListener l) {
@@ -68,19 +70,20 @@ public class PaintListenerSupport extends ListenerSupport {
 
     /**
      * Send a Paint event to all registered listeners.
-     *
+     * 
      * @param graphics PaintEvent
      */
     public void paint(Graphics graphics) {
 
-        if (size() == 0) return;
+        if (size() == 0)
+            return;
         Iterator it = iterator();
 
         while (it.hasNext()) {
-            PaintListener target = (PaintListener)it.next();
+            PaintListener target = (PaintListener) it.next();
             if (Debug.debugging("paint")) {
-                Debug.output("PaintListenerSupport.paint(): target is: " + 
-                             target);
+                Debug.output("PaintListenerSupport.paint(): target is: "
+                        + target);
             }
             target.listenerPaint(graphics);
         }

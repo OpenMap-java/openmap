@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,18 +14,15 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/html/Document.java,v $
 // $RCSfile: Document.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:06:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.util.html;
 
 import java.io.Writer;
-import java.util.Vector;
-import java.util.Enumeration;
 
 /** This class wraps an entire html document (page) */
 public class Document implements ContainerElement {
@@ -37,46 +34,64 @@ public class Document implements ContainerElement {
     protected ListElement body;
 
     /** Constuct a document with no title and an empty body */
-    public Document () {
+    public Document() {
         body = new ListElement();
     }
 
-    /** Constuct a document with a title but an empty body
-     * @param title the title of the document */
-    public Document (String title) {
+    /**
+     * Constuct a document with a title but an empty body
+     * 
+     * @param title the title of the document
+     */
+    public Document(String title) {
         body = new ListElement();
         this.title = title;
     }
 
-    /** Writer for title
-     * @param title the new document title */
-    public void setTitle (String title) {
+    /**
+     * Writer for title
+     * 
+     * @param title the new document title
+     */
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    /** Writer for the base url
-     * @param base the new base URL */
-    public void setBase (String base) {
+    /**
+     * Writer for the base url
+     * 
+     * @param base the new base URL
+     */
+    public void setBase(String base) {
         this.base = base;
     }
 
-    /** Add another element to the body of the document
-     * @param e the element to add */
-    public void addElement (Element e) {
+    /**
+     * Add another element to the body of the document
+     * 
+     * @param e the element to add
+     */
+    public void addElement(Element e) {
         body.addElement(e);
     }
 
-    /** Add another string to the body of the document
-     * @param s the string to add */
-    public void addElement (String s) {
+    /**
+     * Add another string to the body of the document
+     * 
+     * @param s the string to add
+     */
+    public void addElement(String s) {
         addElement(new StringElement(s));
     }
 
-    /** Write the header to the output
+    /**
+     * Write the header to the output
+     * 
      * @param out the Writer to dump output to
-     * @exception java.io.IOException an IO error occured accessing out
+     * @exception java.io.IOException an IO error occured accessing
+     *            out
      */
-    public void generateHeader (Writer out) throws java.io.IOException {
+    public void generateHeader(Writer out) throws java.io.IOException {
         out.write("<HEAD>");
         if (title != null) {
             out.write("<TITLE>");
@@ -84,16 +99,19 @@ public class Document implements ContainerElement {
             out.write("</TITLE>");
         }
         if (base != null) {
-            out.write("<BASE href=\""  + "\">");
+            out.write("<BASE href=\"" + "\">");
         }
         out.write("</HEAD>");
     }
 
-    /** convert representation to html and write it out
+    /**
+     * convert representation to html and write it out
+     * 
      * @param out the output Writer
-     * @exception java.io.IOException an IO error occurred accessing out
+     * @exception java.io.IOException an IO error occurred accessing
+     *            out
      */
-    public void generate (Writer out) throws java.io.IOException {
+    public void generate(Writer out) throws java.io.IOException {
         out.write("<HTML>");
         generateHeader(out);
         out.write("<BODY>");

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,21 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/PathGLPoint.java,v $
 // $RCSfile: PathGLPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.3 $
+// $Date: 2004/10/14 18:05:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.graphicLoader;
 
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
 
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.*;
@@ -45,7 +40,7 @@ public class PathGLPoint extends GLPoint {
     int pathIndex = 0;
     float currentSegDist = 0f;
     float nextSegOffset = 0f;
-    float rate = Length.METER.toRadians(10000); 
+    float rate = Length.METER.toRadians(10000);
 
     public PathGLPoint(OMPoly path, int radius, boolean isOval) {
         super(0f, 0f, radius, isOval);
@@ -60,57 +55,59 @@ public class PathGLPoint extends GLPoint {
 
     public float[] getSegmentCoordinates(int currentPathIndex) {
         float[] latlons = new float[4];
-        
+
         if (pathIndex > pathPoints.length - 2 || pathIndex < 0) {
             pathIndex = 0;
         }
-        
+
         if (pathPoints != null && pathPoints.length >= 4) {
-            
+
             int la1 = pathIndex;
             int lo1 = pathIndex + 1;
-            
+
             int la2 = pathIndex + 2;
             int lo2 = pathIndex + 3;
-            
+
             if (lo2 >= pathPoints.length) {
                 if (poly.isPolygon()) {
-                    Debug.message("graphicloader", "PathGLPoint.moveAlong(): index to big, wrapping... ");
+                    Debug.message("graphicloader",
+                            "PathGLPoint.moveAlong(): index to big, wrapping... ");
                     la2 = 0;
                     lo2 = 1;
                 } else {
                     pathIndex = 0;
-                    Debug.message("graphicloader", "PathGLPoint.moveAlong(): index to big, no wrapping, starting over... ");
+                    Debug.message("graphicloader",
+                            "PathGLPoint.moveAlong(): index to big, no wrapping, starting over... ");
                     return getSegmentCoordinates(pathIndex);
                 }
             }
-            
+
             latlons[0] = pathPoints[la1];
             latlons[1] = pathPoints[lo1];
             latlons[2] = pathPoints[la2];
             latlons[3] = pathPoints[lo2];
-        } 
-        
+        }
+
         return latlons;
     }
 
     public void moveAlong() {
         if (Debug.debugging("graphicloader")) {
-            Debug.output("PathGLPoint.moveAlong(): segment " + 
-                         (pathIndex/2) + " of " + 
-                         (pathPoints.length/2));
+            Debug.output("PathGLPoint.moveAlong(): segment " + (pathIndex / 2)
+                    + " of " + (pathPoints.length / 2));
         }
         float azimuth;
         LatLonPoint newPoint;
 
         float[] latlons = getSegmentCoordinates(pathIndex);
 
-        float segLength = GreatCircle.spherical_distance(latlons[0], 
-                                                         latlons[1], 
-                                                         latlons[2],
-                                                         latlons[3]);
+        float segLength = GreatCircle.spherical_distance(latlons[0],
+                latlons[1],
+                latlons[2],
+                latlons[3]);
         if (Debug.debugging("graphicloader")) {
-            Debug.output("PathGLPoint.moveAlong(): segment Length " + segLength + ", and already have " + currentSegDist + " of it.");
+            Debug.output("PathGLPoint.moveAlong(): segment Length " + segLength
+                    + ", and already have " + currentSegDist + " of it.");
         }
         float needToTravel = rate;
         int originalPathIndex = pathIndex;
@@ -121,11 +118,10 @@ public class PathGLPoint extends GLPoint {
             currentSegDist = 0f;
 
             pathIndex += 2; // Move to the next segment of the poly
-            
+
             if (Debug.debugging("graphicloader")) {
-                Debug.output("PathGLPoint to next segment(" +
-                             (pathIndex/2) + "), need to travel " + 
-                             needToTravel);
+                Debug.output("PathGLPoint to next segment(" + (pathIndex / 2)
+                        + "), need to travel " + needToTravel);
             }
             latlons = getSegmentCoordinates(pathIndex);
 
@@ -137,36 +133,38 @@ public class PathGLPoint extends GLPoint {
                     return;
                 }
             }
-            
-            segLength = GreatCircle.spherical_distance(latlons[0], 
-                                                       latlons[1], 
-                                                       latlons[2],
-                                                       latlons[3]);
+
+            segLength = GreatCircle.spherical_distance(latlons[0],
+                    latlons[1],
+                    latlons[2],
+                    latlons[3]);
         }
-        
+
         if (Debug.debugging("graphicloader")) {
-            Debug.output("Moving PathGLPoint within current(" +
-                         (pathIndex/2) + ") segment, segLength: " + 
-                         segLength + ", ntt: " + needToTravel);
+            Debug.output("Moving PathGLPoint within current(" + (pathIndex / 2)
+                    + ") segment, segLength: " + segLength + ", ntt: "
+                    + needToTravel);
         }
-        
+
         // Staying on this segment, just calculate where the
         // next point on the segment is.
-        azimuth = GreatCircle.spherical_azimuth(latlons[0], 
-                                                latlons[1], 
-                                                latlons[2],
-                                                latlons[3]);
+        azimuth = GreatCircle.spherical_azimuth(latlons[0],
+                latlons[1],
+                latlons[2],
+                latlons[3]);
 
-        newPoint = GreatCircle.spherical_between(
-            latlons[0], latlons[1], 
-            currentSegDist + needToTravel, azimuth);
-        
+        newPoint = GreatCircle.spherical_between(latlons[0],
+                latlons[1],
+                currentSegDist + needToTravel,
+                azimuth);
+
         setLat(newPoint.getLatitude());
         setLon(newPoint.getLongitude());
-        
-        currentSegDist = GreatCircle.spherical_distance(
-            latlons[0], latlons[1], 
-            newPoint.radlat_, newPoint.radlon_);
+
+        currentSegDist = GreatCircle.spherical_distance(latlons[0],
+                latlons[1],
+                newPoint.radlat_,
+                newPoint.radlon_);
     }
 
     public boolean generate(Projection p) {

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/InfoDisplayEvent.java,v $
 // $RCSfile: InfoDisplayEvent.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.event;
 
@@ -30,31 +29,33 @@ import com.bbn.openmap.Layer;
  */
 public class InfoDisplayEvent extends java.util.EventObject {
 
-    /**   
+    /**
      * The requester may send information along with the event if the
      * event represents an information display request from the layer,
      * this variable contains the information needed to process the
-     * event.  
+     * event.
      */
     protected String information = null;
 
     /**
      * A preferred location index for which info line, if there is
-     * more than one, should display the requested information.  The
+     * more than one, should display the requested information. The
      * default is 0.
      */
     protected int preferredLocation = 0;
 
     /**
      * Construct an InfoDisplayEvent.
+     * 
      * @param source Object
      */
     public InfoDisplayEvent(Object source) {
-        this (source, null);
+        this(source, null);
     }
 
     /**
      * Construct an InfoDisplayEvent.
+     * 
      * @param source Object
      * @param info String information
      */
@@ -65,10 +66,11 @@ public class InfoDisplayEvent extends java.util.EventObject {
 
     /**
      * Construct an InfoDisplayEvent.
+     * 
      * @param source Object
      * @param info String information
      * @param loc the location index for which info line should
-     * display the information.
+     *        display the information.
      */
     public InfoDisplayEvent(Object source, String info, int loc) {
         super(source);
@@ -77,20 +79,19 @@ public class InfoDisplayEvent extends java.util.EventObject {
     }
 
     /**
-     * Get the associated Layer or null.
-     * Returns a Layer, if the Layer is the source of the event,
-     * otherwise null.
+     * Get the associated Layer or null. Returns a Layer, if the Layer
+     * is the source of the event, otherwise null.
+     * 
      * @return Layer or null
      */
     public Layer getLayer() {
         Object obj = getSource();
-        return (obj instanceof Layer)
-            ? (Layer)obj
-            : null;
+        return (obj instanceof Layer) ? (Layer) obj : null;
     }
 
     /**
      * Get the information.
+     * 
      * @return String information
      */
     public String getInformation() {
@@ -99,6 +100,7 @@ public class InfoDisplayEvent extends java.util.EventObject {
 
     /**
      * Set the information.
+     * 
      * @param info String
      */
     public void setInformation(String info) {

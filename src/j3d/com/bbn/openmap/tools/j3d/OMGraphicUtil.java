@@ -2,7 +2,7 @@
 //
 // <copyright>
 //
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OMGraphicUtil.java,v $
 // $RCSfile: OMGraphicUtil.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/09 13:33:36 $
+// $Revision: 1.5 $
+// $Date: 2004/10/14 18:05:38 $
 // $Author: dietrick $
 //
 // **********************************************************************
-
 
 package com.bbn.openmap.tools.j3d;
 
@@ -38,43 +37,38 @@ import javax.vecmath.*;
 import javax.media.j3d.*;
 
 /**
- * This class handles translating OMGraphics into a Java 3D
- * Scene.
- *
- * @author    dietrick
- * @created   April 25, 2002
+ * This class handles translating OMGraphics into a Java 3D Scene.
+ * 
+ * @author dietrick
+ * @created April 25, 2002
  */
 public class OMGraphicUtil {
 
     public final static int DEFAULT_NPOINTS_BUFFER_SIZE = 100;
     public final static Iterator NULL_ITERATOR = new HashSet().iterator();
 
-
     /**
-     * Method takes an OMGraphic, creates one or more
-     * Shape3D objects out of it, and returns an Iterator
-     * containing them.
-     *
-     * @param graphic  the OMGraphic.
-     * @return         Iterator containing Shape3D objects.
+     * Method takes an OMGraphic, creates one or more Shape3D objects
+     * out of it, and returns an Iterator containing them.
+     * 
+     * @param graphic the OMGraphic.
+     * @return Iterator containing Shape3D objects.
      */
     public static Iterator createShape3D(OMGraphic graphic) {
         return createShape3D(graphic, 0);
     }
 
-
     /**
-     * Method takes an OMGraphic, creates one or more
-     * Shape3D objects out of it, and returns an Iterator
-     * containing them.
-     *
-     * @param graphic         the OMGraphic.
-     * @param baselineHeight  the baselined height for all
-     *      the graphics on the list.
-     * @return                Iterator containing Shape3D
-     *      objects.
+     * Method takes an OMGraphic, creates one or more Shape3D objects
+     * out of it, and returns an Iterator containing them.
+     * 
+     * @param graphic the OMGraphic.
+     * @param baselineHeight the baselined height for all the graphics
+     *        on the list.
+     * @return Iterator containing Shape3D objects.
      */
-    public static Iterator createShape3D(OMGraphic graphic, double baselineHeight) {
+    public static Iterator createShape3D(OMGraphic graphic,
+                                         double baselineHeight) {
 
         Debug.message("3detail", "OMGraphicUtil.createShape3D()");
 
@@ -86,14 +80,16 @@ public class OMGraphicUtil {
 
         Iterator subList;
 
-        if (graphic instanceof OMGraphicList && !(graphic instanceof OMGeometryList)) {
+        if (graphic instanceof OMGraphicList
+                && !(graphic instanceof OMGeometryList)) {
 
             HashSet set = new HashSet();
-            Iterator it = ((OMGraphicList)graphic).iterator();
+            Iterator it = ((OMGraphicList) graphic).iterator();
 
             while (it.hasNext()) {
-                OMGraphic subgraphic = (OMGraphic)it.next();
-                Debug.message("3detail", "OMGraphicUtil.createShape3D():  recursivly adding list...");
+                OMGraphic subgraphic = (OMGraphic) it.next();
+                Debug.message("3detail",
+                        "OMGraphicUtil.createShape3D():  recursivly adding list...");
                 Iterator iterator = createShape3D(subgraphic, baselineHeight);
                 while (iterator.hasNext()) {
                     set.add(iterator.next());
@@ -120,11 +116,17 @@ public class OMGraphicUtil {
 
                 if (graphic.shouldRenderFill()) {
                     // Do polygons.
-                    return createShape3D(shape, baselineHeight, graphic.getFillColor(), true);
+                    return createShape3D(shape,
+                            baselineHeight,
+                            graphic.getFillColor(),
+                            true);
                 } else if (graphic.shouldRenderEdge()) {
                     // Might as well make sure it's not totally
                     // clear before creating lines.
-                    return createShape3D(shape, baselineHeight, graphic.getDisplayColor(), false);
+                    return createShape3D(shape,
+                            baselineHeight,
+                            graphic.getDisplayColor(),
+                            false);
                 } else if (DEBUG_SHAPE) {
                     Debug.output("OMGraphicUtil.createShape3D(): can't render graphic");
                 }
@@ -135,21 +137,19 @@ public class OMGraphicUtil {
         return NULL_ITERATOR;
     }
 
-
     /**
      * Create an Iterator containing a set of Shape3D objects, created
-     * from OMGrid.  Currently only works for OMGrids containing
+     * from OMGrid. Currently only works for OMGrids containing
      * GridData.Int data.
-     *
+     * 
      * @param grid the OMGrid to create a 3D terrain object from.
      * @param baselineHeight the baselined height for all the values
-     * in the grid, if the OMGridGenerator wants to use it.
+     *        in the grid, if the OMGridGenerator wants to use it.
      * @param projection the map projection
      * @return an iterator containing all Shape3D objects
      */
-    public static Iterator createShape3D(OMGrid grid,
-            double baselineHeight,
-            Projection projection) {
+    public static Iterator createShape3D(OMGrid grid, double baselineHeight,
+                                         Projection projection) {
 
         TriangleStripArray gridStrip;
 
@@ -163,9 +163,10 @@ public class OMGraphicUtil {
             DEBUG = true;
         }
 
-//      if (grid.getGenerator() == null && grid.getFillColor() == OMColor.clear) {
-//          return createWireFrame(grid, baselineHeight, projection);
-//      }
+        //      if (grid.getGenerator() == null && grid.getFillColor() ==
+        // OMColor.clear) {
+        //          return createWireFrame(grid, baselineHeight, projection);
+        //      }
 
         Color fColor = grid.getFillColor();
         Color lColor = grid.getLineColor();
@@ -194,7 +195,8 @@ public class OMGraphicUtil {
         float vRes = grid.getVerticalResolution();
         float hRes = grid.getHorizontalResolution();
 
-        gridStrip = new TriangleStripArray(stripCount * numberVerticesPerStrip, TriangleStripArray.COORDINATES | TriangleStripArray.COLOR_3 | TriangleStripArray.NORMALS, stripCounts);
+        gridStrip = new TriangleStripArray(stripCount * numberVerticesPerStrip, TriangleStripArray.COORDINATES
+                | TriangleStripArray.COLOR_3 | TriangleStripArray.NORMALS, stripCounts);
 
         // OK, what you want to do is calculate the index of the
         // vertices, add the correct multiplication of offsets in
@@ -211,11 +213,11 @@ public class OMGraphicUtil {
             Debug.error("OMGrid.interpValueAt only works for integer data.");
         }
 
-        int[][] data = ((GridData.Int)gridData).getData();
+        int[][] data = ((GridData.Int) gridData).getData();
         boolean major = gridData.getMajor();
 
-//         int[][] data = grid.getData();
-//         boolean major = grid.getMajor();
+        //         int[][] data = grid.getData();
+        //         boolean major = grid.getMajor();
 
         int dataPoint;
         Color3f color;
@@ -224,7 +226,7 @@ public class OMGraphicUtil {
         OMGridGenerator tempGen = grid.getGenerator();
 
         if (tempGen instanceof SimpleColorGenerator) {
-            generator = (SimpleColorGenerator)tempGen;
+            generator = (SimpleColorGenerator) tempGen;
         }
 
         for (int j = 0; j < numRows - 1; j++) {
@@ -233,8 +235,8 @@ public class OMGraphicUtil {
                 Debug.output("Creating strip " + j);
             }
             // I think the '-' should be '+'... (changed, DFD)
-            float lat1 = anchorLL.getLatitude() + ((float)j * vRes);
-            float lat2 = anchorLL.getLatitude() + (((float)j + 1f) * vRes);
+            float lat1 = anchorLL.getLatitude() + ((float) j * vRes);
+            float lat2 = anchorLL.getLatitude() + (((float) j + 1f) * vRes);
 
             for (int k = 0; k < numCols; k++) {
 
@@ -242,7 +244,7 @@ public class OMGraphicUtil {
                     Debug.output("   working row " + k);
                 }
 
-                float lon = anchorLL.getLongitude() + ((float)k * hRes);
+                float lon = anchorLL.getLongitude() + ((float) k * hRes);
 
                 projection.forward(lat1, lon, p);
                 if (major) {
@@ -251,10 +253,12 @@ public class OMGraphicUtil {
                     dataPoint = data[j][k];
                 }
 
-                gridStrip.setCoordinate(pointer, new Point3d((float)p.getX(), (float)dataPoint, (float)p.getY()));
+                gridStrip.setCoordinate(pointer,
+                        new Point3d((float) p.getX(), (float) dataPoint, (float) p.getY()));
 
                 if (DEBUG) {
-                    Debug.output("       1st coord " + p.getX() + ", " + dataPoint + ", " + p.getY());
+                    Debug.output("       1st coord " + p.getX() + ", "
+                            + dataPoint + ", " + p.getY());
                 }
 
                 projection.forward(lat2, lon, p);
@@ -264,13 +268,16 @@ public class OMGraphicUtil {
                 } else {
                     dataPoint = data[j + 1][k];
                 }
-                gridStrip.setCoordinate(pointer + 1, new Point3d((float)p.getX(), (float)dataPoint, (float)p.getY()));
+                gridStrip.setCoordinate(pointer + 1,
+                        new Point3d((float) p.getX(), (float) dataPoint, (float) p.getY()));
 
                 if (DEBUG) {
-                    Debug.output("       2nd coord " + p.getX() + ", " + dataPoint + ", " + p.getY());
+                    Debug.output("       2nd coord " + p.getX() + ", "
+                            + dataPoint + ", " + p.getY());
                 }
 
-                // Need the TriangleStripArray.COLOR_3 Attribute set above
+                // Need the TriangleStripArray.COLOR_3 Attribute set
+                // above
                 if (generator == null) {
                     if (polyline) {
                         color = linecolor;
@@ -284,7 +291,7 @@ public class OMGraphicUtil {
                 gridStrip.setColor(pointer++, color);
                 gridStrip.setColor(pointer++, color);
                 // else
-//              pointer += 2;
+                //              pointer += 2;
             }
         }
 
@@ -307,23 +314,20 @@ public class OMGraphicUtil {
         return set.iterator();
     }
 
-
     /**
-     * Create an Iterator containing a set of Shape3D
-     * objects, created from a java.awt.Shape.
-     *
-     * @param shape           java.awt.Shape object.
-     * @param baselineHeight  the baselined height for all
-     *      the values in the grid, if the OMGridGenerator
-     *      wants to use it.
-     * @param color           the color to make the object.
-     * @param filled          whether or not to fill the
-     *      object with color.
-     * @return                Iterator containing Shape3D
-     *      objects created from shape object.
+     * Create an Iterator containing a set of Shape3D objects, created
+     * from a java.awt.Shape.
+     * 
+     * @param shape java.awt.Shape object.
+     * @param baselineHeight the baselined height for all the values
+     *        in the grid, if the OMGridGenerator wants to use it.
+     * @param color the color to make the object.
+     * @param filled whether or not to fill the object with color.
+     * @return Iterator containing Shape3D objects created from shape
+     *         object.
      */
     public static Iterator createShape3D(Shape shape, double baselineHeight,
-            Color color, boolean filled) {
+                                         Color color, boolean filled) {
 
         int bufferSize = DEFAULT_NPOINTS_BUFFER_SIZE;
 
@@ -354,7 +358,8 @@ public class OMGraphicUtil {
         HashSet set = new HashSet();
         Shape3D shape3D = null;
 
-        Debug.message("3detail", "OMGraphicUtil.createShape3D(): figuring out coordinates");
+        Debug.message("3detail",
+                "OMGraphicUtil.createShape3D(): figuring out coordinates");
 
         // Creating the data[]
 
@@ -364,56 +369,61 @@ public class OMGraphicUtil {
 
             switch (type) {
 
-                case PathIterator.SEG_MOVETO:
-                    if (dataIndex != 0) {
-                        shape3D = createShape3D(data, dataIndex, stripCount, color, filled);
-                        if (shape3D != null) {
-                            set.add(shape3D);
-                        }
-                        data = expandArrayD(bufferSize, null);
-                        dataIndex = 0;
+            case PathIterator.SEG_MOVETO:
+                if (dataIndex != 0) {
+                    shape3D = createShape3D(data,
+                            dataIndex,
+                            stripCount,
+                            color,
+                            filled);
+                    if (shape3D != null) {
+                        set.add(shape3D);
                     }
-                case PathIterator.SEG_LINETO:
+                    data = expandArrayD(bufferSize, null);
+                    dataIndex = 0;
+                }
+            case PathIterator.SEG_LINETO:
 
-                    // SEG_MOVETO is the first point of
-                    // the shape, SEG_LINETO are the
-                    // middle and end points.  SEG_CLOSE
-                    // confirms the close, but we don't
-                    // need it.
-                    pntx = coords[0];
-                    pnty = coords[1];
+                // SEG_MOVETO is the first point of
+                // the shape, SEG_LINETO are the
+                // middle and end points. SEG_CLOSE
+                // confirms the close, but we don't
+                // need it.
+                pntx = coords[0];
+                pnty = coords[1];
 
-                    if (Debug.debugging("3detail")) {
-                        Debug.output("Shape coordinates: " + pntx + ", " + pnty);
-                    }
+                if (Debug.debugging("3detail")) {
+                    Debug.output("Shape coordinates: " + pntx + ", " + pnty);
+                }
 
-                    // Get Z here, if you want to set the height of the coordinate...
-                    // pntz =
+                // Get Z here, if you want to set the height of the
+                // coordinate...
+                // pntz =
 
-                    // See if there is space in the buffer.
-                    if (dataIndex >= data.length) {
-                        data = expandArrayD(bufferSize, data);
-                        refreshCounter = bufferSize;
-                    }
+                // See if there is space in the buffer.
+                if (dataIndex >= data.length) {
+                    data = expandArrayD(bufferSize, data);
+                    refreshCounter = bufferSize;
+                }
 
-                    data[dataIndex++] = pntx;
-                    data[dataIndex++] = pntz;
-                    data[dataIndex++] = pnty;
+                data[dataIndex++] = pntx;
+                data[dataIndex++] = pntz;
+                data[dataIndex++] = pnty;
 
-//              data[dataIndex++] = pntx;
-//              data[dataIndex++] = pnty;
-//              data[dataIndex++] = pntz;
+                //              data[dataIndex++] = pntx;
+                //              data[dataIndex++] = pnty;
+                //              data[dataIndex++] = pntz;
 
-                    stripCount[0]++;
+                stripCount[0]++;
 
-                    refreshCounter -= 3;
-                    break;
-                default:
-                    // Do nothing, because it's a repeat
-                    // of the last SEG_LINETO point.
+                refreshCounter -= 3;
+                break;
+            default:
+                // Do nothing, because it's a repeat
+                // of the last SEG_LINETO point.
 
-                    Debug.message("3detail", "Shape coordinates: " + coords[0] + ", " + coords[1] +
-                            " rounding out SEG_CLOSE");
+                Debug.message("3detail", "Shape coordinates: " + coords[0]
+                        + ", " + coords[1] + " rounding out SEG_CLOSE");
             }
 
             pi.next();
@@ -429,20 +439,20 @@ public class OMGraphicUtil {
         return set.iterator();
     }
 
-
     /**
-     * Create a Shape3D from raw components. May return
-     * null. Assumes a stripCount array of size one.
-     *
-     * @param data           Description of the Parameter
-     * @param realDataIndex  Description of the Parameter
-     * @param stripCount     Description of the Parameter
-     * @param color          Description of the Parameter
-     * @param filled         Description of the Parameter
-     * @return               Description of the Return Value
+     * Create a Shape3D from raw components. May return null. Assumes
+     * a stripCount array of size one.
+     * 
+     * @param data Description of the Parameter
+     * @param realDataIndex Description of the Parameter
+     * @param stripCount Description of the Parameter
+     * @param color Description of the Parameter
+     * @param filled Description of the Parameter
+     * @return Description of the Return Value
      */
     public static Shape3D createShape3D(double[] data, int realDataIndex,
-            int[] stripCount, Color color, boolean filled) {
+                                        int[] stripCount, Color color,
+                                        boolean filled) {
         try {
             double[] newData = new double[realDataIndex];
             System.arraycopy(data, 0, newData, 0, realDataIndex);
@@ -452,37 +462,41 @@ public class OMGraphicUtil {
                 return createEdges(newData, color);
             }
         } catch (java.lang.IllegalArgumentException iae) {
-            Debug.error("OMGraphicUtil.createShape3D():  IllegalArgumentException caught: \n" +
-                    iae.toString());
+            Debug.error("OMGraphicUtil.createShape3D():  IllegalArgumentException caught: \n"
+                    + iae.toString());
 
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < stripCount.length; i++) {
                 sb.append("{" + stripCount[i] + "}");
             }
 
-            Debug.output("Something funny happened on " + (filled ? "filled" : "edge") +
-                    " data[" + data.length + "], reflecting " + data.length / 3 +
-                    " nodes, with stripCount[" + stripCount.length + "] " + sb.toString());
+            Debug.output("Something funny happened on "
+                    + (filled ? "filled" : "edge") + " data[" + data.length
+                    + "], reflecting " + data.length / 3
+                    + " nodes, with stripCount[" + stripCount.length + "] "
+                    + sb.toString());
         }
         return null;
     }
 
-
-    public static Shape3D createFilled(double[] data, int[] stripCount, Color color)
-        throws IllegalArgumentException {
+    public static Shape3D createFilled(double[] data, int[] stripCount,
+                                       Color color)
+            throws IllegalArgumentException {
 
         // j + 1 is the number of shapes.
         // Might have to track the number of coordinates per shape.
 
         // Use a Triangulator to take geometry data and create
         // polygons out of it.
-        Debug.message("3detail", "OMGraphicUtil: adding polygon, data length " + data.length + ", reflecting " + data.length / 3 + " nodes, with a strip count of " + stripCount);
+        Debug.message("3detail", "OMGraphicUtil: adding polygon, data length "
+                + data.length + ", reflecting " + data.length / 3
+                + " nodes, with a strip count of " + stripCount);
         GeometryInfo gi = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);
         gi.setCoordinates(data);
         gi.setStripCounts(stripCount);
 
         Triangulator tr = new Triangulator();
-//        Triangulator tr = new Triangulator(1);
+        //        Triangulator tr = new Triangulator(1);
         Debug.message("3detail", "OMGraphicUtil: begin triangulation");
         tr.triangulate(gi);
         Debug.message("3detail", "OMGraphicUtil: end triangulation");
@@ -503,24 +517,23 @@ public class OMGraphicUtil {
         return shape3D;
     }
 
-
     public static Shape3D createEdges(double[] data, Color color)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
 
         int numPoints = data.length / 3;
 
         // Create a line for the polyline.
-        Debug.message("3detail", "OMGraphicUtil: adding polyline of " +
-                numPoints + " points.");
+        Debug.message("3detail", "OMGraphicUtil: adding polyline of "
+                + numPoints + " points.");
 
-        LineStripArray la = new LineStripArray(numPoints, LineArray.COORDINATES | LineArray.COLOR_4, new int[]{numPoints});
+        LineStripArray la = new LineStripArray(numPoints, LineArray.COORDINATES
+                | LineArray.COLOR_4, new int[] { numPoints });
 
         la.setCoordinates(0, data);
         Color4b[] colors = createColorArray(numPoints, color);
         la.setColors(0, colors);
         return new Shape3D(la);
     }
-
 
     public static Appearance createMaterialAppearance(Color color) {
 
@@ -538,7 +551,6 @@ public class OMGraphicUtil {
         return materialAppear;
     }
 
-
     public static Appearance createWireFrameAppearance(Color color) {
 
         Appearance materialAppear = new Appearance();
@@ -552,18 +564,16 @@ public class OMGraphicUtil {
         return materialAppear;
     }
 
-
     /**
      * Create an array of Color4b objects for an OMGraphic
-     * representation. The colors in an OMGraphic are ARGB,
-     * which is why this creates a Color4b object. Since all
-     * the parts of an OMGraphic are colored the same,
-     * create the array of colors to be all the same color
-     * retrieved from the OMGraphic.
-     *
-     * @param size   Description of the Parameter
-     * @param color  Description of the Parameter
-     * @return       Description of the Return Value
+     * representation. The colors in an OMGraphic are ARGB, which is
+     * why this creates a Color4b object. Since all the parts of an
+     * OMGraphic are colored the same, create the array of colors to
+     * be all the same color retrieved from the OMGraphic.
+     * 
+     * @param size Description of the Parameter
+     * @param color Description of the Parameter
+     * @return Description of the Return Value
      */
     public static Color4b[] createColorArray(int size, Color color) {
         Color4b[] colors = new Color4b[size];
@@ -573,18 +583,20 @@ public class OMGraphicUtil {
         return colors;
     }
 
-
     /**
-     * Create an array to hold double data for 3d polygons
-     * and lines.
-     *
-     * @param bufferSize    the number of <pre>points</pre>
-     *      to buffer. Equals three doubles per point.
-     * @param currentArray  if not null, will create an
-     *      array the size of the current array plus the
-     *      size needed to hold the desired number of
-     *      points.
-     * @return              a double[].
+     * Create an array to hold double data for 3d polygons and lines.
+     * 
+     * @param bufferSize the number of
+     * 
+     * <pre>
+     * points
+     * </pre>
+     * 
+     * to buffer. Equals three doubles per point.
+     * @param currentArray if not null, will create an array the size
+     *        of the current array plus the size needed to hold the
+     *        desired number of points.
+     * @return a double[].
      */
     public static double[] expandArrayD(int bufferSize, double[] currentArray) {
 
@@ -598,18 +610,20 @@ public class OMGraphicUtil {
         return ret;
     }
 
-
     /**
-     * Create an array to hold float data for 3d polygons
-     * and lines.
-     *
-     * @param bufferSize    the number of <pre>points</pre>
-     *      to buffer. Equals three floats per point.
-     * @param currentArray  if not null, will create an
-     *      array the size of the current array plus the
-     *      size needed to hold the desired number of
-     *      points.
-     * @return              a float[].
+     * Create an array to hold float data for 3d polygons and lines.
+     * 
+     * @param bufferSize the number of
+     * 
+     * <pre>
+     * points
+     * </pre>
+     * 
+     * to buffer. Equals three floats per point.
+     * @param currentArray if not null, will create an array the size
+     *        of the current array plus the size needed to hold the
+     *        desired number of points.
+     * @return a float[].
      */
     public static float[] expandArrayF(int bufferSize, float[] currentArray) {
 

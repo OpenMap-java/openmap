@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.15 $
-// $Date: 2004/09/17 18:12:36 $
+// $Revision: 1.16 $
+// $Date: 2004/10/14 18:05:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
@@ -34,13 +33,13 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * The WindowSupport class provides support for managing JFrames or
- * JInternalFrames for other components.  The frame is disposed of
- * when the window is closed, and recreated when displayInWindow is
- * called.  The WindowSupport remembers size and location changes for
- * the window when it is recreated.
+ * JInternalFrames for other components. The frame is disposed of when
+ * the window is closed, and recreated when displayInWindow is called.
+ * The WindowSupport remembers size and location changes for the
+ * window when it is recreated.
  */
-public class WindowSupport extends ListenerSupport 
-    implements ComponentListener, ActionListener {
+public class WindowSupport extends ListenerSupport implements
+        ComponentListener, ActionListener {
 
     protected Component content;
     protected String title;
@@ -50,7 +49,7 @@ public class WindowSupport extends ListenerSupport
     public final static String DisplayWindowCmd = "displayWindowCmd";
     public final static String KillWindowCmd = "killWindowCmd";
 
-    /** 
+    /**
      * The frame used when the DrawingToolLauncher is used in an
      * applet, or if Environment.useInternalFrames == true;
      */
@@ -63,6 +62,7 @@ public class WindowSupport extends ListenerSupport
 
     /**
      * Create the window support.
+     * 
      * @param content the content to display in the window.
      * @param windowTitle the title of the window.
      */
@@ -104,19 +104,19 @@ public class WindowSupport extends ListenerSupport
      * ComponentListener method, new size is noted.
      */
     public void componentResized(ComponentEvent e) {
-        Component source = (Component)e.getSource();
+        Component source = (Component) e.getSource();
         if (source instanceof JFrame) {
-            source = ((JFrame)source).getContentPane();
+            source = ((JFrame) source).getContentPane();
         } else if (source instanceof JInternalFrame) {
-            source = ((JInternalFrame)source).getContentPane();
+            source = ((JInternalFrame) source).getContentPane();
         } else if (source instanceof JDialog) {
-            source = ((JDialog)source).getContentPane();
+            source = ((JDialog) source).getContentPane();
         }
         setComponentSize(new Dimension(source.getWidth(), source.getHeight()));
 
         Iterator it = iterator();
         while (it.hasNext()) {
-            ((ComponentListener)it.next()).componentResized(e);
+            ((ComponentListener) it.next()).componentResized(e);
         }
     }
 
@@ -124,10 +124,10 @@ public class WindowSupport extends ListenerSupport
      * ComponentListener method, new location is noted.
      */
     public void componentMoved(ComponentEvent e) {
-        setComponentLocation(((Component)e.getSource()).getLocation());
+        setComponentLocation(((Component) e.getSource()).getLocation());
         Iterator it = iterator();
         while (it.hasNext()) {
-            ((ComponentListener)it.next()).componentMoved(e);
+            ((ComponentListener) it.next()).componentMoved(e);
         }
     }
 
@@ -137,7 +137,7 @@ public class WindowSupport extends ListenerSupport
     public void componentShown(ComponentEvent e) {
         Iterator it = iterator();
         while (it.hasNext()) {
-            ((ComponentListener)it.next()).componentShown(e);
+            ((ComponentListener) it.next()).componentShown(e);
         }
     }
 
@@ -146,14 +146,14 @@ public class WindowSupport extends ListenerSupport
      * it is hidden.
      */
     public void componentHidden(ComponentEvent e) {
-        Component source = (Component)e.getSource();
+        Component source = (Component) e.getSource();
         if (source == dialog || source == iFrame) {
             cleanUp();
         }
 
         Iterator it = iterator();
         while (it.hasNext()) {
-            ((ComponentListener)it.next()).componentHidden(e);
+            ((ComponentListener) it.next()).componentHidden(e);
         }
     }
 
@@ -190,7 +190,7 @@ public class WindowSupport extends ListenerSupport
 
     /**
      * Subclass method to allow modifications to content, wrappers,
-     * etc.  This version just returns comp.
+     * etc. This version just returns comp.
      */
     public Component modifyContent(Component comp) {
         return comp;
@@ -214,12 +214,12 @@ public class WindowSupport extends ListenerSupport
     public Component getContent() {
         return content;
     }
-    
+
     protected int maxHeight = -1;
     protected int maxWidth = -1;
 
     /**
-     * Sets the maximum pixel size of the window.  If you don't care
+     * Sets the maximum pixel size of the window. If you don't care
      * about a particular dimension, set it to be less than zero and
      * the natural size of the content will be displayed.
      */
@@ -239,6 +239,7 @@ public class WindowSupport extends ListenerSupport
     /**
      * Display the window, and find out what the natural or revised
      * size and location are for the window.
+     * 
      * @param owner Frame for JDialog
      */
     public void displayInWindow(Frame owner) {
@@ -255,7 +256,7 @@ public class WindowSupport extends ListenerSupport
         // -window on the owner if it's not null, for JDialogs.
         int x = -1; // these are now initialised at -1 instead of 10
         int y = -1; // these are now initialised at -1 instead of 10
-            
+
         Point loc = getComponentLocation();
         if (loc != null) {
             x = (int) loc.getX();
@@ -267,12 +268,13 @@ public class WindowSupport extends ListenerSupport
 
     /**
      * Display the window.
+     * 
      * @param x the horizontal pixel location for the window.
      * @param y the vertical pixel location for the window.
      * @param width the horizontal size of the window, if less than or
-     * equal to zero the content size will be used.
+     *        equal to zero the content size will be used.
      * @param height the vertical size of the window, if less than or
-     * equal to zero the content size will be used.
+     *        equal to zero the content size will be used.
      */
     public void displayInWindow(int x, int y, int width, int height) {
         displayInWindow(null, x, y, width, height);
@@ -280,40 +282,40 @@ public class WindowSupport extends ListenerSupport
 
     /**
      * Display the window.
+     * 
      * @param owner Frame for JDialog
      * @param x the horizontal pixel location for the window.
      * @param y the vertical pixel location for the window.
      * @param width the horizontal size of the window, if less than or
-     * equal to zero the content size will be used.
+     *        equal to zero the content size will be used.
      * @param height the vertical size of the window, if less than or
-     * equal to zero the content size will be used.
+     *        equal to zero the content size will be used.
      */
-    public void displayInWindow(Frame owner, int x, int y, 
-                                int width, int height) {
+    public void displayInWindow(Frame owner, int x, int y, int width, int height) {
 
         if (content == null) {
-            Debug.message("windowsupport", "WindowSupport asked to display window with null content");
+            Debug.message("windowsupport",
+                    "WindowSupport asked to display window with null content");
             return;
         }
 
         if (iFrame == null && dialog == null) {
-        
+
             // Try to group the applet-specific stuff in here...
             if (Environment.getBoolean(Environment.UseInternalFrames)) {
 
-                iFrame = new JInternalFrame(
-                    title,
-                    /*resizable*/ true,
-                    /*closable*/ true,
-                    /*maximizable*/ true,
-                    /*iconifiable*/ true);
+                iFrame = new JInternalFrame(title,
+                /* resizable */true,
+                /* closable */true,
+                /* maximizable */true,
+                /* iconifiable */true);
                 iFrame.setOpaque(true);
                 iFrame.addComponentListener(this);
-                
-                JLayeredPane desktop = 
-                    Environment.getInternalFrameDesktop();
 
-                Debug.message("windows", "WindowSupport creating internal frame");
+                JLayeredPane desktop = Environment.getInternalFrameDesktop();
+
+                Debug.message("windows",
+                        "WindowSupport creating internal frame");
 
                 if (desktop != null) {
                     desktop.remove(iFrame);
@@ -321,7 +323,7 @@ public class WindowSupport extends ListenerSupport
                 } else {
                     Debug.output("WindowSupport:  No desktop set for internal frame");
                 }
-                
+
             } else { // Working as an application...
                 dialog = new JDialog(owner, title);
                 dialog.addComponentListener(this);
@@ -332,7 +334,7 @@ public class WindowSupport extends ListenerSupport
         setContent(content);
 
         if (content instanceof ComponentListener) {
-            addComponentListener((ComponentListener)content);
+            addComponentListener((ComponentListener) content);
         }
 
         if (iFrame != null) {
@@ -355,10 +357,10 @@ public class WindowSupport extends ListenerSupport
     /**
      * Checks the component's dimensions against the requested values
      * and against any maximum limits that may have been set in the
-     * WindowSupport.  Calls setBounds() on the Component.
+     * WindowSupport. Calls setBounds() on the Component.
      */
-    protected void checkBounds(Component comp, int x, int y, 
-                               int width, int height) {
+    protected void checkBounds(Component comp, int x, int y, int width,
+                               int height) {
         if (comp != null) {
 
             if (width <= 0) {
@@ -392,21 +394,22 @@ public class WindowSupport extends ListenerSupport
         int h = comp.getHeight();
 
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        Debug.message("basic","Screen dimensions are " + d);
-        int x = d.width/2 - w/2;
-        int y = d.height/2 - h/2;
-        
+        Debug.message("basic", "Screen dimensions are " + d);
+        int x = d.width / 2 - w / 2;
+        int y = d.height / 2 - h / 2;
+
         if (Debug.debugging("basic")) {
-            Debug.output("Setting PLG frame X and Y from properties to " + x + " " + y);
+            Debug.output("Setting PLG frame X and Y from properties to " + x
+                    + " " + y);
         }
 
         // compose the frame, but don't show it here
-        comp.setBounds(x,y,w,h);
+        comp.setBounds(x, y, w, h);
     }
 
     /**
      * Set the window to be hidden and fire a ComponentEvent for
-     * COMPONENT_HIDDEN.  Normally, just setting the visibility of the
+     * COMPONENT_HIDDEN. Normally, just setting the visibility of the
      * window would be enough, but we're running into that problem we
      * had with the layers not firing ComponentEvents when hidden.
      * This method calls componentHidden, which in turn calls cleanUp.
@@ -445,7 +448,7 @@ public class WindowSupport extends ListenerSupport
         }
 
         if (content instanceof ComponentListener) {
-            removeComponentListener((ComponentListener)content);
+            removeComponentListener((ComponentListener) content);
         }
     }
 
@@ -458,20 +461,20 @@ public class WindowSupport extends ListenerSupport
     }
 
     /**
-     * Remove a component listener that was interested in hearing about
-     * what happens to the window.
+     * Remove a component listener that was interested in hearing
+     * about what happens to the window.
      */
     public void removeComponentListener(ComponentListener l) {
         removeListener(l);
     }
 
     /**
-     * Return the window displaying the content.  May be null.
+     * Return the window displaying the content. May be null.
      */
     public Container getWindow() {
         if (dialog != null) {
             return dialog;
-        } 
+        }
         return iFrame;
     }
 

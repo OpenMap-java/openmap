@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,22 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/STextBox.java,v $
 // $RCSfile: STextBox.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
 package com.bbn.openmap.layer.specialist;
 
 import com.bbn.openmap.CSpecialist.*;
-import java.io.*;
-import java.util.*;
 
 /**
- * Class STextBox is a specialist palette widget.  It is a window
- * that has a text area and a button to confirm the text entry to the
+ * Class STextBox is a specialist palette widget. It is a window that
+ * has a text area and a button to confirm the text entry to the
  * specialist.
  */
 public class STextBox extends _TextBoxStub {
@@ -45,31 +42,36 @@ public class STextBox extends _TextBoxStub {
         label_ = label;
         text_ = text;
     }
+
     public void label(java.lang.String label) {
         label_ = label;
     }
+
     public java.lang.String label() {
         return label_;
     }
+
     public void contents(String text) {
         text_ = text;
     }
+
     public String contents() {
         return text_;
     }
-    public void pressed(java.lang.String box_label,
-                        java.lang.String text,
+
+    public void pressed(java.lang.String box_label, java.lang.String text,
                         java.lang.String uniqueID) {
-//      System.out.println("TextBox:");
-//      System.out.println(" in box: " + box_label);
-//      System.out.println(" unique ID: " + uniqueID);
-//      System.out.println(" New contents of text box: " + text);
+        //      System.out.println("TextBox:");
+        //      System.out.println(" in box: " + box_label);
+        //      System.out.println(" unique ID: " + uniqueID);
+        //      System.out.println(" New contents of text box: " + text);
         text_ = text;
     }
 
-    /** The <b>widget</b> function should be used to get the object
-     * needed for the <b>addPalette</b> specialist function, which adds
-     * the palette widget to the palette widget list.  
+    /**
+     * The <b>widget </b> function should be used to get the object
+     * needed for the <b>addPalette </b> specialist function, which
+     * adds the palette widget to the palette widget list.
      */
     public UWidget widget() {
         UWidget uw = new UWidget();
@@ -77,8 +79,4 @@ public class STextBox extends _TextBoxStub {
         return uw;
     }
 }
-
-
-
-
 

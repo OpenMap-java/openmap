@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -12,14 +12,15 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimeSliderSupport.java,v $
+// $Source:
+// /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimeSliderSupport.java,v
+// $
 // $RCSfile: TimeSliderSupport.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/09/22 14:56:43 $
+// $Revision: 1.7 $
+// $Date: 2004/10/14 18:05:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui.time;
 
@@ -36,16 +37,16 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
     protected long startTime;
     protected long endTime;
 
-    public TimeSliderSupport(JSlider slider, RealTimeHandler rth, 
-                             long startingTime, long endingTime) {
+    public TimeSliderSupport(JSlider slider, RealTimeHandler rth,
+            long startingTime, long endingTime) {
         timeSlider = slider;
         rtHandler = rth;
         startTime = startingTime;
         endTime = endingTime;
 
         if (Debug.debugging("timedetail")) {
-            Debug.output("TimeSliderSupport: initialized to:" + startTime +
-                         ", " + endTime);
+            Debug.output("TimeSliderSupport: initialized to:" + startTime
+                    + ", " + endTime);
         }
 
         timeSlider.addChangeListener(this);
@@ -53,7 +54,7 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
 
     /**
      * Updates the position of the slider to a place reflective to the
-     * startTime and endTime of this support object.  Only moves the
+     * startTime and endTime of this support object. Only moves the
      * slider marker if the difference is greater than one.
      */
     public void update(long time) {
@@ -71,14 +72,16 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
                 }
                 double val = minimum;
                 if (diff != 0) {
-                    val = ((double)(time - startTime)/diff) * (maximum - minimum);
+                    val = ((double) (time - startTime) / diff)
+                            * (maximum - minimum);
                 }
 
                 if (Math.abs(val - timeSlider.getValue()) > 1) {
                     if (Debug.debugging("timedetail")) {
-                        Debug.output("TimeSliderSupport: Setting time slider to : " + val);
+                        Debug.output("TimeSliderSupport: Setting time slider to : "
+                                + val);
                     }
-                    timeSlider.setValue((int)val);
+                    timeSlider.setValue((int) val);
                 }
             }
         }
@@ -105,7 +108,7 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
         int value = timeSlider.getValue();
 
         try {
-            return (startTime + (long)((endTime - startTime) * value/(maximum - minimum)));
+            return (startTime + (long) ((endTime - startTime) * value / (maximum - minimum)));
         } catch (ArithmeticException ae) {
             Debug.error("TimeSliderSupport.getTime(): " + ae.getMessage());
             if (Debug.debugging("timedetail")) {

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SGraphic.java,v $
 // $RCSfile: SGraphic.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.4 $
+// $Date: 2004/10/14 18:05:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.specialist;
 
@@ -31,7 +30,7 @@ import java.util.*;
 
 /**
  * The SGraphic class is the base class for the specialist graphic
- * objects - it holds attributes common to most all objects.  Some
+ * objects - it holds attributes common to most all objects. Some
  * attributes don't apply to some types of graphics.
  */
 public abstract class SGraphic {
@@ -39,8 +38,8 @@ public abstract class SGraphic {
     private static long gid = 0;
     Vector graphicUpdateList_ = null;
     protected com.bbn.openmap.CSpecialist.GraphicPackage.EGraphic eg;
-    final private static EColor nullColor = new EColor(null, (short)0, (short)0, (short)0);
-    final private static EStipple nullStipple = new EStipple(null, (short)0, (short)0, new byte[0]);
+    final private static EColor nullColor = new EColor(null, (short) 0, (short) 0, (short) 0);
+    final private static EStipple nullStipple = new EStipple(null, (short) 0, (short) 0, new byte[0]);
     final private static EComp nullComp = new EComp(null, "");
 
     // create a raw EGraphic
@@ -61,9 +60,8 @@ public abstract class SGraphic {
         return eg;
     }
 
-
     public SGraphic(Graphic g, GraphicType gType, RenderType rType,
-                    LineType lType, DeclutterType dcType) {
+            LineType lType, DeclutterType dcType) {
         eg = new EGraphic();
         eg.graph = g;
         eg.obj = nullComp;
@@ -80,13 +78,15 @@ public abstract class SGraphic {
         graphicUpdateList_ = new Vector();
     }
 
-    /** construct an SGraphic without a reference to the actual CORBA
-        object. */
-    public SGraphic(GraphicType gType, RenderType rType,
-                    LineType lType, DeclutterType dcType) {
-            this(null, gType, rType, lType, dcType);
+    /**
+     * construct an SGraphic without a reference to the actual CORBA
+     * object.
+     */
+    public SGraphic(GraphicType gType, RenderType rType, LineType lType,
+            DeclutterType dcType) {
+        this(null, gType, rType, lType, dcType);
     }
-  
+
     public java.lang.String gID() {
         return eg.gID;
     }
@@ -97,7 +97,7 @@ public abstract class SGraphic {
 
     public GraphicType gType() {
         return eg.gType;
-    } 
+    }
 
     public void object(Comp object) {
         eg.obj = (object == null) ? nullComp : object.fill();
@@ -106,9 +106,9 @@ public abstract class SGraphic {
     public Comp object() {
         return eg.obj.comp;
     }
-  
+
     public SComp sobject() {
-        return((eg.obj.comp instanceof SComp)?(SComp)eg.obj.comp:null);
+        return ((eg.obj.comp instanceof SComp) ? (SComp) eg.obj.comp : null);
     }
 
     public void lType(LineType lType) {
@@ -136,7 +136,8 @@ public abstract class SGraphic {
     }
 
     public SColor scolor() {
-        return((eg.color.color instanceof SColor)?(SColor)eg.color.color:null);
+        return ((eg.color.color instanceof SColor) ? (SColor) eg.color.color
+                : null);
     }
 
     public void fillColor(CColor fillColor) {
@@ -148,7 +149,8 @@ public abstract class SGraphic {
     }
 
     public SColor sfillColor() {
-        return((eg.fillColor.color instanceof SColor)?(SColor)eg.fillColor.color:null);
+        return ((eg.fillColor.color instanceof SColor) ? (SColor) eg.fillColor.color
+                : null);
     }
 
     public void lineWidth(short lineWidth) {
@@ -168,11 +170,13 @@ public abstract class SGraphic {
     }
 
     public SStipple sstipple() {
-        return((eg.stipple.stipple instanceof SStipple)?(SStipple)eg.stipple.stipple:null);
+        return ((eg.stipple.stipple instanceof SStipple) ? (SStipple) eg.stipple.stipple
+                : null);
     }
 
     public void fillStipple(CStipple fillStipple) {
-        eg.fillStipple = (fillStipple == null) ? nullStipple :fillStipple.fill();
+        eg.fillStipple = (fillStipple == null) ? nullStipple
+                : fillStipple.fill();
     }
 
     public CStipple fillStipple() {
@@ -180,7 +184,8 @@ public abstract class SGraphic {
     }
 
     public SStipple sfillStipple() {
-        return((eg.fillStipple.stipple instanceof SStipple)?(SStipple)eg.fillStipple.stipple:null);
+        return ((eg.fillStipple.stipple instanceof SStipple) ? (SStipple) eg.fillStipple.stipple
+                : null);
     }
 
     public void dcType(DeclutterType dcType) {
@@ -250,7 +255,7 @@ public abstract class SGraphic {
         ug.gf_update(gupdate);
         addGraphicChange(ug);
     }
-  
+
     public void changeStipple(SStipple stipple) {
         stipple(stipple);
         GF_update gupdate = new GF_update();
@@ -270,39 +275,39 @@ public abstract class SGraphic {
     }
 
     public void changeDcType(DeclutterType dct) {
-        //       dcType_ = dct;
-        //       GF_update gupdate = new GF_update();
-        //       gupdate.dcType(dct);
-        //       UpdateGraphic ug = new UpdateGraphic();
-        //       ug.gf_update(gupdate);
-        //       addGraphicChange(ug);
+    //       dcType_ = dct;
+    //       GF_update gupdate = new GF_update();
+    //       gupdate.dcType(dct);
+    //       UpdateGraphic ug = new UpdateGraphic();
+    //       ug.gf_update(gupdate);
+    //       addGraphicChange(ug);
     }
 
-
-    /**  <b>addGraphicChange</b> is called from within each graphic
-         object type (SCirc, SBitmap, etc. to add it to the change list.
-         Don't call this directly, the object will take care of it. It
-         adds the change to the specific parameter of the object to a
-         total list of changes that the object is tracking. */
+    /**
+     * <b>addGraphicChange </b> is called from within each graphic
+     * object type (SCirc, SBitmap, etc. to add it to the change list.
+     * Don't call this directly, the object will take care of it. It
+     * adds the change to the specific parameter of the object to a
+     * total list of changes that the object is tracking.
+     */
     protected void addGraphicChange(UpdateGraphic ug) {
         graphicUpdateList_.addElement(ug);
     }
 
-    /** <b>getGraphicUpdates</b> are called from within the graphic
-     *  objects to get the list of updates that have been made to the
-     *  object.  The list is converted to an <b>UpdateRecord</b>. Call
-     *  this method to obtain the <b>UpdateRecord</b> needed for the
-     *  graphic updates as a result of a gesture action.  */
+    /**
+     * <b>getGraphicUpdates </b> are called from within the graphic
+     * objects to get the list of updates that have been made to the
+     * object. The list is converted to an <b>UpdateRecord </b>. Call
+     * this method to obtain the <b>UpdateRecord </b> needed for the
+     * graphic updates as a result of a gesture action.
+     */
     public UpdateRecord getGraphicUpdates() {
         UpdateRecord ur = new UpdateRecord();
         ur.gID = eg.gID;
         ur.objectUpdates = new UpdateGraphic[graphicUpdateList_.size()];
         for (int i = 0; i < graphicUpdateList_.size(); i++)
-            ur.objectUpdates[i] = 
-                (UpdateGraphic) graphicUpdateList_.elementAt(i);
+            ur.objectUpdates[i] = (UpdateGraphic) graphicUpdateList_.elementAt(i);
         return ur;
     }
 }
-
-
 

@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LineType.java,v $
 // $RCSfile: LineType.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/10/14 18:06:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.proj;
 
@@ -29,11 +28,11 @@ package com.bbn.openmap.proj;
 public final class LineType {
 
     // cannot construct
-    private LineType () {}
+    private LineType() {}
 
     /**
-     * Straight lines are the easiest and fastest to draw.  Use them
-     * if you're concerned about speed of projecting.
+     * Straight lines are the easiest and fastest to draw. Use them if
+     * you're concerned about speed of projecting.
      */
     final public static transient int Straight = 1;
 

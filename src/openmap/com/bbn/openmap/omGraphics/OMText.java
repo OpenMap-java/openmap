@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/09/22 15:45:41 $
+// $Revision: 1.13 $
+// $Date: 2004/10/14 18:06:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.omGraphics;
 
@@ -31,8 +30,6 @@ import java.io.Serializable;
 
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.DrawUtil;
-
 
 /**
  * The OMText graphic type lets you put text on the screen. The
@@ -40,7 +37,6 @@ import com.bbn.openmap.proj.DrawUtil;
  * corner of the first letter of the string.
  */
 public class OMText extends OMGraphic implements Serializable {
-
 
     //----------------------------------------------------------------------
     // Static constants
@@ -57,37 +53,36 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Parameter of Font to count toward footprint of height of Text.
-     * This indicates that the ascent, descent and leading of the
-     * text should count toward the footprint of the text. This is
-     * the same as the full height of the FontMetric, and is the
-     * default. 
+     * This indicates that the ascent, descent and leading of the text
+     * should count toward the footprint of the text. This is the same
+     * as the full height of the FontMetric, and is the default.
      */
     public final static transient int HEIGHT = 0;
 
     /**
      * Parameter of Font to count toward footprint of height of Text.
      * This indicates that the ascent and the descent of the text
-     * should count toward the footprint of the text. 
+     * should count toward the footprint of the text.
      */
     public final static transient int ASCENT_DESCENT = 1;
 
     /**
      * Parameter of Font to count toward footprint of height of Text.
      * This indicates that the ascent and the leading of the text
-     * should count toward the footprint of the text. 
+     * should count toward the footprint of the text.
      */
     public final static transient int ASCENT_LEADING = 2;
 
     /**
      * Parameter of Font to count toward footprint of height of Text.
      * This indicates that just the ascent of the text should count
-     * toward the footprint of the text. 
+     * toward the footprint of the text.
      */
     public final static transient int ASCENT = 3;
 
     /**
      * Parameter that dictates where the font baseline will be set
-     * compared to the location of the OMText.  The BASELINE_BOTTOM
+     * compared to the location of the OMText. The BASELINE_BOTTOM
      * setting, the default, means that the location will be set along
      * the normal bottom edge of the text where the letters rest.
      */
@@ -95,17 +90,17 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Parameter that dictates where the font baseline will be set
-     * compared to the location of the OMText.  The BASELINE_MIDDLE
-     * setting means that the location will be set along
-     * the middle of the height of the text.
+     * compared to the location of the OMText. The BASELINE_MIDDLE
+     * setting means that the location will be set along the middle of
+     * the height of the text.
      */
     public final static transient int BASELINE_MIDDLE = 1;
 
     /**
      * Parameter that dictates where the font baseline will be set
-     * compared to the location of the OMText.  The BASELINE_TOP
-     * setting means that the location will be set along
-     * the top of the height of the text.
+     * compared to the location of the OMText. The BASELINE_TOP
+     * setting means that the location will be set along the top of
+     * the height of the text.
      */
     public final static transient int BASELINE_TOP = 2;
 
@@ -126,20 +121,20 @@ public class OMText extends OMGraphic implements Serializable {
 
     /** The Font type that the string should be displayed with. */
     protected Font f;
-    /** 
+    /**
      * The FontSizer set in the OMText, changing the font size
-     * appropriate for a projection scale. 
+     * appropriate for a projection scale.
      */
     protected FontSizer fontSizer = null;
-    /** 
+    /**
      * The latitude location for the text, used for lat/lon or offset
-     * rendertype texts, in decimal degrees. 
+     * rendertype texts, in decimal degrees.
      */
     protected float lat = 0.0f;
 
-    /** 
+    /**
      * The longitude location for the text, used for lat/lon or offset
-     * rendertype texts, in decimal degrees. 
+     * rendertype texts, in decimal degrees.
      */
     protected float lon = 0.0f;
 
@@ -147,15 +142,14 @@ public class OMText extends OMGraphic implements Serializable {
     protected String data = null;
 
     /**
-     * Justification of the string.
-     * Will let you put the text to the right, centered or to the left
-     * of the given location.
+     * Justification of the string. Will let you put the text to the
+     * right, centered or to the left of the given location.
      */
     protected int justify = JUSTIFY_LEFT;
 
     /**
      * Location of the baseline of the text compared to the location
-     * point of the OMText object.  You can set this to be
+     * point of the OMText object. You can set this to be
      * BASELINE_BOTTOM (default), BASELINE_MIDDLE or BASELINE_TOP,
      * depending on if you want the bottom of the letters to be lined
      * up to the location, or the middle or the top of them.
@@ -164,7 +158,7 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * The fmHeight is the FontMetric height to use for calculating
-     * the footprint for the line.  This becomes important for
+     * the footprint for the line. This becomes important for
      * multi-line text and text in decluttering, because it dictates
      * the amount of space surrounding the text. The default height is
      * to take into account the ascent, descent and leading of the
@@ -199,14 +193,14 @@ public class OMText extends OMGraphic implements Serializable {
     //----------------------------------------------------------------------
 
     /**
-     * Default constructor.  Produces an instance with no location
-     * and an empty string for text.  For this instance to be useful
-     * it needs text (setData), a location (setX, setY, setLat, setLon)
+     * Default constructor. Produces an instance with no location and
+     * an empty string for text. For this instance to be useful it
+     * needs text (setData), a location (setX, setY, setLat, setLon)
      * and a renderType (setRenderType).
      */
     public OMText() {
         super(RENDERTYPE_UNKNOWN, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
-        point = new Point(0,0);
+        point = new Point(0, 0);
         setData("");
         f = DEFAULT_FONT;
     }
@@ -214,6 +208,7 @@ public class OMText extends OMGraphic implements Serializable {
     /**
      * Creates a text object, with Lat/Lon placement, and default
      * SansSerif font.
+     * 
      * @param lt latitude of the string, in decimal degrees.
      * @param ln longitude of the string, in decimal degrees.
      * @param stuff the string to be displayed.
@@ -225,14 +220,14 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Creates a text object, with Lat/Lon placement.
+     * 
      * @param lt latitude of the string, in decimal degrees.
      * @param ln longitude of the string, in decimal degrees.
      * @param stuff the string to be displayed.
      * @param font the Font description for the string.
      * @param just the justification of the string
      */
-    public OMText(float lt, float ln, String stuff, 
-                  Font font, int just) {
+    public OMText(float lt, float ln, String stuff, Font font, int just) {
 
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
@@ -242,29 +237,30 @@ public class OMText extends OMGraphic implements Serializable {
         f = font;
         justify = just;
     }
-  
+
     /**
      * Creates a text object, with XY placement, and default SansSerif
-     * font. 
+     * font.
+     * 
      * @param px1 horizontal window pixel location of the string.
      * @param py1 vertical window pixel location of the string.
      * @param stuff the string to be displayed.
      * @param just the justification of the string
      */
-    public OMText(int px1, int py1, String stuff, int just) { 
+    public OMText(int px1, int py1, String stuff, int just) {
         this(px1, py1, stuff, DEFAULT_FONT, just);
     }
-  
+
     /**
-     * Creates a text object, with XY placement. 
+     * Creates a text object, with XY placement.
+     * 
      * @param px1 horizontal window pixel location of the string.
      * @param py1 vertical window pixel location of the string.
      * @param stuff the string to be displayed.
      * @param font the Font description for the string.
      * @param just the justification of the string
      */
-    public OMText(int px1, int py1, 
-                  String stuff, Font font, int just) { 
+    public OMText(int px1, int py1, String stuff, Font font, int just) {
         super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         point = new Point(px1, py1);
         setData(stuff);
@@ -275,6 +271,7 @@ public class OMText extends OMGraphic implements Serializable {
     /**
      * Creates a Text object, with lat/lon placement with XY offset,
      * and default SansSerif font.
+     * 
      * @param lt latitude of the string, in decimal degrees.
      * @param ln longitude of the string, in decimal degrees.
      * @param offX horizontal offset of string
@@ -282,14 +279,14 @@ public class OMText extends OMGraphic implements Serializable {
      * @param aString the string to be displayed.
      * @param just the justification of the string
      */
-    public OMText(float lt, float ln, 
-                  int offX, int offY, 
-                  String aString, int just) { 
+    public OMText(float lt, float ln, int offX, int offY, String aString,
+            int just) {
         this(lt, ln, offX, offY, aString, DEFAULT_FONT, just);
     }
 
     /**
-     * Creates a Text object, with lat/lon placement with XY offset. 
+     * Creates a Text object, with lat/lon placement with XY offset.
+     * 
      * @param lt latitude of the string, in decimal degrees.
      * @param ln longitude of the string, in decimal degrees.
      * @param offX horizontal offset of string
@@ -298,10 +295,8 @@ public class OMText extends OMGraphic implements Serializable {
      * @param font the Font description for the string.
      * @param just the justification of the string
      */
-    public OMText(float lt, float ln, 
-                  int offX, int offY, 
-                  String aString, Font font, 
-                  int just) { 
+    public OMText(float lt, float ln, int offX, int offY, String aString,
+            Font font, int just) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         lat = lt;
         lon = ln;
@@ -314,7 +309,7 @@ public class OMText extends OMGraphic implements Serializable {
     /**
      * Get the font of the text object, which might have been scaled
      * by the font sizer.
-     *
+     * 
      * @return the font of the object.
      */
     public Font getFont() {
@@ -323,18 +318,18 @@ public class OMText extends OMGraphic implements Serializable {
         }
         return f;
     }
-    
+
     /**
-     * Set the base font.  Will take effect on the next render.  If
-     * the font sizer is not null, this font will be set in that
-     * object as well, and the active font will come from the font
-     * sizer.  To make the set font the constant font, set the font
-     * sizer to null.  Flushes the cache fields <code>fm</code>,
-     * <code>widths</code>, and <code>polyBounds</code>.  Calls
+     * Set the base font. Will take effect on the next render. If the
+     * font sizer is not null, this font will be set in that object as
+     * well, and the active font will come from the font sizer. To
+     * make the set font the constant font, set the font sizer to
+     * null. Flushes the cache fields <code>fm</code>,
+     * <code>widths</code>, and <code>polyBounds</code>. Calls
      * setScaledFont.
-     *
+     * 
      * @param aFont font to be used for the text.
-     *
+     * 
      * @see #fm
      * @see #widths
      * @see #polyBounds
@@ -349,15 +344,16 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Sets the scaled font, which is the one that is used for rendering.
+     * Sets the scaled font, which is the one that is used for
+     * rendering.
      */
     protected void setScaledFont(Font aFont) {
         f = aFont;
 
         // now flush the cached information about the old font
-        fm = null;              // flush existing metrics.
-        widths = null;          // flush existing width table.
-        polyBounds = null;      // flush existing bounds.
+        fm = null; // flush existing metrics.
+        widths = null; // flush existing width table.
+        polyBounds = null; // flush existing bounds.
     }
 
     /**
@@ -372,7 +368,7 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Set the FontSizer object, which provides different font sizes
-     * at different scales.  If set to null, the font size will remain
+     * at different scales. If set to null, the font size will remain
      * constant regardless of projection scale.
      */
     public void setFontSizer(FontSizer fs) {
@@ -387,7 +383,7 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Get the FontSizer object, which provides different font sizes
-     * at different scales.  If set to null, the font size will remain
+     * at different scales. If set to null, the font size will remain
      * constant regardless of projection scale.
      */
     public FontSizer getFontSizer() {
@@ -395,10 +391,10 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the x location. Applies to XY and OFFSET text objects. 
-     *
+     * Get the x location. Applies to XY and OFFSET text objects.
+     * 
      * @return the horizontal window location of the string, from the
-     * left of the window.
+     *         left of the window.
      */
     public int getX() {
         if (point != null) {
@@ -409,10 +405,10 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Set the x location. Applies to XY and OFFSET text objects. 
-     *
-     * @param newX the horizontal pixel location of the window to place
-     * the string.
+     * Set the x location. Applies to XY and OFFSET text objects.
+     * 
+     * @param newX the horizontal pixel location of the window to
+     *        place the string.
      */
     public void setX(int newX) {
         if (point == null && getRenderType() == RENDERTYPE_LATLON) {
@@ -424,10 +420,10 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the y location. Applies to XY and OFFSET text objects. 
-     *
+     * Get the y location. Applies to XY and OFFSET text objects.
+     * 
      * @return the vertical pixel location of the string, from the top
-     * of the window.
+     *         of the window.
      */
     public int getY() {
         if (point != null) {
@@ -438,10 +434,10 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Set the y location. Applies to XY and OFFSET text objects. 
-     *
+     * Set the y location. Applies to XY and OFFSET text objects.
+     * 
      * @param newY the vertical pixel location of the window to place
-     * the string.
+     *        the string.
      */
     public void setY(int newY) {
         if (point == null && getRenderType() == RENDERTYPE_LATLON) {
@@ -453,39 +449,41 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the latitude location of the string. Applies to LATLON
-     * and OFFSET text objects.
-     *
+     * Get the latitude location of the string. Applies to LATLON and
+     * OFFSET text objects.
+     * 
      * @return the latitude, in decimal degrees.
      */
     public float getLat() {
         return lat;
     }
- 
+
     /**
-     * Set the latitude. Applies to LATLON and OFFSET text
-     * objects. 
-     *
+     * Set the latitude. Applies to LATLON and OFFSET text objects.
+     * 
      * @param l latitude for new location, in decimal degrees.
      */
     public void setLat(float l) {
         lat = l;
         setNeedToRegenerate(true);
     }
-    
+
     /**
-     * Return the longitude. Applies to LATLON and OFFSET text objects. 
-     *
-     * @return the longitude location of the string, in decimal degrees.
+     * Return the longitude. Applies to LATLON and OFFSET text
+     * objects.
+     * 
+     * @return the longitude location of the string, in decimal
+     *         degrees.
      */
     public float getLon() {
         return lon;
     }
 
     /**
-     * Set the longitude. Applies to LATLON and OFFSET text objects. 
-     *
-     * @param l the longitude location for the string, in decimal degrees.
+     * Set the longitude. Applies to LATLON and OFFSET text objects.
+     * 
+     * @param l the longitude location for the string, in decimal
+     *        degrees.
      */
     public void setLon(float l) {
         lon = l;
@@ -493,22 +491,25 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Not for the faint hearted.  Used by the DeclutterMatrix to
-     * replace text on the map after it has been projected.  This
+     * Not for the faint hearted. Used by the DeclutterMatrix to
+     * replace text on the map after it has been projected. This
      * method lets the declutter matrix find out where the text should
-     * go.  
-     * @return Point on the map where the text has been projected to go.
+     * go.
+     * 
+     * @return Point on the map where the text has been projected to
+     *         go.
      */
     public Point getMapLocation() {
         return pt;
     }
 
     /**
-     * Not for the faint hearted.  Used by the DeclutterMatrix to
-     * replace text on the map after it has been projected.  This
+     * Not for the faint hearted. Used by the DeclutterMatrix to
+     * replace text on the map after it has been projected. This
      * method lets the declutter matrix put the text in an uncluttered
      * place.
-     * @param point the point on the map where the text being placed.  
+     * 
+     * @param point the point on the map where the text being placed.
      */
     public void setMapLocation(Point point) {
         pt = point;
@@ -516,8 +517,8 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Return the string. 
-     *
+     * Return the string.
+     * 
      * @return the string
      */
     public java.lang.String getData() {
@@ -525,14 +526,13 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Sets the string contents that are presented. 
-     * Flushes the cache fields <code>parsedData</code>, <code>widths</code>,
-     * and <code>polyBounds</code>.
-     * HACK synchronized so that it doesn't interfere with other methods that
-     * are using parsedData.
-     *
+     * Sets the string contents that are presented. Flushes the cache
+     * fields <code>parsedData</code>,<code>widths</code>, and
+     * <code>polyBounds</code>. HACK synchronized so that it
+     * doesn't interfere with other methods that are using parsedData.
+     * 
      * @param d the text to be displayed
-     *
+     * 
      * @see #parsedData
      * @see #widths
      * @see #polyBounds
@@ -541,14 +541,14 @@ public class OMText extends OMGraphic implements Serializable {
         data = d;
 
         // now flush the cached information about the old text
-        parsedData = null;      // flush existing parsed line table.
-        widths = null;          // flush existing width table.
-        polyBounds = null;      // flush existing bounds.
+        parsedData = null; // flush existing parsed line table.
+        widths = null; // flush existing width table.
+        polyBounds = null; // flush existing bounds.
     }
 
     /**
      * Gets the justification of this OMText.
-     *
+     * 
      * @return one of JUSTIFY_LEFT, JUSTIFY_CENTER, JUSTIFY_RIGHT
      */
     public int getJustify() {
@@ -556,10 +556,10 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Sets the justification of this OMText.
-     * Flushes the cache fields <code>fm</code>, <code>widths</code>,
-     * and <code>polyBounds</code>.
-     *
+     * Sets the justification of this OMText. Flushes the cache fields
+     * <code>fm</code>,<code>widths</code>, and
+     * <code>polyBounds</code>.
+     * 
      * @param j one of JUSTIFY_LEFT, JUSTIFY_CENTER, JUSTIFY_RIGHT
      * @see #polyBounds
      */
@@ -567,36 +567,38 @@ public class OMText extends OMGraphic implements Serializable {
         justify = j;
 
         // now flush cached information
-        polyBounds = null;      // flush existing bounds.
+        polyBounds = null; // flush existing bounds.
     }
 
     /**
      * Gets the baseline location of this OMText.
-     *
-     * @return one of BASELINE_BOTTOM, BASELINE_MIDDLE or BASELINE_TOP.
+     * 
+     * @return one of BASELINE_BOTTOM, BASELINE_MIDDLE or
+     *         BASELINE_TOP.
      */
     public int getBaseline() {
         return baseline;
     }
 
     /**
-     * Sets the location of the baseline of this OMText.
-     * Flushes the cache fields <code>fm</code>, <code>widths</code>,
-     * and <code>polyBounds</code>.
-     *
-     * @param b one of BASELINE_BOTTOM, BASELINE_MIDDLE or BASELINE_TOP.
+     * Sets the location of the baseline of this OMText. Flushes the
+     * cache fields <code>fm</code>,<code>widths</code>, and
+     * <code>polyBounds</code>.
+     * 
+     * @param b one of BASELINE_BOTTOM, BASELINE_MIDDLE or
+     *        BASELINE_TOP.
      * @see #polyBounds
      */
     public void setBaseline(int b) {
         baseline = b;
 
         // now flush cached information
-        polyBounds = null;      // flush existing bounds.
+        polyBounds = null; // flush existing bounds.
     }
 
     /**
      * Gets the show bounds field.
-     *
+     * 
      * @deprecated use isMatted() instead.
      * @return true if bounds are shown, false if hidden.
      */
@@ -605,9 +607,9 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Sets the show bounds field.  When <code>true</code>, the
+     * Sets the show bounds field. When <code>true</code>, the
      * bounding box of this text is displayed.
-     *
+     * 
      * @deprecated use setMatted(boolean) instead.
      * @param show true to show, false to hide.
      * @see #setFillColor
@@ -618,19 +620,21 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Set flag to specify that the bounds, if displayed, should be
-     * rectangular.  Only really affects mult-line text.
+     * rectangular. Only really affects mult-line text.
+     * 
      * @param value if true, bounds for multi-line text will be
-     * retangular instead of closely following text.
+     *        retangular instead of closely following text.
      */
     public void setUseMaxWidthForBounds(boolean value) {
-        useMaxWidthForBounds = value;   
+        useMaxWidthForBounds = value;
     }
 
     /**
      * Get flag to specify that the bounds, if displayed, should be
-     * rectangular.  Only really affects mult-line text.
-     * @return true if bounds for multi-line text will be
-     * retangular instead of closely following text.
+     * rectangular. Only really affects mult-line text.
+     * 
+     * @return true if bounds for multi-line text will be retangular
+     *         instead of closely following text.
      */
     public boolean getUseMaxWidthForBounds() {
         return useMaxWidthForBounds;
@@ -638,6 +642,7 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Get the text bounds.
+     * 
      * @return Polygon or null if bounds not calculated yet
      */
     public Polygon getPolyBounds() {
@@ -647,10 +652,11 @@ public class OMText extends OMGraphic implements Serializable {
         return polyBounds;
     }
 
-    /** 
+    /**
      * Set the fmHeight to use for the footprint.
+     * 
      * @param fmh the setting for fmHeight, out of the parameters
-     * stated above.  
+     *        stated above.
      */
     public void setFMHeight(int fmh) {
         fmHeight = fmh;
@@ -658,8 +664,9 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Get the fmHeight used for the footprint.
-     * @return the setting for fmHeight, out of the parameters
-     * stated above.  
+     * 
+     * @return the setting for fmHeight, out of the parameters stated
+     *         above.
      */
     public int getFMHeight() {
         return fmHeight;
@@ -667,9 +674,9 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Set the angle by which the text is to rotated.
-     *
+     * 
      * @param theta the number of radians the text is to be rotated.
-     * Measured clockwise from horizontal.  
+     *        Measured clockwise from horizontal.
      * @deprecated use setRotationAngle instead.
      */
     public void setTheta(double theta) {
@@ -679,20 +686,20 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Get the current rotation of the text.
-     *
+     * 
      * @return the text rotation.
      * @deprecated use getRotationAngle instead.
      */
     public double getTheta() {
         return getRotationAngle();
     }
-    
+
     /**
      * Set the angle by which the text is to rotated.
-     *
-     * @param angle the number of radians the text is to be
-     * rotated.  Measured clockwise from horizontal.  Positive numbers
-     * move the positive x axis toward the positive y axis.
+     * 
+     * @param angle the number of radians the text is to be rotated.
+     *        Measured clockwise from horizontal. Positive numbers
+     *        move the positive x axis toward the positive y axis.
      */
     public void setRotationAngle(double angle) {
         this.rotationAngle = angle;
@@ -701,7 +708,7 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Get the current rotation of the text.
-     *
+     * 
      * @return the text rotation.
      */
     public double getRotationAngle() {
@@ -709,19 +716,20 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Prepares the text for rendering.  Determines the location
-     * based on the renderType and possibly the projection.
-     * Sets the field <code>pt</code>.
-     * Flushes the cache field <code>polyBounds</code>.
-     *
+     * Prepares the text for rendering. Determines the location based
+     * on the renderType and possibly the projection. Sets the field
+     * <code>pt</code>. Flushes the cache field
+     * <code>polyBounds</code>.
+     * 
      * @param proj the projection of the window.
      * @return true if the placement of the string on the window is
-     * valid.
-     *
+     *         valid.
+     * 
      * @see #pt
      */
     public synchronized boolean generate(Projection proj) {
-        // HACK synchronized because of various race conditions that need to
+        // HACK synchronized because of various race conditions that
+        // need to
         // be sorted out.
 
         if (proj == null) {
@@ -732,10 +740,14 @@ public class OMText extends OMGraphic implements Serializable {
         // flush the cached information about the bounding box.
         polyBounds = null;
 
-        // Although it most definately has bounds, OMText is considered a
-        // point object by the projection code.  We need to check to make
-        // sure the point is plot-able: if not then don't display it.  This
-        // might occur, for instance, if we're using the Orthographic and the
+        // Although it most definately has bounds, OMText is
+        // considered a
+        // point object by the projection code. We need to check to
+        // make
+        // sure the point is plot-able: if not then don't display it.
+        // This
+        // might occur, for instance, if we're using the Orthographic
+        // and the
         // point is on the other side of the world.
         switch (renderType) {
         case RENDERTYPE_XY:
@@ -744,8 +756,7 @@ public class OMText extends OMGraphic implements Serializable {
         case RENDERTYPE_OFFSET:
             if (!proj.isPlotable(lat, lon)) {
                 if (Debug.debugging("omGraphics"))
-                    System.err.println(
-                        "OMText.generate(): offset point is not plotable!");
+                    System.err.println("OMText.generate(): offset point is not plotable!");
                 setNeedToRegenerate(true);//so we don't render it!
                 return false;
             }
@@ -755,25 +766,23 @@ public class OMText extends OMGraphic implements Serializable {
         case RENDERTYPE_LATLON:
             if (!proj.isPlotable(lat, lon)) {
                 if (Debug.debugging("omGraphics"))
-                    System.err.println(
-                        "OMText.generate(): llpoint is not plotable!");
+                    System.err.println("OMText.generate(): llpoint is not plotable!");
                 setNeedToRegenerate(true);//so we don't render it!
                 return false;
             }
             pt = proj.forward(lat, lon);
             break;
         case RENDERTYPE_UNKNOWN:
-            System.err.println(
-                "OMText.render.generate(): invalid RenderType");
+            System.err.println("OMText.render.generate(): invalid RenderType");
             return false;
         }
 
         setFont(proj.getScale());
 
         // Compliance with Shape additions to OMGeometry/OMGraphic.
-        // If font metrics are set, we can take care of this now.  If
+        // If font metrics are set, we can take care of this now. If
         // this is the first time this OMText is drawn, then we have
-        // to put this off until render.  There will be a
+        // to put this off until render. There will be a
         // one-projection lag for font metrics to catch up with any
         // change.
         computeBounds();
@@ -785,45 +794,48 @@ public class OMText extends OMGraphic implements Serializable {
     protected Projection hackProj = null;
 
     /**
-     * Build a font out of an X Font description string.  This function
+     * Build a font out of an X Font description string. This function
      * take this common string format, and pulls the font type, style,
      * and size out of it.
-     *
+     * 
      * @param fontString the X font description.
      */
     public static Font rebuildFont(String fontString) {
-        if (fontString.equals("") )
+        if (fontString.equals(""))
             return DEFAULT_FONT;
         int fontStyle = Font.PLAIN;
         int fontSize = 12;
         // Taking the X Font-type string and converting the
         // essential parts to a java Font object.
 
-        int start = fontString.indexOf("-", 1)+1;  //skipping first field
-        int end = fontString.indexOf("-", start+1);
+        int start = fontString.indexOf("-", 1) + 1; //skipping first
+                                                    // field
+        int end = fontString.indexOf("-", start + 1);
         String name = fontString.substring(start, end);
         //System.out.println("rebuildFont: Name is " + name);
-        if (fontString.indexOf("-bold-") >= 0) fontStyle = Font.BOLD;
-        if (fontString.indexOf("-i-") >= 0) fontStyle += Font.ITALIC;
+        if (fontString.indexOf("-bold-") >= 0)
+            fontStyle = Font.BOLD;
+        if (fontString.indexOf("-i-") >= 0)
+            fontStyle += Font.ITALIC;
         //System.out.println("rebuildFont: Style is " + fontStyle);
         start = fontString.indexOf("--") + 2;
-        end = fontString.indexOf("-", start+1);
+        end = fontString.indexOf("-", start + 1);
         String tmpFontSize = fontString.substring(start, end);
-        if (tmpFontSize.indexOf("*") < 0) 
+        if (tmpFontSize.indexOf("*") < 0)
             fontSize = Integer.parseInt(tmpFontSize);
-        //System.out.println("rebuildFont: Size is " + fontSize);       
+        //System.out.println("rebuildFont: Size is " + fontSize);
         return new Font(name, fontStyle, fontSize);
     }
 
-    /** 
+    /**
      * In some applications, fonts are represented by a string.
      * Traditionally, with MATT, the font was a X representation of a
-     * font.  That's what is being done here - we're taking the Font
-     * structure, and then going to XFont type text structure.  Dashes
-     * need to be included, line feeds are not.  They are here only
-     * for readability.  The rebuildFont method brings this back to a
-     * java Font.  
-     *
+     * font. That's what is being done here - we're taking the Font
+     * structure, and then going to XFont type text structure. Dashes
+     * need to be included, line feeds are not. They are here only for
+     * readability. The rebuildFont method brings this back to a java
+     * Font.
+     * 
      * @param font the Java font to convert to an XFont string.
      * @return the font as a string.
      */
@@ -831,17 +843,21 @@ public class OMText extends OMGraphic implements Serializable {
         //-foundry(who made it)
         StringBuffer ret = new StringBuffer("-*");
         //-font family(name)
-        ret.append("-"+font.getName());
+        ret.append("-" + font.getName());
         //-weight(bold, medium)
-        if(font.isBold()) ret.append("-bold");
-        else ret.append("-normal");
+        if (font.isBold())
+            ret.append("-bold");
+        else
+            ret.append("-normal");
         //-slant(o,i)
-        if(font.isItalic()) ret.append("-i");
-        else ret.append("-o");
+        if (font.isItalic())
+            ret.append("-i");
+        else
+            ret.append("-o");
         //-set width(normal, condensed, narrow, double width)
         ret.append("-normal");
         //--pixels(height)
-        ret.append("--"+ font.getSize());
+        ret.append("--" + font.getSize());
         //-points(in tenths of a point, related to screen)
         ret.append("-*");
         //-horizontal resolution in dpi
@@ -860,7 +876,7 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Counts occurences of a character in a string.
-     *
+     * 
      * @param str the String
      * @param ch the character to count
      * @return the number of occurences
@@ -871,23 +887,24 @@ public class OMText extends OMGraphic implements Serializable {
 
         while ((fromIndex = str.indexOf(ch, fromIndex)) != -1) {
             count++;
-            fromIndex++;        // increment past current index
-                                // so we don't pick up the same
-                                // instance again.
+            fromIndex++; // increment past current index
+            // so we don't pick up the same
+            // instance again.
         }
         return count;
     }
 
     /**
-     * Breaks the text down into separate lines.
-     * Sets the cache field <code>parsedData</code>.
-     *
+     * Breaks the text down into separate lines. Sets the cache field
+     * <code>parsedData</code>.
+     * 
      * @see #parsedData
      */
     protected void parseData() {
         if (parsedData == null) {
 
-            if (data == null) data = "";
+            if (data == null)
+                data = "";
 
             int nLines = countChar(data, '\n') + 1;
             if (nLines <= 1) {
@@ -899,60 +916,61 @@ public class OMText extends OMGraphic implements Serializable {
                 int toIndex = 0;
                 parsedData = new String[nLines];
 
-                while ( (toIndex = data.indexOf('\n', fromIndex)) != -1) {
+                while ((toIndex = data.indexOf('\n', fromIndex)) != -1) {
                     parsedData[i] = data.substring(fromIndex, toIndex);
-                    fromIndex = toIndex+1;
+                    fromIndex = toIndex + 1;
                     i++;
                 }
                 parsedData[nLines - 1] = data.substring(fromIndex,
-                                                        data.length());
+                        data.length());
             }
         }
     }
 
     /**
-     * Computes the widths of each line of the text.
-     * Sets the cache field <code>widths</code>.
-     *
+     * Computes the widths of each line of the text. Sets the cache
+     * field <code>widths</code>.
+     * 
      * @param fm the metrics to use for computation.
-     *
+     * 
      * @see #widths
      */
     protected void computeStringWidths(FontMetrics fm) {
         if (widths == null && fm != null) {
             int nLines = parsedData.length;
             widths = new int[nLines];
-            for (int i=0; i<nLines; i++) {
+            for (int i = 0; i < nLines; i++) {
                 widths[i] = fm.stringWidth(parsedData[i]);
             }
         }
     }
 
-    /** 
-     * This function can be called to initialize the internals such
-     * as height and width of OMText.  Lets you use the graphics, and
-     * thus the FontMetrics object, to figure out the dimensions of
-     * the text in order to manipulate the placement of the text on
-     * the map.  These internals were otherwise initialized only when
-     * render function was called.  
-     * @param g the java.awt.Graphics to put the string on.  
+    /**
+     * This function can be called to initialize the internals such as
+     * height and width of OMText. Lets you use the graphics, and thus
+     * the FontMetrics object, to figure out the dimensions of the
+     * text in order to manipulate the placement of the text on the
+     * map. These internals were otherwise initialized only when
+     * render function was called.
+     * 
+     * @param g the java.awt.Graphics to put the string on.
      */
     public synchronized void prepareForRender(Graphics g) {
         parseData();
         g.setFont(getFont());
-        
+
         if (fm == null) {
             fm = g.getFontMetrics();
         }
-        computeBounds();                
+        computeBounds();
     }
 
     /**
-     * Renders the text onto the given graphics.
-     * Sets the cache field <code>fm</code>.
-     *
+     * Renders the text onto the given graphics. Sets the cache field
+     * <code>fm</code>.
+     * 
      * @param g the java.awt.Graphics to put the string on.
-     *
+     * 
      * @see #fm
      */
     public synchronized void render(Graphics g) {
@@ -961,8 +979,9 @@ public class OMText extends OMGraphic implements Serializable {
         // others...
         g = g.create();
 
-        if (getNeedToRegenerate() || pt == null || !isVisible()) return;
-        
+        if (getNeedToRegenerate() || pt == null || !isVisible())
+            return;
+
         g.setFont(getFont());
         setGraphicsForEdge(g);
 
@@ -973,13 +992,13 @@ public class OMText extends OMGraphic implements Serializable {
         computeBounds();
 
         // If there is a rotation angle, the shape will be calculated
-        // for that rotation.  Don't need to rotate the Graphics for
+        // for that rotation. Don't need to rotate the Graphics for
         // the shape.
 
         if (shouldRenderFill()) {
             setGraphicsForFill(g);
             fill(g);
-            
+
             if (textureMask != null && textureMask != fillPaint) {
                 setGraphicsColor(g, textureMask);
                 fill(g);
@@ -1001,8 +1020,7 @@ public class OMText extends OMGraphic implements Serializable {
         double rh = 0.0;
         double woffset = 0.0;
 
-        if (g instanceof Graphics2D && 
-            rotationAngle != DEFAULT_ROTATIONANGLE) {
+        if (g instanceof Graphics2D && rotationAngle != DEFAULT_ROTATIONANGLE) {
 
             Rectangle rect = polyBounds.getBounds();
 
@@ -1011,8 +1029,8 @@ public class OMText extends OMGraphic implements Serializable {
             rw = rect.getWidth();
             rh = rect.getHeight();
             woffset = 0.0;
-            
-            switch  (justify) {
+
+            switch (justify) {
             case JUSTIFY_LEFT:
                 // woffset = 0.0;
                 break;
@@ -1023,7 +1041,7 @@ public class OMText extends OMGraphic implements Serializable {
                 woffset = rw;
             }
             //rotate about our text anchor point
-            ((Graphics2D)g).rotate(rotationAngle, rx+woffset, pt.y);
+            ((Graphics2D) g).rotate(rotationAngle, rx + woffset, pt.y);
         }
 
         setGraphicsForEdge(g);
@@ -1039,10 +1057,11 @@ public class OMText extends OMGraphic implements Serializable {
             height = fm.getAscent();
         }
 
-        int baselineLocation = pt.y; // baseline == BASELINE_BOTTOM, normal.
+        int baselineLocation = pt.y; // baseline == BASELINE_BOTTOM,
+                                     // normal.
 
         if (baseline == BASELINE_MIDDLE) {
-            baselineLocation += (fm.getAscent() - fm.getDescent())/2;
+            baselineLocation += (fm.getAscent() - fm.getDescent()) / 2;
         } else if (baseline == BASELINE_TOP) {
             baselineLocation += (fm.getAscent() - fm.getDescent());
         }
@@ -1050,33 +1069,33 @@ public class OMText extends OMGraphic implements Serializable {
         switch (justify) {
         case JUSTIFY_LEFT:
             // Easy case, just draw them.
-            for (int i=0; i<parsedData.length; i++) {
-                g.drawString(parsedData[i], pt.x, baselineLocation + (height*i));
+            for (int i = 0; i < parsedData.length; i++) {
+                g.drawString(parsedData[i], pt.x, baselineLocation
+                        + (height * i));
             }
             break;
         case JUSTIFY_CENTER:
             computeStringWidths(fm);
-            for (int i=0; i<parsedData.length; i++) {
+            for (int i = 0; i < parsedData.length; i++) {
                 g.drawString(parsedData[i],
-                             pt.x - (widths[i]/2),
-                             baselineLocation + (height*i));
+                        pt.x - (widths[i] / 2),
+                        baselineLocation + (height * i));
             }
             break;
         case JUSTIFY_RIGHT:
             computeStringWidths(fm);
-            for (int i=0; i<parsedData.length; i++) {
-                g.drawString(parsedData[i],
-                             pt.x - widths[i],
-                             baselineLocation + (height*i));
+            for (int i = 0; i < parsedData.length; i++) {
+                g.drawString(parsedData[i], pt.x - widths[i], baselineLocation
+                        + (height * i));
             }
             break;
         }
     }
 
     /**
-     * Computes the bounding polygon.
-     * Sets the cache field <code>polyBounds</code>.
-     *
+     * Computes the bounding polygon. Sets the cache field
+     * <code>polyBounds</code>.
+     * 
      * @see #polyBounds
      */
     protected void computeBounds() {
@@ -1090,7 +1109,7 @@ public class OMText extends OMGraphic implements Serializable {
 
             int xoffset = 0;
             int i;
-            
+
             int height;
             int descent;
             if (fmHeight == HEIGHT) {
@@ -1112,10 +1131,11 @@ public class OMText extends OMGraphic implements Serializable {
 
             computeStringWidths(fm);
 
-            int baselineOffset = 0; // baseline == BASELINE_BOTTOM, normal.
+            int baselineOffset = 0; // baseline == BASELINE_BOTTOM,
+                                    // normal.
 
             if (baseline == BASELINE_MIDDLE) {
-                baselineOffset = descent/2;
+                baselineOffset = descent / 2;
             } else if (baseline == BASELINE_TOP) {
                 baselineOffset = descent;
             }
@@ -1124,20 +1144,22 @@ public class OMText extends OMGraphic implements Serializable {
             // But that depends on the actual values of the BASELINE
             // values, which doesn't seem safe.
 
-            /* pt.y is bottom of first line, currenty is initialized
-               to top of first line, minus any offset introduced by
-               baseline adjustments. */
+            /*
+             * pt.y is bottom of first line, currenty is initialized
+             * to top of first line, minus any offset introduced by
+             * baseline adjustments.
+             */
             int currenty = pt.y + descent - height - baselineOffset;
 
             // First, all the line endpoints.
-            for (i=0; i<nLines; i++) {
+            for (i = 0; i < nLines; i++) {
 
                 switch (justify) {
                 case JUSTIFY_LEFT:
                     xoffset = widths[i];
                     break;
                 case JUSTIFY_CENTER:
-                    xoffset = widths[i]/2;
+                    xoffset = widths[i] / 2;
                     break;
                 case JUSTIFY_RIGHT:
                     xoffset = 0;
@@ -1152,13 +1174,13 @@ public class OMText extends OMGraphic implements Serializable {
             }
 
             // Next, all line startpoints (the left side)
-            for (i=nLines-1; i >= 0; i--) {
+            for (i = nLines - 1; i >= 0; i--) {
                 switch (justify) {
                 case JUSTIFY_LEFT:
                     xoffset = 0;
                     break;
                 case JUSTIFY_CENTER:
-                    xoffset = -widths[i]/2;
+                    xoffset = -widths[i] / 2;
                     break;
                 case JUSTIFY_RIGHT:
                     xoffset = -widths[i];
@@ -1176,9 +1198,8 @@ public class OMText extends OMGraphic implements Serializable {
                     shape = new GeneralPath(polyBounds);
                 }
 
-
                 // Make sure the shape takes into account the current
-                // rotation angle.  Code taken from generate() method,
+                // rotation angle. Code taken from generate() method,
                 // so it should match up with the drawn text.
                 if (rotationAngle != DEFAULT_ROTATIONANGLE) {
 
@@ -1187,8 +1208,8 @@ public class OMText extends OMGraphic implements Serializable {
                     double rx = rect.getX();
                     double rw = rect.getWidth();
                     double woffset = 0.0;
-            
-                    switch  (justify) {
+
+                    switch (justify) {
                     case JUSTIFY_LEFT:
                         // woffset = 0.0;
                         break;
@@ -1200,7 +1221,7 @@ public class OMText extends OMGraphic implements Serializable {
                     }
 
                     AffineTransform at = new AffineTransform();
-                    at.rotate(rotationAngle, rx+woffset, pt.y);
+                    at.rotate(rotationAngle, rx + woffset, pt.y);
                     PathIterator pi = shape.getPathIterator(at);
                     GeneralPath gp = new GeneralPath();
                     gp.append(pi, false);
@@ -1210,23 +1231,29 @@ public class OMText extends OMGraphic implements Serializable {
 
         } else {
             if (Debug.debugging("omtext")) {
-                Debug.output("OMText.computeBounds() didn't compute because polybounds = " + polyBounds + " or  pt = " + pt + " or fm = " + fm + ", (only polybounds should be null)");
+                Debug.output("OMText.computeBounds() didn't compute because polybounds = "
+                        + polyBounds
+                        + " or  pt = "
+                        + pt
+                        + " or fm = "
+                        + fm
+                        + ", (only polybounds should be null)");
             }
         }
     }
 
     /**
-     * Return the shortest distance from the OMText to an
-     * XY-point. <p>
-     *
+     * Return the shortest distance from the OMText to an XY-point.
+     * <p>
+     * 
      * This method uses the OMText's internal Shape object, created
      * from the boundary of the text, as its boundary.
-     *
+     * 
      * @param x X coordinate of the point.
      * @param y Y coordinate of the point.
      * @return float distance, in pixels, from graphic to the point.
-     * Returns Float.POSITIVE_INFINITY if the graphic isn't ready
-     * (ungenerated).
+     *         Returns Float.POSITIVE_INFINITY if the graphic isn't
+     *         ready (ungenerated).
      */
     public float distance(int x, int y) {
         return _distance(x, y);

@@ -1,19 +1,32 @@
+//**********************************************************************
+//
+//<copyright>
+//
+//BBN Technologies
+//10 Moulton Street
+//Cambridge, MA 02138
+//(617) 873-8000
+//
+//Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
+//</copyright>
+//**********************************************************************
+//
+//$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/meteo/OMColdSurfaceFront.java,v $
+//$RCSfile: OMColdSurfaceFront.java,v $
+//$Revision: 1.3 $
+//$Date: 2004/10/14 18:06:19 $
+//$Author: dietrick $
+//
+//**********************************************************************
+
 package com.bbn.openmap.omGraphics.meteo;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.Point2D;
-
-import com.bbn.openmap.omGraphics.awt.AbstractShapeDecoration;
 import com.bbn.openmap.omGraphics.awt.LineShapeDecoration;
-import com.bbn.openmap.omGraphics.awt.TextShapeDecoration;
 import com.bbn.openmap.omGraphics.OMDecoratedSpline;
 
 /**
- * OMColdSurfaceFront.
- * Just need to init the decorations.
+ * OMColdSurfaceFront. Just need to init the decorations.
  * 
  * @author Eric LEPICIER
  * @version 28 juil. 2002
@@ -33,6 +46,7 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
 
     /**
      * Constructor.
+     * 
      * @param llPoints
      * @param units
      * @param lType
@@ -43,21 +57,19 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
 
     /**
      * Constructor.
+     * 
      * @param llPoints
      * @param units
      * @param lType
      * @param nsegs
      */
-    public OMColdSurfaceFront(
-        float[] llPoints,
-        int units,
-        int lType,
-        int nsegs) {
+    public OMColdSurfaceFront(float[] llPoints, int units, int lType, int nsegs) {
         super(llPoints, units, lType, nsegs);
     }
 
     /**
      * Constructor.
+     * 
      * @param xypoints
      */
     public OMColdSurfaceFront(int[] xypoints) {
@@ -66,6 +78,7 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
 
     /**
      * Constructor.
+     * 
      * @param xPoints
      * @param yPoints
      */
@@ -75,33 +88,28 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
 
     /**
      * Constructor.
+     * 
      * @param latPoint
      * @param lonPoint
      * @param xypoints
      * @param cMode
      */
-    public OMColdSurfaceFront(
-        float latPoint,
-        float lonPoint,
-        int[] xypoints,
-        int cMode) {
+    public OMColdSurfaceFront(float latPoint, float lonPoint, int[] xypoints,
+            int cMode) {
         super(latPoint, lonPoint, xypoints, cMode);
     }
 
     /**
      * Constructor.
+     * 
      * @param latPoint
      * @param lonPoint
      * @param xPoints
      * @param yPoints
      * @param cMode
      */
-    public OMColdSurfaceFront(
-        float latPoint,
-        float lonPoint,
-        int[] xPoints,
-        int[] yPoints,
-        int cMode) {
+    public OMColdSurfaceFront(float latPoint, float lonPoint, int[] xPoints,
+            int[] yPoints, int cMode) {
         super(latPoint, lonPoint, xPoints, yPoints, cMode);
     }
 
@@ -109,13 +117,8 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
      * @see com.bbn.openmap.omGraphics.OMDecoratedSpline#initDecorations()
      */
     protected void initDecorations() {
-        getDecorator().addDecoration(
-            new LineShapeDecoration(SPACING, ColdFrontShapeDecoration.COLOR));
-        getDecorator().addDecoration(
-            new ColdFrontShapeDecoration(
-                LENGTH,
-                WIDTH,
-                ColdFrontShapeDecoration.LEFT));
+        getDecorator().addDecoration(new LineShapeDecoration(SPACING, ColdFrontShapeDecoration.COLOR));
+        getDecorator().addDecoration(new ColdFrontShapeDecoration(LENGTH, WIDTH, ColdFrontShapeDecoration.LEFT));
     }
 
 }
