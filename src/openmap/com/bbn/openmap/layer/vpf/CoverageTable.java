@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageTable.java,v $
 // $RCSfile: CoverageTable.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/09/25 02:48:22 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -346,12 +346,12 @@ public class CoverageTable {
 
     public String getDescription(String t, String a, int v) {
 	CoverageIntVdt civ = new CoverageIntVdt(t,a,v);
-	return((String)(intvdtrec.get(civ)));
+	return (String)intvdtrec.get(civ);
     }
   
     public String getDescription(String t, String a, String v) {
 	CoverageCharVdt civ = new CoverageCharVdt(t,a,v);
-	return((String)(charvdtrec.get(civ)));
+	return (String)charvdtrec.get(civ);
     }
 
     private String getDescription(List id, FeatureClassInfo fti[],
@@ -773,7 +773,7 @@ public class CoverageTable {
 		    int descr = fcadesc.whatColumn("descr");
 		    ArrayList al = new ArrayList(fcadesc.getColumnCount());
 		    while (fcadesc.parseRow(al)) {
-			String fname = ((String)al.get(fclass)).intern();
+			String fname = ((String)al.get(fclass)).toLowerCase().intern();
 			char ftype = ((String)al.get(type)).charAt(0);
 			String fdesc = (String)al.get(descr);
 			FeatureClassRec fcr = new FeatureClassRec(fname, ftype,
@@ -1129,7 +1129,7 @@ class CoverageCharVdt {
     public CoverageCharVdt(String t, String a, String v) {
 	table = t.toLowerCase().intern();
 	attribute = a.toLowerCase().intern();
-	value = v.intern();;
+	value = v.intern();
     }
 
     /**
