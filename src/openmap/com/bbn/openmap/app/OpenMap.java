@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/09/05 15:42:47 $
+// $Revision: 1.8 $
+// $Date: 2003/09/22 22:34:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,9 @@
 package com.bbn.openmap.app;
 
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -73,8 +76,26 @@ public class OpenMap {
      */
     public OpenMap(PropertyHandler propertyHandler) {
 	mapPanel = new BasicMapPanel(propertyHandler);
-	mapPanel.getMapHandler().add(new OpenMapFrame());
+
+	OpenMapFrame omf = new OpenMapFrame();
+	setWindowListenerOnFrame(omf);
+	mapPanel.getMapHandler().add(omf);
 	mapPanel.getMapBean().showLayerPalettes();
+    }
+
+    /**
+     * A method called to set the WindowListener behavior on an
+     * OpenMapFrame used for the OpenMap application.  By default,
+     * this method adds a WindowAdapter that calls System.exit(0),
+     * killing java.  You can extend this to add a WindowListener to
+     * the OpenMapFrame that does nothing or something else.
+     */
+    public void setWindowListenerOnFrame(OpenMapFrame omf) {
+	omf.addWindowListener(new WindowAdapter() {
+		public void windowClosing(WindowEvent e) {
+		    System.exit(0);
+		}
+	     });
     }
 
     /**
