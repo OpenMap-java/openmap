@@ -1,3 +1,32 @@
+2003-03-25  Don Dietrick  <dietrick@bbn.com>
+
+	* Added the com.bbn.openmap.util.DataBounds and
+	com.bbn.openmap.util.DataBoundsProvider interface, and modified
+	the GoToMenu to use the
+	com.bbn.openmap.gui.menu.DataBoundsViewMenuItem to enable the
+	capability to focus the map on a particular data set.  For
+	instance, if a ShapeLayer is added to the MapHandler, it will be
+	picked up by the DataBoundsViewMenuItem and a menu item for that
+	data set will be added to the submenu, allowing the map to be
+	recentered and zoomed directly over the area covered by the data.
+
+	* Modified the LayersPanel and LayerPane classes, and added the
+	LayerControlButtonPanel.  The LayerControlButtonPanel is a
+	configurable OMComponentPanel that contains the buttons to change
+	the layer order.  These buttons used to be integrated into the
+	LayersPanel, and have been moved into their own panel that is
+	configurable via properties (horizontal, vertical, top, bottom,
+	right, left, and include/omit add/remove layer buttons). This
+	panel can be added to the LayersPanel in several different ways,
+	all configurations available via the properties, but if you don't
+	specifiy anything the LayersPanel will appear as before.  The
+	LayerPane now notifies the LayersPanel when a layer entry has been
+	selected for movement, and that notification gets passed to the
+	LayersPanel and on to the LayerControlButtonPanel, and anything
+	else that is listening for PropertyChangeEvents.  Notifications of
+	layer order changes also pass from the LayerControlButtonPanel to
+	the LayersPanel via PropertyChangeEvents.
+
 2003-03-13  Don Dietrick  <dietrick@bbn.com>
 
 	* The directory structure of the OpenMap package has been changed
