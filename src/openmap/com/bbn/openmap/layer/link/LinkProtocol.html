@@ -1,0 +1,4346 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>Link Protocol for Client-Server Communication</title>
+  </head>
+
+  <body>
+    <h1>Link Protocol for Client-Server Communication, v0.3</h1> 
+    <h3>Basic Description</h3>
+
+      This document will describe the Link Protocol for Link
+      client-server communication.  Link client-server relationships
+      involve the exchange and modification of geographic and graphic
+      objects, called graphics, and information about those graphics.
+    <P>
+      The protocol is a set of requests and descriptions. A request or
+      description makes up a section of the communication between a
+      client and server.  Each communication between the client and
+      server can consist of any combination of these sections.  Each
+      section has a unique header, and one of two tail selections.
+      The tail is important because it indicates whether another
+      section follows the current one in the communication.
+  <P>
+      <b>General Definitions</b>
+    <UL>
+      <LI> Byte order follows the Network Byte Order, or big endian.
+
+      <LI> Decimal degree longitude values are valid between -180.0
+      and 180.0.  Negative values represent locations in the Western
+      hemisphere, and positive values represent locations in the
+      Eastern hemisphere.  Passing a value that is outside these
+      limits is allowed, but may result in unexpected behavior.
+	
+      <LI> Decimal degree latitude values are valid between -90.0 and
+      +90.0.  Negative values represent locations in the Southern
+      hemisphere, and positive values represent locations in the
+      Northern hemisphere. Passing a value that is outside these
+      limits is allowed, but may result in unexpected behavior.
+	
+      <LI>Maximum/Minimum scale and maximum pixel size of the map are
+	determined by the client, and unknown to the server.
+    </UL>
+
+    <h3>Versions</h3>
+    <UL>
+      <LI> v0.1 was the development version.
+      <LI> v0.2 was the released version.
+      <LI> v0.3 added the LinkPoint.  The language in the Link
+      Protocol document has also been modified to emphasize that the
+      protocol doesn't dictate which sections should be sent by the
+      client, and which should be sent by the server.  Any section can
+      be sent at any time.  The receiver can then decide if it can
+      act on it, and disregard a section it is not prepared to
+      handle.  With any transmission, some response is expected.
+    </UL>
+
+  <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="50" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Number Notations and Definitions</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="50%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Number Type</FONT></B>
+	      </TD>
+	      <TD WIDTH=" 40%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Definition</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="40%" VALIGN="TOP">
+		8 bit ASCII character</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Unicode char</TD>
+	      <TD WIDTH="40%" VALIGN="TOP">
+		16 bit Unicode character.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="40%" VALIGN="TOP">
+		32 bit signed.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="40%" VALIGN="TOP">
+		32 bit signed.  Follows the <a
+		href="http://standards.ieee.org">IEEE</a> 754 standard
+		for floating point numbers.</TD>
+	    </TR> </TABLE></TR></TABLE>
+
+    <h3>Definitions</h3>
+
+    These are the byte definitions for the objects being passed over
+    the client-server connection.
+
+    <UL> <B>Header Definitions</B>
+      <LI><a href="#headers">Query and Description Headers</a>
+      <LI><a href="#objectheaders">Graphic Object Headers</a>
+      <LI><a href="#actionheaders">Action Object Headers</a>
+      <LI><a href="#tails">Tail definitions</a>
+    </UL>
+
+    <UL> <B>Query Definitions</B>
+      <LI><a href="#GraphicsLinkQuery">Graphics Query</a>
+      <LI><a href="#GestureLinkQuery">Gesture Queries</a>
+	<UL>
+	  <LI><a href="#MouseGestureLinkQuery">Mouse Gesture Queries</a>
+	  <LI><a href="#KeyGestureLinkQuery">Key Gesture Queries</a>
+	  <LI><a href="#NotificationGestureLinkQuery">Client
+	      Notification of Server Interest</a>
+	</UL>
+    </UL>
+    
+    <UL> <B>Description Definitions</B>
+      <LI><a href="#GraphicsLinkDescription">Graphics Description</a>
+      <LI><a href="#GestureLinkDescription">Gesture Description</a>
+    </UL>
+
+    <UL> <B>Graphics Definitions</B>
+      <LI><a href="#Bitmap">Bitmap</a>
+      <LI><a href="#Circle">Circle</a>
+      <LI><a href="#Grid">Grid</a>
+      <LI><a href="#Line">Line</a>
+      <LI><a href="#Point">Point</a>
+      <LI><a href="#Poly">Poly</a>
+      <LI><a href="#Raster">Raster</a>
+      <LI><a href="#Rectangle">Rectangle</a>
+      <LI><a href="#Text">Text</a>
+    </UL>
+
+   <UL> <B>Action Definitions</B>
+      <LI><a href="#graphicAction">Graphic Action</a>
+    </UL>
+
+
+    <HR>
+    <HR>
+    <a name="headers"></a>
+    <h3>Headers</h3>
+
+    Headers are important because they serve several important
+    functions.  They describe the section the precede, enabling the
+    proper parsing to begin on the object.  They also serve as
+    reference markers on the communication socket in case the link
+    communication loses synchronization.  The &lt; and &gt; symbols
+    combine to mark the location of a header.  The client and server
+    are expected to look for these markers byte-by-byte, identify the
+    beginning of a section, and then parse the section accordingly.
+
+    <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="50%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Header Definitions</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="50%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="30%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Query Sections</FONT></B>
+	      </TD>
+	      <TD WIDTH=" 20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Header</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Map Request</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:MAP_REQUEST&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Action Request</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:ACTION_REQUEST&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>GUI Request (Undefined)</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:GUI_REQUEST&gt;</TD></TR>
+
+	    <TR>
+	      <TD WIDTH="30%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Description Sections</FONT></B>
+	      </TD>
+	      <TD WIDTH=" 20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Header</FONT></B>
+	      </TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Graphics Description</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:GRAPHICS&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Gesture Description</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:ACTIONS&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>GUI Description (Undefined)</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:GUI&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>No Action</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:HUH?&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Close Link</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:CLOSE_LINK&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">
+		  <a name="objectheaders">Graphic Objects</a></FONT></B>
+	      </TD>
+	      <TD WIDTH=" 20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Header</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Bitmap</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:BITMAP&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Circle</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:CIRCLE&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Grid</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:GRID&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Line</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:LINE&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Point</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:POINT&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Poly</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:POLY&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Raster</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Rectangle</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:RECTANGLE&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Text</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:TEXT&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">
+		  <a name="actionheaders">Action Objects</a></FONT></B>
+	      </TD>
+	      <TD WIDTH=" 20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Header</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Update Graphics</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:UPDATE_GRAPHICS&gt;</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Update GUI (Undefined)</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:UPDATE_GUI&gt;</TD>	
+	      </TR></TABLE></TR></TABLE>
+<a name="tails"></a>
+    <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="60%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Section Tail Definitions</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="60%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="30%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Sections</FONT></B>
+	      </TD>
+	      <TD WIDTH=" 30%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Tail</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>End Section, more sections
+		following.(END_SECTION)</TD>
+	      <TD WIDTH="30%" VALIGN="TOP">
+		Line Feed ASCII Character - '\n'</TD></TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>End Query/Description, nothing
+		following.(END_TOTAL)</TD>
+	      <TD WIDTH="30%" VALIGN="TOP">
+		Carrige Return ASCII Character - '\r'</TD></TR>
+	    <TR></TABLE></TR></TABLE>
+<P>
+<HR>
+    <h3>Query Definitions</h3>
+    
+    <h4><a name="LinkMapRequest"></a>Map Request</h4>
+    
+    Graphics queries are used by the client to ask the server for
+    graphics to draw on a map.  The query provides several different
+    parameters that let the server get an idea of what the bounds of
+    the map are.
+    <P>
+      
+      <a name="LinkMapRequest"></a>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Map Request</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	      </TD>
+	      <TD WIDTH="20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	      </TD>
+	      <TD WIDTH="50%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">20</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:MAP_REQUEST&gt;</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Version number of the map request format.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		The center latitude of the map, in decimal degrees.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float </TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		The center longitude of the map, in decimal degrees.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		The scale of the map, as in 1:&lt;scale&gt;.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		The height of the map, in pixels.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		The width of the map, in pixels.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		The number of <a href="#LinkBoundingPoly">bounding
+		polygons</a> defining the areas of interest on the
+		map.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		  <a href="#LinkBoundingPoly">bounding polygon</a> </TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Bounding Polygons.  A series of bounding polygons.</TD>
+	    </TR>	    
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		The even number (N_FLTS) of 4 byte floats that follow
+		in BoundsArray. The floats represent the coordinates
+		of a bounding polygon, in pairs, each pair containing
+		first a latitude and then a longitude.  The
+		coordinates of the polygon are defined to be listed in
+		the clockwise direction.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4n</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		BoundsArray.  A series of 4 byte floats, in pairs.
+		Each pair represents a latitude and then a longitude
+		in decimal degrees. There will be an even number
+		greater than four of these floats sent, since they
+		define a bounding polygon.  If the number of points in
+		the polygon is N_PTS, there will be 2*N_PTS = N_FLTS
+		floats in BoundsArray.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		  <a href="#args">Arg List</a></TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		A list of key-value pairs for attribute passing. See
+		<a href="#LinkProperties">Defined Properties</A>.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Tail marker describing the end of this section, or the end
+		of the entire communication (END_SECTION or END_TOTAL)</TD>
+	    </TR>
+	  </TABLE><TR></TABLE>
+    <P>  
+
+      <a name="LinkBoundingPoly"></a>
+
+      For the <a href="#LinkMapRequest">Map Request</a>, the
+      bounding polygon holds polygons defined by latitude and
+      longitude values.  These polygons are assumed to not cross over
+      the dateline (+-180 degrees longitude), and do not contain the
+      North or South pole.  Areas that break these assumptions must be 
+      defined by multiple bounding polygons.<P>
+
+
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Bounding Polygon</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	      </TD>
+	      <TD WIDTH="20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	      </TD>
+	      <TD WIDTH="50%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		The even number (N_FLTS) of 4 byte floats that follow
+		in BoundsArray. The floats represent the coordinates
+		of a bounding polygon, in pairs, each pair containing
+		first a latitude and then a longitude.  The
+		coordinates of the polygon are defined to be listed in
+		the clockwise direction.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4n</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		BoundsArray.  A series of 4 byte floats, in pairs.
+		Each pair represents a latitude and then a longitude
+		in decimal degrees. There will be an even number
+		greater than four of these floats sent, since they
+		define a bounding polygon.  If the number of points in
+		the polygon is N_PTS, there will be 2*N_PTS = N_FLTS
+		floats in BoundsArray.</TD>
+	    </TR>
+	  </TABLE><TR></TABLE>
+    <P>
+    <HR>
+    
+    <h4><a name="LinkActionRequest"></a>Action Request</h4>
+    
+    Gesture queries are used by the client to tell the server that a
+    user event has happened, like a mouse movement or keyboard event.
+    When used by the client, it is understood that the client will
+    wait for some description from the server.  The server can send a
+    Gesture Query as well, but that would usually happen to tell the
+    client what kind of events the server is interested in receiving.
+    <P>
+      
+      <a name="MouseLinkActionRequest"></a>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Action Request for Mouse Events</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	      </TD>
+	      <TD WIDTH="20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	      </TD>
+	      <TD WIDTH="50%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">23</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ACTION_REQUEST&gt;</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Version number of the action request format.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		<a href="#descriptor">descriptor</a> contains bit
+		settings that mark this as a mouse event-generated
+		GestureLinkquery instead of a <a
+		href="#KeyLinkActionRequest">keyboard-generated
+		LinkActionRequest</a> or <a
+		href="NotificationLinkActionRequest">client
+		notification</a>.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		X - Horizontal map pixel location of event, from the top left 
+		corner.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Y - Vertical map pixel location of event from the top left
+		corner.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int </TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Click count - number of times mouse button pressed and released 
+		at current location.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		<a href="#modifiers">Modifiers</a> for event, describing
+		keyboard keys and mouse keys pressed.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Latitude, in decimal degrees, of event.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Longitude, in decimal degrees, of event.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		  <a href="#args">Arg List</a></TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		A list of key-value pairs for attribute passing. See
+		<a href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Tail marker describing the end of this section, or the end
+		of the entire communication (END_SECTION or END_TOTAL)</TD>
+	    </TR>
+	  </TABLE><TR></TABLE>
+    <P>
+      <a name="KeyLinkActionRequest"></a>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Action Request for Key Events</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	      </TD>
+	      <TD WIDTH="20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	      </TD>
+	      <TD WIDTH="50%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">23</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ACTION_REQUEST&gt;</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Version number of the action request format.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		<a href="#descriptor">descriptor</a> contains bit
+		settings that mark this as a keyboard-generated
+		LinkActionRequest instead of a <a
+		href="#MouseLinkActionRequest">mouse event-generated
+		GestureLinkquery</a> or <a
+		href="NotificationLinkActionRequest">client
+		notification</a>.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">2</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">Unicode char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Keyboard character for event..</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		<a href="#modifiers">Modifiers</a> for event, describing
+		other keyboard keys pressed.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		  <a href="#args">Arg List</a></TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		A list of key-value pairs for attribute passing. See
+		<a href="#LinkProperties">Defined Properties</A>.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Tail marker describing the end of this section, or the end
+		of the entire communication (END_SECTION or END_TOTAL)</TD>
+	    </TR>
+	  </TABLE><TR></TABLE>
+      
+    <P>
+      
+      <a name="NotificationLinkActionRequest"></a>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Action Request for Client Notification of Server Interest</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	      </TD>
+	      <TD WIDTH="20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	      </TD>
+	      <TD WIDTH="50%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">23</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ACTION_REQUEST&gt;</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Version number of the action request format.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		<a href="#descriptor">descriptor</a> contains bit
+		settings that mark this as a client notification
+		instead of a <a href="#MouseLinkActionRequest">mouse
+		event-generated GestureLinkquery</a> or <a
+		href="#KeyLinkActionRequest">keyboard-generated
+		LinkActionRequest</a>.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Tail marker describing the end of this section, or the end
+		of the entire communication (END_SECTION or END_TOTAL)</TD>
+	    </TR>
+	  </TABLE><TR></TABLE>
+    <P>
+      <a name="descriptor"></a>
+      The <b>gesture descriptor</b> is a masked integer that
+      describes what kind of user event occured.
+    <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Gesture Descriptor Masking</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Bit Number</FONT></B>
+	      </TD>
+	      <TD WIDTH=" 70%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Meaning</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">0</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		The mouse button was clicked (pressed and released).</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Mouse button pressed.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">2</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Mouse button released.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Mouse was moved with no mouse buttons pressed.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Cursor entered the map area.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">5</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Cursor exited the map area.</TD>
+	    </TR>
+	  <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">6</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Mouse moved with a mouse button down (dragged).</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">7</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		A keyboard key was pressed.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">8</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		A keyboard key was released.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">9</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		A graphic is involved in the gesture.  For example, a
+		mouse click occured on a graphic.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">10</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Client notification flag.  This is set if the server is
+		sending the query to let the client know what kind of
+		gestures the server is interested in receiving.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">11</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Flag to set if the server should always be notified of
+		a gesture, even if a graphic has responded to it on
+		the client side.  Since the graphics may contain
+		properties that allow client actions to take place
+		when a gesture occurs on a graphic, this flag
+		indicates that a Action Request should also be sent to
+		the server.  Otherwise, the client determines what
+		actions occur locally..</TD> </TR>
+		</TABLE></TR></TABLE>
+    <P>
+      <a name="modifier"></a> 
+
+      The <b>modifier</b> is a masked integer that describes if
+      additional keyboard buttons where pressed down when the gesture
+      occured.
+    <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Modifer Masking</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Bit Number</FONT></B>
+	      </TD>
+	      <TD WIDTH=" 70%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Meaning</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">0</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		The Shift key on the keyboard was down.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		The Control key on the keyboard was down.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">2</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		The Meta key on the keyboard was down, or the mouse
+		button #3 state changed.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		The Alt key on the keyboard was down, or the mouse
+		button #2 state changed.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		The mouse button #1 state changed.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">5</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		The Alt-Graph key state changed.</TD>
+	    </TR>
+	  </TABLE></TR></TABLE>
+    <P>      
+      
+    <HR>
+    <HR>
+    <h3>Description Definitions</h3>
+    
+    Descriptions are sections that provide objects or actions across
+    the link.  They can be answers to queries, but they can also be
+    sent to initiate communication.  For example, a client can provide
+    a list of graphics to be added to a repository on the server..  In
+    general, if a client sends a query, it should expect some sort of
+    description.  If a descrition is sent, some sort of response
+    should be expected.  A 'No Action' response can be used as
+    acknowledgement.
+    
+    <a name="LinkGraphicList"></a>
+    <h4>Graphics Description</h4>
+    
+    A Graphics Description is the object that defines a list of graphics
+    being sent over the link.  The Graphics Description has a header to
+    define the beginning of the list, and a tail to signify the end of
+    it.  The graphics in between have their own headers and <a
+    href="#GraphicsDefinitions">definitions</a>.
+
+    <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Graphics Description</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	      </TD>
+	      <TD WIDTH="20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	      </TD>
+	      <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">17</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:GRAPHICS&gt;</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Version number of the graphic list format.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		  <a href="#args">Arg List</a></TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		A list of key-value pairs for attribute passing. See
+		<a href="#LinkProperties">Defined Properties</A>.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">Graphics</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		A sequence of <a
+		href="#GraphicsDefinitions">graphics</a>, each with
+		their own header and format.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Tail marker describing the end of this section, or the end
+		of the entire communication (END_SECTION or END_TOTAL)</TD>
+	    </TR>
+	  </TABLE></TR></TABLE>
+
+  <P>
+  <HR>      
+    <a name="LinkActionList"></a>
+    <h4>Actions</h4>
+    
+    Actions are descriptions to Action Requests.  There are a number of
+    possible descriptions and any number of them can be included in this
+    transmission.  It should be assumed that the client will act on
+    the descriptions in order.
+    
+    <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Action List</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	      </TD>
+	      <TD WIDTH="20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	      </TD>
+	      <TD WIDTH="50%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">16</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ACTIONS&gt;</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Version number of the action list format.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		  <a href="#args">Arg List</a></TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		A list of key-value pairs for attribute passing. See
+		<a href="#LinkProperties">Defined Properties</A>.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">Actions</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		A sequence of <a href="#ActionDefinitions">actions</a>, each with
+		their own header and format.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Tail marker describing the end of this section, or the end
+		of the entire communication (END_SECTION or END_TOTAL)</TD>
+	    </TR>
+	  </TABLE></TR></TABLE>
+
+    <P>
+    <HR>      
+    <h4>No Action Response</h4>
+    
+    A No Action section is set when a client or server either doesn't
+    know how to handle a query or definition set to it, or doesn't
+    have anything else to say.
+
+    <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>No Action</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	      </TD>
+	      <TD WIDTH="20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	      </TD>
+	      <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:HUH?&gt;</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Tail marker describing the end of this section, or the end
+		of the entire communication (END_SECTION or END_TOTAL)</TD>
+	    </TR>
+	  </TABLE></TR></TABLE>
+
+    <P>
+    <HR>    
+    <h4>Close Link Response</h4>
+    
+    A Close Link response is sent when a client or server wants to sign off a
+    link connection.
+    <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Close Link</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	      </TD>
+	      <TD WIDTH="20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	      </TD>
+	      <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">19</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:CLOSE_LINK&gt;</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Tail marker describing the end of this section, or the end
+		of the entire communication (END_SECTION or END_TOTAL)</TD>
+	    </TR>
+	  </TABLE></TR></TABLE>
+      
+    <P>
+    <HR>
+    <HR>
+    <a name="GraphicsDefinitions"></a>
+    <h3>Graphic Definitions</h3>
+
+    The graphic formats are defined below for Graphic and Gesture
+    Descriptions.  The <FONT COLOR="#99FF99">green fields</FONT>
+    represent the fields in the protocol that change for each graphic
+    depending on the render type of the graphic. The <FONT
+    COLOR="#FF9999">red fields</FONT> represent the fields in the
+    raster protocol that change depending on the image format of the
+    raster.
+    
+    <P>
+    <HR>
+    <a name="Bitmap"></a>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Bitmap at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:BITMAP&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Bitmaps, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the bitmap's upper left corner, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the bitmap's upper left corner, in decimal degrees.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the bitmap, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the bitmap, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of bitmap bytes.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Bytes representing the bitmap.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+    <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Link Bitmap at X/Y Location</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	      </TD>
+	      <TD WIDTH="20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	      </TD>
+	      <TD WIDTH="50%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:BITMAP&gt;</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		This space is for a graphic type identifier.  For
+		Bitmaps, the value is 1.</TD>
+	    </TR>
+	    <TR BGCOLOR="#99FF99">
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	    </TR>
+	    <TR BGCOLOR="#99FF99">
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Horizontal distance, from the left side of the map, of the
+              bitmap's upper left corner, in pixels.</TD>
+	    </TR>
+	    <TR BGCOLOR="#99FF99">
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Vertical distance, from the top of the map, of the
+		bitmap's upper left corner, in pixels.</TD>
+	    </TR>
+	    <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Width of the bitmap, in pixels.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+              Height of the bitmap, in pixels.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Number of bitmap bytes.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1n</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Bytes representing the bitmap.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		  <a href="#args">Arg List</a></TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		A list of key-value pairs for attribute passing. See
+		<a href="#LinkProperties">Defined Properties</A>.</TD>
+	    </TR>
+	  </TABLE></TR></TABLE>
+    <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Link Bitmap at X/Y Offset from Lat/Lon Location</B>
+	</TR>
+	<TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:BITMAP&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Bitmaps, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the bitmap's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the bitmap's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the longitude map anchor
+              point location, of the bitmap's upper left corner, in
+              pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the latitude map anchor point
+              location, of the bitmap's upper left corner, in
+              pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the bitmap, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the bitmap, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of bitmap bytes.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Bytes representing the bitmap.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+<HR>
+<a name="Circle"></a>
+
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Circle at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:CIRCLE&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Circles, the value is 6.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the circle's center, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the circle's center, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Radius of the circle, in units defined in the next field.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Units of the radius measurement. Values can be:<BR>
+              Decimal Degrees = -1<BR>
+              Kilometers = 0<BR>
+              Miles = 1<BR>
+              Nautical Miles = 2</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of verticies to use to approximate the circle.
+              If this value is -1, the projection algorithm of the
+              client should decide the best value.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Circle at X/Y Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:CIRCLE&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Circles, the value is 6.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the left side of the map, of the
+              circle's center, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the top of the map, of the
+              circle's center, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the circle, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the circle, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Circle at X/Y Offset from Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:CIRCLE&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Circles, the value is 6.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the circle's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the circle's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the longitude map anchor
+              point location, of the circle's center, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the latitude map anchor point
+              location, of the circle's center, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the circle, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the circle, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+<HR>
+<a name="Grid"></a>
+<P>
+The meaning of location attributes of the grid depend on the
+rendertype of the grid.  Likewise, the direction of increasing rows
+also depends on the rendertype.  The convention, howeverm is
+consistant.  The rows and columns always increase according to the
+rendered background.  For example, for Lat/Lon rendered grids, the
+latitude and longitude of the location of the grid refers to the lower
+right corner of the grid.  The rows of the data increase as the
+latitude increases, and the columns increase with the longitudes.  For
+X/Y and Offset rendertypes, the grid is located by the x/y point of
+the upper left corner of the grid.  The rows increase as the y pixel
+count increases, which is actually down the screen.  The column count
+increases with the x pixel count, which is to the right.  The
+advantage of this is that the horizontal and vertical resolution
+directly apply to the index of the columns and rows, when mapping
+between lat/lon or x/y to the grid.<P>
+
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Grid at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:GRID&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Grids, the value is 8.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the grid's lower left corner, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the grid's lower left corner, in decimal degrees.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of vertical rows in the grid.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of horizontal columns in the grid.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Orientation of the grid, in radians.  North is 0.0,
+	      where the columns are parallel to longitude lines.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical resolution of the rows, in degrees/point.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal resolution of the columns, in degrees/point.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Major dimension designation, indicating the primary
+	      dimension of the data.  If the data is listed as columns 
+	      this value is 0 (COLUMN_MAJOR).  If the data is listed
+	      as rows, the value is 1 (ROW_MAJOR).</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of integer values to follow.  Should equal rows*columns.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Integer data for the grid.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Grid at X/Y Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:GRID&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Grids, the value is 8.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the left side of the map, of the
+              grid's left side, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the top of the map, of the
+              grid's top, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of vertical rows in the grid.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of horizontal columns in the grid.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Orientation of the grid, in radians.  Up is 0.0,
+	      where the columns are parallel to the sides of the map.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical resolution of the rows, in pixels/point.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal resolution of the columns, in pixels/point.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Major dimension designation, indicating the primary
+	      dimension of the data.  If the data is listed as columns 
+	      this value is 0 (COLUMN_MAJOR).  If the data is listed
+	      as rows, the value is 1 (ROW_MAJOR).</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of integer values to follow.  Should equal rows*columns.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+		Integer data for the grid.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Grid at X/Y Offset from Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:GRID&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Grids, the value is 8.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the grid's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the grid's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the longitude map anchor
+              point location, of the grid's left side, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the latitude map anchor point
+              location, of the grid's top, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of vertical rows in the grid.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of horizontal columns in the grid.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Orientation of the grid, in radians.  Up is 0.0,
+	      where the columns are parallel to the sides of the map.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical resolution of the rows, in pixels/point.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal resolution of the columns, in pixels/point.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Major dimension designation, indicating the primary
+	      dimension of the data.  If the data is listed as columns 
+	      this value is 0 (COLUMN_MAJOR).  If the data is listed
+	      as rows, the value is 1 (ROW_MAJOR).</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of integer values to follow.  Should equal rows*columns.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+		Integer data for the grid.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+
+<P>
+<HR>
+<a name="Line"></a>
+
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Line with Lat/Lon Endpoints</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:LINE&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Lines, the value is 4.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Line type definition.  The possible values are:<BR>
+              Unknown line type = 0<BR>
+              Straight line = 1<BR>
+              Rhumb line (constant bearing) = 2<BR>
+              Great circle line = 3</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the line's start point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the line's start point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the line's end point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the line's end point, in decimal degrees.</TD>
+	  </TR>
+
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of segments to use in approximating a curved line
+              on the map.  If the value is -1, the client's projection
+              algorithm should determine the best value.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Line with X/Y Endpoints</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:LINE&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Lines, the value is 4.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the left side of the map, of the
+              line's start point, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the top of the map, of the
+              line's start point, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the left side of the map, of the
+              line's end point, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the top of the map, of the
+              line's end point, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Line with X/Y EndPoints at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:LINE&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Lines, the value is 4.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the line's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the line's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the longitude map anchor
+              point location, of the line's start point, in
+              pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the latitude map anchor point
+              location, of the line's start point, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the longitude map anchor
+              point location, of the line's end point, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the latitude map anchor point
+              location, of the line's end point, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+
+<P>
+<HR>
+<a name="Point"></a>
+
+   <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Point at a Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">14</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:POINT&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+	      Points, the value is 9.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Radius of the point, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.  For
+	      Points, a oval=true property can be added to specify
+	      that the point should be rendered as a circle.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Point at a X/Y Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">14</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:POINT&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+	      Points, the value is 9.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the left side of the map, of the
+	      point's location, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the top of the map, of the
+              point's location, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Radius of the point, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.  For
+	      Points, a oval=true property can be added to specify
+	      that the point should be rendered as a circle.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Point at a  X/Y Distance from a Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">14</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:POINT&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+	      Points, the value is 9.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the point's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the point's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the longitude map anchor
+              point location, of the point's location, in
+              pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the latitude map anchor point
+              location, of the point's location, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Radius of the point, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.  For
+	      Points, a oval=true property can be added to specify
+	      that the point should be rendered as a circle.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+<HR>
+<a name="Poly"></a>
+
+    Lat/Lon <b>polygons</b>, by definition, list their points in a
+    clockwise direction.<P>
+
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Poly with Lat/Lon Points</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:POLY&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Polys, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Line type definition.  The possible values are:<BR>
+              Unknown line type = 0<BR>
+              Straight line = 1<BR>
+              Rhumb line (constant bearing) = 2<BR>
+              Great circle line = 3</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of latitude and longitude values to follow.  Each
+              latitude and longitude value contributes to this
+              count.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Each float represents alternating latitude and longitude
+              values, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Units of the lat/lon values.  Possibilities include:<BR>
+              Decimal degrees = 0<BR>
+              Radians = 1<BR></TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of segments to use in approximating a curved poly
+              on the map.  If the value is -1, the client's projection
+              algorithm should determine the best value.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Poly with X/Y Points</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:POLY&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Lines, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of x and y values to follow.  Each x and y value
+              contributes to this count.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Each integer represents alternating x and y values, in
+              pixels.  The x value represents the horizontal number of
+              pixels between the point and the left side of the map.
+              The y value represents the vertical number of pixels
+              between the point and the top of the map.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Poly with X/Y Points at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:POLY&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Lines, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the poly's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the poly's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of x and y values to follow.  Each x and y value
+              contributes to this count.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Each integer represents alternating x and y values, in
+              pixels. For the first point in the list, the x value
+              represents the horizontal number of pixels between the
+              first point and the anchor point location, while the y
+              value represents the vertical pixel distance. The
+              meaning of the remaining pixel values depends on the
+              coordinate mode, described next.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Coordinate mode of the x/y points. If the coordinate
+              mode is from the origin, then all the x values refer to
+              the horizontal pixel distance between the point and the
+              first point, and the y values refer to the vertical
+              pixel distance.  If the mode is from the previous point,
+              then all the measurements are taken from the point
+              proceeding the current one.  The possible values
+              are:<BR> origin = 0<BR> previous = 1</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+
+<P>
+<HR>
+<a name="Raster"></a>
+
+<h4>Link Raster</h4>
+
+Images can be transmitted in three different formats.  Two of these
+represent different colormodels, and the third format is indicates
+that the image can be downloaded from an URL. The direct colormodel is
+when the pixels are integers containing the <a href="#RGBInteger">RGB
+integer</a> values.  The indexed colormodel is when the pixels are
+bytes, and each byte refers to an index into a colortable.  The
+colortable is an array of RGB integers.
+<P>
+
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Raster, Utilizing the Direct Colormodel, with Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Rasters, the value is 7.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Image format.  This Raster is using the direct
+              colormodel, and the value is 0.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the upper left point of the image, in
+              decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the upper left point of the image, in
+              decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the image, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the image, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of integer pixels in the image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Pixel values of the image, each representing a <a
+              href="#RGBInteger">RGB integer</a> value.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Raster, Utilizing the Direct Colormodel, with X/Y Points</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Rasters, the value is 7.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Image format.  This Raster is using the direct
+              colormodel, and the value is 0.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal pixel offset, from the left side of the
+              map, of the upper left corner of the image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical pixel offset, from the top of the map, of the
+              top left corner of the image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the image, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the image, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of integer pixels in the image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Pixel values of the image, each representing a <a
+              href="#RGBInteger">RGB integer</a> value.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line --> 
+      <TR><B> Link Raster, Utilizing the Direct
+      Colormodel, with X/Y Offset at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Rasters, the value is 7.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Image format.  This Raster is using the direct
+              colormodel, and the value is 0.
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the raster's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the raster's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal pixel offset, from the map location of
+              the anchor point, of the upper left corner of the
+              image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical pixel offset, from the map location of the
+              anchor point, of the upper left corner of the image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the image, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the image, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of integer pixels in the image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Pixel values of the image, each representing a <a
+              href="#RGBInteger">RGB integer</a> value.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Raster, Utilizing the Indexed Colormodel, with Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Rasters, the value is 7.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Image format.  This Raster is using the indexed
+              colormodel, and the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the upper left point of the image, in
+              decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the upper left point of the image, in
+              decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the image, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the image, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of bytes to create the Raster.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Array of bytes used to create bitmap.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of integers to create the colortable.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Array of <a href="#RGBInteger">RGB integers</a> that
+              represent the colortable.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              The transparency of the image.  This should be a value
+              between 0-255, where 255 means an opaque image.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Raster, Utilizing the Indexed Colormodel, with X/Y Points</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Rasters, the value is 7.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Image format.  This Raster is using the indexed
+              colormodel, and the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal pixel offset, from the left side of the
+              map, of the upper left corner of the image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical pixel offset, from the top of the map, of the
+              top left corner of the image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the image, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of bytes to create the image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Array of bytes used to create image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of integers to create the colortable.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Array of <a href="#RGBInteger">RGB integers</a> that
+              represent the colortable.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              The transparency of the image.  This should be a value
+              between 0-255, where 255 means an opaque image.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line --> 
+      <TR><B> Link Raster, Utilizing the Indexed
+      Colormodel, with X/Y Offset at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Rasters, the value is 7.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Image format.  This Raster is using the indexed
+              colormodel, and the value is 1.
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the raster's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the raster's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal pixel offset, from the map location of
+              the anchor point, of the upper left corner of the
+              image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical pixel offset, from the map location of the
+              anchor point, of the upper left corner of the image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the image, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the image, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of bytes to create the Raster.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Array of bytes used to create bitmap.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of integers to create the colortable.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Array of <a href="#RGBInteger">RGB integers</a> that
+              represent the colortable.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              The transparency of the image.  This should be a value
+              between 0-255, where 255 means an opaque image.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Raster, Referencing an Image URL, with Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Rasters, the value is 7.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Image format.  This Raster is referencing an URL, and
+              the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the upper left point of the image, in
+              decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the upper left point of the image, in
+              decimal degrees.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>. The URL
+	      of the image to use is located in the Arg List.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Raster, Referencing an URL, with X/Y Points</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Rasters, the value is 7.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Image format.  This Raster is referencing an URL, and
+              the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal pixel offset, from the left side of the
+              map, of the upper left corner of the image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical pixel offset, from the top of the map, of the
+              top left corner of the image.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.. The URL
+	      of the image to use is located in the Arg List.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line --> 
+      <TR><B> Link Raster, Referencing an URL, with X/Y Offset at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Rasters, the value is 7.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#FF9999">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Image format.  This Raster is referencing an URL, and
+              the value is 2.
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the raster's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the raster's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal pixel offset, from the map location of
+              the anchor point, of the upper left corner of the
+              image.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical pixel offset, from the map location of the
+              anchor point, of the upper left corner of the image.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.. The URL
+	      of the image to use is located in the Arg List.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+<HR>
+<a name="Rectangle"></a>
+
+   <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Rectangle with Lat/Lon Corners</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">18</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RECTANGLE&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Rectangles, the value is 5.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Line type definition.  The possible values are:<BR>
+              Unknown line type = 0<BR>
+              Straight line = 1<BR>
+              Rhumb line (constant bearing) = 2<BR>
+              Great circle line = 3</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the rectangle's Northwest corner, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the rectangle's Northwest corner, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the rectangle's Southeast corner, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the rectangle's Southeast corner, in decimal degrees.</TD>
+	  </TR>
+
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of segments to use in approximating a curved rectangle
+              on the map.  If the value is -1, the client's projection
+              algorithm should determine the best value.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Rectangle with X/Y Corners</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">18</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RECTANGLE&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Rectangles, the value is 5.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the left side of the map, of the
+              rectangle's upper left corner, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the top of the map, of the
+              rectangle's upper left corner, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the left side of the map, of the
+              rectangle's lower right corner, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the top of the map, of the
+              rectangle's lower right corner, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Rectangle with X/Y Corners at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">18</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RECTANGLE&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Rectangles, the value is 5.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the rectangle's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the rectangle's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the longitude map anchor
+              point location, of the rectangle's upper left corner, in
+              pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the latitude map anchor point
+              location, of the rectangle's upper left corner, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the longitude map anchor
+              point location, of the rectangle's lower right corner, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the latitude map anchor point
+              location, of the rectangle's lower right corner, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+<HR>
+<a name="Text"></a>
+<b>Text</b> is anchored to a specified point on the map using the
+baseline of the text. The justification parameter of the text
+determines the left-to-right location of the charaters on the baseline.
+
+<P>
+   <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Text at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:TEXT&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Text, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the text, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the text, in decimal degrees.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Justification of text with regard to the Lat/Lon point.
+              Possible values:<BR> left = 0<BR> center = 1<BR> right =
+              2</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.  The text
+	      string and the font representation string are located in
+	      the Arg List.
+	      </TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Text at X/Y Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:TEXT&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Text, the value is 5.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the left side of the map, of the
+              text, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the top of the map, of the
+              text, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Justification of text with regard to the Lat/Lon point.
+              Possible values:<BR> left = 0<BR> center = 1<BR> right =
+              2</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		A list of key-value pairs for attribute passing. See <a
+		  href="#LinkProperties">Defined Properties</A>.  The text
+		string and the font representation string are located in
+		the Arg List.
+	      </TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Text with X/Y Offset at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:TEXT&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Text, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the text's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the text's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the longitude map anchor
+              point location, of the text, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the latitude map anchor point
+              location, of the text, in pixels.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Justification of text with regard to the Lat/Lon point.
+              Possible values:<BR> left = 0<BR> center = 1<BR> right =
+              2</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+		A list of key-value pairs for attribute passing. See
+		<a href="#LinkProperties">Defined Properties</A>. The text
+		string and the font representation string are located in
+		the Arg List.
+	      </TD>
+	    </TR>
+	</TABLE></TR></TABLE>
+<P>
+<HR>
+<a name="LinkProperties"></a>
+<h4>Defined Properties</h4>
+
+The properties can contain information on how a graphic should be
+drawn, or describing an action that the client should take.  In
+addition to these defined property names, any other property may be
+defined and passed across the link.
+
+<P>
+<a name="RGBInteger"></a>
+
+<B>RGB Integers</B> are used in the protocol to describe colors.  The
+colors should be passed as hex string representations of the desiired
+color.  Bits 23-16 represent the red value, bits 15-8 represent the
+green value, and bits 7-0 represent the blue value.  The range of
+values in each color byte is 0 (weakest) to 255 (strongest). For
+system implementations that support it, bits 31-24 represent a
+tranparency value, where 255 is opaque.  For instance, a color
+representation of an opaque red should be passed as FFFF0000.
+
+<P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Link Properties</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Property Name</FONT></B>
+	      </TD>
+	      <TD WIDTH="70%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Meaning</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">lineColor</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Property describing the RGB Integer for the line color.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">highlightColor</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Property describing the RGB Integer for the highlight line color.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">fillColor</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Property describing the RGB Integer for the fill color.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">lineWidth</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Property describing the integer for the line width.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">textString</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Property describing the content string for LinkText objects.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">textFont</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Property describing the font description string for
+		LinkText objects.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">graphicID</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Property describing graphic identifier for a Link
+		Graphic object.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">url</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Property describing a url to be used for a list or object.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">html</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Property describing html text to be displayed for a
+		list or object.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">info</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Property describing a short message to be displayed
+		for a list or object.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">message</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Property describing test for a pop-up window or other
+		messaging tool for be used for a list or object.</TD>
+	    </TR>
+	  </TABLE></TR></TABLE>
+
+
+<P>
+<HR>
+<HR>
+<a name="ActionDefinitions"></a>
+<h3>Action Definitions</h3>
+
+<b>Actions</b> are tasks that the server gives to the client in order
+to manipulate graphics as a result of user gestures.
+<P>
+<HR>
+
+<a name="graphicAction"></A>
+A <b>Graphic</b> action is the server requesting that the client
+update the appearance of some or all of the graphics on the map.  Any
+part of the graphic can be modified, and the protocol also supports
+the addition and deletion of graphics.
+    <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Graphic Action</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	      </TD>
+	      <TD WIDTH="20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	      </TD>
+	      <TD WIDTH="50%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">24</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:UPDATE_GRAPHICS&gt;</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Action identifier.  For graphic actions, the value is 0</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		<a href="#gad">Graphic action descriptor</a>, which is a
+		masked integer that describes the action to be taken on
+		the graphic.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER"> Graphic or
+		  <a href="#args">Arg List</a>, depending on the graphic
+		  action descriptor.</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		If the <a href="#gad">graphic action descriptor</A>
+		describes an action that requires more information
+		about the updates on a specific graphic, the graphic
+		is included here.  Otherwise, a graphic ID property is
+		included in the <a href="#args">Arg List</a></TD>
+	    </TR></TABLE></TR></TABLE>
+
+    <P>
+      <a name="gad"></a> 
+      
+The <b>graphic action descriptor</b> is a masked integer that
+describes what action should be taken on a graphic.  Many actions can
+be described with the descriptor.  For example, a graphic may be
+raised and selected at the same time.  The two actions that require a
+graphics object are adding a graphic, and updating a graphic.
+<P>
+   <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Graphic Action Descriptor Masking</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Bit Number</FONT></B>
+	    </TD>
+	    <TD WIDTH=" 70%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Meaning</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">0</TD>
+	    <TD WIDTH="70%" VALIGN="TOP">
+              Raise the graphic to be on top of all the other graphics
+              supplied by the server.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="70%" VALIGN="TOP">
+              Lower the graphic to be under all the other graphics
+              supplied by the server.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">2</TD>
+	    <TD WIDTH="70%" VALIGN="TOP">
+              Delete the graphic.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
+	    <TD WIDTH="70%" VALIGN="TOP">
+              Select the graphic.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="70%" VALIGN="TOP">
+              Deselect the graphic.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">5</TD>
+	    <TD WIDTH="70%" VALIGN="TOP">
+              Deselect all the graphics.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">6</TD>
+	    <TD WIDTH="70%" VALIGN="TOP">
+              Add the graphic.  This requires a graphic
+              description.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">7</TD>
+	    <TD WIDTH="70%" VALIGN="TOP">
+              Update the graphic.  This requires a graphic
+              description.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+<HR>
+<a name="args"></a>
+<b>Args</b> are an array of strings which represent key-value
+pairs.<P>
+
+   <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Args</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Sum of the number of keys and values.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER"></TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER"></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              The key-value pairs follow:</TD>
+	  </TR>	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Length of text (key or value), number of characters.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">2n</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">Unicode char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Text representing key or value.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <hr>
+    <address><a href="mailto:openmap@bbn.com">OpenMap</a></address>
+<!-- Created: Fri Apr 23 14:11:57 EDT 1999 -->
+<!-- hhmts start -->
+Last modified: Mon Jul 26 11:16:15 EDT 1999
+<!-- hhmts end -->
+  </body>
+</html>

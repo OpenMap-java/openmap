@@ -1,0 +1,23 @@
+<!-- *****************************************************************-->
+<!-- *  BBNT Solutions LLC, A part of GTE -->
+<!-- *  10 Moulton St.                                                -->
+<!-- *  Cambridge, MA 02138                                           -->
+<!-- *  (617) 873-2000                                                -->
+<!-- *                                                                -->
+<!-- *  Copyright (C) 2002                                            -->
+<!-- *  This software is subject to copyright protection              -->
+<!-- *  under the laws of the United States and other countries.      -->
+<!-- *****************************************************************-->
+
+<body>
+
+The beanbox package contains classes that implement a BeanPanel component.
+A BeanPanel is an openmap component that loads a set of java beans upon 
+startup and organizes them into one or more tabbed panes. The structure of the tabs is specified in the openmap properties file. For details see {@link com.bbn.openmap.tools.beanbox.BeanPanel}. The BeanPanel component uses Java Drag-And-Drop and is registered as a DragSource for Drag-And-Drop events. A user can drag and drop a bean from one of the tabs in the BeanPanel onto the map where the {@link com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher} catches the bean.
+<p><p>
+This package also contains classes to catch the bean dragged from the BeanPanel and dropped on the layer. The {@link com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher} class defined in this package catches drag-n-drop events generated from the BeanPanel and delivers them to a target beanbox. A beanbox is a user-defined class that implements the abstract {@link com.bbn.openmap.tools.beanbox.BeanBox} class
+contained in this package. Each BeanBox implementation is expected to be associated with an openmap layer. The BeanBox class manages a set of java beans that are delivered to it from the BeanPanel via the BeanBoxDnDCatcher. The abstract BeanBox base class performs functions such as adding and removing beans from its associated layer and provides support for moving beans on the layer and cut/copy/paste functionality.
+<p><p>
+The classes in this package have dependencies on the classes in the com.bbn.openmap.tools.dnd package.
+
+</body>

@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+
+Name: com/bbn/openmap/examples/beanbox/SimpleBeanObject.class
+Java-Bean: True
+
+Name: com/bbn/openmap/examples/beanbox/SimpleBeanContainer.class
+Java-Bean: True
+
+Name: com/bbn/openmap/examples/beanbox/Fighter.class
+Java-Bean: True

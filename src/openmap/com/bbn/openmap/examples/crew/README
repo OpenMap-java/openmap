@@ -1,0 +1,10 @@
+
+You may need to adjust the Crew.properties file so that the political
+shape data can be found.  You can either add the directory that
+contains these files to your CLASSPATH, or specify absolute paths in
+the properties file.
+
+You can run this example by typing:
+
+java com.bbn.openmap.examples.crew.Crew
+

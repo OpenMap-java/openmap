@@ -1,0 +1,2 @@
+Name: com/bbn/openmap/MapBean.class
+Java-Bean: True

@@ -1,0 +1,74 @@
+
+This directory contains a sample implementation of the 
+com.bbn.openmap.tools.beanbox.BeanBox class as well as an example OpenMap layer
+that uses this sample implementation.
+
+To run the application, use the beanbox.bat file (or beanbox on cygwin).
+This will bring up the standard OpenMap frame that contains one additional
+component in the form of a blue bean button on the far right side of the 
+components toolbar.
+
+Clicking on this button should bring up the Bean Box frame 
+that contains three tabs: Generic, Container and Military, 
+each containing a single example bean. The configuration of the Bean Box
+is specified in the openmap.properties file contained in this package. The
+openmap.properties file also contains the following three components necessary
+for the drag-n-drop bean package to work correctly:
+
+dropSupport.class=com.bbn.openmap.tools.dnd.DropListenerSupport
+dndCatcher.class=com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher
+beanpanel.class=com.bbn.openmap.tools.beanbox.BeanPanel
+
+
+The manifest.txt file contained in this package contains the statements 
+that declares the beans in this package. 
+This file is compiled into the openmap.jar.
+
+Example Usage:
+
+1. Run beanbox.bat or beanbox to bring up the OpenMap frame and click on
+   the blue bean icon on the component bar to bring up the Bean Box frame.
+   Switch to the OpenMap Gestures mode.
+
+2. In the Bean Box frame, switch to the Military tab and drag two fighter 
+   beans from the Bean Box to the map.
+   NOTE: When you drag and drop a bean on the map, a menu will open
+   listing the layers willing to accept the drop event. In this example
+   only the SimpleBeanLayer accepts bean drop events. So select this layer
+   in the menu.
+   A property sheet for the bean will now open giving you a chance to change
+   the bean's properties *before* it is added to the layer. Once this sheet
+   is closed the bean appears on the layer. You can always change a bean's 
+   properties at any time by right-clicking on the bean icon on the layer.
+
+3. In the Bean Box frame, switch to the container tab and drag a container bean 
+   from the Bean Box to the map.
+
+4. Drag the two fighter beans on the map into the container bean.
+
+4. Right click on the container bean to bring up its property sheet. (If 
+   the propertysheet does not open, try dragging the bean a little bit on the
+   map and then right-click on it again.)
+
+5. The default layoutClass for the container is the NullLayout, which
+   is as good as not having a layout manager. Change the layoutClass property's
+   value to WallFormationLayout. The two fighter beans will get rearranged into
+   a wall formation. Dismiss the container's property sheet.
+
+6. Drag another fighter bean from the Bean Box into the container bean
+   on the map. The three fighters in the container now get re-layed out in 
+   a 3-ship wall formation.
+
+7. Once again right-click on the container to bring up its property sheet.
+
+8. Click on the property editor for the layoutmanager property and adjust the 
+   parameters of the WallFormationLayout, namely bearingInDeg and separationInNM
+   and watch the effect of these changes on the aircraft formation inside 
+   the container. Close all property sheets.
+
+9. Drag the container to a different location and notice how the 3-ship
+   formation moves with it.
+
+10.Drag one of the fighters out of the container. This fighter is now no longer 
+   a part of the container. The container now rearranges into a 2-ship formation.
+

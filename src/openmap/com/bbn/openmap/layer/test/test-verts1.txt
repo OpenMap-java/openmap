@@ -1,0 +1,68 @@
+# Test polygon vertices to be used with the TestLayer.  This poly is
+# best viewed with a RHUMBLINE linetype.  If you want to add your own
+# test polygon, remember to specify the vertices in clockwise order.
+#
+# To see this poly without having to type in the vertices, run the
+# OpenMap viewer like this:
+# "-Dtest.poly.vertices=`/bin/cat <THIS FILE>`"
+# 
+
+60.0 -170.0
+80.0 -170.0
+80.0 -90.0
+80.0 0.0
+80.0 90.0
+80.0 170.0
+70.0 170.0
+70.0 90.0
+70.0 0.0
+70.0 -90.0
+70.0 -150.0
+50.0 -150.0
+50.0 -180.0
+50.0 90.0
+50.0 0.0
+50.0 -90.0
+50.0 -130.0
+30.0 -130.0
+30 -180
+0 -180
+-30 -180
+-30 -90
+-30 0
+-30 90
+-30 160
+-60 160
+-60 90
+-60 0
+-60 -90
+-60 -180
+-70 -180
+-70 -90
+-70 0
+-70 90
+-70 160
+-80 160
+-80 90
+-80 0
+-80 -90
+-80 170
+-50 170
+-50 -90
+-50 0
+-50 90
+-50 150
+-40 150
+-40 90
+-40 0
+-40 -90
+-40 170
+0 170
+30.0 170.0
+40.0 170.0
+40.0 -140.0
+60.0 -140.0
+60.0 -90.0
+60.0 0.0
+60.0 90.0
+60.0 -170.0

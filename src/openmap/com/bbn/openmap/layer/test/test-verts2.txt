@@ -1,0 +1,22 @@
+# Problematic Poly:
+# View this poly with a fillcolor, with either rhumb or greatcircle
+# linetype, in an azimuthal projection centered over either pole to
+# see a rendering problem.
+#
+#	* These vertices mark a poly band around the tropical regions.
+#
+#	* In order to draw a band like this correctly you must break
+#	it up into 3 or more sections.
+#
+
+-20 0
+-20 -90
+-20 -180
+-20 90
+-20 0
+20 0
+20 90
+20 180
+20 -90
+20 0
+-20 0

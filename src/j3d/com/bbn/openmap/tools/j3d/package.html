@@ -1,0 +1,62 @@
+<!-- *****************************************************************-->
+<!-- *                                                                -->
+<!-- *  BBNT Solutions LLC, A part of GTE -->
+<!-- *  10 Moulton St.                                                -->
+<!-- *  Cambridge, MA 02138                                           -->
+<!-- *  (617) 873-2000                                                -->
+<!-- *                                                                -->
+<!-- *  Copyright (C) 1999-2000                                            -->
+<!-- *  This software is subject to copyright protection              -->
+<!-- *  under the laws of the United States and other countries.      -->
+<!-- *                                                                -->
+<!-- *****************************************************************-->
+<!-- *                                                                -->
+<!-- * $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/package.html,v $-->
+<!-- * $Revision: 1.1.1.1 $                                              -->
+<!-- * $Date: 2003/02/14 21:35:48 $                                   -->
+<!-- * $Author: dietrick $                                            -->
+<!-- *                                                                -->
+<!-- *****************************************************************-->
+
+<body>
+
+The com.bbn.openmap.tools.j3d package holds components that can create
+a 3D scene, with a viewer, from OpenMap maps.  The Java3D package,
+distributed separately and requiring it's own installation, is
+required for all classes in this package. <P>
+
+The Manager classes create the 3D scene, setting up the camera
+(Viewing Platform), universe, and all the BranchGroups containing map
+information.  The MapContentManager is the basic manager, providing a
+view that can be controlled with keyboard strokes.  The
+ControlledManager is an extended manager class, which provides a
+viewer controlled by external code. <P>
+
+All Managers need a content mask - and each decided what content to
+add based on the settings in the mask.  For this initial release, the
+3D scene can be created from OpenMap components in a couple of
+different ways: <P>
+
+<UL>
+<LI> OM3DConstants.CONTENT_MASK_OMGRAPHICHANDLERLAYERS - The manager
+will use a MapContent object that uses
+com.bbn.openmap.layers.OMGraphicHandlerLayers to get OMGraphics to
+convert to Shape3D objects.
+<LI> OM3DConstants.CONTENT_MASK_OM3DGRAPHICHANDLERS - The manager will
+will use a MapContent object that contacts OM3DGraphicHandler objects,
+to let them know what MapContent object they should add scene objects
+to.  They have different options for doing this.
+<LI> OM3DConstants.CONTENT_MASK_IMAGEMAP - The manager will take all
+the layers and paint themselves into an image to be used as a texture
+for a flat plane.  This is not entirely implemented yet.
+<LI> OM3DConstants.CONTENT_MASK_ELEVATIONMAP - The manager will use a
+DTEDFrameCache to create an OMGrid object to use to build a terrain,
+and then fill the terrain with whatever is painted on the map.  This
+is also not implemented, yet.
+</UL>
+
+<P>Thanks to the guys at j3d.org (Justin Couch) for all their work in creating a
+great informational site, and for putting code examples up.  There is
+a lot if their code sprinkled around in this package.
+
+</body>

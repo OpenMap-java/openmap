@@ -1,0 +1,140 @@
+// **********************************************************************
+// 
+// <copyright>
+// 
+//  BBN Technologies, a Verizon Company
+//  10 Moulton Street
+//  Cambridge, MA 02138
+//  (617) 873-8000
+// 
+//  Copyright (C) BBNT Solutions LLC. All rights reserved.
+// 
+// </copyright>
+// **********************************************************************
+// 
+// $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl,v $
+// $RCSfile: CorbaRpfFrameProvider.idl,v $
+// $Revision: 1.1.1.1 $
+// $Date: 2003/02/14 21:35:47 $
+// $Author: dietrick $
+// 
+// **********************************************************************
+
+
+#ifndef CorbaRpfFrameProvider_idl
+#define CorbaRpfFrameProvider_idl
+
+// ----------------------------------------------------------------------
+//  The Server Definition.
+// ----------------------------------------------------------------------
+module CRpfFrameProvider {
+
+// ----------------------------------------------------------------------
+//  Basic Structures
+// ----------------------------------------------------------------------
+    const string Revision = "@(#)$Header: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl,v 1.1.1.1 2003/02/14 21:35:47 dietrick Exp $";
+    
+    struct XYPoint {
+	short x;
+	short y;
+    };
+    
+    struct LLPoint {
+	float lat;
+	float lon;
+    };
+
+    struct CRFPCADRGProjection {
+	LLPoint center;
+	unsigned short height;
+	unsigned short width;
+	float scale;
+	// Zone just for pixel spacing compatability - doesn't
+	// represent southern hemisphere zones A-H
+	unsigned short zone;
+    };
+
+    struct CRFPCoverageBox {
+	float nw_lat;
+	float nw_lon;
+	float se_lat;
+	float se_lon;
+	double subframeLatInterval;
+	double subframeLonInterval;
+	string chartCode;
+	unsigned short zone;
+	XYPoint startIndexes;
+	XYPoint endIndexes;
+	unsigned short tocNumber;
+	unsigned short entryNumber;
+	float scale;
+	float percentCoverage;
+    };
+
+    typedef sequence<CRFPCoverageBox> CRFPCoverageBoxSeq;
+    
+    struct CRFPViewAttributes {
+	unsigned short numberOfColors;
+	unsigned short opaqueness;
+	boolean scaleImages;
+	float imageScaleFactor;
+	string chartSeries;
+    };
+
+    typedef sequence<octet> data;
+    typedef sequence<long> rawdata;
+
+    struct RawImage {
+	rawdata colortable;
+	data imagedata;
+    };
+
+    //------------------------------------------------------------
+    //  Server methods
+    //------------------------------------------------------------
+
+    interface Server {
+
+	void setViewAttributes(in CRFPViewAttributes va,
+			       in string uniqueID);
+
+	CRFPCoverageBoxSeq getCoverage(
+	    in float ullat, in float ullon,
+	    in float lrlat, in float lrlon,
+	    in CRFPCADRGProjection p,
+	    in string uniqueID);
+
+	CRFPCoverageBoxSeq getCatalogCoverage(
+	    in float ullat, in float ullon,
+	    in float lrlat, in float lrlon,
+	    in CRFPCADRGProjection p,
+	    in string chartSeriesCode,
+	    in string uniqueID);
+
+	data getSubframeData(
+	    in unsigned short tocNumber,
+	    in unsigned short entryNumber,
+	    in short x,
+	    in short y,
+	    in float jpegQuality,
+	    in string uniqueID);
+
+	RawImage getRawSubframeData(
+	    in unsigned short tocNumber,
+	    in unsigned short entryNumber,
+	    in short x,
+	    in short y,
+	    in string uniqueID);
+
+	string getSubframeAttributes(
+	    in unsigned short tocNumber,
+	    in unsigned short entryNumber,
+	    in short x,
+	    in short y,
+	    in string uniqueID);
+
+	oneway void signoff(in string uniqueID);
+    };
+};
+
+#endif

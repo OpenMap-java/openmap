@@ -1,0 +1,15 @@
+V[1.1:com.bbn.openmap.awt]
+S[com.bbn.openmap.awt:LineShapeDecoration,com.bbn.openmap.awt:SpacingShapeDecoration]{2:(862,382),(1872,100)}
+S[com.bbn.openmap.awt:SpacingShapeDecoration,com.bbn.openmap.awt:AbstractShapeDecoration]{2:(1944,100),(1370,440)}
+S[com.bbn.openmap.awt:TextShapeDecoration,com.bbn.openmap.awt:AbstractShapeDecoration]{2:(1922,440),(1370,516)}
+S[com.bbn.openmap.awt:AbstractShapeDecoration,com.bbn.openmap.awt:ShapeDecoration]{2:(1270,346),(1324,200)}
+S[com.bbn.openmap.awt:ShapeDecoration,com.bbn.openmap.awt:Revertable]{2:(1208,72),(1190,68)}
+S[com.bbn.openmap.awt:ShapeDecorator,com.bbn.openmap.awt:Revertable]{2:(1532,124),(1190,64)}
+P[com.bbn.openmap.awt:AbstractShapeDecoration]{1044,346}
+P[com.bbn.openmap.awt:LineShapeDecoration]{558,368}
+P[com.bbn.openmap.awt:LineUtil]{734,168}
+P[com.bbn.openmap.awt:Revertable]{1108,20}
+P[com.bbn.openmap.awt:ShapeDecoration]{1208,20}
+P[com.bbn.openmap.awt:ShapeDecorator]{1532,20}
+P[com.bbn.openmap.awt:SpacingShapeDecoration]{1864,20}
+P[com.bbn.openmap.awt:TextShapeDecoration]{1922,146}

@@ -1,0 +1,55 @@
+<!-- *****************************************************************-->
+<!-- *                                                                -->
+<!-- *  BBNT Solutions LLC, A part of GTE -->
+<!-- *  10 Moulton St.                                                -->
+<!-- *  Cambridge, MA 02138                                           -->
+<!-- *  (617) 873-2000                                                -->
+<!-- *                                                                -->
+<!-- *  Copyright (C) 1999-2000                                            -->
+<!-- *  This software is subject to copyright protection              -->
+<!-- *  under the laws of the United States and other countries.      -->
+<!-- *                                                                -->
+<!-- *****************************************************************-->
+<!-- *                                                                -->
+<!-- * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/package.html,v $-->
+<!-- * $Revision: 1.1.1.1 $                                              -->
+<!-- * $Date: 2003/02/14 21:35:48 $                                   -->
+<!-- * $Author: dietrick $                                            -->
+<!-- *                                                                -->
+<!-- *****************************************************************-->
+
+<body>
+
+This package has classes that provide image creation and manipulation
+capabilities.  The Helper classes are for managing java images and
+their pixels.  The other classes can be used to work with the MapBean
+to create image files.
+<P>
+To create image files, you'll want to focus on the ImageServer,
+ImageReceiver and ImageGenerator classes.
+<P>
+The ImageGenerator has the smarts to control the layers in a
+MapBean, managing the multithreaded nature of them, to get them to
+draw their graphics into an image for a given projection.  It accepts
+an array of layers, a projection, and a ImageReadyListener to notify
+when the java.awt.Image is ready.  The ImageReadyListener handles the
+formatting of the java.awt.Image into a standard image format - JPEG,
+GIF, etc.  Caution:  The ImageGenerator has been found to have timing
+issues under loading, and some layers, for some reason, don't always
+make it to the final image.  The ImageServer utilizes the Layers'
+ProjectionPainter interface methods to provide a reliable path for map
+image creation.
+<P>
+The ImageServer is a manager class that prepares layers for the
+ImageGenerator to use.  The ImageServer has several forms of
+createImage() methods, which accept projection requests, and then,
+either cycle through the ImageGenerator to create map images, or cycle
+through the Layers using their ProjectionPainter interface method.
+With the former, the ImageServer also calls the appropriate
+ImageReceiver for each projection request to hand over the formatted
+image bytes when the image is created.
+<P>
+The MapRequestHandler is an extended ImageServer with methods that
+parse OpenGIS Web Mapping Server format requests, and create images in
+response to those requests.
+</body>
