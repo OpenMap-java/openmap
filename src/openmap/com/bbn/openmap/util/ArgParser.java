@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ArgParser.java,v $
 // $RCSfile: ArgParser.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/12/10 14:14:31 $
+// $Revision: 1.5 $
+// $Date: 2005/01/10 17:08:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -283,30 +283,27 @@ public class ArgParser {
     public static void main(String[] argv) {
         Debug.init();
         ArgParser ap = new ArgParser("ArgParser");
-        ap.add("class", "class name to test for");
-        ap.add("latlon", "lat/lon to use", 2);
-        ap.add("test", "testing");
+        ap.add("first", "First test argument, no parameters expected");
+        ap.add("second", "Second test argument, two parameters expected", 2);
+        ap.add("third", "Third test argument, no parameters expected");
+        ap.add("fourth", "Fourth test argument, one parameter expected", 1);
 
         if (!ap.parse(argv)) {
             ap.printUsage();
             System.exit(0);
         }
 
-        //      int i;
-        //      Vector args = ap.getArgs();
-        //      for (i = 0; i < args.size(); i++) {
-        //          ArgParser.Arg a = (ArgParser.Arg)args.elementAt(i);
-        //          Debug.output(a.toString());
-        //      }
+        int i;
+        Vector args = ap.getArgs();
+        for (i = 0; i < args.size(); i++) {
+            ArgParser.Arg a = (ArgParser.Arg) args.elementAt(i);
+            Debug.output(a.toString());
+        }
 
-        //      String[] rest = ap.getRest();
-        //      Debug.output("Rest:");
-        //      for (i = 0; i < rest.length; i++) {
-        //          Debug.output(rest[i]);
-        //      }
-
-        if (ap.getArgValues("class") != null) {
-            Debug.output("'class' option caught.");
+        String[] rest = ap.getRest();
+        Debug.output("Rest:");
+        for (i = 0; i < rest.length; i++) {
+            Debug.output(rest[i]);
         }
     }
 
