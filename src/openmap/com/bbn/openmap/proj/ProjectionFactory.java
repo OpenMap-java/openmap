@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionFactory.java,v $
 // $RCSfile: ProjectionFactory.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:06:23 $
+// $Revision: 1.10 $
+// $Date: 2004/10/25 15:04:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -313,6 +313,10 @@ public class ProjectionFactory extends OMComponent {
                                             float centerLat, float centerLon,
                                             float scale, int width, int height) {
 
+        if (projClassName == null) {
+            throw new ProjectionException("No projection class name specified");
+        }
+        
         try {
             return makeProjection(Class.forName(projClassName),
                     centerLat,
