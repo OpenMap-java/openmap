@@ -18,9 +18,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.20 $
-# $Date: 1998/08/27 18:03:18 $
-# $Author: dietrick $
+# $Revision: 1.21 $
+# $Date: 1998/08/27 20:31:55 $
+# $Author: aculline $
 # 
 # **********************************************************************
 #
@@ -38,9 +38,10 @@
 showUsage () {
   echo "usage: $0 <args>"
   echo "Arguments:"
-  echo "-d or --directory :   The build directory"
-  echo "-t or --tag :   Build using a tagged version"
-  echo "-v or --verbose :   Be vocal about things"
+  echo "-d or --directory :	The build directory"
+  echo "-t or --tag :		Build using a tagged version"
+  echo "-v or --verbose :	Be vocal about things"
+  echo "--no-export :		Don't remove/export sources (assume checked-out)"
   echo
   echo "ENVVARS:"
   echo "	CVSROOT"
@@ -96,6 +97,11 @@ while [ "$1" != "" ] ; do
     "-v" | "--verbose" )
 
       Verbose=/bin/true
+      ;;
+
+    "--no-export" )
+
+      NoRM=/bin/true
       ;;
 
   esac;
@@ -182,14 +188,18 @@ fi
 #
 ## Create a build directory
 #
-/bin/rm -rf $BuildDir
-/bin/mkdir -p $BuildDir
+if [ ! "${NoRM}" ] ; then
+	/bin/rm -rf $BuildDir
+	/bin/mkdir -p $BuildDir
+fi
 cd $BuildDir
 
 #
 ## Export the sources
 #
-cvs export $BuildVersion openmap
+if [ ! "${NoRM}" ] ; then
+	cvs export $BuildVersion openmap
+fi
 cd openmap
 
 #
@@ -231,10 +241,13 @@ javadoc -J-ms64m -J-mx64m -version -d ../docs/api $DocPackages
 /bin/grep -v "package com.bbn.openmap.app;" com/bbn/openmap/app/OpenMap.java > ../examples/openmap/OpenMap.java
 
 #
-## Add scripts
+## Create extra directories and copy config files
 #
 /bin/mkdir -p ../etc
-/bin/cp -r etc/scripts ../etc/
+/bin/mkdir -p ../bin
+/bin/mkdir -p ../lib
+/bin/cp etc/scripts/OpenMap ../bin
+/bin/cp etc/scripts/OpenMap.bat ../bin
 /bin/cp etc/*.html ../etc/
 /bin/cp etc/overlays.txt ../etc/
 /bin/cp etc/README-install ../
@@ -244,17 +257,24 @@ javadoc -J-ms64m -J-mx64m -version -d ../docs/api $DocPackages
 #
 ## Add other jar files
 #
-#if cp /usr/local/matt/openmap/common/lib/assembler3.jar $BuildDir/; then
-#  echo "++Copied assembler jar";
-#else
-#  echo "++Copy failed: assembler jar";
-#  exit 1;
-#fi
-
-if /bin/cp $OpenMapClassPath $BuildDir/; then
-  echo "++Copied cspec jar";
+if /bin/cp $OpenMapClassPath $BuildDir/lib; then
+  echo "++Copied $OpenMapClassPath";
 else
-  echo "++Copy failed: cspec jar";
+  echo "++Copy failed: $OpenMapClassPath";
+  exit 1;
+fi
+
+if /bin/cp $SwingClassPath $BuildDir/lib; then
+  echo "++Copied $SwingClassPath";
+else
+  echo "++Copy failed: $SwingClassPath";
+  exit 1;
+fi
+
+if /bin/mv $BuildDir/openmap.jar $BuildDir/lib; then
+  echo "++Copied openmap.jar";
+else
+  echo "++Copy failed: openmap.jar";
   exit 1;
 fi
 
@@ -263,7 +283,7 @@ fi
 
 # Create packages in tar.Z, tar.gz, and zip format
 
-PkgFiles="$BeanName/openmap.jar $BeanName/cspec58.jar $BeanName/docs $BeanName/examples $BeanName/etc $BeanName/README*"
+PkgFiles="$BeanName/docs $BeanName/examples $BeanName/etc $BeanName/lib $BeanName/README*"
 
 cd $BuildDir/..
 tar cf $BuildDir/$BeanName.tar $PkgFiles
