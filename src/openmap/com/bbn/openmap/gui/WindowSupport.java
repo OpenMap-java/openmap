@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/02/02 22:52:25 $
+// $Revision: 1.14 $
+// $Date: 2004/02/06 00:01:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -251,8 +251,10 @@ public class WindowSupport extends ListenerSupport
             content.setSize(dim);
         }
 
-        int x = 10;
-        int y = 10;
+        // -1 is a flag for the positioning code to recenter the
+        // -window on the owner if it's not null, for JDialogs.
+        int x = -1; // these are now initialised at -1 instead of 10
+        int y = -1; // these are now initialised at -1 instead of 10
             
         Point loc = getComponentLocation();
         if (loc != null) {
@@ -341,6 +343,9 @@ public class WindowSupport extends ListenerSupport
         } else if (dialog != null) {
             dialog.pack();
             checkBounds(dialog, x, y, width, height);
+            if (owner != null && x < 0 && y < 0) {
+                dialog.setLocationRelativeTo(owner);
+            }
             dialog.show();
         }
     }
