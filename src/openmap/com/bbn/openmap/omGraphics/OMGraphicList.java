@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/03/13 16:58:54 $
+// $Revision: 1.5 $
+// $Date: 2003/06/25 15:33:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1680,4 +1680,17 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * OMGraphicList.  Does nothing for a generic OMGraphicList.
      */
     public void sort() {}
+
+    /**
+     * Convenience method to cast an object to an OMGraphic if it is
+     * one.  Returns null if it isn't.
+     */
+    protected OMGraphic objectToOMGraphic(Object obj) {
+	if (obj instanceof OMGraphic) {
+	    return (OMGraphic)obj;
+	} else {
+	    return null;
+	}
+    }
+
 }

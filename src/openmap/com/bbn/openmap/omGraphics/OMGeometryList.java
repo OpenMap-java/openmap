@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometryList.java,v $
 // $RCSfile: OMGeometryList.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/05 05:45:54 $
+// $Revision: 1.4 $
+// $Date: 2003/06/25 15:33:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -427,6 +427,28 @@ public class OMGeometryList extends OMGraphicList
      */
     public OMGeometry findClosestGeometry(int x, int y, float limit) {
 	return _findClosest(x, y, limit).omg;
+    }
+
+    /**
+     * This method returns an OMGraphic if the thing that is found
+     * closest to the coordinates is an OMGraphic.  It mose likely is
+     * an OMGeometry, so it can return null if it found something
+     * close to the coordinates that isn't an OMGraphic.
+     */
+    public OMGraphic findClosest(int x, int y, float limit) {
+	return objectToOMGraphic(super.findClosest(x, y, limit));
+    }
+
+    /**
+     * This method returns an OMGraphic if the thing that is found
+     * closest to the coordinates is an OMGraphic.  It mose likely is
+     * an OMGeometry, so it can return null if it found something
+     * close to the coordinates that isn't an OMGraphic.  It will tell
+     * anything it finds to be selected, however, whether it is an
+     * OMGraphic or OMGeometry.
+     */
+    public OMGraphic selectClosest(int x, int y, float limit) {
+	return objectToOMGraphic(super.selectClosest(x, y, limit));
     }
 
     /**

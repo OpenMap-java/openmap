@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/FilterSupport.java,v $
 // $RCSfile: FilterSupport.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/06/25 15:33:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -97,6 +97,11 @@ public class FilterSupport implements OMGraphicHandler {
 	if (shapeBoundary != null) {
 	    area = new Area(shapeBoundary);
 	}
+
+	if (Debug.debugging("filtersupportdetail")) {
+	    Debug.output(getList().getDescription());
+	}
+
 	return filterList(getList(), area, getInsideBoundary);
     }
 
@@ -108,28 +113,72 @@ public class FilterSupport implements OMGraphicHandler {
 				       Area area, boolean getInsideArea) {
 	
 	OMGraphicList ret = new OMGraphicList();
+	boolean DEBUG_DETAIL = Debug.debugging("filtersupportdetail");
+	boolean DEBUG = Debug.debugging("filtersupport") || DEBUG_DETAIL;
+
+	if (DEBUG) {
+	    Debug.output("FilterSupport.filterList");
+	}
+
+	int count = 0; // for debugging
 
 	if (area != null && omgl != null) { // just checking
-	    Iterator it = list.iterator();
+	    Iterator it = omgl.iterator();
 
 	    while (it.hasNext()) {
 		OMGraphic omg = (OMGraphic)it.next();
+
+		if (DEBUG) {
+		    Debug.output("FilterSupport.filterList evaluating " + (count++) + 
+				 " OMGraphic, " + omg);
+		}
+
 		boolean outsideFilter = true;
 
 		// If not visible, automatically fails...
-		if (!omg.isVisible()) continue;
+		if (!omg.isVisible()) {
+		    if (DEBUG) {
+			Debug.output("   OMGraphic not visible, ignoring");
+		    }
+		    continue;
+		}
 
 		if (omg instanceof OMGraphicList) {
 
-		    OMGraphicList subList = filterList((OMGraphicList)omg, area, getInsideArea);
+		    if (omg == omgl) {
+			Debug.output("   OMGraphic is parent list (points to itself), ignoring...");
+			continue;
+		    }
+
+		    if (DEBUG) {
+			Debug.output("  (filterList recursiving handing OMGraphicList)");
+		    }
+
+		    OMGraphicList subList = 
+			filterList((OMGraphicList)omg, area, getInsideArea);
 
 		    if (!subList.isEmpty()) {
+			if (DEBUG) {
+			    Debug.output("  +++ OMGraphicList's contents (" + 
+					 subList.size() + ") pass filter, adding...");
+			}
 			ret.add(subList);
+		    } else {
+			if (DEBUG) {
+			    Debug.output("  --- OMGraphicList's contents fail filter, ignoring...");
+			}
+
+			omg.setVisible(false);
 		    }
+		    continue;
 		} else {
 		    Shape omgShape = omg.getShape();
 		    if (omgShape != null && 
 			area.intersects(omgShape.getBounds2D())) {
+
+			if (DEBUG_DETAIL) {
+			    Debug.output("   +++ omg intersects bounds");
+			}
 
 			// The area.interects() method above is a
 			// general case.  If you care about
@@ -152,8 +201,16 @@ public class FilterSupport implements OMGraphicHandler {
 		    // getInsideArea
 		    if ((outsideFilter && !getInsideArea) ||
 			(!outsideFilter && getInsideArea)) {
+
+			if (DEBUG) {
+			    Debug.output("   +++ OMGraphic passes filter, adding...");
+			}
+
 			ret.add(omg);
 		    } else {
+			if (DEBUG) {
+			    Debug.output("   --- OMGraphic fails filter, hiding...");
+			}
 			omg.setVisible(false);
 		    }
 

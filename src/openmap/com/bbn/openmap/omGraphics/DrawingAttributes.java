@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/02 14:24:02 $
+// $Revision: 1.3 $
+// $Date: 2003/06/25 15:33:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -93,38 +93,58 @@ public class DrawingAttributes
 
     /** The name of the property that holds the line paint of the graphics. */
     public final static String linePaintProperty = "lineColor";
-    /** The name of the property that holds the text paint for Text,
-     *  in case that should be different for labels, etc.. */
+    /**
+     * The name of the property that holds the text paint for Text,
+     * in case that should be different for labels, etc. 
+     */
     public final static String textPaintProperty = "textColor";
     /** The name of the property that holds the fill paint of the graphics. */
     public final static String fillPaintProperty = "fillColor";
-    /** The name of the property that holds the select paint of the
-     *  graphics, which is the line paint that gets set with the
-     *  default OMGraphic.select() action. */
+    /**
+     * The name of the property that holds the select paint of the
+     * graphics, which is the line paint that gets set with the
+     * default OMGraphic.select() action. 
+     */
     public final static String selectPaintProperty = "selectColor";
-    /** The property that specifies an URL or file a image file to be
-     *  used to construct the Paint object for a texture fill pattern.
-     *  If the fillPattern is null, the fillPaint will be used. */
+    /**
+     * The name of the property that holds the matting paint of the
+     * graphics, which is the wider line paint that gets set when
+     * matting is enabled. 
+     */
+    public final static String mattingPaintProperty = "mattingColor";
+    /**
+     * The property that specifies an URL or file a image file to be
+     * used to construct the Paint object for a texture fill pattern.
+     * If the fillPattern is null, the fillPaint will be used. 
+     */
     public static final String fillPatternProperty = "fillPattern";
     /** The name of the property that holds the lineWidth of the graphics. */
     public final static String lineWidthProperty = "lineWidth";
-    /** The name of the property that holds a dashed pattern for
-     *  lines. This will be used to build the stroke object for
-     *  lines. This pattern should be two space-separated numbers, the
-     *  first representing the pixel length of the line in the dash,
-     *  the second being the space pixel length of the dash. */
+    /**
+     * The name of the property that holds a dashed pattern for
+     * lines. This will be used to build the stroke object for
+     * lines. This pattern should be two space-separated numbers, the
+     * first representing the pixel length of the line in the dash,
+     * the second being the space pixel length of the dash. 
+     */
     public final static String dashPatternProperty = "dashPattern";
-    /** The name of the property that holds a dashed phase for
-     *  lines. This will be used to build the stroke object for
-     *  lines. */
+    /**
+     * The name of the property that holds a dashed phase for
+     * lines. This will be used to build the stroke object for
+     * lines. 
+     */
     public final static String dashPhaseProperty = "dashPhase";
-    /** The base scale to use for the image provided for the fill
-     *  pattern.  As the scale of the map changes, the base scale can
-     *  be used as a reference to change the resolution of the
-     *  pattern. This scale will also be used for strokes. */
+    /**
+     * The base scale to use for the image provided for the fill
+     * pattern.  As the scale of the map changes, the base scale can
+     * be used as a reference to change the resolution of the
+     * pattern. This scale will also be used for strokes. 
+     */
     public static final String baseScaleProperty = "baseScale";
-    /** Set whether a thin black matting should be drawing around the
-     *  OMGraphic.*/
+    /**
+     * Set whether a thin black matting should be drawing around the
+     * OMGraphic.
+     */
     public static final String mattedProperty = "matted";
 
     public final static int NONE = -1;
@@ -133,8 +153,10 @@ public class DrawingAttributes
     public final static String defaultLinePaintString = "0"; // black
     /** The default fill paint. (none) */
     public final static String defaultFillPaintString = "-1"; // none
-    /** The default fill paint. (none) */
+    /** The default fill paint. (black) */
     public final static String defaultSelectPaintString = "0"; // black
+    /** The default matting paint. (black) */
+    public final static String defaultMattingPaintString = "0"; // black
     /** The default line width */
     public final static float defaultLineWidth = 1f;
     /** The default dash phase, which is zero. */
@@ -150,6 +172,9 @@ public class DrawingAttributes
     protected Paint selectPaint = Color.black;
     /** The paint to fill the shapes. */
     protected Paint fillPaint = OMColor.clear;
+    /** The paint to use for matting. */
+    protected Paint mattingPaint = OMColor.black;
+
     /**
      * A TexturePaint pattern, if defined. Overrules fillPaint if
      * fillPaint is null or clear. 
@@ -169,9 +194,16 @@ public class DrawingAttributes
     protected boolean matted = false;
 
     protected String propertyPrefix = null;
-    String fPattern = null; // for writing out the properties
+    protected String fPattern = null; // for writing out the properties
+    /**
+     * A good ol' generic DrawingAttributes object for all to
+     * use. Black lines, clear fill paint. 
+     */
     public final static DrawingAttributes DEFAULT = new DrawingAttributes();
 
+    /**
+     * Support object to notify listeners when something has changed.
+     */
     protected PropertyChangeSupport propertyChangeSupport = null;
 
     /** The organizer for the palette. */
@@ -180,14 +212,17 @@ public class DrawingAttributes
     public final static String LineColorCommand = "LineColor";
     /** Command for fill color string adjustments. */
     public final static String FillColorCommand = "FillColor";
-    /** Command for select  color string adjustments. */
+    /** Command for select color string adjustments. */
     public final static String SelectColorCommand = "SelectColor";
+    /** Command for matting color string adjustments. */
+    public final static String MattingColorCommand = "MattingColor";
     /** Command for adding matting. */
     public final static String MattedCommand = "MattedCommand";
 
     private JButton lineColorButton;
     private JButton fillColorButton;
     private JButton selectColorButton;
+    private JButton mattingColorButton;
     private JCheckBox mattedCheckBox;
     private JComboBox lineCombo;
     private JComboBox dashCombo;
@@ -244,6 +279,7 @@ public class DrawingAttributes
 	clone.textPaint = textPaint;
 	clone.selectPaint = selectPaint;
 	clone.fillPaint = fillPaint;
+	clone.mattingPaint = mattingPaint;
 	clone.fillPattern = fillPattern;
 	clone.setStroke(stroke);
 	clone.baseScale = baseScale;
@@ -255,6 +291,7 @@ public class DrawingAttributes
 		da.textPaint == textPaint && 
 		da.selectPaint == selectPaint && 
 		da.fillPaint == fillPaint && 
+		da.mattingPaint == mattingPaint &&
 		da.fillPattern == fillPattern && 
 		da.stroke == stroke && 
 		da.baseScale == baseScale &&
@@ -469,6 +506,37 @@ public class DrawingAttributes
     }
 
     /**
+     * Set the matting paint for the graphics created for the coverage
+     * type.  The matting paint is the paint used for the matting line
+     * painted around the edge, two pixels wider than the edge line
+     * width.  Black by default, only painted when the matting
+     * variable is set to true.
+     * @param mPaint the paint.  
+     */
+    public void setMattingPaint(Paint mPaint) {
+	Paint oldPaint = mattingPaint;
+	mattingPaint = mPaint;
+	
+	if (mattingPaint instanceof Color && mattingColorButton != null) {
+ 	    mattingColorButton.setBackground((Color)mattingPaint);
+	    mattingColorButton.setForeground(calculateTextColor((Color)mattingPaint));
+	}
+
+	propertyChangeSupport.firePropertyChange("mattingPaint", 
+						 oldPaint, 
+						 mattingPaint);
+    }
+
+    /**
+     * Get the matting paint for the OMGraphics
+     *
+     * @return the matting paint to use for the areas.  
+     */
+    public Paint getMattingPaint() {
+	return mattingPaint;
+    }
+
+    /**
      * Set the fill pattern TexturePaint to be used as the fill color.
      * If not null, the fillPattern will be returned from
      * getFillPaint() instead of fillPaint.
@@ -551,6 +619,7 @@ public class DrawingAttributes
     public void setFrom(OMGraphic graphic) {
 
 	matted = graphic.isMatted();
+	mattingPaint = graphic.getMattingPaint();
 
 	if (graphic instanceof OMText) {
 	    // Seems like we should have a setTextPaint method for 
@@ -610,6 +679,7 @@ public class DrawingAttributes
 	}
 
 	graphic.setMatted(matted);
+	graphic.setMattingPaint(mattingPaint);
     }
 
     /**
@@ -738,6 +808,13 @@ public class DrawingAttributes
 	    if (tmpPaint != null) {
  		setSelectPaint(tmpPaint);
 	    }
+	} else if (command == MattingColorCommand && 
+		   mattingPaint instanceof Color) {
+	    tmpPaint = getNewPaint((Component)source, "Choose Matting Color", 
+				   (Color)selectPaint);
+	    if (tmpPaint != null) {
+ 		setMattingPaint(tmpPaint);
+	    }
 	} else if (command == MattedCommand) {
 	    JCheckBox check = (JCheckBox)e.getSource();
 	    setMatted(check.isSelected());
@@ -746,11 +823,6 @@ public class DrawingAttributes
 		Debug.output("DrawingAttributes.actionPerformed: unrecognized command > " + command);
 	    }
 	}
-    }
-
-    public void PropertyChange(PropertyChangeEvent event) {
-	// getSource();
-	// getNewValue();
     }
 
     /**
@@ -984,6 +1056,11 @@ public class DrawingAttributes
 	    LayerUtils.parseColorFromProperties(
 		props, realPrefix + selectPaintProperty,
 		selectPaint);
+
+	mattingPaint =
+	    LayerUtils.parseColorFromProperties(
+		props, realPrefix + mattingPaintProperty,
+		mattingPaint);
 	
 	textPaint =
 	    LayerUtils.parseColorFromProperties(
@@ -1156,6 +1233,10 @@ public class DrawingAttributes
 	    props.put(prefix + selectPaintProperty, 
 		      Integer.toHexString(((Color)selectPaint).getRGB()));
 	}
+	if (mattingPaint instanceof Color) {
+	    props.put(prefix + mattingPaintProperty, 
+		      Integer.toHexString(((Color)mattingPaint).getRGB()));
+	}
 
 	props.put(prefix + fillPatternProperty, 
 		  (fPattern==null?"":fPattern));
@@ -1230,6 +1311,10 @@ public class DrawingAttributes
 	list.put(selectPaintProperty + ScopedEditorProperty, 
 		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
+	list.put(mattingPaintProperty, "Matting edge color for graphics.");
+	list.put(mattingPaintProperty + ScopedEditorProperty, 
+		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+
 	list.put(fillPatternProperty, "Image file to use for fill pattern for graphics (optional).");
 	list.put(fillPatternProperty + ScopedEditorProperty, 
 		 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
@@ -1245,11 +1330,13 @@ public class DrawingAttributes
 	list.put(mattedProperty + ScopedEditorProperty,
 		 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
 
+	list.put(initPropertiesProperty, getInitPropertiesOrder());
+
 	return list;
     }
 
     public String getInitPropertiesOrder() {
-	return " " + linePaintProperty + " " + selectPaintProperty + " " + fillPaintProperty + " " + textPaintProperty + " " + fillPatternProperty + " " + mattedProperty + " " + lineWidthProperty + " " + dashPatternProperty + " " + dashPhaseProperty;
+	return " " + linePaintProperty + " " + selectPaintProperty + " " + fillPaintProperty + " " + textPaintProperty + " " + mattingPaintProperty + " " + fillPatternProperty + " " + mattedProperty + " " + lineWidthProperty + " " + dashPatternProperty + " " + dashPhaseProperty;
     }
 
     /**
@@ -1284,11 +1371,83 @@ public class DrawingAttributes
 	sb.append("linePaint(" + linePaint + "), ");
 	sb.append("selectPaint(" + selectPaint + "), ");
 	sb.append("textPaint(" + textPaint + "), ");
+	sb.append("mattingPaint(" + mattingPaint + "), ");
 	sb.append("fillPaint(" + fillPaint + "), ");
 	sb.append("fillPattern(" + fillPattern + "), ");
 	sb.append("stroke(" + stroke + "), ");
 	sb.append("baseScale(" + baseScale + "), ");
 	sb.append("matted(" + new Boolean(matted).toString() + ")]");
 	return sb.toString();
+    }
+
+    /**
+     * Render the Shape into the Graphics2D object, using the
+     * mattingPaint, fillPaint, fillPattern, linePaint and stroke
+     * contained in this DrawingAttributes object.
+     */
+    public void render(Graphics2D g, Shape shape) {
+	render(g, shape, false);
+    }
+    /**
+     * Render the Shape into the Graphics2D object, using the
+     * mattingPaint, fillPaint, fillPattern, linePaint and stroke
+     * contained in this DrawingAttributes object.
+     * @param g java.awt.Graphics2D object to render into
+     * @param shape java.awt.Shape to draw
+     * @param replaceColorWithGradient flag to specify replacement of
+     * fill and edge colors with a GradientPaint to give a light to
+     * dark look.
+     */
+    public void render(Graphics2D g, Shape shape, 
+		       boolean replaceColorWithGradient) {
+
+	if (matted) {
+	    if (stroke instanceof BasicStroke) {
+		g.setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
+		g.setPaint(mattingPaint);
+		g.draw(shape);
+	    }
+	}
+
+	if (!OMGraphic.isClear(fillPaint)) {
+	    g.setStroke(OMGraphicConstants.BASIC_STROKE);
+
+	    if (replaceColorWithGradient) {
+		g.setPaint(getGradientPaintForShape(shape, fillPaint));
+	    } else {
+		g.setPaint(fillPaint);
+	    }
+
+	    g.fill(shape);
+
+	    if (fillPattern != null && fillPattern != fillPaint) {
+		g.setPaint(fillPattern);
+		g.fill(shape);
+	    }
+	}
+	
+	if (linePaint != fillPaint) {
+	    g.setStroke(getStroke());
+	    if (replaceColorWithGradient) {
+		g.setPaint(getGradientPaintForShape(shape, linePaint));
+	    } else {
+		g.setPaint(linePaint);
+	    }
+	    g.draw(shape);
+	}
+    }
+
+    public Paint getGradientPaintForShape(Shape shape, Paint paint) {
+	if (paint instanceof Color) {
+	    Color color = (Color)fillPaint;
+	    Rectangle rect = shape.getBounds();
+	    paint = new GradientPaint((float)rect.getWidth()*.3f,
+				      (float)rect.getHeight()*.3f, 
+				      color.brighter().brighter(),
+				      (float)rect.getWidth()*.7f, 
+				      (float)rect.getHeight()*.7f, 
+				      color.darker().darker());
+	}
+	return paint;
     }
 }

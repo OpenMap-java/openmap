@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/07 16:27:58 $
+// $Revision: 1.3 $
+// $Date: 2003/06/25 15:33:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -94,6 +94,12 @@ public abstract class OMGraphic extends BasicGeometry
     protected Paint linePaint = Color.black;
 
     /** 
+     * This paint is used for the matting area around the edge of an
+     * OMGraphic painted when the matted variable is set to true.
+     */
+    protected Paint mattingPaint = Color.black;
+
+    /** 
      * The color that the object is displayed with.  This color
      * changes back and forth between the selectColor and the lineColor,
      * depending on the if the object is selected or not.
@@ -168,6 +174,12 @@ public abstract class OMGraphic extends BasicGeometry
      */
     protected int declutterType = DECLUTTERTYPE_NONE;
 
+    /**
+     * Flag for determining when the matting around the edge of an
+     * OMGraphic.  Matting is a line, two pixels wider than the edge,
+     * painted under the edge.  It makes the OMGraphic stand out on
+     * busy backgrounds.
+     */
     protected boolean matted = false;
 
     /**
@@ -648,6 +660,20 @@ public abstract class OMGraphic extends BasicGeometry
     }
 
     /**
+     * Set the Paint used for matting.
+     */
+    public void setMattingPaint(Paint mPaint) {
+	mattingPaint = mPaint;
+    }
+
+    /**
+     * Get the Paint used for matting.
+     */
+    public Paint getMattingPaint() {
+	return mattingPaint;
+    }
+
+    /**
      * Set the Stroke that should be used for the graphic edges.
      * Using a BasicStroke, you can set a stroke that defines the line
      * width, the dash interval and phase.  If a null value is passed
@@ -737,8 +763,6 @@ public abstract class OMGraphic extends BasicGeometry
      */
     public abstract boolean generate(Projection proj);
 
-    public Paint mattedColor = Color.black;
-
     /**
      * Paint the graphic.
      * This paints the graphic into the Graphics context.  This is
@@ -760,7 +784,7 @@ public abstract class OMGraphic extends BasicGeometry
 	    if (g instanceof Graphics2D && 
 		stroke instanceof BasicStroke) {
 		((Graphics2D)g).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
-		setGraphicsColor(g, mattedColor);
+		setGraphicsColor(g, mattingPaint);
 		draw(g);
 	    }
 	}
