@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/etopo/ETOPOLayer.java,v $
 // $RCSfile: ETOPOLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/05 18:15:07 $
+// $Revision: 1.6 $
+// $Date: 2004/05/10 21:12:05 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -571,11 +571,8 @@ public class ETOPOLayer extends Layer implements ActionListener {
 
         try {
 
-            // open file
-            File file = new File(fileName);
-
             // treat as buffered binary
-            BinaryBufferedFile binFile = new BinaryBufferedFile(file);
+            BinaryBufferedFile binFile = new BinaryBufferedFile(fileName);
             binFile.byteOrder(true);
 
             // set width/height
