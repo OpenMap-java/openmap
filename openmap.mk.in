@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
 # $RCSfile: openmap.mk.in,v $
-# $Revision: 1.1 $
-# $Date: 1998/10/26 18:25:39 $
+# $Revision: 1.2 $
+# $Date: 1998/10/30 21:20:05 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -29,6 +29,11 @@
 # ------------------------------------------------------------
 #srcdir = @srcdir@
 #top = @top_srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+libdir = @libdir@
+
 JAVA = @JAVA@
 JAVAC = @JAVAC@
 SWING_JAR = @SWING_JAR@
@@ -47,6 +52,8 @@ JFLAGS = $(JFLAGS_DEV)
 #
 # These use GNU install
 INSTALL.dir =		install --directory
+INSTALL.jar =		install --mode=444
+INSTALL.bin =		install --mode=555
 INSTALL.class =		install --mode=444
 INSTALL.image =		install --mode=444
 INSTALL.props =		install --mode=444

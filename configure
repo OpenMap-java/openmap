@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.1 
+# From configure.in OpenMap Revision: 1.2 
 
 
 
@@ -763,6 +763,9 @@ if test "x$with_corba" = "xyes"; then
   
   CORBA_CLASSPATH=:/home/tmitchel/jars/vbjall.jar:/home/tmitchel/jars/cspec58.jar
   
+  CORBA_DIRS=com/bbn/openmap/specialist/Makefile \
+		com/bbn/openmap/specialist/vpf/Makefile \
+		com/bbn/openmap/corba/Makefile
 fi
 
 trap '' 1 2 15
@@ -879,6 +882,7 @@ ac_given_srcdir=$srcdir
 
 trap 'rm -fr `echo "openmap.mk
 	Makefile
+	bin/openmap
 	com/Makefile
 	com/bbn/Makefile
 	com/bbn/util/Makefile
@@ -902,10 +906,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/shape/Makefile
 	com/bbn/openmap/terrain/Makefile
 	com/bbn/openmap/vpf/Makefile
-	com/bbn/openmap/dcwSpecialist/Makefile
-	com/bbn/openmap/specialist/Makefile
-	com/bbn/openmap/specialist/vpf/Makefile
-	com/bbn/openmap/corba/Makefile
+	$CORBA_DIRS
 	" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
@@ -988,6 +989,7 @@ cat >> $CONFIG_STATUS <<EOF
 
 CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	Makefile
+	bin/openmap
 	com/Makefile
 	com/bbn/Makefile
 	com/bbn/util/Makefile
@@ -1011,10 +1013,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/shape/Makefile
 	com/bbn/openmap/terrain/Makefile
 	com/bbn/openmap/vpf/Makefile
-	com/bbn/openmap/dcwSpecialist/Makefile
-	com/bbn/openmap/specialist/Makefile
-	com/bbn/openmap/specialist/vpf/Makefile
-	com/bbn/openmap/corba/Makefile
+	$CORBA_DIRS
 	"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF

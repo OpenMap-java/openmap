@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.1 $
-# $Date: 1998/10/26 18:25:39 $
+# $Revision: 1.2 $
+# $Date: 1998/10/30 21:20:02 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -32,44 +32,78 @@ TOP = @top_srcdir@
 include ${TOP}/openmap.mk
 
 
+#####################
+# variable settings #
+#####################
+
+CORE.JAR =	com/bbn/util/*.class \
+		com/bbn/util/cacheHandler/*.class \
+		com/bbn/util/stateMachine/*.class \
+		com/bbn/openmap/*.class \
+		com/bbn/openmap/*.gif \
+		com/bbn/openmap/app/*.class \
+		com/bbn/openmap/dted/*.class \
+		com/bbn/openmap/event/*.class \
+		com/bbn/openmap/examples/*.class \
+		com/bbn/openmap/gui/*.class \
+		com/bbn/openmap/gui/*.gif \
+		com/bbn/openmap/html/*.class \
+		com/bbn/openmap/http/*.class \
+		com/bbn/openmap/nitf/*.class \
+		com/bbn/openmap/omGraphics/*.class \
+		com/bbn/openmap/pluginLayer/*.class \
+		com/bbn/openmap/proj/*.class \
+		com/bbn/openmap/rpf/*.class \
+		com/bbn/openmap/shape/*.class \
+		com/bbn/openmap/terrain/*.class \
+		com/bbn/openmap/util/*.class \
+		com/bbn/openmap/vpf/*.class \
+		com/boutell/gd/*.class
 
 #########
 # rules #
 #########
 
+default:	om_core
+
 # java compile OpenMap code
-all:
-	cd com && $(MAKE) $@
+om_core:
+	cd com && $(MAKE) all
+
+jar: 	om_core lib/openmap.jar
+
+all:	om_core jar
 
 clean:
 	cd com && $(MAKE) $@
 
-install:
+distclean:	clean
+	$(RM) Makefile openmap.mk bin/openmap
 	cd com && $(MAKE) $@
 
-#----------------------------------------------------------------------
-# OpenMap targets
-#----------------------------------------------------------------------
+lib:
+	${INSTALL.dir} $@
 
-#include scripts.mk
+lib/openmap.jar: lib
+	jar cvf $@ ${CORE.JAR}
 
-# changes the hardcoded version information in the java code and in
-# the etc/scripts directory, recompiles OpenMap and makes a jar file
-# of the new version.
-build-version:
-	$(MAKE) newversion
-	$(MAKE) openmap-version
 
-build-major-version:
-	$(MAKE) majorversion
-	$(MAKE) openmap-version
+################
+# installation #
+################
 
-openmap-version:
-	$(MAKE) all
-	$(MAKE) openmap-version.jar -f scripts.mk
+${bindir}:
+	${INSTALL.dir} $@
 
-openmap.jar:
-	jar cf openmap.jar $(OPENMAP.JAR)
+${libdir}:
+	${INSTALL.dir} $@
 
-applet.jar:
-	jar cf applet.jar $(APPLET.JAR)
+${bindir}/openmap: ${bindir} bin/openmap
+	${INSTALL.bin} bin/opemmap $@
+
+install::	${bindir}/openmap
+
+${libdir}/openmap.jar: ${libdir} lib/openmap.jar
+	${INSTALL.jar} lib/openmap.jar $@
+
+install::	${libdir}/openmap.jar
