@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DescribeDB.java,v $
 // $RCSfile: DescribeDB.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:08 $
+// $Revision: 1.4 $
+// $Date: 2004/12/08 01:04:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -152,8 +152,8 @@ public class DescribeDB {
         print(prefix, "FeatureClassNames: ");
         println("");
         Hashtable info = ct.getFeatureTypeInfo();
-        for (Enumeration enum = info.elements(); enum.hasMoreElements();) {
-            CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec) enum.nextElement();
+        for (Enumeration enumerator = info.elements(); enumerator.hasMoreElements();) {
+            CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec) enumerator.nextElement();
 
             String tstring = "[unknown] ";
             if (fcr.type == CoverageTable.TEXT_FEATURETYPE) {

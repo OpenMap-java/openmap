@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFileSearch.java,v $
 // $RCSfile: RpfFileSearch.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:03 $
+// $Revision: 1.6 $
+// $Date: 2004/12/08 01:04:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -96,8 +96,8 @@ public class RpfFileSearch {
 
             try {
                 java.lang.reflect.Method method = file.getClass()
-                        .getDeclaredMethod("isDirectory", null);
-                Object obj = method.invoke(file, null);
+                        .getDeclaredMethod("isDirectory", (Class[])null);
+                Object obj = method.invoke(file, (Object[])null);
                 if (obj instanceof Boolean) {
                     dirTest = ((Boolean) obj).booleanValue();
                 }

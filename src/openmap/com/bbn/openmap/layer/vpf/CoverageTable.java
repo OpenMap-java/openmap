@@ -12,17 +12,24 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageTable.java,v $
-// $Revision: 1.8 $ $Date: 2004/10/14 18:06:08 $ $Author: dietrick $
+// $Revision: 1.9 $ $Date: 2004/12/08 01:04:23 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.io.*;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Encapsulate a VPF coverage directory. This class handles requests
@@ -444,8 +451,8 @@ public class CoverageTable {
 
         List featureList = warehouse.getFeatures();
 
-        for (Iterator enum = featureList.iterator(); enum.hasNext();) {
-            String currentFeature = (String) enum.next();
+        for (Iterator it = featureList.iterator(); it.hasNext();) {
+            String currentFeature = (String) it.next();
 
             // Figure out if the feature should be rendered, depending
             // on what the warehouse settings are (drawedges,

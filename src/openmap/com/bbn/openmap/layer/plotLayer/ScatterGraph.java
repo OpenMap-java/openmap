@@ -16,20 +16,29 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/ScatterGraph.java,v
 // $
 // $RCSfile: ScatterGraph.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:02 $
+// $Revision: 1.4 $
+// $Date: 2004/12/08 01:04:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.plotLayer;
 
-import java.util.*;
-import java.text.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Vector;
 
+import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.omGraphics.*;
 
 public class ScatterGraph {
 
@@ -382,10 +391,10 @@ public class ScatterGraph {
         return graphic;
     }
 
-    private Enumeration sortEnumerationOfFloats(Enumeration enum) {
+    private Enumeration sortEnumerationOfFloats(Enumeration enumeration) {
         Vector vec = new Vector();
-        while (enum.hasMoreElements()) {
-            vec.addElement(enum.nextElement());
+        while (enumeration.hasMoreElements()) {
+            vec.addElement(enumeration.nextElement());
         }
 
         Float[] result = new Float[vec.size()];

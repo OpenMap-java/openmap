@@ -14,16 +14,23 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFConfig.java,v $
 // $RCSfile: VPFConfig.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/11/26 03:46:56 $
+// $Revision: 1.10 $
+// $Date: 2004/12/08 01:04:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -588,8 +595,8 @@ public class VPFConfig extends JPanel implements ActionListener {
                                     CoverageTable ct) {
         int numFeatures = 0;
         Hashtable info = ct.getFeatureTypeInfo();
-        for (Enumeration enum = info.elements(); enum.hasMoreElements();) {
-            CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec) enum.nextElement();
+        for (Enumeration enumeration = info.elements(); enumeration.hasMoreElements();) {
+            CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec) enumeration.nextElement();
 
             if (fcr.type == CoverageTable.SKIP_FEATURETYPE) {
                 continue;

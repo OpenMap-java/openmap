@@ -12,15 +12,23 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibrarySelectionTable.java,v $
-// $Revision: 1.10 $ $Date: 2004/10/14 18:06:08 $ $Author: dietrick $
+// $Revision: 1.11 $ $Date: 2004/12/08 01:04:24 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.io.*;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -478,8 +486,8 @@ public class LibrarySelectionTable {
                         Debug.output("   Checking in coverage table " + covname);
                     CoverageTable ct = cat.getCoverageTable(covname);
                     Hashtable info = ct.getFeatureTypeInfo();
-                    for (Enumeration enum = info.elements(); enum.hasMoreElements();) {
-                        CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec) enum.nextElement();
+                    for (Enumeration enumeration = info.elements(); enumeration.hasMoreElements();) {
+                        CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec) enumeration.nextElement();
                         String name = fcr.feature_class;
                         if (coverageOrFeatureType.equalsIgnoreCase(name)) {
                             if (DEBUG)

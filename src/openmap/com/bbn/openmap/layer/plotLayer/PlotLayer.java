@@ -14,24 +14,34 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/PlotLayer.java,v $
 // $RCSfile: PlotLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:01 $
+// $Revision: 1.6 $
+// $Date: 2004/12/08 01:04:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.plotLayer;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.io.*;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Vector;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
+import javax.swing.JPanel;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.event.MapMouseListener;
+import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 
