@@ -11,6 +11,8 @@
     <property name="build.compiler" value="classic"/>
 
     <property name="openmap.home" value="."/>
+    <property name="openmap.class_dir" value="./classes"/>
+    <property name="openmap.classes" value="./classes/openmap"/>
     <!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR BATIK INSTALLATION -->
     <property name="batik.home" value="/usr/local/openmap/batik-1.1.1"/>
 
@@ -31,7 +33,8 @@
     <property name="svg.excludes" value="**/SVGFormatter.java"/>
     <property name="j3d.excludes" value="**/j3d/**, **/pilot/**"/>
 
-    <property name="personal.excludes" value=""/>
+    <property name="personal.excludes" value="**/OMShape.java,
+    **/gml/**, **/CloudImagePlugIn.java, **/EditableOMText.java, **/OMTextLoader.java"/>
 
     <property name="svg.jars" value="${batik.home}/lib/batik-svggen.jar;${batik.home}/lib/batik-awt-util.jar;${batik.home}/lib/batik-util.jar;${batik.home}/lib/batik-dom.jar;${batik.home}/lib/batik-ext.jar;${batik.home}/lib/batik-xml.jar;;${batik.home}/lib/batik-svggen.jar;${batik.home}/lib/batik-awt-util.jar;${batik.home}/lib/batik-util.jar;${batik.home}/lib/batik-dom.jar;${batik.home}/lib/batik-ext.jar;${batik.home}/lib/batik-xml.jar;${batik.home}/lib/batik-svg-dom.jar"/>
 
@@ -54,12 +57,6 @@
 		 includes="**/*.java, **/*.class" />
     </uptodate>
 
-    <uptodate property="contribBuild.notRequired"
-              targetfile="${openmap.home}/lib/omcontrib.jar" >
-       <srcfiles dir= "${openmap.home}/contrib"
-                 excludes="${javac.excludes}, ${dependency.excludes}"
-		 includes="**/*.java, **/*.class" />
-    </uptodate>
   </target>
 
   <!--  ############################
@@ -71,7 +68,7 @@
 	############################ -->  
 
   <target name="todo" 
-          depends="presvg, prej3d, visibroker, jars" 
+          depends="presvg, prej3d, visibroker, jar" 
           description="Compiles all of the OpenMap classes and builds jar files in lib directory, including the svg, j3d and corba packages."/>
 
   <target name="classes" 
@@ -79,23 +76,27 @@
           description="Compiles standard OpenMap classes."/>
 
   <target name="all" 
-          depends="jars" 
+          depends="jar" 
           description="Compiles standard OpenMap classes and creates
           the jar files."/>
 
-  <target name="jars"
+  <target name="jar"
           depends="classes"
 	  description="Builds jar files, placing them in the lib directory."
 	  unless="contribBuild.buildRequired, openmapBuild.buildRequired">
-    <jar jarfile="${openmap.home}/lib/omcontrib.jar"
-         basedir="${openmap.home}/contrib" includes="**/*.class"/>
 
     <jar jarfile="${openmap.home}/lib/openmap.jar" 
-         basedir="${openmap.home}"
-	 includes="openmap.properties, com/**/*.class, com/**/*.gif"/>
+         basedir="${openmap.classes}"
+	 includes="openmap.properties, com/**/*.class, com/**/*.gif,
+		   Acme/**/*.class, doppelt/**/*.class" 
+	 excludes="${corba.excludes}"/>
+
+<!-- omcore no longer created by default - remove these comments if
+     you need to create that jar file, which contains no layer or plugin
+     classes.
 
     <jar jarfile="${openmap.home}/lib/omcore.jar"
-         basedir="${openmap.home}"
+         basedir="${openmap.classes}"
          includes="openmap.properties,
 	           com/bbn/openmap/*.class,	
                    com/bbn/openmap/*.gif,	
@@ -121,26 +122,30 @@
                    com/bbn/openmap/tools/drawing/*.gif, 
                    com/bbn/openmap/util/*.class, 
                    com/bbn/openmap/util/quadtree/*.class, 
-                   com/bbn/openmap/image/*.class"/>
+                   com/bbn/openmap/image/*.class"
+	 excludes="${corba.excludes}"/>
+
+-->
+
   </target>    
   
   <!--  ############################
 	contrib relies on OpenMap Debug class - but we need to build it first.
 	############################ -->  
-  <target name="debug">
-    <javac srcdir="${openmap.home}"
+  <target name="debug" depends="init">
+    <mkdir dir="${openmap.classes}"/>
+    <javac srcdir="${openmap.home}" destdir="${openmap.classes}"    
            includes="com/bbn/openmap/util/Debug.java"/>
   </target>
 
   <!--  ############################
-	Standard target, to build evertything you can.
+	Standard target, to build everything you can.
 	############################ -->  
-  <target name="openmap" 
-          depends="contrib"
+  <target name="openmap" depends="contrib"
 	  description="Compiles the OpenMap classes.  Contrib classes compiled if needed.">
     <echo message="Building OpenMap classes..."/>
-    <javac srcdir="${openmap.home}"
-           classpath="${openmap.home}/lib/omcontrib.jar;${openmap.home}/contrib" 
+    <javac srcdir="${openmap.home}" destdir="${openmap.classes}"
+           classpath="${openmap.home}/lib/openmap.jar;${openmap.classes}" 
            excludes="${javac.excludes}, ${dependency.excludes}"/>
   </target>
 
@@ -148,12 +153,12 @@
 	Build all the packages that OpenMap code depends on, that are
 	from other people.
 	############################ -->  
-  <target name="contrib" 
-          depends="init, debug"
+  <target name="contrib" depends="debug"
 	  description="Compiles the contrib classes that OpenMap needs.">
     <echo message="Building OpenMap contrib classes..."/>
     <javac srcdir="${openmap.contrib}"
-           classpath="${openmap.home}/lib/openmap.jar;${openmap.home}"
+           destdir="${openmap.classes}"
+	   classpath="${openmap.home}/lib/openmap.jar;${openmap.classes}"
            excludes="${javac.excludes}, ${dependency.excludes}"/>
   </target>
 
@@ -179,37 +184,25 @@
 	Cleanup targets
 	############################ -->  
   <target name="clean" 
-          depends="clean_classes, clean_contrib, clean_jars"
+          depends="clean_classes, clean_jars"
 	  description="Delete jar files and all class files"/>
+
+  <target name="distclean"
+          depends="clean_classes, visibroker.distclean"
+	  description="Delete class files, but not the jar files."/>
 
   <target name="clean_all"
           depends="clean, clean_docs"
 	  description="Delete jar files, class files, and generated documentation."/>
 
-  <target name="distclean"
-          depends="clean_classes, clean_contrib, distclean_corba"
-	  description="Delete class files, but not the jar files."/>
-
   <target name="clean_classes" 
           depends="init"
 	  description="Delete the OpenMap class files.">
-    <delete>
-      <fileset dir="com/bbn/openmap" includes="**/*.class" />
-    </delete>
-  </target>
-
-  <target name="clean_contrib" 
-          depends="init"
-	  description="Delete only the class files in the contrib directory.">
-    <delete>
-      <fileset dir="contrib" includes="**/*.class" />
-    </delete>
+    <delete dir="${openmap.class_dir}" />
   </target>
 
   <target name="clean_jars"
           description="Delete only the jar files from the lib directory.">
-    <delete file="lib/omcontrib.jar"/>
-    <delete file="lib/omcore.jar"/>
     <delete file="lib/openmap.jar"/>
   </target>
 
@@ -227,11 +220,11 @@
 	End of cleanup targets.
 	############################ -->  
 
-<!--      depends="jars" -->
+<!--      depends="jar" -->
   <target name="run"
 	  description="Run the OpenMap application.">
     <java classname="com.bbn.openmap.app.OpenMap"
-          classpath="lib/openmap.jar:lib/omcontrib.jar"
+          classpath="lib/openmap.jar"
 	  fork="yes"/>
 
   </target>
@@ -245,13 +238,14 @@
 	  description="Compiles the SVG Formatter.">
     <echo message="Compiling SVG classes with ${svg.jars}"/>
     <javac srcdir="${openmap.home}"
+           destdir="${openmap.classes}"
            includes="${svg.excludes}"
-           classpath="${openmap.home}/lib/openmap.jar;${openmap.home};${svg.jars}"
+           classpath="${openmap.home}/lib/openmap.jar;${openmap.classes};${svg.jars}"
            excludes="${javac.excludes}"/>
   </target>
 
   <target name="svg" 
-          depends="init, presvg, jars"
+          depends="init, presvg, jar"
 	  description="Compiles the SVG Formatter and recreates the jars after compiling this target. You must have Batik (http://xml.apache.org/batik/index.html) installed.  (Call this to build SVG targets)">
     <echo message="SVG classes included in jar files."/>
   </target>
@@ -260,94 +254,68 @@
 
   <target name="visibroker.setup" depends="init">
     <!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR VISIBROKER INSTALLATION -->
+    <property name="openmap.vb_classes" value="${openmap.home}/classes/corba_vb"/>
     <property name="visibroker.home" value="/usr/local/openmap/vbroker-3.4/java"/>
     <property name="visibroker.jars" value="${visibroker.home}/lib/vbjapp.jar:${visibroker.home}/lib/vbjcosnm.jar:${visibroker.home}/lib/vbjtools.jar:${visibroker.home}/lib/vbjorb.jar"/>
-    <property name="visibroker.bootclasspath" value="${visibroker.jars}:${java.home}/lib/rt.jar:${openmap.home}:${openmap.home}/contrib"/>
+    <property name="visibroker.bootclasspath" value="${visibroker.jars}:${java.home}/lib/rt.jar:${openmap.classes}"/>
   </target>
 
   <target name="visibroker.idl" depends="visibroker.setup"
 	  description="Create stub classes from idl files and compile stubs.">
     <echo message="Creating CORBA stub classes from idls with Visibroker..."/>
+
     <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
 	<jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
 	<arg line='-root_dir ${openmap.home} -package com.bbn.openmap.layer.rpf.corba com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl'/>
      </java>
 
-     <javac srcdir="${openmap.home}"
-	    includes="**/CRpfFrameProvider/**"
-	    excludes="${java.excludes}"
-	    bootclasspath="${visibroker.bootclasspath}"/>
-     
      <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
 	<jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
 	<arg line='-root_dir ${openmap.home} -package com.bbn.openmap com/bbn/openmap/layer/specialist/Specialist.idl'/>
      </java>
-
-     <javac srcdir="${openmap.home}"
-	    includes="**/CSpecialist/**"
-	    excludes="${java.excludes}"
-	    bootclasspath="${visibroker.bootclasspath}" />
-
-    <jar jarfile="${openmap.home}/lib/cspec58.jar"
-         basedir="${openmap.home}"
-         includes="**/CSpecialist/**/*.class"/>
 
      <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
 	<jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
 	<arg line='-root_dir ${openmap.home} -package com.bbn.openmap.plugin.corbaImage com/bbn/openmap/plugin/corbaImage/CorbaImageServer.idl'/>
      </java>
 
+     <mkdir dir="${openmap.vb_classes}" />
+
      <javac srcdir="${openmap.home}"
-	    includes="**/corbaImageServer/**"
+            destdir="${openmap.vb_classes}"
+	    includes="**/CRpfFrameProvider/**, **/CSpecialist/**, **/corbaImageServer/**"
 	    excludes="${java.excludes}"
 	    bootclasspath="${visibroker.bootclasspath}" />
+
   </target>
 
   <target name="visibroker"
           depends="visibroker.idl"
 	  description="Compiles the Corba classes with the Visibroker CORBA implementation. You must have Visibroker (http://www.borland.com/bes/visibroker) installed. (Call this to build CORBA classes) ">
      <echo message="Compiling CORBA classes with Visibroker..."/>
-     <javac srcdir="${openmap.home}"
-	    includes="**/layer/rpf/corba/**/*.java"
-	    excludes="${java.excludes}"
-	    bootclasspath="${visibroker.bootclasspath}"/>
-
-    <jar jarfile="${openmap.home}/lib/rpfserver.jar"
-         basedir="${openmap.home}"
-         includes="**/rpf/corba/**/*.class,
-		   **/rpf/corba/CRpfFrameProvider/**/*.class"/>
 
      <javac srcdir="${openmap.home}"
-	    includes="**/layer/specialist/**/*.java"
-	    excludes="${java.excludes}, **/unimplemented/**"
-	    bootclasspath="${visibroker.bootclasspath}"/>
+            destdir="${openmap.vb_classes}"
+	    includes="**/layer/rpf/corba/**/*.java,
+	              **/layer/specialist/**/*.java,
+		      **/plugin/corbaImage/**/*.java" />
 
-    <jar jarfile="${openmap.home}/lib/specialist.jar"
-         basedir="${openmap.home}"
-         includes="**/layer/specialist/**/*.class"/>
-
-     <javac srcdir="${openmap.home}"
-	    includes="**/plugin/corbaImage/**/*.java"
-	    excludes="${java.excludes}"
-	    bootclasspath="${visibroker.bootclasspath}"/>
-
-    <jar jarfile="${openmap.home}/lib/corbaimageserver.jar"
-         basedir="${openmap.home}"
-         includes="**/plugin/corbaImage/**/*.class"/>
+     <jar jarfile="${openmap.home}/lib/omcorba_vb.jar"
+          basedir="${openmap.vb_classes}"
+	  includes="**/*.class"/>
 
    </target>
 
-  <target name="clean_corba" 
-          depends="init"
+  <target name="visibroker.clean" 
+          depends="visibroker.setup"
 	  description="Delete just the Corba OpenMap class files.">
-    <delete>
-      <fileset dir="com/bbn/openmap" includes="**/layer/rpf/corba/**/*.class, **/layer/specialist/**/*.class, **/plugin/corbaImage/**/*.class, **/CSpecialist/**/*.class" />
-    </delete>
+    <delete dir="${openmap.vb_classes}"/>
   </target>
 
-  <target name="distclean_corba" 
-          depends="init, clean_corba"
-	  description="Delete the Corba OpenMap class files.">
+  <target name="visibroker.distclean" 
+          depends="visibroker.clean"
+	  description="Delete the Corba OpenMap class files and the
+	  stub classes.">
     <delete dir="com/bbn/openmap/layer/rpf/corba/CRpfFrameProvider"/>
     <delete dir="com/bbn/openmap/CSpecialist"/>
     <delete dir="com/bbn/openmap/plugin/corbaImage/corbaImageServer"/>
@@ -358,13 +326,14 @@
           depends="init"
 	  description="Compiles the Java 3D OpenMap code.  You must have the Java 3D extension package (http://java.sun.com/products/java-media/3D/index.html) installed in your Java installation.">
     <javac srcdir="${openmap.home}"
+           destdir="${openmap.classes}"
            includes="${j3d.excludes}"
            classpath="${openmap.home}/lib/openmap.jar;${openmap.home}"
            excludes="${javac.excludes}"/>
   </target>
 
   <target name="j3d"
-          depends="init, prej3d, jars"
+          depends="init, prej3d, jar"
 	  description="Compiles the Java 3D OpenMap code and adds it to the jars.  You must have the Java 3D extension package (http://java.sun.com/products/java-media/3D/index.html) installed in your Java installation. (Call this to build J3D targets)">
     <echo message="J3D classes included in jar files."/>
   </target>
