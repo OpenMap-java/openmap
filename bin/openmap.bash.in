@@ -17,5 +17,5 @@ done
 OM_HOME=`dirname $PRG`/..
 progname=`basename $0`
 
-export CLASSPATH=$OM_HOME/lib/openmap.jar:@SWING_JAR@:@CORBA_CLASSPATH@
+export CLASSPATH=$OM_HOME/lib/openmap.jar:$OM_HOME/share:@SWING_JAR@:@CORBA_CLASSPATH@
 @JAVA@ -mx64m com.bbn.openmap.app.OpenMap
