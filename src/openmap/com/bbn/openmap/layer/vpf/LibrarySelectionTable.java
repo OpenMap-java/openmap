@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibrarySelectionTable.java,v $
 // $RCSfile: LibrarySelectionTable.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 20:43:33 $
+// $Revision: 1.5 $
+// $Date: 2003/12/29 17:16:30 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -186,7 +186,7 @@ public class LibrarySelectionTable {
 		    Debug.output("*****\nVPFLayer.LST: Couldn't create CoverageAttributeTable for " + vpfpath + " " + lname + " " + fe.getMessage() + "\n--- Not a problem if you have multiple paths, and " + lname + " is included in another path ---\n*****");
 		    fe.printStackTrace();
 		} else {
-		    Debug.output("VPFLayer.LST: CAT discrepancy (run with -Ddbug.vpf for more details)");
+		    Debug.output("VPFLayer.LST: CAT discrepancy (run with -Ddebug.vpf for more details)");
 		}
 	    }
 	}
