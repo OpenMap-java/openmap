@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SaveAsMenu.java,v $
 // $RCSfile: SaveAsMenu.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/06 02:31:29 $
+// $Revision: 1.2 $
+// $Date: 2003/03/15 20:36:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,7 +40,6 @@ public class SaveAsMenu extends AbstractOpenMapMenu {
     public SaveAsMenu(String title) {
 	super(title);
 	add(new SaveAsJpegMenuItem());
-// 	add(createSaveAsVirtualJpegMenuItem());
 	add(new SaveAsGifMenuItem());
 	addSVGMenuItem(this);
     }

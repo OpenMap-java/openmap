@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SaveAsImageMenuItem.java,v $
 // $RCSfile: SaveAsImageMenuItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/06 02:31:29 $
+// $Revision: 1.2 $
+// $Date: 2003/03/15 20:36:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,53 +63,53 @@ public class SaveAsImageMenuItem extends MapHandlerMenuItem
 	    return;
 	}
 	
-	Iterator it = mapHandler.iterator();
-	Object someObj;
+	MapBean mb = (MapBean) mapHandler.get("com.bbn.openmap.MapBean");
 
-	while (it.hasNext()) {
-	    someObj = it.next();
-    	    if (someObj instanceof MapBean) {
-		MapBean mb = (MapBean)someObj;
-		Debug.message("saveimage", "MapBean found, creating image");
-                try {
+	if (mb != null) {
+	    Debug.message("saveimage", "MapBean found, creating image");
+	    try {
 
-		    while (true) {
-			JFileChooser chooser = new JFileChooser();
-			int returnVal = chooser.showSaveDialog(getParent());
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-			    String filename = chooser.getSelectedFile().getAbsolutePath(); 
-			    if (formatter == null) {
-				break;
-			    }
+		while (true) {
+		    SaveAsImageFileChooser chooser = 
+			new SaveAsImageFileChooser(mb.getWidth(), mb.getHeight());
 			
-			    filename = checkFileName(filename, formatter.getFormatLabel().toLowerCase());
-			    if (filename == null) {
-				// This is the reason for the while
-				// loop, the name didn't really pass
-				// muster, so we'll try again.
-				continue;
-			    }
-
-			    byte[] imageBytes = formatter.getImageFromMapBean(mb);
-			    FileOutputStream binFile = new FileOutputStream(filename);
-			    binFile.write(imageBytes);
-			    binFile.close();
-			    if (Debug.debugging("saveimage")) {
-				com.bbn.openmap.proj.Projection proj = mb.getProjection();
-				Debug.output("Created image at " + filename + 
-					     "where projection covers " + 
-					     proj.getUpperLeft() + " to " + 
-					     proj.getLowerRight());
-			    }
-			    break;
-			} else if (returnVal == JFileChooser.CANCEL_OPTION) {
+		    int returnVal = chooser.showSaveDialog(getParent());
+		    if (returnVal == JFileChooser.APPROVE_OPTION) {
+			String filename = chooser.getSelectedFile().getAbsolutePath(); 
+			if (formatter == null) {
 			    break;
 			}
+			
+			filename = checkFileName(filename, formatter.getFormatLabel().toLowerCase());
+			if (filename == null) {
+			    // This is the reason for the while
+			    // loop, the name didn't really pass
+			    // muster, so we'll try again.
+			    continue;
+			}
+
+			int imageHeight = chooser.getImageHeight();
+			int imageWidth = chooser.getImageWidth();
+
+			byte[] imageBytes = formatter.getImageFromMapBean(mb, imageWidth, imageHeight);
+			FileOutputStream binFile = new FileOutputStream(filename);
+			binFile.write(imageBytes);
+			binFile.close();
+			if (Debug.debugging("saveimage")) {
+			    com.bbn.openmap.proj.Projection proj = mb.getProjection();
+			    Debug.output("Created image at " + filename + 
+					 "where projection covers " + 
+					 proj.getUpperLeft() + " to " + 
+					 proj.getLowerRight());
+			}
+			break;
+		    } else if (returnVal == JFileChooser.CANCEL_OPTION) {
+			break;
 		    }
-		} catch (IOException e) {		   
-		    Debug.error("SaveAsImageMenuItem: " + e);
 		}
-    	    }
+	    } catch (IOException e) {		   
+		Debug.error("SaveAsImageMenuItem: " + e);
+	    }
 	}
 	return;
     }
@@ -148,4 +148,5 @@ public class SaveAsImageMenuItem extends MapHandlerMenuItem
 
 	return newFilePath;
     }
+
 }

@@ -17,7 +17,9 @@ import com.bbn.openmap.proj.*;
 
 /**
  * A MenuItem that is capable of looking at MapBean and saving it as
- * an Image of virtual size
+ * an Image of virtual size.  Not really needed, the functionality
+ * provided here has been added to the SaveAsImageMenuItem and the
+ * SaveAsImageFileChooser.
  */
 public class SaveAsVirtualImageMenuItem extends SaveAsImageMenuItem {
     
