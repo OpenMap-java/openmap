@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapConnector.java,v $
 // $RCSfile: NetMapConnector.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 21:16:23 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -546,3 +546,4 @@ public class NetMapConnector
 	return propertyPrefix;
     }
 }
+

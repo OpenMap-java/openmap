@@ -206,3 +206,4 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
 	decorator.revert();
     }
 }
+

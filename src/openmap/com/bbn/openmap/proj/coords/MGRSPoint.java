@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/06/26 17:51:27 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 21:16:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -747,3 +747,4 @@ public class MGRSPoint extends UTMPoint {
 
     }
 }
+

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriPlugIn.java,v $
 // $RCSfile: EsriPlugIn.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/11/21 22:59:20 $
-// $Author: dietrick $
+// $Revision: 1.6 $
+// $Date: 2003/12/23 21:16:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -811,3 +811,4 @@ public class EsriPlugIn extends AbstractPlugIn
 	return box;
     }
 }
+

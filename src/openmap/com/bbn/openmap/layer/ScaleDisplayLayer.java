@@ -12,9 +12,9 @@
  * **********************************************************************
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleDisplayLayer.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/04/23 17:08:00 $
- * $Author: dietrick $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/23 21:16:23 $
+ * $Author: wjeuerle $
  *
  * **********************************************************************
  */
@@ -331,3 +331,4 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer  {
     
     
 }
+

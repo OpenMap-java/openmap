@@ -110,3 +110,4 @@ public class WKTNode {
 	return (WKTNode) this.children.elementAt(i);
     }
 }
+

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/ShpInputStream.java,v $
 // $RCSfile: ShpInputStream.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/14 22:42:18 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 21:16:22 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -334,3 +334,4 @@ public class ShpInputStream implements ShapeConstants {
 	return shapeType;
     }
 }
+

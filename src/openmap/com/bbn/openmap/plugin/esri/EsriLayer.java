@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriLayer.java,v $
 // $RCSfile: EsriLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/14 20:52:24 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 21:16:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -357,3 +357,4 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
     }
 
 }
+

@@ -387,4 +387,3 @@ public class TX7 extends OMGraphic {
     }
 }
 
-

@@ -300,3 +300,4 @@ public abstract class BeanBox {
    */
   public abstract void beanChanged(Object bean, String changedPropertyName);
 }
+

@@ -26,3 +26,4 @@ public class SpacingShapeDecoration extends AbstractShapeDecoration {
 	// nothing to do, it's space !
     }
 }
+

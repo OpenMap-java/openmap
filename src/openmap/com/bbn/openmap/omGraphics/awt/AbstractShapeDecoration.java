@@ -155,3 +155,4 @@ public abstract class AbstractShapeDecoration implements ShapeDecoration {
 	g2D.setPaint(savePaint);
     }
 }
+

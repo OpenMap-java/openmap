@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/23 18:20:21 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 21:16:22 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -208,3 +208,4 @@ public class DbfOutputStream {
 	_leos.close();
     }
 }
+

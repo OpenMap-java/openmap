@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/26 00:23:24 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 21:16:28 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -473,9 +473,4 @@ public class UTMPoint {
 	}
    }
 }
-
-
-
-
-
 

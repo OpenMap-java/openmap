@@ -65,3 +65,4 @@ public interface ShapeDecoration extends Revertable {
      */
     public void draw(Graphics g, Point2D[] points, boolean complete);
 }
+

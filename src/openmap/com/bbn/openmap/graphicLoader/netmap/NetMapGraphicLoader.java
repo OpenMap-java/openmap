@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapGraphicLoader.java,v $
 // $RCSfile: NetMapGraphicLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:16:53 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 21:16:23 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -470,3 +470,4 @@ public class NetMapGraphicLoader extends MMLGraphicLoader
     }
 
 }
+

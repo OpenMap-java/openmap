@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapHandler.java,v $
 // $RCSfile: MapHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/05 20:58:50 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 21:16:21 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -261,3 +261,4 @@ public class MapHandler extends BeanContextServicesSupport {
     }
 
 }
+

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMDistance.java,v $
 // $RCSfile: EditableOMDistance.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/23 21:13:04 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 21:16:25 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -150,3 +150,4 @@ public class EditableOMDistance extends EditableOMPoly {
 	((OMDistance)getGraphic()).paintOnlyPoly = false;
     }
 }
+

@@ -113,3 +113,4 @@ public class HotFrontShapeDecoration extends AbstractShapeDecoration {
 	this.filled = filled;
     }
 }
+

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/ShxInputStream.java,v $
 // $RCSfile: ShxInputStream.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 21:16:22 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -86,3 +86,4 @@ public class ShxInputStream {
 	_leis.close();
     }
 }
+

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/LittleEndianInputStream.java,v $
 // $RCSfile: LittleEndianInputStream.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 21:16:21 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -187,3 +187,4 @@ public class LittleEndianInputStream extends DataInputStream {
 	return Float.intBitsToFloat(this.readLEInt());
     }
 }
+

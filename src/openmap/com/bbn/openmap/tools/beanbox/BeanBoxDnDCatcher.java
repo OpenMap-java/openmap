@@ -654,3 +654,4 @@ public class BeanBoxDnDCatcher
     }
   }
 }
+

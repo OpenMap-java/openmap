@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/geo/Intersection.java,v $
 // $RCSfile: Intersection.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 21:16:22 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -365,4 +365,6 @@ public class Intersection {
 	System.out.println("b3="+b3);
     }
 
-};
+}
+
+

@@ -14,9 +14,9 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCoverageBox.java,v $
 // $RCSfile: RpfCoverageBox.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:49:04 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 21:16:24 $
+// $Author: wjeuerle $
 //
 // **********************************************************************
 
@@ -284,3 +284,4 @@ public class RpfCoverageBox {
       scale = 0;
    }
 }
+
