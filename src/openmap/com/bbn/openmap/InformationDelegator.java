@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.14 $
-// $Date: 2004/10/14 18:05:39 $
+// $Revision: 1.15 $
+// $Date: 2004/11/10 13:43:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -73,12 +73,12 @@ import com.bbn.openmap.util.WebBrowser;
  * 
  * <pre>
  * 
- *  # Make the status lights buttons that bring up layer palettes.
- *  infoDelegator.triggers=true
- *  # Show the layer status lights.
- *  infoDelegator.showLights=true
- *  # Show the information text line
- *  infoDelegator.showInfoLine=true
+ *   # Make the status lights buttons that bring up layer palettes.
+ *   infoDelegator.triggers=true
+ *   # Show the layer status lights.
+ *   infoDelegator.showLights=true
+ *   # Show the information text line
+ *   infoDelegator.showInfoLine=true
  *  
  * </pre>
  */
@@ -427,10 +427,17 @@ public class InformationDelegator extends OMComponentPanel implements
      * Display a message in a pop-up window.
      */
     public void displayMessage(String title, String message) {
-        JOptionPane.showMessageDialog(null,
-                message,
-                title,
-                JOptionPane.INFORMATION_MESSAGE);
+        if (Environment.getBoolean(Environment.UseInternalFrames)) {
+            JOptionPane.showInternalMessageDialog(null,
+                    message,
+                    title,
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    message,
+                    title,
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     ///////////////////////////////////////////
