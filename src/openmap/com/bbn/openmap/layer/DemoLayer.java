@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/03/01 00:27:23 $
+// $Revision: 1.6 $
+// $Date: 2003/03/06 04:23:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,6 +43,7 @@ import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.EditableOMPoly;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMArrowHead;
 import com.bbn.openmap.omGraphics.OMBitmap;
 import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMColor;
@@ -194,7 +195,8 @@ public class DemoLayer extends OMGraphicHandlerLayer
 
 	OMLine line =
 	    new OMLine(40f, -75f, 42f, -70f, OMGraphic.LINETYPE_STRAIGHT);
-	line.addArrowHead(true);
+// 	line.addArrowHead(true);
+	line.addArrowHead(OMArrowHead.ARROWHEAD_DIRECTION_BOTH);
 	line.setStroke(new BasicStroke(2));
 	omList.add(line);
 
