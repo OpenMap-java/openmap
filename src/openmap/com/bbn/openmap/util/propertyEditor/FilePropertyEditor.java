@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/FilePropertyEditor.java,v $
 // $RCSfile: FilePropertyEditor.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/06 00:07:11 $
+// $Revision: 1.5 $
+// $Date: 2004/02/23 21:16:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,7 +57,7 @@ public class FilePropertyEditor extends PropertyEditorSupport
     
     public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = getFileChooser();
-        int returnVal = chooser.showDialog((Component)null, "Select");
+        int returnVal = chooser.showOpenDialog((Component)null);
         if (returnVal==JFileChooser.APPROVE_OPTION) {
             String newFilename = chooser.getSelectedFile().getAbsolutePath();
             newFilename = cleanUpName(newFilename);
