@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMAction.java,v $
 // $RCSfile: OMAction.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/07 15:05:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -130,22 +130,22 @@ public class OMAction implements OMGraphicConstants {
      * Provide a String that describes what the Action is all about.
      */
     public String toString() {
-	StringBuffer sb = new StringBuffer("OMAction [ ");
+	StringBuffer sb = new StringBuffer("OMAction (" + value + ") [ ");
 	boolean gotOne = false;
 	if (value == 0) {
 	    sb.append("add ");
 	} else {
-	    if (isMask(0)) sb.append("raise_to_top ");
-	    if (isMask(1)) sb.append("lower_to_bottom ");
-	    if (isMask(2)) sb.append("delete ");
-	    if (isMask(3)) sb.append("select ");
-	    if (isMask(4)) sb.append("deselect ");
-	    if (isMask(5)) sb.append("deselect_all ");
-	    if (isMask(6)) sb.append("add ");
-	    if (isMask(7)) sb.append("update ");
-	    if (isMask(8)) sb.append("raise ");
-	    if (isMask(9)) sb.append("lower ");
-	    if (isMask(10)) sb.append("sort ");
+	    if (isMask(RAISE_TO_TOP_GRAPHIC_MASK)) sb.append("raise_to_top ");
+	    if (isMask(LOWER_TO_BOTTOM_GRAPHIC_MASK)) sb.append("lower_to_bottom ");
+	    if (isMask(DELETE_GRAPHIC_MASK)) sb.append("delete ");
+	    if (isMask(SELECT_GRAPHIC_MASK)) sb.append("select ");
+	    if (isMask(DESELECT_GRAPHIC_MASK)) sb.append("deselect ");
+	    if (isMask(DESELECTALL_GRAPHIC_MASK)) sb.append("deselect_all ");
+	    if (isMask(ADD_GRAPHIC_MASK)) sb.append("add ");
+	    if (isMask(UPDATE_GRAPHIC_MASK)) sb.append("update ");
+	    if (isMask(RAISE_GRAPHIC_MASK)) sb.append("raise ");
+	    if (isMask(LOWER_GRAPHIC_MASK)) sb.append("lower ");
+	    if (isMask(SORT_GRAPHICS_MASK)) sb.append("sort ");
 	}
 	sb.append("]");
 	return sb.toString();
