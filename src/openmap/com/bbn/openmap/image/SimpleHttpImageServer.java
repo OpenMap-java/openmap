@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/SimpleHttpImageServer.java,v $
 // $RCSfile: SimpleHttpImageServer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/05/08 16:27:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -169,6 +169,7 @@ public class SimpleHttpImageServer
 	    String[] varg = ap.getArgValues("verbose");
 	    if (varg != null) {
 		Debug.put("shis");
+		Debug.put("imageserver");
 	    }
 
 	    SimpleHttpImageServer shis;
