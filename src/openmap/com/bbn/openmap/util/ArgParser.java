@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ArgParser.java,v $
 // $RCSfile: ArgParser.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:29 $
+// $Revision: 1.4 $
+// $Date: 2004/12/10 14:14:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,7 +65,7 @@ public class ArgParser {
 
     /**
      * Add a argument to the parser. Don't include the '-' in the
-     * argName, that's added autmatically. Assumes that the option
+     * argName, that's added automatically. Assumes that the option
      * expects no arguments.
      * 
      * @param argName the command line option
@@ -77,7 +77,7 @@ public class ArgParser {
 
     /**
      * Add a argument to the parser. Don't include the '-' in the
-     * argName, that's added autmatically.
+     * argName, that's added automatically.
      * 
      * @param argName the command line option
      * @param desc a help line description.
@@ -90,7 +90,7 @@ public class ArgParser {
 
     /**
      * Add a argument to the parser. Don't include the '-' in the
-     * argName, that's added autmatically.
+     * argName, that's added automatically.
      * 
      * @param argName the command line option
      * @param desc a help line description.
