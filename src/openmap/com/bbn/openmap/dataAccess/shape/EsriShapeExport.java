@@ -22,6 +22,7 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.FileUtils;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -768,37 +769,10 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
     /**
      * Fetches a file path from the user, via a JFileChooser.  Returns
      * null if the user cancels.
+     * @see com.bbn.openmap.util.FileUtils.getFilePathFromUser
      */
     public String getFilePathFromUser() {
-        String ret = null;
-        try {
-            //setup the file chooser
-            File startingPoint = new File(Environment.get("lastchosendirectory", System.getProperty("user.home")));
-            JFileChooser chooser = new JFileChooser(startingPoint);
-
-            chooser.setDialogTitle("Select ShapeFile Set Name...");
-
-            int state = chooser.showSaveDialog(null);
-            //only bother trying to read the file if there is one
-            //for some reason, the APPROVE_OPTION said it was a
-            //boolean during compile and didn't work in this next
-            //statement
-            if ((state != JFileChooser.CANCEL_OPTION) && 
-                (state != JFileChooser.ERROR_OPTION)) {
-
-                ret = chooser.getSelectedFile().getCanonicalPath();
-
-                //store the selected file for later
-                Environment.set("lastchosendirectory", ret);
-            } else {
-                // no need to try to continue if the user doesn't
-                // actually pick a filename
-                if (DEBUG) Debug.output("ESE: No output file chosen.");
-            }
-        } catch (IOException ioe) {
-            handleException(ioe);
-        }
-        return ret;
+        return FileUtils.getFilePathFromUser("Select Name for Shape File Set...");
     }
 
     /**
@@ -973,11 +947,11 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
                 ShpOutputStream pos = 
                     new ShpOutputStream(new FileOutputStream(shpFile));
                 int[][] indexData = pos.writeGeometry(list);
-                
+
                 ShxOutputStream xos = 
                     new ShxOutputStream(new FileOutputStream(shxFile));
                 xos.writeIndex(indexData, list.getType());
-                
+
                 if (getWriteDBF()) {
                     DbfOutputStream dos = 
                         new DbfOutputStream(new FileOutputStream(dbfFile));

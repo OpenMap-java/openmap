@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/DbfInputStream.java,v $
 // $RCSfile: DbfInputStream.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.6 $
+// $Date: 2004/09/17 18:04:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,6 +29,7 @@ import java.io.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.*;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Reads the contents of a DBF file and provides access to what it has read
@@ -175,6 +176,7 @@ public class DbfInputStream {
      * Reads the data and places data in a class scope ArrayList of records
      */
     public void readData() throws IOException {
+        java.text.DecimalFormat df = new java.text.DecimalFormat();
         _leis.skipBytes(2);
         _records = new ArrayList();
         for (int r=0; r <= _rowCount - 1; r++) {
@@ -185,7 +187,18 @@ public class DbfInputStream {
                 int type = _types[c];
                 String cell = _leis.readString(length);
                 if (type == DbfTableModel.TYPE_NUMERIC && !cell.equals("")) {
-                    record.add(c, new Double(cell));
+                    try {
+//                         record.add(c, new Double(cell));
+                        record.add(c, new Double(df.parse(cell).doubleValue()));
+//                     } catch (NumberFormatException nfe) {
+//                         Debug.error("DbfInputStream:  error reading column " + c + ", row " + r + 
+//                                     ", expected number and got " + cell);
+//                         record.add(c, new Double(0));                        
+                    } catch (java.text.ParseException pe) {
+                        Debug.error("DbfInputStream:  error parsing column " + c + ", row " + r + 
+                                    ", expected number and got " + cell);
+                        record.add(c, new Double(0));                        
+                    }
                 } else {
                     record.add(c, cell);
                 }

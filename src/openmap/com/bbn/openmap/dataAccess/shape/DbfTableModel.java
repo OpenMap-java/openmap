@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.7 $
+// $Date: 2004/09/17 18:04:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,8 +32,11 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
+import com.bbn.openmap.Environment;
 import com.bbn.openmap.dataAccess.shape.input.*;
+import com.bbn.openmap.dataAccess.shape.output.*;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.FileUtils;
 
 /**
  * An implemention of TableModel that manages tabular data read from a
@@ -90,6 +93,11 @@ public class DbfTableModel extends AbstractTableModel
      * to the table complete.
      */
     public static final int DONE_MASK = 1 << 3;
+
+    /**
+     * Button mask to show a save button to write out any changes.
+     */
+    public static final int SAVE_MASK = 1 << 4;
 
     /**
      * An array of bytes that contain the character lengths for each
@@ -433,6 +441,29 @@ public class DbfTableModel extends AbstractTableModel
             controlPanel.add(editTableButton);
         }
 
+        if ((actionMask & SAVE_MASK) != 0) {
+            JButton saveButton = new JButton("Save");
+            saveButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        try {
+                            String filePath = FileUtils.getFilePathFromUser("Select DBF file name...");
+                            if (!filePath.endsWith(".dbf")) {
+                                filePath = filePath + ".dbf";
+                            }
+                            if (filePath != null) {
+                                DbfOutputStream dos = 
+                                    new DbfOutputStream(new FileOutputStream(new File(filePath)));
+                                dos.writeModel(parent);
+                                dos.close();
+                            }
+                        } catch (FileNotFoundException fnfe) {
+                        } catch (IOException ioe) {
+                        }
+                    }
+                });
+            controlPanel.add(saveButton);
+        }
+
         if ((actionMask & DONE_MASK) != 0) {
             JButton doneButton = new JButton("Done");
             doneButton.addActionListener(new ActionListener() {
@@ -478,7 +509,7 @@ public class DbfTableModel extends AbstractTableModel
     }
 
     public void exitWindowClosed() {
-        if (exitOnClose) {
+        if (exitOnClose) {            
             System.exit(0);
         }
     }
@@ -701,7 +732,7 @@ public class DbfTableModel extends AbstractTableModel
             DbfTableModel dtm = new DbfTableModel(dis);
             dtm.setWritable(true);
             dtm.exitOnClose = true;
-            dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK);
+            dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK | SAVE_MASK);
             is.close();
         } catch (Exception e) {
             Debug.error(e.getMessage());

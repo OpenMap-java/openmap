@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/03/05 21:17:41 $
+// $Revision: 1.8 $
+// $Date: 2004/09/17 18:04:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -181,6 +181,7 @@ public class DbfOutputStream {
     }
 
     public void writeRecords(DbfTableModel model) throws IOException {
+        java.text.NumberFormat df = new java.text.DecimalFormat();
         int rowCount = model.getRowCount();
         int columnCount = model.getColumnCount();
         for (int r=0; r<=rowCount-1; r++) {
@@ -191,8 +192,15 @@ public class DbfOutputStream {
                 if (type == DbfTableModel.TYPE_NUMERIC) {
                     Object obj = model.getValueAt(r, c);
                     if (obj instanceof Double) {
-                        Number d = (Number)model.getValueAt(r, c);
-                        value = d.toString();
+                        // Why Number?
+//                         Number d = (Number)model.getValueAt(r, c);
+                        // This seems to sometimes write out
+                        // exponetial numbers, which is bad for
+                        // reading it back in.
+//                         value = ((Number)obj).toString();
+//                         value = df.format(((Double)obj).doubleValue());
+                        
+                        value = "" + df.format(((Double)obj).doubleValue());
                     } else {
                         value = "";
                     }
