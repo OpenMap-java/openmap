@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/09/22 22:29:17 $
+// $Revision: 1.8 $
+// $Date: 2003/10/03 00:43:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -358,21 +358,35 @@ public class InformationDelegator extends OMComponentPanel
      * Try to display a URL in a web browser.
      */
     public void displayURL(String url) {
-	WebBrowser wb = getBrowser();
-	if (wb != null) {
-	    wb.launch(url);
-	}	    
+	MapHandler mh = (MapHandler) getBeanContext();
+	Frame frame = null;
+	if (mh != null) {
+	    frame = (Frame)mh.get(java.awt.Frame.class);
+	}
+
+	try {
+	    com.bbn.openmap.gui.MiniBrowser.display(frame, new URL(url));
+	} catch (java.net.MalformedURLException murle) {
+	    Debug.error("InformationDelegator can't launch " + url);
+	}
+
+// 	WebBrowser wb = getBrowser();
+// 	if (wb != null) {
+// 	    wb.launch(url);
+// 	}	    
     }
     
     /**
      * Display a html String in a window.
      */
     public void displayBrowserContent(String content) {
-	com.bbn.openmap.gui.MiniBrowser.display(content);
-// 	WebBrowser wb = getBrowser();
-// 	if (wb != null) {
-// 	    wb.writeAndLaunch(content);
-// 	}
+	MapHandler mh = (MapHandler) getBeanContext();
+	Frame frame = null;
+	if (mh != null) {
+	    frame = (Frame)mh.get(java.awt.Frame.class);
+	}
+
+	com.bbn.openmap.gui.MiniBrowser.display(frame, "text/html", content);
     }
     
     /**
