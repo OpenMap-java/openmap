@@ -12,7 +12,7 @@
 
     <property name="openmap.home" value="."/>
     <!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR BATIK INSTALLATION -->
-    <property name="batik.home" value="/usr/local/java/batik-1.1.1"/>
+    <property name="batik.home" value="/usr/local/openmap/batik-1.1.1"/>
 
     <property name="openmap.contrib" value="${openmap.home}/contrib"/>
     <property name="javac.excludes" value="**/*.in, **/Makefile, **/*.bat,
@@ -71,10 +71,8 @@
 	############################ -->  
 
   <target name="todo" 
-          depends="presvg, prej3d, visibroker" 
-          description="Compiles all of the OpenMap classes and builds
-          jar files in lib directory, including the svg, j3d and corba
-          packages."/>
+          depends="presvg, prej3d, visibroker, jars" 
+          description="Compiles all of the OpenMap classes and builds jar files in lib directory, including the svg, j3d and corba packages."/>
 
   <target name="classes" 
           depends="contrib, openmap" 
@@ -262,13 +260,14 @@
 
   <target name="visibroker.setup" depends="init">
     <!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR VISIBROKER INSTALLATION -->
-    <property name="visibroker.home" value="/usr/local/java/vbroker/3.4/java"/>
+    <property name="visibroker.home" value="/usr/local/openmap/vbroker-3.4/java"/>
     <property name="visibroker.jars" value="${visibroker.home}/lib/vbjapp.jar:${visibroker.home}/lib/vbjcosnm.jar:${visibroker.home}/lib/vbjtools.jar:${visibroker.home}/lib/vbjorb.jar"/>
     <property name="visibroker.bootclasspath" value="${visibroker.jars}:${java.home}/lib/rt.jar:${openmap.home}:${openmap.home}/contrib"/>
   </target>
 
   <target name="visibroker.idl" depends="visibroker.setup"
 	  description="Create stub classes from idl files and compile stubs.">
+    <echo message="Creating CORBA stub classes from idls with Visibroker..."/>
     <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
 	<jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
 	<arg line='-root_dir ${openmap.home} -package com.bbn.openmap.layer.rpf.corba com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl'/>
@@ -277,8 +276,8 @@
      <javac srcdir="${openmap.home}"
 	    includes="**/CRpfFrameProvider/**"
 	    excludes="${java.excludes}"
-	    classpath="${visibroker.bootclasspath}" />
-
+	    bootclasspath="${visibroker.bootclasspath}"/>
+     
      <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
 	<jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
 	<arg line='-root_dir ${openmap.home} -package com.bbn.openmap com/bbn/openmap/layer/specialist/Specialist.idl'/>
@@ -287,7 +286,7 @@
      <javac srcdir="${openmap.home}"
 	    includes="**/CSpecialist/**"
 	    excludes="${java.excludes}"
-	    classpath="${visibroker.bootclasspath}" />
+	    bootclasspath="${visibroker.bootclasspath}" />
 
     <jar jarfile="${openmap.home}/lib/cspec58.jar"
          basedir="${openmap.home}"
@@ -301,7 +300,7 @@
      <javac srcdir="${openmap.home}"
 	    includes="**/corbaImageServer/**"
 	    excludes="${java.excludes}"
-	    classpath="${visibroker.bootclasspath}" />
+	    bootclasspath="${visibroker.bootclasspath}" />
   </target>
 
   <target name="visibroker"
@@ -311,7 +310,7 @@
      <javac srcdir="${openmap.home}"
 	    includes="**/layer/rpf/corba/**/*.java"
 	    excludes="${java.excludes}"
-	    classpath="${openmap.home}"/>
+	    bootclasspath="${visibroker.bootclasspath}"/>
 
     <jar jarfile="${openmap.home}/lib/rpfserver.jar"
          basedir="${openmap.home}"
@@ -321,7 +320,7 @@
      <javac srcdir="${openmap.home}"
 	    includes="**/layer/specialist/**/*.java"
 	    excludes="${java.excludes}, **/unimplemented/**"
-	    classpath="${openmap.home}/lib/cspec58.jar;${openmap.home}"/>
+	    bootclasspath="${visibroker.bootclasspath}"/>
 
     <jar jarfile="${openmap.home}/lib/specialist.jar"
          basedir="${openmap.home}"
@@ -330,7 +329,7 @@
      <javac srcdir="${openmap.home}"
 	    includes="**/plugin/corbaImage/**/*.java"
 	    excludes="${java.excludes}"
-	    classpath="${openmap.home};${openmap.home}/contrib"/>
+	    bootclasspath="${visibroker.bootclasspath}"/>
 
     <jar jarfile="${openmap.home}/lib/corbaimageserver.jar"
          basedir="${openmap.home}"
