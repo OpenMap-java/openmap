@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/09/26 19:09:36 $
-// $Author: dietrick $
+// $Revision: 1.6 $
+// $Date: 2003/09/29 20:37:16 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -483,28 +483,33 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 	}
 
 	if (grp != null) {
-	    lastToolTip = grp.getToolTipTextFor(omg);
-
-
+	    handleToolTip(grp.getToolTipTextFor(omg));
+	    handleInfoLine(grp.getInfoText(omg));
 	    if (grp.isHighlightable(omg)) {
 		grp.highlight(omg);
 	    }
-
-	    if (layer != null) {
-
-		if (lastToolTip != null) {
-		    layer.fireRequestToolTip(me, lastToolTip);
-		} else {
-		    layer.fireHideToolTip(me);
-		}
-
-		String infoText = grp.getInfoText(omg);
-		if (infoText != null) {
-		    layer.fireRequestInfoLine(infoText);
-		}
-	    }
 	}
 	return true;
+    }
+
+    protected void handleToolTip(String tip) {
+	if (lastToolTip == tip) {
+	    return;
+	}
+	lastToolTip = tip;
+	if (layer != null) {
+	    if (lastToolTip != null) {
+		layer.fireRequestToolTip(lastToolTip);
+	    } else {
+		layer.fireHideToolTip();
+	    }
+	}
+    }
+
+    protected void handleInfoLine(String line) {
+	if (layer != null) {
+	    layer.fireRequestInfoLine((line==null)?"":line);
+	}
     }
 
     public boolean mouseNotOver(OMGraphic omg) {
@@ -515,15 +520,8 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 	if (grp != null) {
 	    grp.unhighlight(omg);
 	}
-
-	if (layer != null) {
-	    if (lastToolTip != null) {
-		layer.fireHideToolTip(null);
-	    }
-	    lastToolTip = null;
-
-	    layer.fireRequestInfoLine("");
-	}
+	handleToolTip(null);
+	handleInfoLine(null);
 	return false;
     }
 
