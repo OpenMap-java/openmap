@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/04/05 05:39:01 $
+// $Revision: 1.5 $
+// $Date: 2003/04/08 18:41:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,7 +39,7 @@ import javax.swing.event.InternalFrameEvent;
 import javax.accessibility.*;
 
 import com.bbn.openmap.*;
-import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.event.LayerListener;
 import com.bbn.openmap.event.LayerSupport;
@@ -91,6 +91,11 @@ import com.bbn.openmap.util.PropUtils;
  * line are being specially buffered by the BufferedLayerMapBean. <P>
  *
  * The properties that can be set for the LayersPanel: <pre>
+ * # Use LayerStatusPanes for the layers if true, otherwise
+ * # LayerPanes.  LayerStatusPanes turn the on/off bulbs to green/red
+ * # bulbs when the layer is resting/working.  LayerPanes just show
+ * # yellow bulbs when the layer is part of the map.
+ * showStatus=true
  * # When the BufferedLayerMapBean is used, a divider will be
  * # displayed in the list of layers showing which layers are in the
  * # MapBean buffer (below the line).  Commands to move layers, by
@@ -142,6 +147,14 @@ public class LayersPanel extends OMToolComponent
      * bufferedBoundary.
      */
     public final static String BufferedBoundaryProperty = "boundary";
+    /**
+     * A property that can be used for controlling what type of
+     * LayerPanes are used.  If true (default) a LayerStatusPane will
+     * be created for each layer.  Otherwise, a LayerPane will be
+     * used.
+     */
+    public final static String ShowStatusProperty = "showStatus";
+
     /**
      * A value for the (controls) property to not include control
      * buttons in the interface.
@@ -214,6 +227,12 @@ public class LayersPanel extends OMToolComponent
      */
     protected boolean bufferedBoundary = true;
 
+    /**
+     * Behavior flag that determines what kind of LayerPane is used
+     * for the layers.  If true (default) the LayerStatusPane will be
+     * used.  Otherwise, the LayerPane will be used instead.
+     */
+    protected boolean showStatus = true;
     /**
      * Construct the LayersPanel.
      *
@@ -554,7 +573,11 @@ public class LayersPanel extends OMToolComponent
     protected LayerPane createLayerPaneForLayer(Layer layer, 
 						LayerHandler layerHandler,
 						ButtonGroup bg) {
-	return new LayerPane(layer, layerHandler, bg);
+	if (showStatus) {
+	    return new LayerStatusPane(layer, layerHandler, bg);
+	} else {
+	    return new LayerPane(layer, layerHandler, bg);
+	}
     }
 
     public void deletePanes(LinkedList dpanes) {
@@ -944,6 +967,9 @@ public class LayersPanel extends OMToolComponent
 		}
 	    }
 	}
+
+	bufferedBoundary = LayerUtils.booleanFromProperties(props, prefix + BufferedBoundaryProperty, bufferedBoundary);
+	showStatus = LayerUtils.booleanFromProperties(props, prefix + ShowStatusProperty, showStatus);
     }
 
     public Properties getProperties(Properties props) {
@@ -955,6 +981,8 @@ public class LayersPanel extends OMToolComponent
 	    props.put(prefix + ControlButtonsProperty, controls.getClass().getName());
 	    controls.getProperties(props);
 	}
+	props.put(prefix + BufferedBoundaryProperty, new Boolean(bufferedBoundary).toString());
+	props.put(prefix + ShowStatusProperty, new Boolean(showStatus).toString());
 	return props;
     }
 
@@ -965,6 +993,10 @@ public class LayersPanel extends OMToolComponent
 	if (controls != null) {
 	    controls.getPropertyInfo(props);
 	}
+	props.put(BufferedBoundaryProperty, "Force layer movement to respect background layer boundary.");
+	props.put(BufferedBoundaryProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+	props.put(ShowStatusProperty, "Use Layer Panes that show layer status.");
+	props.put(ShowStatusProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 	return props;
     }
 }

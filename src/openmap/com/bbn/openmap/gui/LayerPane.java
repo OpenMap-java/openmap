@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerPane.java,v $
 // $RCSfile: LayerPane.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/19 20:36:50 $
+// $Revision: 1.3 $
+// $Date: 2003/04/08 18:41:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -62,12 +62,6 @@ public class LayerPane extends JPanel
     
     protected transient LayerHandler layerHandler;
 
-    /**
-     * Only added if "-Ddebug.bllp" is set when the
-     * application is started.
-     */
-    protected transient JCheckBox backgroundButton;
-
     // the icons
     protected static transient URL url1;
     protected static transient ImageIcon paletteIcon;
@@ -105,20 +99,17 @@ public class LayerPane extends JPanel
      */
     public LayerPane(Layer layer, LayerHandler layerHandler, ButtonGroup bg) {
 	super();
+	this.layer = layer;
+	setLayerHandler(layerHandler);
+	createGUI(bg);
+	layer.addComponentListener(this);
+    }
 
+    protected void createGUI(ButtonGroup bg) {
 	GridBagLayout gridbag = new GridBagLayout();
 	GridBagConstraints c = new GridBagConstraints();
 	setLayout(gridbag);
 
-// 	setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-// 	setAlignmentX(LEFT_ALIGNMENT);
-// 	setAlignmentY(TOP_ALIGNMENT);
-	//setBorder(new LineBorder(Color.black));
-
-	this.layer = layer;
-	this.layer.addComponentListener(this);
-
-	setLayerHandler(layerHandler);
 	onoffButton = new JCheckBox(layerOffIcon);
 	onoffButton.setSelectedIcon(layerOnIcon);
 	onoffButton.setActionCommand(toggleLayerCmd);
@@ -165,16 +156,6 @@ public class LayerPane extends JPanel
 	gridbag.setConstraints(paletteButton, c);
 	add(paletteButton);
 
-	if (Debug.debugging("bllp")) {
-	    backgroundButton = new JCheckBox();
-	    backgroundButton.setToolTipText("Set As Background Layer");
-	    backgroundButton.setSelected(layer.getAddAsBackground());
-	    backgroundButton.addActionListener(this);
-
-	    gridbag.setConstraints(backgroundButton, c);
-	    add(backgroundButton);
-	}
-
 	c.weightx = 1;
 	c.fill = GridBagConstraints.HORIZONTAL;
 	c.insets = new Insets(1, 2, 1, 15);
@@ -182,6 +163,9 @@ public class LayerPane extends JPanel
 	add(layerName);
     }
 
+    /**
+     * Used for the background LayerPanel marker.
+     */
     protected LayerPane(String title) {
 	super();
 	// prevent null pointers somewhere...
@@ -345,14 +329,6 @@ public class LayerPane extends JPanel
 	    if (Debug.debugging("layerspanel")){
 		Debug.output("LayerPane: Layer " + layer.getName() + 
 			     (layer.isVisible()?" is visible.":" is NOT visible"));
-	    }
-	} else if (e.getSource().equals(backgroundButton)) {
-
-	    layer.setAddAsBackground(((JCheckBox)e.getSource()).isSelected());
-
-	    if (Debug.debugging("layerspanel")){
-		Debug.output("LayerPane: Layer " + layer.getName() + 
-			     (layer.getAddAsBackground()?" is background.":" is NOT background"));
 	    }
 	} else if (e.getSource().equals(layerName)) {
 	    setSelected(true);
