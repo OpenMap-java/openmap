@@ -1,5 +1,8 @@
 2004-02-09  Don Dietrick  <dietrick@jade.local>
 
+	* Fixed the problem in OMColorChooser where the preview panel
+	wasn't showing up in jdk 1.4.2.
+
 	* Added properties in DrawingAttributes that set the pixel radius
 	and oval settings of OMPoints when setTo(OMPoint) is called.
 
