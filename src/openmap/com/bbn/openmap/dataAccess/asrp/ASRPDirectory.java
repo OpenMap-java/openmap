@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/ASRPDirectory.java,v $
 // $RCSfile: ASRPDirectory.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/03/17 23:07:52 $
+// $Revision: 1.4 $
+// $Date: 2004/03/23 18:51:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -148,8 +148,8 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
     public OMRect getBounds() {
         if (bounds == null) {
             bounds = new OMRect(pso, lso, 
-                                pso - degPerHorBlock*numHorBlocks_N, 
-                                lso + degPerVerBlock*numVerBlocks_M, 
+                                pso - degPerVerBlock*numVerBlocks_M, 
+                                lso + degPerHorBlock*numHorBlocks_N, 
                                 OMGraphic.LINETYPE_GREATCIRCLE);
         }
 
@@ -257,8 +257,10 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
         for (int x = startX; x < endX; x++) {
             for (int y = startY; y < endY; y++) {
                 OMGraphic omg = (OMGraphic)get(new String(x + "," + y).intern());
-                omg.generate(proj);
-                list.add(omg);
+                if (omg != null) {
+                    omg.generate(proj);
+                    list.add(omg);
+                }
             }
         }
 
@@ -294,6 +296,15 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
                              x + ", " + y + ") is " + blockOffset);
             }
 
+            if (blockOffset < 0) {
+                // Can't have a negative offset...
+                if (Debug.debugging("asrp")) {
+                    Debug.output("     skipping...");
+                }
+
+                return null;
+            }
+
             DDFModule mod = img.getInfo();
             mod.seek(tileDataOffset + blockOffset);
 
@@ -323,16 +334,30 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
                 
                 // OK, cpv has value, cpc says how many pixels that goes in.
 
-                for (int c = 0; c < cpc; c++) {
-                    rowCount++;
-                    if (colors != null && cpv > colors.length) {
-                        if (Debug.debugging("asrpdetail")) {
-                            Debug.output("Got value that is too big for colortable");
+                try {
+                    for (int c = 0; c < cpc; c++) {
+                        rowCount++;
+                        if (colors != null && cpv > colors.length) {
+                            if (Debug.debugging("asrpdetail")) {
+                                Debug.output("Got value that is too big for colortable");
+                            }
                         }
+                        data[byteCount + c] = (byte) cpv;
                     }
-                    data[byteCount + c] = (byte) cpv;
+                } catch (ArrayIndexOutOfBoundsException aioobe) {
+                    if (Debug.debugging("asrp")) {
+                        Debug.output("ASRPDirectory.getBlock(): bad index for setting byte value: " + 
+                                     aioobe.getMessage());
+                    }
+                    // This try/catch block is really for the data[]
+                    // array indexing.
+
+                    // if byteCount + x was greater than numBlockPixels,
+                    // we should be at the end of the image bytes, so we
+                    // shouldn't have to worry about rowCount not being
+                    // properly updated.
                 }
-                
+
                 byteCount += cpc;
                 if (rowCount == numHorPixels_Q) {
                     rowCount = 0;

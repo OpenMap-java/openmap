@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRaster.java,v $
 // $RCSfile: OMRaster.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/03/17 23:12:20 $
+// $Revision: 1.4 $
+// $Date: 2004/03/23 18:51:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -731,14 +731,24 @@ public class OMRaster extends OMRasterObject implements Serializable {
             // colortable is, versus the transparent value
             //              int pixAlpha;
 
-            if (b >= numColors) {
-                if (DEBUG) Debug.output("OMRaster:.computePixels() problem!: " + b);
-                color = clear.getRGB();
+            try {
+                if (b >= numColors) {
+                    if (DEBUG) Debug.output("OMRaster:.computePixels() problem!: " + b);
+                    color = clear.getRGB();
 
-            } else if (b < 0) {
-                color = colors[MoreMath.signedToInt(b)];
-            } else {
-                color = colors[b];
+                } else if (b < 0) {
+                    color = colors[MoreMath.signedToInt(b)];
+                } else {
+                    color = colors[b];
+                }
+            } catch (ArrayIndexOutOfBoundsException aiiobe) {
+                // If the color can't be found, don't paint it.
+                if (DEBUG) {
+                    Debug.output("OMRaster.computePixels() problem, can't find color for index: "  + 
+                                 aiiobe.getMessage());
+                }
+                                        
+                color = clear.getRGB();
             }
 
             // OK, got an int value, argb, for the color to be put on

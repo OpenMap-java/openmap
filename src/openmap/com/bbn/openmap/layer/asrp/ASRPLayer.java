@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/asrp/ASRPLayer.java,v $
 // $RCSfile: ASRPLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/03/17 23:11:21 $
+// $Revision: 1.4 $
+// $Date: 2004/03/23 18:51:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -71,7 +71,8 @@ import javax.swing.*;
  *
  * </pre>
  */
-public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvider {
+public class ASRPLayer extends OMGraphicHandlerLayer 
+    implements DataBoundsProvider, ASRPConstants {
 
     protected ASRPDirectoryHandler asrpHandler;
     protected String[] thfPaths = null;
@@ -79,7 +80,7 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvid
 
     protected boolean showCoverage = true;
 
-    DrawingAttributes coverageDrawingAttributes = DrawingAttributes.getDefaultClone();
+    protected DrawingAttributes coverageDrawingAttributes;
 
     /**
      * Property describing a flag that can be set to show where image
@@ -103,6 +104,7 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvid
 
     public ASRPLayer() {
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+        coverageDrawingAttributes = DrawingAttributes.getDefaultClone();
     }
 
     public synchronized OMGraphicList prepare() {
@@ -148,7 +150,8 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvid
                     asrpDirHandler.add(new TransmittalHeaderFile(thfPaths[i]));
                 } catch (IOException ioe) {
                     Debug.error("ASRPLayer (" + getName() + 
-                                ") caught exception trying to read TRANSH02.THF: " + 
+                                ") caught exception trying to read " + 
+                                ASRPConstants.TRANS + ": " + 
                                 ioe.getMessage());
                 }
             }
@@ -260,6 +263,7 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvid
 
         props.put(prefix + ShowCoverageProperty, new Boolean(showCoverage).toString());
 
+        coverageDrawingAttributes.setPropertyPrefix(prefix);
         coverageDrawingAttributes.getProperties(props);
 
         return props;
@@ -274,7 +278,7 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements DataBoundsProvid
         interString = i18n.get(ASRPLayer.class, THFProperty, "TRANSH01.THF files");
         props.put(THFProperty + LabelEditorProperty,interString);
         props.put(THFProperty + ScopedEditorProperty, 
-                  "com.bbn.openmap.util.propertyEditor.MultiDirectoryPropertyEditor");
+                  "com.bbn.openmap.util.propertyEditor.MultiDirFilePropertyEditor");
 
         interString = i18n.get(ASRPLayer.class,ASRPDirectoryProperty,I18n.TOOLTIP,"Paths to ASRP Directories (if no TRANSH01.THF files)");
         props.put(ASRPDirectoryProperty, interString);

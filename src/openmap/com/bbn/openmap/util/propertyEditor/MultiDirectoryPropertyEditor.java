@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/MultiDirectoryPropertyEditor.java,v $
 // $RCSfile: MultiDirectoryPropertyEditor.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/23 21:16:05 $
+// $Revision: 1.6 $
+// $Date: 2004/03/23 18:51:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,8 +32,8 @@ import javax.swing.*;
 
 /** 
  * A PropertyEditor that brings up a JFileChooser panel to several
- * directories. You can enter information in the text field, and
- * pressing the add button will bring up a file chooser. Anything
+ * files and directories. You can enter information in the text field,
+ * and pressing the add button will bring up a file chooser. Anything
  * chosen in the file chooser will be appended to what is currently in
  * the text field.
  */

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.17 $
-// $Date: 2004/02/10 00:12:42 $
+// $Revision: 1.18 $
+// $Date: 2004/03/23 18:51:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -308,6 +308,16 @@ public class DrawingAttributes
             return super.clone();
         } catch (CloneNotSupportedException e) {
             return null;
+        }
+    }
+
+    public Stroke cloneBasicStroke() {
+        if (stroke instanceof BasicStroke) {
+            BasicStroke bs = (BasicStroke) stroke;
+            return new BasicStroke(bs.getLineWidth(), bs.getEndCap(), bs.getLineJoin(),
+                                   bs.getMiterLimit(), bs.getDashArray(), bs.getDashPhase());
+        } else {
+            return new BasicStroke(1);
         }
     }
 
@@ -1618,7 +1628,7 @@ public class DrawingAttributes
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer("DrawningAttributes[");
+        StringBuffer sb = new StringBuffer("DrawingAttributes[");
         sb.append("linePaint(" + linePaint + "), ");
         sb.append("selectPaint(" + selectPaint + "), ");
 //      sb.append("textPaint(" + textPaint + "), ");
