@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXY.java,v $
 // $RCSfile: LLXY.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.5 $
+// $Date: 2004/03/31 21:11:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -105,6 +105,10 @@ public class LLXY extends Cylindrical implements EqualArc {
         ppd = world.x/360f;
 
         float latLimit = 90f - ((float)hy / ppd);
+
+        //Add check for zoom allowing more than 90 degrees viewable
+        if (latLimit < 0.0f)
+            latLimit = 0.0f;
 
         if (cLat > latLimit) {
             cLat = latLimit;
