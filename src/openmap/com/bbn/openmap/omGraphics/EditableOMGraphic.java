@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMGraphic.java,v $
 // $RCSfile: EditableOMGraphic.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 01:10:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -701,6 +701,15 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
 	    attributeBox.add(graphicAttributes.getGUI());
 	    return attributeBox;
 	}
+	return null;
+    }
+
+    /**
+     * Return a small GUI, fit for a toolbar, for modifying the
+     * type-specific attributes of an OMGraphic.  Can return a button
+     * to bring up a larger interface in it's own window.
+     */
+    public Component getToolBarGUI() {
 	return null;
     }
 }

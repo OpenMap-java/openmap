@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 01:10:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,6 +35,7 @@ import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -1186,7 +1187,7 @@ public class EditableOMPoly extends EditableOMGraphic {
      * from getGUI.
      * @param graphicAttributes the GraphicAttributes to use to get
      * the GUI widget from to control those parameters for this EOMG.
-     * @return java.awt.Component to use to control parameters for this EOMG.
+     * @return Component to use to control parameters for this EOMG.
      */
     public Component getGUI(GraphicAttributes graphicAttributes) {
 	Debug.message("eomg", "EditableOMPoly.getGUI");
@@ -1215,23 +1216,18 @@ public class EditableOMPoly extends EditableOMGraphic {
 	}
     }
 
-    protected java.awt.Component buildGUI(GraphicAttributes graphicAttributes) {
-
-	JPanel palette = new JPanel();
-	palette.setLayout(new BoxLayout(palette, BoxLayout.Y_AXIS));
-	palette.setAlignmentX(Component.CENTER_ALIGNMENT); // LEFT
-	palette.setAlignmentY(Component.CENTER_ALIGNMENT); // BOTTOM
-
-	Box buttonBox = Box.createHorizontalBox();
-	
-	if (graphicAttributes != null) {
-	    palette.add(graphicAttributes.getGUI());
+    public Component getToolBarGUI() {
+	JToolBar buttonBox = new JToolBar();
+	buttonBox.setFloatable(false);
+	URL url;
+	ImageIcon imageIcon;
+	if (polygonButton == null) {
+	    url = getImageURL("enclosepoly.gif");
+	    imageIcon = new ImageIcon(url);
+	    polygonButton = new JToggleButton(imageIcon);
+	    polygonButton.setToolTipText("Automatically link first and last nodes");
 	}
 
-	java.net.URL url = getImageURL("enclosepoly.gif");
-	ImageIcon imageIcon = new ImageIcon(url);
-	
-	polygonButton = new JToggleButton(imageIcon);		
 	polygonButton.setSelected(isEnclosed());
 	polygonButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -1242,12 +1238,14 @@ public class EditableOMPoly extends EditableOMGraphic {
 		    }
 		}
 	    });
-	polygonButton.setToolTipText("Automatically link first and last nodes");
 	buttonBox.add(polygonButton);
 
-	url = getImageURL("addpoint.gif");
-	imageIcon = new ImageIcon(url);
-	addButton = new JButton(imageIcon);
+	if (addButton == null) {
+	    url = getImageURL("addpoint.gif");
+	    imageIcon = new ImageIcon(url);
+	    addButton = new JButton(imageIcon);
+	    addButton.setToolTipText("Add a node to the polygon");
+	}
 	addButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    ((PolyStateMachine)stateMachine).setAddNode();
@@ -1255,12 +1253,14 @@ public class EditableOMPoly extends EditableOMGraphic {
 		}
 	    });
 	addButton.setEnabled(false);
-	addButton.setToolTipText("Add a node to the polygon");
 	buttonBox.add(addButton);
 
-	url = getImageURL("deletepoint.gif");
-	imageIcon = new ImageIcon(url);
-	deleteButton = new JButton(imageIcon);
+	if (deleteButton == null) {
+	    url = getImageURL("deletepoint.gif");
+	    imageIcon = new ImageIcon(url);
+	    deleteButton = new JButton(imageIcon);
+	    deleteButton.setToolTipText("Delete a node from the polygon");
+	}
 	deleteButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    ((PolyStateMachine)stateMachine).setDeleteNode();
@@ -1268,10 +1268,22 @@ public class EditableOMPoly extends EditableOMGraphic {
 		}
 	    });
 	deleteButton.setEnabled(false);
-	deleteButton.setToolTipText("Delete a node from the polygon");
 	buttonBox.add(deleteButton);
+	return buttonBox;
+    }
 
-	palette.add(buttonBox);
+    protected Component buildGUI(GraphicAttributes graphicAttributes) {
+
+	JPanel palette = new JPanel();
+	palette.setLayout(new BoxLayout(palette, BoxLayout.Y_AXIS));
+	palette.setAlignmentX(Component.CENTER_ALIGNMENT); // LEFT
+	palette.setAlignmentY(Component.CENTER_ALIGNMENT); // BOTTOM
+
+	if (graphicAttributes != null) {
+	    palette.add(graphicAttributes.getGUI());
+	}
+
+	palette.add(getToolBarGUI());
 	
 	return palette;
     }
