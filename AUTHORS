@@ -1,8 +1,8 @@
 $Source: /cvs/distapps/openmap/AUTHORS,v $
 $RCSfile: AUTHORS,v $
-$Revision: 1.8 $
-$Date: 2000/08/28 19:11:43 $
-$Author: dietrick $
+$Revision: 1.9 $
+$Date: 2001/06/20 00:47:09 $
+$Author: bmackiew $
 
 People and organizations that have contributed to OpenMap
 ---------------------------------------------------------
@@ -59,7 +59,7 @@ Ringo Wathelet (DSTO in Australia)
 Paul Tomblin
   Provided a fix for the quadtree rectangle test for bounds checking.
 
-Davis Gillespie (formally from General Dynamics)
+David Gillespie (formerly from General Dynamics)
   Provided fixes for a memory leak in the DTEDLayer and DTEDFrameCache.
 
 Colin Mummery
