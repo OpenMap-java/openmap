@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/AbstractMouseMode.java,v $
 // $RCSfile: AbstractMouseMode.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/22 23:12:51 $
+// $Revision: 1.5 $
+// $Date: 2003/10/04 04:53:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,6 +48,14 @@ import com.bbn.openmap.util.PropUtils;
  * Base class of the MouseModes.  It takes care of the administrative
  * aspects of being a mouse mode, but does not respond to MouseEvents.
  * <p>
+ * The ID and pretty name can be set in the properties file.<pre>
+ * 
+ * # Name that layers use to get events from this mode
+ * mousemode.id=ID
+ * # Tooltip and Menu name for mode
+ * mousemode.prettyName=Display Name
+ *
+ * </pre>
  * This class delegates much of the work of managing its listeners to
  * a MapMouseSupport object.
  * @see MapMouseSupport
