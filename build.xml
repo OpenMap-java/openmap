@@ -46,11 +46,12 @@
 
     <jar jarfile="${openmap.home}/lib/openmap.jar" 
          basedir="${openmap.home}"
-	 includes="com/**/*.class, com/**/*.gif, share/"/>
+	 includes="openmap.properties, com/**/*.class, com/**/*.gif, share/"/>
 
     <jar jarfile="${openmap.home}/lib/omcore.jar"
          basedir="${openmap.home}"
-         includes="com/bbn/openmap/*.class,	
+         includes="openmap.properties,
+	           com/bbn/openmap/*.class,	
                    com/bbn/openmap/*.gif,	
                    com/bbn/openmap/event/*.class,
                    com/bbn/openmap/gui/*.class, 
