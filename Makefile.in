@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.56 $  $Date: 2001/07/30 17:36:16 $
+# $Revision: 1.57 $  $Date: 2001/08/23 00:01:42 $
 # **********************************************************************
 
 
@@ -73,7 +73,9 @@ Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/util/quadtree/*.class
 
 Core.extra =	com/bbn/openmap/*.gif \
-		com/bbn/openmap/gui/*.gif
+		com/bbn/openmap/gui/*.gif \
+		com/bbn/openmap/omGraphics/*.gif \
+		com/bbn/openmap/tools/drawing/*.gif
 
 Core.jar =	${Core.classes} ${Core.extra}
 
