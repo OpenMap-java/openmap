@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/Attic/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.4 $
-$Date: 1999/01/08 15:16:45 $
+$Revision: 1.5 $
+$Date: 1999/02/02 14:22:46 $
 $Author: aculline $
 
 Frequently Asked Questions for the OpenMap system.
@@ -36,7 +36,7 @@ BBN is part of GTE. GTE bought BBN and created GTE Internetworking.
 BBN is still the legal entity under which we operate. You can see a
 history of BBN at <tt><htmlurl url="http://www.bbn.com"></tt>
 (actually at <tt><htmlurl
-url="http://www.bbn.com/aboutbbn/history.htm"</tt>) where you'll see
+url="http://www.bbn.com/aboutbbn/history.htm"></tt>) where you'll see
 that we helped build the ARPANET which eventually became the Internet.
 
 
@@ -58,6 +58,16 @@ name="openmap@bbn.com"></tt> or browse our web site.
 That's Antarctica. The "open" continent. Home of the penguin, and we
 do a lot of our work on Linux systems. Not to mention that
 Antarctica's kind of a cool place.
+
+
+<sect1>What types of data does OpenMap support?
+<p>
+OpenMap comes with built-in support for <htmlurl
+url="http://www.nima.mil/" name="NIMA"> DCW, VPF, and VMAP, and also
+<htmlurl url="http://www.esri.com/" name="ESRI"> Shapefiles.  OpenMap
+can display both vector and raster geospatial data.  You can use
+OpenMap to develop map layers which can display your own private
+formats.
 
 
 <sect1>Can OpenMap display CADRG, CIB, RPF?
@@ -92,30 +102,27 @@ Questions concerning the core OpenMap source code.
 <sect1>When adding ESRI shape files to OpenMap I don't see (some/all) of the 
 data.  What's wrong?
 <p>
-
 The Openmap <htmlurl
 url="api/com.bbn.openmap.layer.shape.ShapeLayer.html"
 name="ShapeLayer"> uses a customized indexing scheme to efficiently
 draw the shape file data.  You'll need to create a spatial index from
 your shape file.  A spatial index is different from a shape index
 (.shx) file.
-
+<p>
 To generate a spatial index from a "country.shp" file do the following:
-
 <verb>
 java com.bbn.openmap.layer.shape.SpatialIndex -c country.ssx country.shp
 </verb>
-
 This creates the Spatial Index file (country.ssx) from the country.shp
 file.  Then you need to change the attribute in the openmap.properties
 file:
-
 <verb>
 country.spatialIndex=country.ssx
 </verb>
-
 Be sure to substitute the correct name of your shape file and layer for the
 word 'country' in the examples above.
+
+
 
 <sect>OpenMap Viewer Application
 <p>
