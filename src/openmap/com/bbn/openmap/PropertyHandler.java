@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/04 14:41:14 $
+// $Revision: 1.4 $
+// $Date: 2003/04/05 05:40:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,6 +78,10 @@ import com.bbn.openmap.Environment;
  * for the openmap.components property, especially for components that
  * get added to lists and menus.  Place the components in the list in
  * the order that you want components added to the MapHandler.
+ *
+ * If the debug.showprogress environment variable is set, the
+ * PropertyHandler will display a progress bar when it is creating
+ * components.
  */
 public class PropertyHandler implements SoloMapComponent {
 
@@ -133,6 +137,31 @@ public class PropertyHandler implements SoloMapComponent {
     protected boolean updateProgress = false;
 
     /**
+     * Create a PropertyHandler object that checks in the default
+     * order for openmap.properties files.  It checks for the
+     * openmap.properties file as a resource, in the configDir if
+     * specified as a system property, and lastly, in the user's home
+     * directory.
+     */
+    public PropertyHandler() {
+	this(false);
+    } 
+
+    /**
+     * Create a PropertyHandler object that checks in the default
+     * order for openmap.properties files.  It checks for the
+     * openmap.properties file as a resource, in the configDir if
+     * specified as a system property, and lastly, in the user's home
+     * directory.
+     * @param provideProgressUpdates if true, a progress bar will be
+     * displayed to show the progress of building components.
+     */
+    public PropertyHandler(boolean provideProgressUpdates) {
+	updateProgress = provideProgressUpdates;
+	searchForAndLoadProperties();
+    } 
+
+    /**
      * Constructor to take resource name, file path or URL string as
      * argument, to create context for a particular map.  
      */
@@ -167,13 +196,12 @@ public class PropertyHandler implements SoloMapComponent {
     }
 
     /**
-     * Create a PropertyHandler object that checks in the default
-     * order for openmap.properties files.  It checks for the
-     * openmap.properties file as a resource, in the configDir if
-     * specified as a system property, and lastly, in the user's home
-     * directory.
+     * Look for openmap.properties files as a resource in the
+     * classpath, in the config directory, and in the user's home
+     * directory, in that order.  If any property is duplicated in any
+     * version, last one wins.
      */
-    public PropertyHandler() {
+    protected void searchForAndLoadProperties() {
 
 	Properties tmpProperties = new Properties();
 	Properties includeProperties;
@@ -183,6 +211,10 @@ public class PropertyHandler implements SoloMapComponent {
 	
 	if (Debug.debugging("properties")) {
 	    showDebugMessages = true;
+	}
+
+	if (Debug.debugging("showprogress")) {
+	    updateProgress = true;
 	}
 
 	if (showDebugMessages) {
