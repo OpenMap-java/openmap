@@ -207,7 +207,7 @@
 		      use="true"
 		      windowtitle="OpenMap API"
 		      doctitle="OpenMap"
-		      bottom="Copyright (C) 2002, BBNT Solutions LLC; See http://openmap.bbn.com/ for details"/>
+		      bottom="Copyright (C) 2002, BBNT Solutions LLC; See http://openmap.bbn.com/ for details" />
 	</target>
 
   <!--  ############################
@@ -350,14 +350,14 @@
 	</target>
 
 	<target name="visibroker.clean" 
-	        description="Delete just the Corba OpenMap class files.">
-		<delete dir="${openmap.vb_classes}"/>
+	        depends="visibroker.distclean"
+	        description="Delete the Corba OpenMap class, stub and jar files.">
 		<delete file="lib/omcorba_vb.jar"/>
 	</target>
 
 	<target name="visibroker.distclean" 
-	        depends="visibroker.clean"
 		description="Delete the Corba OpenMap class files and the stub classes.">
+		<delete dir="${openmap.vb_classes}"/>
 		<delete dir="com/bbn/openmap/layer/rpf/corba/CRpfFrameProvider"/>
 		<delete dir="com/bbn/openmap/CSpecialist"/>
 		<delete dir="com/bbn/openmap/plugin/corbaImage/corbaImageServer"/>
