@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/09/09 15:22:32 $
+// $Revision: 1.7 $
+// $Date: 2003/09/09 15:31:07 $
 // $Author: blubin $
 // 
 // **********************************************************************
@@ -302,7 +302,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * prefix librarian in the MapHandler.
      **/
     public Object getMapComponent(String prefix) {
-	return getMapHandler().get(prefix);
+	return getPropertyHandler().get(prefix);
     }
 
     /**
