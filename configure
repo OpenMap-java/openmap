@@ -1116,8 +1116,6 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/plugin/corbaImage/Makefile
 	com/bbn/openmap/plugin/earthImage/Makefile
 	com/bbn/openmap/plugin/esri/Makefile
-	com/bbn/openmap/plugin/esri/input/Makefile
-	com/bbn/openmap/plugin/esri/output/Makefile
 	com/bbn/openmap/plugin/graphicLoader/Makefile
 	com/bbn/openmap/plugin/pilot/Makefile
 	com/bbn/openmap/plugin/shis/Makefile
@@ -1282,8 +1280,6 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/plugin/corbaImage/Makefile
 	com/bbn/openmap/plugin/earthImage/Makefile
 	com/bbn/openmap/plugin/esri/Makefile
-	com/bbn/openmap/plugin/esri/input/Makefile
-	com/bbn/openmap/plugin/esri/output/Makefile
 	com/bbn/openmap/plugin/graphicLoader/Makefile
 	com/bbn/openmap/plugin/pilot/Makefile
 	com/bbn/openmap/plugin/shis/Makefile
