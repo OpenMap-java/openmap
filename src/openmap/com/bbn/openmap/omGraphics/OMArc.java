@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArc.java,v $
 // $RCSfile: OMArc.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/06 19:01:20 $
+// $Revision: 1.6 $
+// $Date: 2004/10/01 20:41:32 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -28,7 +28,6 @@ import java.awt.geom.*;
 import java.util.ArrayList;
 import java.io.Serializable;
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.*;
 
