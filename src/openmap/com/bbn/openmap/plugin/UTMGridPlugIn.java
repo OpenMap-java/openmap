@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/02/28 00:02:05 $
+// $Revision: 1.4 $
+// $Date: 2003/03/19 20:38:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -90,6 +90,23 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     protected int distanceGridResolution = 0;
     protected Paint utmGridPaint = Color.black;
     protected Paint distanceGridPaint = Color.black;
+
+    /**
+     * Used to hold OMText UTM zone labels.
+     */
+    protected QuadTree labelTree;
+    /**
+     * Used for UTM zone labels.
+     */
+    protected OMGraphicList labelList;
+    /**
+     * The vertical list of OMLines used for UTM zones.
+     */
+    protected OMGraphicList verticalList;
+    /**
+     * The horizontal list of OMLines used for UTM zones.
+     */
+    protected OMGraphicList horizontalList;
 
     public final static String ShowLabelsProperty = "showLabels";
     public final static String ShowZonesProperty = "showZones";
@@ -199,6 +216,13 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 	labelTree.put(latitude, longitude, new OMText(latitude, longitude, 2, -2, new String(utm.zone_number + "" + utm.zone_letter), OMText.JUSTIFY_LEFT));
     }
 
+    /**
+     * Called to create 100km distance grid lines.  Was originally
+     * designed to accept different gridLineInterval distances, but
+     * has only been debugged and tested for 100000.
+     * @param utm the UTMPoint of the center of the area to create
+     * lines for.
+     */
     protected OMGraphicList createEquiDistanceLines(UTMPoint utm, int gridLineInterval) {
 
 	OMGraphicList list = new OMGraphicList();
@@ -323,11 +347,38 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 	return list;
     }
 
+    /**
+     * Create a list of rectangles representing equal areas of MGRS
+     * coordinates around a lat/lon location.  The rectangles are laid
+     * out on the MGRS grid, their size determined by the accuracy
+     * limitation given, which reflects how many digits are provided
+     * in a MGRS coordinate.  Uses WGS 84 ellipsoid.
+     * @param llp the lat/lon point of concern.
+     * @param accuracy the number of digits for northing and easting
+     * values of a MGRS coordinate, which implicitly translates to
+     * meters - 5 (1 meter) to 1 (10,000 meter).
+     * @param numRects the number of rectangles in each direction from
+     * the llp to create.
+     */
     protected OMGeometryList createMGRSRectangles(LatLonPoint llp, int accuracy, 
 						  int numRects) {
 	return createMGRSRectangles(llp, accuracy, numRects, Ellipsoid.WGS_84);
     }
 
+    /**
+     * Create a list of rectangles representing equal areas of MGRS
+     * coordinates around a lat/lon location.  The rectangles are laid
+     * out on the MGRS grid, their size determined by the accuracy
+     * limitation given, which reflects how many digits are provided
+     * in a MGRS coordinate.
+     * @param llp the lat/lon point of concern.
+     * @param accuracy the number of digits for northing and easting
+     * values of a MGRS coordinate, which implicitly translates to
+     * meters - 5 (1 meter) to 1 (10,000 meter).
+     * @param numRects the number of rectangles in each direction from
+     * the llp to create.
+     * @param ellipsoid the ellipsoid to use.
+     */
     protected OMGeometryList createMGRSRectangles(LatLonPoint llp, int accuracy, 
 						  int numRects, Ellipsoid ellipsoid) {
 	MGRSPoint mgrs = new MGRSPoint();
@@ -417,11 +468,6 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 	return poly;
     }
 
-    protected QuadTree labelTree;
-    protected OMGraphicList labelList;
-    protected OMGraphicList verticalList;
-    protected OMGraphicList horizontalList;
-
     /**
      * The getRectangle call is the main call into the PlugIn module.
      * The module is expected to fill the graphics list with objects
@@ -460,8 +506,8 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 	if (distanceGridResolution > 0) {
 	    Debug.message("utmgrid", "Creating distance lines...");
 
-	    float decisionAid = 100000f/(float)Math.pow(10, distanceGridResolution); 
 
+	    float decisionAid = 100000f/(float)Math.pow(10, distanceGridResolution); 
 	    float dglc = 30f * decisionAid; // distance grid label cutoff
 // 	    Debug.output("Basing decision to display labels on " + dglc);
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/10 22:04:54 $
+// $Revision: 1.4 $
+// $Date: 2003/03/19 20:38:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -352,7 +352,9 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 	throws PropertyVetoException {
 	super.setBeanContext(in_bc);
 
-	if (plugin != null && plugin instanceof BeanContextChild) {
+	if (in_bc != null && 
+	    plugin != null && 
+	    plugin instanceof BeanContextChild) {
 	    in_bc.add(plugin);
 	}
     }
