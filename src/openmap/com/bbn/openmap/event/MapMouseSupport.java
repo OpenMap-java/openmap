@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseSupport.java,v $
 // $RCSfile: MapMouseSupport.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/08 21:29:17 $
+// $Revision: 1.5 $
+// $Date: 2003/10/23 21:03:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -194,7 +194,7 @@ public class MapMouseSupport extends ListenerSupport {
 
 	boolean consumed = false;
 
-	if (proxy == null || 
+	if (proxy == null || evt.isShiftDown() ||
 	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_PRESSED) > 0) {
 
 	    evt = new MapMouseEvent(getParentMode(), evt);
@@ -213,7 +213,7 @@ public class MapMouseSupport extends ListenerSupport {
 	boolean ignoreConsumed = !consumed ||
 	    (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_PRESSED) == 0));
 
-	if (proxy != null && ignoreConsumed) {
+	if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
 	    proxy.mousePressed(evt);
 	    consumed = true;
 	}
@@ -246,7 +246,7 @@ public class MapMouseSupport extends ListenerSupport {
 	    consumed = true;
 	}
 
-	if (proxy == null || 
+	if (proxy == null || evt.isShiftDown() ||
 	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_RELEASED) > 0) {
 
 	    Iterator it = iterator();
@@ -258,7 +258,7 @@ public class MapMouseSupport extends ListenerSupport {
 	boolean ignoreConsumed = !consumed ||
 	    (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_RELEASED) == 0));
 
-	if (proxy != null && ignoreConsumed) {
+	if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
 	    proxy.mouseReleased(evt);
 	    consumed = true;
 	}
@@ -290,7 +290,7 @@ public class MapMouseSupport extends ListenerSupport {
 
 	priorityListener = null;
 
-	if (proxy == null || 
+	if (proxy == null || evt.isShiftDown() ||
 	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_CLICKED) > 0) {
 
 	    Iterator it = iterator();
@@ -308,7 +308,7 @@ public class MapMouseSupport extends ListenerSupport {
 	boolean ignoreConsumed = !consumed ||
 	    (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_CLICKED) == 0));
 
-	if (proxy != null && ignoreConsumed) {
+	if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
 	    proxy.mouseClicked(evt);
 	    consumed = true;
 	}
@@ -328,7 +328,7 @@ public class MapMouseSupport extends ListenerSupport {
 
 	boolean consumed = false;
 
-	if (proxy == null || 
+	if (proxy == null || evt.isShiftDown() ||
 	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_ENTERED) > 0) {
 
 	    evt = new MapMouseEvent(getParentMode(), evt);
@@ -341,7 +341,7 @@ public class MapMouseSupport extends ListenerSupport {
 	    }
 	}
 
-	if (proxy != null) {
+	if (proxy != null && !evt.isShiftDown()) {
 	    proxy.mouseEntered(evt);
 	    consumed = true;
 	}
@@ -361,7 +361,7 @@ public class MapMouseSupport extends ListenerSupport {
 
 	boolean consumed = false;
 
-	if (proxy == null || 
+	if (proxy == null || evt.isShiftDown() ||
 	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_EXITED) > 0) {
 
 	    evt = new MapMouseEvent(getParentMode(), evt);
@@ -374,7 +374,7 @@ public class MapMouseSupport extends ListenerSupport {
 	    }
 	}
 
-	if (proxy != null) {
+	if (proxy != null && !evt.isShiftDown()) {
 	    proxy.mouseExited(evt);
 	    consumed = true;
 	}
@@ -395,7 +395,7 @@ public class MapMouseSupport extends ListenerSupport {
 	clickHappened = false;
 	boolean consumed = false;
 
-	if (proxy == null || 
+	if (proxy == null || evt.isShiftDown() ||
 	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_DRAGGED) > 0) {
 
 	    evt = new MapMouseEvent(getParentMode(), evt);
@@ -410,7 +410,7 @@ public class MapMouseSupport extends ListenerSupport {
 	boolean ignoreConsumed = !consumed ||
 	    (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_DRAGGED) == 0));
 
-	if (proxy != null && ignoreConsumed) {
+	if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
 	    proxy.mouseDragged(evt);
 	    consumed = true;
 	}
@@ -433,7 +433,7 @@ public class MapMouseSupport extends ListenerSupport {
 
 	boolean consumed = false;
 
-	if (proxy == null || 
+	if (proxy == null || evt.isShiftDown() ||
 	    (proxyDistributionMask & PROXY_DISTRIB_MOUSE_MOVED) > 0) {
 
 	    evt = new MapMouseEvent(getParentMode(), evt);
@@ -458,7 +458,7 @@ public class MapMouseSupport extends ListenerSupport {
 	boolean ignoreConsumed = !consumed ||
 	    (consumed && ((proxyDistributionMask & PROXY_ACK_CONSUMED_MOUSE_MOVED) == 0));
 
-	if (proxy != null && ignoreConsumed) {
+	if (proxy != null && ignoreConsumed && !evt.isShiftDown()) {
 	    proxy.mouseMoved(evt);
 	    consumed = true;
 	}
