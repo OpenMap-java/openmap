@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/23 18:20:20 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:12:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,8 +37,8 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * An implemention of TableModel that manages tabular data read from a
- * .dbf file and enables the user to stored data store herein to be
- * saved to a file conforming to the DBF III file format specification
+ * dbf file and enables the user to stored data store herein to be
+ * saved to a file conforming to the DBF III file format specification.
  *
  * To create a three one column model:
  * <pre>
