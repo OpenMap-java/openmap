@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.17 $
-// $Date: 2003/10/10 19:18:44 $
+// $Revision: 1.18 $
+// $Date: 2003/10/23 21:17:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -393,39 +393,14 @@ public class OMDrawingTool extends OMToolComponent
 	    unsetMask(SHOW_GUI_BEHAVIOR_MASK);
 	}
 
-	EditableOMGraphic eomg = null;
-	EditToolLoader loader = (EditToolLoader)loaders.get(classname);
+	EditableOMGraphic eomg = getEditableGraphic(classname, ga);
 
-	if (loader == null) {
-
-	    if (DEBUG) {
-		Debug.output("OMDrawingTool.create(" + classname + ") - rechecking loaders");
-	    }
-
-	    // The loaders may be able to instantiate objects they
-	    // don't want in the GUI - check to see if they can..
-	    Iterator things = loaders.values().iterator();
-	    while (things.hasNext()) {
-		EditToolLoader ldr = (EditToolLoader)things.next();
-		
-		eomg = ldr.getEditableGraphic(classname, ga);
-		if (eomg != null) {
-		    break;
-		}
-	    }
-
-	    if (eomg == null) {
-		return null;
-		// well, we tried...
-	    }
-
-	} else {
-	    eomg = loader.getEditableGraphic(classname, ga);
+	if (eomg == null) {
+	    return null;
 	}
-	setAttributes(ga);
 
+	setAttributes(ga);
 	eomg.setShowGUI(isMask(SHOW_GUI_BEHAVIOR_MASK));
-	
 	eomg.setActionMask(OMGraphic.ADD_GRAPHIC_MASK);
 
 	return edit(eomg, requestor);
@@ -472,15 +447,14 @@ public class OMDrawingTool extends OMToolComponent
 
 	if (getCurrentEditable() != null) {
 	    if (DEBUG) {
-		Debug.output("OMDrawingTool.edit(): can't edit " + g.getClass().getName() + ", drawing tool busy with another graphic.");
+		Debug.output("OMDrawingTool.edit(): can't edit " + 
+			     g.getClass().getName() + 
+			     ", drawing tool busy with another graphic.");
 	    }
 	    return null;
 	}
 
-	Set keys = loaders.keySet();
 	this.requestor = requestor;
-
-	paletteTitle = DefaultPaletteTitle;
 
 	if (showGUI) {
 	    if (DEBUG) Debug.output("OMDrawingTool.edit(): showing GUI per request");
@@ -490,43 +464,14 @@ public class OMDrawingTool extends OMToolComponent
 	    unsetMask(SHOW_GUI_BEHAVIOR_MASK);
 	}
 
-	Iterator iterator = keys.iterator();
-	while (iterator.hasNext()) {
-	    if (DEBUG) Debug.output("OMDrawingTool: looking for loader.");
-	    String key = (String)iterator.next();
+	EditableOMGraphic eomg = getEditableGraphic(g);
 
-	    try {
-		Class kc = Class.forName(key);
-		Class gc = g.getClass();
-		if (kc == gc || kc.isAssignableFrom(gc)) {
-		    EditToolLoader loader = (EditToolLoader)loaders.get(key);
-		    
-		    if (loader == null) {
-			return null;
-		    }
-		    
-		    // There is a reason why the generation of the
-		    // graphic is done here.  I think it has to do
-		    // with something with the creation of the
-		    // EditableOMGraphic and its display with the
-		    // GrabPoints.
-		    generateOMGraphic(g);
+	if (eomg != null) {
+	    eomg.setShowGUI(isMask(SHOW_GUI_BEHAVIOR_MASK));
+	    eomg.setActionMask(OMGraphic.UPDATE_GRAPHIC_MASK);
+	    return edit(eomg, requestor);
+	}
 
-		    EditableOMGraphic eomg = loader.getEditableGraphic(g);
-
-		    paletteTitle = loader.getPrettyName(key);
-
-		    eomg.setShowGUI(isMask(SHOW_GUI_BEHAVIOR_MASK));
-		    eomg.setActionMask(OMGraphic.UPDATE_GRAPHIC_MASK);
-
-		    return edit(eomg, requestor);
-		}
-	    } catch (ClassNotFoundException cnfe) {
-		if (DEBUG) {
-		    Debug.output("OMDrawingTool.edit(" + g.getClass().getName() + ") comparision couldn't find class for " + key);
-		}
-	    }
-	} 
 	return null;
     }
 
@@ -540,6 +485,8 @@ public class OMDrawingTool extends OMToolComponent
      * the behavior mask set in the tool, and you want a particular
      * behavior, set it before calling this method.
      *
+     * This method is called by other edit methods.
+     *
      * @param g OMGraphic to modify
      * @param requestor the Component that is requesting the
      * OMGraphic.  The requestor gets notified when the user is
@@ -547,8 +494,7 @@ public class OMDrawingTool extends OMToolComponent
      * @return OMGraphic being modified contained within the
      * EditableOMGraphic.  
      */
-    public OMGraphic edit(EditableOMGraphic eomg, 
-			  DrawingToolRequestor requestor) {
+    public OMGraphic edit(EditableOMGraphic eomg, DrawingToolRequestor requestor) {
 
 	if (setCurrentEditable(eomg)) {
 
@@ -558,22 +504,26 @@ public class OMDrawingTool extends OMToolComponent
 	    if (DEBUG) {
 		Debug.output("OMDrawingTool.edit success");
 	    }
+
 	    this.requestor = requestor;
+
 	    if (currentEditable != null) {
 		graphicAttributes.setFrom(currentEditable.getGraphic());
 		activate();
-		if (currentEditable == null) {
-		    // In case activating caused something 
-		    // strange to happen, most likely with activating
-		    // the MouseModes.
-		    return null;
+
+		// Check currentEditable in case activating caused
+		// something strange to happen, most likely with
+		// activating the MouseModes.
+		if (currentEditable != null) {
+		    return currentEditable.getGraphic();
 		}
-		return currentEditable.getGraphic();
 	    }
 	}
 
 	if (DEBUG) {
-	    Debug.output("OMDrawingTool.edit(): can't edit " + eomg.getClass().getName() + ", drawing tool busy with another graphic.");
+	    Debug.output("OMDrawingTool.edit(): can't edit " + 
+			 eomg.getClass().getName() + 
+			 ", drawing tool busy with another graphic.");
 	}
 
 	return null;
@@ -603,23 +553,9 @@ public class OMDrawingTool extends OMToolComponent
 	OMGraphic ret = null;
 
 	if (getCurrentEditable() == null) {
-	    ret = edit(g, requestor, g.getShowEditablePalette());
-	    if (ret != null) {
-		currentEditable.getStateMachine().setEdit();
-		if (e != null) {
-		    GrabPoint gp = currentEditable.getMovingPoint(e);
-		    if (gp == null) {
-			currentEditable.move(e);
-		    } else {
-			currentEditable.getStateMachine().setSelected();
-		    }
-		} else {
-		    currentEditable.getStateMachine().setSelected();
-		}
-	    }
-	} else {
-	    if (DEBUG) {
-		Debug.output("OMDrawingTool.edit(mouseEvent): can't edit " + g.getClass().getName() + ", drawing tool busy with another graphic.");
+	    EditableOMGraphic eomg = getEditableGraphic(g);
+	    if (eomg != null) {
+		ret = edit(eomg, requestor, e);
 	    }
 	}
 
@@ -644,26 +580,105 @@ public class OMDrawingTool extends OMToolComponent
     public OMGraphic edit(EditableOMGraphic eomg, 
 			  DrawingToolRequestor requestor,
 			  MouseEvent e) {
-	OMGraphic ret = null;
+	
+	OMGraphic ret = edit(eomg, requestor);
 
-	if (currentEditable != null) {
-	    ret = edit(eomg, requestor);
+	if (ret != null) {
 	    currentEditable.getStateMachine().setEdit();
 	    if (e != null) {
 		GrabPoint gp = currentEditable.getMovingPoint(e);
 		if (gp == null) {
 		    currentEditable.move(e);
+		} else {
+		    currentEditable.getStateMachine().setSelected();
 		}
 	    } else {
 		currentEditable.getStateMachine().setSelected();
 	    }
-	} else {
-	    if (DEBUG) {
-		Debug.output("OMDrawingTool.edit(): can't edit " + eomg.getClass().getName() + ", drawing tool busy with another graphic.");
-	    }
 	}
 
 	return ret;
+    }
+
+    /**
+     * Given a classname, check the EditToolLoaders and create the
+     * OMGraphic it represents wrapped in an EditableOMGraphic.
+     * @param classname the classname of an OMGraphic to create.
+     * @param ga GraphicAttributes needed to initialize the OMGraphic.
+     * @return EdtiableOMGraphic, or null if none of the loaders can
+     * figure out what to make.
+     */
+    public EditableOMGraphic getEditableGraphic(String classname, GraphicAttributes ga) {
+
+	EditableOMGraphic eomg = null;
+	EditToolLoader loader = (EditToolLoader)loaders.get(classname);
+	if (loader == null) {
+
+	    if (DEBUG) {
+		Debug.output("OMDrawingTool.create(" + classname + ") - rechecking loaders");
+	    }
+
+	    // The loaders may be able to instantiate objects they
+	    // don't want in the GUI - check to see if they can..
+	    for (Iterator things = loaders.values().iterator(); things.hasNext();) {
+		EditToolLoader ldr = (EditToolLoader)things.next();
+		eomg = ldr.getEditableGraphic(classname, ga);
+		if (eomg != null) {
+		    break;
+		}
+	    }
+
+	} else {
+	    eomg = loader.getEditableGraphic(classname, ga);
+	}
+
+	return eomg;
+    }
+
+    /**
+     * Given an OMGraphic, check the EditToolLoaders and wrap it in an
+     * EditableOMGraphic.
+     * @param classname the classname of an OMGraphic to create.
+     * @param ga GraphicAttributes needed to initialize the OMGraphic.
+     * @return EdtiableOMGraphic, or null if none of the loaders can
+     * figure out what to make.
+     */
+    public EditableOMGraphic getEditableGraphic(OMGraphic g) {
+	Set keys = loaders.keySet();
+	Iterator iterator = keys.iterator();
+	while (iterator.hasNext()) {
+	    if (DEBUG) Debug.output("OMDrawingTool: looking for loader.");
+	    String key = (String)iterator.next();
+
+	    try {
+		Class kc = Class.forName(key);
+		Class gc = g.getClass();
+		if (kc == gc || kc.isAssignableFrom(gc)) {
+		    EditToolLoader loader = (EditToolLoader)loaders.get(key);
+		    
+		    if (loader == null) {
+			return null;
+		    }
+		    
+		    // There is a reason why the generation of the
+		    // graphic is done here.  I think it has to do
+		    // with something with the creation of the
+		    // EditableOMGraphic and its display with the
+		    // GrabPoints.
+		    generateOMGraphic(g);
+
+		    EditableOMGraphic eomg = loader.getEditableGraphic(g);
+		    return eomg;
+		}
+	    } catch (ClassNotFoundException cnfe) {
+		if (DEBUG) {
+		    Debug.output("OMDrawingTool.getEditableGraphic(" + 
+				 g.getClass().getName() + 
+				 ") comparision couldn't find class for " + key);
+		}
+	    }
+	}
+	return null;
     }
 
     /**
@@ -698,7 +713,8 @@ public class OMDrawingTool extends OMToolComponent
 
     /**
      * Set the EditableOMGraphic being used, if it hasn't already been
-     * set.  You can set it to null all the time.
+     * set.  You can set it to null all the time.  This method
+     * triggers the selection listeners.
      */
     public synchronized boolean setCurrentEditable(EditableOMGraphic eomg) {
 
@@ -1279,12 +1295,6 @@ public class OMDrawingTool extends OMToolComponent
     }
 
     ////////////////  end BeanContext stuff
-
-    /**
-     *  The palette title.
-     */
-    public final static String DefaultPaletteTitle = "Drawing Tool";
-    public static String paletteTitle = DefaultPaletteTitle;
 
     /**
      * Display the palette.
