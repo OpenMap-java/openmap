@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/CoordDialog.java,v $
 // $RCSfile: CoordDialog.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/05 05:39:01 $
+// $Revision: 1.4 $
+// $Date: 2003/04/16 22:12:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,27 +39,32 @@ import java.beans.*;
 import java.io.Serializable;
 
 /**
- * A Dialog box wrapper for a CoordPanel
+ * A Dialog box wrapper for a CombinedCoordPanel.
  */
 public class CoordDialog extends JDialog 
-    implements Serializable, ActionListener, CenterListener {
+    implements Serializable, ActionListener, LightMapHandlerChild {
 
-    protected transient JButton closebutton;
-    protected transient JButton applybutton;
-    protected transient JTabbedPane tabPane;
-    protected transient CoordPanel coordPanel;
-    protected transient DMSCoordPanel dmsPanel;
-    protected transient UTMCoordPanel utmPanel;
-    protected transient MGRSCoordPanel mgrsPanel;
+    protected transient CombinedCoordPanel ccp;
 
-    protected transient CenterSupport centerDelegate;
+    public final static String DEFAULT_TITLE = "Go To Coordinates";
 
     /** 
-     *  Creates a Dialog Box with a CoordPanel and Apply and Close buttons
+     * Creates a Dialog Box with a CombinedCoordPanel.
      */
     public CoordDialog() {
 	super();
+	setTitle(DEFAULT_TITLE);
 	setup();
+    }
+
+    /** 
+     * Creates a Dialog Box with a CombinedCoordPanel
+     * with a specified title and comment.
+     */
+    public CoordDialog(String title, String comment) {
+	super();
+	setTitle(DEFAULT_TITLE);
+	setup(comment);
     }
 
     /**
@@ -67,47 +72,18 @@ public class CoordDialog extends JDialog
      *  and Apply and Close buttons
      */
     protected void setup() {
-	centerDelegate = new CenterSupport(this);
-	// We want to set all of the current tabs with the current center.
-	addCenterListener(this);
-	Container contentPane = getContentPane();
-	contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+	setup(CombinedCoordPanel.DEFAULT_COMMENT);
+    }
 
-	setTitle("Go To Coordinates");
-	
-	JPanel bigPanel = new JPanel();
-	JPanel titlePanel = new JPanel();
-	titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
-	JLabel clarification = new JLabel("Set Center of Map to Coordinates:");
-	titlePanel.add(clarification);
-	bigPanel.add(titlePanel);
+    protected void setup(String comment) {
+	ccp = new CombinedCoordPanel(comment, this);
+	getContentPane().add(ccp);
+    }
 
-	bigPanel.setLayout(new BoxLayout(bigPanel, BoxLayout.Y_AXIS));
-	coordPanel = new CoordPanel(centerDelegate);
-	dmsPanel = new DMSCoordPanel(centerDelegate);
-	utmPanel = new UTMCoordPanel(centerDelegate);
-	mgrsPanel = new MGRSCoordPanel(centerDelegate);
-
-	tabPane = new JTabbedPane();
-	tabPane.addTab("Dec Deg", coordPanel);
-	tabPane.addTab("DMS", dmsPanel);
-	tabPane.addTab("UTM", utmPanel);
-	tabPane.addTab("MGRS", mgrsPanel);
-
-	bigPanel.add(tabPane);
-
-	JPanel buttonPanel = new JPanel();
-	buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-	closebutton = new JButton("Close");
-	closebutton.addActionListener(this);
-	applybutton = new JButton("Apply");
-	applybutton.addActionListener(this);
-	buttonPanel.add(applybutton);
-	buttonPanel.add(closebutton);
-
-	bigPanel.add(buttonPanel);
-	contentPane.add(bigPanel);
-	pack();
+    public void actionPerformed(java.awt.event.ActionEvent e) {
+	if (e.getActionCommand() == CombinedCoordPanel.CloseCmd) {
+	    setVisible(false);
+	}
     }
 
     /**
@@ -115,60 +91,33 @@ public class CoordDialog extends JDialog
      *  entry boxes in the CoordPanel
      */
     public LatLonPoint getLatLon() {
-	return coordPanel.getLatLon();
+	return ccp.getLatLon();
     }
 
     /**
-     *  Sets the contents of the latitude and longitude entry 
-     *  boxes in CoordPanel
-     *  @param llpoint the object containt the coordinates that should go in the boxes
+     * Sets the contents of the latitude and longitude entry 
+     * boxes in CoordPanel
+     * @param llpoint the object containt the coordinates that should
+     * go in the boxes
      */
     public void setLatLon(LatLonPoint llpoint) {
-	coordPanel.setLatLon(llpoint);
-	dmsPanel.setLatLon(llpoint);
-	utmPanel.setLatLon(llpoint);
-	mgrsPanel.setLatLon(llpoint);
+	ccp.setLatLon(llpoint);
     }
 
     /**
-     *  Tells the CoordPanel to set the center of the map
+     * LightMapHandlerChild method.  The CoordDialog passes all
+     * objects to the CombinedCoordPanel.
      */
-    public boolean setCenter() {
-	return ((CoordPanel)tabPane.getSelectedComponent()).setCenter();
-    }
-
-    public void actionPerformed(java.awt.event.ActionEvent e) {
-	if (e.getSource() == applybutton) {
-	    boolean allOK = setCenter();
-	    if (!allOK) {
-		setLatLon(null);
-	    }
-
-	} else if (e.getSource() == closebutton) {
-	    setVisible(false);
-	}
+    public void findAndInit(Object someObj) {
+	ccp.findAndInit(someObj);
     }
 
     /**
-     * Add a CenterListener to the listener list.
-     *
-     * @param listener  The CenterListener to be added
+     * LightMapHandlerChild method.  The CoordDialog passes all
+     * objects to the CombinedCoordPanel.
      */
-    public void addCenterListener(CenterListener listener) {
-	centerDelegate.addCenterListener(listener);
+   public void findAndUndo(Object someObj) {
+       ccp.findAndUndo(someObj);
     }
 
-
-    /**
-     * Remove a CenterListener from the listener list.
-     *
-     * @param listener  The CenterListener to be removed
-     */
-    public void removeCenterListener(CenterListener listener) {
-	centerDelegate.removeCenterListener(listener);
-    }
-
-    public void center(CenterEvent centerEvent) {
-	setLatLon(new LatLonPoint(centerEvent.getLatitude(), centerEvent.getLongitude()));
-    }
 }

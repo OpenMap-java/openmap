@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/CoordInternalFrame.java,v $
 // $RCSfile: CoordInternalFrame.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/05 05:39:01 $
+// $Revision: 1.3 $
+// $Date: 2003/04/16 22:12:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,16 +39,12 @@ import com.bbn.openmap.*;
 import com.bbn.openmap.event.CenterListener;
 
 /**
- * An Internal Frame wrapper for a CoordPanel
+ * An Internal Frame wrapper for a CombinedCoordPanel.
  */
 public class CoordInternalFrame extends JInternalFrame
-    implements Serializable, ActionListener {
+    implements Serializable, ActionListener, LightMapHandlerChild {
 
-    protected transient JButton closebutton;
-    protected transient JButton applybutton;
-    protected transient JTabbedPane tabPane;
-    protected transient DMSCoordPanel dmsPanel;
-    protected transient CoordPanel coordPanel;
+    protected CombinedCoordPanel ccp;
 
     /** 
      * Creates the internal frame with a CoordPanel and Apply and 
@@ -58,7 +54,7 @@ public class CoordInternalFrame extends JInternalFrame
      * to be placed.
      */
     public CoordInternalFrame() {
-	super("Go To Coordinates",
+	super(CoordDialog.DEFAULT_TITLE,
 	      true,		//resizable
 	      false,		//closable  - weird bug, won't close the second time
 	      false,		//maximizable
@@ -72,114 +68,30 @@ public class CoordInternalFrame extends JInternalFrame
      * and Apply and Close buttons
      */
     protected void setup() {
-
-	Container contentPane = getContentPane();
-	contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-
-	JPanel bigPanel = new JPanel();
-	bigPanel.setLayout(new BoxLayout(bigPanel, BoxLayout.Y_AXIS));
-	bigPanel.setAlignmentX(LEFT_ALIGNMENT);
- 	bigPanel.setAlignmentY(BOTTOM_ALIGNMENT);
-
-	coordPanel = new CoordPanel();
-	dmsPanel = new DMSCoordPanel();
-	tabPane = new JTabbedPane();
-	tabPane.addTab("Dec Deg", coordPanel);
-	tabPane.addTab("DMS", dmsPanel);
-	bigPanel.add(tabPane);
-
-	JPanel buttonPanel = new JPanel();
-	buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-	closebutton = new JButton("Close");
-	closebutton.addActionListener(this);
-	applybutton = new JButton("Apply");
-	applybutton.addActionListener(this);
-	buttonPanel.add(applybutton);
-	buttonPanel.add(closebutton);
-
-	bigPanel.add(buttonPanel);
-	contentPane.add(bigPanel);
-
+	ccp = new CombinedCoordPanel(this);
+	getContentPane().add(ccp);
  	setOpaque(true);
- 	pack();
      }
 
-    /**
-     * @return the LatLonPoint represented by contents of the 
-     * entry boxes in the CoordPanel
-     */
-    public LatLonPoint getLatLon() {
-
-	return coordPanel.getLatLon();
-    }
-
-    /**
-     * Sets the contents of the latitude and longitude entry 
-     * boxes in CoordPanel
-     * @param llpoint the object containt the coordinates that should
-     * go in the boxes
-     */
-    public void setLatLon(LatLonPoint llpoint) {
-        if (tabPane.getSelectedComponent() == coordPanel)
-	    coordPanel.setLatLon(llpoint);
-	else
-	    dmsPanel.setLatLon(llpoint);
-    }
-
-    /**
-     * Tells the CoordPanel to set the center of the map
-     */
-    public boolean setCenter() {
-        if (tabPane.getSelectedComponent() == coordPanel)
-	    return coordPanel.setCenter();
-	return dmsPanel.setCenter();
-    }
-
     public void actionPerformed(java.awt.event.ActionEvent e) {
-
-	if (e.getSource() == applybutton) {
-	    if (tabPane.getSelectedComponent() == coordPanel)
-	        coordPanel.setCenter();
-	    else
-	        dmsPanel.setCenter();
-	}
-
-	else if (e.getSource() == closebutton) {
-	    try { 
-		Component obj = getParent();
-		while (!(obj instanceof JLayeredPane)) {
-		    obj = obj.getParent();
-		}
-		((JLayeredPane)obj).remove(this);
-		setClosed(true); 
-		obj.repaint();
-	    }
-	    catch (java.beans.PropertyVetoException evt) {
-		Assert.assertExp(false,
-			      "CoordInternalFrame.actionPerformed("
-			      + "close): internal error!");
-	    
-	    }
+	if (e.getActionCommand() == CombinedCoordPanel.CloseCmd) {
+	    setVisible(false);
 	}
     }
 
     /**
-     * Add a CenterListener to the listener list.
-     *
-     * @param listener  The CenterListener to be added
+     * LightMapHandlerChild method.  The CoordInternalFrame passes all
+     * objects to the CombinedCoordPanel.
      */
-    public void addCenterListener(CenterListener listener) {
-        coordPanel.addCenterListener(listener);
-	dmsPanel.addCenterListener(listener);
+    public void findAndInit(Object someObj) {
+	ccp.findAndInit(someObj);
     }
 
     /**
-     * Remove a CenterListener from the listener list.
-     *
-     * @param listener  The CenterListener to be removed
+     * LightMapHandlerChild method.  The CoordInternalFrame passes all
+     * objects to the CombinedCoordPanel.
      */
-    public void removeCenterListener(CenterListener listener) {
-	coordPanel.removeCenterListener(listener);
-	dmsPanel.removeCenterListener(listener);
+   public void findAndUndo(Object someObj) {
+       ccp.findAndUndo(someObj);
     }
 }

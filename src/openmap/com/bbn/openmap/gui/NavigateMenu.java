@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigateMenu.java,v $
 // $RCSfile: NavigateMenu.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/06 03:47:01 $
+// $Revision: 1.4 $
+// $Date: 2003/04/16 22:12:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,6 +32,7 @@ import java.util.Iterator;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.MapBean;
+import com.bbn.openmap.gui.menu.CoordsMenuItem;
 import com.bbn.openmap.gui.menu.ProjectionMenu;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.event.ProjectionSupport;
@@ -51,11 +52,6 @@ public class NavigateMenu extends AbstractOpenMapMenu
     public static final String defaultText = "Navigate";
     public static final int defaultMnemonic = 'N';
 
-    public final static transient String coordCmd = "coordinates";
-  
-    protected transient CoordInternalFrame coordDialog=null;
-    protected transient CoordDialog coordDialog2 = null;
-
     protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
     protected ZoomSupport zoomSupport = new ZoomSupport(this);
     public final static transient String zoomIn2Cmd = "zoomIn2Cmd";
@@ -72,7 +68,7 @@ public class NavigateMenu extends AbstractOpenMapMenu
 	super();
 	setText(I18N.get("menu.navigate",defaultText));
 	setMnemonic(defaultMnemonic);
-	add(createCoordinatesMenuItem());
+	add(new CoordsMenuItem());
     
 	JMenuItem mi;
 	JMenu submenu = (JMenu)add(new JMenu(
@@ -102,23 +98,6 @@ public class NavigateMenu extends AbstractOpenMapMenu
     }    
 
     /**
-     * A MenuItem which upon clicked, creates CoordDialog object.
-     */
-    public JMenuItem createCoordinatesMenuItem() {
-	JMenuItem coordMenuItem = new JMenuItem(I18N.get(
-	    "menu.navigate.coords", "Coordinates..."));
-	coordMenuItem.addActionListener(this);
-	coordMenuItem.setActionCommand(coordCmd);
-    
-	if (Environment.getBoolean(Environment.UseInternalFrames)) {
-	    coordDialog = new CoordInternalFrame();
-	} else {
-	    coordDialog2 = new CoordDialog();
-	}
-	return coordMenuItem;
-    }  
-  
-    /**
      * ActionListener interface, lets the Menu act on the actions of
      * the MenuItems.
      */
@@ -135,59 +114,9 @@ public class NavigateMenu extends AbstractOpenMapMenu
 	    fireZoom(ZoomEvent.RELATIVE, 2.0f);
 	} else if (command.equals(zoomOut4Cmd)) {
 	    fireZoom(ZoomEvent.RELATIVE, 4.0f);
-	} else if (command.equals(coordCmd)) {
-	    doCoordCommand();
 	} 	
     }
-  
-    /**
-     * Called when Coordinates MenuItem is clicked.
-     */
-    protected void doCoordCommand() {
-	if (Environment.getBoolean(Environment.UseInternalFrames)){
-	    if (coordDialog.isIcon()) {
-		try {
-		    coordDialog.setIcon(false);
-		} catch (PropertyVetoException pv) {
-		    System.err.println("setIcon(false) vetoed!" + pv);
-		}
-	    } else {
-		Component obj = getParent();
-		while (!(obj instanceof JLayeredPane)) {
-		    obj = obj.getParent();
-		}
-		((JLayeredPane)obj).add(coordDialog);
-	    }
-	} else {
-	    coordDialog2.setVisible(true);
-	}
-    }
-  
-  
-    /** 
-     * Convenience function for setting up listeners.
-     */
-    public void setupListeners(MapBean map) {     
-	addZoomListener(map);   
-	if (Environment.getBoolean(Environment.UseInternalFrames)){
-	    coordDialog.addCenterListener(map);
-	} else {
-	    coordDialog2.addCenterListener(map);
-	}
-    }
-  
-    /** 
-     * Convenience function for undoing set up listeners.
-     */
-    public void undoListeners(MapBean map) {   
-	removeZoomListener(map);  
-	if (Environment.getBoolean(Environment.UseInternalFrames)){
-	    coordDialog.removeCenterListener(map);
-	} else {
-	    coordDialog2.removeCenterListener(map);
-	}
-    }
-  
+
     /*----------------------------------------------------------------------
      * Zoom Support - for broadcasting zoom events
      *----------------------------------------------------------------------
@@ -218,14 +147,14 @@ public class NavigateMenu extends AbstractOpenMapMenu
     public void findAndInit(Object someObj) {
 	super.findAndInit(someObj);
 	if(someObj instanceof MapBean) {
-	    setupListeners((MapBean)someObj);
+	    addZoomListener((MapBean)someObj);
 	}
     }
 
     public void findAndUndo(Object someObj) {
 	super.findAndUndo(someObj);
 	if(someObj instanceof MapBean) {
-	    undoListeners((MapBean)someObj);
+	    removeZoomListener((MapBean)someObj);
 	}
     }
 

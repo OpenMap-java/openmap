@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/MenuPanel.java,v $
 // $RCSfile: MenuPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/05 05:39:01 $
+// $Revision: 1.3 $
+// $Date: 2003/04/16 22:12:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -200,9 +200,9 @@ public class MenuPanel extends JMenuBar
         addZoomListener(map);
         map.addProjectionListener(this);
 	if (Environment.getBoolean(Environment.UseInternalFrames)){
-	    coordDialog.addCenterListener(map);
+	    coordDialog.findAndInit(map);
 	} else {
-	    coordDialog2.addCenterListener(map);
+	    coordDialog2.findAndInit(map);
 	}
     }
 
@@ -215,9 +215,9 @@ public class MenuPanel extends JMenuBar
         removeZoomListener(map);
         map.removeProjectionListener(this);
 	if (Environment.getBoolean(Environment.UseInternalFrames)){
-	    coordDialog.removeCenterListener(map);
+	    coordDialog.findAndInit(map);
 	} else {
-	    coordDialog2.removeCenterListener(map);
+	    coordDialog2.findAndInit(map);
 	}
     }
 

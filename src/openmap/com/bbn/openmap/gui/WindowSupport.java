@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/08 16:27:19 $
+// $Revision: 1.3 $
+// $Date: 2003/04/16 22:12:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -144,7 +144,9 @@ public class WindowSupport implements ComponentListener, ActionListener {
     }
 
     protected void finalize() {
-	Debug.output("WindowSupport being gc'd");
+	if (Debug.debugging("gc")) {
+	    Debug.output("WindowSupport being gc'd");
+	}
     }
 
     /**
@@ -157,12 +159,13 @@ public class WindowSupport implements ComponentListener, ActionListener {
 
 	Dimension dim = getComponentSize();
 	if (dim != null) {
-	    w = (int)dim.getWidth();
-	    h = (int)dim.getHeight();
+	    content.setSize(dim);
+// 	    w = (int)dim.getWidth();
+// 	    h = (int)dim.getHeight();
 	}
 
-	if (w <= 0) w = content.getWidth();
-	if (h <= 0) h = content.getHeight();
+// 	if (w <= 0) w = content.getWidth();
+// 	if (h <= 0) h = content.getHeight();
 
 	int x = 10;
 	int y = 10;
@@ -173,7 +176,8 @@ public class WindowSupport implements ComponentListener, ActionListener {
 	    y = (int) loc.getY();
 	}
 
-	displayInWindow(x, y, w, h);
+// 	displayInWindow(x, y, w, h);
+	displayInWindow(x, y, -1, -1);
     }
 
     /**
