@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.18 $
-// $Date: 2003/10/23 21:17:21 $
+// $Revision: 1.19 $
+// $Date: 2003/10/30 20:42:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -580,20 +580,26 @@ public class OMDrawingTool extends OMToolComponent
     public OMGraphic edit(EditableOMGraphic eomg, 
 			  DrawingToolRequestor requestor,
 			  MouseEvent e) {
-	
-	OMGraphic ret = edit(eomg, requestor);
 
-	if (ret != null) {
-	    currentEditable.getStateMachine().setEdit();
-	    if (e != null) {
-		GrabPoint gp = currentEditable.getMovingPoint(e);
-		if (gp == null) {
-		    currentEditable.move(e);
+	OMGraphic ret = null;
+
+ 	if (eomg != null) {
+	    eomg.setActionMask(OMGraphic.UPDATE_GRAPHIC_MASK);
+
+	    ret = edit(eomg, requestor);
+
+	    if (ret != null) {
+		currentEditable.getStateMachine().setEdit();
+		if (e != null) {
+		    GrabPoint gp = currentEditable.getMovingPoint(e);
+		    if (gp == null) {
+			currentEditable.move(e);
+		    } else {
+			currentEditable.getStateMachine().setSelected();
+		    }
 		} else {
 		    currentEditable.getStateMachine().setSelected();
 		}
-	    } else {
-		currentEditable.getStateMachine().setSelected();
 	    }
 	}
 
