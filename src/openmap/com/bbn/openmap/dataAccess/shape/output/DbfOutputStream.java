@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 22:55:22 $
-// $Author: wjeuerle $
+// $Revision: 1.5 $
+// $Date: 2004/01/24 02:57:55 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -183,16 +183,20 @@ public class DbfOutputStream {
     public void writeRecords(DbfTableModel model) throws IOException {
 	int rowCount = model.getRowCount();
 	int columnCount = model.getColumnCount();
-	for(int r=0; r<=rowCount-1; r++) {
+	for (int r=0; r<=rowCount-1; r++) {
 	    _leos.writeByte(32);
-	    for(int c=0; c<=columnCount-1; c++) {
+	    for (int c=0; c<=columnCount-1; c++) {
 		byte type = model.getType(c);
 		String value = null;
-		if(type == DbfTableModel.TYPE_NUMERIC) {
-		    Double d = (Double)model.getValueAt(r, c);
-		    value = d.toString();
-		}
-		else{
+		if (type == DbfTableModel.TYPE_NUMERIC) {
+                    Object obj = model.getValueAt(r, c);
+                    if (obj instanceof Double) {
+                        Double d = (Double)model.getValueAt(r, c);
+                        value = d.toString();
+                    } else {
+                        value = "";
+                    }
+		} else {
 		    value = (String)model.getValueAt(r,c);
 		}
 		int length = model.getLength(c);
