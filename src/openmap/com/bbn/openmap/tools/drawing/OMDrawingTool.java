@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.24 $
-// $Date: 2004/02/04 17:26:04 $
+// $Revision: 1.25 $
+// $Date: 2004/02/04 22:40:13 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -149,6 +149,11 @@ public class OMDrawingTool extends OMToolComponent
      * particular class name or OMGraphic.
      */
     protected Hashtable loaders = new Hashtable();
+    /**
+     * The ordered list of EditToolLoaders, for notification.
+     * Preservers order, no duplicates.
+     */
+    protected Vector rawLoaders = new Vector();
     /**
      * The MouseMode used for the drawing tool.
      */
@@ -918,7 +923,7 @@ public class OMDrawingTool extends OMToolComponent
      */
     public void addLoader(EditToolLoader loader) {
         String[] classnames = loader.getEditableClasses();
-        
+        rawLoaders.add(loader);
         // Add the loader to the hashtable, with the classnames as
         // keys.  Then, when we get a request for a classname, we do
         // a lookup and get the proper loader for the key.
@@ -926,9 +931,9 @@ public class OMDrawingTool extends OMToolComponent
             for (int i = 0; i < classnames.length; i++) {
                 loaders.put(classnames[i].intern(), loader);
             }
-            firePropertyChange(LoadersProperty, null, loaders);
             possibleEditableClasses = null;
         }
+        firePropertyChange(LoadersProperty, null, rawLoaders);
     }
     
     /**
@@ -938,7 +943,7 @@ public class OMDrawingTool extends OMToolComponent
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         if (listener != null) {
             super.addPropertyChangeListener(listener);
-            listener.propertyChange(new PropertyChangeEvent(this, LoadersProperty, null, loaders));
+            listener.propertyChange(new PropertyChangeEvent(this, LoadersProperty, null, rawLoaders));
         }
     }
     
@@ -962,7 +967,8 @@ public class OMDrawingTool extends OMToolComponent
                     }
                 }
             }
-            firePropertyChange(LoadersProperty, null, loaders);
+            rawLoaders.remove(loader);
+            firePropertyChange(LoadersProperty, null, rawLoaders);
             possibleEditableClasses = null;
         }
     }
@@ -988,6 +994,7 @@ public class OMDrawingTool extends OMToolComponent
      */
     public void setLoaders(EditToolLoader[] etls) {
         loaders.clear();
+        rawLoaders.clear();
         for (int i = 0; i < etls.length; i++) {
             addLoader(etls[i]);
         }
@@ -1431,7 +1438,8 @@ public class OMDrawingTool extends OMToolComponent
             setCanvas((JComponent)someObj);
         }
         if (someObj instanceof EditToolLoader) {
-            if (DEBUG) Debug.output("DrawingTool: found EditToolLoader.");
+            if (DEBUG) Debug.output("DrawingTool: found EditToolLoader: " + 
+                                    someObj.getClass().getName());
             addLoader((EditToolLoader)someObj);
         }
     }

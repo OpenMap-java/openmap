@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.14 $
-// $Date: 2004/02/04 17:26:04 $
+// $Revision: 1.15 $
+// $Date: 2004/02/04 22:40:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,6 +34,7 @@ import com.bbn.openmap.MapHandlerChild;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -45,9 +46,20 @@ import javax.swing.*;
 /**
  * This tool is a widget that calls the OMDrawingTool to create a
  * specific graphic.  The launcher is completely configured by
- * EditToolLaunchers and OMGraphicHandlers that it finds in a
- * MapHandler.  There are no methods to manually add stuff to this
- * GUI.
+ * EditToolLaunchers it gets told about from the DrawingTool, and
+ * OMGraphicHandlers that it finds in a MapHandler.  There are no
+ * methods to manually add stuff to this GUI. <p>
+ *
+ * There are two properties that can be set for the launcher: <pre>
+ *
+ * # Number of launcher buttons to place in a row in that part of the
+ * # GUI. -1 (the default) is to keep them all on one line.
+ * omdtl.horizNumLoaderButtons=-1
+ *
+ * # If set to true, a text popup will be used for the OMGraphic
+ * # loaders instead of buttons (false is default).
+ * omdtl.useTextLabels=false
+ * </pre>
  */
 public class OMDrawingToolLauncher extends OMToolComponent 
     implements ActionListener, PropertyChangeListener {
@@ -56,13 +68,26 @@ public class OMDrawingToolLauncher extends OMToolComponent
     protected DrawingTool drawingTool;
     protected boolean useTextEditToolTitles = false;
     protected GraphicAttributes defaultGraphicAttributes = new GraphicAttributes();
+    public int maxHorNumLoaderButtons = -1;
 
-    protected TreeMap loaders = new TreeMap();
+    // Places buttons in alphabetical order
+    //     protected TreeMap loaders = new TreeMap();
+    protected Vector loaders = new Vector();
+
     protected Vector drawingToolRequestors = new Vector();
 
     protected DrawingToolRequestor currentRequestor;
     protected String currentCreation;
     protected JComboBox requestors;
+
+    /**
+     * Property for setting the maximum number of loader buttons to
+     * allow in the horizontal direction in the GUI
+     * (horizNumLoaderButtons).  -1 means to just lay them out in one
+     * row.
+     */
+    public final static String HorizontalNumberOfLoaderButtonsProperty = "horizNumLoaderButtons";
+    public final static String UseLoaderTextProperty = "useTextLabels";
 
     String[] rtc = { i18n.get(OMDrawingToolLauncher.class,"renderingType.LatLon","Lat/Lon"),
                      i18n.get(OMDrawingToolLauncher.class,"renderingType.XY","X/Y"),
@@ -274,7 +299,6 @@ public class OMDrawingToolLauncher extends OMToolComponent
 
         panel = PaletteHelper.createVerticalPanel(i18n.get(OMDrawingToolLauncher.class,"panelGraphicAttributes","Graphic Attributes:"));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
         
         JPanel panel2 = PaletteHelper.createVerticalPanel(i18n.get(OMDrawingToolLauncher.class,"panelRenderingType","Rendering Type:"));
         panel2.add(renderTypeList);  
@@ -284,13 +308,11 @@ public class OMDrawingToolLauncher extends OMToolComponent
         panel.add(panel3);
         palette.add(panel);
     
-    
         JButton createButton = new JButton(i18n.get(OMDrawingToolLauncher.class,"createButton","Create Graphic"));
         createButton.setActionCommand(CreateCmd);
         createButton.addActionListener(this);
 
         JPanel dismissBox = new JPanel();
-    
         JButton dismiss = new JButton(i18n.get(OMDrawingToolLauncher.class,"dismiss","Close"));
         dismissBox.setLayout(new BoxLayout(dismissBox, BoxLayout.X_AXIS));
         dismissBox.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -311,20 +333,53 @@ public class OMDrawingToolLauncher extends OMToolComponent
             });
     }
 
+    protected JComponent getToolWidgets() {
+	JPanel iconBar = new JPanel();
+	// this parameters should be read from properties!
+	iconBar.setLayout(new GridLayout(2,4)); 
+	ButtonGroup bg = new ButtonGroup();
+	JToggleButton btn = null;
+	boolean setFirstButtonSelected = true;
+
+        for (Iterator it = getLoaders();it.hasNext();) {
+            LoaderHolder lh = (LoaderHolder)it.next();
+            String pName = lh.prettyName;
+            EditToolLoader etl = lh.loader;
+            ImageIcon icon = etl.getIcon(getEditableClassName(pName));
+            btn = new JToggleButton(icon);
+            btn.setMargin(new Insets(0,0,0,0));
+            btn.setToolTipText(pName);
+            btn.setActionCommand(pName);
+            btn.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        setCurrentCreation(ae.getActionCommand());
+                    }
+                });
+            if (setFirstButtonSelected) {
+                btn.setSelected(true);
+                setCurrentCreation(pName);
+                setFirstButtonSelected = false;
+            }
+            bg.add(btn);
+            iconBar.add(btn);
+        }
+        return iconBar;
+    }
+
     protected JComponent getToolWidgets(boolean useText) {      
 
-        // Set editables with all the pretty names.
-        Vector editables = new Vector();
-        Iterator graphicNames = loaders.keySet().iterator();
-        while (graphicNames.hasNext()) {
-            String graphicName = (String) graphicNames.next();
-            editables.add(graphicName);
-        }
-
         if (useText) {
+            // Set editables with all the pretty names.
+            Vector editables = new Vector();
+
+            for (Iterator it = getLoaders();it.hasNext();) {
+                LoaderHolder lh = (LoaderHolder)it.next();
+                editables.add(lh.prettyName);
+            }
+
             return createToolOptionMenu(editables);
         } else {
-            return createToolButtonPanel(editables);
+            return createToolButtonPanel();
         }
     }
 
@@ -353,37 +408,68 @@ public class OMDrawingToolLauncher extends OMToolComponent
         return tools;
     }
 
-    private JToolBar createToolButtonPanel(Vector editables) {
-        // Otherwise, create a set of buttons.
-        JToggleButton btn;
-        JToolBar iconBar = new JToolBar();
-        iconBar.setFloatable(false);
+    private JPanel createToolButtonPanel() {
+	// Otherwise, create a set of buttons.
+	JPanel panel = new JPanel();
+	GridBagLayout gridbag = new GridBagLayout();
+	GridBagConstraints c = new GridBagConstraints();
+        c.gridwidth = GridBagConstraints.REMAINDER;
 
-        ButtonGroup bg = new ButtonGroup();
+	panel.setLayout(gridbag);
 
-        for (int i = 0; i < editables.size(); i++) {
-            String pName = (String)editables.elementAt(i);
-            EditToolLoader etl = (EditToolLoader)loaders.get(pName);
-            ImageIcon icon = etl.getIcon(getEditableClassName(pName));
-            btn = new JToggleButton(icon, i==0);
-            btn.setToolTipText(pName);
-            btn.setActionCommand(pName);
-            btn.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        setCurrentCreation(ae.getActionCommand());
-                    }
-                });
-            bg.add(btn);
+	ButtonGroup bg = new ButtonGroup();
 
-            iconBar.add(btn);
-
-            // Just set one as active, the first one.
-            if (i == 0) {
-                setCurrentCreation(pName);
-            }
+	int toolbarCount = 0;
+        boolean limitWidth = false;
+	if (maxHorNumLoaderButtons >= 0) {
+            limitWidth = true;
         }
+        
+	JToggleButton btn;
+	JToolBar iconBar = null;
+        boolean activeSet = false;
+        for (Iterator it = getLoaders();it.hasNext();) {
 
-        return iconBar;
+	    if (toolbarCount == 0) {
+		iconBar = new JToolBar();
+		iconBar.setFloatable(false);
+		gridbag.setConstraints(iconBar, c);
+		panel.add(iconBar);
+	    }
+
+            LoaderHolder lh = (LoaderHolder)it.next();
+            String pName = lh.prettyName;
+	    EditToolLoader etl = lh.loader;
+	    ImageIcon icon = etl.getIcon(getEditableClassName(pName));
+
+	    btn = new JToggleButton(icon, !activeSet);
+	    btn.setToolTipText(pName);
+	    btn.setActionCommand(pName);
+	    btn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent ae) {
+			setCurrentCreation(ae.getActionCommand());
+		    }
+		});
+	    bg.add(btn);
+
+	    if (iconBar != null) {
+		iconBar.add(btn);
+	    }
+
+            toolbarCount++;
+
+	    // Just set one as active, the first one.
+	    if (!activeSet) {
+		setCurrentCreation(pName);
+                activeSet = true;
+	    }
+
+	    if (limitWidth && toolbarCount >= maxHorNumLoaderButtons) {
+		toolbarCount = 0;
+	    }
+	}
+
+	return panel;
     }
 
     /**
@@ -422,10 +508,11 @@ public class OMDrawingToolLauncher extends OMToolComponent
      * created, from one of the EditToolLoaders.
      */
     public String getEditableClassName(String prettyName) {
-        Iterator objs = getLoaders();
-        while (objs.hasNext()) {
-            EditToolLoader etl = (EditToolLoader) objs.next();
+        for (Iterator it = getLoaders(); it.hasNext();) {
+            LoaderHolder lh = (LoaderHolder) it.next();
+            EditToolLoader etl = lh.loader;
             String[] ec = etl.getEditableClasses();
+
             for (int i = 0; i < ec.length; i++) {
                 if (prettyName.equals(etl.getPrettyName(ec[i]))) {
                     return ec[i];
@@ -552,6 +639,9 @@ public class OMDrawingToolLauncher extends OMToolComponent
         defaultGraphicAttributes = ga;
     }
 
+    /**
+     * Set the loaders with an Iterator containing EditToolLoaders.
+     */
     public void setLoaders(Iterator iterator) {
         loaders.clear();
         while (iterator.hasNext()) {
@@ -559,24 +649,29 @@ public class OMDrawingToolLauncher extends OMToolComponent
         }
     }
 
+    /**
+     * Returns an iterator of LoaderHolders.
+     */
     public Iterator getLoaders() {
-        return loaders.values().iterator();
+        return loaders.iterator();
     }
 
     public void addLoader(EditToolLoader etl) {
         if (etl != null) {
             String[] classNames = etl.getEditableClasses();
             for (int i = 0; i < classNames.length; i++) {
-                loaders.put(etl.getPrettyName(classNames[i]), etl);
+                loaders.add(new LoaderHolder(etl.getPrettyName(classNames[i]), etl));
             }
         }
     }
 
     public void removeLoader(EditToolLoader etl) {
         if (etl != null) {
-            String[] classNames = etl.getEditableClasses();
-            for (int i = 0; i < classNames.length; i++) {
-                loaders.remove(etl.getPrettyName(classNames[i]));
+            for (Iterator it = getLoaders(); it.hasNext();) {
+                LoaderHolder lh = (LoaderHolder)it.next();
+                if (lh.loader == etl) {
+                    loaders.remove(lh);
+                }
             }
         }
     }
@@ -587,8 +682,57 @@ public class OMDrawingToolLauncher extends OMToolComponent
      */
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName() == OMDrawingTool.LoadersProperty) {
-            setLoaders(((Hashtable)pce.getNewValue()).values().iterator());
+            setLoaders(((Vector)pce.getNewValue()).iterator());
             resetGUI();
+        }
+    }
+
+    public void setProperties(String prefix, Properties props) {
+        super.setProperties(prefix, props);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        maxHorNumLoaderButtons = PropUtils.intFromProperties(props, prefix + HorizontalNumberOfLoaderButtonsProperty, maxHorNumLoaderButtons);
+        useTextEditToolTitles = PropUtils.booleanFromProperties(props, prefix + UseLoaderTextProperty, useTextEditToolTitles);
+    }
+
+    public Properties getProperties(Properties props) {
+        props = super.getProperties(props);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        props.put(prefix + HorizontalNumberOfLoaderButtonsProperty, 
+                  Integer.toString(maxHorNumLoaderButtons));
+        props.put(prefix + UseLoaderTextProperty, 
+                  new Boolean(useTextEditToolTitles).toString());
+        return props;
+    }
+
+    public Properties getPropertyInfo(Properties props) {
+        props = super.getPropertyInfo(props);
+        String internString = i18n.get(OMDrawingToolLauncher.class,
+                                       HorizontalNumberOfLoaderButtonsProperty,I18n.TOOLTIP,
+                                       "Number of loader buttons to place horizontally");
+        props.put(HorizontalNumberOfLoaderButtonsProperty, internString);
+
+        internString = i18n.get(OMDrawingToolLauncher.class, HorizontalNumberOfLoaderButtonsProperty,
+                                "# Horizontal Buttons");
+        props.put(HorizontalNumberOfLoaderButtonsProperty + LabelEditorProperty, internString);
+
+        internString = i18n.get(OMDrawingToolLauncher.class, UseLoaderTextProperty,I18n.TOOLTIP,
+                                "Use text popup for loader selection.");
+        props.put(UseLoaderTextProperty, internString);
+
+        internString = i18n.get(OMDrawingToolLauncher.class, UseLoaderTextProperty,
+                                "Use Text For Selection");
+        props.put(UseLoaderTextProperty + LabelEditorProperty, internString);
+
+        return props;
+    }
+
+    public static class LoaderHolder {
+        public String prettyName;
+        public EditToolLoader loader;
+
+        public LoaderHolder(String pn, EditToolLoader etl) {
+            prettyName = pn;
+            loader = etl;
         }
     }
 }
