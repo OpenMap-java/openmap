@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/TimerLocationLayer.java,v $
 // $RCSfile: TimerLocationLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.4 $
+// $Date: 2004/02/01 21:18:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,6 +28,8 @@ package com.bbn.openmap.layer.location;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.Properties;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
@@ -47,7 +49,7 @@ import com.bbn.openmap.event.ProjectionEvent;
  *
  * <pre>
  * # Specify the interval (milliseconds) for the timer. Default is 10 seconds.
- * layer.updateInterval=10000
+ * layer.updateTimerInterval=10000
  * # Auto-start/stop the timer when the layer is part of the Default
  * # is true.  There is a control to start/stop the timer on the
  * # palette.
@@ -69,11 +71,34 @@ public class TimerLocationLayer extends LocationLayer {
      */
     protected boolean autoTimer = true;
 
+    private final com.bbn.openmap.Layer layer = this;
+
     /** 
      * The default constructor for the Layer.  All of the attributes
      * are set to their default values.
      */
-    public TimerLocationLayer() {}
+    public TimerLocationLayer() {
+        addComponentListener(new ComponentAdapter() {
+                public void componentShown(ComponentEvent e) {
+                    if (e.getComponent() == layer &&
+                        getAutoTimer() && 
+                        timerButton != null && 
+                        !timerButton.isSelected()) {
+
+                        timerButton.doClick();
+                    }
+                }
+                public void componentHidden(ComponentEvent e) {
+                    if (e.getComponent() == layer &&
+                        getAutoTimer() && 
+                        timerButton != null && 
+                        timerButton.isSelected()) {
+
+                        timerButton.doClick();
+                    }
+                }
+            });
+    }
 
     public void projectionChanged(ProjectionEvent e) {
         super.projectionChanged(e);
@@ -135,13 +160,11 @@ public class TimerLocationLayer extends LocationLayer {
                         }
                     });
                 timerButton.setToolTipText("<HTML><BODY>Reload the map data from the original source at specified intervals.</BODY></HTML>");
-            }                 
-
-            JPanel tbp = new JPanel(new GridLayout(0, 1));
-            tbp.add(timerButton);
+            }   
 
             if (autoTimerButton == null) {
-                autoTimerButton = new JCheckBox("Reload Only When Visible", autoTimer);
+                autoTimerButton = new JCheckBox("Reload Only When Visible", 
+                                                getAutoTimer());
                 autoTimerButton.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent ae) {
                             JCheckBox check = (JCheckBox)ae.getSource();
@@ -151,6 +174,8 @@ public class TimerLocationLayer extends LocationLayer {
                 autoTimerButton.setToolTipText("<HTML><BODY>Only run the timer when the layer is active on the map.</BODY></HTML>");
             }
             
+            JPanel tbp = new JPanel(new GridLayout(0, 1));
+            tbp.add(timerButton);
             tbp.add(autoTimerButton);
             box.add(tbp);
         }

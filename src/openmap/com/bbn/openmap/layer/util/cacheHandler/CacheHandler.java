@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/cacheHandler/CacheHandler.java,v $
 // $RCSfile: CacheHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.4 $
+// $Date: 2004/02/01 21:18:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -118,7 +118,7 @@ public abstract class CacheHandler {
      * Search the cache for a match -return null if not found.  The key
      * search is case insensitive.
      */
-    protected CacheObject searchCache(String key) {
+    public CacheObject searchCache(String key) {
         for (int i = 0; i < objs.length; i++) {
             CacheObject co = objs[i];
             if (co == null) {
