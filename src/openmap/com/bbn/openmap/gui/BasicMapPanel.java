@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/05/15 04:13:42 $
+// $Revision: 1.14 $
+// $Date: 2004/09/17 18:12:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,13 +57,15 @@ import com.bbn.openmap.util.Debug;
  * hold all of its OpenMap components, and uses the PropertyHandler
  * given to it in its constructor to create and configure all of the
  * application components.  The best way to add components to the
- * MapPanel is to get the MapHandler from it and add the component to
- * that.  The BasocMapPanel also adds itself to its MapHandler, so
- * when the PropertyHandler adds components to the MapHandler, the
- * BasicMapPanel is able to find them via the findAndInit method.  By
- * default, the BasicMapPanel looks for MapPanelChildren and asks them
- * for where they would prefer to be located (BorderLayout.NORTH,
- * BorderLayout.SOUTH, BorderLayout.EAST, BorderLayout.WEST).
+ * MapPanel is to get the MapHandler from it and add components to
+ * that.  The BasicMapPanel also adds itself to its MapHandler, so
+ * when the PropertyHandler adds MapPanelChildren components to the
+ * MapHandler, the BasicMapPanel is able to find them via the
+ * findAndInit method.  By default, the BasicMapPanel looks for
+ * MapPanelChildren and asks them for where they would prefer to be
+ * located (BorderLayout.NORTH, BorderLayout.SOUTH, BorderLayout.EAST,
+ * BorderLayout.WEST).  If you extend this component, though, other
+ * components could be found via that same findAndInit method.
  */
 public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
@@ -73,7 +75,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     protected MenuList menuList;
 
     /**
-     * Create an empty MapPanel that creates its own empty
+     * Creates an empty MapPanel that creates its own empty
      * PropertyHandler.  The MapPanel will contain a MapBean, a
      * MapHandler, and a PropertyHandler with no properties.  The
      * constructor to use to create a blank map framework to add

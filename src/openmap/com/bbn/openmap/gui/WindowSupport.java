@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.14 $
-// $Date: 2004/02/06 00:01:14 $
+// $Revision: 1.15 $
+// $Date: 2004/09/17 18:12:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -305,7 +305,7 @@ public class WindowSupport extends ListenerSupport
                     title,
                     /*resizable*/ true,
                     /*closable*/ true,
-                    /*maximizable*/ false,
+                    /*maximizable*/ true,
                     /*iconifiable*/ true);
                 iFrame.setOpaque(true);
                 iFrame.addComponentListener(this);
@@ -345,6 +345,8 @@ public class WindowSupport extends ListenerSupport
             checkBounds(dialog, x, y, width, height);
             if (owner != null && x < 0 && y < 0) {
                 dialog.setLocationRelativeTo(owner);
+            } else if (owner == null) {
+                setPosition(dialog);
             }
             dialog.show();
         }
@@ -380,6 +382,29 @@ public class WindowSupport extends ListenerSupport
     }
 
     /**
+     * For applications, checks where the Environment says the window
+     * should be placed, and then uses the packed height and width to
+     * make adjustments.
+     */
+    protected void setPosition(Component comp) {
+        // get starting width and height
+        int w = comp.getWidth();
+        int h = comp.getHeight();
+
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        Debug.message("basic","Screen dimensions are " + d);
+        int x = d.width/2 - w/2;
+        int y = d.height/2 - h/2;
+        
+        if (Debug.debugging("basic")) {
+            Debug.output("Setting PLG frame X and Y from properties to " + x + " " + y);
+        }
+
+        // compose the frame, but don't show it here
+        comp.setBounds(x,y,w,h);
+    }
+
+    /**
      * Set the window to be hidden and fire a ComponentEvent for
      * COMPONENT_HIDDEN.  Normally, just setting the visibility of the
      * window would be enough, but we're running into that problem we
@@ -389,13 +414,15 @@ public class WindowSupport extends ListenerSupport
     public void killWindow() {
 
         ComponentEvent ce = null;
+        JDialog dialogLocal = dialog;
+        JInternalFrame iFrameLocal = iFrame;
 
-        if (dialog != null) {
-            dialog.setVisible(false);
-            ce = new ComponentEvent(dialog, ComponentEvent.COMPONENT_HIDDEN);
-        } else if (iFrame != null) {
-            iFrame.setVisible(false);
-            ce = new ComponentEvent(iFrame, ComponentEvent.COMPONENT_HIDDEN);
+        if (dialogLocal != null) {
+            dialogLocal.setVisible(false);
+            ce = new ComponentEvent(dialogLocal, ComponentEvent.COMPONENT_HIDDEN);
+        } else if (iFrameLocal != null) {
+            iFrameLocal.setVisible(false);
+            ce = new ComponentEvent(iFrameLocal, ComponentEvent.COMPONENT_HIDDEN);
         }
 
         if (ce != null) {

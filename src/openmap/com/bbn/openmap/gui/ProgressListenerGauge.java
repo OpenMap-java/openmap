@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ProgressListenerGauge.java,v $
 // $RCSfile: ProgressListenerGauge.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/09/17 18:12:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,104 +39,50 @@ public class ProgressListenerGauge extends JPanel
     protected boolean createWindowsForDisplay = false;
     protected String title;
 
-    /**
-     * The frame used when the ProgressPanel is used in an application.  
-     */
-    protected transient JFrame progressWindowFrame;
-    /**
-     * The frame used when the ProgressPanel is used in an applet. 
-     */
-    protected transient JInternalFrame progressWindow;
+    protected WindowSupport windowSupport = null;
 
     public ProgressListenerGauge() {
         init();
     }
 
     public ProgressListenerGauge(String windowTitle) {
-        init();
-
         createWindowsForDisplay = true;
         title = windowTitle;
+        init();
     }
 
-    protected void manageWindow(boolean visible) {
+    protected synchronized void manageWindow(boolean visible) {
         if (visible) {
-            if (progressWindow == null && progressWindowFrame == null) {
-                // create one or the other, try to group the
-                // applet-specific stuff in here...
-                if (Environment.getBoolean(Environment.UseInternalFrames)) {
-                    progressWindow = new JInternalFrame(
-                        title,
-                        /*resizable*/ true,
-                        /*closable*/ true,
-                        /*maximizable*/ false,
-                        /*iconifiable*/ true);
-                    progressWindow.setContentPane(this);
-                    progressWindow.pack();
-                    progressWindow.setOpaque(true);
-                    progressWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-                    setPosition(progressWindow);
-
-                    JLayeredPane desktop = 
-                        Environment.getInternalFrameDesktop();
-                
-                    if (desktop != null) {
-                        desktop.remove(progressWindow);
-                        desktop.add(progressWindow, 
-                                    JLayeredPane.POPUP_LAYER);
-                        progressWindow.show();
-                    }
-
-                } else { // Working as an application...
-                    progressWindowFrame = new JFrame(title);
-                    progressWindowFrame.setContentPane(this);
-                    progressWindowFrame.pack();
-                    setPosition(progressWindowFrame);
-                    progressWindowFrame.setState(Frame.NORMAL);
-                    progressWindowFrame.show();
-                    progressWindowFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-                }
+            if (windowSupport == null) {
+                windowSupport = new WindowSupport(this, title);
             }
-
-            if (progressWindow != null) {
-                progressWindow.toFront();
-            } else if (progressWindowFrame != null) {
-                progressWindowFrame.toFront();
-            }
-
+            windowSupport.displayInWindow();
         } else {
-            if (progressWindow != null) {
-                progressWindow.dispose();
-                progressWindow = null;
-            } else if (progressWindowFrame != null) {
-                progressWindowFrame.dispose();
-                progressWindowFrame = null;
+            if (windowSupport != null) {
+                windowSupport.killWindow();
             }
         }
     }
 
-    protected void init() {
-        
+    protected synchronized void init() {
         setLayout(new BorderLayout());
         add(new JLabel("     "), BorderLayout.EAST);
         add(new JLabel("     "), BorderLayout.WEST);
         add(new JLabel("      "), BorderLayout.NORTH);
         add(new JLabel("      "), BorderLayout.SOUTH);
-
         message = new JLabel("");
-        jpb = new JProgressBar(JProgressBar.HORIZONTAL, 0, 100);
-
+        jpb = new JProgressBar(0, 100);
         JPanel cpanel = new JPanel();
         cpanel.setLayout(new GridLayout(0,1));
         cpanel.add(jpb);
         cpanel.add(message);
 
         add(cpanel, BorderLayout.CENTER);
-        
+
         setPreferredSize(new Dimension(300, 75));
     }
 
-    public void setVisible(boolean set) {
+    public synchronized void setVisible(boolean set) {
         if (createWindowsForDisplay) {
             manageWindow(set);
         } else {
@@ -144,13 +90,11 @@ public class ProgressListenerGauge extends JPanel
         }
     }
 
-    public void updateProgress(ProgressEvent evt) {
-
+    public synchronized void updateProgress(ProgressEvent evt) {
         int type = evt.getType();
 
         if (type == ProgressEvent.START ||
             type == ProgressEvent.UPDATE) {
-
             setVisible(true);
             message.setText(evt.getTaskDescription());
             jpb.setValue(evt.getPercentComplete());
@@ -164,7 +108,7 @@ public class ProgressListenerGauge extends JPanel
      * should be placed, and then uses the packed height and width to
      * make adjustments.
      */
-    protected void setPosition(Component comp) {
+    protected synchronized void setPosition(Component comp) {
         // get starting width and height
         int w = comp.getWidth();
         int h = comp.getHeight();
@@ -180,17 +124,6 @@ public class ProgressListenerGauge extends JPanel
 
         // compose the frame, but don't show it here
         comp.setBounds(x,y,w,h);
-    }
-
-    // Trying to get the window to stay on top of everything else,
-    // especially when the application is starting up.  Doesn't seem
-    // to work.
-    public void toFront() {
-        if (progressWindow != null) {
-            progressWindow.toFront();
-        } else if (progressWindowFrame != null) {
-            progressWindowFrame.toFront();
-        }
     }
 
 }

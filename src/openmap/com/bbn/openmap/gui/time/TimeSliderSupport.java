@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimeSliderSupport.java,v $
 // $RCSfile: TimeSliderSupport.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.5 $
+// $Date: 2004/09/17 18:12:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,8 +65,12 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
             } else if (time >= endTime) {
                 timeSlider.setValue(maximum);
             } else {
-                double val = 
-                    ((double)(time - startTime)/(double)(endTime - startTime)) * (maximum-minimum);
+                double diff = endTime - startTime;
+                double val = minimum;
+                if (diff != 0) {
+                    val = ((double)(time - startTime)/diff) * (maximum - minimum);
+                }
+
                 if (Math.abs(val - timeSlider.getValue()) > 1) {
                     if (Debug.debugging("timedetail")) {
                         Debug.output("TimeSliderSupport: Setting time slider to : " + val);
