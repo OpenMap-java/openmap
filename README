@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/README,v $
 $RCSfile: README,v $
-$Revision: 1.5 $
-$Date: 1998/12/07 13:12:20 $
+$Revision: 1.6 $
+$Date: 1999/01/20 16:29:27 $
 $Author: aculline $
 
 
@@ -34,12 +34,11 @@ of GTE Internetworking.
 
 Downloads and home page
 -----------------------
-Downloads of the current distribution are available at:
-<URL:ftp://javamap.bbn.com/pub/openmap/>
-
 The homepage is at:
 <URL:http://openmap.bbn.com/> and
 <URL:http://javamap.bbn.com/>
+
+Downloads of the current distribution are available from the homepage.
 
 
 Anonymous CVS repository
@@ -73,6 +72,6 @@ Regression testing
 DejaGNU?
 
 
-Other similar projects
-----------------------
-We are aware of the following related (OpenSource?) projects.
+Related groups and projects
+---------------------------
+The OpenGIS Consortium <URL:http://www.opengis.org/>
