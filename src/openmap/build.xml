@@ -11,7 +11,7 @@
 
 		<property name="openmap.home" value="../.."/>
 		<property name="openmap.class_dir" value="${openmap.home}/classes"/>
-		<property name="openmap.classes" value="${openmap.home}/classes/openmap"/>
+		<property name="openmap.classes" value="${openmap.class_dir}/openmap"/>
 		<property name="openmap.src" value="${openmap.home}/src/openmap"/>
 		<property name="openmap.jar" value="${openmap.home}/lib/openmap.jar"/>
 		<property name="openmap.src_ext" value="${openmap.home}/src/ext"/>
@@ -138,7 +138,7 @@
 	<target name="distclean.openmap"
 	        depends="init.openmap"
 		description="Delete class files, but not the jar files.">
-	     <delete dir="${openmap.class_dir}" />
+	     <delete dir="${openmap.classes}" />
 	</target>
 
 	<target name="clean_jars.openmap"
