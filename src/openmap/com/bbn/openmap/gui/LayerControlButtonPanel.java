@@ -14,12 +14,11 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerControlButtonPanel.java,v $
 // $RCSfile: LayerControlButtonPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/09/30 22:36:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 
 package com.bbn.openmap.gui;
 
@@ -32,7 +31,6 @@ import java.util.Properties;
 import javax.swing.*;
 
 import com.bbn.openmap.Layer;
-import com.bbn.openmap.LightMapHandlerChild;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -41,37 +39,43 @@ import com.bbn.openmap.util.propertyEditor.*;
 /**
  * A OMComponentPanel that provides controls to manupulate layer order
  * in the LayersPanel, and to provide add layer and delete layer
- * buttons.  This panel can be embedded into the LayersPanel, or it
- * can be positioned somewhere else in the application.  The
- * LayersPanel can be set to create one of these itself, in which case
- * it will be embedded.  If you don't want an embedded version, create
- * one and add it to the MapHandler, it will hook up to the
- * LayersPanel when it finds it.  The LayerPanes, LayersPanel and
- * LayerControlButtonPanel communicate with each other using
- * PropertyChangeEvents.  The LayerPanes notify the LayersPanelwhen
- * one of them is selected, and that event gets passed to this panel.
- * When a button on this panel is pressed, it fires a
- * PropertyChangeEvent with the layer and command to take to all its
- * PropertyChangeListeners. <P>
- *
- * The LayerControlButtonPanel takes these properties: <pre>
- * # Direction buttons are laid out,  vertical or horizontal (vertical is default).
- * orientation=vertical
- * # Flag on whether to insert buttons onto LayersPanel (true by default).
- * embedded=true
- * # Configuration setting when embedding into LayersPanel (WEST,
- * # NORTH, EAST, SOUTH, NORTH_SOUTH) NORTH_SOUTH puts up button above
- * # list, down button below list.
- * configuration=WEST
- * # Flag to put button that lets the user delete layers (true by default).
- * delete=true
- * # Flag to put button that lets the user add layers, if the
- * # LayersAddPanel is discovered in the MapHandler (true by default)
- * add=true
+ * buttons. This panel can be embedded into the LayersPanel, or it can
+ * be positioned somewhere else in the application. The LayersPanel
+ * can be set to create one of these itself, in which case it will be
+ * embedded. If you don't want an embedded version, create one and add
+ * it to the MapHandler, it will hook up to the LayersPanel when it
+ * finds it. The LayerPanes, LayersPanel and LayerControlButtonPanel
+ * communicate with each other using PropertyChangeEvents. The
+ * LayerPanes notify the LayersPanelwhen one of them is selected, and
+ * that event gets passed to this panel. When a button on this panel
+ * is pressed, it fires a PropertyChangeEvent with the layer and
+ * command to take to all its PropertyChangeListeners.
+ * <P>
+ * 
+ * The LayerControlButtonPanel takes these properties:
+ * 
+ * <pre>
+ * 
+ *  
+ *   # Direction buttons are laid out,  vertical or horizontal (vertical is default).
+ *   orientation=vertical
+ *   # Flag on whether to insert buttons onto LayersPanel (true by default).
+ *   embedded=true
+ *   # Configuration setting when embedding into LayersPanel (WEST,
+ *   # NORTH, EAST, SOUTH, NORTH_SOUTH) NORTH_SOUTH puts up button above
+ *   # list, down button below list.
+ *   configuration=WEST
+ *   # Flag to put button that lets the user delete layers (true by default).
+ *   delete=true
+ *   # Flag to put button that lets the user add layers, if the
+ *   # LayersAddPanel is discovered in the MapHandler (true by default)
+ *   add=true
+ *   
+ *  
  * </pre>
  */
-public class LayerControlButtonPanel extends OMComponentPanel 
-    implements ActionListener, PropertyChangeListener {
+public class LayerControlButtonPanel extends OMComponentPanel implements
+        ActionListener, PropertyChangeListener {
 
     // Images
     protected static transient URL urlup;
@@ -139,7 +143,7 @@ public class LayerControlButtonPanel extends OMComponentPanel
         urladdc = LayersPanel.class.getResource("AddLayer.gif");
         addclickedgif = new ImageIcon(urladdc, "Add (clicked)");
     }
- 
+
     protected JButton add = null;
     protected JButton delete = null;
     protected JButton top = null;
@@ -182,47 +186,59 @@ public class LayerControlButtonPanel extends OMComponentPanel
     }
 
     public void removeLayersPanel(LayersPanel panel) {
-        panel.removePropertyChangeListener(this);
-        removePropertyChangeListener(panel);
+        if (panel != null) {
+            panel.setControls(null);
+            panel.removePropertyChangeListener(this);
+            removePropertyChangeListener(panel);
 
-        if (embedded) {
-            if (configuration.equalsIgnoreCase(NORTH_SOUTH_CONFIG)) {
-                panel.remove(up);
-                panel.remove(down);
-            } else {
-                panel.remove(this);
+            if (embedded) {
+                if (configuration.equalsIgnoreCase(NORTH_SOUTH_CONFIG)) {
+                    panel.remove(up);
+                    panel.remove(down);
+                } else {
+                    panel.remove(this);
+                }
             }
         }
     }
 
     /**
-     * If you want to extend this class and change how the buttons are
-     * displayed in the LayersPanel, change this method.
+     * Sets this panel to control the LayersPanel. If you want to
+     * extend this class and change how the buttons are displayed in
+     * the LayersPanel, change this method.
      */
     public void setLayersPanel(LayersPanel panel) {
-        panel.addPropertyChangeListener(this);
-        addPropertyChangeListener(panel);
+        if (panel != null) {
+            // Just in case it's already been added.
+            panel.removePropertyChangeListener(this);
 
-        if (embedded) {
-            createInterface(); // again, reset for new config values
-            setLayout(new BoxLayout(this, orientation));
+            panel.addPropertyChangeListener(this);
+            addPropertyChangeListener(panel);
 
-            if (panel.getLayout() instanceof BorderLayout) {
-                if (configuration.equalsIgnoreCase(WEST_CONFIG)) {
-                    panel.add(this, BorderLayout.WEST);
-                } else if (configuration.equalsIgnoreCase(EAST_CONFIG)) {
-                    panel.add(this, BorderLayout.EAST);
-                } else if (configuration.equalsIgnoreCase(NORTH_CONFIG)) {
-                    panel.add(this, BorderLayout.NORTH);
-                } else if (configuration.equalsIgnoreCase(SOUTH_CONFIG)) {
-                    panel.add(this, BorderLayout.SOUTH);
-                } else if (configuration.equalsIgnoreCase(NORTH_SOUTH_CONFIG)) {
-                    panel.add(up, BorderLayout.NORTH);
-                    panel.add(down, BorderLayout.SOUTH);
+            if (embedded) {
+                createInterface(); // again, reset for new config
+                // values
+                setLayout(new BoxLayout(this, orientation));
+
+                if (panel.getLayout() instanceof BorderLayout) {
+                    if (configuration.equalsIgnoreCase(WEST_CONFIG)) {
+                        panel.add(this, BorderLayout.WEST);
+                    } else if (configuration.equalsIgnoreCase(EAST_CONFIG)) {
+                        panel.add(this, BorderLayout.EAST);
+                    } else if (configuration.equalsIgnoreCase(NORTH_CONFIG)) {
+                        panel.add(this, BorderLayout.NORTH);
+                    } else if (configuration.equalsIgnoreCase(SOUTH_CONFIG)) {
+                        panel.add(this, BorderLayout.SOUTH);
+                    } else if (configuration.equalsIgnoreCase(NORTH_SOUTH_CONFIG)) {
+                        panel.add(up, BorderLayout.NORTH);
+                        panel.add(down, BorderLayout.SOUTH);
+                    }
+                } else {
+                    panel.add(this);
                 }
-            } else {
-                panel.add(this);
             }
+            // Let the LayersPanel know who is controlling it.
+            panel.setControls(this);
         }
     }
 
@@ -264,7 +280,7 @@ public class LayerControlButtonPanel extends OMComponentPanel
         if (deleteLayers) {
             JLabel blank = new JLabel(" ");
             add(blank);
-            
+
             delete = new JButton(deletegif);
             delete.setActionCommand(LayersPanel.LayerRemoveCmd);
             delete.setToolTipText("Remove selected layer");
@@ -307,11 +323,11 @@ public class LayerControlButtonPanel extends OMComponentPanel
     }
 
     /**
-     * Method associated with the ActionListener interface.  This
+     * Method associated with the ActionListener interface. This
      * method listens for action events meant to change the order of
      * the layers, as fired by the layer order buttons.
-     *
-     * @param e ActionEvent 
+     * 
+     * @param e ActionEvent
      */
     public void actionPerformed(java.awt.event.ActionEvent e) {
 
@@ -321,21 +337,21 @@ public class LayerControlButtonPanel extends OMComponentPanel
             Debug.output("LayersPanel.actionPerformed(): " + command);
         }
 
-        if (command == LayersPanel.LayerTopCmd ||
-            command == LayersPanel.LayerBottomCmd ||
-            command == LayersPanel.LayerUpCmd ||
-            command == LayersPanel.LayerDownCmd ||
-            command == LayersPanel.LayerRemoveCmd) {
+        if (command == LayersPanel.LayerTopCmd
+                || command == LayersPanel.LayerBottomCmd
+                || command == LayersPanel.LayerUpCmd
+                || command == LayersPanel.LayerDownCmd
+                || command == LayersPanel.LayerRemoveCmd) {
             if (selected != null) {
                 if (Debug.debugging("layercontrol")) {
-                    Debug.output("LayerControlButtonPanel: button firing " + 
-                                 command + " event for " + selected.getName());
+                    Debug.output("LayerControlButtonPanel: button firing " + command
+                            + " event for " + selected.getName());
                 }
                 firePropertyChange(command, null, selected);
             } else {
                 if (Debug.debugging("layercontrol")) {
-                    Debug.output("LayerControlButtonPanel: button firing " + 
-                                 command + " event with no layer selected");
+                    Debug.output("LayerControlButtonPanel: button firing " + command
+                            + " event with no layer selected");
                 }
             }
         } else if (command.equals(LayersPanel.LayerAddCmd)) {
@@ -351,21 +367,22 @@ public class LayerControlButtonPanel extends OMComponentPanel
         String command = pce.getPropertyName();
         Object obj = pce.getNewValue();
         if (Debug.debugging("layercontrol")) {
-            Debug.output("LayerControlButtonPanel: receiving PropertyChangeEvent " + pce.getPropertyName());
+            Debug.output("LayerControlButtonPanel: receiving PropertyChangeEvent "
+                    + pce.getPropertyName());
         }
 
-        if (command == LayersPanel.LayerSelectedCmd &&
-            obj instanceof Layer) {
+        if (command == LayersPanel.LayerSelectedCmd && obj instanceof Layer) {
 
-            selected = (Layer)obj;
+            selected = (Layer) obj;
 
             delete.setEnabled(selected.isRemoveable());
 
             if (Debug.debugging("layercontrol")) {
-                Debug.output("LayerControlButtonPanel: got notification that layer is selected: " + selected.getName());
+                Debug
+                        .output("LayerControlButtonPanel: got notification that layer is selected: "
+                                + selected.getName());
             }
-        } else if (command == LayersPanel.LayerDeselectedCmd &&
-                   selected == obj) {
+        } else if (command == LayersPanel.LayerDeselectedCmd && selected == obj) {
             selected = null;
             delete.setEnabled(false);
         }
@@ -373,11 +390,11 @@ public class LayerControlButtonPanel extends OMComponentPanel
 
     public void findAndInit(Object someObj) {
         if (someObj instanceof LayerAddPanel) {
-            setLayerAddPanel((LayerAddPanel)someObj);
+            setLayerAddPanel((LayerAddPanel) someObj);
         }
 
         if (someObj instanceof LayersPanel) {
-            setLayersPanel((LayersPanel)someObj);
+            setLayersPanel((LayersPanel) someObj);
         }
     }
 
@@ -389,7 +406,7 @@ public class LayerControlButtonPanel extends OMComponentPanel
         }
 
         if (someObj instanceof LayersPanel) {
-            removeLayersPanel((LayersPanel)someObj);
+            removeLayersPanel((LayersPanel) someObj);
         }
     }
 
@@ -403,12 +420,18 @@ public class LayerControlButtonPanel extends OMComponentPanel
             configuration = DefaultConfiguration;
         }
 
-        embedded = LayerUtils.booleanFromProperties(props, prefix + EmbeddedProperty, embedded);
-        deleteLayers = LayerUtils.booleanFromProperties(props, prefix + DeleteLayersProperty, deleteLayers);
-        addLayers = LayerUtils.booleanFromProperties(props, prefix + AddLayersProperty, addLayers);
-        
+        embedded = LayerUtils.booleanFromProperties(props,
+                                                    prefix + EmbeddedProperty,
+                                                    embedded);
+        deleteLayers = LayerUtils.booleanFromProperties(props, prefix
+                + DeleteLayersProperty, deleteLayers);
+        addLayers = LayerUtils.booleanFromProperties(props, prefix
+                + AddLayersProperty, addLayers);
+
         String orient = props.getProperty(prefix + OrientationProperty);
-        if (orient != null && (orient.equalsIgnoreCase(HORIZONTAL_CONFIG) || (orient.equalsIgnoreCase("false")))) {
+        if (orient != null
+                && (orient.equalsIgnoreCase(HORIZONTAL_CONFIG) || (orient
+                        .equalsIgnoreCase("false")))) {
             orientation = BoxLayout.X_AXIS;
         }
     }
@@ -418,9 +441,12 @@ public class LayerControlButtonPanel extends OMComponentPanel
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         props.put(prefix + ConfigurationProperty, configuration);
-        props.put(prefix + OrientationProperty, (orientation==BoxLayout.X_AXIS?HORIZONTAL_CONFIG:VERTICAL_CONFIG));
+        props.put(prefix + OrientationProperty,
+                  (orientation == BoxLayout.X_AXIS ? HORIZONTAL_CONFIG
+                          : VERTICAL_CONFIG));
         props.put(prefix + EmbeddedProperty, new Boolean(embedded).toString());
-        props.put(prefix + DeleteLayersProperty, new Boolean(deleteLayers).toString());
+        props.put(prefix + DeleteLayersProperty, new Boolean(deleteLayers)
+                .toString());
         props.put(prefix + AddLayersProperty, new Boolean(addLayers).toString());
         return props;
     }
@@ -428,15 +454,21 @@ public class LayerControlButtonPanel extends OMComponentPanel
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
 
-        props.put(ConfigurationProperty, "Pre-Defined Configuration String (WEST, EAST, NORTH, SOUTH, NORTH_SOUTH).");
+        props
+                .put(ConfigurationProperty,
+                     "Pre-Defined Configuration String (WEST, EAST, NORTH, SOUTH, NORTH_SOUTH).");
         props.put(OrientationProperty, "Horizontal or Vertical.");
-        props.put(OrientationProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.OrientationPropertyEditor");
+        props.put(OrientationProperty + ScopedEditorProperty,
+                  "com.bbn.openmap.util.propertyEditor.OrientationPropertyEditor");
         props.put(EmbeddedProperty, "Insert itself into LayersPanel.");
-        props.put(EmbeddedProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(EmbeddedProperty + ScopedEditorProperty,
+                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
         props.put(DeleteLayersProperty, "Include button to delete layers.");
-        props.put(DeleteLayersProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(DeleteLayersProperty + ScopedEditorProperty,
+                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
         props.put(AddLayersProperty, "Include button to add layers.");
-        props.put(AddLayersProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(AddLayersProperty + ScopedEditorProperty,
+                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return props;
     }
