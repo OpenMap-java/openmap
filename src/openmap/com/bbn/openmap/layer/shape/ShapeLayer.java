@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/02/04 00:26:48 $
+// $Revision: 1.11 $
+// $Date: 2004/02/04 22:38:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.10 $ $Date: 2004/02/04 00:26:48 $
+ * @version $Revision: 1.11 $ $Date: 2004/02/04 22:38:10 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
@@ -113,9 +113,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer
     String spatialIndexFileName = null;
     String imageURLString = null;
     
-    //for internationalization
-    protected I18n i18n = Environment.getI18n();
-
     /**
      * Initializes an empty shape layer.
      */
