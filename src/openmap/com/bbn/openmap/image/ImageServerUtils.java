@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServerUtils.java,v $
 // $RCSfile: ImageServerUtils.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 01:01:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,11 +63,14 @@ public class ImageServerUtils implements ImageServerConstants {
 	    projID = ProjectionFactory.getProjType(projType);
 	}
 
-	Debug.output("SHIS: projection of type " + projType + 
-		     ", with HEIGHT = " + height + 
-		     ", WIDTH = " + width + 
-		     ", lat = " + latitude + 
-		     ", lon = " + longitude);
+	if (Debug.debugging("imageserver")) {
+	    Debug.output("ImageServerUtils.createOMProjection: projection of type " + 
+			 projType + 
+			 ", with HEIGHT = " + height + 
+			 ", WIDTH = " + width + 
+			 ", lat = " + latitude + 
+			 ", lon = " + longitude);
+	}
 
 	Proj proj = (Proj) ProjectionFactory.makeProjection(
 	    projID, latitude, longitude, scale, width, height);
@@ -86,6 +89,13 @@ public class ImageServerUtils implements ImageServerConstants {
 						 backgroundColor.getBlue(),
 						 0x00);
 	}
+
+	if (Debug.debugging("imageserver")) {
+	    Debug.output("ImageServerUtils.createOMProjection: projection color: " + 
+			 Integer.toHexString(backgroundColor.getRGB()) + 
+			 ", transparent(" + transparent + ")");
+	}
+
 
 	proj.setBackgroundColor(backgroundColor);
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapRequestHandler.java,v $
 // $RCSfile: MapRequestHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/26 23:52:55 $
+// $Revision: 1.3 $
+// $Date: 2003/04/26 01:01:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -349,7 +349,6 @@ public class MapRequestHandler extends ImageServer
 	// property is set, to bother with taking up the time to run
 	// through all of this...
 
-
 	if (strLayers != null) {
 
 	    Vector layers = PropUtils.parseMarkers(strLayers, ",");
@@ -385,14 +384,17 @@ public class MapRequestHandler extends ImageServer
 
 	byte[] image = handleMapRequest(requestProperties);
 
+	if (Debug.debugging("imageserver")) {
+	    Debug.output("MRH: have completed image, size " + image.length);
+	}
+
 	String contentType = getFormatterContentType(getFormatter());
 
 	if (contentType == null) {
 	    contentType = HttpConnection.CONTENT_PLAIN;
 	}
 
-	Debug.message("imageserver", "MRH: have completed image, size " +
-		      image.length + ", type = " + contentType);
+	Debug.message("imageserver", "MRH: have type = " + contentType);
 
 	HttpConnection.writeHttpResponse(out, contentType, image);
     }
