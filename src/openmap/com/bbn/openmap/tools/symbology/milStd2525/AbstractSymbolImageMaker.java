@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: AbstractSymbolImageMaker.java,v $
-//$Revision: 1.1 $
-//$Date: 2004/12/10 14:17:11 $
+//$Revision: 1.2 $
+//$Date: 2005/01/13 01:33:58 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -70,12 +70,23 @@ public abstract class AbstractSymbolImageMaker extends OMComponent implements
     protected URL getFileURL(String code) throws MalformedURLException {
         code = massageCode(code);
         code = dataPath + ((dataPath != null && dataPath != "") ? "/" : "")
-                + code + ".svg";
+                + code + getFileExtension();
         if (Debug.debugging("symbology")) {
             Debug.output("AbstractSymbolImageMaker: code massaged to " + code);
         }
         URL ret = PropUtils.getResourceOrFileOrURL(code);
         return ret;
+    }
+
+    /**
+     * Return the file extension of this particular SymbolImageMaker,
+     * added to the symbol name after the code has been massaged into
+     * a file name.
+     * 
+     * @return
+     */
+    public String getFileExtension() {
+        return "";
     }
 
     /**

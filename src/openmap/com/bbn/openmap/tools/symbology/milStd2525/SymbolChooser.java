@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolChooser.java,v $
 // $RCSfile: SymbolChooser.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/12/10 14:17:11 $
+// $Revision: 1.8 $
+// $Date: 2005/01/13 01:33:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -497,14 +497,15 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
     public static void main(String[] args) {
         Debug.init();
+        Debug.put("symbology");
         SymbolReferenceLibrary srl = new SymbolReferenceLibrary();
-        if (srl.setSymbolImageMaker("com.bbn.openmap.tools.symbology.milStd2525.SVGSymbolImageMaker") != null) {
+        if (srl.setSymbolImageMaker("com.bbn.openmap.tools.symbology.milStd2525.GIFSymbolImageMaker") != null) {
             SymbolChooser.showDialog(null,
                     "MIL-STD-2525B Symbol Chooser",
                     srl,
                     "SFPPV-----*****");
         } else {
-            Debug.output("SymbolChooser: Need to add omsvg.jar to the classpath");
+            Debug.output("Couldn't create SymbolImageMaker");
         }
 
         System.exit(0);

@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GIFSymbolImageMaker.java,v $
-//$Revision: 1.2 $
-//$Date: 2004/12/10 14:17:11 $
+//$Revision: 1.3 $
+//$Date: 2005/01/13 01:33:58 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -74,6 +74,10 @@ public class GIFSymbolImageMaker extends AbstractSymbolImageMaker {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public String getFileExtension() {
+        return ".gif";
     }
     
 }
