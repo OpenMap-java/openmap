@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/FontSizer.java,v $
 // $RCSfile: FontSizer.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/02/13 13:36:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,7 +49,7 @@ public class FontSizer {
      * for every point of font size, should be provided as (scale
      * number / 1 point size), or a whole number.
      * @param minPointSize the minimum point size to use for the scaled font.
-     * @param maxPointSize the minimum point size to use for the scaled font.
+     * @param maxPointSize the maximum point size to use for the scaled font.
      */
     public FontSizer(Font font, float baseScale, int pointSizeRatio, int minPointSize, int maxPointSize) {
         this(baseScale, pointSizeRatio, minPointSize, maxPointSize);
@@ -63,7 +63,7 @@ public class FontSizer {
      * for every point of font size, should be provided as (scale
      * number / 1 point size), or a whole number.
      * @param minPointSize the minimum point size to use for the scaled font.
-     * @param maxPointSize the minimum point size to use for the scaled font.
+     * @param maxPointSize the maximum point size to use for the scaled font.
     */
     public FontSizer(float baseScale, int pointSizeRatio, int minPointSize, int maxPointSize) {
         this.baseScale = baseScale;
