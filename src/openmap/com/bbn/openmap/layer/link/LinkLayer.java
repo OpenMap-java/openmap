@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/09/22 23:52:34 $
+// $Revision: 1.7 $
+// $Date: 2003/09/25 18:50:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -546,6 +546,8 @@ public class LinkLayer extends OMGraphicHandlerLayer
 	boolean needRepaint = false;
 	LinkOMGraphicList graphics = getGraphicList();
 
+	Projection proj = getProjection();
+
 	if (graphics == null) {
 	    Debug.message("link", "LinkLayer.handleLinkActionList: null LinkOMGraphicList, making new one...");
 	    // Why ignore what the server has to say, set the new
@@ -560,7 +562,7 @@ public class LinkLayer extends OMGraphicHandlerLayer
 
 	    // Take care of this first.....
 	    if (LinkUtil.isMask(gu.action, MODIFY_DESELECTALL_GRAPHIC_MASK)) {
-		Debug.message("link","LinkLayer: deselecting all graphics");
+		Debug.message("link","LinkLayer.handleLinkActionList: deselecting all graphics");
 		graphics.deselectAll();
 	    }
 
@@ -579,15 +581,26 @@ public class LinkLayer extends OMGraphicHandlerLayer
 	    // don't have that luxury - we have to look up the
 	    // OMGraphic again...
 
+	    if (gu == null) {
+		Debug.message("link", "LinkLayer.handleLinkActionList: null GraphicUpdate, skipping...");
+		continue;
+	    }
 
+	    OMGraphic gug = gu.graphic;
 	    OMGraphic reactionGraphic = null;
 	    int reactionGraphicIndex = Link.UNKNOWN;
 
             if (LinkUtil.isMask(gu.action, UPDATE_ADD_GRAPHIC_MASK)) {
-		// If gu.graphic is null, this will throw an exception
-		Debug.message("link", "LinkListener: adding graphic " + gu.id);
-		graphics.add(gu.graphic);
-		reactionGraphic = gu.graphic;
+		if (Debug.debugging("link")) {
+		    Debug.output("LinkLayer.handleLinkActionList: adding graphic, id:" + gu.id);
+		}
+		if (gug != null) {
+		    gug.generate(proj);
+		    graphics.add(gug);
+		    reactionGraphic = gug;
+		} else {
+		    Debug.message("link", "LinkLayer.handleLinkActionList: trying to add null OMGraphic, id: " + gu.id);
+		}
 	    } else if (gu.id != null) {
 		reactionGraphicIndex = graphics.getOMGraphicIndexWithId(gu.id);
 		if (reactionGraphicIndex == Link.UNKNOWN) {
@@ -597,11 +610,16 @@ public class LinkLayer extends OMGraphicHandlerLayer
 			if (Debug.debugging("link")) {
 			    Debug.output("LinkLayer.handleLinkActionList: adding graphic " + gu.id);
 			}
-			graphics.add(gu.graphic);
-			reactionGraphic = gu.graphic;
+			if (gug != null) {
+			    gug.generate(proj);
+			    graphics.add(gug);
+			    reactionGraphic = gug;
+			} else {
+			    Debug.message("link", "LinkLayer.handleLinkActionList: trying to add null OMGraphic, id: " + gu.id);
+			}
 		    } else {
 			gu.action = 0; // No action...
-			Debug.error("LinkLayer: Gesture Response on an unknown graphic.");
+			Debug.error("LinkLayer.handleLinkActionList: Gesture Response on an unknown graphic.");
 		    }
 		} else {
 		    reactionGraphic = graphics.getOMGraphicWithId(gu.id);
