@@ -75,9 +75,6 @@ Java-Bean: True
 Name: com/bbn/openmap/gui/GoToMenu.class
 Java-Bean: True
 
-Name: com/bbn/openmap/gui/HelpMenu.class
-Java-Bean: True
-
 Name: com/bbn/openmap/gui/LayerAddPanel.class
 Java-Bean: True
 
