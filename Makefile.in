@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.51 $  $Date: 2001/05/31 18:36:51 $
+# $Revision: 1.52 $  $Date: 2001/06/15 03:10:28 $
 # **********************************************************************
 
 
@@ -132,7 +132,7 @@ Layer.jar =	${Layer.classes} ${Layer.props}
 
 App.pkgs = 	com.bbn.openmap.app
 
-App.props = 	com/bbn/openmap/openmap.properties
+App.props = 	openmap.properties
 
 App.classes = 	com/bbn/openmap/app/*.class
 
@@ -184,7 +184,7 @@ lib/openmap.jar:: omcore lib
 	${JAR} cf $@ ${Core.jar} ${Layer.jar} ${App.jar} ${Example.jar}
 
 lib/omcore.jar:: omcore lib
-	${JAR} cf $@ ${Core.jar}
+	${JAR} cf $@ ${Core.jar} ${App.props}
 
 lib/omcontrib.jar:
 	cd contrib && $(JAR) cf ../$@ ${Contrib.jar}
