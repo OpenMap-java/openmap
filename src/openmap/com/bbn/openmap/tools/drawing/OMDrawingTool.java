@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/03/07 16:24:02 $
+// $Revision: 1.8 $
+// $Date: 2003/04/26 01:07:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -773,7 +773,10 @@ public class OMDrawingTool
 
 	lastRemarks = "";
 	setRemarks(lastRemarks);
-	palette.add(remarks);
+
+	if (false) { // These just don't look good.
+	    palette.add(remarks);
+	}
 
 	JPanel dismissPanel = new JPanel();
 	Box dismissBox = Box.createHorizontalBox();
