@@ -2,20 +2,20 @@
 //
 // <copyright>
 //
-//  BBN Technologies
-//  10 Moulton Street
-//  Cambridge, MA 02138
-//  (617) 873-8000
+// BBN Technologies
+// 10 Moulton Street
+// Cambridge, MA 02138
+// (617) 873-8000
 //
-//  Copyright (C) BBNT Solutions LLC. All rights reserved.
+// Copyright (C) BBNT Solutions LLC. All rights reserved.
 //
 // </copyright>
 // **********************************************************************
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/02/02 00:26:55 $
+// $Revision: 1.11 $
+// $Date: 2005/02/02 13:20:43 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -642,6 +642,7 @@ public class MGRSPoint extends UTMPoint {
         // column
         int curCol = baseCol[set - 1];
         float eastingValue = 100000f;
+        boolean rewindMarker = false;
 
         while (curCol != e) {
             curCol++;
@@ -649,8 +650,13 @@ public class MGRSPoint extends UTMPoint {
                 curCol++;
             if (curCol == O)
                 curCol++;
-            if (curCol > Z)
+            if (curCol > Z) {
+                if (rewindMarker) {
+                    throw new NumberFormatException("Bad character: " + e);
+                }
                 curCol = A;
+                rewindMarker = true;
+            }
             eastingValue += 100000f;
         }
 
@@ -679,15 +685,17 @@ public class MGRSPoint extends UTMPoint {
      */
     protected float getNorthingFromChar(char n, int set) {
 
-        if (n > 'V')
+        if (n > 'V') {
             throw new NumberFormatException("MGRSPoint given invalid Northing "
                     + n);
+        }
 
         int baseRow[] = getOriginRowLetters();
         // rowOrigin is the letter at the origin of the set for the
         // column
         int curRow = baseRow[set - 1];
         float northingValue = 0f;
+        boolean rewindMarker = false;
 
         while (curRow != n) {
             curRow++;
@@ -695,8 +703,15 @@ public class MGRSPoint extends UTMPoint {
                 curRow++;
             if (curRow == O)
                 curRow++;
-            if (curRow > V)
+            // fixing a bug making whole application hang in this loop
+            // when 'n' is a wrong character
+            if (curRow > V) {
+                if (rewindMarker) { //making sure that this loop ends
+                    throw new NumberFormatException("Bad character: " + n);
+                }
                 curRow = A;
+                rewindMarker = true;
+            }
             northingValue += 100000f;
         }
 
