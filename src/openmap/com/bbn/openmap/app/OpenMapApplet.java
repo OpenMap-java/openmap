@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMapApplet.java,v $
 // $RCSfile: OpenMapApplet.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/05 05:42:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,33 +23,49 @@
 
 package com.bbn.openmap.app;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
+import java.beans.beancontext.BeanContext;
+import java.beans.beancontext.BeanContextChild;
+import java.beans.beancontext.BeanContextChildSupport;
+import java.beans.beancontext.BeanContextMembershipEvent;
+import java.beans.beancontext.BeanContextMembershipListener;
+import javax.swing.JApplet;
+import javax.swing.JMenuBar;
+import java.util.Iterator;
 
-import java.io.*;
-import java.util.Properties;
-
-import javax.swing.*;
-import javax.swing.border.BevelBorder;
-
-import com.bbn.openmap.*;
-import com.bbn.openmap.proj.Mercator;
-import com.bbn.openmap.proj.ProjectionFactory;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.PropertyHandler;
+import com.bbn.openmap.gui.MapPanel;
 import com.bbn.openmap.util.Debug;
 
 /**
- * OpenMap Applet
- *
+ * OpenMap Applet.  Uses the MapHandler, via
+ * BeanContextMembershipListener methods to lay out the MapPanel and
+ * JMenuBar.  Creates a PropertyHandler that will look for the
+ * openmap.properties file in the codebase.
  */
-public class OpenMapApplet extends JApplet {
+public class OpenMapApplet extends JApplet 
+    implements BeanContextMembershipListener, BeanContextChild {
     
+    /**
+     * BeanContextChildSupport object provides helper functions for
+     * BeanContextChild interface.  
+     */
+    private BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
+
+    // pinfo used to have these parameters, too, but that doesn't 
+    // seem right to include visibroker arguments in the generic
+    // applet parameter info.
+// 	{"ORBdisableLocator", "boolean", "disable Visiborker Gatekeeper"},
+// 	{"ORBgatekeeperIOR", "boolean", "URL to gatekeeper IOR."},
+
     protected final String pinfo[][] = {
 	{Environment.Latitude, "float", "Starting center latitude"},
 	{Environment.Longitude, "float", "Starting center longitude"},
 	{Environment.Scale, "float", "Starting Scale"},
 	{Environment.Projection, "String", "Default projection type"},
-	{"ORBdisableLocator", "boolean", "disable Visiborker Gatekeeper"},
-	{"ORBgatekeeperIOR", "boolean", "URL to gatekeeper IOR."},
  	{"debug.basic", "none", "enable basic debugging"},
 	{Environment.HelpURL, "String", "URL location of OpenMap help pages"}
     };
@@ -64,7 +80,6 @@ public class OpenMapApplet extends JApplet {
     public String getAppletInfo() {
 	return MapBean.getCopyrightMessage();
     }
-
 
     /**
      * Returns information about the parameters that are understood by 
@@ -89,7 +104,6 @@ public class OpenMapApplet extends JApplet {
 	return pinfo;
     }
 
-
     /**
      * Called by the browser or applet viewer to inform 
      * this applet that it has been loaded into the system. It is always 
@@ -105,45 +119,19 @@ public class OpenMapApplet extends JApplet {
      * @since   JDK1.0
      */
     public void init() {
-      //OpenMapOld.init(this);// initialize Environment and debugging
         // Initialize as an applet
-            Environment.init(this);
-	    Debug.init(this,
-		       new String[] {"debug.basic",
-				     "debug.cspec",
-				     "debug.layer",
-				     "debug.mapbean",
-				     "debug.plugin"
-		       });
+	Environment.init(this);
+	Debug.init(this,
+		   new String[] {"debug.basic",
+				 "debug.cspec",
+				 "debug.layer",
+				 "debug.mapbean",
+				 "debug.plugin"
+		   });
 	    
-	PropertyHandler propertyHandler = new PropertyHandler();
-	MapBean mapBean = new BufferedMapBean();
-	mapBean.setBorder(new BevelBorder(BevelBorder.LOWERED));
-
-	// Initialize the map projection, scale, center with user prefs or
-	// defaults
-	String projName = Environment.get(Environment.Projection, 
-					  Mercator.MercatorName);
-	int projType = ProjectionFactory.getProjType(projName);
-	mapBean.setProjectionType(projType);
-	mapBean.setScale(Environment.getFloat(Environment.Scale,
-					      Float.POSITIVE_INFINITY));
-	mapBean.setCenter(new LatLonPoint(
-	    Environment.getFloat(Environment.Latitude, 0f),
-	    Environment.getFloat(Environment.Longitude, 0f)
-	    ));
-
-	MapHandler beanHandler = new MapHandler();
-	
-	try {
-	    beanHandler.add(propertyHandler);
-	    propertyHandler.createComponents(beanHandler);
-	    beanHandler.add(mapBean);
-	} catch (MultipleSoloMapComponentException msmce) {
-	    Debug.error("OpenMapNG: tried to add multiple components of the same type when only one is allowed! - " + msmce);
-	}
+	MapPanel mapPanel = new MapPanel();
+	mapPanel.getMapHandler().add(this);
 	Debug.message("app", "OpenMapApplet.init()");
-	//new OpenMapOld().init();
     }
 
     /**
@@ -194,5 +182,96 @@ public class OpenMapApplet extends JApplet {
     public void destroy() {
 	Debug.message("app", "OpenMapApplet.destroy()");
 	super.destroy();
+    }
+
+    /**
+     * The method called by BeanContextMembershipListener methods to
+     * find components in the MapHandler.
+     */
+    public void findAndInit(Iterator it) {
+	Object someObj;
+	while (it.hasNext()) {
+	    someObj = it.next();
+	    if (someObj instanceof MapPanel) {
+		getContentPane().add((MapPanel)someObj);
+		invalidate();
+	    }
+
+	    if (someObj instanceof JMenuBar) {
+		getRootPane().setJMenuBar((JMenuBar)someObj);
+		invalidate();
+	    }
+	}
+    }
+    
+    /**
+     * BeanContextMembership interface method.  Called when objects
+     * are added to the BeanContext.
+     *
+     * @param bcme contains an Iterator that lets you go through the
+     * new objects.  
+     */
+    public void childrenAdded(BeanContextMembershipEvent bcme) {
+	findAndInit(bcme.iterator());      
+    }
+
+    /**
+     * BeanContextMembership interface method.  Called by BeanContext
+     * when children are being removed.  Unhooks itself from the
+     * objects that are being removed if they are contained within the
+     * Frame.
+     *
+     * @param bcme event that contains an Iterator to use to go
+     * through the removed objects.
+     */
+    public void childrenRemoved(BeanContextMembershipEvent bcme) {
+	Object someObj;
+	Iterator it = bcme.iterator();
+	while (it.hasNext()) {
+	    someObj = it.next();
+	    if (someObj instanceof MapPanel) {		
+		Debug.message("basic", "OpenMapApplet: MapPanel is being removed from applet");
+		getContentPane().remove((MapPanel)someObj);
+	    }
+	    
+	    if (someObj instanceof JMenuBar) {
+		if (getJMenuBar() == (JMenuBar) someObj) {
+		    Debug.message("basic", "OpenMapApplet: MenuBar is being removed from applet");
+		    setJMenuBar(null);
+		}
+	    }
+	}
+    }
+
+    /** Method for BeanContextChild interface. */
+    public BeanContext getBeanContext()	{
+	return beanContextChildSupport.getBeanContext();
+    }
+    
+    /** Method for BeanContextChild interface. 
+     * 
+     * @param BeanContext in_bc The context to which this object is being added
+     */
+    public void setBeanContext(BeanContext in_bc) 
+	throws PropertyVetoException {
+	if (in_bc != null) {
+	    in_bc.addBeanContextMembershipListener(this);
+	    beanContextChildSupport.setBeanContext(in_bc);
+	    findAndInit(in_bc.iterator());
+	}
+    }
+    
+    /** Method for BeanContextChild interface. */
+    public void addVetoableChangeListener(String propertyName,
+					  VetoableChangeListener in_vcl) {
+	beanContextChildSupport.addVetoableChangeListener(propertyName,
+							  in_vcl);
+    }
+  
+    /** Method for BeanContextChild interface. */
+    public void removeVetoableChangeListener(String propertyName, 
+					     VetoableChangeListener in_vcl) {
+	beanContextChildSupport.removeVetoableChangeListener(propertyName,
+							     in_vcl);
     }
 }

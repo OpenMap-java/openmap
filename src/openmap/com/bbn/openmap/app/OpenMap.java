@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/03 15:30:56 $
+// $Revision: 1.4 $
+// $Date: 2003/04/05 05:42:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,70 +23,71 @@
 
 package com.bbn.openmap.app;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Dimension;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import java.io.*;
-import java.util.Properties;
-
-import javax.swing.*;
-import javax.swing.border.BevelBorder;
-
-import com.bbn.openmap.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.MapHandler;
+import com.bbn.openmap.MultipleSoloMapComponentException;
+import com.bbn.openmap.PropertyHandler;
+import com.bbn.openmap.gui.MapPanel;
+import com.bbn.openmap.gui.OpenMapFrame;
+import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.ArgParser;
+import com.bbn.openmap.util.Debug;
 
 /**
- * This application demonstrates how various OpenMap components can be
- * added to an application.  If the application is run with a
- * -Ddebug.blmb flag, a BufferedLayerMapBean will be used
- * instead of a BufferedMapBean.
+ * The OpenMap application framework.  This class creates a
+ * PropertyHandler that searches the classpath, config directory and
+ * user's home directory for an openmap.properties file, and creates
+ * the application based on the contents of the properties files.  It
+ * also creates an MapPanel and an OpenMapFrame to be used for the
+ * application and adds them to the MapHandler contained in the
+ * MapPanel.  All other components are added to that MapHandler as
+ * well, and they use the MapHandler to locate, connect and
+ * communicate with each other.
  */
 public class OpenMap {
   
-    protected MapHandler beanHandler;
+    protected MapPanel mapPanel;
 
-    public OpenMap(PropertyHandler propertyHandler) { 
-      	MapBean mapBean;
+    /**
+     * Create a new OpenMap framework object - creates a MapPanel,
+     * OpenMapFrame, and brings up the layer palettes that are being
+     * told to be open at startup.  The MapPanel will create a
+     * PropertiesHandler that will search for an openmap.properties
+     * file.
+     */
+    public OpenMap() {
+	this(null);
+    }
 
-	mapBean = new BufferedLayerMapBean();
-
-	mapBean.setBorder(new BevelBorder(BevelBorder.LOWERED));
-	int envWidth = Environment.getInteger(Environment.Width, MapBean.DEFAULT_WIDTH);
-	int envHeight = Environment.getInteger(Environment.Height, MapBean.DEFAULT_HEIGHT);
-	// Initialize the map projection, scale, center with user prefs or
-	// defaults
-	Projection proj = ProjectionFactory.makeProjection(
-	    ProjectionFactory.getProjType(Environment.get(Environment.Projection, Mercator.MercatorName)),
-	    Environment.getFloat(Environment.Latitude, 0f),
-	    Environment.getFloat(Environment.Longitude, 0f),
-	    Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY),
-	    envWidth, envHeight);
-
-	mapBean.setProjection(proj);
-	mapBean.setPreferredSize(new java.awt.Dimension(envWidth, envHeight));
-
-	beanHandler = getMapHandler();
-	
-	try {
-	    beanHandler.add(propertyHandler);
-	    beanHandler.add(mapBean);
-	    propertyHandler.createComponents(beanHandler);
-	} catch (MultipleSoloMapComponentException msmce) {
-	    Debug.error("OpenMapNG: tried to add multiple components of the same type when only one is allowed! - " + msmce);
-	}
-	mapBean.showLayerPalettes();
+    /**
+     * Create a new OpenMap framework object - creates a MapPanel,
+     * OpenMapFrame, and brings up the layer palettes that are being
+     * told to be open at startup.  The properties in the
+     * PropertyHandler will be used to configure the application.
+     * PropertyHandler may be null.
+     */
+    public OpenMap(PropertyHandler propertyHandler) {
+	mapPanel = new MapPanel(propertyHandler);
+	mapPanel.getMapHandler().add(new OpenMapFrame());
+	mapPanel.getMapBean().showLayerPalettes();
     }
 
     /**
      * Get the MapHandler used for the OpenMap object.
      */      
     public MapHandler getMapHandler() {
-	if (beanHandler == null) {
-	    beanHandler = new MapHandler();
-	}
-	return beanHandler;
+	return mapPanel.getMapHandler();
+    }
+
+    /**
+     * Get the MapPanel, the container for the OpenMap components.
+     */
+    public MapPanel getMapPanel() {
+	return mapPanel;
     }
 
     /**
@@ -112,24 +113,20 @@ public class OpenMap {
     public static OpenMap create(String propertiesFile) {
 	Debug.init();
 
-	PropertyHandler propertyHandler;
+	PropertyHandler propertyHandler = null;
 
-	if (propertiesFile == null) {
-	    propertyHandler = new PropertyHandler();
-	} else {
-
+	if (propertiesFile != null) {
 	    try {
-		java.net.URL propURL = 
-		    com.bbn.openmap.layer.util.LayerUtils.getResourceOrFileOrURL(null, propertiesFile);
+		URL propURL = LayerUtils.getResourceOrFileOrURL(null, propertiesFile);
 		propertyHandler = new PropertyHandler(propURL);
-	    } catch (java.net.MalformedURLException murle) {
+	    } catch (MalformedURLException murle) {
 		Debug.error(murle.getMessage());
 		murle.printStackTrace();
-		propertyHandler = new PropertyHandler();
-	    } catch(IOException ioe) {
+		propertyHandler = null;
+	    } catch (IOException ioe) {
 		Debug.error(ioe.getMessage());
 		ioe.printStackTrace();
-		propertyHandler = new PropertyHandler();
+		propertyHandler = null;
 	    }
 	}
 
