@@ -17,9 +17,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/scripts.mk,v $
 # $RCSfile: scripts.mk,v $
-# $Revision: 1.2 $
-# $Date: 1998/03/17 18:10:21 $
-# $Author: tmitchel $
+# $Revision: 1.3 $
+# $Date: 1998/03/30 17:06:49 $
+# $Author: aculline $
 # 
 # **********************************************************************
 
@@ -52,11 +52,6 @@ majorversion:
 		$(PERL) $(SCRIPTS_DIR)/NewVersion.pl $(VERSION_FILE) -major
 
 openmap-version.jar:
-	jar cvf0 openmap-$(OM_VERSION).jar $(OPENMAP.JAR)
-#	jar cvf0 openmap-$(OM_VERSION).jar $(SRCDIR)/*.class \
-#	$(SRCDIR)/*/*.class
-
-openmapz-version.jar:
 	jar cvf openmap-$(OM_VERSION).jar $(OPENMAP.JAR)
 #	jar cvf openmap-$(OM_VERSION).jar $(SRCDIR)/*.class \
 #	$(SRCDIR)/*/*.class
