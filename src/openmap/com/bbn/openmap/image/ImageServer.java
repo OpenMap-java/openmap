@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServer.java,v $
 // $RCSfile: ImageServer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/27 21:35:12 $
+// $Revision: 1.3 $
+// $Date: 2003/08/14 22:53:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -300,6 +300,8 @@ public class ImageServer
 		    }			    
 		}
 	    }
+	} else if (Debug.debugging("imageserver")) {
+	    Debug.output("ImageServer: no layers available for image");
 	}
 
 	byte[] formattedImage = getFormattedImage(imageFormatter,
@@ -363,6 +365,11 @@ public class ImageServer
 	}
 
 	((Proj)proj).drawBackground(graphics);
+
+	if (Debug.debugging("imageserver")) {
+	    Debug.output("ImageServer: considering " + layers.length + " for image...");
+	}
+
 	for (int i = layers.length - 1; i >= 0; i--) {
 	    
 	    if ((includedLayerMask & (0x00000001 << i)) != 0) {
