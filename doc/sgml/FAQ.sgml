@@ -1,9 +1,9 @@
 <!--
 $source: /net/blatz/u4/rcs/openmap/doc/sgml/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.20 $
-$Date: 2000/12/21 04:12:22 $
-$Author: wjeuerle $
+$Revision: 1.21 $
+$Date: 2001/02/16 13:03:16 $
+$Author: bmackiew $
 
 Frequently Asked Questions for the OpenMap system.
 -->
@@ -797,7 +797,7 @@ on the ImageServer, ImageGenerator and ImageReceiver classes.  They
 are set up to control the layers and the multi-threaded nature of
 their SwingWorkers, and then create an image using the graphics from
 the layers.  There is a UML <htmlurl
-url="./image/openmap_image_toolkit.ps" name="postscript"> file of the
+url="./images/openmap_image_toolkit.ps" name="postscript"> file of the
 image package available.
 
 <p>
