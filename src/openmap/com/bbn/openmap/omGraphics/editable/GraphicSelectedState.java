@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicSelectedState.java,v $
 // $RCSfile: GraphicSelectedState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/08/19 23:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -98,15 +98,11 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
 		graphic.fireEvent(EOMGCursors.DEFAULT, "");
 		graphic.redraw(e, true);
 	    } else if (graphic.getCanGrabGraphic()) {
-		graphic.getStateMachine().setEdit();
 		graphic.fireEvent(EOMGCursors.EDIT, "");
 		graphic.redraw(e, true);
 	    }
 	} else {
-	    // else, if the moving point is set, go to edit mode.  If
-	    // the mouse is released, we'll consider ourselves
-	    // unselected agin.
-	    graphic.getStateMachine().setEdit();
+	    // If the moving point was valid, just stay in selected mode.
 	    graphic.fireEvent(EOMGCursors.EDIT, "");
 	    graphic.redraw(e, true);
 	}

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicEditState.java,v $
 // $RCSfile: GraphicEditState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/08/19 23:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,8 +53,6 @@ public class GraphicEditState extends State implements EOMGEditState {
     public boolean mouseReleased(MouseEvent e) {
 	Debug.message("eomg", "GraphicStateMachine|edit state|mouseReleased");
 
- 	graphic.redraw(e);
-
 	if ((graphic.getStateMachine()).isOffsetNeeded() == true) {
 	    graphic.getStateMachine().setOffset();
 	    graphic.getStateMachine().setOffsetNeeded(false);
@@ -63,19 +61,12 @@ public class GraphicEditState extends State implements EOMGEditState {
 	    GrabPoint mp = graphic.getMovingPoint();
 	    if (mp == null && !graphic.getCanGrabGraphic()) {
 		graphic.fireEvent(EOMGCursors.DEFAULT, "");
-	    } else {
+     	    } else {
 		graphic.fireEvent(EOMGCursors.EDIT, "");
 	    }
 	}
 
-    	if (graphic.getMovingPoint() != null) {
-	    graphic.redraw(e, true);
-  	} else { 
-	    // added here instead of above.  The one
-	    // above was redundant for moving points != null
-	    graphic.redraw(e);
-	}
-
+	graphic.redraw(e, true);
 	graphic.setMovingPoint(null);
 
 	return getMapMouseListenerResponse();

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PointStateMachine.java,v $
 // $RCSfile: PointStateMachine.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/08/19 23:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,10 +44,11 @@ public class PointStateMachine extends EOMGStateMachine {
 
     protected State[] init(){
 	State[] states = super.init();
-	Debug.message("eomc", "PointStateMachine.init()");
+	Debug.message("eomg", "PointStateMachine.init()");
 
 	//  These are the only two states that need something special
 	//  to happen.
+	states[GRAPHIC_EDIT] = new PointEditState((EditableOMPoint)graphic);
 	states[GRAPHIC_UNDEFINED] = new PointUndefinedState((EditableOMPoint)graphic);
 	states[GRAPHIC_SETOFFSET] = new PointSetOffsetState((EditableOMPoint)graphic);
 	return states;

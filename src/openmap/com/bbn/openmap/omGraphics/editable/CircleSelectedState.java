@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/CircleSelectedState.java,v $
 // $RCSfile: CircleSelectedState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/08/19 23:18:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,7 +50,9 @@ public class CircleSelectedState extends GraphicSelectedState {
 	// If the graphic itself was clicked on, then just go to selected
 	// mode.
 	if (mp == null) {
-	    if (graphic.getGraphic().distance(e.getX(), e.getY()) > 2) {
+	    if ((graphic.getGraphic().getRenderType() != OMGraphic.RENDERTYPE_LATLON &&
+		 graphic.getGraphic().distance(e.getX(), e.getY()) > 2) ||
+		graphic.getGraphic().distanceToEdge(e.getX(), e.getY()) > 2) {
 		// if the graphic isn't picked, then unselect the graphic.
 		graphic.getStateMachine().setUnselected();
 //  		graphic.setMovingPoint(new GrabPoint(e.getX(), e.getY()));
@@ -90,7 +92,7 @@ public class CircleSelectedState extends GraphicSelectedState {
 
 	if (mp == null) {
 	    if (graphic.getCanGrabGraphic() &&
-		graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
+		graphic.getGraphic().distanceToEdge(e.getX(), e.getY()) < 2) {
 
 		graphic.fireEvent(EOMGCursors.EDIT, "Click and Drag edge to resize.");
 	    } else {
