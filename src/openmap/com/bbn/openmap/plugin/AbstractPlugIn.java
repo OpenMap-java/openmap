@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/AbstractPlugIn.java,v $
 // $RCSfile: AbstractPlugIn.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/21 22:44:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,6 +31,7 @@ import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.SelectMouseMode;
+import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
@@ -59,11 +60,28 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer, MapMou
      */
     protected MapMouseListener mml = this;
 
+    /**
+     * Flag to denote whether the plugin should be added to the bean
+     * context (MapHandler).
+     */
+    protected boolean addToBeanContext = false;
 
     public AbstractPlugIn() {}
 
     public AbstractPlugIn(Component comp) {
 	setComponent(comp);
+    }
+
+    /**
+     * Set the name of the plugin.  If the parent component is a
+     * layer, set its pretty name as well.
+     */
+    public void setName(String name) {
+	this.name = name;
+	Component comp = getComponent();
+	if (comp != null) {
+	    comp.setName(name);
+	}
     }
 
     /**
@@ -149,6 +167,14 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer, MapMou
 	return null;
     }
 
+    public void setAddToBeanContext(boolean value) {
+	addToBeanContext = value;
+    }
+
+    public boolean getAddToBeanContext() {
+	return addToBeanContext;
+    }
+
     //////  PropertyConsumer Interface Methods
 
     /**
@@ -186,6 +212,7 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer, MapMou
 	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
 	name = setList.getProperty(realPrefix + Layer.PrettyNameProperty);
+	setAddToBeanContext(LayerUtils.booleanFromProperties(setList, realPrefix + Layer.AddToBeanContextProperty, addToBeanContext));
     }
 
     /**
@@ -207,6 +234,7 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer, MapMou
 	if (getList == null) {
 	    getList = new Properties();
 	}
+	getList.put(prefix + Layer.AddToBeanContextProperty, new Boolean(addToBeanContext).toString());
 	return getList;
     }
 
@@ -231,6 +259,9 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer, MapMou
 	if (list == null) {
 	    list = new Properties();
 	}
+	list.put(Layer.AddToBeanContextProperty, "Flag to give the PlugIn access to all of the other application components.");
+	list.put(Layer.AddToBeanContextProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
 	return list;
     }
 

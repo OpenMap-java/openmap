@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriPlugIn.java,v $
 // $RCSfile: EsriPlugIn.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/21 22:44:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,6 +33,8 @@ import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.plugin.*;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.DataBounds;
+import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -166,7 +168,8 @@ import javax.swing.table.*;
  * @author Lonnie Goad from OptiMetrics provided selection bug
  * solution and GUI interaction.
  */
-public class EsriPlugIn extends AbstractPlugIn implements ShapeConstants {
+public class EsriPlugIn extends AbstractPlugIn 
+    implements ShapeConstants, DataBoundsProvider {
 
     private EsriGraphicList _list = null;
     private DbfTableModel _model = null;
@@ -239,38 +242,6 @@ public class EsriPlugIn extends AbstractPlugIn implements ShapeConstants {
 	this.name = name;
     }
 
-    /**
-     * Overridden to check to see if the parent component is a layer,
-     * and if it is, set the pretty name to the plugin's name.
-     */
-    public void setComponent(Component comp) {
-	super.setComponent(comp);
-    }
-
-    /**
-     * Set the name of the plugin.  If the parent component is a
-     * layer, set its pretty name as well.
-     */
-    public void setName(String name) {
-	this.name = name;
-	Component comp = getComponent();
-	if (comp instanceof Layer) {
-	    ((Layer)comp).setName(name);
-	}
-    }
-
-    /**
-     * Get the name of the plugin.  If the parent component is a
-     * layer, get the pretty name from it instead.
-     */
-    public String getName() {
-	Component comp = getComponent();
-	if (comp instanceof Layer) {
-	    return ((Layer)comp).getName();
-	}
-	return name;
-    }
-    
     /**
      * Set the drawing attributes for the graphics on the list.
      */
@@ -514,7 +485,7 @@ public class EsriPlugIn extends AbstractPlugIn implements ShapeConstants {
     public Properties getPropertyInfo(Properties props) {
 	props = super.getPropertyInfo(props);
 
-	props.put(initPropertiesProperty, PARAM_SHP + " " + PARAM_DBF + " " + PARAM_SHX + drawingAttributes.getInitPropertiesOrder());
+	props.put(initPropertiesProperty, PARAM_SHP + " " + PARAM_DBF + " " + PARAM_SHX + drawingAttributes.getInitPropertiesOrder() + " " + Layer.AddToBeanContextProperty);
 
 	props.put(PARAM_SHP, "Location of a shape (.shp) file (path or URL)");
 	props.put(PARAM_SHX, "Location of a index file (.shx) for the shape file (path or URL, optional)");
@@ -800,4 +771,23 @@ public class EsriPlugIn extends AbstractPlugIn implements ShapeConstants {
     protected JFrame tableFrame = null;
     /** This marks the index of the OMGraphic that is "selected" */
     protected int graphicIndex = -1;
+
+    /**
+     * DataBoundsInformer interface.
+     */
+    public DataBounds getDataBounds() {
+	DataBounds box = null;
+	if (_list == null) {
+	    _list = getEsriGraphicList();
+	}
+
+	if (_list != null) {
+	    float[] extents = _list.getExtents();
+	    box = new DataBounds((double)extents[1],
+				 (double)extents[0],
+				 (double)extents[3],
+				 (double)extents[2]);
+	}
+	return box;
+    }
 }

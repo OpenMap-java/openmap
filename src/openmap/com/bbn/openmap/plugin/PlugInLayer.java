@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/03/20 18:17:48 $
+// $Revision: 1.6 $
+// $Date: 2003/03/21 22:44:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -113,7 +113,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 	} else {
 	    // If plugInClass is not defined, then we want the
 	    // PlugInLayer to be invisible - the PlugIn should be
-	    // the only thing in the properties, and ther other
+	    // the only thing in the properties, and the other
 	    // components should be OK with that.
 	    PlugIn pi = getPlugIn();
 	    if (pi != null) {
@@ -338,8 +338,13 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      */
     public boolean getAddToBeanContext() {
 	if (plugin != null && 
+
 	    (plugin instanceof BeanContextChild ||
-	     plugin instanceof BeanContextMembershipListener)) {
+	     plugin instanceof BeanContextMembershipListener) ||
+
+	    (plugin instanceof AbstractPlugIn && 
+	     ((AbstractPlugIn)plugin).getAddToBeanContext())) {
+
 	    Debug.message("plugin", getName() + ".addToBeanContext is true");
 	    return true;
 	} else {
@@ -354,7 +359,11 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 
 	if (in_bc != null && 
 	    plugin != null && 
-	    plugin instanceof BeanContextChild) {
+
+	    (plugin instanceof BeanContextChild || 
+	     (plugin instanceof AbstractPlugIn && 
+	      ((AbstractPlugIn)plugin).getAddToBeanContext()))) {
+
 	    in_bc.add(plugin);
 	}
     }
