@@ -1,3 +1,37 @@
+2005-02-11  Donald Dietrick  <dietrick@jader.local>
+
+	* Updated many classes for internationalization, with help from
+	Piotr Kaminski and Jesper Berglund.
+
+	* Updated the RpfLayer so the opaque slider works on the coverage
+	rectangles as well as the images.  Updated the palette to enable
+	the modification of preference settings.  Updated the MakeToc to
+	better check for non-RPF image files to skip them when appropriate.
+
+	* Updated FileUtils to have separate save and open methods,
+	updated different classes in the package to call them
+	appropriately.
+
+	* Updated the BasicI8n class so it can provide a set of
+	ResourceBundle properties files that can be used to
+	internationalize an application.  If the 'i18n.create' Debug flag
+	is set (with a -Ddebug.i18n.create OpenMap application flag, or
+	by calling Debug.put("i18n.create") somewhere at the very
+	beginning of an application), the BasicI18n class will log all
+	the resource bundle properties files accessed or attempted to be
+	accessed, and will track the retrieved strings or their defaults
+	provided to the application GUI.  If requested, the BasicI8n
+	class can create a hierarchy of I18N_<locale>.properties files in
+	the correct directory structure of the requesting application,
+	filled with key-value pairs where the values can be replaced with
+	language-appropriate translations for the given locale.  If the
+	application is run with the 'i18n.default' flag also set, then
+	I18N.properties files will be created without the locale
+	setting. Added the I18nFileCreateMenuItem that will tell the
+	BasicI18n class to create the new files.  The openmap.properties
+	file was updated to show how to load the menu item to a generic
+	OMBasicMenu in order to temporarily add this class.
+
 2005-01-10  Donald Dietrick  <dietrick@dhcp89-077-058.bbn.com>
 
 	* Updated the com.bbn.openmap.tools.symbology.milStd2525
@@ -8,7 +42,8 @@
 	uses a SymbolImageMaker to decide how to make a image based on
 	that code.  The SVGSymbolImageMaker can use the SVG symbol
 	library available from DISA, and also requires the Batik
-	package from http://xml.apache.org/batik.  The GIFSymbolImageMaker
+	package from http://xml.apache.org/batik.  The
+	PNGSymbolImageMaker and GIFSymbolImageMaker
 	will create scaled icons from a gif file selection.
 
 	* Added labeling capabilties to OMGraphics, handled by their
