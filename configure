@@ -1036,10 +1036,6 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/layer/pluginLayer/Makefile
 	com/bbn/openmap/layer/rpf/Makefile
 	com/bbn/openmap/layer/shape/Makefile
-	com/bbn/openmap/layer/specialist/Makefile
-	com/bbn/openmap/layer/specialist/rpf/Makefile
-	com/bbn/openmap/layer/specialist/dted/Makefile
-	com/bbn/openmap/layer/specialist/vpf/Makefile
 	com/bbn/openmap/layer/util/Makefile
 	com/bbn/openmap/layer/util/cacheHandler/Makefile
 	com/bbn/openmap/layer/util/html/Makefile
@@ -1050,7 +1046,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/layer/test/Makefile
 	com/bbn/openmap/layer/csvLocation/Makefile
 	com/bbn/openmap/layer/link/Makefile
-	com/bbn/openmap/layer/link/shape/Makefile
+	com/bbn/openmap/layer/link/shape/Makefile	
 	" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
@@ -1161,10 +1157,6 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/layer/pluginLayer/Makefile
 	com/bbn/openmap/layer/rpf/Makefile
 	com/bbn/openmap/layer/shape/Makefile
-	com/bbn/openmap/layer/specialist/Makefile
-	com/bbn/openmap/layer/specialist/rpf/Makefile
-	com/bbn/openmap/layer/specialist/dted/Makefile
-	com/bbn/openmap/layer/specialist/vpf/Makefile
 	com/bbn/openmap/layer/util/Makefile
 	com/bbn/openmap/layer/util/cacheHandler/Makefile
 	com/bbn/openmap/layer/util/html/Makefile
@@ -1174,8 +1166,8 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/layer/daynight/Makefile
 	com/bbn/openmap/layer/test/Makefile
 	com/bbn/openmap/layer/csvLocation/Makefile
-	com/bbn/openmap/layer/link/Makefile
-	com/bbn/openmap/layer/link/shape/Makefile
+	com/bbn/openmap/layer/link/Makefile	
+	com/bbn/openmap/layer/link/shape/Makefile	
 	"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
