@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OMGraphicUtil.java,v $
 // $RCSfile: OMGraphicUtil.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/17 00:38:02 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -137,16 +137,15 @@ public class OMGraphicUtil {
 
 
     /**
-     * Create an Iterator containing a set of Shape3D
-     * objects, created from OMGrid.
+     * Create an Iterator containing a set of Shape3D objects, created
+     * from OMGrid.  Currently only works for OMGrids containing
+     * GridData.Int data.
      *
-     * @param grid            the OMGrid to create a 3D
-     *      terrain object from.
-     * @param baselineHeight  the baselined height for all
-     *      the values in the grid, if the OMGridGenerator
-     *      wants to use it.
-     * @param projection      the map projection
-     * @return                an iterator containing all Shape3D objects
+     * @param grid the OMGrid to create a 3D terrain object from.
+     * @param baselineHeight the baselined height for all the values
+     * in the grid, if the OMGridGenerator wants to use it.
+     * @param projection the map projection
+     * @return an iterator containing all Shape3D objects
      */
     public static Iterator createShape3D(OMGrid grid,
             double baselineHeight,
@@ -204,8 +203,20 @@ public class OMGraphicUtil {
 
         Point p = new Point();
         int pointer = 0;
-        int[][] data = grid.getData();
-        boolean major = grid.getMajor();
+
+        GridData gridData = grid.getData();
+
+	if (!(gridData instanceof GridData.Int)) {
+            // Need to fix this to work with all GridData types!
+            Debug.error("OMGrid.interpValueAt only works for integer data.");
+        }
+
+        int[][] data = ((GridData.Int)gridData).getData();
+        boolean major = gridData.getMajor();
+
+//         int[][] data = grid.getData();
+//         boolean major = grid.getMajor();
+
         int dataPoint;
         Color3f color;
 
