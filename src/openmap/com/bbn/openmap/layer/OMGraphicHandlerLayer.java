@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.23 $
-// $Date: 2004/09/23 19:26:47 $
+// $Revision: 1.24 $
+// $Date: 2004/09/28 14:24:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,11 +38,16 @@ import com.bbn.openmap.event.MapMouseEvent;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.layer.policy.ProjectionChangePolicy;
-import com.bbn.openmap.layer.policy.StandardPCPolicy;
 import com.bbn.openmap.layer.policy.RenderPolicy;
+import com.bbn.openmap.layer.policy.StandardPCPolicy;
 import com.bbn.openmap.layer.policy.StandardRenderPolicy;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.event.*;
+import com.bbn.openmap.omGraphics.FilterSupport;
+import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.event.GestureResponsePolicy;
+import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
+import com.bbn.openmap.omGraphics.event.StandardMapMouseInterpreter;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
@@ -387,7 +392,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         rp.setLayer(this);
     }
 
-    public void interrupt() {
+    protected void interrupt() {
         try {
             if (layerWorker != null) {
                 layerWorker.interrupt();
@@ -397,8 +402,22 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         }
     }
 
+    /**
+	 * Sets the SwingWorker off to call prepare(). If the SwingWorker passed in
+	 * is not null, start() is called on it.
+	 * 
+	 * @param worker
+	 *            null to reset the layerWorker variable, or a SwingWorker to
+	 *            start up.
+	 */
     protected void setLayerWorker(SwingWorker worker) {
-        layerWorker = worker;
+    		synchronized (LAYERWORKER_LOCK) {
+    			layerWorker = worker;
+		
+    			if (layerWorker != null) {
+    				layerWorker.start();
+    			}
+    		}
     }
 
     protected SwingWorker getLayerWorker() {
@@ -406,20 +425,22 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     }
 
     /**
-     * This method is here to provide a default action for Layers as
-     * they act as a ProjectionPainter.  Normally, ProjectionPainters
-     * are expected to receive the projection, gather/create
-     * OMGraphics that apply to the projection, and render them into
-     * the Graphics provided.  This is supposed to be done in the
-     * same thread that calls this function, so the caller knows that
-     * when this method returns, everything that the
-     * ProjectionPainter needed to do is complete.<P> If the layer
-     * doesn't override this method, then the paint(Graphics) method
-     * will be called.
-     *
-     * @param proj Projection of the map.
-     * @param g java.awt.Graphics to draw into.  
-     */
+	 * This method is here to provide a default action for Layers as they act as
+	 * a ProjectionPainter. Normally, ProjectionPainters are expected to receive
+	 * the projection, gather/create OMGraphics that apply to the projection,
+	 * and render them into the Graphics provided. This is supposed to be done
+	 * in the same thread that calls this function, so the caller knows that
+	 * when this method returns, everything that the ProjectionPainter needed to
+	 * do is complete.
+	 * <P>
+	 * If the layer doesn't override this method, then the paint(Graphics)
+	 * method will be called.
+	 * 
+	 * @param proj
+	 *            Projection of the map.
+	 * @param g
+	 *            java.awt.Graphics to draw into.
+	 */
     public synchronized void renderDataForProjection(Projection proj, Graphics g) {
         if (proj == null) {
             Debug.error("Layer(" + getName() + 
@@ -452,27 +473,34 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * LayerWorker will call workerComplete() which will call
      * repaint() on this layer.
      */
-    public synchronized void doPrepare() {
+    public void doPrepare() {
+    	
+    		if (isWorking()) {
+         	if (Debug.debugging("layer")) {
+         		Debug.output(getName() + " layer already working in prepare(), cancelling");
+         	}
+         	setCancelled(true);
+         	return;
+    		}
+    		
         // If there isn't a worker thread working on a projection
         // changed or other doPrepare call, then create a thread that
         // will do the real work. If there is a thread working on
         // this, then set the cancelled flag in the layer.
-        if (layerWorker == null) {
-            layerWorker = new LayerWorker();
-            layerWorker.start();
-        } else {
-            if (Debug.debugging("layer")) {
-                Debug.output(getName() + " layer already working in prepare(), cancelling");
-            }
-            setCancelled(true);
-        }
+    		setLayerWorker(new LayerWorker());
     }
 
     /**
      * A check to see if the SwingWorker is doing something.
      */
     public boolean isWorking() {
-        return layerWorker != null;
+    		boolean ret = false;
+    	
+    		synchronized (LAYERWORKER_LOCK) {
+    			ret = (layerWorker != null);
+    		}
+
+    		return ret;
     }
 
     /**
@@ -511,7 +539,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      */
     public synchronized OMGraphicList prepare() {
         OMGraphicList currentList = getList();
-        Projection proj = getProjection(); 
+        Projection proj = getProjection(); 	
 
         // if the layer hasn't been added to the MapBean 
         // the projection could be null.
@@ -527,23 +555,32 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * gathering graphics, and we want it to stop early. 
      */
     protected boolean cancelled = false;
-
+   	protected Object CANCELLED_LOCK = new Object();
+   	protected Object LAYERWORKER_LOCK = new Object();
+   	
     /**
      * Used to set the cancelled flag in the layer.  The swing worker
      * checks this once in a while to see if the projection has
      * changed since it started working.  If this is set to true, the
      * swing worker quits when it is safe. 
      */
-    public synchronized void setCancelled(boolean set) {
+    public void setCancelled(boolean set) {
         if (set) {
             interrupt();// if the layerWorker is busy, stop it.
         }
-        cancelled = set;
+		
+        synchronized (CANCELLED_LOCK) {
+			cancelled = set;
+		}
     }
-
+    
     /** Check to see if the cancelled flag has been set. */
-    public synchronized boolean isCancelled() {
-        return cancelled;
+    public boolean isCancelled() {
+    		boolean ret = false;
+    		synchronized (CANCELLED_LOCK) {
+    			ret = cancelled;
+    		}
+        return ret;
     }
 
     /** 
@@ -553,16 +590,14 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      *
      * @param worker the worker that has the graphics.
      */
-    protected synchronized void workerComplete(LayerWorker worker) {
+    protected void workerComplete(LayerWorker worker) {
         if (!isCancelled()) {
-            layerWorker = null;
+            setLayerWorker(null);
             getProjectionChangePolicy().workerComplete((OMGraphicList)worker.get());
             repaint();
-        }
-        else{
+        } else {
             setCancelled(false);
-            layerWorker = new LayerWorker();
-            layerWorker.start();
+            setLayerWorker(new LayerWorker());
         }
     }
 

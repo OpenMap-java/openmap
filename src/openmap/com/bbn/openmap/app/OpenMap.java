@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/01/26 18:18:05 $
+// $Revision: 1.12 $
+// $Date: 2004/09/28 14:24:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,23 +23,18 @@
 
 package com.bbn.openmap.app;
 
-import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import com.bbn.openmap.MapHandler;
-import com.bbn.openmap.MultipleSoloMapComponentException;
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.BasicMapPanel;
 import com.bbn.openmap.gui.MapPanel;
 import com.bbn.openmap.gui.OpenMapFrame;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
 
 /**
  * The OpenMap application framework.  This class creates a
