@@ -20,6 +20,7 @@ import com.bbn.openmap.proj.*;
  * an Image of virtual size.  Not really needed, the functionality
  * provided here has been added to the SaveAsImageMenuItem and the
  * SaveAsImageFileChooser.
+ * @deprecated Redundant, functionality integrated into SaveAsImageMenuItem.
  */
 public class SaveAsVirtualImageMenuItem extends SaveAsImageMenuItem {
     
