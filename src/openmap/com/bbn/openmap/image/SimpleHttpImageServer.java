@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/SimpleHttpImageServer.java,v $
 // $RCSfile: SimpleHttpImageServer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/13 17:19:15 $
+// $Revision: 1.5 $
+// $Date: 2004/03/15 23:46:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -108,6 +108,22 @@ public class SimpleHttpImageServer
         httpd.addHttpRequestListener(this);
 
         iServer = new MapRequestHandler(props);
+    }
+
+    /**
+     * Get the MapRequestHandler that is handling map image requests.
+     */
+    public MapRequestHandler getMapRequestHandler() {
+        return iServer;
+    }
+
+    /**
+     * If you want to configure the MapRequestHandler and set it in
+     * the SHIS, you can use this method.  This will cause the SHIS to
+     * assume that the MapRequestHandler is ready to go.
+     */
+    public void setMapRequestHandler(MapRequestHandler mrh) {
+        iServer = mrh;
     }
 
     /**
