@@ -1,9 +1,9 @@
 <!--
 $source: /net/blatz/u4/rcs/openmap/doc/sgml/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.17 $
-$Date: 2000/05/19 14:37:35 $
-$Author: bmackiew $
+$Revision: 1.18 $
+$Date: 2000/05/24 16:04:24 $
+$Author: wjeuerle $
 
 Frequently Asked Questions for the OpenMap system.
 -->
@@ -691,6 +691,30 @@ url="./api/com/bbn/openmap/layer/dted/DTEDLayer.html"
 name="DTEDLayer"> can create terrain renderings for DTED levels 0
 (elevations are 1 km apart), 1 (100 meters apart), and 2 (10 meters
 apart).
+
+<sect1>Can OpenMap display DCW, VMAP, VPF?
+
+<p>Yes, we have <htmlurl
+url="./api/com/bbn/openmap/layer/vpf/VPFLayer.html" name="an OpenMap layer">
+ that can display this data.  The <htmlurl
+url="./api/com/bbn/openmap/layer/vpf/VPFLayer.html" name="VPFLayer javadoc">
+includes a description of the various openmap.properties you need to set
+to select data for display.
+ 
+<sect1>What is DCW, VMAP, VPF?
+
+<p>VPF (Vector Product Format) is a <htmlurl url="http://www.nima.mil" 
+name="NIMA"> format for vector data.  DCW and VMAP (level 0) are two
+of the databases available in VPF format.
+
+<sect1>What other VPF databases are available? Are they supported?
+
+<p>NIMA has several other databases in VPF format, including DNC (Digital
+Nautical Chart) and LWD (Littoral Warfare Data).  These additional
+databases are rendered correctly, but in some cases, some feature
+selection capabilities won't be available. The <htmlurl 
+url="./api/com/bbn/openmap/layer/vpf/VPFLayer.html" name="VPFLayer javadoc">
+goes into more detail.
 
 <sect1> Does OpenMap read Arc/Info or GeoTIFF files?
 <p>Not at the moment.  We haven't worked with projects that have required
