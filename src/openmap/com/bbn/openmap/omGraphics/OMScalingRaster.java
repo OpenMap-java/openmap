@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingRaster.java,v $
 // $RCSfile: OMScalingRaster.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.4 $
+// $Date: 2004/02/12 23:05:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -365,12 +365,25 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                     int yOffset = (int)((iRect.y - projRect.y)); //   and y offset
                     clipRect.x = (int)(xOffset * xScaleFactor); //   scale the x position
                     clipRect.y = (int)(yOffset * yScaleFactor); //   scale the y position
-                    clipRect.width = (int)(iRect.width * xScaleFactor); //   scale the width
-                    clipRect.height = (int)(iRect.height * yScaleFactor); //   scale the height
-                }                   
+
+                    // Do Math.ceil because the icon was getting
+                    // clipped a little if it started to move off the
+                    // screen a little.
+                    clipRect.width = (int)Math.ceil(iRect.width * xScaleFactor); //   scale the width
+                    clipRect.height = (int)Math.ceil(iRect.height * yScaleFactor); //   scale the height
+                }
+
+                // check width and height of clipRect, in case it got
+                // rounded down to zero.
+                if (clipRect.width <= 0) {
+                    clipRect.width = 1;
+                }
+                if (clipRect.height <= 0) {
+                    clipRect.height = 1;
+                }
                 // Now we can grab the bit we want out of the source and
                 // scale it to fit the intersection.
-                
+
                 // Calc width adjustment
                 double widthAdj = (double)iRect.width / (double)clipRect.width;
                 // Calc height adjustment
