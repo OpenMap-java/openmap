@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/03 00:53:03 $
+// $Revision: 1.5 $
+// $Date: 2003/10/07 15:40:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,7 +45,13 @@ import com.bbn.openmap.image.ImageHelper;
  * scale filters, color filters, or maybe (?hopefully?) projection
  * filters.  These filters won't change the original image data, and
  * the original can be reconstructed by resetting the filter to null,
- * and generating the object.  
+ * and generating the object. <P>
+ *
+ * For all classes in the OMRasterObject family, a java.awt.Shape
+ * object is created for the border of the image.  This Shape object
+ * is used for distance calculations.  If the OMRasterObject is
+ * selected(), however, this Shape will be rendered with the OMGraphic
+ * parameters that are set in the OMGraphic.
  */
 public abstract class OMRasterObject extends OMGraphic 
     implements Serializable, ImageObserver{
@@ -309,7 +315,9 @@ public abstract class OMRasterObject extends OMGraphic
 
 	if (bitmap != null) {
 
-	    if (isMatted()) {
+	    if (isSelected() || 
+		Debug.debugging("rasterobjects")) {
+
 		super.render(g);
 	    }
 
@@ -329,10 +337,6 @@ public abstract class OMRasterObject extends OMGraphic
 	    }
 	} else {
 	    if (DEBUG) Debug.output("OMRasterObject.render: ignoring null bitmap");
-	}
-
-	if (Debug.debugging("rasterobjects")) {
-	    super.render(g);
 	}
 
     }
