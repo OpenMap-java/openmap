@@ -1,9 +1,9 @@
 <!--
 $source: /net/blatz/u4/rcs/openmap/doc/sgml/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.18 $
-$Date: 2000/05/24 16:04:24 $
-$Author: wjeuerle $
+$Revision: 1.19 $
+$Date: 2000/11/07 21:36:53 $
+$Author: bmackiew $
 
 Frequently Asked Questions for the OpenMap system.
 -->
@@ -772,6 +772,20 @@ because it is our experience that there isn't one.  We've always had
 to come up with specialized code to display the graphics and
 attributes in a manner that was appropriate for the particular goal of
 the layer.
+
+<sect1> The ETOPO data I downloaded from your site doesn't display correctly.
+
+<p> We've found that with some commercial zip extraction programs, the 
+line feeds in the files from the etopo.tar.gz file are replaced with
+carriage return/line feeds.  This is supposed to be a feature, as most
+tar.gz files are built under Unix, and the zip extractor is trying to
+process the file for easier use under Windows.  While this can be a great
+help at times, in this instance, it corrupts the ETOPO data.
+
+<p> Instead, we recommend either changing the options in your zip extraction 
+program to not substitute CR/LF for LFs, or simpler still, downloading the 
+etopo.zip file in the data directory.  This zip should extract with no 
+problems under Windows.
 
 
 <sect> Using OpenMap to Create Image Files
