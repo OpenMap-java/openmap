@@ -1,0 +1,84 @@
+# **********************************************************************
+# 
+#    Use, duplication, or disclosure by the Government is subject to
+# 	     restricted rights as set forth in the DFARS.
+#  
+# 			   BBN Technologies
+# 			    A Division of
+# 			   BBN Corporation
+# 			  10 Moulton Street
+# 			 Cambridge, MA 02138
+# 			    (617) 873-3000
+#  
+# 	  Copyright 1998 by BBN Technologies, A Division of
+# 		BBN Corporation, all rights reserved.
+#  
+# **********************************************************************
+# 
+# $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
+# $RCSfile: openmap.mk.in,v $
+# $Revision: 1.1 $
+# $Date: 1998/10/26 18:25:39 $
+# $Author: tmitchel $
+# 
+# **********************************************************************
+
+
+# ------------------------------------------------------------
+# User settings.  Change these if necessary
+# ------------------------------------------------------------
+#srcdir = @srcdir@
+#top = @top_srcdir@
+JAVA = @JAVA@
+JAVAC = @JAVAC@
+SWING_JAR = @SWING_JAR@
+
+# Java compiler flags for optimizing
+JFLAGS_OPT = -J-mx128m -O
+
+# Java compiler flags for development
+JFLAGS_DEV = -J-mx128m -g -deprecation
+
+# Command line flags handed to the java compiler
+JFLAGS = $(JFLAGS_DEV)
+
+#
+# Install settings
+#
+# These use GNU install
+INSTALL.dir =		install --directory
+INSTALL.class =		install --mode=444
+INSTALL.image =		install --mode=444
+INSTALL.props =		install --mode=444
+
+# ------------------------------------------------------------
+# End of User settings
+# ------------------------------------------------------------
+
+
+# ------------------------------------------------------------
+# Java to class file rule
+# ------------------------------------------------------------
+
+# add some new suffixes for java related files
+.SUFFIXES: .java .class
+
+# *.java to *.class make rule
+.java.class:
+	CLASSPATH=$(CLASSPATH) $(JAVAC) $(JFLAGS) $<
+
+# ------------------------------------------------------------
+# End of Java to class file rule
+# ------------------------------------------------------------
+
+#####################
+# computed settings #
+#####################
+
+# !! WARNING !!
+# TOP must be set by the Makefile that is including this makefile.
+#
+CLASSPATH = ${TOP}:${SWING_JAR}@CORBA_CLASSPATH@
+
+INSTALL_DIR = ${TOP}/tmp
+

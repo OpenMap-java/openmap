@@ -1,0 +1,59 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_REVISION(OpenMap $Revision: 1.1 $)
+AC_INIT(openmap.mk.in)
+
+dnl Checks for programs.
+
+AC_PROG_JAVA
+AC_PROG_JAVAC
+AC_FIND_SWING_JAR
+
+dnl Checks for libraries.
+
+dnl Checks for header files.
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+
+dnl Checks for library functions.
+
+dnl Checks for packages
+AC_ARG_WITH(java, [  --with-java=JAVA        Java runtime executable])
+AC_ARG_WITH(javac, [  --with-javac=JAVAC      Java compiler])
+AC_ARG_WITH(swing, [  --with-swing=JARFILE    Swing jar file])
+AC_ARG_WITH(corba, [  --with-corba            Build CORBA Specialists])
+
+if test "x$with_corba" = "xyes"; then
+  BUILD_CORBA=all_corba
+  AC_SUBST(BUILD_CORBA)
+  CORBA_CLASSPATH=:/home/tmitchel/jars/vbjall.jar:/home/tmitchel/jars/cspec58.jar
+  AC_SUBST(CORBA_CLASSPATH)
+fi
+
+AC_OUTPUT(openmap.mk
+	Makefile
+	com/Makefile
+	com/bbn/Makefile
+	com/bbn/util/Makefile
+	com/bbn/util/cacheHandler/Makefile
+	com/bbn/openmap/Makefile
+	com/bbn/openmap/app/Makefile
+	com/bbn/openmap/examples/Makefile
+	com/bbn/openmap/gui/Makefile
+	com/bbn/openmap/http/Makefile
+	com/bbn/openmap/html/Makefile
+	com/bbn/openmap/event/Makefile
+	com/bbn/openmap/html/Makefile
+	com/bbn/openmap/event/Makefile
+	com/bbn/openmap/pluginLayer/Makefile
+	com/bbn/openmap/proj/Makefile
+	com/bbn/openmap/omGraphics/Makefile
+	com/bbn/openmap/util/Makefile
+	com/bbn/openmap/nitf/Makefile
+	com/bbn/openmap/rpf/Makefile
+	com/bbn/openmap/dted/Makefile
+	com/bbn/openmap/shape/Makefile
+	com/bbn/openmap/terrain/Makefile
+	com/bbn/openmap/dcwSpecialist/Makefile
+	com/bbn/openmap/specialist/Makefile
+	com/bbn/openmap/corba/Makefile
+	)

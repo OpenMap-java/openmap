@@ -1,0 +1,75 @@
+# **********************************************************************
+# 
+#    Use, duplication, or disclosure by the Government is subject to
+# 	     restricted rights as set forth in the DFARS.
+#  
+# 			   BBN Technologies
+# 			    A Division of
+# 			   BBN Corporation
+# 			  10 Moulton Street
+# 			 Cambridge, MA 02138
+# 			    (617) 873-3000
+#  
+# 	  Copyright 1998 by BBN Technologies, A Division of
+# 		BBN Corporation, all rights reserved.
+#  
+# **********************************************************************
+# 
+# $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
+# $RCSfile: Makefile.in,v $
+# $Revision: 1.1 $
+# $Date: 1998/10/26 18:25:39 $
+# $Author: tmitchel $
+# 
+# **********************************************************************
+
+
+TOP = @top_srcdir@
+
+############
+# includes #
+############
+include ${TOP}/openmap.mk
+
+
+
+#########
+# rules #
+#########
+
+# java compile OpenMap code
+all:
+	cd com && $(MAKE) $@
+
+clean:
+	cd com && $(MAKE) $@
+
+install:
+	cd com && $(MAKE) $@
+
+#----------------------------------------------------------------------
+# OpenMap targets
+#----------------------------------------------------------------------
+
+#include scripts.mk
+
+# changes the hardcoded version information in the java code and in
+# the etc/scripts directory, recompiles OpenMap and makes a jar file
+# of the new version.
+build-version:
+	$(MAKE) newversion
+	$(MAKE) openmap-version
+
+build-major-version:
+	$(MAKE) majorversion
+	$(MAKE) openmap-version
+
+openmap-version:
+	$(MAKE) all
+	$(MAKE) openmap-version.jar -f scripts.mk
+
+openmap.jar:
+	jar cf openmap.jar $(OPENMAP.JAR)
+
+applet.jar:
+	jar cf applet.jar $(APPLET.JAR)
