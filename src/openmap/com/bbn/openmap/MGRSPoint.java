@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Attic/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/26 00:29:26 $
+// $Revision: 1.3 $
+// $Date: 2003/02/26 23:24:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -118,11 +118,14 @@ public class MGRSPoint extends UTMPoint {
 	easting = point.easting;
 	zone_number = point.zone_number;
 	zone_letter = point.zone_letter;
+	accuracy = point.accuracy;
     }
 
+    /**
+     * Create a MGRSPoint from UTM values;
+     */
     public MGRSPoint(float northing, float easting, int zoneNumber, char zoneLetter) {
 	super(northing, easting, zoneNumber, zoneLetter);
-	
     }
 
     /**
@@ -159,6 +162,9 @@ public class MGRSPoint extends UTMPoint {
      * Get the MGRS string value - the honkin' coordinate value.
      */
     public String getMGRS() {
+	if (mgrs == null) {
+	    resolve();
+	}
 	return mgrs;
     }
 
@@ -250,6 +256,7 @@ public class MGRSPoint extends UTMPoint {
      */
     public void setAccuracy(int value) {
 	accuracy = value;
+	mgrs = null;
     }
 
     public int getAccuracy() {
@@ -318,19 +325,30 @@ public class MGRSPoint extends UTMPoint {
 	// 5, U - 5, W - 8
 
 	if ((zone_letter == 'Q' && north100k < 1700000) ||
-	    (zone_letter >= 'R')) north100k += 2000000;
+	    (zone_letter >= 'R')) {
+	    north100k += 2000000;
+	    if (DEBUG) Debug.output(" northing rolled over 18, adding 200k to " + north100k);
+	}
 
 	if ((zone_letter == 'S' && north100k < 3000000) ||
-	    (zone_letter >= 'T')) north100k += 2000000;
+	    (zone_letter >= 'T')) {
+	    north100k += 2000000;
+	    if (DEBUG) Debug.output(" northing rolled over 36, adding 200k to " + north100k);
+	}
 
 	if ((zone_letter == 'U' && north100k < 5330000) ||
-	    (zone_letter >= 'V')) north100k += 2000000;
+	    (zone_letter >= 'V')) {
+	    north100k += 2000000;
+	    if (DEBUG) Debug.output(" northing rolled over 54, adding 200k to " + north100k);
+	}
 
 	if (zone_letter >= 'X') {
 	    north100k += 2000000;
+	    if (DEBUG) Debug.output(" northing rolled over 72, adding 200k to " + north100k);	    
 	    if (north100k > 9500000) {
 		// There's a tiny sliver of space that does this...
 		north100k -= 2000000;
+		if (DEBUG) Debug.output(" - rolling back to " + north100k);
 	    }
 	}
 
@@ -351,11 +369,14 @@ public class MGRSPoint extends UTMPoint {
 	float sepNorthing = 0f;
 
 	if (sep > 0) {
+	    if (DEBUG) Debug.output(" calculating e/n from " + mgrs.substring(i));
 	    float accuracyBonus = 100000f/(float)Math.pow(10, sep);
-
+	    if (DEBUG) Debug.output(" calculated accuracy bonus as  " + accuracyBonus);
 	    String sepEastingString = mgrsString.substring(i, i + sep);
+	    if (DEBUG) Debug.output(" parsed easting as " + sepEastingString);
 	    sepEasting = Float.parseFloat(sepEastingString) * accuracyBonus;
 	    String sepNorthingString = mgrsString.substring(i + sep);
+	    if (DEBUG) Debug.output(" parsed northing as " + sepNorthingString);
 	    sepNorthing = Float.parseFloat(sepNorthingString) * accuracyBonus;
 	}
 	
@@ -392,19 +413,39 @@ public class MGRSPoint extends UTMPoint {
 			     get100kID(easting, northing, zone_number));
 	StringBuffer seasting = new StringBuffer(Integer.toString((int)easting));
 	StringBuffer snorthing = new StringBuffer(Integer.toString((int)northing));
+
+	if (DEBUG) {
+	    Debug.output(" Resolving MGRS from easting: " + seasting + " derived from " + easting + ", and northing: " + snorthing + " derived from " + northing);
+	}
 	
 	while (digitAccuracy > seasting.length()) {
 	    seasting.insert(0, '0');
 	}
 
+	// We have to be careful here, the 100k values shouldn't be 
+	// used for calculating stuff here.
+
 	while (digitAccuracy > snorthing.length()) {
 	    snorthing.insert(0, '0');
 	}
 
-	sb.append(seasting.substring(1, digitAccuracy + 1) + 
-		  snorthing.substring(1, digitAccuracy + 1));
+	while (snorthing.length() > 6) {
+	    snorthing.deleteCharAt(0);
+	}
+
+	if (DEBUG) {
+	    Debug.output(" -- modified easting: " + seasting + 
+			 " and northing: " + snorthing);
+	}
+
+	try {
+	    sb.append(seasting.substring(1, digitAccuracy + 1) + 
+		      snorthing.substring(1, digitAccuracy + 1));
 	
-	mgrs = sb.toString();
+	    mgrs = sb.toString();
+	} catch (IndexOutOfBoundsException ioobe) {
+	    mgrs = null;
+	}
     }
 
     /**
@@ -649,67 +690,6 @@ public class MGRSPoint extends UTMPoint {
 		System.out.println(sb);
 	    }
 	}
-    }
-
-    public static OMGraphic getRectangle(LatLonPoint llp, int accuracy) {
-	MGRSPoint mgrs = new MGRSPoint();
-	mgrs.setAccuracy(accuracy);
-	LLtoMGRS(llp, Ellipsoid.WGS_84, mgrs);
-
-	Debug.output("------\n  Original - " + mgrs.getMGRS() + 
-		     ", with easting " + mgrs.easting + 
-		     ", northing " + mgrs.northing);
-
-	mgrs = new MGRSPoint(mgrs.getMGRS());
-
-	Debug.output("  corner point - " + mgrs.getMGRS() + 
-		     ", with easting " + mgrs.easting + 
-		     ", northing " + mgrs.northing);
-
-	LatLonPoint llp1 = mgrs.toLatLonPoint();
-
-	float accuracyBonus = 100000f/(float)Math.pow(10, accuracy);
-	Debug.output("adding " + accuracyBonus + " meters with accuracy");
-
-	LatLonPoint llp2 = UTMtoLL(Ellipsoid.WGS_84,
-				   mgrs.northing, 
-				   mgrs.easting + accuracyBonus,
-				   mgrs.zone_number, mgrs.zone_letter, null);
-
-	LatLonPoint llp3 = UTMtoLL(Ellipsoid.WGS_84,
-				   mgrs.northing + accuracyBonus, 
-				   mgrs.easting + accuracyBonus,
-				   mgrs.zone_number, mgrs.zone_letter, null);
-
-	LatLonPoint llp4 = UTMtoLL(Ellipsoid.WGS_84,
-				   mgrs.northing + accuracyBonus, 
-				   mgrs.easting,
-				   mgrs.zone_number, mgrs.zone_letter, null);
-
-	float[] llpoints = new float[10];
-	llpoints[0] = llp1.getLatitude();
-	llpoints[1] = llp1.getLongitude();
-	llpoints[2] = llp2.getLatitude();
-	llpoints[3] = llp2.getLongitude();
-	llpoints[4] = llp3.getLatitude();
-	llpoints[5] = llp3.getLongitude();
-	llpoints[6] = llp4.getLatitude();
-	llpoints[7] = llp4.getLongitude();
-	llpoints[8] = llp1.getLatitude();
-	llpoints[9] = llp1.getLongitude();
-
-	OMGraphicList list = new OMGraphicList();
-
-	OMPoly poly = new OMPoly(llpoints, OMGraphic.DECIMAL_DEGREES,
-				 OMGraphic.LINETYPE_GREATCIRCLE);
-	poly.setLinePaint(java.awt.Color.red);
-	list.add(poly);
-
-	OMPoint pt =new OMPoint(llp.getLatitude(), llp.getLongitude());
-	pt.setLinePaint(java.awt.Color.green);
-	list.add(pt);
-
-	return list;
     }
 
     public static void main(String[] argv) {
