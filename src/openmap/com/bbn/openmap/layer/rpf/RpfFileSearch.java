@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFileSearch.java,v $
 // $RCSfile: RpfFileSearch.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/07/07 21:46:53 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -92,7 +92,37 @@ public class RpfFileSearch {
 	try {
 
 	    String[] filenames = file.list();
-	    if (filenames != null){
+	    boolean dirTest = false;
+	    boolean not14 = false;
+
+	    try {
+		java.lang.reflect.Method method = 
+		    file.getClass().getDeclaredMethod("isDirectory", null);
+		Object obj = method.invoke(file, null);
+		if (obj instanceof Boolean) {
+		    dirTest = ((Boolean)obj).booleanValue();
+		}
+	    } catch (NoSuchMethodException nsme) {
+		not14 = true;
+	    } catch (SecurityException se) {
+		not14 = true;
+	    } catch (IllegalAccessException iae) {
+		not14 = true;
+	    } catch (IllegalArgumentException iae2) {
+		not14 = true;
+	    } catch (java.lang.reflect.InvocationTargetException ite) {
+		not14 = true;
+	    }
+
+	    if (not14) {
+		dirTest = (filenames != null);
+	    }
+
+	    if (dirTest){
+		if (Debug.debugging("maketoc")) {
+		    Debug.output("RpfFileSearch.handleEntry(" + file + ", " +
+				 RPFDirFound + "), file a directory");
+		}
 		File[] contents = new File[filenames.length]; // file.listFiles();
 		for (int i = 0; i < contents.length; i++) {
 		    contents[i] = new File(file, filenames[i]);
@@ -106,6 +136,11 @@ public class RpfFileSearch {
 		    handleEntry(contents[i], RPFDirFound || rpf);
 		}
 	    } else {
+		if (Debug.debugging("maketoc")) {
+		    Debug.output("RpfFileSearch.handleEntry(" + file + ", " +
+				 RPFDirFound + "), adding to list...");
+		}
+
 		String parent = file.getParent();
 		if (RPFDirFound){
 		    if (parent != null){
