@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.1 $
-# $Date: 1998/04/20 21:44:21 $
+# $Revision: 1.2 $
+# $Date: 1998/04/20 22:18:55 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -35,6 +35,10 @@
 # buildDir  - The build directory
 #
 # **********************************************************************
+
+echo ""
+echo "MapBean build started at `date`"
+
 
 BuildRoot=/tmp/openmap
 
@@ -130,3 +134,7 @@ jar cfM $BuildDir/$BeanDir.zip $PkgFiles
 cd $BuildDir
 compress -c $BeanDir.tar > $BeanDir.tar.Z
 gzip $BeanDir.tar
+
+echo ""
+echo "MapBean build complete at `date`"
+exit 0
