@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/Attic/ElevationMBandGenerator.java,v $
 // $RCSfile: ElevationMBandGenerator.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2004/01/17 00:22:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,6 +37,7 @@ import java.awt.Graphics;
  * elevation range for each color.  
  */
 public class ElevationMBandGenerator extends SimpleColorGenerator {
+
     public static final int DEFAULT_BANDHEIGHT = 50;
     public static final int DEFAULT_ADJUST = 3;
 
@@ -51,7 +52,7 @@ public class ElevationMBandGenerator extends SimpleColorGenerator {
      *  color. */
     protected int bandHeight = DEFAULT_BANDHEIGHT; // meters
 
-    public ElevationMBandGenerator(){
+    public ElevationMBandGenerator() {
 	setColortable(createGreyscaleColors(216, 255));
     }
 
@@ -64,12 +65,12 @@ public class ElevationMBandGenerator extends SimpleColorGenerator {
      * @param source a grid point value assigned to the raster pixel.
      * @return the ARGB to color the pixel.  
      */
-    public int calibratePointValue(int source){
-	if (source < -500){
+    public int calibratePointValue(int source) {
+	if (source < -500) {
 	    return 0; // clear, nothing is that low...
 	}
 
-	if (source == 0){
+	if (source == 0) {
 	    return colors[0]; // water blue, assumed.
 	}
 
@@ -90,31 +91,31 @@ public class ElevationMBandGenerator extends SimpleColorGenerator {
 	return colors[assignment];
     }
 
-    public void setColortable(int[] colors){
+    public void setColortable(int[] colors) {
 	this.colors = colors;
     }
 
-    public int[] getColortable(){
+    public int[] getColortable() {
 	return colors;
     }
 
-    public void setBandHeight(int height){
+    public void setBandHeight(int height) {
 	if (height <= 0) 
 	    height = DEFAULT_BANDHEIGHT;
 	bandHeight = height;
     }
 
-    public int getBandHeight(){
+    public int getBandHeight() {
 	return bandHeight;
     }
 
-    public void setAdjust(int value){
+    public void setAdjust(int value) {
 	if (value <= 0 || value > 5) 
 	    value = DEFAULT_ADJUST;
 	adjust = value;
     }
 
-    public int getAdjust(){
+    public int getAdjust() {
 	return adjust;
     }
 }
