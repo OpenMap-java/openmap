@@ -5,24 +5,33 @@
 	Set up the different builds.
 	############################ -->  
 
-	<target name="openmap.init" 
+	<target name="init.openmap" 
 	        description="Sets properties needed by the OpenMap code targets.">
 		<tstamp/>
 
-		<!-- Currency conditions -->
-		<uptodate property="contribBuild.notRequired"
-		          targetfile="${openmap.home}/lib/openmap.jar" >
-			  <srcfiles dir= "${openmap.src_ext}"
-			            excludes="${javac.excludes}, ${dependency.excludes}"
-				    includes="**/*.java, **/*.class" />
-		</uptodate>
+		<echo message="OpenMap base code..."/>
 
-		<uptodate property="openmapBuild.notRequired"
-		          targetfile="${openmap.home}/lib/openmap.jar" >
-			  <srcfiles dir= "${openmap.src}"
-			            excludes="${javac.excludes}, ${dependency.excludes}"
-				    includes="**/*.java, **/*.class" />
-		</uptodate>
+		<property name="openmap.home" value="../.."/>
+		<property name="openmap.class_dir" value="${openmap.home}/classes"/>
+		<property name="openmap.classes" value="${openmap.home}/classes/openmap"/>
+		<property name="openmap.src" value="${openmap.home}/src/openmap"/>
+		<property name="openmap.src_ext" value="${openmap.home}/src/ext"/>
+		<property name="openmap.docs" value="${openmap.home}/doc"/>
+
+		<property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
+							 **/ChangeLog, **/*.html, **/*.txt,
+							 **/*.*.txt, **/*.dat,
+							 **/*.pl,
+							 **/unimplemented/**, 
+							 **/build.xml"/>
+
+		<property name="javac.excludes" value="${general.excludes}, 
+						       **/*.gif,
+						       **/*.png, 
+						       **/*.properties,
+						       **/OMTextLoader*" />
+
+		<property name="jar.excludes" value="${general.excludes}, **/*.java"/>
 
 	</target>
 
@@ -34,17 +43,8 @@
 	      Main targets
 	      ############################ -->  
 
-	<!-- Call to main build.xml file to call back into this file -->
-	<target name="classes">
-	  <ant antfile="../../build.xml"
-	       target="classes"/>
-	</target>
-
-	<!-- Call to main build.xml file to call back into this file -->
-	<target name="all">
-	  <ant antfile="../../build.xml"
-	       target="all"/>
-	</target>
+	<target name="classes" depends="openmap"/>
+	<target name="all" depends="all.openmap"/>
 
 	<!-- Targets that should be called from upper level build.xml file,
 	     because that init target needs to be called -->
@@ -55,8 +55,7 @@
 
 	<target name="jar.openmap"
 	        depends="build.openmap"
-		description="Builds jar files, placing them in the lib directory."
-		unless="contribBuild.buildRequired, openmapBuild.buildRequired">
+		description="Builds jar files, placing them in the lib directory.">
 
 	  <jar jarfile="${openmap.home}/lib/openmap.jar" 
 	       basedir="${openmap.classes}"
@@ -64,9 +63,7 @@
 	       includes="openmap.properties,
 			 **/*.class,
 			 **/*.gif, **/*.png,
-			 **/*.properties" 
-	       excludes="${corba.excludes}"/>
-
+			 **/*.properties"/>
 	</target>    
   
 	<target name="build.openmap" 
@@ -76,7 +73,7 @@
   <!--  ############################
 	ext relies on OpenMap Debug class - but we need to build it first.
 	############################ -->  
-	<target name="debug" depends="openmap.init">
+	<target name="debug" depends="init.openmap">
 	     <mkdir dir="${openmap.classes}"/>
 	     <javac srcdir="${openmap.src}" 
 	            destdir="${openmap.classes}"    
@@ -94,7 +91,7 @@
 	       <javac srcdir="${openmap.src_ext}"
 	              destdir="${openmap.classes}"
 		      debug="on"
-		      excludes="${javac.excludes}, ${dependency.excludes}"/>
+		      excludes="${javac.excludes}"/>
 	</target>
 
   <!--  ############################
@@ -107,7 +104,7 @@
 	     <javac srcdir="${openmap.src}" 
 	            destdir="${openmap.classes}"
 		    debug="on"
-		    excludes="${javac.excludes}, ${dependency.excludes}"/>
+		    excludes="${javac.excludes}"/>
 
 	     <!-- Copy the gifs and other resources to the new classpath. -->
 	     <copy todir="${openmap.classes}" 
@@ -123,7 +120,7 @@
 	Build the documentation.
 	############################ -->  
 	<target name="docs.openmap" 
-	        depends="openmap.init"
+	        depends="init.openmap"
 		description="Make the javadoc API html documents.">
 	     <javadoc sourcepath="${openmap.src}:${openmap.src_ext}"
 	              destdir="${openmap.docs}/api"
@@ -150,7 +147,7 @@
 		description="Delete jar files and all class files"/>
 
 	<target name="distclean.openmap"
-	        depends="openmap.init"
+	        depends="init.openmap"
 		description="Delete class files, but not the jar files.">
 	     <delete dir="${openmap.class_dir}" />
 	</target>

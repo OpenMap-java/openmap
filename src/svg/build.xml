@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<project name="OpenMap_svg" default="all" basedir=".">
+
+  <!--  ############################
+	Set up the different builds.
+	############################ -->  
+
+  <target name="init.svg" 
+	  description="Sets properties needed by the other targets.">
+    <tstamp/>
+	  
+    <property name="openmap.home" value="../.."/>
+    <property name="openmap.class_dir" value="${openmap.home}/classes"/>
+    <property name="openmap.classes" value="${openmap.home}/classes/openmap"/>
+    <property name="svg.src" value="${openmap.home}/src/svg"/>
+    <property name="openmap.docs" value="${openmap.home}/doc"/>
+
+    <property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
+		                             **/ChangeLog, **/*.html, **/*.txt,
+					     **/*.*.txt, **/*.dat,
+					     **/*.pl, **/unimplemented/**, **/build.xml"/>
+
+    <property name="javac.excludes" value="${general.excludes}, 
+					   **/*.gif, **/*.png" />
+	  
+    <!-- sets the batik.home present property to the value "true" if
+	 the batik package is found. Change the location of batik.home
+	 if you want it to be different. -->
+
+    <property name="batik.home" value="/usr/local/java/batik-1.1.2"/>
+    <available file="${batik.home}" property="do.svg"/> 
+
+    <property name="svg.jars" value="${batik.home}/lib/batik-svggen.jar;${batik.home}/lib/batik-awt-util.jar;${batik.home}/lib/batik-util.jar;${batik.home}/lib/batik-dom.jar;${batik.home}/lib/batik-ext.jar;${batik.home}/lib/batik-xml.jar;${batik.home}/lib/batik-svggen.jar;${batik.home}/lib/batik-awt-util.jar;${batik.home}/lib/batik-util.jar;${batik.home}/lib/batik-dom.jar;${batik.home}/lib/batik-ext.jar;${batik.home}/lib/batik-xml.jar;${batik.home}/lib/batik-svg-dom.jar"/>
+
+  </target>
+
+  <!--  ############################
+	Main targets
+	############################ -->  
+
+  <target name="classes.svg"
+	  depends="init.svg"
+	  description="Compiles the SVG Formatter and recreates the jars after compiling this target. You must have Batik (http://xml.apache.org/batik/index.html) installed.  (Call this to build SVG targets)"
+	  if="do.svg">
+
+    <echo message="Compiling SVG classes with ${svg.jars}"/>
+    <javac srcdir="${svg.src}"
+	   destdir="${openmap.classes}"
+	   classpath="${openmap.home}/lib/openmap.jar;${openmap.classes};${svg.jars}"
+	   debug="on"
+	   excludes="${javac.excludes}"/>
+
+  </target>
+
+</project>
+

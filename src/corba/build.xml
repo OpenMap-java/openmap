@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<project name="OpenMap_corba" default="all" basedir=".">
+
+  <!--  ############################
+	Set up the different builds.
+	############################ -->  
+
+  <target name="init.corba" 
+	  description="Sets properties needed by the other targets.">
+    <tstamp/>
+
+    <property name="openmap.home" value="."/>
+    <property name="openmap.class_dir" value="${openmap.home}/classes"/>
+    <property name="openmap.classes" value="${openmap.home}/classes/openmap"/>
+    <property name="corba.src" value="${openmap.home}/src/corba"/>
+
+    <property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
+		                             **/ChangeLog, **/*.html, **/*.txt,
+					     **/*.*.txt, **/*.dat, **/*.idl,
+					     **/*.pl, **/unimplemented/**, **/build.xml"/>
+
+    <property name="javac.excludes" value="${general.excludes}, 
+					   **/*.gif, **/*.png" />
+
+    <property name="openmap.vb_classes" value="${openmap.home}/classes/corba_vb"/>
+
+    <!-- sets the visibroker.home present property to the value "true"
+	 if the home directory of Visibroker is found. -->
+    <property name="visibroker.home" value="/usr/local/openmap/vbroker-3.4/java"/>
+    <available file="${visibroker.home}" property="do.visibroker"/> 
+    <property name="visibroker.jars" value="${visibroker.home}/lib/vbjapp.jar:${visibroker.home}/lib/vbjcosnm.jar:${visibroker.home}/lib/vbjtools.jar:${visibroker.home}/lib/vbjorb.jar"/>
+    <property name="visibroker.bootclasspath" value="${visibroker.jars}:${java.home}/lib/rt.jar:${openmap.classes}"/>
+
+    <!-- check to see if the idls need to be compiled. -->
+    <property name="cspecialist.home" value="${corba.src}/com/bbn/openmap/CSpecialist"/>
+    <available file="${cspecialist.home}" property="idl.compiled"/> 
+
+  </target>
+
+  <target name="visibroker.idl" depends="init.corba"
+	  description="Create stub classes from idl files and compile stubs."
+	  unless="idl.compiled">
+    <echo message="Creating CORBA stub classes from idls with Visibroker..."/>
+    
+    <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
+      <jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
+      <arg line='-root_dir ${openmap.home} -package com.bbn.openmap.layer.rpf.corba com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl'/>
+    </java>
+
+    <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
+      <jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
+      <arg line='-root_dir ${openmap.home} -package com.bbn.openmap com/bbn/openmap/layer/specialist/Specialist.idl'/>
+    </java>
+
+    <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
+      <jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
+      <arg line='-root_dir ${openmap.home} -package com.bbn.openmap.plugin.corbaImage com/bbn/openmap/plugin/corbaImage/CorbaImageServer.idl'/>
+    </java>
+  </target>
+
+  <target name="visibroker.stubs" depends="visibroker.idl"
+	  description="Compile stub classes created from idl files.">
+    <echo message="Compiling CORBA stub classes..."/>
+    <javac srcdir="${corba.src}"
+           destdir="${openmap.vb_classes}"
+	   debug="on"
+	   includes="**/CRpfFrameProvider/**, **/CSpecialist/**, **/corbaImageServer/**"
+	   excludes="${javac.excludes}"
+	   bootclasspath="${visibroker.bootclasspath}" />
+  </target>
+
+  <target name="classes.visibroker" depends="visibroker.stubs"
+	  description="Compiles the Corba classes with the Visibroker CORBA implementation. You must have Visibroker (http://www.borland.com/bes/visibroker) installed. (Call this to build CORBA classes) "
+	  if="do.visibroker">
+
+    <echo message="Compiling CORBA classes with Visibroker..."/>
+
+    <javac srcdir="${corba.src}"
+	   destdir="${openmap.vb_classes}"
+	   debug="on"
+	   includes="**/layer/rpf/corba/**/*.java,
+		     **/layer/specialist/**/*.java,
+		     **/plugin/corbaImage/**/*.java"
+	   excludes="**/unimplemented/**"
+	   bootclasspath="${visibroker.bootclasspath}" />
+
+    <jar jarfile="${openmap.home}/lib/omcorba_vb.jar"
+	 basedir="${openmap.vb_classes}"
+	 includes="**/*.class"/>
+
+  </target>
+
+  <target name="clean.visibroker" 
+	  depends="distclean.visibroker"
+	  description="Delete the Corba OpenMap class, stub and jar files.">
+    <delete file="${openmap.home}/lib/omcorba_vb.jar"/>
+  </target>
+
+  <target name="distclean.visibroker" 
+	  description="Delete the Corba OpenMap class files and the stub classes.">
+    <delete dir="${openmap.vb_classes}"/>
+    <delete dir="${corba.src}/com/bbn/openmap/layer/rpf/corba/CRpfFrameProvider"/>
+    <delete dir="${corba.src}/com/bbn/openmap/CSpecialist"/>
+    <delete dir="${corba.src}/com/bbn/openmap/plugin/corbaImage/corbaImageServer"/>
+  </target>
+ 
+</project>
+

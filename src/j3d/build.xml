@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<project name="OpenMap_j3d" default="classes" basedir=".">
+
+  <target name="init.j3d" 
+	  description="Sets properties needed by the other targets.">
+    <tstamp/>
+
+    <property name="openmap.home" value="."/>
+    <property name="openmap.class_dir" value="${openmap.home}/classes"/>
+    <property name="openmap.classes" value="${openmap.home}/classes/openmap"/>
+    <property name="j3d.src" value="${openmap.home}/src/j3d"/>
+
+    <property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
+		                             **/ChangeLog, **/*.html, **/*.txt,
+					     **/*.*.txt, **/*.dat,
+					     **/*.pl, **/unimplemented/**, **/build.xml"/>
+
+    <property name="javac.excludes" value="${general.excludes}, 
+					   **/*.gif, **/*.png" />
+	  
+    <condition property="javamail.complete">
+      <and>
+	<available classname="javax.activation.DataHandler"/>
+	<available classname="javax.mail.Transport"/>
+      </and>
+    </condition> 
+
+  </target>
+
+  <!--  ############################
+	Main targets
+	############################ -->  
+
+  <target name="classes" 
+	  depends="classes.j3d">
+  </target>
+
+  <!--  ############################
+	End of cleanup targets.
+	############################ -->  
+
+  <target name="classes.j3d"
+          depends="init.j3d"
+	  description="Compiles the Java 3D OpenMap code and adds it to the jar.  You must have the Java 3D extension package (http://java.sun.com/products/java-media/3D/index.html) installed in your Java installation. (Call this to build J3D targets)"
+	  if="{$do.j3d}">
+    <echo message="J3D classes included in jar files."/>
+    <javac srcdir="${j3d.src}"
+	   destdir="${openmap.classes}"
+	   debug="on"
+	   classpath="${openmap.home}/lib/openmap.jar;${openmap.home}"
+	   excludes="${javac.excludes}"/>
+  </target>
+ 
+</project>
+
