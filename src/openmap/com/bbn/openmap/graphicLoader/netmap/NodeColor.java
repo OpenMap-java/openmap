@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NodeColor.java,v $
 // $RCSfile: NodeColor.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.3 $
+// $Date: 2004/02/24 21:50:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ToolPanel.java,v $
 // $RCSfile: ToolPanel.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.9 $
+// $Date: 2004/02/24 21:50:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -578,8 +578,9 @@ public class ToolPanel extends JToolBar
     public boolean areComponentsVisible() {
         Enumeration enum = items.elements();
         while (enum.hasMoreElements()) {
-            Component comp = (Component)enum.nextElement();
-            if (comp != filler && comp.isVisible()) {
+            Tool tool  = (Tool) enum.nextElement();
+            Container face = tool.getFace();
+            if (tool != filler && face != null && face.isVisible()) {
                 return true;
             }
         }

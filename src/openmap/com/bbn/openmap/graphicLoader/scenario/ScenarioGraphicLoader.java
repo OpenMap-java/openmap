@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/ScenarioGraphicLoader.java,v $
 // $RCSfile: ScenarioGraphicLoader.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.5 $
+// $Date: 2004/02/24 21:50:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -500,6 +500,9 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
                     String name = null;
                     String icon = null;
                     Vector record = (Vector) records.next();
+
+                    if (record.size() == 0) continue;
+
                     name = (String)record.elementAt(nameIndex);
 
                     if (iconIndex != -1) {
@@ -517,11 +520,16 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
                     }
                 }
             } catch (MalformedURLException murle) {
-                Debug.error("ScenarioGraphicLoader: problem with location file: " + 
+                Debug.error("ScenarioGraphicLoader: problem finding the location file: " + 
                             locationFile);
                 return list;
             } catch (ArrayIndexOutOfBoundsException aioobe) {
-                Debug.error("ScenarioGraphicLoader: problem parsing location file: " + locationFile);
+                Debug.error("ScenarioGraphicLoader: problem with parsing location file: " + locationFile);
+                if (Debug.debugging("scenario")) {
+                    Debug.output("The problem is with one of the indexes into the file: \n" +
+                                 aioobe.getMessage());
+                    aioobe.printStackTrace();
+                }
             } catch (NullPointerException npe) {
                 Debug.error("ScenarioGraphicLoader (" + getName() + ") null pointer exception, most likely a problem finding the organization data file");
             }
@@ -549,6 +557,9 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
                     long time;
 
                     Vector record = (Vector) records.next();
+
+                    if (record.size() == 0) continue;
+
                     name = record.elementAt(activityNameIndex).toString().intern();
 
                     try {
