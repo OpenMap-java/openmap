@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LayerHandler.java,v $
 // $RCSfile: LayerHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/10 18:33:12 $
+// $Revision: 1.5 $
+// $Date: 2003/10/10 18:48:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -667,6 +667,7 @@ public class LayerHandler extends OMComponent
 	    if (layer != null) {
 		Debug.error("LayerHandler: received command to remove " + layer.getName() +
 			    ", which has been designated as *NOT* removeable");
+		throw new com.bbn.openmap.util.HandleError("LayerHandler commanded to delete a layer (" + layer.getName() + ") that is not removeable");
 	    }
 	}
     }
