@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/09/09 15:42:30 $
+// $Revision: 1.9 $
+// $Date: 2003/09/22 22:29:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -636,18 +636,48 @@ public abstract class Layer extends JComponent
      *
      * @param me MouseEvent location for the tool tip.
      * @param tip string to display.
+     * @deprecated use fireRequestToolTip(String tip) instead.
      */
     public void fireRequestToolTip(MouseEvent me, String tip) {
-	fireRequestToolTip(me, new InfoDisplayEvent(this, tip));
+	fireRequestToolTip(new InfoDisplayEvent(this, tip));
+    }
+
+    /**
+     * Request to show the tool tips on the map.
+     *
+     * @param me MouseEvent location for the tool tip.
+     * @param tip string to display.
+     */
+    public void fireRequestToolTip(String tip) {
+	fireRequestToolTip(new InfoDisplayEvent(this, tip));
     }
 
     /**
      * Request to hide the tool tips on the map.
      *
      * @param me MouseEvent location.
+     * @deprecated use fireHideToolTip() instead.
      */
     public void fireHideToolTip(MouseEvent me) {
-	fireRequestToolTip(me, (InfoDisplayEvent) null);
+	fireRequestToolTip((InfoDisplayEvent) null);
+    }
+
+    /**
+     * Request to hide the tool tips on the map.
+     */
+    public void fireHideToolTip() {
+	fireRequestToolTip((InfoDisplayEvent) null);
+    }
+
+    /**
+     * Fire off a Tool Tip request to the InfoDisplayListeners.  If
+     * the InfoDisplayEvent is null, then a requestHideToolTip will be
+     * fired. 
+     * @deprecated use fireHideToolTip(InfoDisplayEvent) instead.
+     */
+    public void fireRequestToolTip(MouseEvent me, 
+				   InfoDisplayEvent event) {
+	fireRequestToolTip(event);
     }
 
     /**
@@ -655,15 +685,14 @@ public abstract class Layer extends JComponent
      * the InfoDisplayEvent is null, then a requestHideToolTip will be
      * fired. 
      */
-    public void fireRequestToolTip(MouseEvent me, 
-				   InfoDisplayEvent event) {
+    public void fireRequestToolTip(InfoDisplayEvent event) {
 	InfoDisplayListener[] temp = getSynchronizedListeners();
 	if (temp != null) {
 	    for (int i = 0; i < temp.length; i++) {
 		if (event != null) {
-		    temp[i].requestShowToolTip(me, event);
+		    temp[i].requestShowToolTip(event);
 		} else {
-		    temp[i].requestHideToolTip(me);
+		    temp[i].requestHideToolTip();
 		}
 	    }
 	} else if (Debug.debugging("layer")) { 

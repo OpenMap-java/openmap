@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/08/28 21:57:00 $
+// $Revision: 1.7 $
+// $Date: 2003/09/22 22:29:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -456,8 +456,23 @@ public class InformationDelegator extends OMComponentPanel
      * which indicates where the tooltip is to appear
      * @param text A String value of the tooltip text which is to
      * appear (this can also be HTML wih Java 1.3)
+     * @deprecated use requestShowToolTip(InfoDisplayEvent) instead.
      */
     public void requestShowToolTip(MouseEvent me, InfoDisplayEvent event) { 
+	requestShowToolTip(event);
+    }
+
+    /**
+     * If a tooltip is required over a spot on the map then a
+     * <code>MouseMapListener</code> should pass a MouseEvent to this
+     * method. The Swing ToolTipManager is used to achieve this. A
+     * call to this method should always be followed by a call to
+     * <code>hideToolTip</code>
+     *
+     * @param text A String value of the tooltip text which is to
+     * appear (this can also be HTML wih Java 1.3)
+     */
+    public void requestShowToolTip(InfoDisplayEvent event) { 
 	//shows a tooltip over the map
 	if (map != null) {
 	    if (ttmanager == null) { 
@@ -466,7 +481,7 @@ public class InformationDelegator extends OMComponentPanel
 		ttmanager.registerComponent(map);
 	    }
 	    map.setToolTipText(event.getInformation()); 
-	    ttmanager.mouseEntered(me);
+	    ttmanager.setEnabled(true);
 	}
     }
 
@@ -477,13 +492,23 @@ public class InformationDelegator extends OMComponentPanel
      *
      * @param me A MouseEvent which passes from a MapMouseListener to
      * indicate that a tooltip should disappear 
+     * @deprecated call requestHideToolTip() instead.
      */
     public void requestHideToolTip(MouseEvent me) { 
+	requestHideToolTip();
+    }
+
+    /**
+     * This method should follow a call to showToolTip in order to
+     * indicate that the tooltip should no longer be displayed. This
+     * method should always follow a call to <code>showToolTip</code?
+     */
+    public void requestHideToolTip() { 
 	//disables a tooltip over the map
 	if (ttmanager==null) {
 	    return; //in case showToolTip was never called
 	}
-	ttmanager.mouseExited(me); 
+	ttmanager.setEnabled(false);
 	initToolTip();
     }
 

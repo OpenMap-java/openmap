@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.12 $
-// $Date: 2003/09/09 16:54:56 $
+// $Revision: 1.13 $
+// $Date: 2003/09/22 22:29:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1027,7 +1027,7 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
      * used prefix list.  Returns true if successful.  
      */
     public boolean addUsedPrefix(String prefix) {
-	prefix.replace(' ', '_');
+	prefix = prefix.replace(' ', '_');
 
  	return usedPrefixes.add(prefix.intern());
     }
@@ -1037,7 +1037,7 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
      * the used prefix list.  Returns true if successful.  
      */
     public boolean removeUsedPrefix(String prefix) {
-	prefix.replace(' ', '_');
+	prefix = prefix.replace(' ', '_');
 
 	return usedPrefixes.remove(prefix.intern());
     }
