@@ -1,0 +1,357 @@
+<!DOCTYPE web-app 
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" 
+    "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+
+<web-app>
+
+
+    <!-- General description of your web application -->
+
+    <display-name>Development Tools for VPF Data</display-name>
+    <description>
+      These are some test code I wrote to familiarize myself
+      with servlets, and to hopefully do something vaguely
+      useful at the same time. The included servlet code can
+      print VPF data.
+    </description>
+
+
+    <!-- Context initialization parameters that define shared
+         String constants used within your application, which
+         can be customized by the system administrator who is
+         installing your application.  The values actually
+         assigned to these parameters can be retrieved in a
+         servlet or JSP page by calling:
+
+             String value =
+               getServletContext().getInitParameter("name");
+
+         where "name" matches the <param-name> element of
+         one of these initialization parameters.
+
+         You can define any number of context initialization
+         parameters, including zero.
+    -->
+
+    <context-param>
+      <param-name>webmaster</param-name>
+      <param-value>myaddress@mycompany.com</param-value>
+      <description>
+        The EMAIL address of the administrator to whom questions
+        and comments about this application should be addressed.
+      </description>
+    </context-param>
+
+    <!--
+	Any parameter with a name beginning with
+	"com.bbn.openmap.vpfservlet.vpf_library." will be interpreted as a path
+	to the root of a VPF database, and will be added to the list of
+	available databases on the servlet home page.
+    -->
+
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.dnc13</param-name>
+      <param-value>d:/data/dnc13</param-value>
+      <description>
+        Where the DNC VPF library can be found.
+      </description>
+    </context-param>
+
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.v1077</param-name>
+      <param-value>d:/data/v1077/noamer</param-value>
+      <description>
+        Where the VMAP Level 1 Area 077 VPF library can be found.
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.v1098</param-name>
+      <param-value>d:/data/v1098/noamer</param-value>
+      <description>
+        Where the VMAP Level 1 Area 098 VPF library can be found.
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.v1079</param-name>
+      <param-value>d:/data/v1079/noamer</param-value>
+      <description>
+        Where the VMAP Level 1 Area 079 VPF library can be found.
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.v1097</param-name>
+      <param-value>d:/data/v1097/noamer</param-value>
+      <description>
+        Where the VMAP Level 1 Area 097 VPF library can be found.
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.noamer</param-name>
+      <param-value>d:/data/VMAPLV0</param-value>
+      <description>
+        Where the VMAP Level 1 Area 097 VPF library can be found.
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.dnc01</param-name>
+      <param-value>d:/data/vpfsample/dnc01</param-value>
+      <description>
+        Where the DNC sample VPF library can be found.
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.uvmap</param-name>
+      <param-value>d:/data/vpfsample/uvmap</param-value>
+      <description>
+        Where the  sample urban VMAP VPF library can be found.
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.vm2alv1</param-name>
+      <param-value>d:/data/vpfsample/vm2alv1</param-value>
+      <description>
+        Where the VM2ALV1 VPF library can be found.
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.vm2alv2</param-name>
+      <param-value>d:/data/vpfsample/vm2alv2</param-value>
+      <description>
+        Where the VM2ALV2 VPF library can be found.
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.vmapaero</param-name>
+      <param-value>d:/data/vpfsample/vmapaero</param-value>
+      <description>
+        Where the VMAP Aero VPF library can be found.
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.vmap0sample</param-name>
+      <param-value>d:/data/vpfsample/vmaplv0</param-value>
+      <description>
+        Where the VMAPLV0 Sample VPF library can be found.
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.wvs</param-name>
+      <param-value>d:/data/vpfsample/wvs</param-value>
+      <description>
+        Where the WVS VPF library can be found.
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.vmap1sample</param-name>
+      <param-value>d:/data/vpfsample/vmaplv1</param-value>
+      <description>
+        Where the VMAPLV1 sample VPF library can be found.
+      </description>
+    </context-param>
+
+    <!-- Servlet definitions for the servlets that make up
+         your web application, including initialization
+         parameters.  With Tomcat, you can also send requests
+         to servlets not listed here with a request like this:
+
+           http://localhost:8080/{context-path}/servlet/{classname}
+
+         but this usage is not guaranteed to be portable.  It also
+         makes relative references to images and other resources
+         required by your servlet more complicated, so defining
+         all of your servlets (and defining a mapping to them with
+         a <servlet-mapping> element) is recommended.
+
+         Servlet initialization parameters can be retrieved in a
+         servlet or JSP page by calling:
+
+             String value =
+               getServletConfig().getInitParameter("name");
+
+         where "name" matches the <param-name> element of
+         one of these initialization parameters.
+
+         You can define any number of servlets, including zero.
+    -->
+
+    <servlet>
+      <servlet-name>Dispatch</servlet-name>
+      <description>
+        This servlet is the entry doing for most of the work.
+      </description>
+      <servlet-class>DispatchServlet</servlet-class>
+      <!-- Load this servlet at server startup time 
+      <load-on-startup>5</load-on-startup> -->
+    </servlet>
+
+    <servlet>
+      <servlet-name>DirectoryList</servlet-name>
+      <description>
+        This servlet is the entry doing for most of the work.
+      </description>
+      <servlet-class>DirectoryServlet</servlet-class>
+      <init-param>
+        <param-name>listDirectories</param-name>
+        <param-value>true</param-value>
+      </init-param>
+    </servlet>
+
+    <servlet>
+      <servlet-name>DescribeVPF</servlet-name>
+      <description>
+	This servlet describes a VPF database.
+      </description>
+      <servlet-class>DescribeDBServlet</servlet-class>
+      <!-- Load this servlet at server startup time 
+      <load-on-startup>7</load-on-startup> -->
+    </servlet>
+
+    <servlet>
+      <servlet-name>Schema</servlet-name>
+      <description>
+        This servlet dumps schema info.
+      </description>
+      <servlet-class>Schema</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>Data</servlet-name>
+      <description>
+        This servlet dumps table data.
+      </description>
+      <servlet-class>Data</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>DocFile</servlet-name>
+      <description>
+        This servlet dumps documentation file data.
+      </description>
+      <servlet-class>DocFileServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>Thematic</servlet-name>
+      <description>
+        This servlet dumps thematic index file data.
+      </description>
+      <servlet-class>ThematicIndexServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>SpatialIndex</servlet-name>
+      <description>
+        This servlet dumps spatial index file data.
+      </description>
+      <servlet-class>SpatialIndexServlet</servlet-class>
+    </servlet>
+    <servlet>
+      <servlet-name>SpatialGraphic</servlet-name>
+      <description>
+        This servlet dumps spatial index file data.
+      </description>
+      <servlet-class>SpatialGraphicServlet</servlet-class>
+    </servlet>
+
+    <!-- Define mappings that are used by the servlet container to
+         translate a particular request URI (context-relative) to a
+         particular servlet.  The examples below correspond to the
+         servlet descriptions above.  Thus, a request URI like:
+
+           http://localhost:8080/{contextpath}/graph
+
+         will be mapped to the "graph" servlet, while a request like:
+
+           http://localhost:8080/{contextpath}/saveCustomer.do
+
+         will be mapped to the "controller" servlet.
+
+         You may define any number of servlet mappings, including zero.
+         It is also legal to define more than one mapping for the same
+         servlet, if you wish to.
+    -->
+
+    <servlet-mapping>
+      <servlet-name>Dispatch</servlet-name>
+      <url-pattern>/UnknownType/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>Dispatch</servlet-name>
+      <url-pattern>/UnknownType</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>DescribeVPF</servlet-name>
+      <url-pattern>/DescribeVPF/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>Schema</servlet-name>
+      <url-pattern>/Schema</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>DocFile</servlet-name>
+      <url-pattern>/DocFile</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>DocFile</servlet-name>
+      <url-pattern>/DocFile/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>DirectoryList</servlet-name>
+      <url-pattern>/DirectoryList</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>DirectoryList</servlet-name>
+      <url-pattern>/DirectoryList/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>Thematic</servlet-name>
+      <url-pattern>/Thematic</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>Thematic</servlet-name>
+      <url-pattern>/Thematic/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>SpatialIndex</servlet-name>
+      <url-pattern>/SpatialIndex</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+      <servlet-name>SpatialGraphic</servlet-name>
+      <url-pattern>/SpatialGraphic</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>SpatialIndex</servlet-name>
+      <url-pattern>/SpatialIndex/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+      <servlet-name>SpatialGraphic</servlet-name>
+      <url-pattern>/SpatialGraphic/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>Data</servlet-name>
+      <url-pattern>/Data</url-pattern>
+    </servlet-mapping>
+
+
+    <!-- Define the default session timeout for your application,
+         in minutes.  From a servlet or JSP page, you can modify
+         the timeout for a particular session dynamically by using
+         HttpSession.getMaxInactiveInterval(). -->
+
+    <session-config>
+      <session-timeout>30</session-timeout>    <!-- 30 minutes -->
+    </session-config>
+
+</web-app>
