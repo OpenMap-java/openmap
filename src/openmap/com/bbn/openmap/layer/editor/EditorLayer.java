@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayer.java,v $
 // $RCSfile: EditorLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/09/25 18:59:14 $
+// $Revision: 1.8 $
+// $Date: 2003/10/03 00:48:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,6 +59,9 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      */
     protected EditorTool editorTool = null;
 
+    /**
+     * The mouse mode used to direct mouse events to the editor.
+     */
     protected EditorLayerMouseMode elmm = null;
 
     /**
@@ -112,14 +115,25 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      * EditorLayerMouseMode is invisible, meaning it won't show up in
      * standard OpenMap GUI widgets as a viable MouseMode.  It is
      * expected that the EditorTool will compensate for displaying
-     * what is going on.
+     * what is going on. <P>
+     *
+     * If the EditorLayerMouseMode isn't set programmatically, this
+     * method will create one with this layer's name as the mouse mode
+     * ID.  If the layer's name hasn't been set, a temporary mouse
+     * mode will be returned, but with a somewhat random name that may
+     * not really work as expected.  Once the layer's name gets set,
+     * however, a good, useable mouse mode will get picked up and
+     * used.
      */
     public EditorLayerMouseMode getMouseMode() {
 	if (elmm == null) {
 	    String ln = getName();
 	    if (ln == null) {
-		// Try something unique
+		// Try something unique, but don't make it permanent.
+		// This will keep the layer cookin' along, but force a
+		// new mouse mode until the name gets set.
 		ln = this.getClass().getName() + System.currentTimeMillis();
+		return new EditorLayerMouseMode(ln.intern(), true);
 	    }
 	    elmm = new EditorLayerMouseMode(ln.intern(), true);
 	}
@@ -174,9 +188,9 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
     }
 
     public void setMouseModeIDsForEvents(String[] modes) {
-	if (elmm == null) {
-	    getMouseMode(); // creates the MouseMode...
-	}
+	// creates the MouseMode if needed
+	EditorLayerMouseMode elmm = getMouseMode();
+
 	String[] newModes = new String[modes.length + 1];
 	System.arraycopy(modes, 0, newModes, 0, modes.length);
 	newModes[modes.length] = elmm.getID();

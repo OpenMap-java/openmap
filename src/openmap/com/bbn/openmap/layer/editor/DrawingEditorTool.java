@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/DrawingEditorTool.java,v $
 // $RCSfile: DrawingEditorTool.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/02 23:04:13 $
-// $Author: blubin $
+// $Revision: 1.5 $
+// $Date: 2003/10/03 00:48:44 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -223,6 +223,11 @@ public class DrawingEditorTool extends AbstractEditorTool
      * setWantEvents(true), which calls resetForNewGraphic().
      */
     protected void setWantsEvents(String command) {
+
+	if (Debug.debugging("editortool")) {
+	    Debug.output("DET.setWantsEvents(" + command + ")");
+	}
+
 	// Has to be called first
 	thingToCreate = command;
 	setWantsEvents(true);
@@ -236,9 +241,10 @@ public class DrawingEditorTool extends AbstractEditorTool
 	super.setWantsEvents(value);
 	if (!value) {
 	    thingToCreate = null;
-	    if (drawingTool != null && drawingTool.isActivated()) {
-		drawingTool.deactivate();
-	    }
+	}
+
+	if (drawingTool != null && drawingTool.isActivated()) {
+	    drawingTool.deactivate();
 	}
 
 	resetForNewGraphic();
@@ -357,6 +363,10 @@ public class DrawingEditorTool extends AbstractEditorTool
     public void actionPerformed(ActionEvent e) {
 	String command = e.getActionCommand();
 
+	if (Debug.debugging("editortool")) {
+	    Debug.output("DET.actionPerformed(" + command + ")");
+	}
+
 	if (command == RESET_CMD) {
 	    setWantsEvents(false);
 	} else if (command != thingToCreate) {
@@ -382,22 +392,32 @@ public class DrawingEditorTool extends AbstractEditorTool
      */
     protected OMDrawingToolMouseMode activateDrawingTool(String ttc) {
 	if (drawingTool != null && ttc != null) {
+	    // If there is a pre-defined set of DrawingAttributes for
+	    // a particular OMGraphic, set those attributes in the
+	    // GraphicAttributes used in the OMDrawingTool.
+	    DrawingAttributes da = (DrawingAttributes)drawingAttributesTable.get(ttc);
+	    if (da != null) {
+		da.setTo(ga);
+	    }
 
-		// If there is a pre-defined set of DrawingAttributes for
-		// a particular OMGraphic, set those attributes in the
-		// GraphicAttributes used in the OMDrawingTool.
-		DrawingAttributes da = (DrawingAttributes)drawingAttributesTable.get(ttc);
-		if (da != null) {
-		    da.setTo(ga);
-		}
+	    if (Debug.debugging("editortool")) {
+		Debug.output("DrawingEditorTool.activateDrawingTool(" + ttc + ")");
+	    }
 
-		drawingTool.setBehaviorMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
-		if (drawingTool.create(ttc, ga, (DrawingToolRequestor)getLayer(), true) == null) {
-		    // Something bad happened, might as well try to clean up.
-		    drawingTool.deactivate();
-		    return null;
+	    drawingTool.setBehaviorMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
+	    if (drawingTool.create(ttc, ga, (DrawingToolRequestor)getLayer(), true) == null) {
+		// Something bad happened, might as well try to clean up.
+		if (Debug.debugging("editortool")) {
+		    Debug.output("DrawingEditorTool.activateDrawingTool() failed, cleaning up...");
 		}
-		return drawingTool.getMouseMode();
+		drawingTool.deactivate();
+		return null;
+	    }
+	    return drawingTool.getMouseMode();
+	} else {
+	    if (Debug.debugging("editortool")) {
+		Debug.output("DrawingEditorTool.activateDrawingTool(" + ttc + ") with drawing tool = " + drawingTool);
+	    }
 	}
 
 	return null;
@@ -652,7 +672,7 @@ public class DrawingEditorTool extends AbstractEditorTool
 	    String mmID = ((MapMouseMode)evt.getNewValue()).getID();
 
 	    if (Debug.debugging("editortool")) {
-		Debug.output("DTE.propertyChange: mousemode changed to " + mmID);
+		Debug.output("DET.propertyChange: mousemode changed to " + mmID);
 	    }
 
 	    if (mmID != ((EditorLayer)getLayer()).getMouseMode().getID()) {
