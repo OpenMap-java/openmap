@@ -18,41 +18,94 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.12 $
-# $Date: 1998/05/17 16:07:28 $
+# $Revision: 1.13 $
+# $Date: 1998/05/17 21:06:12 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
 #
-# The goal of this script is to build and package an openmap release
-# every night.  Log files will be kept, and emailed to the named
-# email addresses.
+# This script will build the openmap package automatically.
 #
 # **********************************************************************
+
+
+#----------------------------------------------------------------------
 #
-# Parameters:
+#----------------------------------------------------------------------
+
+# Show the usage for this script
 #
-# -d <buildDir>  - The build directory
-# -l <logFile>   - The log file
-# **********************************************************************
+#
+showUsage () {
+  echo "usage: $0 <args>"
+  echo "Arguments:"
+  echo "-d or --directory :   The build directory"
+  echo "-v or --verbose :   Be vocal about things"
+}
+
+
+
+#----------------------------------------------------------------------
+# Default variable settings.  Override via command line args
+#----------------------------------------------------------------------
+
+BuildDir=""
+Verbose=/bin/false
+
+
+#----------------------------------------------------------------------
+# Command line argument parsing
+#----------------------------------------------------------------------
+
+# Parse command line arguments
+# -d || -directory
+# -v || -verbose
+#
+
+while [ "$1" != "" ] ; do
+
+  case $1 in
+
+    "-d" | "--directory" )
+
+      BuildDir=$2;
+      shift;;
+
+    "-v" | "--verbose" )
+
+      Verbose=/bin/true
+      ;;
+
+  esac;
+  shift;
+done
+
+if [ "$BuildDir" = "" ] ; then
+  showUsage
+  exit 1
+fi
+
+BuildRoot=`dirname $BuildDir`
+BeanName=`basename $BuildDir`
+
+if $Verbose; then
+  echo "BuildDir = $BuildDir"
+  echo "BuildRoot = $BuildRoot"
+  echo "BeanName = $BeanName"
+fi
 
 echo ""
 echo "MapBean build started at `date`"
 
-DefaultBuildDir=$BuildRoot/$BeanDir
+if $Verbose; then
+  echo "building in $BuildRoot"
+fi
 
-# if BuildRoot is already set, then use it
-BuildRoot=${BuildRoot:-/u4/openmap/builds}
-echo "building in $BuildRoot"
 
-VersionID=Autobuild
-
-DateString=`date +"%Y%m%d"`      # 17750419
-DefaultBeanDir=mapBean-$DateString
-BeanDir=${BeanDir:-$DefaultBeanDir}
-
-BuildDir=$BuildRoot/$BeanDir
-
+#----------------------------------------------------------------------
+# Set up the environment.  Some of these should be command line
+# arguments.
+#----------------------------------------------------------------------
 
 CVSROOT=:server:blatz:/u4/rcs
 
@@ -85,7 +138,11 @@ export DocPackages
 # set: -e = exit if a command exits with a non-zero exit status
 # set: -v = Print shell input lines as they are read
 # set: -x = Print commands and their  arguments  as  they  are executed.
-set -evx
+if $Verbose; then
+  set -evx
+else
+  set -e
+fi
 
 #
 ## Create a build directory
@@ -146,14 +203,14 @@ fi
 
 # Create packages in tar.Z, tar.gz, and zip format
 
-PkgFiles="$BeanDir/mapBean.jar $BeanDir/cspec58.jar $BeanDir/docs $BeanDir/examples"
+PkgFiles="$BeanName/mapBean.jar $BeanName/cspec58.jar $BeanName/docs $BeanName/examples"
 
 cd $BuildDir/..
-tar cf $BuildDir/$BeanDir.tar $PkgFiles
-jar cfM $BuildDir/$BeanDir.zip $PkgFiles
+tar cf $BuildDir/$BeanName.tar $PkgFiles
+jar cfM $BuildDir/$BeanName.zip $PkgFiles
 cd $BuildDir
-compress -c $BeanDir.tar > $BeanDir.tar.Z
-gzip $BeanDir.tar
+compress -c $BeanName.tar > $BeanName.tar.Z
+gzip $BeanName.tar
 
 echo ""
 echo "MapBean build complete at `date`"
