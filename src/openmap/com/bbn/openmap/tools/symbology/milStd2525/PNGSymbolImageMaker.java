@@ -15,8 +15,8 @@
 //$Source:
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
-//$RCSfile: GIFSymbolImageMaker.java,v $
-//$Revision: 1.4 $
+//$RCSfile: PNGSymbolImageMaker.java,v $
+//$Revision: 1.1 $
 //$Date: 2005/02/11 22:39:43 $
 //$Author: dietrick $
 //
@@ -25,19 +25,19 @@
 package com.bbn.openmap.tools.symbology.milStd2525;
 
 
-public class GIFSymbolImageMaker extends BasicSymbolImageMaker {
+public class PNGSymbolImageMaker extends BasicSymbolImageMaker {
 
     /**
      *  
      */
-    public GIFSymbolImageMaker() {}
+    public PNGSymbolImageMaker() {}
 
-    public GIFSymbolImageMaker(String dataPath) {
+    public PNGSymbolImageMaker(String dataPath) {
         super(dataPath);
     }
 
     public String getFileExtension() {
-        return ".gif";
+        return ".png";
     }
     
 }

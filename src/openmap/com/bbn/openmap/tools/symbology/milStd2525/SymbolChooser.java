@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolChooser.java,v $
 // $RCSfile: SymbolChooser.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/01/14 18:18:24 $
+// $Revision: 1.10 $
+// $Date: 2005/02/11 22:39:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -294,7 +294,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
                         BufferedImage.TYPE_INT_ARGB);
                 ImageFormatter formatter = new AcmeGifFormatter();
                 byte[] imageBytes = formatter.formatImage(bi);
-                String newFileName = FileUtils.getFilePathFromUser("Pick File To Save");
+                String newFileName = FileUtils.getFilePathToSaveFromUser("Create File To Save");
                 if (newFileName != null) {
                     FileOutputStream fos = new FileOutputStream(newFileName);
                     fos.write(imageBytes);
@@ -502,7 +502,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
         ArgParser ap = new ArgParser("SymbolChooser");
         ap.add("type",
-                "Type of symbol image set being used (GIF or SVG, GIF is default)",
+                "Type of symbol image set being used (PNG, GIF or SVG, PNG is default)",
                 1);
         ap.add("path",
                 "Path to root directory of symbol image set if not in classpath",
@@ -517,10 +517,12 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
         String arg[];
         arg = ap.getArgValues("type");
-        String symbolImageMakerClass = "com.bbn.openmap.tools.symbology.milStd2525.GIFSymbolImageMaker";
+        String symbolImageMakerClass = "com.bbn.openmap.tools.symbology.milStd2525.PNGSymbolImageMaker";
         if (arg != null) {
             if (arg[0].equalsIgnoreCase("SVG")) {
                 symbolImageMakerClass = "com.bbn.openmap.tools.symbology.milStd2525.SVGSymbolImageMaker";
+            } else if (arg[0].equalsIgnoreCase("GIF")) {
+                symbolImageMakerClass = "com.bbn.openmap.tools.symbology.milStd2525.GIFSymbolImageMaker";
             }
         }
 

@@ -15,9 +15,9 @@
 //$Source:
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
-//$RCSfile: AbstractSymbolImageMaker.java,v $
-//$Revision: 1.2 $
-//$Date: 2005/01/13 01:33:58 $
+//$RCSfile: BasicSymbolImageMaker.java,v $
+//$Revision: 1.1 $
+//$Date: 2005/02/11 22:39:43 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -26,6 +26,8 @@ package com.bbn.openmap.tools.symbology.milStd2525;
 
 import java.awt.Dimension;
 import java.awt.Paint;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
@@ -33,14 +35,23 @@ import java.util.Properties;
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.OMComponent;
+import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
-public abstract class AbstractSymbolImageMaker extends OMComponent implements
+public class BasicSymbolImageMaker extends OMComponent implements
         SymbolImageMaker {
 
     protected String dataPath;
     protected Paint background;
+
+    public BasicSymbolImageMaker() {
+        this(null);
+    }
+
+    public BasicSymbolImageMaker(String dataPath) {
+        this.dataPath = (dataPath != null ? dataPath : "");
+    }
 
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
@@ -81,7 +92,9 @@ public abstract class AbstractSymbolImageMaker extends OMComponent implements
     /**
      * Return the file extension of this particular SymbolImageMaker,
      * added to the symbol name after the code has been massaged into
-     * a file name.
+     * a file name. The BasicSymbolImageLaker doesn't add an
+     * extension. If you override, include the dot at the beginning of
+     * the return string.
      * 
      * @return
      */
@@ -105,7 +118,31 @@ public abstract class AbstractSymbolImageMaker extends OMComponent implements
      * @see com.bbn.openmap.tools.symbology.milStd2525.SymbolImageMaker#getIcon(java.lang.String,
      *      java.awt.Dimension)
      */
-    public abstract ImageIcon getIcon(String code, Dimension di);
+    public ImageIcon getIcon(String code, Dimension di) {
+
+        try {
+            URL fileURL = getFileURL(code);
+            if (Debug.debugging("symbology")) {
+                Debug.output("BasicSymbolImageMaker: Trying to create "
+                        + fileURL);
+            }
+
+            BufferedImage bi = BufferedImageHelper.getBufferedImage(fileURL);
+            return new ImageIcon(bi.getScaledInstance((int) di.getWidth(),
+                    (int) di.getHeight(),
+                    java.awt.Image.SCALE_SMOOTH));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException npe) {
+            if (Debug.debugging("symbology")) {
+                Debug.output("BasicSymbolImageMaker: didn't find data for image");
+                npe.printStackTrace();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /*
      * (non-Javadoc)
