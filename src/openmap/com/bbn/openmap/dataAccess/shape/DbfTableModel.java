@@ -14,25 +14,44 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:43 $
+// $Revision: 1.9 $
+// $Date: 2005/02/02 13:02:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.dataAccess.shape;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-import com.bbn.openmap.dataAccess.shape.input.*;
-import com.bbn.openmap.dataAccess.shape.output.*;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
+
+import com.bbn.openmap.dataAccess.shape.input.DbfInputStream;
+import com.bbn.openmap.dataAccess.shape.output.DbfOutputStream;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.FileUtils;
 
@@ -129,7 +148,7 @@ public class DbfTableModel extends AbstractTableModel implements
 
     protected boolean writable = false;
 
-    protected final JTable table;
+    protected JTable table;
     protected final DbfTableModel parent;
 
     protected boolean dirty = false;
@@ -149,7 +168,6 @@ public class DbfTableModel extends AbstractTableModel implements
         _decimalCounts = new byte[columnCount];
         _types = new byte[columnCount];
         _names = new String[columnCount];
-        table = new JTable();
         parent = this;
         DEBUG = Debug.debugging("shape");
     }
@@ -166,7 +184,6 @@ public class DbfTableModel extends AbstractTableModel implements
         _types = is.getTypes();
         _records = is.getRecords();
         _columnCount = is.getColumnCount();
-        table = new JTable();
         parent = this;
     }
 
@@ -380,13 +397,17 @@ public class DbfTableModel extends AbstractTableModel implements
      * Needs to be called before displaying the DbfTableModel.
      */
     public JTable getTable(ListSelectionModel lsm) {
-        table.setModel(this);
-        table.setSelectionModel(lsm);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        return table;
+        JTable t = getTable();
+        t.setModel(this);
+        t.setSelectionModel(lsm);
+        t.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        return t;
     }
 
     protected JTable getTable() {
+        if (table == null) {
+            table = new JTable();
+        }
         return table;
     }
 
