@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServerConstants.java,v $
 // $RCSfile: ImageServerConstants.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/06/02 18:33:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -71,6 +71,11 @@ public interface ImageServerConstants extends WMTConstants {
      * Specific OpenMap projection parameter (AZIMUTH).  Float value.
      */
     public final static String AZIMUTH = "AZIMUTH";
+
+    /**
+     * Keyword (query) for the map server query request;
+     */
+    public final static String QUERY = "QUERY";
 
     /** 
      * Specific OpenMap projection parameter (X).  Int value.
