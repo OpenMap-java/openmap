@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OverviewMapAreaLayer.java,v $
 // $RCSfile: OverviewMapAreaLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/20 18:08:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,15 +25,25 @@ package com.bbn.openmap.layer;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.event.OverviewMapStatusListener;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.proj.Cylindrical;
+import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.Projection;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
+import java.util.Properties;
 
 /**
  * A class used to draw the rectangle representing the area covered by
  * the source MapBean projection.  Used by the OverviewMapHandler.
+ * The layer responds to DrawingAttributes properties being set, which
+ * are forwarded on to the coverage box rectangle.
  */
 public class OverviewMapAreaLayer extends Layer 
     implements OverviewMapStatusListener {
@@ -44,6 +54,8 @@ public class OverviewMapAreaLayer extends Layer
     LatLonPoint ul;
     LatLonPoint lr;
 
+    DrawingAttributes boxAttributes = DrawingAttributes.getDefaultClone();
+
     /**
      * Listening to the overview MapBean.
      */
@@ -53,6 +65,7 @@ public class OverviewMapAreaLayer extends Layer
 	// HACK for big world problem...
 	if (rectangle == null){
 	    rectangle = new OMRect();
+	    boxAttributes.setTo(rectangle);
 	}
 	if (ul != null || lr != null){
 	    
@@ -95,9 +108,30 @@ public class OverviewMapAreaLayer extends Layer
 	return rectangle;
     }
     
-    public void paint(java.awt.Graphics g){
+    public void paint(Graphics g){
 	if (rectangle != null &&
 	    overviewScale > sourceScale) rectangle.render(g);
     }
+
+    public void setProperties(String prefix, Properties props) {
+	super.setProperties(prefix, props);
+	boxAttributes.setProperties(prefix, props);
+	// Cause a rebuild if this is called after 
+	// the first projection change.
+	rectangle = null;
+    }
+
+    public Properties getProperties(Properties props) {
+	props = super.getProperties(props);
+	boxAttributes.getProperties(props);
+	return props;
+    }
+
+    public Properties getPropertyInfo(Properties props) {
+	props = super.getPropertyInfo(props);
+	boxAttributes.getPropertyInfo(props);
+	return props;
+    }
+
 }
 
