@@ -3,23 +3,22 @@
 #    Use, duplication, or disclosure by the Government is subject to
 # 	     restricted rights as set forth in the DFARS.
 #  
-# 			   BBN Technologies
-# 			    A Division of
-# 			   BBN Corporation
+# 			   BBNT Solutions LLC
+# 			      A Part of  
+# 			         GTE      
 # 			  10 Moulton Street
 # 			 Cambridge, MA 02138
 # 			    (617) 873-3000
 #  
-# 	  Copyright 1998 by BBN Technologies, A Division of
-# 		BBN Corporation, all rights reserved.
+# 	  Copyright 1998, 2000 by BBNT Solutions LLC,
+# 		A part of GTE, all rights reserved.
 #  
 # **********************************************************************
 # 
 # $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
-# $RCSfile: openmap.mk.in,v $
-# $Revision: 1.17 $
-# $Date: 1998/12/18 20:51:58 $
-# $Author: tmitchel $
+# $Revision: 1.18 $
+# $Date: 2000/05/08 14:21:51 $
+# $Author: wjeuerle $
 # 
 # **********************************************************************
 
