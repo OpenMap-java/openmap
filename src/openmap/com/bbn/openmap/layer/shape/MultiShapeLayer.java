@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/03/19 21:23:22 $
+// $Revision: 1.9 $
+// $Date: 2004/05/14 20:18:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,7 +77,7 @@ import com.bbn.openmap.util.SwingWorker;
  * ############################
  * </pre></code>
  *
- * @version $Revision: 1.8 $ $Date: 2004/03/19 21:23:22 $
+ * @version $Revision: 1.9 $ $Date: 2004/05/14 20:18:34 $
  * @see SpatialIndex 
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -370,20 +370,21 @@ public class MultiShapeLayer extends ShapeLayer {
      * DataBoundsInformer interface.
      */
     public DataBounds getDataBounds() {
-        DataBounds box = null;
 
         ESRIBoundingBox bounds = new ESRIBoundingBox(); 
-        Iterator sii = spatialIndexes.iterator();
-        while (sii.hasNext()) {
-            SpatialIndex si = (SpatialIndex)sii.next();
-            if (si != null) {
-                ESRIBoundingBox boundingBox = spatialIndex.getBounds();
+
+        for (Iterator sii = spatialIndexes.iterator();sii.hasNext();) {
+            SpatialIndexHandler sih = (SpatialIndexHandler)sii.next();
+            if (sih != null && sih.spatialIndex != null) {
+                ESRIBoundingBox boundingBox = sih.spatialIndex.getBounds();
                 if (bounds != null) {
                     bounds.addBounds(boundingBox);
                 }
             }
         }
-        return box;
+
+        return new DataBounds(bounds.min.x, bounds.min.y, 
+                              bounds.max.x, bounds.max.y);
     }
 
 }
