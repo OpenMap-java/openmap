@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXY.java,v $
 // $RCSfile: LLXY.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:56:43 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:56 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -212,7 +212,7 @@ public class LLXY extends Cylindrical implements EqualArc {
     /**
      * Inverse project a Point.
      * 
-     * @param point x,y Point
+     * @param pt x,y Point
      * @param llp resulting LatLonPoint
      * @return LatLonPoint llp
      */

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/URLRasterLocation.java,v $
 // $RCSfile: URLRasterLocation.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:47:35 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 20:43:29 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -167,8 +167,8 @@ public class URLRasterLocation extends Location {
     /**
      * Create an OMRaster at a latitude/longitude, from a image URL.
      *
-     * @param latitude latitide in decimal degrees
-     * @param longitude longitude in decimal degrees.
+     * @param lat latitide in decimal degrees
+     * @param lon longitude in decimal degrees.
      * @param iconURL a URL for an image
      */
     public static OMRaster getIconRaster(float lat, float lon, String iconURL) {
@@ -181,8 +181,8 @@ public class URLRasterLocation extends Location {
     /**
      * Create an OMRaster at a latitude/longitude, from a image URL.
      *
-     * @param latitude latitide in decimal degrees
-     * @param longitude longitude in decimal degrees.
+     * @param lat latitide in decimal degrees
+     * @param lon longitude in decimal degrees.
      * @param iconURL a URL for an image
      */
     public static OMRaster getIconRaster(float lat, float lon, URL iconURL) {
@@ -232,8 +232,8 @@ public class URLRasterLocation extends Location {
     /**
      * Create an OMRaster at a latitude/longitude, from a image URL.
      *
-     * @param latitude latitide in decimal degrees
-     * @param longitude longitude in decimal degrees.
+     * @param lat latitide in decimal degrees
+     * @param lon longitude in decimal degrees.
      * @param x horizontal pixel screen location from the
      * longitude map point.
      * @param y vertical pixel screen location, from the
@@ -251,8 +251,8 @@ public class URLRasterLocation extends Location {
     /**
      * Create an OMRaster at a latitude/longitude, from a image URL.
      *
-     * @param latitude latitide in decimal degrees
-     * @param longitude longitude in decimal degrees.
+     * @param lat latitide in decimal degrees
+     * @param lon longitude in decimal degrees.
      * @param x horizontal pixel screen location from the
      * longitude map point.
      * @param y vertical pixel screen location, from the

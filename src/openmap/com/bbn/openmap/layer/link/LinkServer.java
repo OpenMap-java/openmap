@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkServer.java,v $
 // $RCSfile: LinkServer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -52,7 +52,7 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
     /** 
      * Create child thread that will handle the client.
      *
-     * @param socket the socket to communicate over.
+     * @param s the socket to communicate over.
      */
     public LinkServer(Socket s) {
 	try {
@@ -82,7 +82,6 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
      * handleClient is a method that listens to the link to a
      * client, and responds to requests that are made.
      *
-     * @param link the Link to the client.
      * @throws IOException
      */
     public void handleClient() throws IOException {
@@ -148,7 +147,7 @@ public class LinkServer extends Thread implements LinkPropertiesConstants {
     /** 
      * An example of how to handle LinkActionRequest.
      *
-     * @param query the LinkActionRequest, so you can get more
+     * @param lar the LinkActionRequest, so you can get more
      * information about the parameters of the gesture frome the
      * client.
      * @param link the link to communicate the response back to the

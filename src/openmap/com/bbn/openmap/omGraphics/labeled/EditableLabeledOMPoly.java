@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/labeled/EditableLabeledOMPoly.java,v $
 // $RCSfile: EditableLabeledOMPoly.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:46:45 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -52,7 +52,7 @@ public class EditableLabeledOMPoly extends EditableOMPoly {
      * Create the EditableLabeledOMPoly with a LabeledOMPoly already
      * defined, ready for editing.
      *
-     * @param oml LabeledOMPoly that should be edited.  
+     * @param omp LabeledOMPoly that should be edited.  
      */
     public EditableLabeledOMPoly(LabeledOMPoly omp) {
 	setGraphic(omp);

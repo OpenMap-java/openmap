@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Gnomonic.java,v $
 // $RCSfile: Gnomonic.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:56:43 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:56 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -65,11 +65,10 @@ public class Gnomonic extends Azimuth {
 
     /**
      * Construct a Mercator projection.
-     * <p>
      * @param center LatLonPoint center of projection
      * @param scale float scale of projection
-     * @param w width of screen
-     * @param h height of screen
+     * @param width width of screen
+     * @param height height of screen
      *
      */
     public Gnomonic(
@@ -82,7 +81,6 @@ public class Gnomonic extends Azimuth {
 
     /**
      * Return stringified description of this projection.
-     * <p>
      * @return String
      * @see Projection#getProjectionID
      *
@@ -172,7 +170,6 @@ public class Gnomonic extends Azimuth {
 
     /**
      * Get the distance c of the point from the center of the hemisphere.
-     * <p>
      * @param phi1 latitude
      * @param lambda0 longitude
      * @param phi latitude
@@ -190,7 +187,6 @@ public class Gnomonic extends Azimuth {
 
     /**
      * Check if a given lat/lon is within the visible hemisphere.
-     * <p>
      * @param phi1 latitude
      * @param lambda0 longitude
      * @param phi latitude
@@ -213,7 +209,6 @@ public class Gnomonic extends Azimuth {
      * <p>
      * This is invoked for points that aren't visible in the current
      * hemisphere.
-     * <p>
      * @param p Point
      * @return Point p
      *
@@ -244,7 +239,6 @@ public class Gnomonic extends Azimuth {
      * Checks if a LatLonPoint is plot-able.
      * <p>
      * A point is plot-able if it is within the visible hemisphere.
-     * <p>
      * @param lat float latitude in decimal degrees
      * @param lon float longitude in decimal degrees
      * @return boolean
@@ -262,7 +256,7 @@ public class Gnomonic extends Azimuth {
      * AzimuthVar variable if specified.
      * @param phi float latitude in radians
      * @param lambda float longitude in radians
-     * @param pt Point
+     * @param p Point
      * @param azVar AzimuthVar or null
      * @return Point pt
      */
@@ -298,7 +292,6 @@ public class Gnomonic extends Azimuth {
 
     /**
      * Inverse project x,y coordinates into a LatLonPoint.
-     * <p>
      * @param x integer x coordinate
      * @param y integer y coordinate
      * @param llp LatLonPoint
@@ -360,8 +353,7 @@ public class Gnomonic extends Azimuth {
 
     /**
      * Inverse project a Point.
-     * <p>
-     * @param point x,y Point
+     * @param pt x,y Point
      * @param llp resulting LatLonPoint
      * @return LatLonPoint llp
      *
@@ -389,7 +381,6 @@ public class Gnomonic extends Azimuth {
      * Returns the upper left point (or closest equivalent) of the
      * projection based on the center point and height and width of
      * screen.
-     * <p>
      * @return LatLonPoint
      */
     public LatLonPoint getUpperLeft() {
@@ -457,7 +448,6 @@ public class Gnomonic extends Azimuth {
      * <p>
      * This is trivial for most cylindrical projections, but much more
      * complicated for azimuthal projections.
-     * <p>
      * @return LatLonPoint
      */
     public LatLonPoint getLowerRight() {

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/HttpServer.java,v $
 // $RCSfile: HttpServer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:32 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -92,7 +92,6 @@ public class HttpServer extends Thread {
      * Creates an Http Server on any free port, and then starts
      * a thread that listens to that port.
      *
-     * @param port the port to open
      * @see java.net.ServerSocket
      */
     public HttpServer() throws IOException {

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwColumnInfo.java,v $
 // $RCSfile: DcwColumnInfo.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:32 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -77,7 +77,7 @@ public class DcwColumnInfo {
 
     /**
      * Construct a DcwColumnInfo from the specified input stream.
-     * @param in the filestream to construct from
+     * @param inputFile the filestream to construct from
      * @exception EOFException when the first character read is a ';',
      * indicating that we've reached the end of the column list; also thrown
      * for an end of file

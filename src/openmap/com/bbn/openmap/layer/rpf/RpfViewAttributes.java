@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfViewAttributes.java,v $
 // $RCSfile: RpfViewAttributes.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/06/25 15:28:12 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:30 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -256,7 +256,7 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @param String prefix String.  
+     * @return the property prefix
      */
     public String getPropertyPrefix() {
 	return propertyPrefix;

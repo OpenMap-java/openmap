@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkActionList.java,v $
 // $RCSfile: LinkActionList.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:26 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -365,7 +365,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * want to update or add a graphic, because that requires the
      * graphic being added.
      *
-     * @param maskDescrition an integer with the applicable MODIFY_MASKS set.
+     * @param maskDescription an integer with the applicable MODIFY_MASKS set.
      * @param props property list containing the identifier used by
      * the client to know which graphic to modify.
      * @throws IOException 
@@ -714,7 +714,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @param orientation the direction of the vertical axits of the
      * grid, in radians from up ( North).
      * @param vResolution degrees/point between rows of the grid.
-     * @param hRsolution degrees/point between columns of the grid.
+     * @param hResolution degrees/point between columns of the grid.
      * @param major designation of the presentation of the data, as
      * columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
@@ -745,7 +745,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @param orientation the direction of the vertical axits of the
      * grid, in radians from up ( North).
      * @param vResolution pixels/point between rows of the grid.
-     * @param hRsolution pixels/point between columns of the grid.
+     * @param hResolution pixels/point between columns of the grid.
      * @param major designation of the presentation of the data, as
      * columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
@@ -778,7 +778,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * @param orientation the direction of the vertical axits of the
      * grid, in radians from up ( North).
      * @param vResolution pixels/point between rows of the grid.
-     * @param hRsolution pixels/point between columns of the grid.
+     * @param hResolution pixels/point between columns of the grid.
      * @param major designation of the presentation of the data, as
      * columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
@@ -919,8 +919,8 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * Write a raster in the response.
      * @param lt latitude of placement of upper left corner of raster.
      * @param ln longitude of placement of upper left corner of raster.
-     * @param x1 horizontal pixel offset of upper left corner of raster.
-     * @param y1 vertical pixel offset of upper left corner of raster.
+     * @param offset_x1 horizontal pixel offset of upper left corner of raster.
+     * @param offset_y1 vertical pixel offset of upper left corner of raster.
      * @param ii ImageIcon to place on the map..
      * @param properties description of drawing attributes.
      * @param graphicUpdateMask the mask describing the graphic update.
@@ -940,9 +940,9 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * Write a bitmap in the response.
      * @param lt latitude of placement of upper left corner of bitmap.
      * @param ln longitude of placement of upper left corner of bitmap.
-     * @param w width of bitmap.
-     * @param h height of bitmap.
-     * @param Image the java.awt.Image.
+     * @param image_width width of bitmap.
+     * @param image_height height of bitmap.
+     * @param image the java.awt.Image.
      * @param properties description of drawing attributes.
      * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
@@ -984,8 +984,8 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * Write a raster in the response.
      * @param lt latitude of placement of upper left corner of raster.
      * @param ln longitude of placement of upper left corner of raster.
-     * @param x1 horizontal pixel offset of upper left corner of raster.
-     * @param y1 vertical pixel offset of upper left corner of raster.
+     * @param offset_x1 horizontal pixel offset of upper left corner of raster.
+     * @param offset_y1 vertical pixel offset of upper left corner of raster.
      * @param image Image to place on map.
      * @param image_width width of image.
      * @param image_height height of image.
@@ -1323,9 +1323,9 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
     
     /** 
      * Write a poly in the response.
-     * @param llpoints alternating latitude and logitude points of poly.
+     * @param llPoints alternating latitude and logitude points of poly.
      * @param units degrees or radians.
-     * @param linetype straight, rhumb, great circle.
+     * @param lType straight, rhumb, great circle.
      * @param properties description of drawing attributes.
      * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException
@@ -1342,7 +1342,7 @@ public class LinkActionList implements LinkActionConstants, LinkPropertiesConsta
      * Write a poly in the response.
      * @param llpoints alternating latitude and logitude points of poly.
      * @param units degrees or radians.
-     * @param linetype straight, rhumb, great circle.
+     * @param lType straight, rhumb, great circle.
      * @param nsegs number of segments to use to approimate curved poly lines..
      * @param properties description of drawing attributes.
      * @param graphicUpdateMask the mask describing the graphic update.

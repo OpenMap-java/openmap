@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/ScenarioGraphicLoader.java,v $
 // $RCSfile: ScenarioGraphicLoader.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/06/26 00:54:43 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:45 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -990,7 +990,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader
     /** 
      * Tool Method.  Set the retrieval key for this tool.
      *
-     * @param key The key for this tool.
+     * @param aKey The key for this tool.
      */
     public void setKey(String aKey) {
 	setName(aKey);

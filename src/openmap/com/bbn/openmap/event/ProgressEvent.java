@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProgressEvent.java,v $
 // $RCSfile: ProgressEvent.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:47:45 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -49,8 +49,8 @@ public class ProgressEvent extends java.util.EventObject {
     /**
      * Construct a ProgressEvent.
      * @param source Object
-     * @param endValue the ending value.
-     * @param currentValue the ending value.
+     * @param finishValue the ending value
+     * @param currentValue the current value
      */
     public ProgressEvent(Object source, int type, String taskDescription, 
 			 float finishValue, float currentValue) {

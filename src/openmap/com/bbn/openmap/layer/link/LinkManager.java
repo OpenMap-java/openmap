@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkManager.java,v $
 // $RCSfile: LinkManager.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/28 22:21:18 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 20:43:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -120,10 +120,6 @@ public class LinkManager {
      * Called for a LayerListener that will not write to the Link,
      * only read from it.  Doesn't effect the lock.
      *
-     * @param waitForLock if true, the caller will block in this
-     * method until the link has been locked for the caller.  If
-     * false, a null will be returned if the lock on the link couldn't
-     * be set for the caller's use.
      * @return a link if the link is locked for the caller's use, null
      * if the link is not available.
      */

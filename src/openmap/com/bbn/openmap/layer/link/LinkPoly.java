@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkPoly.java,v $
 // $RCSfile: LinkPoly.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -42,7 +42,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
      * Write a poly, with an array of alternating lat/lon points.
      * Lat/lons in decimal degrees.
      *
-     * @param llpoints alternating latitude and logitude points of poly.
+     * @param llPoints alternating latitude and logitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
      * @param properties description of drawing attributes.
@@ -58,7 +58,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
     /** Write a poly.
      * @param llpoints alternating latitude and longitude points of poly.
      * @param units degrees or radians.
-     * @param linetype straight, rhumb, great circle.
+     * @param lType straight, rhumb, great circle.
      * @param nsegs number of segments to use to approimate curved poly lines..
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream
@@ -89,7 +89,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param latpoints latitude points of poly.
      * @param lonpoints longitude points of poly.
      * @param units degrees or radians.
-     * @param linetype straight, rhumb, great circle.
+     * @param lType straight, rhumb, great circle.
      * @param nsegs number of segments to use to approimate curved poly lines..
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream

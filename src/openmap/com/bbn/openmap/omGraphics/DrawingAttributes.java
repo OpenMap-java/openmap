@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.11 $
-// $Date: 2003/11/14 20:50:27 $
-// $Author: dietrick $
+// $Revision: 1.12 $
+// $Date: 2003/12/23 20:46:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -1450,7 +1450,7 @@ public class DrawingAttributes
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @param String prefix String.  
+     * @return the property prefix
      */
     public String getPropertyPrefix() {
 	return propertyPrefix;

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibrarySelectionTable.java,v $
 // $RCSfile: LibrarySelectionTable.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/11/14 20:40:39 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 20:43:33 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -86,7 +86,7 @@ public class LibrarySelectionTable {
     /**
      * Construct a LibrarySelectionTable with a path to data.
      *
-     * @param vpfpath the paths to the data directories; the file opened
+     * @param vpfpaths the paths to the data directories; the file opened
      * is <code>vpfpath</code>/lat.
      * @exception FormatException some error was encountered while trying to 
      * handle the file.

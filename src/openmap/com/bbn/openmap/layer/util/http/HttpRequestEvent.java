@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/HttpRequestEvent.java,v $
 // $RCSfile: HttpRequestEvent.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:32 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -40,9 +40,9 @@ public class HttpRequestEvent extends java.util.EventObject {
     /**
      * Creates an http request event.
      *
-     * @param source  the source object
+     * @param source the source object
      * @param request the parsed target of the "GET" command
-     * @param output  the http client output stream
+     * @param out the http client output stream
      */
     public HttpRequestEvent(Object source,
 			    String request,

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.16 $
-// $Date: 2003/11/14 20:09:38 $
-// $Author: dietrick $
+// $Revision: 1.17 $
+// $Date: 2003/12/23 20:47:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -623,7 +623,7 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
      * marker.class properties and create those Java objects.  Those
      * objects will be added to the BeanContext given.
      *
-     * @param context BeanContext.  
+     * @param mapHandler BeanContext.  
      */
     public void createComponents(MapHandler mapHandler) {
 	int i; // default counter

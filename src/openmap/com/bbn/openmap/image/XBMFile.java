@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/XBMFile.java,v $
 // $RCSfile: XBMFile.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:47:48 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -68,8 +68,8 @@ public class XBMFile {
       *  have to do the counting yourself, and remember it's little
       *  endian, and done by the byte.
       *
-      *    @param height Height of bitmap.
-      *    @param width Width of bitmap.
+      *    @param h Height of bitmap.
+      *    @param w Width of bitmap.
       *    @param b byte string representing the pixels.
       *
       */

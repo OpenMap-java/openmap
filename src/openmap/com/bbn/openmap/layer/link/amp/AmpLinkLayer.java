@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/amp/AmpLinkLayer.java,v $
 // $RCSfile: AmpLinkLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:28 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -330,7 +330,7 @@ public class AmpLinkLayer extends LinkLayer
     /** 
      * Set the retrieval key for this tool
      *
-     * @param key The key for this tool.
+     * @param aKey The key for this tool.
      */
     public void setKey(String aKey) {
 	key = aKey;

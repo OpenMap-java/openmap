@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DeclutterMatrix.java,v $
 // $RCSfile: DeclutterMatrix.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:25 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -33,8 +33,11 @@
  *
  *  Modification history:
  *  $Log: DeclutterMatrix.java,v $
- *  Revision 1.1.1.1  2003/02/14 21:35:48  dietrick
- *  Moving source code to new src directory, with directories to separate code that relies on non-J2SE packages
+ *  Revision 1.2  2003/12/23 20:43:25  wjeuerle
+ *  no code changes, updated javadoc comments to fix javadoc warnings
+ *
+ *  Revision 1.1  2003/02/14 21:35:48  dietrick
+ *  Initial revision
  *
  *  Revision 1.14  2002/04/02 20:59:41  bmackiew
  *  Updated with revised copyright information.
@@ -571,7 +574,7 @@ public class DeclutterMatrix {
      *
      * @param horizontalIndex the horizontal index of the matrix to mark.
      * @param verticalIndex the vertical starting index of the matrix to mark.
-     * @param numCellsToCheck the number of matrix cells to mark as taken.
+     * @param numCellsToMark the number of matrix cells to mark as taken.
      */
     protected void setTaken(int horizontalIndex,
 			    int verticalIndex, 
@@ -646,7 +649,7 @@ public class DeclutterMatrix {
      * @param point the window point
      * @param pixelLength the pixel length of space from left to right.
      * @param pixelHeight the pixel height from bottom to top.
-     * @param pixelLimitAway the pixel distance away from the original
+     * @param pixelAwayLimit the pixel distance away from the original
      * location that where an object will be discarded if it's not at
      * least that close.  -1 means find anywhere on the map where the
      * object will fit.

@@ -162,7 +162,7 @@ public class JarInfo {
     }
 
     /**
-     * Was this bean from a serialized prototype? -- unused so far?
+     * True if the bean from a serialized prototype.
      */
     public boolean isFromPrototype(String name) {
 	return fromPrototype[indexForName(name)];

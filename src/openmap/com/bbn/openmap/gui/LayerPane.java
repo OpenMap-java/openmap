@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerPane.java,v $
 // $RCSfile: LayerPane.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/10 15:42:52 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 20:47:46 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -93,7 +93,7 @@ public class LayerPane extends JPanel
 
     /**
      *  @param layer the layer to be represented by the pane.
-     *  @param cake the list of layers currently displayed on the map.
+     *  @param bg the buttongroup for the layer
      *  @param layerHandler the LayerHandler that contains information
      *  about the Layers. 
      */

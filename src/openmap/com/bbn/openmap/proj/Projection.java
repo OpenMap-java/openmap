@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Projection.java,v $
 // $RCSfile: Projection.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/16 00:02:34 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:57 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -332,12 +332,11 @@ public interface Projection extends java.io.Serializable {
      * <p>
      * For no-frills, no-assumptions, fast and efficient projecting, see
      * <a href="#forwardRaw">forwardRaw()</a>.
-     * <p>
      * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
      * @param ltype line type (straight, rhumbline, greatcircle)
      * @param nsegs number of segment points (only for greatcircle or
      * rhumbline line types, and if &lt; 1, this value is generated internally)
-     * @param fill poly is filled? or not
+     * @param isFilled poly is filled? or not
      * @return ArrayList of x[], y[], x[], y[], ... projected poly
      * @see #forwardRaw
      * @see LineType#Straight

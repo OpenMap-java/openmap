@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGraphicList.java,v $
 // $RCSfile: LinkGraphicList.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/28 22:21:18 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 20:43:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -434,8 +434,8 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * Write a bitmap in the response.
      * @param lt latitude of placement of upper left corner of bitmap.
      * @param ln longitude of placement of upper left corner of bitmap.
-     * @param x1 horizontal offset of upper left corner of bitmap.
-     * @param y1 vertical offset of upper left corner of bitmap.
+     * @param offset_x1 horizontal offset of upper left corner of bitmap.
+     * @param offset_y1 vertical offset of upper left corner of bitmap.
      * @param w pixel width of bitmap.
      * @param h pixel height of bitmap.
      * @param bytes bitmap data.
@@ -487,8 +487,8 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * Write a circle in the response.
      * @param latPoint latitude of placement of center of circle.
      * @param lonPoint longitude of placement of center of circle.
-     * @param x1 horizontal pixel offset of center of circle..
-     * @param y1 vertical pixel offset of center of circle..
+     * @param offset_x1 horizontal pixel offset of center of circle..
+     * @param offset_y1 vertical pixel offset of center of circle..
      * @param w width of circle.
      * @param h height of circle.
      * @param properties Properties containing attributes.
@@ -568,7 +568,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @param orientation the direction of the vertical axits of the
      * grid, in radians from up ( North).
      * @param vResolution degrees/point between rows of the grid.
-     * @param hRsolution degrees/point between columns of the grid.
+     * @param hResolution degrees/point between columns of the grid.
      * @param major designation of the presentation of the data, as
      * columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
@@ -595,7 +595,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @param orientation the direction of the vertical axits of the
      * grid, in radians from up ( North).
      * @param vResolution pixels/point between rows of the grid.
-     * @param hRsolution pixels/point between columns of the grid.
+     * @param hResolution pixels/point between columns of the grid.
      * @param major designation of the presentation of the data, as
      * columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
@@ -624,7 +624,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @param orientation the direction of the vertical axits of the
      * grid, in radians from up ( North).
      * @param vResolution pixels/point between rows of the grid.
-     * @param hRsolution pixels/point between columns of the grid.
+     * @param hResolution pixels/point between columns of the grid.
      * @param major designation of the presentation of the data, as
      * columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
@@ -720,7 +720,6 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @param ln longitude of placement of upper left corner of raster.
      * @param ii ImageIcon to place on the map..
      * @param properties Properties containing attributes.
-     * @param properties Properties containing attributes.
      * @throws IOException
      * @throws InterruptedException
      * @see com.bbn.openmap.layer.link.LinkRaster
@@ -750,8 +749,8 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * Write a raster in the response.
      * @param lt latitude of placement of upper left corner of raster.
      * @param ln longitude of placement of upper left corner of raster.
-     * @param x1 horizontal pixel offset of upper left corner of raster.
-     * @param y1 vertical pixel offset of upper left corner of raster.
+     * @param offset_x1 horizontal pixel offset of upper left corner of raster.
+     * @param offset_y1 vertical pixel offset of upper left corner of raster.
      * @param ii ImageIcon to place on the map..
      * @param properties Properties containing attributes.
      * @throws IOException
@@ -769,9 +768,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * Write a raster in the response.
      * @param lt latitude of placement of upper left corner of raster.
      * @param ln longitude of placement of upper left corner of raster.
-     * @param w width of raster.
-     * @param h height of raster.
-     * @param Image the java.awt.Image.
+     * @param image_width width of raster.
+     * @param image_height height of raster.
+     * @param image the java.awt.Image.
      * @param properties Properties containing attributes.
      * @throws IOException
      * @throws InterruptedException
@@ -809,8 +808,8 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * Write a raster in the response.
      * @param lt latitude of placement of upper left corner of raster.
      * @param ln longitude of placement of upper left corner of raster.
-     * @param x1 horizontal pixel offset of upper left corner of raster.
-     * @param y1 vertical pixel offset of upper left corner of raster.
+     * @param offset_x1 horizontal pixel offset of upper left corner of raster.
+     * @param offset_y1 vertical pixel offset of upper left corner of raster.
      * @param image Image to place on map.
      * @param image_width width of image.
      * @param image_height height of image.
@@ -1048,8 +1047,8 @@ public class LinkGraphicList implements LinkGraphicConstants {
 
     /** 
      * Write a rectangle in the response.
-     * @param lt latitude of placement of upper left corner of rectangle.
-     * @param ln longitude of placement of upper left corner of rectangle..
+     * @param lt1 latitude of placement of upper left corner of rectangle.
+     * @param ln1 longitude of placement of upper left corner of rectangle..
      * @param x1 Horizontal pixel offset of upper left corner of rectangle.
      * @param y1 Vertical pixel offset of upper left corner of rectangle.
      * @param x2 Horizontal pixel offset of lower right corner of rectangle.
@@ -1097,8 +1096,8 @@ public class LinkGraphicList implements LinkGraphicConstants {
     
     /** 
      * Write a point in the response.
-     * @param lt latitude of placement of upper left corner of point.
-     * @param ln longitude of placement of upper left corner of point..
+     * @param lt1 latitude of placement of upper left corner of point.
+     * @param ln1 longitude of placement of upper left corner of point..
      * @param x1 Horizontal pixel offset of upper left corner of point.
      * @param y1 Vertical pixel offset of upper left corner of point.
      * @param radius Pixel radius of the point.
@@ -1115,9 +1114,9 @@ public class LinkGraphicList implements LinkGraphicConstants {
 
     /** 
      * Write a poly in the response.
-     * @param llpoints alternating latitude and logitude points of poly.
+     * @param llPoints alternating latitude and logitude points of poly.
      * @param units degrees or radians.
-     * @param linetype straight, rhumb, great circle.
+     * @param lType straight, rhumb, great circle.
      * @param properties Properties containing attributes.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoly
@@ -1132,7 +1131,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * Write a poly in the response.
      * @param llpoints alternating latitude and logitude points of poly.
      * @param units degrees or radians.
-     * @param linetype straight, rhumb, great circle.
+     * @param lType straight, rhumb, great circle.
      * @param nsegs number of segments to use to approimate curved poly lines..
      * @param properties Properties containing attributes.
      * @throws IOException

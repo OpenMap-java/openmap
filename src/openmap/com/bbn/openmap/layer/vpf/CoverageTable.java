@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageTable.java,v $
 // $RCSfile: CoverageTable.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/25 02:48:22 $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:32 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -337,7 +337,7 @@ public class CoverageTable {
     /**
      * Returns the FeatureClassInfo object corresponding to the
      * feature type.  Returns null if the featureType doesn't exist.
-     * @returns the feature class object for the feature type
+     * @return the feature class object for the feature type
      * @param featureType the name of the feature to get
      */
     public FeatureClassInfo getFeatureClassInfo(String featureType) {

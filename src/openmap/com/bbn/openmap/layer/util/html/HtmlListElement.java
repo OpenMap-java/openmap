@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/html/HtmlListElement.java,v $
 // $RCSfile: HtmlListElement.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:31 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -61,7 +61,7 @@ public class HtmlListElement implements ContainerElement {
 	items.addElement(e);
     }
     /** Add an element to the end of the list
-     * @param e the element to add */
+     * @param s the string to add */
     public void addElement(String s) {
 	addElement(new StringElement(s));
     }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/PaintListenerSupport.java,v $
 // $RCSfile: PaintListenerSupport.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/08 21:29:17 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 20:47:45 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -44,7 +44,7 @@ public class PaintListenerSupport extends ListenerSupport {
 
     /**
      * Construct a PaintListenerSupport.
-     * @param aSource source Object
+     * @param source source Object
      */
     public PaintListenerSupport(Object source) {
 	super(source);
@@ -69,7 +69,7 @@ public class PaintListenerSupport extends ListenerSupport {
     /**
      * Send a Paint event to all registered listeners.
      *
-     * @param event PaintEvent
+     * @param graphics PaintEvent
      */
     public void paint(Graphics graphics) {
 

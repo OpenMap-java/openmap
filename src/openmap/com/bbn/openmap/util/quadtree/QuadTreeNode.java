@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/quadtree/QuadTreeNode.java,v $
 // $RCSfile: QuadTreeNode.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:44:37 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -275,7 +275,7 @@ public class QuadTreeNode implements Serializable {
      *
      * @param lat up-down location in QuadTree Grid (latitude, y)
      * @param lon left-right location in QuadTree Grid (longitude, x)
-     * @param the maximum get distance.
+     * @param withinDistance maximum get distance.
      * @return the object that matches the best distance, null if no
      * closer object was found.
      */

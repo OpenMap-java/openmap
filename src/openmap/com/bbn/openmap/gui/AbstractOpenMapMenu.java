@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/AbstractOpenMapMenu.java,v $
 // $RCSfile: AbstractOpenMapMenu.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/18 14:51:44 $
-// $Author: blubin $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 20:47:45 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -371,7 +371,7 @@ abstract public class AbstractOpenMapMenu extends JMenu
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @param String prefix String.  
+     * @return the property prefix for the menu
      */
     public String getPropertyPrefix() {
 	return propertyPrefix;

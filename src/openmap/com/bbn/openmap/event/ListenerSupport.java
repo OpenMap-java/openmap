@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ListenerSupport.java,v $
 // $RCSfile: ListenerSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/10 15:40:15 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:45 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -92,7 +92,7 @@ public class ListenerSupport implements java.io.Serializable {
     /**
      * Remove an Object from the listener list.
      *
-     * @param listener  The Object to be removed
+     * @param obj The Object to be removed
      */
     public synchronized void removeListener(Object obj) {
 	if (listeners != null) {

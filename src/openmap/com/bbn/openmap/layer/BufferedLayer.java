@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/BufferedLayer.java,v $
 // $RCSfile: BufferedLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/11/14 20:29:38 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 20:43:24 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -266,7 +266,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * background paint of the projection used by the internal
      * MapBean.
      *
-     * @param color java.awt.Paint
+     * @param paint java.awt.Paint
      */
     public void setBckgrnd(Paint paint) {
 	mapBean.setBckgrnd(paint);

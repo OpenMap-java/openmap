@@ -510,7 +510,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * Draw a rubberband line and circle between two points
      * @param pt1 the anchor point.
      * @param pt2 the current (mouse) position.
-     * @param graphics a java.awt.Graphics object to render into.
+     * @param g a java.awt.Graphics object to render into.
      */
     public void paintRubberband(LatLonPoint pt1, LatLonPoint pt2, Graphics g) {
 	paintLine(pt1, pt2, g);
@@ -664,7 +664,7 @@ public class DistanceMouseMode extends CoordMouseMode {
 
     /**
      * Set the drawing of the rubberband circle on/off.
-     * @param off true or false
+     * @param onOff true or false
      */
     public void showCircle(boolean onOff) {
 	displayCircle = onOff;

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ColorFactory.java,v $
 // $RCSfile: ColorFactory.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:44:37 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -116,7 +116,6 @@ public class ColorFactory {
      * @param p properties
      * @param propName the name of the property
      * @param dfault color to use if the property value doesn't work
-     * @param forceAlpha force using alpha value
      * @return java.awt.Color
      * @exception NumberFormatException if the specified string
      * cannot be interpreted as a hexidecimal integer

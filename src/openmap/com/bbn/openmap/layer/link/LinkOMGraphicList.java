@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkOMGraphicList.java,v $
 // $RCSfile: LinkOMGraphicList.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/03 13:49:30 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 20:43:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -177,7 +177,7 @@ public class LinkOMGraphicList extends OMGraphicList
 
     /**
       * Get the graphic with the graphic ID.
-      * @param id graphic ID of the wanted graphic.
+      * @param gid graphic ID of the wanted graphic.
       * @return OMGraphic or null if not found
       */
      public OMGraphic getOMGraphicWithId(String gid) {
@@ -187,7 +187,7 @@ public class LinkOMGraphicList extends OMGraphicList
     /**
      * Get the graphic with the graphic ID. Traverse mode doesn't
      * matter.
-     * @param graphicID graphic ID of the wanted graphic.  
+     * @param gid graphic ID of the wanted graphic.  
      * @return OMGraphic index or Link.UNKNOWN if not found
      */
     public int getOMGraphicIndexWithId(String gid) {

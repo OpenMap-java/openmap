@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayer.java,v $
 // $RCSfile: EditorLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/10/03 00:48:44 $
-// $Author: dietrick $
+// $Revision: 1.9 $
+// $Date: 2003/12/23 20:43:26 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -266,7 +266,7 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      * since the ToolPanel may be expecting to find a key that is
      * reflected in the openmap.properties file.
      *
-     * @param key The key for this tool.
+     * @param aKey The key for this tool.
      */
     public void setKey(String aKey) {
 	setPropertyPrefix(aKey);

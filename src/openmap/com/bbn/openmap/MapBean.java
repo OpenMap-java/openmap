@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/11/14 20:09:38 $
-// $Author: dietrick $
+// $Revision: 1.7 $
+// $Date: 2003/12/23 20:47:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -468,7 +468,7 @@ public class MapBean extends JComponent
      * If different from the current type, this installs a new
      * projection with the same center, scale, width, and height of
      * the previous one.
-     * @param int type
+     * @param newType the new projection type
      */
     public void setProjectionType(int newType) {
 	int oldType = projection.getProjectionType();

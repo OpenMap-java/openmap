@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/DrawUtil.java,v $
 // $RCSfile: DrawUtil.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:56 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -349,8 +349,8 @@ public class DrawUtil {
      * @param y1 line y coord1
      * @param x2 line x coord2
      * @param y2 line y coord2
-     * @param x3 point x coord
-     * @param y3 point y coord
+     * @param x point x coord
+     * @param y point y coord
      * @return float distance to line segment
      * @deprecated USE THE NEW FUNCTION
      *

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXYView.java,v $
 // $RCSfile: LLXYView.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:56 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -65,12 +65,10 @@ public class LLXYView extends LLXY {
 
     /**
      * Construct a LLXY projection.
-     * <p>
      * @param center LatLonPoint center of projection
      * @param scale float scale of projection
      * @param width width of screen
      * @param height height of screen
-     *
      */
     public LLXYView(LatLonPoint center, float scale, int width, int height) {
 	super(center, scale, width, height, LLXYViewType);
@@ -80,7 +78,6 @@ public class LLXYView extends LLXY {
 
     /**
      * Return stringified description of this projection.
-     * <p>
      * @return String
      * @see Projection#getProjectionID
      */
@@ -162,7 +159,6 @@ public class LLXYView extends LLXY {
 
     /**
      * Projects a point from Lat/Lon space to X/Y space.
-     * <p>
      * @param pt LatLonPoint
      * @param p Point retval
      * @return Point p
@@ -187,7 +183,6 @@ public class LLXYView extends LLXY {
 
     /**
      * Forward projects a lat,lon coordinates.
-     * <p>
      * @param lat raw latitude in decimal degrees
      * @param lon raw longitude in decimal degrees
      * @param p Resulting XY Point
@@ -215,7 +210,6 @@ public class LLXYView extends LLXY {
 
     /**
      * Forward projects lat,lon into XY space and returns a Point.
-     * <p>
      * @param lat float latitude in radians
      * @param lon float longitude in radians
      * @param p Resulting XY Point
@@ -244,11 +238,9 @@ public class LLXYView extends LLXY {
 
     /**
      * Inverse project a Point.
-     * <p>
-     * @param point x,y Point
+     * @param pt x,y Point
      * @param llp resulting LatLonPoint
      * @return LatLonPoint llp
-     *
      */
     public LatLonPoint inverse(Point pt, LatLonPoint llp) {
 	// convert from screen to user coordinates
@@ -262,13 +254,11 @@ public class LLXYView extends LLXY {
 
     /**
      * Inverse project x,y coordinates into a LatLonPoint.
-     * <p>
      * @param x integer x coordinate
      * @param y integer y coordinate
      * @param llp LatLonPoint
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
-     *
      */
     public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
 	int tx = x - this.wx + dUSX;

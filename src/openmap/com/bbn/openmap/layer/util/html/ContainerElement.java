@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/html/ContainerElement.java,v $
 // $RCSfile: ContainerElement.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:31 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -34,6 +34,6 @@ public interface ContainerElement extends Element {
     public void addElement(Element e);
 
     /** add an additional element to the Container
-     * @param e the element to add */
+     * @param s the String to add */
     public void addElement(String s);
 }

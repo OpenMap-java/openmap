@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/OMComponent.java,v $
 // $RCSfile: OMComponent.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 03:08:09 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -128,7 +128,7 @@ public class OMComponent extends MapHandlerChild implements PropertyConsumer {
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @param String prefix String.  
+     * @return the property prefix string
      */
     public String getPropertyPrefix() {
 	return propertyPrefix;

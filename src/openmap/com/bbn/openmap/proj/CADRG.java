@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/CADRG.java,v $
 // $RCSfile: CADRG.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:56:43 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:56 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -68,12 +68,10 @@ public class CADRG extends Cylindrical implements EqualArc {
 
     /**
      * Construct a CADRG projection.
-     * <p>
      * @param center LatLonPoint center of projection
      * @param scale float scale of projection
-     * @param w width of screen
-     * @param h height of screen
-     *
+     * @param width width of screen
+     * @param height height of screen
      */
     public CADRG(LatLonPoint center, float scale, int width, int height) {
 	super(center, scale, width, height, CADRGType);
@@ -84,7 +82,7 @@ public class CADRG extends Cylindrical implements EqualArc {
     /**
      * Sets radian latitude to something sane.  This is an abstract
      * function since some projections don't deal well with extreme
-     * latitudes.<p>
+     * latitudes.
      *
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
@@ -400,12 +398,9 @@ public class CADRG extends Cylindrical implements EqualArc {
 
     /**
      * Forward projects lat,lon into XY space and returns a Point.
-     * <p>
      * @param lat float latitude in radians
      * @param lon float longitude in radians
      * @param ret_val Resulting XY Point
-     * @param isRadian bogus argument indicating that lat,lon
-     * arguments are in radians
      * @return Point ret_val
      */
     public Point forward (float lat, float lon, Point ret_val, boolean b) {
@@ -438,8 +433,7 @@ public class CADRG extends Cylindrical implements EqualArc {
 
     /**
      * Inverse project a Point.
-     * <p>
-     * @param point x,y Point
+     * @param pt x,y Point
      * @param ret_val resulting LatLonPoint
      * @return LatLonPoint ret_val
      *

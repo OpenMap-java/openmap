@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/CoordInternalFrame.java,v $
 // $RCSfile: CoordInternalFrame.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/04/16 22:20:50 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 20:47:46 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -48,10 +48,8 @@ public class CoordInternalFrame extends JInternalFrame
 
     /** 
      * Creates the internal frame with a CoordPanel and Apply and 
-     * Close buttons.<br> 
-     * You MUST call addCenterListener() for the Apply button to do anything.
-     * @param desltp the JLayeredPane on which the internal frame is
-     * to be placed.
+     * Close buttons. You MUST call addCenterListener() for the Apply
+     * button to do anything.
      */
     public CoordInternalFrame() {
 	super(CoordDialog.DEFAULT_TITLE,

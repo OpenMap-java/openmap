@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LayerHandler.java,v $
 // $RCSfile: LayerHandler.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/10 18:48:32 $
-// $Author: dietrick $
+// $Revision: 1.6 $
+// $Date: 2003/12/23 20:47:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -434,7 +434,7 @@ public class LayerHandler extends OMComponent
     /**  
      * Tell anyone interested in the layers to update the layer pretty
      * names.  Same as setLayers().
-     * @deprecated. Replaced by setLayers().
+     * @deprecated Replaced by setLayers().
      */
     public void updateLayerLabels() {
 	setLayers(allLayers);
@@ -498,7 +498,7 @@ public class LayerHandler extends OMComponent
      * layers, the layer is moved to the bottom of the pile.
      *
      * @param layer the layer to move.
-     * @param position the array index to place it, shifting the other
+     * @param toPosition the array index to place it, shifting the other
      * layers up or down, depending on where the layer is originally.
      * @return true if the layer is already contained in the
      * LayerHandler, false if not.
@@ -740,7 +740,7 @@ public class LayerHandler extends OMComponent
      * the BeanContext.
      * 
      * @param currentLayers the current layers handled in the LayersMenu.
-     * @param the validated index of the layer to remove.  
+     * @param index the validated index of the layer to remove.  
      */
     protected void removeLayer(Layer[] currentLayers, int index) {
 	Layer rLayer = currentLayers[index];
@@ -782,7 +782,7 @@ public class LayerHandler extends OMComponent
      * adding/removing it from the MapBean.
      *
      * @param setting true to add layer to the map.
-     * @param layer the index of the layer to turn on/off.
+     * @param index the index of the layer to turn on/off.
      * @return true of index represented a layer, false if not or if
      * something went wrong.
      */

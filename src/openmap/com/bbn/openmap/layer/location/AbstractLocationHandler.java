@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/AbstractLocationHandler.java,v $
 // $RCSfile: AbstractLocationHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/11/20 17:50:24 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 20:43:28 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -41,7 +41,7 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  *
  * @see         com.bbn.openmap.layer.location.LocationHandler
- * @version    $Revision: 1.3 $ $Date: 2003/11/20 17:50:24 $
+ * @version    $Revision: 1.4 $ $Date: 2003/12/23 20:43:28 $
  * @author     Michael E. Los D530/23448
  *
  * locationhandler.locationColor=FF0000<BR>
@@ -112,7 +112,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * to trigger a repaint.  It can also be used to communicate with
      * the information delegator.
      *
-     * @param layer a LocationLayer
+     * @param l a LocationLayer
      */
     public void setLayer(LocationLayer l) {
 	zLayer = l;
@@ -344,7 +344,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @param String prefix String.  
+     * @return the property prefix
      */
     public String getPropertyPrefix() {
 	return propertyPrefix;

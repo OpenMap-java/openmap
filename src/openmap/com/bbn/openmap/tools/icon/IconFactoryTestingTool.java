@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/icon/IconFactoryTestingTool.java,v $
 // $RCSfile: IconFactoryTestingTool.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/26 17:48:55 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:47:49 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -114,7 +114,7 @@ public class IconFactoryTestingTool implements Tool {
     /** 
      * Set the retrieval key for this tool
      *
-     * @param key The key for this tool.
+     * @param aKey The key for this tool.
      */
     public void setKey(String aKey) {}
 

@@ -379,7 +379,7 @@ public class DefaultDnDCatcher
         beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
     }
     /**
-     * @returns the current BeanContext associated with the JavaBean
+     * @return the current BeanContext associated with the JavaBean
      */
     public java.beans.beancontext.BeanContext getBeanContext() {
         return beanContextChildSupport.getBeanContext();

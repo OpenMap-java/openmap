@@ -4,7 +4,7 @@ package com.bbn.openmap.omGraphics;
  * A natural cubic closed spline calculation.
  * 
  * @author Eric LEPICIER
- * @see http://www.cse.unsw.edu.au/~lambert/splines/
+ * @see <a href="http://www.cse.unsw.edu.au/~lambert/splines/">Splines</a>
  * @version 21 juil. 2002
  */
 public class NatCubicClosedSpline extends NatCubicSpline {

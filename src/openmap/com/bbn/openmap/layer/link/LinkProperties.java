@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkProperties.java,v $
 // $RCSfile: LinkProperties.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -72,7 +72,7 @@ public class LinkProperties extends Properties
      * Assumes the properties are the next thing to be read, starting
      * with the string count.
      *
-     * @param numArgs the number of keys + values to read.
+     * @param link the Link to read properties from
      * @throws IOException.
      */
     public LinkProperties(Link link) throws IOException {
@@ -84,7 +84,6 @@ public class LinkProperties extends Properties
      * Create a LinkProperties, and read it's contents off a link.
      *
      * @param dis DataInput to read from.
-     * @param numArgs the number of keys + values to read.
      * @throws IOException. 
      */
     public LinkProperties(DataInput dis) throws IOException {

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/OrthographicView.java,v $
 // $RCSfile: OrthographicView.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:56:43 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:57 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -70,8 +70,8 @@ public class OrthographicView extends Orthographic {
      * <p>
      * @param center LatLonPoint center of projection
      * @param scale float scale of projection
-     * @param w width of screen
-     * @param h height of screen
+     * @param width width of screen
+     * @param height height of screen
      *
      */
     public OrthographicView(
@@ -197,7 +197,7 @@ public class OrthographicView extends Orthographic {
      * AzimuthVar variable if specified.
      * @param phi float latitude in radians
      * @param lambda float longitude in radians
-     * @param pt Point
+     * @param p Point
      * @param azVar AzimuthVar or null
      * @return Point pt
      */
@@ -255,7 +255,7 @@ public class OrthographicView extends Orthographic {
     /**
      * Inverse project a Point.
      * <p>
-     * @param point x,y Point
+     * @param pt x,y Point
      * @param llp resulting LatLonPoint
      * @return LatLonPoint llp
      *

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/11/14 20:29:38 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 20:43:25 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -247,7 +247,6 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
      * The properties and prefix are managed and decoded here, for
      * the standard uses of the GraticuleLayer.
      *
-     * @param prefix string prefix used in the properties file for this layer.
      * @param properties the properties set in the properties file.  
      */
     public Properties getProperties(Properties properties) {
@@ -319,7 +318,6 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
      * The properties and prefix are managed and decoded here, for
      * the standard uses of the GraticuleLayer.
      *
-     * @param prefix string prefix used in the properties file for this layer.
      * @param properties the properties set in the properties file.  
      */
     public Properties getPropertyInfo(Properties properties) {

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CenterSupport.java,v $
 // $RCSfile: CenterSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/08 21:29:17 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -37,7 +37,7 @@ import java.util.Iterator;
 public class CenterSupport extends ListenerSupport {
 
     /**
-     * @sourceBean  The bean to be given as the source for any events.
+     * @param sourceBean The bean to be given as the source for any events
      */
     public CenterSupport(Object sourceBean) {
 	super(sourceBean);

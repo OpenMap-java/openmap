@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/ShapeConstants.java,v $
 // $RCSfile: ShapeConstants.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/23 18:20:21 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -24,35 +24,38 @@ package com.bbn.openmap.dataAccess.shape;
 
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 
+/*
+ * Constants used in reading shape files.
+ */
 public interface ShapeConstants {
 
-    /** The length of a shape file header in bytes.  (100) */
+    /** The length of a shape file header in bytes, value of 100. */
     public static final int SHAPE_FILE_HEADER_LENGTH = 100;
 
-    /** The length of a shape file record header in bytes.  (8) */
+    /** The length of a shape file record header in bytes, value of 8. */
     public static final int SHAPE_FILE_RECORD_HEADER_LENGTH = 8;
 
-    /** The indicator for a null shape type. (0) */
+    /** The indicator for a null shape type, value of 0 */
     public static final int SHAPE_TYPE_NULL	  = 0;
 
-    /** The indicator for a point shape type. (1) */
+    /** The indicator for a point shape type, value of 1. */
     public static final int SHAPE_TYPE_POINT	  = 1;
 
-    /** The indicator for an arc (polyline) shape type. (3) */
+    /** The indicator for an arc (polyline) shape type, value of 3. */
     public static final int SHAPE_TYPE_ARC	  = 3;
 
     /**
-     * The indicator for a polyline (arc) shape type. (3).
+     * The indicator for a polyline (arc) shape type, value of 3.
      * NOTE: ESRI decided to rename the `arc' type as the `polyline'
      * type as of their July 1998 Shapefile Technical Description
      * paper.  Maybe they should rename Arc/Info as Polyline/Info?...
      */
     public static final int SHAPE_TYPE_POLYLINE	  = 3;
 
-    /** The indicator for a polygon shape type. (5) */
+    /** The indicator for a polygon shape type, value of 5. */
     public static final int SHAPE_TYPE_POLYGON	  = 5;
 
-    /** The indicator for a multipoint shape type. (8) */
+    /** The indicator for a multipoint shape type, value of 8. */
     public static final int SHAPE_TYPE_MULTIPOINT = 8;
 
     public static final Byte DBF_TYPE_CHARACTER = new Byte((byte)67);

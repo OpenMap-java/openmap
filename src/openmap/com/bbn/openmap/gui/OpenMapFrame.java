@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OpenMapFrame.java,v $
 // $RCSfile: OpenMapFrame.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/09/22 23:20:42 $
-// $Author: dietrick $
+// $Revision: 1.6 $
+// $Date: 2003/12/23 20:47:46 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -227,7 +227,7 @@ public class OpenMapFrame extends JFrame
     
     /** Method for BeanContextChild interface. 
      * 
-     * @param BeanContext in_bc The context to which this object is being added
+     * @param in_bc The context to which this object is being added
      */
     public void setBeanContext(BeanContext in_bc) 
 	throws PropertyVetoException {
@@ -319,7 +319,7 @@ public class OpenMapFrame extends JFrame
      * the property that would be helpful (range, default value,
      * etc.).
      *
-     * @param getList a Properties object to load the PropertyConsumer
+     * @param list a Properties object to load the PropertyConsumer
      * properties into.  If getList equals null, then a new Properties
      * object should be created.
      * @return Properties object containing PropertyConsumer property
@@ -349,7 +349,7 @@ public class OpenMapFrame extends JFrame
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.  Returns "openmap".
      *
-     * @param String prefix String.  
+     * @return the property prefix for the frame
      */
     public String getPropertyPrefix() {
 	return Environment.OpenMapPrefix;

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/10/03 00:43:57 $
-// $Author: dietrick $
+// $Revision: 1.9 $
+// $Date: 2003/12/23 20:47:42 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -300,8 +300,8 @@ public class InformationDelegator extends OMComponentPanel
     /**
      * Set the information line label.
      * @param str String
-     * @param int the designator used to specify which information
-     * line to use to display the string.
+     * @param infoLineDesignator the designator used to specify which
+     * information line to use to display the string.
      */
     public void setLabel(String str, int infoLineDesignator) {
 	JLabel iLine;
@@ -467,9 +467,8 @@ public class InformationDelegator extends OMComponentPanel
      * <code>hideToolTip</code>
      *
      * @param me A MouseEvent from a <code>MapMouseListener</code>
-     * which indicates where the tooltip is to appear
-     * @param text A String value of the tooltip text which is to
-     * appear (this can also be HTML wih Java 1.3)
+     * which indicates where the tooltip is to appear (unused)
+     * @param event an event containing the ToolTip to show
      * @deprecated use requestShowToolTip(InfoDisplayEvent) instead.
      */
     public void requestShowToolTip(MouseEvent me, InfoDisplayEvent event) { 
@@ -483,8 +482,7 @@ public class InformationDelegator extends OMComponentPanel
      * call to this method should always be followed by a call to
      * <code>hideToolTip</code>
      *
-     * @param text A String value of the tooltip text which is to
-     * appear (this can also be HTML wih Java 1.3)
+     * @param event an event containing the ToolTip to show
      */
     public void requestShowToolTip(InfoDisplayEvent event) { 
 	//shows a tooltip over the map

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/11/14 20:40:39 $
-// $Author: dietrick $
+// $Revision: 1.8 $
+// $Date: 2003/12/23 20:43:33 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -135,7 +135,9 @@ public class VPFLayer extends OMGraphicHandlerLayer
 {
     /** property extension used to set the VPF root directory */
     public static final String pathProperty = "vpfPath";
-    /** property extension used to set the desired coverage type. e.g. po, hyd */
+    /** property extension used to set the desired coverage type.
+     * Examples of coverage types inclue "po" for DCW and "hyd" for
+     * VMAP Level 0. */
     public static final String coverageTypeProperty = "coverageType";
     /** 
      * Property extension used to set the desired feature types.

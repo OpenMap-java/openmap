@@ -37,7 +37,7 @@ import com.bbn.openmap.util.Taskable;
 
 
 /**
- * Layer that displays nexrad rainfall data
+ * Implement a Layer that displays nexrad rainfall data.
  * <code><pre>
  * # zero value color (ARGB)
  * nexrad.color.bg=ffb3b3b3
@@ -52,7 +52,7 @@ import com.bbn.openmap.util.Taskable;
  * </pre></code>
  * <p>
  * NOTE: the color properties do not support alpha value if running on
- * JDK 1.1...
+ * JDK 1.1.
  */
 public class NexradLayer extends OMGraphicHandlerLayer {
     

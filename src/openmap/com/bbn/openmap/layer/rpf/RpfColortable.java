@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfColortable.java,v $
 // $RCSfile: RpfColortable.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:29 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -120,7 +120,7 @@ public class RpfColortable {
      * Set the alpha values of the OMColors, which governs the
      * transparency/opaqueness of the images. This method lets you set
      * the value as a percentage between 0-100.
-     * @param value index between 0-100 (0 is transparent, 100 is opaque)
+     * @param percent index between 0-100 (0 is transparent, 100 is opaque)
      */
     public void setOpaquePercent(int percent) {
 	setOpaqueness((int)((float)(percent*2.55)));

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibraryBean.java,v $
 // $RCSfile: LibraryBean.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:33 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -139,7 +139,7 @@ public class LibraryBean implements PropertyConsumer, Serializable {
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @param String prefix String.  
+     * @return the property prefix
      */
     public String getPropertyPrefix() {
 	return propertyPrefix;

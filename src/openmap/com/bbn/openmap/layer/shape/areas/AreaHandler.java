@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:47:35 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:30 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -417,10 +417,10 @@ public class AreaHandler implements PropertyConsumer {
     /** 
      * Get the graphics for a particular lat/lon area.
      *
-     * @param ullat upper left latitude, in decimal degrees.
-     * @param ullat upper left longitude, in decimal degrees.
-     * @param ullat lower right latitude, in decimal degrees.
-     * @param ullat lower right longitude, in decimal degrees.
+     * @param ulLat upper left latitude, in decimal degrees.
+     * @param ulLon upper left longitude, in decimal degrees.
+     * @param lrLat lower right latitude, in decimal degrees.
+     * @param lrLon lower right longitude, in decimal degrees.
      * @return OMGraphicList
      */
     public OMGraphicList getGraphics(float ulLat, float ulLon, 
@@ -770,7 +770,7 @@ public class AreaHandler implements PropertyConsumer {
      * DeterminePoliticalAreas goes over a list of omgraphics, and
      * spits out a hashtable that holds PoliticalArea objects for
      * every area key. 
-     * @param graphiclist the list of graphics.  The top level graphic
+     * @param graphicList the list of graphics.  The top level graphic
      * entries on the list represent areas.  
      */
     public Hashtable determinePoliticalAreas(OMGraphicList graphicList) {
@@ -791,7 +791,7 @@ public class AreaHandler implements PropertyConsumer {
      * created and placed in the Hashtable.  This will duplicate
      * graphics if you call it more than once for the same graphic
      * list.
-     * @param graphiclist the list of graphics.  The top level graphic
+     * @param graphicList the list of graphics.  The top level graphic
      * entries on the list represent areas.
      */
     public Hashtable determinePoliticalAreas(OMGraphicList graphicList,

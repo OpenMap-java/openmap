@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCoverageManager.java,v $
 // $RCSfile: DTEDCoverageManager.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:25 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -153,7 +153,7 @@ public class DTEDCoverageManager {
      * file can't be found.
      *
      * @param paths paths to the level 0 and 1 dted root directory.
-     * @param paths paths to the level 2 dted root directory.
+     * @param paths2 paths to the level 2 dted root directory.
      */
     public void checkOutCoverage(String[] paths, String[] paths2) {
 	int latindex, lonindex;
@@ -400,7 +400,7 @@ public class DTEDCoverageManager {
      * byte[180][360] written out to file.  These are converted to
      * booleans.
      * 
-     * @param url an url to a coverage file, if available.  Should be null if not used.
+     * @param urlCov an url to a coverage file, if available.  Should be null if not used.
      * @param coverage the path to the file.
      * @return whether the file was read!  True means yes.
      */

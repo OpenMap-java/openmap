@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageAttributeTable.java,v $
 // $RCSfile: CoverageAttributeTable.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:32 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -36,7 +36,7 @@ import com.bbn.openmap.io.*;
  */
 public class CoverageAttributeTable {
 
-    /** the name of the library (e.g. noamer) we are */
+    /** the name of the library we are, for example "noamer" in DCW */
     final protected String libraryname;
     /** the path to our directory */
     final protected String dirpath;

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.20 $
-// $Date: 2003/11/14 21:04:33 $
-// $Author: dietrick $
+// $Revision: 1.21 $
+// $Date: 2003/12/23 20:47:49 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -486,7 +486,7 @@ public class OMDrawingTool extends OMToolComponent
      *
      * This method is called by other edit methods.
      *
-     * @param g OMGraphic to modify
+     * @param eomg OMGraphic to modify
      * @param requestor the Component that is requesting the
      * OMGraphic.  The requestor gets notified when the user is
      * finished with the DrawingTool and the graphic is ready.
@@ -1402,7 +1402,7 @@ public class OMDrawingTool extends OMToolComponent
 
     /**
      * Called from the findAndInit(Iterator) method, when objects are
-     * added to the MapHandler. so the OMDrawingTool can hook up with
+     * added to the MapHandler, so the OMDrawingTool can hook up with
      * what it needs.  An InformationDelegator is used to provide map
      * coordinates of the mouse movements.  The MouseDelegator is used
      * to intercept MouseEvents when the OMDrawingTool is activated.

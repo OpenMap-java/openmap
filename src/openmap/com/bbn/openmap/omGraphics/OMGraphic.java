@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/03 00:53:03 $
-// $Author: dietrick $
+// $Revision: 1.6 $
+// $Date: 2003/12/23 20:46:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -678,7 +678,7 @@ public abstract class OMGraphic extends BasicGeometry
      * width, the dash interval and phase.  If a null value is passed
      * in, a default BasicStroke will be used.
      *
-     * @param stroke the stroke to use for the graphic edge.  
+     * @param s the stroke to use for the graphic edge.  
      * @see java.awt.Stroke
      * @see java.awt.BasicStroke
      */

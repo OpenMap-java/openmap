@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkText.java,v $
 // $RCSfile: LinkText.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -107,7 +107,7 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
      * from lonPoint.
      * @param offset_y1 # pixels down that the center will be moved
      * from latPoint.
-     * @param aString the string to be displayed.
+     * @param stuff the string to be displayed.
      * @param font the Font description for the string.
      * @param just the justification of the string.
      * @param properties attributes for the graphic.

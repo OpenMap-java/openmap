@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageMaster.java,v $
 // $RCSfile: ImageMaster.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:23:32 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:47 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -109,7 +109,7 @@ public class ImageMaster {
      * Loads properties from a java resource.  This will load the
      * named resource identifier into the given properties instance.
      *
-     * @param properties the Properties instance to receive the properties
+     * @param props the Properties instance to receive the properties
      * @param resourceName the name of the resource to load
      * @return true if all's well.
      */
@@ -140,8 +140,8 @@ public class ImageMaster {
      * Loads properties from a java resource.  This will load the
      * named resource identifier into the given properties instance.
      *
-     * @param properties the Properties instance to receive the properties
-     * @param resourceName the name of the resource to load
+     * @param props the Properties instance to receive the properties
+     * @param url the url to load
      * @return true if all's well.
      */
     public boolean loadProperties(Properties props,  URL url) {
@@ -474,7 +474,7 @@ public class ImageMaster {
 	/** 
 	 * Write the image to a file.
 	 * 
-	 * @param covFilename the file name to write the image into.
+	 * @param fileName the file name to write the image into.
 	 * @param imageData the image data to put in the file.
 	 * */
 	public void writeDataFile(String fileName, byte[] imageData) {

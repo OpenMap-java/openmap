@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkBoundingPoly.java,v $
 // $RCSfile: LinkBoundingPoly.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -69,7 +69,7 @@ public class LinkBoundingPoly{
      * Create a LinkBoundingPoly out of minimum and max x, y, values. 
      *
      * @param minX minimum X value.
-     * @param miny minimum Y value.
+     * @param minY minimum Y value.
      * @param maxX maximum X value.
      * @param maxY maximum Y value.
      */

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/Debug.java,v $
 // $RCSfile: Debug.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 21:07:24 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:44:37 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -60,8 +60,8 @@ import java.util.Properties;
  * both applets and applications.
  *
  * @author Tom Mitchell (tmitchell@bbn.com)
- * @author $Author: dietrick $
- * @version $Revision: 1.2 $, $Date: 2003/11/14 21:07:24 $ 
+ * @author $Author: wjeuerle $
+ * @version $Revision: 1.3 $, $Date: 2003/12/23 20:44:37 $ 
  */
 public abstract class Debug {
 
@@ -316,7 +316,7 @@ public abstract class Debug {
      * Provide a file to log output.  This can be in conjunction with
      * the ouput stream, or instead of it.
      *
-     * @param file the file to use for the error log.
+     * @param filename the file to use for the error log.
      * @param append if true, log the output at the end of the file,
      * instead of the beginning.
      * @param alsoToOutStream true if the out stream should still
@@ -355,7 +355,7 @@ public abstract class Debug {
     /**
      * Sets the error output stream to the named stream.
      *
-     * @param out the desired error output stream
+     * @param err the desired error output stream
      */
     public static void setErrorStream(PrintStream err) {
 	Debug.err = err;
@@ -387,7 +387,7 @@ public abstract class Debug {
      * Provide a file to log errors.  This can be in conjunction with
      * the errorstream, or instead of it.
      *
-     * @param file the file to use for the error log.
+     * @param filename the file to use for the error log.
      * @param append if true, log the output at the end of the file,
      * instead of the beginning.
      * @param alsoToErrStream true if the err stream should still

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/11/14 20:21:42 $
-// $Author: dietrick $
+// $Revision: 1.9 $
+// $Date: 2003/12/23 20:47:46 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -212,7 +212,7 @@ public class OverviewMapHandler extends OMToolComponent
     /**
      * Create an OverviewMapHandler for given MapBean.
      *
-     * @param MapBean srcMapBean
+     * @param srcMap srcMapBean
      * @param prefix the prefix to place in front of each property -
      * i.e., so that each property will be under prefix.propertyName.
      * The period between the two will be added.
@@ -425,7 +425,7 @@ public class OverviewMapHandler extends OMToolComponent
      * remove the current sourceMap from the list of Maps that this
      * handler is controlling and set sourceMap to null.
      *
-     * @param MapBean srcMap.
+     * @param srcMap srcMap.
      */
     public void setSourceMap(MapBean srcMap) {
 	if (sourceMap != null) {
@@ -506,7 +506,7 @@ public class OverviewMapHandler extends OMToolComponent
      * the source map.  That depends on the overview map mouse mode,
      * however.
      *
-     * @param boolean value.  
+     * @param value
      */
     public void setControlSourceMap(boolean value) {
 	if (sourceMap != null) {
@@ -888,7 +888,7 @@ public class OverviewMapHandler extends OMToolComponent
 
 	/**
 	 * Set the center coordinates on all registered listeners.
-	 * @param proj Projection
+	 * @param llp the new centerpoint
 	 */
 	public void setCenter(LatLonPoint llp) {
 	    for (Iterator it = iterator(); it.hasNext();) {
@@ -898,7 +898,7 @@ public class OverviewMapHandler extends OMToolComponent
 
 	/**
 	 * Set the scale on all registered listeners.
-	 * @param proj Projection
+	 * @param scale the new scale
 	 */
 	public void setScale(float scale) {
 	    for (Iterator it = iterator(); it.hasNext();) {

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeUtils.java,v $
 // $RCSfile: ShapeUtils.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:30 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -32,7 +32,7 @@ import com.bbn.openmap.io.BinaryBufferedFile;
  * Utilities for reading and writing the components of shape files.
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/23 20:43:30 $
  */
 public class ShapeUtils implements ShapeConstants {
 
@@ -331,7 +331,7 @@ public class ShapeUtils implements ShapeConstants {
      *
      * @param b the data buffer
      * @param off the offset into the buffer where writing should occur
-     * @param val the point to write
+     * @param point the point to write
      * @return the number of bytes written
      */
     public static int writePoint(byte[] b, int off, ESRIPoint point)
@@ -348,7 +348,7 @@ public class ShapeUtils implements ShapeConstants {
      *
      * @param b the data buffer
      * @param off the offset into the buffer where writing should occur
-     * @param val the bounding box to write
+     * @param box the bounding box to write
      * @return the number of bytes written
      */
     public static int writeBox(byte[] b, int off, ESRIBoundingBox box)

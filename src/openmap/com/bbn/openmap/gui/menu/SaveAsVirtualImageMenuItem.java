@@ -31,9 +31,9 @@ public class SaveAsVirtualImageMenuItem extends SaveAsImageMenuItem {
     protected DimensionQueryWindow DW = null;
 
     /**
-     * @param String A String that will be displayed when this
+     * @param display A String that will be displayed when this
      * menuitem is shown in GUI
-     * @param AbstractImageFormatter A formatter that knows how to
+     * @param in_formatter A formatter that knows how to
      * generate an image from MapBean.  
      */
     public SaveAsVirtualImageMenuItem(String display, 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Tool.java,v $
 // $RCSfile: Tool.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/08 22:25:44 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:47 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -57,7 +57,7 @@ public interface Tool {
     /** 
      * Set the retrieval key for this tool.
      *
-     * @param key The key for this tool.
+     * @param aKey The key for this tool.
      */
     public void setKey(String aKey);
 }

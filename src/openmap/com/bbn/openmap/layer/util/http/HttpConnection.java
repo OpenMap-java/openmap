@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/HttpConnection.java,v $
 // $RCSfile: HttpConnection.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:31 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -228,7 +228,7 @@ public class HttpConnection extends Thread {
      * trailing HTTP version information are stripped off and a
      * HttpRequestEvent is fired via the HttpServer.
      *
-     * @param line a "GET" HTTP command
+     * @param cmd a "GET" HTTP command
      */
     protected void processGetCommand(String cmd) throws IOException {
 	// Command looks like: "GET /thisURL HTTP/1.0"
@@ -296,7 +296,7 @@ public class HttpConnection extends Thread {
      *
      * @param out Writer to place text on the OutputStream.
      * @param contentType the mime type for your response.
-     * @param contentLentgth the byte length of your response.  
+     * @param contentLength the byte length of your response.  
      */
     public static void writeHttpResponseHeader(Writer out,
 					       String contentType,

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MoreMath.java,v $
 // $RCSfile: MoreMath.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:47:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -246,7 +246,7 @@ public class MoreMath {
     /**
      * Converts a short in the range of -32768 to 32767 to
      * an int in the range 0 - 65535.
-     * @param b (-32768 &lt;= b &lt;= 32767)
+     * @param w (-32768 &lt;= b &lt;= 32767)
      * @return int (0 &lt;= b &lt;= 65535)
      */
     public static final int signedToInt(short w) {
@@ -275,7 +275,7 @@ public class MoreMath {
 
     /**
      * Build short out of bytes (in big endian order).
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param offset byte offset
      * @return short
      */
@@ -286,7 +286,7 @@ public class MoreMath {
 
     /**
      * Build short out of bytes (in little endian order).
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param offset byte offset
      * @return short
      */
@@ -297,7 +297,7 @@ public class MoreMath {
 
     /**
      * Build short out of bytes.
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param offset byte offset
      * @param MSBFirst BE or LE?
      * @return short
@@ -313,17 +313,18 @@ public class MoreMath {
 
     /**
      * Build short out of bytes (in big endian order).
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param MSBFirst BE or LE?
      * @return short
      */
+
     public static final short BuildShortBE(byte bytevec[], boolean MSBFirst) {
 	return BuildShortBE(bytevec, 0);
     }
 
     /**
      * Build short out of bytes (in little endian order).
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param MSBFirst BE or LE?
      * @return short
      */
@@ -333,7 +334,7 @@ public class MoreMath {
 
     /**
      * Build short out of bytes.
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param MSBFirst BE or LE?
      * @return short
      */
@@ -343,7 +344,7 @@ public class MoreMath {
 
     /**
      * Build int out of bytes (in big endian order).
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param offset byte offset
      * @return int
      */
@@ -356,7 +357,7 @@ public class MoreMath {
 
     /**
      * Build int out of bytes (in little endian order).
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param offset byte offset
      * @return int
      */
@@ -369,7 +370,7 @@ public class MoreMath {
 
     /**
      * Build int out of bytes.
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param offset byte offset
      * @param MSBFirst BE or LE?
      * @return int
@@ -384,7 +385,7 @@ public class MoreMath {
 
     /**
      * Build int out of bytes (in big endian order).
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @return int
      */
     public static final int BuildIntegerBE(byte bytevec[]) {
@@ -393,7 +394,7 @@ public class MoreMath {
 
     /**
      * Build int out of bytes (in little endian order).
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @return int
      */
     public static final int BuildIntegerLE(byte bytevec[]) {
@@ -402,7 +403,7 @@ public class MoreMath {
 
     /**
      * Build int out of bytes.
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param MSBFirst BE or LE?
      * @return int
      */
@@ -415,7 +416,7 @@ public class MoreMath {
  
     /**
      * Build long out of bytes (in big endian order).
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param offset byte offset
      * @return long
      */
@@ -432,7 +433,7 @@ public class MoreMath {
  
     /**
      * Build long out of bytes (in little endian order).
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param offset byte offset
      * @return long
      */
@@ -449,7 +450,7 @@ public class MoreMath {
  
     /**
      * Build long out of bytes.
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param offset byte offset
      * @param MSBFirst BE or LE?
      * @return long
@@ -464,7 +465,7 @@ public class MoreMath {
 
     /**
      * Build long out of bytes (in big endian order).
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @return long
      */
     public static final long BuildLongBE(byte bytevec[]) {
@@ -473,7 +474,7 @@ public class MoreMath {
  
     /**
      * Build long out of bytes (in little endian order).
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @return long
      */
     public static final long BuildLongLE(byte bytevec[]) {
@@ -482,7 +483,7 @@ public class MoreMath {
 
     /**
      * Build long out of bytes.
-     * @param bytevec[] bytes
+     * @param bytevec bytes
      * @param MSBFirst BE or LE?
      * @return long
      */

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/terrain/LOSGenerator.java,v $
 // $RCSfile: LOSGenerator.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:47:50 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -217,7 +217,7 @@ public class LOSGenerator {
      * @param endTotalHeight total height of one the other point, in
      * meters.  Should represent elevation of point which is the
      * surface elevation above MSL, and the height above the surface.  
-     * @param arc_distance the surface angle, in radians, across the
+     * @param arc_dist the surface angle, in radians, across the
      * spherical model of the earth that separates the two points.
      */
     public double calculateLOSSlope(int startTotalHeight,

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Proj.java,v $
 // $RCSfile: Proj.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/11/14 20:56:43 $
-// $Author: dietrick $
+// $Revision: 1.6 $
+// $Date: 2003/12/23 20:43:57 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -142,7 +142,7 @@ public abstract class Proj implements Projection, Cloneable {
     /**
      * Construct a projection.
      * @param center LatLonPoint center of projection
-     * @param scale float scale of projection
+     * @param s float scale of projection
      * @param w width of screen
      * @param h height of screen
      * @param type projection type
@@ -279,7 +279,6 @@ public abstract class Proj implements Projection, Cloneable {
 
     /**
      * Get the scale of the projection.
-     * <p>
      * @return float scale value
      */
     public float getScale() {
@@ -288,7 +287,6 @@ public abstract class Proj implements Projection, Cloneable {
 
     /**
      * Get the maximum scale of the projection.
-     * <p>
      * @return float max scale value
      */
     public float getMaxScale() {
@@ -492,7 +490,7 @@ public abstract class Proj implements Projection, Cloneable {
 
     /**
      * Test for equality.
-     * @param p Object to compare.
+     * @param o Object to compare.
      * @return boolean comparison
      */
     public boolean equals(Object o) {
@@ -559,7 +557,6 @@ public abstract class Proj implements Projection, Cloneable {
      * <p>
      * Forward projects a LatLon point into XY space.  Returns a
      * Point.
-     * @param point LatLonPoint
      * @param llp LatLonPoint to be projected
      * @return Point (new)
      */
@@ -1134,9 +1131,8 @@ public abstract class Proj implements Projection, Cloneable {
 
     /**
      * Generates a complicated poly.
-     * @param llpts LatLonPoint[]
+     * @param rawllpts LatLonPoint[]
      * @param ltype line type
-     * @param connect polygon or polyline
      * @param nsegs number of segments to draw for greatcircle or
      * rhumb lines (if &lt; 1, this value is generated internally).
      * @param isFilled filled poly?

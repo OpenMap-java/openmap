@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMapApplet.java,v $
 // $RCSfile: OpenMapApplet.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/04/23 17:08:00 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 20:47:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -302,7 +302,7 @@ public class OpenMapApplet extends JApplet
     
     /** Method for BeanContextChild interface. 
      * 
-     * @param BeanContext in_bc The context to which this object is being added
+     * @param in_bc The context to which this object is being added
      */
     public void setBeanContext(BeanContext in_bc) 
 	throws PropertyVetoException {

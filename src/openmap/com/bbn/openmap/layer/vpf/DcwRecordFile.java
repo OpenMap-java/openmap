@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwRecordFile.java,v $
 // $RCSfile: DcwRecordFile.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:32 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -55,7 +55,7 @@ public class DcwRecordFile {
     final protected String filename;
     /** the name of the table */
     protected String tablename = null;
-    /** remember the byte order for later file openings. true is MSB first. */
+    /** remember the byte order for later file openings, true for MSB first */
     protected boolean byteorder = true;
     /** the record number that a call to parseRow() will return */
     int cursorRow = -1;
@@ -65,7 +65,7 @@ public class DcwRecordFile {
 
     /**
      * Open a DcwRecordFile and completely initialize it
-     * @param file the file to use for input
+     * @param name the name of the file to use for input
      * @exception FormatException some problem was encountered dealing with
      *	the file
      */
@@ -75,7 +75,7 @@ public class DcwRecordFile {
     
     /**
      * Open a DcwRecordFile
-     * @param file the file to use for input
+     * @param name the name of the file to use for input
      * @param deferInit if <code>true</code>, don't actually open files and
      *	initialize the object.  In this state, the only method that
      *	should be called is finishInitialization.
@@ -189,7 +189,7 @@ public class DcwRecordFile {
     /**
      * Returns a TilingAdapter for the selected column.
      * @param primColumnName the name of the primitive column
-     * @returns an appropriate TilingAdapter instance or null
+     * @return an appropriate TilingAdapter instance or null
      */
     public TilingAdapter getTilingAdapter(String primColumnName) {
 	return getTilingAdapter(-1, whatColumn(primColumnName));
@@ -199,7 +199,7 @@ public class DcwRecordFile {
      * Returns a TilingAdapter for the selected column.
      * @param primColumnName the name of the primitive column
      * @param tileColumnName the name of the tile_id column
-     * @returns an appropriate TilingAdapter instance or null
+     * @return an appropriate TilingAdapter instance or null
      */
     public TilingAdapter getTilingAdapter(String tileColumnName,
 					  String primColumnName) {
@@ -211,7 +211,7 @@ public class DcwRecordFile {
      * Returns a TilingAdapter for the selected column.
      * @param primColumn the position of the primitive column
      * @param tileColumn the position of the tile_id column
-     * @returns an appropriate TilingAdapter instance or null
+     * @return an appropriate TilingAdapter instance or null
      */
     public TilingAdapter getTilingAdapter(int tileColumn, int primColumn) {
 	DcwColumnInfo tile = (tileColumn != -1) ? columnInfo[tileColumn] : null;
@@ -242,7 +242,7 @@ public class DcwRecordFile {
     /** 
      * Get the column number for a set of column names.
      * @param names the names of the columns
-     * @returns an array of column numbers
+     * @return an array of column numbers
      * @exception FormatException the table does not match the specified schema
      */
     public int[] lookupSchema(String[] names,
@@ -261,12 +261,12 @@ public class DcwRecordFile {
     /** 
      * Get the column number for a set of column names.
      * @param names the names of the columns
-     * @param types in same order as names
+     * @param type in same order as names
      * @param length in same order as names (-1 for a variable length column)
      * @param strictlength false means that variable length columns can be
      *        fixed-length instead
      * @param mustExist if true and a column doesn't exist, method returns null
-     * @returns an array of column numbers
+     * @return an array of column numbers
      * @exception FormatException the table does not match the specified schema
      */
     public int[] lookupSchema(String[] names, boolean mustExist,
@@ -285,7 +285,7 @@ public class DcwRecordFile {
     }
 
     /** make a claim as to what you expect the table to look like
-     * @param types in order that you expect the columns [from VPF spec]
+     * @param type in order that you expect the columns [from VPF spec]
      * @param length array of lengths of the respective columns (-1 for a
      *        variable length column)
      * @param strictlength false means that variable length columns can be

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SaveAsImageMenuItem.java,v $
 // $RCSfile: SaveAsImageMenuItem.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/15 20:36:25 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:47 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -44,9 +44,9 @@ public class SaveAsImageMenuItem extends MapHandlerMenuItem
     AbstractImageFormatter formatter = null;
     
     /**
-     * @param String A String that will be displayed when this
+     * @param display A String that will be displayed when this
      * menuitem is shown in GUI
-     * @param AbstractImageFormatter A formatter that knows how to
+     * @param in_formatter A formatter that knows how to
      * generate an image from MapBean.  
      */
     public SaveAsImageMenuItem(String display, AbstractImageFormatter in_formatter) {

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCacheManager.java,v $
 // $RCSfile: RpfCacheManager.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:29 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -96,7 +96,7 @@ public class RpfCacheManager implements Serializable {
     /**
      * Constructor that lets you set the RPF frame provider
      * 
-     * @param RpfFrameProvider the object supplying the data. 
+     * @param fp the object supplying the data. 
      */
     public RpfCacheManager(RpfFrameProvider fp) {
 	this(fp, new RpfViewAttributes());
@@ -120,7 +120,7 @@ public class RpfCacheManager implements Serializable {
      * @param rfp the object supplying the data. 
      * @param rva the view attributes for the images.
      * @param mainCacheSize the number of subframes held in the large main cache.  
-     * @param auxCacheSize the number of subframes held in the aux caches.
+     * @param auxSubframeCacheSize the number of subframes held in the aux caches.
      */
     public RpfCacheManager(RpfFrameProvider rfp, RpfViewAttributes rva, 
 			   int mainCacheSize, int auxSubframeCacheSize) {
@@ -355,9 +355,6 @@ public class RpfCacheManager implements Serializable {
     /** 
      * Creates the OMGraphicList by cycling through the caches,
      * getting the images and attribute infomation.
-     *
-     * @param showMaps add images to the graphic list for display.
-     * @param showInfo add attribute text to the graphic list for display.
      */
     protected OMGraphic getSubframes() {
 

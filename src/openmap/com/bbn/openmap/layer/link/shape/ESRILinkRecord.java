@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ESRILinkRecord.java,v $
 // $RCSfile: ESRILinkRecord.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:28 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -39,7 +39,7 @@ public interface ESRILinkRecord {
      * Copy the poly points array because the OMPoly converts from
      * degrees to radians in place, trashing the shape.
      *
-     * @param gr the graphics response of the link to write the object to.
+     * @param lgl the graphics response of the link to write the object to.
      * @param properties the properties of the polys
      */
     public void writeLinkGraphics (LinkGraphicList lgl,

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersMenu.java,v $
 // $RCSfile: LayersMenu.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/04/05 05:39:01 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 20:47:46 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -100,7 +100,6 @@ public class LayersMenu extends AbstractOpenMapMenu
     
     /**
      * Construct LayersMenu.
-     * @param inLayers the Layers
      */
     public LayersMenu() {
 	this (null);
@@ -108,7 +107,7 @@ public class LayersMenu extends AbstractOpenMapMenu
 
     /**
      * Construct LayersMenu.
-     * @param inLayers the Layers
+     * @param lHandler the handler for the layer
      */
     public LayersMenu(LayerHandler lHandler) {
 	this (lHandler, "Layers", LAYERS_ON_OFF);
@@ -116,7 +115,7 @@ public class LayersMenu extends AbstractOpenMapMenu
 
     /**
      * Construct LayersMenu.
-     * @param inLayers the Layers
+     * @param lHandler the handler for the layer
      * @param menuName the name of the menu
      * @param menuType either LAYERS_ON_OFF, or PALETTES_ON_OFF
      */

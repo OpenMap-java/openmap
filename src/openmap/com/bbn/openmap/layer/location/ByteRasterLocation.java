@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/ByteRasterLocation.java,v $
 // $RCSfile: ByteRasterLocation.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:29 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -113,8 +113,8 @@ public class ByteRasterLocation extends Location {
     /**
      * Create an OMRaster at a latitude/longitude, from a image byte array.
      *
-     * @param latitude latitide in decimal degrees
-     * @param longitude longitude in decimal degrees.
+     * @param lat latitide in decimal degrees
+     * @param lon longitude in decimal degrees.
      * @param bytearr a byte array from an image file that an
      * ImageIcon can use to create an Image icon.  Can also be the
      * binary contents of an image from a database query.  
@@ -153,8 +153,8 @@ public class ByteRasterLocation extends Location {
      * Create a lat/lon OMRaster, pffset to a certain pixel location,
      * with an image byte array.
      *
-     * @param latitude latitide in decimal degrees
-     * @param longitude longitude in decimal degrees.
+     * @param lat latitide in decimal degrees
+     * @param lon longitude in decimal degrees.
      * @param x horizontal pixel screen location from the
      * longitude map point.
      * @param y vertical pixel screen location, from the

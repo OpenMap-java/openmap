@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/html/WrapElement.java,v $
 // $RCSfile: WrapElement.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:31 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -52,7 +52,7 @@ public class WrapElement implements Element {
 
     /** Construct a WrapElement with a wrapping string and params
      * @param wrapString the html tag that gets wrapped around the element
-     * @param e the element that gets contained
+     * @param paramString the string that gets contained
      */
     public WrapElement(String wrapString, String paramString) {
 	this(wrapString, paramString, null);

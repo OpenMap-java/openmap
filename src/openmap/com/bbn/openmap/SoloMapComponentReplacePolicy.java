@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/SoloMapComponentReplacePolicy.java,v $
 // $RCSfile: SoloMapComponentReplacePolicy.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/05 15:38:21 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -33,7 +33,7 @@ import java.util.Iterator;
 public class SoloMapComponentReplacePolicy implements SoloMapComponentPolicy {
 
     /**
-     * @returns true if the object can be added to the MapHandler, and
+     * @return true if the object can be added to the MapHandler, and
      * will have removed the previous duplicate from the MapHandler.
      */
     public boolean canAdd(BeanContextSupport bc, Object obj) 

@@ -12,7 +12,7 @@
  * 24.02.2002 Don Dietrick <dietrick@bbn.com>
  * version 1.1 updated to work with OpenMap 4.5, added to OpenMap package.
  *
- * $Id: GenerateVPFProperties.java,v 1.1.1.1 2003/02/14 21:35:49 dietrick Exp $
+ * $Id: GenerateVPFProperties.java,v 1.2 2003/12/23 20:43:32 wjeuerle Exp $
  * **********************************************************************
  */
 
@@ -194,8 +194,6 @@ public class GenerateVPFProperties extends DescribeDB {
     }
     /**
      * Print some featureclass names 
-     * @param fcis an array of FeatureClassInfo objects whose names get
-     * printed
      */
     public static void printFeatures(
         String fname, Vector features, String layername) {

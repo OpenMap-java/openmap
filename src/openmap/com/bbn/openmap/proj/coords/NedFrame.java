@@ -67,7 +67,7 @@ public class NedFrame {
     /**
      * Construct a NedFrame from a ECEF vector and a LatLonPoint.
      *
-     * @param ecefVector.
+     * @param ecefVector
      */
     public NedFrame(double[] ecefVector, LatLonPoint llpt) {
         // All calculations are done using radians!
@@ -95,7 +95,7 @@ public class NedFrame {
     /**
      * Convert to  a geocentric frame using a LatLonPoint.
      *
-     * @param llpt.
+     * @param llpt
      * @return a vector of ecef values
      */
     public double[] toGeocentricFrame(LatLonPoint llpt) {
@@ -194,7 +194,7 @@ public class NedFrame {
     /**
      * Copy construct a NedFrame.
      *
-     * @param pt NedFrame
+     * @param nedpt NedFrame
      */
     public NedFrame(NedFrame nedpt) {
         x = nedpt.x;
@@ -212,7 +212,7 @@ public class NedFrame {
 
     /**
      * Set x.
-     * @param x in meters.
+     * @param pX in meters.
      */
     public void setX(float pX) {
         x = pX;
@@ -220,7 +220,7 @@ public class NedFrame {
 
     /**
      * Set y.
-     * @param y in meters.
+     * @param pY in meters.
      */
     public void setY(float pY) {
         y = pY;
@@ -228,7 +228,7 @@ public class NedFrame {
     
     /**
      * Set z.
-     * @param z in meters.
+     * @param pZ in meters.
      */
     public void setZ(float pZ) {
         z = pZ;

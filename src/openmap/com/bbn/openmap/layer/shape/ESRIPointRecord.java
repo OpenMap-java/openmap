@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPointRecord.java,v $
 // $RCSfile: ESRIPointRecord.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/17 16:34:19 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 20:43:30 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -32,7 +32,7 @@ import com.bbn.openmap.omGraphics.*;
  *
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.3 $ $Date: 2003/10/17 16:34:19 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/23 20:43:30 $
  */
 public class ESRIPointRecord extends ESRIRecord {
 
@@ -168,8 +168,6 @@ public class ESRIPointRecord extends ESRIRecord {
      * Generates Points and adds them to the given list. 
      *
      * @param list the graphics list
-     * @param drawingAttributes DrawingAttributes to decribe how to
-     * represent the points, if an ImageIcon is not defined.  
      */
     public OMGeometry addOMGeometry(OMGeometryList list){
 	// Don't have a point geometry yet.

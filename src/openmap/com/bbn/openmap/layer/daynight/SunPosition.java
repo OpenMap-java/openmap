@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/SunPosition.java,v $
 // $RCSfile: SunPosition.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:25 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -29,8 +29,8 @@ import java.util.*;
 
 /**
  * SunPosition calculates the latitude/longitude on the Earth that is
- * closest to the Sun, i.e. the point on the Earth that the sun is
- * "over"..
+ * closest to the Sun, the point on the Earth where the sun is directly
+ * overhead.
  *
  * All of these calculations are based on an epoch, or a starting
  * point where the Sun's position is known.  From the reference

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjMath.java,v $
 // $RCSfile: ProjMath.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:57 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -139,9 +139,8 @@ public final class ProjMath {
 
     /**
      * Convert between decimal degrees and scoords.
-     * @param deg scoords
+     * @param sc scoords
      * @return double decimal degrees
-     *
      */
     final public static double SC_TO_DEG(int sc) {
 	return ((double)(sc) / (60.0 * 60.0 * 1000.0));

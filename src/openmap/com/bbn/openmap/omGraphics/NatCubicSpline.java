@@ -6,7 +6,7 @@ import java.awt.Polygon;
  * A natural cubic spline calculation.
  * 
  * @author Eric LEPICIER
- * @see http://www.cse.unsw.edu.au/~lambert/splines/
+ * @see <a href="http://www.cse.unsw.edu.au/~lambert/splines/">Splines</a>
  * @version 21 juil. 2002
  */
 public class NatCubicSpline {
@@ -169,8 +169,8 @@ public class NatCubicSpline {
     }
 
     /**
-     * Sets the steps, i.e. the number of points interpolated on the curve
-     * between original points to draw it as a polyline.
+     * Sets the number of points (steps) interpolated on the curve
+     * between the original points to draw it as a polyline.
      * @param steps The steps to set
      */
     public void setSteps(int steps) {

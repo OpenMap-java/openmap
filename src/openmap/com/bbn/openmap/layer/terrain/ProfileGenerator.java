@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileGenerator.java,v $
 // $RCSfile: ProfileGenerator.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:47:35 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:31 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -222,7 +222,6 @@ public class ProfileGenerator implements TerrainTool {
     /**
      * Create the image and write it the location.
      *
-     * @param filepath complete filename to write to.
      * @param total_distance total length of line, in pixels
      * @param max_height highest point, in meters of all the heights in the line.
      * @param distances array of pixel distances between the points

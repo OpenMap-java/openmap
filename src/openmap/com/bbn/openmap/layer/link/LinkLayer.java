@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/10/15 19:46:35 $
-// $Author: dietrick $
+// $Revision: 1.10 $
+// $Date: 2003/12/23 20:43:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -694,7 +694,7 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * messaging attributes.  Then, the information delegator is
      * called to handle their display.
      *
-     * @param prop LinkProperties containing messages. 
+     * @param props LinkProperties containing messages. 
      */
     public void handleMessages(LinkProperties props) {
 	String value = props.getProperty(LPC_INFO);
@@ -1098,7 +1098,7 @@ public class LinkLayer extends OMGraphicHandlerLayer
     /**
      * Looks at a properties object, and checks for map updates.
      *
-     * @param prop LinkProperties containing map parameters.
+     * @param props LinkProperties containing map parameters.
      */
     public void updateMap(LinkProperties props) {
 

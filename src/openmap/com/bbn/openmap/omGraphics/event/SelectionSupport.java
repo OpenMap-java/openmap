@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/SelectionSupport.java,v $
 // $RCSfile: SelectionSupport.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:46:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -74,9 +74,9 @@ public class SelectionSupport {
 
     /**
      * Send a selection event to all registered listeners.
-     *
-     * @param latitude the latitude
-     * @param longitude the longitude
+     * @param omg the graphic in the selection event
+     * @param dtr the drawingtoolrequestor in the selection event
+     * @param isSelected the selection state in the selection event
      * @see SelectionEvent
      */
     public void fireSelection(OMGraphic omg, DrawingToolRequestor dtr, boolean isSelected) {

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolSet.java,v $
 // $RCSfile: OMToolSet.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/24 20:49:42 $
-// $Author: blubin $
+// $Revision: 1.7 $
+// $Date: 2003/12/23 20:47:46 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -129,7 +129,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
     /** 
      * Tool interface method. Set the retrieval key for this tool.
      *
-     * @param key The key for this tool.
+     * @param aKey The key for this tool.
      */
     public void setKey(String aKey) {
 	key = aKey;
@@ -163,7 +163,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * Convenience function to set up listeners of the components.  If
      * you are hooking the MapBean up to the OMToolSet, this is what
      * you need to call.
-     * @param aMap a map object.
+     * @param aMapBean a map object.
      */
     public void setupListeners(MapBean aMapBean) {
 	if (aMapBean != null) {
@@ -174,7 +174,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
     /**
      * This function removes the mapBean object from its set of
      * Listeners. An inverse of setupListeners() method.
-     * @param mapBean a map object.
+     * @param aMapBean a map object.
      */
     public void removeFromAllListeners(MapBean aMapBean) {
 	if (aMapBean != null) {
@@ -202,7 +202,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
 
     /**
      * Add a button to the panel.
-     * @param name URL for image
+     * @param url URL for image
      * @param info tool tip
      * @param al ActionListener
      */
@@ -305,7 +305,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * the property that would be helpful (range, default value,
      * etc.).
      *
-     * @param getList a Properties object to load the PropertyConsumer
+     * @param list a Properties object to load the PropertyConsumer
      * properties into.  If getList equals null, then a new Properties
      * object should be created.
      * @return Properties object containing PropertyConsumer property

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameCache.java,v $
 // $RCSfile: DTEDFrameCache.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:32:37 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:26 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -166,7 +166,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     /** 
      * Return The Dted Frame, Given A Lat, Lon And Dted Level.
      *
-     * @Return Dted frame.
+     * @return Dted frame.
      * @param lat latitude of point
      * @param lon longitude of point
      * @param level the dted level wanted (0, 1, 2)
@@ -323,8 +323,8 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     /** 
      * Return the elevation of a lat/lon point, in meters.
      * @return elevation in meters.
-     * @param latitude in decimal degrees.
-     * @param longitude in decimal degrees.
+     * @param lat in decimal degrees.
+     * @param lon in decimal degrees.
      */
     public int getElevation(float lat, float lon) {
 	for (int i=/*dted level*/1; i >= /*dted level*/0; i--) {

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolComponent.java,v $
 // $RCSfile: OMToolComponent.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/23 21:01:16 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 20:47:46 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -137,7 +137,7 @@ public abstract class OMToolComponent extends OMComponentPanel
     /** 
      * Set the retrieval key for this tool
      *
-     * @param key The key for this tool.
+     * @param aKey The key for this tool.
      */
     public void setKey(String aKey) {
 	key = aKey;

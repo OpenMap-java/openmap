@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMLine.java,v $
 // $RCSfile: OMLine.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/10 22:50:05 $
-// $Author: dietrick $
+// $Revision: 1.6 $
+// $Date: 2003/12/23 20:46:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -80,10 +80,9 @@ public class OMLine extends OMGraphic implements Serializable {
      */
     protected int arrowDirectionType = OMArrowHead.ARROWHEAD_DIRECTION_FORWARD;
     /**
-     * Where on the line to put the ArrowHead, from 0-100.  100 is at
-     * the normal endpoint, and 0 is at the normal starting
-     * point. For BACKWARDS directions, 100 would be at the
-     * beginning of the line.
+     * Where on the line to put the ArrowHead, from 0 (start) to 100 (end) of
+     * the line. For BACKWARDS directions, 100 would be at the beginning of
+     * the line.
      */
     protected int arrowLocation = 100;
 
@@ -225,7 +224,7 @@ public class OMLine extends OMGraphic implements Serializable {
      * the line render type, so it acts accordingly.  LL1 is only used
      * in RENDERTYPE_LATLON, RENDERTYPE_OFFSET, and LL2 is only used in
      * RENDERTYPE_LATLON.  
-     * @param latlons array of floats - lat1, lon1, lat2, lon2 
+     * @param lls array of floats - lat1, lon1, lat2, lon2 
      */
     public void setLL(float[] lls) {
 	latlons = lls;

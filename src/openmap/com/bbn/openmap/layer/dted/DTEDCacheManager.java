@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCacheManager.java,v $
 // $RCSfile: DTEDCacheManager.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:32:37 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:25 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -146,7 +146,7 @@ public class DTEDCacheManager {
      * Used to set the DTED directory paths. 
      *
      * @param paths DTED Level 0 and 1 directory paths.
-     * @param paths DTED Level 2 directory paths.
+     * @param paths2 DTED Level 2 directory paths.
      */
     public void setDtedDirPaths(String[] paths, String[] paths2) {
 	dtedDirPaths = paths;

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/BasicLocationHandler.java,v $
 // $RCSfile: BasicLocationHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/21 02:06:54 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:29 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -247,7 +247,7 @@ public class BasicLocationHandler
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @param String prefix String.  
+     * @return thre property prefix
      */
     public String getPropertyPrefix() {
 	return propertyPrefix;

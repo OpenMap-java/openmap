@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/NodeTable.java,v $
 // $RCSfile: NodeTable.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:33 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -123,7 +123,7 @@ public class NodeTable extends PrimitiveTable {
      * @param dpplon threshold for longitude thinngin (passed to warehouse)
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
-     * @param text a list with the TextTable row contents.
+     * @param node a list with the NodeTable row contents.
      * @param featureType the string representing the feature type, in
      * case the warehouse wants to do some intelligent rendering.
      * @see VPFGraphicWarehouse#createNode

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGrid.java,v $
 // $RCSfile: OMGrid.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:46:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -92,14 +92,14 @@ public class OMGrid extends OMGraphic {
      */
     public float longitude;
     /**
-     * The vertical/latitude interval, i.e. the distance between row data
+     * The vertical/latitude interval, the distance between row data
      * points in the vertical direction. For x/y grids, this can
      * server as a pixel multiplier.  For lat/lon grids, it
      * represents the decimal degrees between grid points. 
      */
     public float verticalResolution;
     /**
-     * The horizontal/longitude interval, i.e. the distance between
+     * The horizontal/longitude interval, the distance between
      * column data points in the horizontal direction. For x/y grids, this
      * can server as a pixel mulitplier.  For lat/lon grids, it
      * represents the decimal degrees between grid points. 
@@ -207,7 +207,7 @@ public class OMGrid extends OMGraphic {
      * from the top side of the map.
      * @param vResolution the vertical resolution of the data, as
      * pixels per row.
-     * @param vResolution the horizontal resolution of the data, as
+     * @param hResolution the horizontal resolution of the data, as
      * pixels per column.
      * @param data a double array of integers, representing the rows
      * and columns of data.  
@@ -235,7 +235,7 @@ public class OMGrid extends OMGraphic {
      * from the latitude anchor point.
      * @param vResolution the vertical resolution of the data, as
      * pixels per row.
-     * @param vResolution the horizontal resolution of the data, as
+     * @param hResolution the horizontal resolution of the data, as
      * pixels per column.
      * @param data a double array of integers, representing the rows
      * and columns of data.  

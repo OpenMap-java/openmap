@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometryList.java,v $
 // $RCSfile: OMGeometryList.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/08/28 22:09:16 $
-// $Author: dietrick $
+// $Revision: 1.7 $
+// $Date: 2003/12/23 20:46:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -193,7 +193,7 @@ public class OMGeometryList extends OMGraphicList
      * Set the stroke for this list object.  All geometries will be
      * rendered with this stroke.
      *
-     * @param stroke the stroke object to use.  
+     * @param s the stroke object to use.  
      */
     public void setStroke(java.awt.Stroke s) {
 	if (s != null) {
@@ -242,10 +242,7 @@ public class OMGeometryList extends OMGraphicList
      * Set the line paint for this list object.  All the geometries
      * will be rendered with this fill paint.
      *
-     * @param paint java.awt.Paint 
-     * Set the line paint for all the objects on the list.
-     *
-     * @param paint java.awt.Paint
+     * @param paint Set the line paint for all the objects on the list.
      */
     public void setLinePaint(Paint paint) {
 	if (paint != null) {

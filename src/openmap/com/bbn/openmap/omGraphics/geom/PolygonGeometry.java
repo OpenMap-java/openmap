@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/PolygonGeometry.java,v $
 // $RCSfile: PolygonGeometry.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/10 22:03:57 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:46:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -258,7 +258,7 @@ public abstract class PolygonGeometry extends BasicGeometry
 	 * </ul>
 	 * This is for RENDERTYPE_LATLON polys.
 	 *
-	 * @param llpoints array of lat/lon points, arranged lat, lon,
+	 * @param llPoints array of lat/lon points, arranged lat, lon,
 	 * lat, lon, etc.
 	 * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
 	 * or OMGraphic.DECIMAL_DEGREES
@@ -553,7 +553,7 @@ public abstract class PolygonGeometry extends BasicGeometry
 	 * @param latPoint latitude in decimal degrees
 	 * @param lonPoint longitude in decimal degrees
 	 * @param xypoints int[] of x,y pairs
-	 * @param cmode offset coordinate mode
+	 * @param cMode offset coordinate mode
 	 */
 	public Offset(float latPoint, float lonPoint, 
 		      int[] xypoints, int cMode) {
@@ -571,7 +571,7 @@ public abstract class PolygonGeometry extends BasicGeometry
 	 * @param lonPoint longitude in decimal degrees
 	 * @param xPoints int[] of x coordinates
 	 * @param yPoints int[] of y coordinates
-	 * @param cmode offset coordinate mode
+	 * @param cMode offset coordinate mode
 	 */
 	public Offset(float latPoint, float lonPoint, 
 		      int[] xPoints, int[] yPoints, 

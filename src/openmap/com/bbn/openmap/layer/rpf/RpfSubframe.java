@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfSubframe.java,v $
 // $RCSfile: RpfSubframe.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:30 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -155,8 +155,10 @@ public class RpfSubframe {
 
     /**
      * Set the lat/lon of the frame and attribute text. 
-     * @param lat latitude of upper left point, in decimal degrees. 
-     * @param lon longitude of upper left point, in decimal degrees. 
+     * @param ulat latitude of upper left point, in decimal degrees. 
+     * @param wlon longitude of upper left point, in decimal degrees. 
+     * @param llat latitude of lower right point, in decimal degrees. 
+     * @param elon longitude of lower right point, in decimal degrees. 
      */
     public void setLocation(float ulat, float wlon, float llat, float elon) {
 	image.setULLat(ulat);

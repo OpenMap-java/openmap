@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/Assert.java,v $
 // $RCSfile: Assert.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:44:37 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -54,7 +54,7 @@ package com.bbn.openmap.util;
  *
  * @author Peter Van Der Linden
  * @author Maintained by: Tom Mitchell (tmitchell@bbn.com)
- * @version $Revision: 1.1.1.1 $, $Date: 2003/02/14 21:35:49 $ 
+ * @version $Revision: 1.2 $, $Date: 2003/12/23 20:44:37 $ 
  */
 public final class Assert {
 
@@ -88,7 +88,6 @@ public final class Assert {
      * an exception is thrown.
      *
      * @param b An expression expected to be true
-     * @param s Exception string if expression is false
      * @exception AssertionException if expression is false
      */
     public static final void assertExp(boolean b) {

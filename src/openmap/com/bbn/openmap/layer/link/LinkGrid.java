@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGrid.java,v $
 // $RCSfile: LinkGrid.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:27 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -50,7 +50,7 @@ public class LinkGrid implements LinkGraphicConstants {
      * @param orientation the direction of the vertical axits of the
      * grid, in radians from up ( North).
      * @param vResolution degrees/point between rows of the grid.
-     * @param hRsolution degrees/point between columns of the grid.
+     * @param hResolution degrees/point between columns of the grid.
      * @param major designation of the presentation of the data, as
      * columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
@@ -95,7 +95,7 @@ public class LinkGrid implements LinkGraphicConstants {
      * @param orientation the direction of the vertical axits of the
      * grid, in radians from up ( North).
      * @param vResolution pixels/point between rows of the grid.
-     * @param hRsolution pixels/point between columns of the grid.
+     * @param hResolution pixels/point between columns of the grid.
      * @param major designation of the presentation of the data, as
      * columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
@@ -143,7 +143,7 @@ public class LinkGrid implements LinkGraphicConstants {
      * @param orientation the direction of the vertical axits of the
      * grid, in radians from up ( North).
      * @param vResolution pixels/point between rows of the grid.
-     * @param hRsolution pixels/point between columns of the grid.
+     * @param hResolution pixels/point between columns of the grid.
      * @param major designation of the presentation of the data, as
      * columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.

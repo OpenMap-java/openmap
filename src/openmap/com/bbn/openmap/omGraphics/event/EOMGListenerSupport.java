@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/EOMGListenerSupport.java,v $
 // $RCSfile: EOMGListenerSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:50:27 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:46:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -46,7 +46,7 @@ public class EOMGListenerSupport extends ListenerSupport {
 
     /**
      * Construct a EOMGListenerSupport.
-     * @param aSource source Object
+     * @param graphic source graphic
      */
     public EOMGListenerSupport(EditableOMGraphic graphic) {
 	super(graphic);

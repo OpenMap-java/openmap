@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/unimplemented/Attic/LambertConformalConic.java,v $
 // $RCSfile: LambertConformalConic.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:57 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -56,7 +56,6 @@ public class LambertConformalConic extends Conic {
 
     /**
      * Construct a Lambert projection.
-     * <p>
      * @param center LatLonPoint center of projection
      * @param scale float scale of projection
      * @param width width of screen
@@ -208,7 +207,6 @@ public class LambertConformalConic extends Conic {
 
     /**
      * Checks if a LatLonPoint is plot-able.
-     * <p>
      * @param lat float latitude in decimal degrees
      * @param lon float longitude in decimal degrees
      * @return boolean
@@ -219,7 +217,6 @@ public class LambertConformalConic extends Conic {
 
     /**
      * Projects a point from Lat/Lon space to X/Y space.
-     * <p>
      * @param pt LatLonPoint
      * @param p Point retval
      * @return Point p
@@ -230,7 +227,6 @@ public class LambertConformalConic extends Conic {
 
     /**
      * Forward projects a lat,lon coordinates.
-     * <p>
      * @param lat raw latitude in decimal degrees
      * @param lon raw longitude in decimal degrees
      * @param p Resulting XY Point
@@ -243,7 +239,6 @@ public class LambertConformalConic extends Conic {
 
     /**
      * Forward projects lat,lon into XY space and returns a Point.
-     * <p>
      * @param phi float latitude in radians
      * @param lambda float longitude in radians
      * @param p Resulting XY Point
@@ -279,7 +274,6 @@ public class LambertConformalConic extends Conic {
 
     /**
      * Inverse project x,y coordinates into a LatLonPoint.
-     * <p>
      * @param x integer x coordinate
      * @param y integer y coordinate
      * @param llp LatLonPoint
@@ -310,8 +304,7 @@ public class LambertConformalConic extends Conic {
 
     /**
      * Inverse project a Point.
-     * <p>
-     * @param point x,y Point
+     * @param pt x,y Point
      * @param llp resulting LatLonPoint
      * @return LatLonPoint llp
      */
@@ -326,7 +319,6 @@ public class LambertConformalConic extends Conic {
      * Returns the upper left point (or closest equivalent) of the
      * projection based on the center point and height and width of
      * screen.
-     * <p>
      * @return LatLonPoint
      */
     public LatLonPoint getUpperLeft() {
@@ -369,7 +361,6 @@ public class LambertConformalConic extends Conic {
      * Returns the lower right point (or closest equivalent) of the
      * projection based on the center point and height and width of
      * screen.
-     * <p>
      * @return LatLonPoint
      */
     public LatLonPoint getLowerRight() {

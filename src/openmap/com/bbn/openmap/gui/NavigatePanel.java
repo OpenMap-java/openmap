@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigatePanel.java,v $
 // $RCSfile: NavigatePanel.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/24 20:48:54 $
-// $Author: blubin $
+// $Revision: 1.6 $
+// $Date: 2003/12/23 20:47:46 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -217,7 +217,6 @@ public class NavigatePanel extends OMToolComponent
 
     /**
      * Fire a CenterEvent.
-     * @param direction int
      */
     protected synchronized void fireCenterEvent(float lat, float lon) {
 	centerDelegate.fireCenter(lat, lon);

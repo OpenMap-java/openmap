@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/InfoDisplayListener.java,v $
 // $RCSfile: InfoDisplayListener.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:12:51 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -58,7 +58,7 @@ public interface InfoDisplayListener extends java.util.EventListener {
 
     /**
      * Request that the MapBean cursor be set to a certain type.
-     * @param Cursor java.awt.Cursor to set over the MapBean.
+     * @param cursor java.awt.Cursor to set over the MapBean.
      */
     public void requestCursor(java.awt.Cursor cursor);
 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/unimplemented/Attic/Conic.java,v $
 // $RCSfile: Conic.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:57 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -31,7 +31,6 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * Base of all conic projections.
- * <p>
  * @see LambertConformalConic
  * @see MassStatePlane
  */
@@ -55,7 +54,6 @@ public abstract class Conic extends Proj {
   
     /**
      * Construct a conic projection.
-     * <p>
      * @param center LatLonPoint center of projection
      * @param scale float scale of projection
      * @param width width of screen
@@ -69,7 +67,6 @@ public abstract class Conic extends Proj {
 
     /**
      * Return stringified description of this projection.
-     * <p>
      * @return String
      * @see Projection#getProjectionID
      */
@@ -119,8 +116,10 @@ public abstract class Conic extends Proj {
      * <p>
      * If you don't want a limit on any one of these parametes, pass in the
      * vaue Float.NaN.  Otherwise, the numbers are decimal degrees.
-     * @param lat float latitude in decimal degrees
-     * @param lon float longitude in decimal degrees
+     * @param north float latitude in decimal degrees
+     * @param east float longitude in decimal degrees
+     * @param south float latitude in decimal degrees
+     * @param west float longitude in decimal degrees
      */
     protected void setBorders(float north, float east, 
 			      float south, float west){
@@ -159,7 +158,6 @@ public abstract class Conic extends Proj {
      * <p>
      * It does populate a visible array indicating whether the points are
      * visible on the projected view of the world.
-     * <p>
      * @param rawllpts array of lat,lon,... in radians
      * @param rawoff offset into rawllpts
      * @param xcoords x coordinates

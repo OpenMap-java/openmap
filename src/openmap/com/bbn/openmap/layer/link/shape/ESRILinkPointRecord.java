@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ESRILinkPointRecord.java,v $
 // $RCSfile: ESRILinkPointRecord.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:28 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -35,7 +35,7 @@ import com.bbn.openmap.layer.link.*;
  *
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/23 20:43:28 $
  */
 public class ESRILinkPointRecord extends ESRIPointRecord implements ESRILinkRecord{
 
@@ -62,7 +62,7 @@ public class ESRILinkPointRecord extends ESRIPointRecord implements ESRILinkReco
     /**
      * Generates OMGraphics and adds them to the given list.
      *
-     * @param gr the graphics response to write the point to.
+     * @param lgl the graphics response to write the point to.
      * @param properties the semantic description of how the point should be drawn.
      */
     public void writeLinkGraphics(LinkGraphicList lgl,

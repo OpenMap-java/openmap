@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AbstractImageFormatter.java,v $
 // $RCSfile: AbstractImageFormatter.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/11/14 20:23:32 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/23 20:47:47 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -107,10 +107,7 @@ public abstract class AbstractImageFormatter
      * @param map the MapBean.
      * @param width the pixel width of the desired image.
      * @param height the pixel height of the desired image.
-     * @param useProjectionPainter if true, use the projection painter
-     * interface on the layers to create the image.  If false, uses
-     * the paintAll() method on the MapBean, so whatever is being
-     * painted on the screen gets on the image.
+     * @param scaleImage true to resize image based on scale
      * @return byte[] representing an image of the map in it's current state.
      */
     public byte[] getImageFromMapBean(MapBean map, int width, int height, 

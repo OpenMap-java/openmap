@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkActionRequest.java,v $
 // $RCSfile: LinkActionRequest.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:26 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -79,8 +79,8 @@ public class LinkActionRequest implements LinkActionConstants, LinkPropertiesCon
      * @param link the link to write to.
      * @param descriptor a masked integer (see constants) describing
      * the event to receive.
-     * @param the endType string to use for this description, either
-     * Link.END_TOTAL if this is the last section to the client, or
+     * @param sectionEnder the endType string to use for this description,
+     * either Link.END_TOTAL if this is the last section to the client, or
      * END_SECTION if there are more sections following.  
      */
     public LinkActionRequest(Link link, int descriptor, String sectionEnder) 
@@ -115,7 +115,7 @@ public class LinkActionRequest implements LinkActionConstants, LinkPropertiesCon
      * @param latPoint the latitude of the mouse event.
      * @param lonPoint the longitude of the mouse event.
      * @param props an array of strings representing key-value pairs.
-     * @param dos the DataOutputStream to write the gesture to.
+     * @param link the link to write the gesture to.
      */
     public static void write(int descriptor, MouseEvent me, 
 			     float latPoint, float lonPoint, 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/09/22 23:29:18 $
-// $Author: dietrick $
+// $Revision: 1.10 $
+// $Date: 2003/12/23 20:47:48 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -208,7 +208,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * Sets the current graphics list to the given list.
      *
      * @param aList a list of OMGraphics
-     * @param deprecated call setList() instead.
+     * @deprecated call setList() instead.
      */
     public synchronized void setGraphicList(OMGraphicList aList) {
 	setList(aList);
@@ -216,7 +216,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 
     /**
      * Retrieves the current graphics list.
-     * @param deprecated call getList() instead.
+     * @deprecated call getList() instead.
      */
     public synchronized OMGraphicList getGraphicList() {
 	return getList();

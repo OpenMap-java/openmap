@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerStatusPane.java,v $
 // $RCSfile: LayerStatusPane.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/15 16:16:50 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:46 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -68,7 +68,7 @@ public class LayerStatusPane extends LayerPane
 
     /**
      *  @param layer the layer to be represented by the pane.
-     *  @param cake the list of layers currently displayed on the map.
+     *  @param bg the buttongroup for the layer
      *  @param layerHandler the LayerHandler that contains information
      *  about the Layers. 
      */

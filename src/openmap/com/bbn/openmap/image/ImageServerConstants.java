@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServerConstants.java,v $
 // $RCSfile: ImageServerConstants.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/06/02 18:33:42 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:48 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -49,8 +49,8 @@ public interface ImageServerConstants extends WMTConstants {
      */
     public final static String LON = "LON";
     /**
-     * Which layer number should be included in Image (LayerMask). int value.
-     * Bit 0 is for layer 0 and so on.  
+     * Which layer number should be included in Image (LayerMask).
+     * Integer value. Bit 0 is for layer 0 and so on.  
      */
     public final static String LAYERMASK = "LAYERMASK";
     /**

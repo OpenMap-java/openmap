@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyConsumer.java,v $
 // $RCSfile: PropertyConsumer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:47:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -103,7 +103,7 @@ public interface PropertyConsumer {
      * the property that would be helpful (range, default value,
      * etc.).
      *
-     * @param getList a Properties object to load the PropertyConsumer
+     * @param list a Properties object to load the PropertyConsumer
      * properties into.  If getList equals null, then a new Properties
      * object should be created.
      * @return Properties object containing PropertyConsumer property
@@ -126,7 +126,7 @@ public interface PropertyConsumer {
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @param String prefix String.  
+     * @return the prefix string
      */
     public String getPropertyPrefix();
 

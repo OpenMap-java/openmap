@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/10/14 23:40:08 $
-// $Author: dietrick $
+// $Revision: 1.8 $
+// $Date: 2003/12/23 20:46:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -256,7 +256,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @param latPoint latitude in decimal degrees
      * @param lonPoint longitude in decimal degrees
      * @param xypoints int[] of x,y pairs
-     * @param cmode offset coordinate mode
+     * @param cMode offset coordinate mode
      */
     public OMPoly(float latPoint, float lonPoint, 
 		  int[] xypoints, int cMode) {
@@ -276,7 +276,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * @param lonPoint longitude in decimal degrees
      * @param xPoints int[] of x coordinates
      * @param yPoints int[] of y coordinates
-     * @param cmode offset coordinate mode
+     * @param cMode offset coordinate mode
      */
     public OMPoly(float latPoint, float lonPoint, 
 		  int[] xPoints, int[] yPoints, 
@@ -302,7 +302,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * </ul>
      * This is for RENDERTYPE_LATLON polys.
      *
-     * @param llpoints array of lat/lon points, arranged lat, lon,
+     * @param llPoints array of lat/lon points, arranged lat, lon,
      * lat, lon, etc.
      * @param units radians or decimal degrees.  Use OMGraphic.RADIANS
      * or OMGraphic.DECIMAL_DEGREES
@@ -500,7 +500,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * non-clear, then the poly is a polygon (connected and filled),
      * otherwise it's a polyline (non-filled).
      *
-     * @param value Color 
+     * @param paint value Color 
      */
     public void setFillPaint(Paint paint) {
 	super.setFillPaint(paint);

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodeScheme.java,v $
 // $RCSfile: CodeScheme.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/18 23:37:49 $
-// $Author: dietrick $
+// $Revision: 1.7 $
+// $Date: 2003/12/23 20:47:50 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -119,7 +119,7 @@ public class CodeScheme extends CodePosition {
      * parts under a particular scheme represented by this instance of
      * CodeScheme.
      * @param props the hierarchy properties.
-     * @parent the SymbolPart parent that the new SymbolPart tree falls under.
+     * @param parent the SymbolPart parent that the new SymbolPart tree falls under.
      */
     public SymbolPart parseHierarchy(Properties props, SymbolPart parent) {
 	String hCode = getHierarchyNumber() + hierarchyAddition;
@@ -141,7 +141,7 @@ public class CodeScheme extends CodePosition {
      * @param hCode the hierarchy code of this scheme, used to grow
      * the tree for subsequent generations.
      * @param props the hierarchy properties.
-     * @parent the SymbolPart parent that the new SymbolPart tree falls under.
+     * @param parent the SymbolPart parent that the new SymbolPart tree falls under.
      */
     public void parseHierarchy(String hCode, Properties props, SymbolPart parent) {
 	

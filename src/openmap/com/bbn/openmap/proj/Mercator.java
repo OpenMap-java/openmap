@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Mercator.java,v $
 // $RCSfile: Mercator.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:56 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -62,12 +62,10 @@ public class Mercator extends Cylindrical {
 
     /**
      * Construct a Mercator projection.
-     * <p>
      * @param center LatLonPoint center of projection
      * @param scale float scale of projection
      * @param width width of screen
      * @param height height of screen
-     *
      */
     public Mercator(
 	LatLonPoint center, float scale, int width, int height) {
@@ -87,10 +85,8 @@ public class Mercator extends Cylindrical {
 
     /**
      * Return stringified description of this projection.
-     * <p>
      * @return String
      * @see Projection#getProjectionID
-     *
      */
     public String toString() {
 	return "Mercator[" + super.toString();
@@ -151,7 +147,6 @@ public class Mercator extends Cylindrical {
      * <p>
      * A point is always plot-able in the Mercator projection (even the North
      * and South poles since we normalize latitude).
-     * <p>
      * @param lat float latitude in decimal degrees
      * @param lon float longitude in decimal degrees
      * @return boolean
@@ -229,11 +224,9 @@ public class Mercator extends Cylindrical {
 
     /**
      * Inverse project a Point.
-     * <p>
-     * @param point x,y Point
+     * @param pt x,y Point
      * @param llp resulting LatLonPoint
      * @return LatLonPoint llp
-     *
      */
     public LatLonPoint inverse(Point pt, LatLonPoint llp) {
 	// convert from screen to world coordinates
@@ -254,13 +247,11 @@ public class Mercator extends Cylindrical {
 
     /**
      * Inverse project x,y coordinates into a LatLonPoint.
-     * <p>
      * @param x integer x coordinate
      * @param y integer y coordinate
      * @param llp LatLonPoint
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
-     *
      */
     public LatLonPoint inverse(int x, int y, LatLonPoint llp) {
 	// convert from screen to world coordinates
@@ -286,11 +277,9 @@ public class Mercator extends Cylindrical {
      * rhumb lines by forward projecting the line in the Mercator
      * projection, and then calculating segments along the straight
      * line between them.)
-     * <p>
      * @param pt1 Point
      * @param pt2 Point
      * @return int number of points to use
-     *
      */
     protected final static int rhumbStep(Point pt1, Point pt2) {
 	int step = (int)DrawUtil.distance(pt1.x, pt1.y, pt2.x, pt2.y);

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.10 $
-// $Date: 2003/11/14 20:50:27 $
-// $Author: dietrick $
+// $Revision: 1.11 $
+// $Date: 2003/12/23 20:46:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -403,7 +403,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
     /**
      * Remove the graphic.
      *
-     * @param location the OMGraphic object to remove.
+     * @param graphic the OMGraphic object to remove.
      * @return true if graphic was on the list, false if otherwise.
      */
     public boolean remove(OMGraphic graphic) {
@@ -484,7 +484,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * Insert the geometry at the location number.
      * The OMGeometry must not be null.
      *
-     * @param graphic the OMGeometry to insert.
+     * @param geometry the OMGeometry to insert.
      * @param location the location of the OMGeometry to insert
      * @exception IllegalArgumentException if OMGeometry is null
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds

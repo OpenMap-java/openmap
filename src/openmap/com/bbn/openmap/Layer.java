@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.13 $
-// $Date: 2003/12/08 23:56:30 $
-// $Author: dietrick $
+// $Revision: 1.14 $
+// $Date: 2003/12/23 20:47:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -432,7 +432,7 @@ public abstract class Layer extends JComponent
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @param String prefix String.  
+     * @return the property prefix for the layer
      */
     public String getPropertyPrefix() {
 	return propertyPrefix;
@@ -687,7 +687,6 @@ public abstract class Layer extends JComponent
     /**
      * Request to show the tool tips on the map.
      *
-     * @param me MouseEvent location for the tool tip.
      * @param tip string to display.
      */
     public void fireRequestToolTip(String tip) {
@@ -788,7 +787,7 @@ public abstract class Layer extends JComponent
 
     /**
      * Sends a status update to the LayerStatusListener.
-     * @param evt LayerStatusEvent
+     * @param status the new status
      */
     public void fireStatusUpdate(int status) {
 	fireStatusUpdate(new LayerStatusEvent(this, status));

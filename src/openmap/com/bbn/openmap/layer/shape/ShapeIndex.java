@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeIndex.java,v $
 // $RCSfile: ShapeIndex.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:30 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -44,12 +44,12 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/23 20:43:30 $
  * @see SpatialIndex
  */
 public class ShapeIndex extends ShapeUtils {
 
-    /** Size of the shape index record. (8 bytes) */
+    /** Size of the shape index record, value is 8 bytes. */
     public final static int SHAPE_INDEX_RECORD_LENGTH = 8;
 
     /** The shape index file. */

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LayerGraphicWarehouseSupport.java,v $
 // $RCSfile: LayerGraphicWarehouseSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/28 15:51:23 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:43:33 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -515,7 +515,6 @@ public abstract class LayerGraphicWarehouseSupport
 
     /**
      * Create an OMPoint object corresponding to a VPF node feature
-     * @param text the text
      * @param latitude the latitude of where to place the text
      * @param longitude the longitude of where to place the text
      */

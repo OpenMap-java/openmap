@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/Location.java,v $
 // $RCSfile: Location.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/20 17:50:24 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 20:43:29 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -567,8 +567,6 @@ public abstract class Location extends OMGraphic {
      * generated, it will not be rendered.  This render will take into
      * account the layer showNames and showLocations settings.
      * @param g Graphics context to render into.
-     * @param showNames Layer setting for all the names.
-     * @param showLocations Layer setting for all the locations. 
      */
     public void render(Graphics g) {
 	renderLocation(g);
@@ -584,8 +582,6 @@ public abstract class Location extends OMGraphic {
      * generated, it will not be rendered.  This render will take into
      * account the layer showNames and showLocations settings.
      * @param g Graphics context to render into.
-     * @param showNames Layer setting for all the names.
-     * @param showLocations Layer setting for all the locations.
      */
     public void renderName(Graphics g) {
 	boolean globalShowNames = false;
@@ -612,8 +608,6 @@ public abstract class Location extends OMGraphic {
      * generated, it will not be rendered.  This render will take into
      * account the layer showNames and showLocations settings.
      * @param g Graphics context to render into.
-     * @param showNames Layer setting for all the names.
-     * @param showLocations Layer setting for all the locations.
      */
     public void renderLocation(Graphics g) {
 	boolean globalShowLocations = false;

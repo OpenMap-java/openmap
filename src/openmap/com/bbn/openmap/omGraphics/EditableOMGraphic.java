@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMGraphic.java,v $
 // $RCSfile: EditableOMGraphic.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/11/14 20:50:27 $
-// $Author: dietrick $
+// $Revision: 1.8 $
+// $Date: 2003/12/23 20:46:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -383,7 +383,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * set the moving point to that GrabPoint.  A version for
      * grandchild classes.
      * @param e MouseEvent that the GrabPoint should attach to.
-     * @see getMovingPoint(MouseEvent)
+     * @see #getMovingPoint(MouseEvent)
      */
     public GrabPoint _getMovingPoint(MouseEvent e) {
 	movingPoint = null;

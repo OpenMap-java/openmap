@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/12/16 01:16:36 $
-// $Author: dietrick $
+// $Revision: 1.9 $
+// $Date: 2003/12/23 20:46:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -507,7 +507,7 @@ public class OMText extends OMGraphic implements Serializable {
      * replace text on the map after it has been projected.  This
      * method lets the declutter matrix put the text in an uncluttered
      * place.
-     * @param Point on the map where the text being placed.  
+     * @param point the point on the map where the text being placed.  
      */
     public void setMapLocation(Point point) {
 	pt = point;
@@ -609,8 +609,6 @@ public class OMText extends OMGraphic implements Serializable {
      *
      * @deprecated use setMatted(boolean) instead.
      * @param show true to show, false to hide.
-     * @see #setBoundsLineColor
-     * @see #setBoundsFillColor
      * @see #setFillColor
      */
     public void setShowBounds(boolean show) {
@@ -669,7 +667,7 @@ public class OMText extends OMGraphic implements Serializable {
     /**
      * Set the angle by which the text is to rotated.
      *
-     * @param rotationAngle the number of radians the text is to be rotated.
+     * @param theta the number of radians the text is to be rotated.
      * Measured clockwise from horizontal.  
      * @deprecated use setRotationAngle instead.
      */

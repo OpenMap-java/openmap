@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ShapeLinkServer.java,v $
 // $RCSfile: ShapeLinkServer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:28 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -81,8 +81,6 @@ public class ShapeLinkServer extends LinkServer implements LinkPropertiesConstan
     /** 
      * handleClient is a method that listens to the link to a
      * client, and responds to requests that are made.
-     *
-     * @param link the Link to the client.
      */
     public void handleClient() throws IOException {
 	boolean validQuery;

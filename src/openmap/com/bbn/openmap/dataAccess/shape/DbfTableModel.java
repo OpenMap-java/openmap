@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/14 20:12:50 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 20:47:44 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -216,7 +216,7 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Retrieves the column class for the passed in column index
-     * @param column The column index
+     * @param c The column index
      * @return The column class for the given column index
      */
     public Class getColumnClass(int c) {
@@ -260,8 +260,7 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Retrieves the number of columns that exist in the model
-     * @param The number of columns that exist in the model
-     * @return int The number column that exist in the model
+     * @return The number column that exist in the model
      */
     public int getRowCount() {
 	if (_records == null) {
@@ -311,7 +310,7 @@ public class DbfTableModel extends AbstractTableModel
 
     /**
      * Set the character length fro the passed-in field index
-     * @param colum The column index
+     * @param column The column index
      * @param length The character length to assign for the passed-in
      * column index 
      */

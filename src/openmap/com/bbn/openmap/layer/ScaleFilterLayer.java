@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/11/14 20:29:38 $
-// $Author: dietrick $
+// $Revision: 1.6 $
+// $Date: 2003/12/23 20:43:25 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -509,7 +509,7 @@ public class ScaleFilterLayer extends Layer
 
     /**
      * Request that the MapBean cursor be set to a certain type.
-     * @param Cursor java.awt.Cursor to set over the MapBean.
+     * @param cursor java.awt.Cursor to set over the MapBean.
      */
     public void requestCursor(java.awt.Cursor cursor) {
 	fireRequestCursor(cursor);
@@ -518,7 +518,6 @@ public class ScaleFilterLayer extends Layer
     /**
      * Request a tool tip be shown.
      *
-     * @param me MouseEvent for where the tip should be placed.
      * @param event The InfoDisplayEvent containing the text and
      * requestor.  
      */
@@ -528,8 +527,6 @@ public class ScaleFilterLayer extends Layer
 
     /**
      * Request a tool tip be hidden.
-     *
-     * @param me MouseEvent for where the tip was. May not be exact.
      */
     public void requestHideToolTip() {
 	fireHideToolTip();

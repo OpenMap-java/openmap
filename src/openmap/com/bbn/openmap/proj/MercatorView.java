@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/MercatorView.java,v $
 // $RCSfile: MercatorView.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:56 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -69,12 +69,10 @@ public class MercatorView extends Mercator {
     
     /**
      * Construct a MercatorView projection.
-     * <p>
      * @param center LatLonPoint center of projection
      * @param scale float scale of projection
      * @param width width of screen
      * @param height height of screen
-     *
      */
     public MercatorView (LatLonPoint center, float scale, int width, int height)
     {
@@ -84,10 +82,8 @@ public class MercatorView extends Mercator {
 
     /**
      * Return stringified description of this projection.
-     * <p>
      * @return String
      * @see Projection#getProjectionID
-     *
      */
     public String toString() {
 	return "MercatorView[" + super.toString();
@@ -100,7 +96,6 @@ public class MercatorView extends Mercator {
      * Each projection will decide how to respond to this change.
      * For instance, they may need to recalculate "constant" paramters
      * used in the forward() and inverse() calls.<p>
-     *
      */
     protected void computeParameters() {
 	Debug.message("mercatorview", "MercatorView.computeParameters()");
@@ -164,7 +159,6 @@ public class MercatorView extends Mercator {
 
     /**
      * Projects a point from Lat/Lon space to X/Y space.
-     * <p>
      * @param pt LatLonPoint
      * @param p Point retval
      * @return Point p
@@ -190,7 +184,6 @@ public class MercatorView extends Mercator {
 
     /**
      * Forward projects a lat,lon coordinates.
-     * <p>
      * @param lat raw latitude in decimal degrees
      * @param lon raw longitude in decimal degrees
      * @param p Resulting XY Point
@@ -217,7 +210,6 @@ public class MercatorView extends Mercator {
 
     /**
      * Forward projects lat,lon into XY space and returns a Point.
-     * <p>
      * @param lat float latitude in radians
      * @param lon float longitude in radians
      * @param p Resulting XY Point
@@ -248,11 +240,9 @@ public class MercatorView extends Mercator {
 
     /**
      * Inverse project a Point.
-     * <p>
-     * @param point x,y Point
+     * @param pt x,y Point
      * @param llp resulting LatLonPoint
      * @return LatLonPoint llp
-     *
      */
     public LatLonPoint inverse (Point pt, LatLonPoint llp) {
 	// convert from screen to user coordinates
@@ -269,13 +259,11 @@ public class MercatorView extends Mercator {
 
     /**
      * Inverse project x,y coordinates into a LatLonPoint.
-     * <p>
      * @param x integer x coordinate
      * @param y integer y coordinate
      * @param llp LatLonPoint
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
-     *
      */
     public LatLonPoint inverse (int x, int y, LatLonPoint llp) {
 	// convert from screen to world coordinates

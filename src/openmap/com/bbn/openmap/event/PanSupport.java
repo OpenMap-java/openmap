@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/PanSupport.java,v $
 // $RCSfile: PanSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/08 21:29:17 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:45 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -93,7 +93,7 @@ public class PanSupport extends ListenerSupport {
 
     /**
      * Fire a pan event.
-     * @param Az azimuth "east of north" in decimal degrees:
+     * @param az azimuth "east of north" in decimal degrees:
      * <code>-180 &lt;= Az &lt;= 180</code>
      * @param c arc distance in decimal degrees.
      */

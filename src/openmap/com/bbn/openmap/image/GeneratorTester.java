@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/GeneratorTester.java,v $
 // $RCSfile: GeneratorTester.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:47:47 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -99,9 +99,8 @@ public class GeneratorTester implements ImageReceiver {
      * Loads properties from a java resource.  This will load the
      * named resource identifier into the given properties instance.
      *
-     * @param properties the Properties instance to receive the properties
-     * @param resourceName the name of the resource to load
-     * @param verbose indicates whether status messages should be printed
+     * @param props the Properties instance to receive the properties
+     * @param url the resource to load
      */
     public boolean loadProperties(URL url, Properties props) {
 	try {

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/AbstractPlugIn.java,v $
 // $RCSfile: AbstractPlugIn.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/11/14 20:52:24 $
-// $Author: dietrick $
+// $Revision: 1.6 $
+// $Date: 2003/12/23 20:47:48 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -251,7 +251,7 @@ public abstract class AbstractPlugIn
      * the property that would be helpful (range, default value,
      * etc.).
      *
-     * @param getList a Properties object to load the PropertyConsumer
+     * @param list a Properties object to load the PropertyConsumer
      * properties into.  If getList equals null, then a new Properties
      * object should be created.
      * @return Properties object containing PropertyConsumer property
@@ -284,7 +284,7 @@ public abstract class AbstractPlugIn
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @param String prefix String.  
+     * @return the property prefix for the plugin
      */
     public String getPropertyPrefix() {
 	return prefix;

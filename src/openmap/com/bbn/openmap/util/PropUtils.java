@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/14 21:07:24 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 20:44:37 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -209,7 +209,7 @@ public class PropUtils {
      * named resource identifier into the given properties instance.
      *
      * @param properties the Properties instance to receive the properties.
-     * @param resourceName the name of the resource to load.
+     * @param propsIn an InputStream to read properties from
      * @return true if the properties file exists and was loaded.
      */
     public static boolean loadProperties(Properties properties,

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/TilingAdapter.java,v $
 // $RCSfile: TilingAdapter.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/23 20:43:33 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -34,28 +34,28 @@ public interface TilingAdapter {
     /**
      * Get the tile identifier for the alternate tile
      * @param l a row of the table this adapter was created for
-     * @returns the tile id of the alternate tile
+     * @return the tile id of the alternate tile
      */
     public int getTileId(List l);
 
     /**
      * Get the primitive identifier in the current tile
      * @param l a row of the table this adapter was created for
-     * @returns the primitive id in the current tile
+     * @return the primitive id in the current tile
      */
     public int getPrimId(List l);
 
     /**
      * Get the primitive identifier in the alternate tile
      * @param l a row of the table this adapter was created for
-     * @returns the primitve id in the alternate tile
+     * @return the primitve id in the alternate tile
      */
     public int getTilePrimId(List l);
 
     /**
      * Get the full set of primitive information
      * @param l a row of the table this adapter was created for
-     * @returns the full cross tile identifier information
+     * @return the full cross tile identifier information
      */
     public DcwCrossTileID getPrim(List l);
 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMComponentPanel.java,v $
 // $RCSfile: OMComponentPanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/22 23:20:42 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 20:47:46 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -163,7 +163,7 @@ public abstract class OMComponentPanel extends JPanel
      * Get the property key prefix that is being used to prepend to
      * the property keys for Properties lookups.
      *
-     * @param String prefix String.  
+     * @return the property prefix for the panel
      */
     public String getPropertyPrefix() {
 	return propertyPrefix;

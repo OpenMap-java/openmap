@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/11/14 20:50:27 $
-// $Author: dietrick $
+// $Revision: 1.8 $
+// $Date: 2003/12/23 20:46:43 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -86,7 +86,7 @@ public class EditableOMPoly extends EditableOMGraphic {
      * Create the EditableOMPoly with an OMPoly already defined, ready
      * for editing.
      *
-     * @param oml OMPoly that should be edited.
+     * @param omp OMPoly that should be edited.
      */
     public EditableOMPoly(OMPoly omp) {
 	setGraphic(omp);
@@ -1161,8 +1161,8 @@ public class EditableOMPoly extends EditableOMGraphic {
 
 
     /**
-     * Given a grab point, what's its index into the polygon array?
-     * If it's not in the array, the next available index is returned.
+     * Given a grab point, return its index into the polygon array.
+     * If its not in the array, the next available index is returned.
      */
     public int whichGrabPoint(GrabPoint gp) {
 	GrabPoint[] points = getGrabPoints();

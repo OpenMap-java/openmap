@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/14 20:38:51 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/12/23 20:43:30 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -77,7 +77,7 @@ import com.bbn.openmap.util.SwingWorker;
  * ############################
  * </pre></code>
  *
- * @version $Revision: 1.4 $ $Date: 2003/11/14 20:38:51 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/23 20:43:30 $
  * @see SpatialIndex 
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -209,7 +209,7 @@ public class MultiShapeLayer extends ShapeLayer {
      * the property that would be helpful (range, default value,
      * etc.).
      *
-     * @param list a Properties object to load the PropertyConsumer
+     * @param props a Properties object to load the PropertyConsumer
      * properties into.  If getList equals null, then a new Properties
      * object should be created.
      * @return Properties object containing PropertyConsumer property

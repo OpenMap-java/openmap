@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/03 00:46:13 $
-// $Author: dietrick $
+// $Revision: 1.7 $
+// $Date: 2003/12/23 20:47:46 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -235,8 +235,6 @@ public class LayersPanel extends OMToolComponent
     protected boolean showStatus = true;
     /**
      * Construct the LayersPanel.
-     *
-     * @param lHandler the LayerHandler controlling the layers.
      */
     public LayersPanel() {
 	super();
@@ -782,12 +780,6 @@ public class LayersPanel extends OMToolComponent
    /**
      * Makes a new layer cake of active layers to send to
      * LayerHandler.setLayers().
-     *
-     * @param neworder tells whether the order of the layers has
-     * changed.
-     * @param selectedRow the currently selected layer in the panel,
-     * used to reset the scrollPane so that the row is visible (set to
-     * -1 if unknown).  
      */
     protected void rejiggerMapLayers() {
 	Debug.message("layerspanel", "LayersPanel.rejiggerMapLayers()");

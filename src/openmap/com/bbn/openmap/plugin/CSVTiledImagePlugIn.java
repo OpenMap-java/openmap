@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/CSVTiledImagePlugIn.java,v $
 // $RCSfile: CSVTiledImagePlugIn.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/19 16:21:11 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:47:48 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -298,7 +298,7 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
      * the property that would be helpful (range, default value,
      * etc.).
      *
-     * @param getList a Properties object to load the PropertyConsumer
+     * @param list a Properties object to load the PropertyConsumer
      * properties into.  If getList equals null, then a new Properties
      * object should be created.
      * @return Properties object containing PropertyConsumer property

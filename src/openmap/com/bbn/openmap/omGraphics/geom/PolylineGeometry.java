@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/PolylineGeometry.java,v $
 // $RCSfile: PolylineGeometry.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/10 22:03:58 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/23 20:46:45 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -201,7 +201,7 @@ public abstract class PolylineGeometry extends PolygonGeometry
 	 * @param latPoint latitude in decimal degrees
 	 * @param lonPoint longitude in decimal degrees
 	 * @param xypoints int[] of x,y pairs
-	 * @param cmode offset coordinate mode
+	 * @param cMode offset coordinate mode
 	 */
 	public Offset(float latPoint, float lonPoint, 
 		      int[] xypoints, int cMode) {
@@ -218,7 +218,7 @@ public abstract class PolylineGeometry extends PolygonGeometry
 	 * @param lonPoint longitude in decimal degrees
 	 * @param xPoints int[] of x coordinates
 	 * @param yPoints int[] of y coordinates
-	 * @param cmode offset coordinate mode
+	 * @param cMode offset coordinate mode
 	 */
 	public Offset(float latPoint, float lonPoint, 
 		      int[] xPoints, int[] yPoints, 
