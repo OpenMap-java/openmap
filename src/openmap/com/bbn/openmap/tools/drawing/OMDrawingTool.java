@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/04/26 01:07:50 $
+// $Revision: 1.9 $
+// $Date: 2003/08/21 20:38:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -505,6 +505,8 @@ public class OMDrawingTool
 		GrabPoint gp = currentEditable.getMovingPoint(e);
 		if (gp == null) {
 		    currentEditable.move(e);
+		} else {
+		    currentEditable.getStateMachine().setSelected();
 		}
 	    }
 	} else {
