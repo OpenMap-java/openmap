@@ -13,7 +13,7 @@ rem BATCH FILE.
 set OPENMAP_HOME=..
 
 rem CLASSPATH points to toplevel OpenMap directory and share subdirectory
-set CLASSPATH=%OPENMAP_HOME%;%OPENMAP_HOME%\share;%OPENMAP_HOME%\lib\openmap.jar
+set CLASSPATH=%OPENMAP_HOME%\classes\openmap;%OPENMAP_HOME%\share;%OPENMAP_HOME%\lib\openmap.jar;
 
 rem OK, now run OpenMap
 %JAVABIN% -mx64m -Dopenmap.configDir=%OPENMAP_HOME%\share com.bbn.openmap.app.OpenMap

@@ -8,14 +8,14 @@
 	<target name="init" 
 	        description="Sets properties needed by the other targets.">
 		<tstamp/>
-
+		<!-- Replace 'classic' with 'jikes' if you want. -->
 		<property name="build.compiler" value="classic"/>
 		<property name="openmap.home" value="."/>
 		<property name="openmap.class_dir" value="./classes"/>
 		<property name="openmap.classes" value="./classes/openmap"/>
 
 		<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR BATIK INSTALLATION -->
-		<property name="batik.home" value="/usr/local/java/batik-1.1.1"/>
+		<property name="batik.home" value="/usr/local/openmap/batik-1.1.1"/>
 
 		<property name="openmap.contrib" value="${openmap.home}/contrib"/>
 		<property name="javac.excludes" value="**/*.in, **/Makefile, **/*.bat,
@@ -106,7 +106,8 @@
 	<jar jarfile="${openmap.home}/lib/openmap.jar" 
 	     basedir="${openmap.classes}"
 	     includes="openmap.properties, com/**/*.class, com/**/*.gif,
-		       Acme/**/*.class, doppelt/**/*.class" 
+		       Acme/**/*.class, doppelt/**/*.class, 
+		       com/**/*.properties" 
 	     excludes="${corba.excludes}"/>
 
 	<!-- omcore no longer created by default - remove these comments if
@@ -187,7 +188,7 @@
 	          <fileset dir="${openmap.home}/com/bbn/openmap" 
 		           includes="*.gif, gui/*.gif, tools/drawing/*.gif,
 			             tools/j3d/*.gif, omGraphics/*.gif,
-				     omGraphics/editable/*.gif"/>
+				     omGraphics/editable/*.gif, **/*.properties"/>
 	     </copy>
 
 	</target>
