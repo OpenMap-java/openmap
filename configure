@@ -1089,6 +1089,11 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/layer/rpf/corba/Makefile
 	com/bbn/openmap/layer/shape/Makefile
 	com/bbn/openmap/layer/shape/areas/Makefile
+	com/bbn/openmap/layer/specialist/Makefile
+	com/bbn/openmap/layer/specialist/dted/Makefile
+	com/bbn/openmap/layer/specialist/sample/Makefile
+	com/bbn/openmap/layer/specialist/shape/Makefile
+	com/bbn/openmap/layer/specialist/vpf/Makefile
 	com/bbn/openmap/layer/terrain/Makefile
 	com/bbn/openmap/layer/test/Makefile
 	com/bbn/openmap/layer/util/Makefile
@@ -1119,6 +1124,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/tools/j3d/Makefile
 	com/bbn/openmap/tools/terrain/Makefile
 	com/bbn/openmap/util/Makefile
+	com/bbn/openmap/util/corba/Makefile
 	com/bbn/openmap/util/propertyEditor/Makefile
 	com/bbn/openmap/util/quadtree/Makefile
 	" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
@@ -1244,6 +1250,11 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/layer/rpf/corba/Makefile
 	com/bbn/openmap/layer/shape/Makefile
 	com/bbn/openmap/layer/shape/areas/Makefile
+	com/bbn/openmap/layer/specialist/Makefile
+	com/bbn/openmap/layer/specialist/dted/Makefile
+	com/bbn/openmap/layer/specialist/sample/Makefile
+	com/bbn/openmap/layer/specialist/shape/Makefile
+	com/bbn/openmap/layer/specialist/vpf/Makefile
 	com/bbn/openmap/layer/terrain/Makefile
 	com/bbn/openmap/layer/test/Makefile
 	com/bbn/openmap/layer/util/Makefile
@@ -1274,6 +1285,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/tools/j3d/Makefile
 	com/bbn/openmap/tools/terrain/Makefile
 	com/bbn/openmap/util/Makefile
+	com/bbn/openmap/util/corba/Makefile
 	com/bbn/openmap/util/propertyEditor/Makefile
 	com/bbn/openmap/util/quadtree/Makefile
 	"}
