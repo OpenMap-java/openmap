@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/FeatureCacheGraphicList.java,v $
 // $RCSfile: FeatureCacheGraphicList.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/02/01 21:21:59 $
+// $Revision: 1.2 $
+// $Date: 2004/02/02 23:56:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,7 +29,14 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 
 import java.util.Iterator;
 
-public class FeatureCacheGraphicList extends OMGraphicList implements Cloneable {
+/**
+ * The FeatureCacheGraphicList is an extended OMGraphicList that knows
+ * what types of VPF features it holds.  This allows it to be able to
+ * use a VPFFeatureGraphicWarehouse to set the proper
+ * DrawingAttributes on its contents.
+ */
+public class FeatureCacheGraphicList extends OMGraphicList 
+    implements Cloneable {
 
     public FeatureCacheGraphicList() {}
 

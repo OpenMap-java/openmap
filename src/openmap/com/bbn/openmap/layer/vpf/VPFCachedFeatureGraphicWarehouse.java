@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFCachedFeatureGraphicWarehouse.java,v $
 // $RCSfile: VPFCachedFeatureGraphicWarehouse.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/02/01 21:21:59 $
+// $Revision: 1.2 $
+// $Date: 2004/02/02 23:56:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,6 +37,9 @@ import java.util.*;
 import javax.swing.JTabbedPane;
 
 /**
+ * The VPFFeatureGraphicWarehouse extension that knows how to use a
+ * VPFFeatureCache.  The cached lists are cloned and the drawing
+ * attributes for the clones are set based on the warehouse settings.
  */
 public class VPFCachedFeatureGraphicWarehouse 
     extends VPFFeatureGraphicWarehouse {
@@ -92,10 +95,12 @@ public class VPFCachedFeatureGraphicWarehouse
                                      dpplat, dpplon,
                                      covtable.doAntarcticaWorkaround);
 
-        getAttributesForFeature(featureType).setTo(py);
-        // HACK to get tile boundaries to not show up for areas.
-        py.setLinePaint(py.getFillPaint());
-        py.setSelectPaint(py.getFillPaint());
+        DrawingAttributes da = getAttributesForFeature(featureType);
+        // Must make sure that line paint equals fill paint, the
+        // boundary for areas isn't always the sum of the areas.
+        da.setLinePaint(da.getFillPaint());
+        da.setSelectPaint(da.getFillPaint());
+        da.setTo(py);
         addToCachedList(py, featureType, areatable);
     }
 
@@ -144,21 +149,26 @@ public class VPFCachedFeatureGraphicWarehouse
         addToCachedList(pt, featureType, t);
     }
 
+    /**
+     * Calls addToCachedList on the feature cache if it's available.
+     */
     protected void addToCachedList(OMGraphic omg, String featureType, PrimitiveTable pt) {
         if (featureCache != null) {
-            String key = featureCache.createTableCacheKey(featureType, pt.getTileDirectory().getPath());
-            OMGraphicList omgl = (OMGraphicList)featureCache.get(key);
-            omgl.add(omg);
+            featureCache.addToCachedList(omg, featureType, pt);
         } else {
             // Main OMGraphicList stored in super class
             graphics.add(omg);
         }
     }
 
+    /**
+     * Calls VPFFeatureCache.needToFetchTileContents().
+     */
     public boolean needToFetchTileContents(String currentFeature, 
                                            TileDirectory currentTile) {
         if (featureCache != null) {
-            // The cached graphics list will be added to the graphics list provided.
+            // The cached graphics list will be added to the graphics
+            // list provided.
             return featureCache.needToFetchTileContents(currentFeature, 
                                                         currentTile, 
                                                         graphics);
@@ -167,6 +177,11 @@ public class VPFCachedFeatureGraphicWarehouse
         }
     }
 
+    /**
+     * Overridden method of VPFFeatureGraphicWarehouse, clones cached
+     * OMGraphicLst and sets the proper DrawingAttributes settings for
+     * the particular features.
+     */
     public OMGraphicList getGraphics() {
         // Clone from the cache...
         if (featureCache != null) {
