@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/01/24 03:31:35 $
+// $Revision: 1.11 $
+// $Date: 2004/05/11 19:17:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -488,12 +488,9 @@ public class InformationDelegator extends OMComponentPanel
         //shows a tooltip over the map
         if (map != null) {
             if (ttmanager == null) { 
-                //make sure the MapBean is registered first
-                ttmanager=ToolTipManager.sharedInstance(); 
-                ttmanager.registerComponent(map);
+                initToolTip();
             }
             map.setToolTipText(event.getInformation()); 
-            ttmanager.setEnabled(true);
         }
     }
 
@@ -516,11 +513,6 @@ public class InformationDelegator extends OMComponentPanel
      * method should always follow a call to <code>showToolTip</code?
      */
     public void requestHideToolTip() { 
-        //disables a tooltip over the map
-        if (ttmanager==null) {
-            return; //in case showToolTip was never called
-        }
-        ttmanager.setEnabled(false);
         initToolTip();
     }
 
@@ -531,9 +523,14 @@ public class InformationDelegator extends OMComponentPanel
      */
     public void initToolTip() {
         if (ttmanager == null) {
-            return; //in case showToolTip was never called
+            //make sure the MapBean is registered first
+            ttmanager=ToolTipManager.sharedInstance(); 
+            ttmanager.registerComponent(map);
+            ttmanager.setEnabled(true);
+            return;
         }
 
+        // If it already exists, clear out the current tip
         if (map != null) {
             map.setToolTipText(null);
         }
