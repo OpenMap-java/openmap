@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/10/23 21:17:21 $
+// $Revision: 1.10 $
+// $Date: 2003/10/27 12:55:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -482,7 +482,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
 	JToolBar jtb = null;
 	if (getUseAsTool()) {
 	    jtb = new com.bbn.openmap.gui.GridBagToolBar();
-	    JButton drawingToolButton = new JButton(new ImageIcon(OMDrawingToolLauncher.class.getResource("drawing.gif"), "Drawing Tool Launcher"));
+	    JButton drawingToolButton = new JButton(new ImageIcon(OMDrawingToolLauncher.class.getResource("Drawing.gif"), "Drawing Tool Launcher"));
 	    drawingToolButton.setToolTipText("Drawing Tool Launcher");
 	    drawingToolButton.addActionListener(getActionListener());
 	    jtb.add(drawingToolButton);
