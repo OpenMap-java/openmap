@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDAdmin.java,v $
 // $RCSfile: DTEDAdmin.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/13 01:21:06 $
+// $Revision: 1.2 $
+// $Date: 2004/01/24 02:56:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -285,7 +285,7 @@ public class DTEDAdmin {
 		    toDir.mkdirs();
 		}
 
-		File outputFile = new File(toDir, dnt.getName());
+		File outputFile = new File(toDir, dnt.getFileName());
 
 		if (Debug.debugging("dted")) {
 		    Debug.output("DTEDAdmin copying " + file.getAbsolutePath() +
