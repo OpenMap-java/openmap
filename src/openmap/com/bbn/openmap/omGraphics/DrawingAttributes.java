@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/10/03 00:53:03 $
+// $Revision: 1.8 $
+// $Date: 2003/10/03 22:18:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -905,6 +905,7 @@ public class DrawingAttributes
 	toolbar.setMargin(new Insets(0, 0, 0, 0));
 	toolbar.add(lineColorButton);
 	toolbar.add(fillColorButton);
+	toolbar.add(selectColorButton);
 	toolbar.add(mattingColorButton);
 	toolbar.add(new JLabel(" "));
 	toolbar.add(mattedCheckBox);
@@ -1009,7 +1010,7 @@ public class DrawingAttributes
 	    selectColorButton = new JButton(getIconForPaint(getSelectPaint(), false));
 	    selectColorButton.setActionCommand(SelectColorCommand);
 	    selectColorButton.addActionListener(this);
-	    selectColorButton.setToolTipText("Change Selected Edge Color (true/opaque)");
+	    selectColorButton.setToolTipText("Change Highlight Edge Color (true/opaque)");
 	}
 
 	if (mattingColorButton != null) {
@@ -1526,6 +1527,11 @@ public class DrawingAttributes
 	    }
 
 	    g.fill(shape);
+	    // Seems to help with a rendering problem, not sure why.
+	    // Without this the DrawingAttributes fill icon would not
+	    // be drawn until it was set again.  This way, it always
+	    // appears.  Might be a Mac thing.
+	    g.draw(shape); 
 
 	    if (fillPattern != null && fillPattern != fillPaint) {
 		g.setPaint(fillPattern);
@@ -1533,7 +1539,7 @@ public class DrawingAttributes
 	    }
 	}
 	
-	if (linePaint != fillPaint) {
+ 	if (linePaint != fillPaint) {
 	    g.setStroke(getStroke());
 	    if (replaceColorWithGradient) {
 		g.setPaint(getGradientPaintForShape(shape, linePaint));
@@ -1599,18 +1605,23 @@ public class DrawingAttributes
 	DrawingAttributes da = new DrawingAttributes();
  	da.setLinePaint(paint);
 	da.setStroke(new BasicStroke(2));
-	if (fill) da.setFillPaint(paint);
+	if (fill) {
+	    da.setFillPaint(paint);
+	}
 
 	OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
 	IconPartList parts = new IconPartList();
 
-	if (paint instanceof Color) {
+	if (paint instanceof Color || paint == OMColor.clear) {
 	    Color color = (Color)paint;
-	    Paint opaqueColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255);
+	    Color opaqueColor = new Color(color.getRed(), color.getGreen(), color.getBlue());
 	    DrawingAttributes opaqueDA = new DrawingAttributes();
 	    opaqueDA.setLinePaint(opaqueColor);
 	    opaqueDA.setStroke(new BasicStroke(2));
-	    if (fill) opaqueDA.setFillPaint(opaqueColor);
+
+	    if (fill) {
+		opaqueDA.setFillPaint(opaqueColor);
+	    }
 
 	    parts.add(collection.get("LR_TRI", opaqueDA));
 	    parts.add(collection.get("UL_TRI", da));

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/CircleSelectedState.java,v $
 // $RCSfile: CircleSelectedState.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/19 23:18:10 $
+// $Revision: 1.3 $
+// $Date: 2003/10/03 22:18:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,26 +51,22 @@ public class CircleSelectedState extends GraphicSelectedState {
 	// mode.
 	if (mp == null) {
 	    if ((graphic.getGraphic().getRenderType() != OMGraphic.RENDERTYPE_LATLON &&
-		 graphic.getGraphic().distance(e.getX(), e.getY()) > 2) ||
-		graphic.getGraphic().distanceToEdge(e.getX(), e.getY()) > 2) {
-		// if the graphic isn't picked, then unselect the graphic.
-		graphic.getStateMachine().setUnselected();
-//  		graphic.setMovingPoint(new GrabPoint(e.getX(), e.getY()));
-//  		graphic.fireEvent(EOMGCursors.DEFAULT, "");
-//  		graphic.setMovingPoint(null);
-//  		graphic.redraw(e, true);
-	    } else if (graphic.getCanGrabGraphic()) {
-		// No point was selected, but the graphic was.  Get ready
-		// to move the graphic.
-		Debug.message("eomg", "GraphicStateMachine|selected state|mousePressed - graphic held");
-		graphic.getStateMachine().setEdit();
+		 graphic.getGraphic().distance(e.getX(), e.getY()) <= 2) ||
+		graphic.getGraphic().distanceToEdge(e.getX(), e.getY()) <= 2) {
 
-		// This is the only difference in this method from the
-		// GraphicSelectedState.mousePressed method.
-		graphic.fireEvent(EOMGCursors.EDIT, "");
-		////////
+		if (graphic.getCanGrabGraphic()) {
+		    // No point was selected, but the graphic was.  Get ready
+		    // to move the graphic.
+		    Debug.message("eomg", "GraphicStateMachine|selected state|mousePressed - graphic held");
+		    graphic.getStateMachine().setEdit();
 
-		graphic.move(e);
+		    // This is the only difference in this method from the
+		    // GraphicSelectedState.mousePressed method.
+		    graphic.fireEvent(EOMGCursors.EDIT, "");
+		    ////////
+
+		    graphic.move(e);
+		}
 	    } else {
 		graphic.fireEvent(EOMGCursors.DEFAULT, "");
 		graphic.redraw(e, true);

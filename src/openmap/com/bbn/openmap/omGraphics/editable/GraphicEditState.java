@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicEditState.java,v $
 // $RCSfile: GraphicEditState.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/19 23:18:10 $
+// $Revision: 1.3 $
+// $Date: 2003/10/03 22:18:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,9 +60,9 @@ public class GraphicEditState extends State implements EOMGEditState {
 	    graphic.getStateMachine().setSelected();
 	    GrabPoint mp = graphic.getMovingPoint();
 	    if (mp == null && !graphic.getCanGrabGraphic()) {
-		graphic.fireEvent(EOMGCursors.DEFAULT, "");
+		graphic.fireEvent(EOMGCursors.DEFAULT, "", e);
      	    } else {
-		graphic.fireEvent(EOMGCursors.EDIT, "");
+		graphic.fireEvent(EOMGCursors.EDIT, "", e);
 	    }
 	}
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMLine.java,v $
 // $RCSfile: EditableOMLine.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/03 00:53:03 $
+// $Revision: 1.3 $
+// $Date: 2003/10/03 22:18:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -511,19 +511,23 @@ public class EditableOMLine extends EditableOMGraphic {
 
 	int upTip = (int)((float)height * .25);
 	int downTip = (int)((float)height * .75);
-
+	Polygon poly = null;
 	if (arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_FORWARD || 
 	    arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_BOTH) {
 	    int rightWingX = (int)((float)width * .75);
-  	    g.fill(new Polygon(new int[] {width, rightWingX, rightWingX},
-			       new int[] {middleY, upTip, downTip}, 3));
+	    poly = new Polygon(new int[] {width, rightWingX, rightWingX},
+			       new int[] {middleY, upTip, downTip}, 3);
+  	    g.fill(poly);
+	    g.draw(poly); // Seems to help with rendering problem.
 	}
 
 	if (arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD || 
 	    arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_BOTH) {
 	    int leftWingX = (int)((float)width * .25);
- 	    g.fill(new Polygon(new int[] {0, leftWingX, leftWingX},
-			       new int[] {middleY, upTip, downTip}, 3));
+ 	    poly = new Polygon(new int[] {0, leftWingX, leftWingX},
+			       new int[] {middleY, upTip, downTip}, 3);
+ 	    g.fill(poly);
+	    g.draw(poly); // Seems to help with rendering problem.
 	}
 
 	return new ImageIcon(bigImage);

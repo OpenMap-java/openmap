@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/GraphicAttributes.java,v $
 // $RCSfile: GraphicAttributes.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/03 00:53:03 $
+// $Revision: 1.5 $
+// $Date: 2003/10/03 22:18:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -100,6 +100,14 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      */
     public GraphicAttributes(String prefix, Properties props) {
 	super(prefix, props);
+    }
+
+    /**
+     * If you want to get a DEFAULT DrawingAttributes object that you
+     * may modify, get your own copy.
+     */
+    public static GraphicAttributes getGADefaultClone() {
+	return (GraphicAttributes) DEFAULT.clone();
     }
 
     /**

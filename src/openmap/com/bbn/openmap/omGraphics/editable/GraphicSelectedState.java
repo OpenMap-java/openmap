@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicSelectedState.java,v $
 // $RCSfile: GraphicSelectedState.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/19 23:18:10 $
+// $Revision: 1.3 $
+// $Date: 2003/10/03 22:18:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,24 +53,21 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
 	// If the graphic itself was clicked on, then just go to selected
 	// mode.
 	if (mp == null) {
-	    if (graphic.getGraphic().distance(e.getX(), e.getY()) > 2) {
-		// if the graphic isn't picked, then unselect the graphic.
-		graphic.getStateMachine().setUnselected();
-//  		graphic.setMovingPoint(new GrabPoint(e.getX(), e.getY()));
-//  		graphic.fireEvent(EOMGCursors.DEFAULT, "");
-//  		graphic.setMovingPoint(null);
-//  		graphic.redraw(e, true);
-	    } else if (graphic.getCanGrabGraphic()) {
-		// No point was selected, but the graphic was.  Get ready
-		// to move the graphic.
-		Debug.message("eomg", "GraphicStateMachine|selected state|mousePressed - graphic held");
-		graphic.getStateMachine().setEdit();
-		graphic.fireEvent(EOMGCursors.MOVE, "");
-		graphic.move(e);
+	    if (graphic.getGraphic().distance(e.getX(), e.getY()) <= 2) {
+		if (graphic.getCanGrabGraphic()) {
+
+		    // No point was selected, but the graphic was.  Get ready
+		    // to move the graphic.
+		    Debug.message("eomg", "GraphicStateMachine|selected state|mousePressed - graphic held");
+		    graphic.getStateMachine().setEdit();
+		    graphic.fireEvent(EOMGCursors.MOVE, "");
+		    graphic.move(e);
+		}
 	    } else {
 		Debug.message("eomg", "GraphicStateMachine|selected state|mousePressed - graphic can't be held");
 		graphic.fireEvent(EOMGCursors.DEFAULT, "");
-		graphic.redraw(e, true);
+		// Preparing for deactivation, why bother repainting...
+// 		graphic.redraw(e, true);
 	    }
 	} else {
 	    // else, if the moving point is set, go to edit mode.  If
@@ -92,18 +89,23 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
 	// If the graphic itself was clicked on, then just go to selected
 	// mode.
 	if (mp == null) {
-	    if (graphic.getGraphic().distance(e.getX(), e.getY()) > 2) {
-		// if the graphic isn't picked, then unselect the graphic.
-		graphic.getStateMachine().setUnselected();
-		graphic.fireEvent(EOMGCursors.DEFAULT, "");
-		graphic.redraw(e, true);
-	    } else if (graphic.getCanGrabGraphic()) {
-		graphic.fireEvent(EOMGCursors.EDIT, "");
-		graphic.redraw(e, true);
+	    if (graphic.getGraphic().distance(e.getX(), e.getY()) <= 2) {
+		if (graphic.getCanGrabGraphic()) {
+
+		    graphic.fireEvent(EOMGCursors.EDIT, "", e);
+		    graphic.redraw(e, true);
+		} else {
+		    // Bring up GUI if possible
+		    graphic.fireEvent(EOMGCursors.DEFAULT, "", e);
+		}
+	    } else {
+		// If the graphic isn't picked, then need to
+		// deactivate with a deactivation event.
+		graphic.fireEvent(new com.bbn.openmap.omGraphics.event.EOMGEvent());
 	    }
 	} else {
 	    // If the moving point was valid, just stay in selected mode.
-	    graphic.fireEvent(EOMGCursors.EDIT, "");
+	    graphic.fireEvent(EOMGCursors.EDIT, "", e);
 	    graphic.redraw(e, true);
 	}
 

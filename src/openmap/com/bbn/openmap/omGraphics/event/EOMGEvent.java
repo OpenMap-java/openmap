@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/EOMGEvent.java,v $
 // $RCSfile: EOMGEvent.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/10/03 22:18:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.util.Debug;
 
 import java.awt.Cursor;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
 public class EOMGEvent {
@@ -88,6 +89,16 @@ public class EOMGEvent {
 	this.mouseEvent = me;
     }
 
+    /**
+     * Deactivation event.
+     */
+    public EOMGEvent() {
+	this.source = null;
+	this.cursor = null;
+	this.message = null;
+	this.mouseEvent = null;
+    }
+
     public void setSource(EditableOMGraphic eomg) {
 	source = eomg;
     }
@@ -122,4 +133,20 @@ public class EOMGEvent {
     public MouseEvent getMouseEvent() {
 	return mouseEvent;
     }
+
+    public boolean shouldShowGUI() {
+	if (mouseEvent != null) {
+	    return  	    
+		(mouseEvent.isControlDown() || 
+		 (mouseEvent.getModifiers() & InputEvent.BUTTON3_MASK) > 0);
+	}
+	return false;
+    }
+
+    public boolean shouldDeactivate() {
+	return 	this.source == null && this.cursor == null &&
+	    this.message == null && this.mouseEvent == null;
+    }
+
 }
+
