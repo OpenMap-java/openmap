@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/PilotLoader.java,v $
 // $RCSfile: PilotLoader.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/07/24 13:37:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,7 +33,7 @@ import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MapHandlerChild;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.plugin.graphicLoader.MMLGraphicLoader;
+import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.DrawUtil;
 import com.bbn.openmap.tools.drawing.*;
