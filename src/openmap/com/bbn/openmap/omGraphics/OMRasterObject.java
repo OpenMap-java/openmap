@@ -14,26 +14,39 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/10/14 18:06:14 $
+// $Revision: 1.12 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
+import java.awt.image.AreaAveragingScaleFilter;
+import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageConsumer;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
+import java.awt.image.MemoryImageSource;
+import java.awt.image.PixelGrabber;
+import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import com.bbn.openmap.image.ImageHelper;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.image.ImageHelper;
 
 /**
  * The OMRasterObject is the parent class for OMRaster and OMBitmap
@@ -382,7 +395,7 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
             h = filteredHeight;
         }
 
-        shape = createBoxShape(point1.x, point1.y, w, h);
+        setShape(createBoxShape(point1.x, point1.y, w, h));
     }
 
     /**

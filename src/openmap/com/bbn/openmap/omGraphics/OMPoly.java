@@ -14,20 +14,27 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/10/14 18:06:14 $
+// $Revision: 1.12 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.util.ArrayList;
+import java.awt.BasicStroke;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Point;
+import java.awt.geom.GeneralPath;
 import java.io.Serializable;
+import java.util.ArrayList;
+
+import com.bbn.openmap.proj.DrawUtil;
+import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.proj.*;
 
 /**
  * Graphic object that represents a polygon or polyline
@@ -100,7 +107,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      * this should always be radians.
      */
     protected int units = -1;// this should be set correctly at
-                             // construction
+    // construction
 
     /** Internal array of projected x coordinate arrays. */
     protected int[][] xpoints = new int[0][0];
@@ -591,7 +598,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      */
     public boolean generate(Projection proj) {
         int i, j, npts;
-        shape = null;
+        setShape(null);
 
         if (proj == null) {
             Debug.message("omgraphic", "OMPoly: null projection in generate!");
@@ -619,10 +626,6 @@ public class OMPoly extends OMGraphic implements Serializable {
             ypoints = new int[1][0];
             ypoints[0] = ys;
 
-            if (doShapes) {
-                setNeedToRegenerate(false);
-                createShape();
-            }
             break;
 
         case RENDERTYPE_OFFSET:
@@ -659,42 +662,30 @@ public class OMPoly extends OMGraphic implements Serializable {
             ypoints = new int[1][0];
             ypoints[0] = _y;
 
-            if (doShapes) {
-                setNeedToRegenerate(false);
-                createShape();
-            }
             break;
 
         case RENDERTYPE_LATLON:
-            ArrayList vector = null;
-
             // polygon/polyline project the polygon/polyline.
             // Vertices should already be in radians.
-            vector = proj.forwardPoly(rawllpts, lineType, nsegs, isPolygon);
+            ArrayList vector = proj.forwardPoly(rawllpts,
+                    lineType,
+                    nsegs,
+                    isPolygon);
             int size = vector.size();
 
-            if (!doShapes) {
-                xpoints = new int[(int) (size / 2)][0];
-                ypoints = new int[xpoints.length][0];
-            }
-
-            // We could call create shape, but this is more efficient.
+            xpoints = new int[(int) (size / 2)][0];
+            ypoints = new int[xpoints.length][0];
 
             for (i = 0, j = 0; i < size; i += 2, j++) {
-                if (doShapes) {
-                    GeneralPath gp = createShape((int[]) vector.get(i),
-                            (int[]) vector.get(i + 1),
-                            isPolygon);
+                xpoints[j] = (int[]) vector.get(i);
+                ypoints[j] = (int[]) vector.get(i + 1);
+            }
 
-                    if (shape == null) {
-                        shape = gp;
-                    } else {
-                        ((GeneralPath) shape).append(gp, false);
-                    }
-                } else {
-                    xpoints[j] = (int[]) vector.get(i);
-                    ypoints[j] = (int[]) vector.get(i + 1);
-                }
+            if (!doShapes && size > 1) {
+                setNeedToRegenerate(false);
+                initLabelingDuringGenerate();
+                setLabelLocation(xpoints[0], ypoints[0]);
+                return true;
             }
 
             break;
@@ -705,6 +696,7 @@ public class OMPoly extends OMGraphic implements Serializable {
         }
 
         setNeedToRegenerate(false);
+        createShape();
         return true;
     }
 
@@ -815,6 +807,9 @@ public class OMPoly extends OMGraphic implements Serializable {
                     g.drawPolyline(_x, _y, _x.length);
                 }
             }
+
+            renderLabel(g);
+
         } catch (Exception e) {
             // Trying to catch any clipping problems from within a JRE
             Debug.output("OMPoly: caught Java rendering exception\n"
@@ -905,6 +900,8 @@ public class OMPoly extends OMGraphic implements Serializable {
             return;
         }
 
+        initLabelingDuringGenerate();
+
         switch (renderType) {
 
         case RENDERTYPE_XY:
@@ -923,11 +920,13 @@ public class OMPoly extends OMGraphic implements Serializable {
                     ((GeneralPath) shape).append(gp, false);
                 }
             }
+
             break;
 
         default:
         }
 
+        setLabelLocation(xpoints[0], ypoints[0]);
     }
 
     protected boolean geometryClosed = false;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:06:13 $
+// $Revision: 1.10 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,11 +27,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
+import java.awt.geom.GeneralPath;
 
-import com.bbn.openmap.omGraphics.geom.*;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.omGraphics.geom.BasicGeometry;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -186,6 +188,13 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
      * busy backgrounds.
      */
     protected boolean matted = false;
+
+    /**
+     * The flag set in generate that causes the OMGraphic to look for
+     * an OMLabeler attribute in render. This flag prevents an
+     * unnecessary hashtable lookup every render call.
+     */
+    protected transient boolean hasLabel = false;
 
     /**
      * Checks if the Paint is clear.
@@ -821,6 +830,118 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
             setGraphicsForEdge(g);
             draw(g);
         }
+
+        renderLabel(g);
+    }
+
+    /**
+     * Calls super.setShape(), but also checks the attributes for a
+     * label and moves the label accordingly. The label will be placed
+     * in the center of the bounding box around the path.
+     */
+    public void setShape(GeneralPath gp) {
+        super.setShape(gp);
+
+        hasLabel = false;
+
+        // Go ahead and set the label location if the shape exists.
+        if (gp != null) {
+            OMLabeler labeler = (OMLabeler) getAttribute(LABEL);
+            if (labeler != null) {
+                labeler.setLocation(gp);
+                hasLabel = true;
+            }
+        }
+    }
+
+    protected void setHasLabel(boolean val) {
+        hasLabel = val;
+    }
+
+    /**
+     * Quick check of the flag to see if a label attribute has been
+     * set. Labels are stored in the attribute table, and that table
+     * should only be checked in a generate() method call, and not in
+     * the render(). The setShape() and initLabelingDuringGenerate()
+     * method calls set this flag which is used to opt-out of labeling
+     * methods for better performance.
+     * 
+     * @return
+     */
+    public boolean getHasLabel() {
+        return hasLabel;
+    }
+
+    /**
+     * The method only needs to be called in an OMGraphic's generate
+     * method if the setShape() method isn't called there. The
+     * appropriate setLabelLocation method for where the label should
+     * be set should be called if this method is going to be used.
+     */
+    protected void initLabelingDuringGenerate() {
+        setHasLabel(getAttribute(LABEL) != null);
+    }
+
+    /**
+     * Sets the label location at the center of the polygon points. If
+     * the hasLabel variable hasn't been set, it no-ops.
+     * 
+     * @param xpoints
+     * @param ypoints
+     */
+    public void setLabelLocation(int[] xpoints, int[] ypoints) {
+        if (hasLabel) {
+            OMLabeler oml = (OMLabeler) getAttribute(LABEL);
+            if (oml != null) {
+                oml.setLocation(xpoints, ypoints);
+            }
+        }
+    }
+
+    /**
+     * Sets the label location at the given point. If the hasLabel
+     * variable hasn't been set, it no-ops.
+     * 
+     * @param p
+     */
+    public void setLabelLocation(Point p) {
+        if (hasLabel) {
+            OMLabeler oml = (OMLabeler) getAttribute(LABEL);
+            if (oml != null) {
+                oml.setLocation(p);
+            }
+        }
+    }
+
+    /**
+     * Sets the label location at the center of the bounding box of
+     * the path. If the hasLabel variable hasn't been set, it no-ops.
+     * 
+     * @param gp
+     */
+    public void setLabelLocation(GeneralPath gp) {
+        if (hasLabel) {
+            OMLabeler oml = (OMLabeler) getAttribute(LABEL);
+            if (oml != null) {
+                oml.setLocation(gp);
+            }
+        }
+    }
+
+    /**
+     * Checks to see if a label should be painted based on what
+     * methods were called in generate(), and renders the label if
+     * necessary. If the label wasn't set up, a quick no-op occurs.
+     * 
+     * @param g
+     */
+    public void renderLabel(Graphics g) {
+        if (hasLabel) {
+            OMLabeler labeler = (OMLabeler) getAttribute(LABEL);
+            if (labeler != null) {
+                labeler.render(g);
+            }
+        }
     }
 
     /**
@@ -868,6 +989,16 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
 
         if (distance != Float.POSITIVE_INFINITY) {
             distance = normalizeDistanceForLineWidth(distance);
+        }
+
+        if (hasLabel) {
+            OMLabeler labeler = (OMLabeler) getAttribute(LABEL);
+            if (labeler != null) {
+                float lDistance = labeler.distance(x, y);
+                if (lDistance < distance) {
+                    distance = lDistance;
+                }
+            }
         }
 
         return distance;

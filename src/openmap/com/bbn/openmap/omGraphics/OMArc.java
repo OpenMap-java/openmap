@@ -14,21 +14,31 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArc.java,v $
 // $RCSfile: OMArc.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:12 $
+// $Revision: 1.8 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 //
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.util.ArrayList;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.PathIterator;
 import java.io.Serializable;
+import java.util.ArrayList;
+
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.proj.Cylindrical;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.proj.*;
 
 /**
  * Graphic object that represents an arc.
@@ -692,7 +702,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-        shape = null;
+        setShape(null);
         polarShapeLine = null;
         correctFill = false;
 
@@ -736,7 +746,7 @@ public class OMArc extends OMGraphic implements Serializable {
             gp = new GeneralPath();
             gp.append(pi, false);
             // In X/Y or Offset RenderType, there is only one shape.
-            shape = gp;
+            setShape(gp);
 
             break;
 
@@ -762,7 +772,7 @@ public class OMArc extends OMGraphic implements Serializable {
                         (arcType != Arc2D.OPEN || (arcType == Arc2D.OPEN && !isClear(fillPaint))));
 
                 if (shape == null) {
-                    shape = gp;
+                    setShape(gp);
                 } else {
                     ((GeneralPath) shape).append(gp, false);
                 }
@@ -791,7 +801,7 @@ public class OMArc extends OMGraphic implements Serializable {
             }
 
             if (tempShape != null) {
-                shape = tempShape;
+                setShape(tempShape);
             }
 
             break;

@@ -14,23 +14,27 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMLine.java,v $
 // $RCSfile: OMLine.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:06:13 $
+// $Revision: 1.9 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.GeneralPath;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.omGraphics.util.ArcCalc;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.omGraphics.util.ArcCalc;
 
 /**
  * Graphic object that represents a simple line.
@@ -416,7 +420,7 @@ public class OMLine extends OMGraphic implements Serializable {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-        shape = null;
+        setShape(null);
 
         if (proj == null) {
             Debug.message("omgraphic", "OMLine: null projection in generate!");
@@ -425,6 +429,7 @@ public class OMLine extends OMGraphic implements Serializable {
 
         // reset the internals
         isPolyline = false;
+        initLabelingDuringGenerate();
 
         switch (renderType) {
         case RENDERTYPE_XY:
@@ -519,6 +524,8 @@ public class OMLine extends OMGraphic implements Serializable {
             System.err.println("OMLine.generate: invalid RenderType");
             return false;
         }
+
+        setLabelLocation(shape);
 
         if (doArrowHead) {
             arrowhead = createArrowHeads();

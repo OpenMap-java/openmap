@@ -14,22 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMCircle.java,v $
 // $RCSfile: OMCircle.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:12 $
+// $Revision: 1.8 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
+import java.io.Serializable;
+import java.util.ArrayList;
+
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
-
-import java.awt.*;
-import java.awt.geom.*;
-import java.util.ArrayList;
-import java.io.Serializable;
 
 /**
  * Graphic object that represents a circle or an ellipse.

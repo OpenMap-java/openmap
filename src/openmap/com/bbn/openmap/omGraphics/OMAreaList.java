@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMAreaList.java,v $
 // $RCSfile: OMAreaList.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/11/26 03:51:16 $
+// $Revision: 1.9 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,7 +23,8 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.geom.GeneralPath;
-import java.io.*;
+import java.io.Serializable;
+
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.GraphicList;
 

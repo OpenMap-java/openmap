@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMEllipse.java,v $
 // $RCSfile: OMEllipse.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:13 $
+// $Revision: 1.3 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -171,6 +171,7 @@ public class OMEllipse extends OMCircle {
     }
 
     public boolean generate(Projection proj) {
+        setShape(null);
 
         if (proj == null) {
             Debug.message("omgraphic",
@@ -178,7 +179,6 @@ public class OMEllipse extends OMCircle {
             return false;
         }
 
-        shape = null;
 
         if (rawllpts == null) {
             rawllpts = createLatLonPoints();
@@ -199,7 +199,7 @@ public class OMEllipse extends OMCircle {
                     true);
 
             if (shape == null) {
-                shape = gp;
+                setShape(gp);
             } else {
                 ((GeneralPath) shape).append(gp, false);
             }

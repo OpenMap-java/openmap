@@ -14,22 +14,28 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingRaster.java,v $
 // $RCSfile: OMScalingRaster.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:06:14 $
+// $Revision: 1.9 $
+// $Date: 2005/01/10 16:58:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.io.Serializable;
+
 import javax.swing.ImageIcon;
 
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * This is an extension to OMRaster that automatically scales itelf to
@@ -276,7 +282,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
             int w = bitmap.getWidth(this);
             int h = bitmap.getHeight(this);
 
-            shape = createBoxShape(point1.x, point1.y, w, h);
+            setShape(createBoxShape(point1.x, point1.y, w, h));
 
             setNeedToRegenerate(false);
         }
@@ -543,7 +549,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         int w = point2.x - point1.x;
         int h = point2.y - point1.y;
 
-        shape = createBoxShape(point1.x, point1.y, w, h);
+        setShape(createBoxShape(point1.x, point1.y, w, h));
     }
 
     public boolean isOnMap(Projection proj) {

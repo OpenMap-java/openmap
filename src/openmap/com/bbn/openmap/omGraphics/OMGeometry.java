@@ -14,18 +14,19 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometry.java,v $
 // $RCSfile: OMGeometry.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:13 $
+// $Revision: 1.6 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import com.bbn.openmap.proj.*;
-import java.awt.*;
-import java.awt.geom.*;
+import java.awt.Graphics;
+import java.awt.geom.GeneralPath;
 import java.util.Map;
+
+import com.bbn.openmap.proj.Projection;
 
 /**
  * Base class of OpenMap OMGraphics geometry.

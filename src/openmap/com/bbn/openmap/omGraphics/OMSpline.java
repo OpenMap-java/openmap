@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMSpline.java,v $
 //$RCSfile: OMSpline.java,v $
-//$Revision: 1.7 $
-//$Date: 2004/10/14 18:06:14 $
+//$Revision: 1.8 $
+//$Date: 2005/01/10 16:58:34 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -23,10 +23,8 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Point;
-import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
-import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
@@ -164,7 +162,7 @@ public class OMSpline extends OMPoly {
      */
     public boolean generate(Projection proj) {
         int i, j, npts;
-        shape = null;
+        setShape(null);
 
         if (proj == null) {
             Debug.message("omspline", "OMSpline: null projection in generate!");
@@ -172,7 +170,6 @@ public class OMSpline extends OMPoly {
         }
 
         NatCubicSpline spline = isGeometryClosed() ? natCubicClosed : natCubic;
-
         // HACK : should use something else than nsegs
         spline.setSteps(nsegs);
 
@@ -188,19 +185,12 @@ public class OMSpline extends OMPoly {
                 return false;
             }
 
-            // spline creation
             splinePoints = spline.calc(xs, ys);
-
-            // Need to keep these around for the LabeledOMSpline
             xpoints = new int[1][0];
             xpoints[0] = splinePoints[0];
             ypoints = new int[1][0];
             ypoints[0] = splinePoints[1];
 
-            if (doShapes) {
-                setNeedToRegenerate(false);
-                createShape();
-            }
             break;
 
         case RENDERTYPE_OFFSET:
@@ -216,8 +206,7 @@ public class OMSpline extends OMPoly {
             int[] _y = new int[npts];
 
             // forward project the radian point
-            Point origin = proj.forward(lat, lon, new Point(0, 0), true);
-            //radians
+            Point origin = proj.forward(lat, lon, new Point(0, 0), true);//radians
 
             if (coordMode == COORDMODE_ORIGIN) {
                 for (i = 0; i < npts; i++) {
@@ -234,19 +223,13 @@ public class OMSpline extends OMPoly {
                 }
             }
 
-            // spline creation
             splinePoints = spline.calc(_x, _y);
 
-            // Need to keep these around for the LabeledOMSpline
             xpoints = new int[1][0];
             xpoints[0] = splinePoints[0];
             ypoints = new int[1][0];
             ypoints[0] = splinePoints[1];
 
-            if (doShapes) {
-                setNeedToRegenerate(false);
-                createShape();
-            }
             break;
 
         case RENDERTYPE_LATLON:
@@ -268,29 +251,21 @@ public class OMSpline extends OMPoly {
                     isPolygon);
             int size = vector.size();
 
-            if (!doShapes) {
-                xpoints = new int[(int) (size / 2)][0];
-                ypoints = new int[xpoints.length][0];
-            }
-
-            // We could call create shape, but this is more efficient.
+            xpoints = new int[(int) (size / 2)][0];
+            ypoints = new int[xpoints.length][0];
 
             for (i = 0, j = 0; i < size; i += 2, j++) {
-                if (doShapes) {
-                    GeneralPath gp = createShape((int[]) vector.get(i),
-                            (int[]) vector.get(i + 1),
-                            isPolygon);
-
-                    if (shape == null) {
-                        shape = gp;
-                    } else {
-                        ((GeneralPath) shape).append(gp, false);
-                    }
-                } else {
-                    xpoints[j] = (int[]) vector.get(i);
-                    ypoints[j] = (int[]) vector.get(i + 1);
-                }
+                xpoints[j] = (int[]) vector.get(i);
+                ypoints[j] = (int[]) vector.get(i + 1);
             }
+
+            if (!doShapes && size > 1) {
+                setNeedToRegenerate(false);
+                initLabelingDuringGenerate();
+                setLabelLocation(xpoints[0], ypoints[0]);
+                return true;
+            }
+
             break;
 
         case RENDERTYPE_UNKNOWN:
@@ -299,8 +274,8 @@ public class OMSpline extends OMPoly {
         }
 
         setNeedToRegenerate(false);
+        createShape();
         return true;
     }
-
 }
 

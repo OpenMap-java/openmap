@@ -14,22 +14,24 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRaster.java,v $
 // $RCSfile: OMRaster.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:14 $
+// $Revision: 1.6 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.Serializable;
+
 import javax.swing.ImageIcon;
 
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The OMRaster object lets you create multi-colored images. An image

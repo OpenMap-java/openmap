@@ -14,21 +14,21 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoint.java,v $
 // $RCSfile: OMPoint.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:06:14 $
+// $Revision: 1.9 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
-import java.awt.geom.GeneralPath;
+import java.awt.Point;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.io.Serializable;
 
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * A OMPoint is used to mark a specific point. You can set this point
@@ -238,12 +238,12 @@ public class OMPoint extends OMGraphic implements Serializable {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-
+        setShape(null);
         if (proj == null) {
             Debug.message("omgraphic", "OMPoint: null projection in generate!");
             return false;
         }
-
+        
         // reset the internals
         int x1 = 0;
         int x2 = 0;
@@ -256,6 +256,7 @@ public class OMPoint extends OMGraphic implements Serializable {
             y1 = y - radius;
             x2 = x + radius;
             y2 = y + radius;
+            
             break;
         case RENDERTYPE_OFFSET:
         case RENDERTYPE_LATLON:
@@ -283,6 +284,9 @@ public class OMPoint extends OMGraphic implements Serializable {
                     y1), (int) Math.abs(x2 - x1), (int) Math.abs(y2 - y1));
         }
 
+        initLabelingDuringGenerate();
+        setLabelLocation(new Point(x2, y1));
+        
         setNeedToRegenerate(false);
         return true;
     }

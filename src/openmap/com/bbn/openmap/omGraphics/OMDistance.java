@@ -14,20 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMDistance.java,v $
 // $RCSfile: OMDistance.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:12 $
+// $Revision: 1.8 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import com.bbn.openmap.geo.Geo;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.Debug;
-
-import java.awt.*;
+import java.awt.Graphics;
 import java.text.DecimalFormat;
+
+import com.bbn.openmap.geo.Geo;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * OMGraphic object that represents a polyline, labeled with

@@ -14,18 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRangeRings.java,v $
 // $RCSfile: OMRangeRings.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:14 $
+// $Revision: 1.5 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
+import java.awt.Graphics;
 import java.io.Serializable;
+
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.Projection;
 
 /**
  * An object that manages a series of range circles. It is really an

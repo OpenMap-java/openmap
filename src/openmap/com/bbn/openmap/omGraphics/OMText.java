@@ -14,22 +14,28 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/10/14 18:06:14 $
+// $Revision: 1.14 $
+// $Date: 2005/01/10 16:58:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.io.Serializable;
 
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The OMText graphic type lets you put text on the screen. The
@@ -755,7 +761,7 @@ public class OMText extends OMGraphic implements Serializable {
             break;
         case RENDERTYPE_OFFSET:
             if (!proj.isPlotable(lat, lon)) {
-                if (Debug.debugging("omGraphics"))
+                if (Debug.debugging("omgraphic"))
                     System.err.println("OMText.generate(): offset point is not plotable!");
                 setNeedToRegenerate(true);//so we don't render it!
                 return false;
@@ -765,7 +771,7 @@ public class OMText extends OMGraphic implements Serializable {
             break;
         case RENDERTYPE_LATLON:
             if (!proj.isPlotable(lat, lon)) {
-                if (Debug.debugging("omGraphics"))
+                if (Debug.debugging("omgraphic"))
                     System.err.println("OMText.generate(): llpoint is not plotable!");
                 setNeedToRegenerate(true);//so we don't render it!
                 return false;
@@ -974,7 +980,6 @@ public class OMText extends OMGraphic implements Serializable {
      * @see #fm
      */
     public synchronized void render(Graphics g) {
-
         // copy the graphic, so our transform doesn't cascade to
         // others...
         g = g.create();
@@ -1193,9 +1198,9 @@ public class OMText extends OMGraphic implements Serializable {
 
             if (polyBounds != null) {
                 if (useMaxWidthForBounds) {
-                    shape = new GeneralPath(polyBounds.getBounds());
+                    setShape(new GeneralPath(polyBounds.getBounds()));
                 } else {
-                    shape = new GeneralPath(polyBounds);
+                    setShape(new GeneralPath(polyBounds));
                 }
 
                 // Make sure the shape takes into account the current

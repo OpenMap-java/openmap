@@ -14,20 +14,25 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingIcon.java,v $
 // $RCSfile: OMScalingIcon.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/12/10 14:49:14 $
+// $Revision: 1.7 $
+// $Date: 2005/01/10 16:58:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.io.Serializable;
+
 import javax.swing.ImageIcon;
 
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * This is an extension to OMScalingRaster that scales an icon. The

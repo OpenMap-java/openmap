@@ -14,22 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRect.java,v $
 // $RCSfile: OMRect.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:14 $
+// $Revision: 1.4 $
+// $Date: 2005/01/10 16:58:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
+import java.awt.Point;
 import java.awt.geom.GeneralPath;
-import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Graphic type that lets you draw four-sided polygons that have
@@ -354,7 +354,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-        shape = null;
+        setShape(null);
 
         if (proj == null) {
             Debug.message("omgraphic", "OMRect: null projection in generate!");
@@ -365,8 +365,8 @@ public class OMRect extends OMGraphic implements Serializable {
 
         switch (renderType) {
         case RENDERTYPE_XY:
-            shape = createBoxShape((int) Math.min(x2, x1), (int) Math.min(y2,
-                    y1), (int) Math.abs(x2 - x1), (int) Math.abs(y2 - y1));
+            setShape(createBoxShape((int) Math.min(x2, x1), (int) Math.min(y2,
+                    y1), (int) Math.abs(x2 - x1), (int) Math.abs(y2 - y1)));
             break;
         case RENDERTYPE_OFFSET:
             if (!proj.isPlotable(lat1, lon1)) {
@@ -375,10 +375,10 @@ public class OMRect extends OMGraphic implements Serializable {
             }
             Point p1 = proj.forward(lat1, lon1);
 
-            shape = createBoxShape((int) Math.min(p1.x + x1, p1.x + x2),
+            setShape(createBoxShape((int) Math.min(p1.x + x1, p1.x + x2),
                     (int) Math.min(p1.y + y1, p1.y + y2),
                     (int) Math.abs(x2 - x1),
-                    (int) Math.abs(y2 - y1));
+                    (int) Math.abs(y2 - y1)));
             break;
         case RENDERTYPE_LATLON:
             ArrayList rects = proj.forwardRect(new LatLonPoint(lat1, lon1), // NW
@@ -392,7 +392,7 @@ public class OMRect extends OMGraphic implements Serializable {
                         true);
 
                 if (shape == null) {
-                    shape = gp;
+                    setShape(gp);
                 } else {
                     ((GeneralPath) shape).append(gp, false);
                 }

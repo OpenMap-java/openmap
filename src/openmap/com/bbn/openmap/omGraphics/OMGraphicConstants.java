@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicConstants.java,v $
 // $RCSfile: OMGraphicConstants.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:13 $
+// $Revision: 1.5 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -171,4 +171,27 @@ public interface OMGraphicConstants {
      * doing the sorting.
      */
     public static final int SORT_GRAPHICS_MASK = 1 << 10;
+
+    /**
+     * A string that can be used for a keyword into the OMGraphic
+     * attribute hashtable to designate a tooltip for an OMGraphic.
+     * The layer would then look for a value for this keyword to
+     * display as a tooltip for an OMGraphic.
+     */
+    public static final String TOOLTIP = "Tooltip";
+    /**
+     * A string that can be used for a keyword into the OMGraphic
+     * attribute hashtable to designate something that would be
+     * displayed on the InformationDelegator's information line for an
+     * OMGraphic. The layer would then look for a value for this
+     * keyword to display in the information line for an OMGraphic.
+     */
+    public static final String INFOLINE = "Information Line";
+    /**
+     * A string that can be used for a keyword into the OMGraphic
+     * attribute hashtable to designate something that would be
+     * displayed as a label for an OMGraphic.
+     */
+    public static final String LABEL = "Label";
+
 }

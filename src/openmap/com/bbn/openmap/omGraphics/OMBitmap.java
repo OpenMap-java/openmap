@@ -14,17 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMBitmap.java,v $
 // $RCSfile: OMBitmap.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:12 $
+// $Revision: 1.4 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Paint;
+import java.awt.Toolkit;
 import java.awt.image.MemoryImageSource;
 import java.io.Serializable;
+
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 

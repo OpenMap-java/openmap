@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGrid.java,v $
 // $RCSfile: OMGrid.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/15 14:39:56 $
+// $Revision: 1.9 $
+// $Date: 2005/01/10 16:58:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,10 +25,13 @@ package com.bbn.openmap.omGraphics;
 import java.awt.Graphics;
 import java.awt.Point;
 
-import com.bbn.openmap.omGraphics.grid.*;
-import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.omGraphics.grid.GridData;
+import com.bbn.openmap.omGraphics.grid.OMGridData;
+import com.bbn.openmap.omGraphics.grid.OMGridGenerator;
+import com.bbn.openmap.omGraphics.grid.OMGridObjects;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * An OMGrid object is a two-dimensional container object for data.
@@ -604,7 +607,7 @@ public class OMGrid extends OMGraphicList {
         int rows = getRows();
         // Clear out the OMGraphicList part
         super.clear();
-        shape = null;
+        setShape(null);
 
         /**
          * Let's figure out the dimensions and location of the grid,
