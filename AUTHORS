@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/AUTHORS,v $
 $RCSfile: AUTHORS,v $
-$Revision: 1.17 $
-$Date: 2004/01/27 21:00:38 $
+$Revision: 1.18 $
+$Date: 2004/09/22 21:04:05 $
 $Author: dietrick $
 
 People and organizations that have contributed to OpenMap
@@ -111,6 +111,9 @@ Simon Bowen
   Added code to the MIFLayer package to speed up OMGraphicCreation,
   and to handle scale filtering.  Added support for TEXT and POINT
   primatives.
+
+Dan Bitts
+  Provided the EditableOMScalingRaster classes.
 
 --------------------------------------
 
