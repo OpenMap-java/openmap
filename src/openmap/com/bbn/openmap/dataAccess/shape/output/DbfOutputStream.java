@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/09/17 18:04:08 $
+// $Revision: 1.9 $
+// $Date: 2004/09/30 22:34:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,8 +25,7 @@ package com.bbn.openmap.dataAccess.shape.output;
 
 import com.bbn.openmap.dataAccess.shape.*;
 import java.io.*;
-import javax.swing.*;
-import javax.swing.table.*;
+
 
 /**
  * Writes date in a DbfTableModel to a file, conforming to the DBF III file
@@ -49,7 +48,7 @@ public class DbfOutputStream {
     }
 
     /**
-     *
+     * Writes the model out on the stream.  The stream is closed automatically after the write.
      * @param model the tablemodel to write
      */
     public void writeModel(DbfTableModel model) throws IOException {

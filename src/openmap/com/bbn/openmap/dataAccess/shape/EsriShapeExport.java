@@ -14,8 +14,6 @@ import java.net.MalformedURLException;
 import java.util.*;
 import javax.swing.*;
 
-import com.bbn.openmap.Environment;
-import com.bbn.openmap.MapBean;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.dataAccess.shape.output.*;
 import com.bbn.openmap.proj.Projection;
