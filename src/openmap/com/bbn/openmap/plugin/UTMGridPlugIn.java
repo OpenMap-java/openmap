@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/03/19 20:38:12 $
+// $Revision: 1.5 $
+// $Date: 2003/04/26 00:59:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,12 +23,14 @@
 
 package com.bbn.openmap.plugin;
 
-import com.bbn.openmap.*;
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.omGraphics.geom.*;
 import com.bbn.openmap.proj.Ellipsoid;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.MGRSPoint;
+import com.bbn.openmap.proj.coords.UTMPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
