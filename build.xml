@@ -99,7 +99,9 @@
           depends="init"
 	  description="Compiles the contrib classes that OpenMap needs.">
     <echo message="Building OpenMap contrib classes..."/>
-    <javac srcdir="${openmap.contrib}"/>   
+    <javac srcdir="${openmap.contrib}"
+           classpath="${openmap.home}/lib/openmap.jar;${openmap.home}"
+           excludes="${javac.excludes}, ${corba.excludes, ${dependecy.excludes}"/>
   </target>
 
   <target name="docs" 
