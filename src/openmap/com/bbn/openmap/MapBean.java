@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/02/12 23:03:11 $
+// $Revision: 1.13 $
+// $Date: 2004/09/17 17:56:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -458,6 +458,9 @@ public class MapBean extends JComponent
      *
      * @return int type
      * @see Projection#getProjectionType
+     * @deprecated Projection Type integers are no longer really used.
+     * The ProjectionFactory should be consulted for which type are
+     * available, and the projection should be created there.
      */
     public int getProjectionType() {
         return projection.getProjectionType();
@@ -469,6 +472,9 @@ public class MapBean extends JComponent
      * projection with the same center, scale, width, and height of
      * the previous one.
      * @param newType the new projection type
+     * @deprecated Projection Type integers are no longer really used.
+     * The ProjectionFactory should be consulted for which type are
+     * available, and the projection should be created there.
      */
     public void setProjectionType(int newType) {
         int oldType = projection.getProjectionType();

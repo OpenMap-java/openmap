@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.21 $
-// $Date: 2004/05/10 20:38:31 $
+// $Revision: 1.22 $
+// $Date: 2004/09/17 17:56:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,7 +30,6 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import javax.swing.JFileChooser;
 
 import com.bbn.openmap.event.ProgressEvent;
 import com.bbn.openmap.event.ProgressListener;

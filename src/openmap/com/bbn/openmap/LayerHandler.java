@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LayerHandler.java,v $
 // $RCSfile: LayerHandler.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:05 $
+// $Revision: 1.8 $
+// $Date: 2004/09/17 17:56:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,11 +23,14 @@
 
 package com.bbn.openmap;
 
+import com.bbn.openmap.event.LayerEvent;
+import com.bbn.openmap.event.LayerListener;
+import com.bbn.openmap.event.LayerSupport;
+import com.bbn.openmap.plugin.PlugIn;
+import com.bbn.openmap.plugin.PlugInLayer;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.plugin.*;
 
 import java.awt.event.*;
 import java.io.Serializable;
@@ -857,7 +860,7 @@ public class LayerHandler extends OMComponent
                                  ((Layer)someObj).getName() + "|");
                 }
                 if (!hasLayer((Layer)someObj)) {
-                    addLayer((Layer)someObj);
+                    addLayer((Layer)someObj, 0);
                 }
             }
 

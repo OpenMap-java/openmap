@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/05/15 01:44:58 $
+// $Revision: 1.13 $
+// $Date: 2004/09/17 17:56:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -717,6 +717,7 @@ public class InformationDelegator extends OMComponentPanel
     public void setShowInfoLine(boolean set) {
         showInfoLine = set;
         infoLineHolder.setVisible(set);
+        infoLineHolder2.setVisible(set);
     }
     
     public boolean getShowInfoLine() {
