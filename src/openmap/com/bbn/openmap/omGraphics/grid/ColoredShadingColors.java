@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/grid/ColoredShadingColors.java,v $
 // $RCSfile: ColoredShadingColors.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/01/17 00:22:34 $
+// $Revision: 1.2 $
+// $Date: 2004/01/24 03:38:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -120,7 +120,8 @@ public class ColoredShadingColors implements ElevationColors {
     /**
      * Get the int argb value for a given elevation, with the provided
      * units.  The slope of the land, from the northwest to the
-     * southeast, is provided in case that should matter.
+     * southeast, is provided in case that should matter. It's not
+     * used in this version of the algorithm.
      */
     public int getARGB(int elevation, Length units, double slope) {
 
@@ -138,12 +139,13 @@ public class ColoredShadingColors implements ElevationColors {
         }
 
         int value = colors[i].value;
-        
+
         if (slope < 0) {
             value -= 2*slopeColorAdjustment;
         } else if (slope == 0) {
             value -= slopeColorAdjustment;
         }
+
         return value;
     }
 
