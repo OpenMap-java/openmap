@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMapApplet.java,v $
 // $RCSfile: OpenMapApplet.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/05 05:42:17 $
+// $Revision: 1.3 $
+// $Date: 2003/04/08 16:28:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 
 package com.bbn.openmap.app;
 
+import java.awt.Container;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.beancontext.BeanContext;
@@ -37,6 +38,7 @@ import java.util.Iterator;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.PropertyHandler;
+import com.bbn.openmap.gui.BasicMapPanel;
 import com.bbn.openmap.gui.MapPanel;
 import com.bbn.openmap.util.Debug;
 
@@ -129,7 +131,7 @@ public class OpenMapApplet extends JApplet
 				 "debug.plugin"
 		   });
 	    
-	MapPanel mapPanel = new MapPanel();
+	MapPanel mapPanel = new BasicMapPanel();
 	mapPanel.getMapHandler().add(this);
 	Debug.message("app", "OpenMapApplet.init()");
     }
@@ -191,16 +193,29 @@ public class OpenMapApplet extends JApplet
     public void findAndInit(Iterator it) {
 	Object someObj;
 	while (it.hasNext()) {
-	    someObj = it.next();
-	    if (someObj instanceof MapPanel) {
-		getContentPane().add((MapPanel)someObj);
-		invalidate();
+	    findAndInit(it.next());
+	}
+    }
+
+    /**
+     * Called when an object is added to the MapHandler.
+     */
+    public void findAndInit(Object someObj) {
+	if (someObj instanceof MapPanel && someObj instanceof Container) {
+	    getContentPane().add((Container)someObj);
+
+	    JMenuBar jmb = ((MapPanel)someObj).getMapMenuBar();
+	    if (jmb != null) {
+		Debug.message("basic", "OpenMapApplet: Got MenuBar from MapPanel");
+		getRootPane().setJMenuBar(jmb);
 	    }
 
-	    if (someObj instanceof JMenuBar) {
-		getRootPane().setJMenuBar((JMenuBar)someObj);
-		invalidate();
-	    }
+	    invalidate();
+	}
+
+	if (someObj instanceof JMenuBar) {
+	    getRootPane().setJMenuBar((JMenuBar)someObj);
+	    invalidate();
 	}
     }
     
@@ -228,17 +243,28 @@ public class OpenMapApplet extends JApplet
 	Object someObj;
 	Iterator it = bcme.iterator();
 	while (it.hasNext()) {
-	    someObj = it.next();
-	    if (someObj instanceof MapPanel) {		
-		Debug.message("basic", "OpenMapApplet: MapPanel is being removed from applet");
-		getContentPane().remove((MapPanel)someObj);
+	    findAndUndo(it.next());
+	}
+    }
+
+    /**
+     * Called when an object is removed from the MapHandler.
+     */
+    public void findAndUndo(Object someObj) {
+	if (someObj instanceof MapPanel && someObj instanceof Container) {		
+	    Debug.message("basic", "OpenMapApplet: MapPanel is being removed from applet");
+	    getContentPane().remove((Container)someObj);
+
+	    if (getJMenuBar() == ((MapPanel)someObj).getMapMenuBar()) {
+		Debug.message("basic", "OpenMapApplet: MenuPanel's MenuBar is being removed");
+		setJMenuBar(null);
 	    }
+	}
 	    
-	    if (someObj instanceof JMenuBar) {
-		if (getJMenuBar() == (JMenuBar) someObj) {
-		    Debug.message("basic", "OpenMapApplet: MenuBar is being removed from applet");
-		    setJMenuBar(null);
-		}
+	if (someObj instanceof JMenuBar) {
+	    if (getJMenuBar() == (JMenuBar) someObj) {
+		Debug.message("basic", "OpenMapApplet: MenuBar is being removed from applet");
+		setJMenuBar(null);
 	    }
 	}
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/04/05 05:42:17 $
+// $Revision: 1.5 $
+// $Date: 2003/04/08 16:28:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,6 +31,7 @@ import java.net.URL;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MultipleSoloMapComponentException;
 import com.bbn.openmap.PropertyHandler;
+import com.bbn.openmap.gui.BasicMapPanel;
 import com.bbn.openmap.gui.MapPanel;
 import com.bbn.openmap.gui.OpenMapFrame;
 import com.bbn.openmap.layer.util.LayerUtils;
@@ -71,7 +72,7 @@ public class OpenMap {
      * PropertyHandler may be null.
      */
     public OpenMap(PropertyHandler propertyHandler) {
-	mapPanel = new MapPanel(propertyHandler);
+	mapPanel = new BasicMapPanel(propertyHandler);
 	mapPanel.getMapHandler().add(new OpenMapFrame());
 	mapPanel.getMapBean().showLayerPalettes();
     }
