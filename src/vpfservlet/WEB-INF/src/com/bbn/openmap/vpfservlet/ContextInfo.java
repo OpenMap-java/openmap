@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/ContextInfo.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/25 23:31:47 $ $Author: wjeuerle $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -25,9 +25,9 @@ import com.bbn.openmap.layer.vpf.LibrarySelectionTable;
 public class ContextInfo {
     /** the name of the attribute where ContextInfo objects are in the 
      * ServletContext  */
-    public static final String CONTEXT_INFO = ContextInfo.getPackage().getName() + ".contextInfo";
+    public static final String CONTEXT_INFO = ContextInfo.class.getPackage().getName() + ".contextInfo";
     /** the prefix used to configure VPF libraries in web.xml */
-    public static final String LIBRARY_PREFIX = ContextInfo.getPackage().getName() + "vpf_library.";
+    public static final String LIBRARY_PREFIX = ContextInfo.class.getPackage().getName() + "vpf_library.";
 
     /** a map from library name to (String) library path */
     private Map lib_pathmap;

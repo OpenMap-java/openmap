@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/Data.java,v $
-// $Revision: 1.1 $ $Date: 2004/01/25 20:04:45 $ $Author: wjeuerle $
+// $Revision: 1.2 $ $Date: 2004/01/25 23:31:47 $ $Author: wjeuerle $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -112,10 +112,10 @@ public class Data extends VPFHttpServlet {
 
     public static StringBuffer append(StringBuffer base, String app,
 				      boolean needSep) {
-	return (needsep ? base.append(",") : base).append(app);
+	return (needSep ? base.append(",") : base).append(app);
     }
 
-    public static final String ROWLIST_OBJECT = Data.getPackage().getName()+".rowlist";
+    public static final String ROWLIST_OBJECT = Data.class.getPackage().getName()+".rowlist";
 
     protected void doWork(HttpServletRequest request,
 			  HttpServletResponse response,
