@@ -1,3 +1,16 @@
+2003-04-16  Don Dietrick  <dietrick@bbn.com>
+
+	* Created the CombinedCoordPanel made from the contents of the
+	improved CoordDialog, and modified the CoordDialog and
+	CoordInternalFrame to use that instead of creating their own
+	content.  Created a CoordsMenuItem that brings up the
+	CombinedCoordPanel in a WindowSupport object instead of using the
+	CoordDialog and CoordInternalFrame.  Removed support in the
+	NavigateMenu for the CenterListener setup of the MapBean and
+	specific support for the CoordDialog/CoordInternalFrame, since
+	that moved to the CombinedCoordPanel and setup is now supported
+	by the menu item.
+
 2003-04-14  Don Dietrick  <dietrick@bbn.com>
 
 	* Added the com.bbn.openmap.gui.menu.MenuList component, which
