@@ -106,10 +106,10 @@
 	<jar jarfile="${openmap.home}/lib/openmap.jar" 
 	     basedir="${openmap.classes}"
 	     manifest="${openmap.home}/share/manifest.txt" 
-	     includes="openmap.properties, com/**/*.class,
-		       com/**/*.gif, com/**/*.png,
-		       Acme/**/*.class, doppelt/**/*.class, 
-		       com/**/*.properties" 
+	     includes="openmap.properties,
+		       **/*.class,
+		       **/*.gif, **/*.png,
+		       **/*.properties" 
 	     excludes="${corba.excludes}"/>
 
 	<!-- omcore no longer created by default - remove these comments if
