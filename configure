@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.2 
+# From configure.in OpenMap Revision: 1.4 
 
 
 
@@ -761,6 +761,8 @@ fi
 if test "x$with_corba" = "xyes"; then
   BUILD_CORBA=all_corba
   
+  CLEAN_CORBA=clean_corba
+  
   CORBA_CLASSPATH=:/home/tmitchel/jars/vbjall.jar:/home/tmitchel/jars/cspec58.jar
   
   CORBA_DIRS=com/bbn/openmap/specialist/Makefile \
@@ -887,26 +889,26 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/Makefile
 	com/bbn/util/Makefile
 	com/bbn/util/cacheHandler/Makefile
+	com/bbn/util/stateMachine/Makefile
 	com/bbn/openmap/Makefile
 	com/bbn/openmap/app/Makefile
+	com/bbn/openmap/dted/Makefile
+	com/bbn/openmap/event/Makefile
 	com/bbn/openmap/examples/Makefile
 	com/bbn/openmap/gui/Makefile
+	com/bbn/openmap/html/Makefile
 	com/bbn/openmap/http/Makefile
-	com/bbn/openmap/html/Makefile
-	com/bbn/openmap/event/Makefile
-	com/bbn/openmap/html/Makefile
-	com/bbn/openmap/event/Makefile
+	com/bbn/openmap/nitf/Makefile
+	com/bbn/openmap/omGraphics/Makefile
 	com/bbn/openmap/pluginLayer/Makefile
 	com/bbn/openmap/proj/Makefile
-	com/bbn/openmap/omGraphics/Makefile
-	com/bbn/openmap/util/Makefile
-	com/bbn/openmap/nitf/Makefile
 	com/bbn/openmap/rpf/Makefile
-	com/bbn/openmap/dted/Makefile
 	com/bbn/openmap/shape/Makefile
 	com/bbn/openmap/terrain/Makefile
+	com/bbn/openmap/util/Makefile
 	com/bbn/openmap/vpf/Makefile
 	$CORBA_DIRS
+	com/boutell/gd/Makefile
 	" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
@@ -945,6 +947,7 @@ s%@JAVA_VERSION_TEENY@%$JAVA_VERSION_TEENY%g
 s%@JAVAC@%$JAVAC%g
 s%@SWING_JAR@%$SWING_JAR%g
 s%@BUILD_CORBA@%$BUILD_CORBA%g
+s%@CLEAN_CORBA@%$CLEAN_CORBA%g
 s%@CORBA_CLASSPATH@%$CORBA_CLASSPATH%g
 
 CEOF
@@ -994,26 +997,26 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/Makefile
 	com/bbn/util/Makefile
 	com/bbn/util/cacheHandler/Makefile
+	com/bbn/util/stateMachine/Makefile
 	com/bbn/openmap/Makefile
 	com/bbn/openmap/app/Makefile
+	com/bbn/openmap/dted/Makefile
+	com/bbn/openmap/event/Makefile
 	com/bbn/openmap/examples/Makefile
 	com/bbn/openmap/gui/Makefile
+	com/bbn/openmap/html/Makefile
 	com/bbn/openmap/http/Makefile
-	com/bbn/openmap/html/Makefile
-	com/bbn/openmap/event/Makefile
-	com/bbn/openmap/html/Makefile
-	com/bbn/openmap/event/Makefile
+	com/bbn/openmap/nitf/Makefile
+	com/bbn/openmap/omGraphics/Makefile
 	com/bbn/openmap/pluginLayer/Makefile
 	com/bbn/openmap/proj/Makefile
-	com/bbn/openmap/omGraphics/Makefile
-	com/bbn/openmap/util/Makefile
-	com/bbn/openmap/nitf/Makefile
 	com/bbn/openmap/rpf/Makefile
-	com/bbn/openmap/dted/Makefile
 	com/bbn/openmap/shape/Makefile
 	com/bbn/openmap/terrain/Makefile
+	com/bbn/openmap/util/Makefile
 	com/bbn/openmap/vpf/Makefile
 	$CORBA_DIRS
+	com/boutell/gd/Makefile
 	"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
