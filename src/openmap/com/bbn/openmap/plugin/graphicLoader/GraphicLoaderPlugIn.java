@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/GraphicLoaderPlugIn.java,v $
 // $RCSfile: GraphicLoaderPlugIn.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/06/26 00:53:47 $
+// $Revision: 1.5 $
+// $Date: 2003/09/22 23:29:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -214,7 +214,7 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
 	throws PropertyVetoException {
 	super.setBeanContext(in_bc);
 
-	if (needToAddGraphicLoaderToMapHandler && getGraphicLoader() != null) {
+	if (in_bc != null && needToAddGraphicLoaderToMapHandler && getGraphicLoader() != null) {
 	    in_bc.add(getGraphicLoader());
 	    needToAddGraphicLoaderToMapHandler = false;
 	}

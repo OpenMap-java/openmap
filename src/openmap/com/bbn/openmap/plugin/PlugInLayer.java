@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/09/05 21:01:50 $
+// $Revision: 1.9 $
+// $Date: 2003/09/22 23:29:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -114,7 +114,6 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 	super.setProperties(prefix, props);
 
 	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-	
 	plugInClass = props.getProperty(realPrefix + PlugInProperty);
 
 	if (plugInClass != null) {
@@ -134,13 +133,13 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
     }
 
     public Properties getProperties(Properties props) {
+	props = super.getProperties(props);
 
 	PlugIn pi = getPlugIn();
 	String prefix;
 	if (pi != null) {
 	    if (plugInClass != null) {
 		prefix = PropUtils.getScopedPropertyPrefix(this);
-		props = super.getProperties(props);
 		props.put(prefix + PlugInProperty, pi.getClass().getName());
 	    } else {
 		// If plugInClass is not defined, then we want the
@@ -160,6 +159,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 
     public Properties getPropertyInfo(Properties props) {
 	PlugIn pi = getPlugIn();
+	props = super.getProperties(props);
 
 	if (plugInClass != null || pi == null) {
 	    // If plugInClass is not defined, then we want the
@@ -167,7 +167,6 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 	    // the only thing in the properties, and ther other
 	    // components should be OK with that.
 	    
-	    props = super.getProperties(props);
 	    props.put(PlugInProperty, "Class name of PlugIn");
 	    props.put(PlugInProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
 	} else {

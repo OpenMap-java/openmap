@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/04/26 00:59:22 $
+// $Revision: 1.6 $
+// $Date: 2003/09/22 23:29:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -215,7 +215,10 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     protected void addLabel(LatLonPoint llp, UTMPoint utm, QuadTree labelTree) {
 	float latitude = llp.getLatitude();
 	float longitude = llp.getLongitude();
-	labelTree.put(latitude, longitude, new OMText(latitude, longitude, 2, -2, new String(utm.zone_number + "" + utm.zone_letter), OMText.JUSTIFY_LEFT));
+	labelTree.put(latitude, longitude, 
+		      new OMText(latitude, longitude, 2, -2, 
+				 utm.zone_number + "" + utm.zone_letter,
+				 OMText.JUSTIFY_LEFT));
     }
 
     /**

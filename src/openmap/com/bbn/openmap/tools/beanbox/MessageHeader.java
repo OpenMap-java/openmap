@@ -19,24 +19,24 @@ package com.bbn.openmap.tools.beanbox;
 import java.io.InputStream;
 import java.io.PrintWriter;
 
-/** An RFC 844 or MIME message header.  Includes methods
-    for parsing headers from incoming streams, fetching
-    values, setting values, and printing headers.
-    Key values of null are legal: they indicate lines in
-    the header that don't have a valid key, but do have
-    a value (this isn't legal according to the standard,
-    but lines like this are everywhere). */
-public
-class MessageHeader {
+/**
+ * An RFC 844 or MIME message header.  Includes methods for parsing
+ * headers from incoming streams, fetching values, setting values, and
+ * printing headers.  Key values of null are legal: they indicate
+ * lines in the header that don't have a valid key, but do have a
+ * value (this isn't legal according to the standard, but lines like
+ * this are everywhere). 
+ */
+public class MessageHeader {
     private String keys[];
     private String values[];
     private int nkeys;
 
-    public MessageHeader () {
+    public MessageHeader() {
 	grow();
     }
 
-    public MessageHeader (InputStream is) throws java.io.IOException {
+    public MessageHeader(InputStream is) throws java.io.IOException {
 	parseHeader(is);
     }
 
@@ -69,9 +69,10 @@ class MessageHeader {
 	return values[n];
     }
 
-    /** Find the next value that corresponds to this key.
-     *	It finds the first value that follows v. To iterate
-     *	over all the values of a key use:
+    /**
+     * Find the next value that corresponds to this key.
+     * It finds the first value that follows v. To iterate
+     * over all the values of a key use:
      *	<pre>
      *		for(String v=h.findValue(k); v!=null; v=h.findNextValue(k, v)) {
      *		    ...
@@ -97,9 +98,11 @@ class MessageHeader {
 	return null;
     }
 
-    /** Prints the key-value pairs represented by this
-	header.  Also prints the RFC required blank line
-	at the end. Omits pairs with a null key. */
+    /**
+     * Prints the key-value pairs represented by this
+     * header.  Also prints the RFC required blank line
+     * at the end. Omits pairs with a null key. 
+     */
     public void print(PrintWriter p) {
 	for (int i = 0; i < nkeys; i++)
 	    if (keys[i] != null)
@@ -109,8 +112,10 @@ class MessageHeader {
 	p.flush();
     }
 
-    /** Adds a key value pair to the end of the
-	header.  Duplicates are allowed */
+    /**
+     * Adds a key value pair to the end of the
+     * header.  Duplicates are allowed.
+     */
     public void add(String k, String v) {
 	grow();
 	keys[nkeys] = k;
@@ -118,8 +123,10 @@ class MessageHeader {
 	nkeys++;
     }
 
-    /** Prepends a key value pair to the beginning of the
-	header.  Duplicates are allowed */
+    /**
+     * Prepends a key value pair to the beginning of the
+     * header.  Duplicates are allowed.
+     */
     public void prepend(String k, String v) {
 	grow();
 	for (int i = nkeys; i > 0; i--) {
@@ -131,11 +138,11 @@ class MessageHeader {
 	nkeys++;
     }
 
-    /** Overwrite the previous key/val pair at location 'i'
+    /**
+     * Overwrite the previous key/val pair at location 'i'
      * with the new k/v.  If the index didn't exist before
      * the key/val is simply tacked onto the end.
      */
-
     public void set(int i, String k, String v) {
 	grow();
 	if (i < 0) {
@@ -149,8 +156,9 @@ class MessageHeader {
     }
 	    
 
-    /** grow the key/value arrays as needed */
-
+    /** 
+     * Grow the key/value arrays as needed 
+     */
     private void grow() {
 	if (keys == null || nkeys >= keys.length) {
 	    String[] nk = new String[nkeys + 4];
@@ -164,10 +172,11 @@ class MessageHeader {
 	}
     }
 
-    /** Sets the value of a key.  If the key already
-	exists in the header, it's value will be
-	changed.  Otherwise a new key/value pair will
-	be added to the end of the header. */
+    /**
+     * Sets the value of a key.  If the key already exists in the
+     * header, it's value will be changed.  Otherwise a new key/value
+     * pair will be added to the end of the header. 
+     */
     public void set(String k, String v) {
 	for (int i = nkeys; --i >= 0;)
 	    if (k.equalsIgnoreCase(keys[i])) {
@@ -177,8 +186,10 @@ class MessageHeader {
 	add(k, v);
     }
 
-    /** Convert a message-id string to canonical form (strips off
-	leading and trailing <>s) */
+    /**
+     * Convert a message-id string to canonical form (strips off
+     * leading and trailing <>s) 
+     */
     public static String canonicalID(String id) {
 	if (id == null)
 	    return "";
@@ -212,21 +223,21 @@ class MessageHeader {
 	    int c;
 	    boolean inKey = firstc > ' ';
 	    s[len++] = (char) firstc;
-    parseloop:{
-    parseloop2:	while ((c = is.read()) >= 0) {
+	parseloop:{
+	    parseloop2:	while ((c = is.read()) >= 0) {
 		    switch (c) {
-		      case ':':
+		    case ':':
 			if (inKey && len > 0)
 			    keyend = len;
 			inKey = false;
 			break;
-		      case '\t':
+		    case '\t':
 			c = ' ';
-		      case ' ':
+		    case ' ':
 			inKey = false;
 			break;
-		      case '\r':
-		      case '\n':
+		    case '\r':
+		    case '\n':
 			firstc = is.read();
 			if (c == '\r' && firstc == '\n') {
 			    firstc = is.read();
