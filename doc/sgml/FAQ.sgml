@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/Attic/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.7 $
-$Date: 1999/04/05 19:06:42 $
+$Revision: 1.8 $
+$Date: 1999/04/07 19:45:20 $
 $Author: aculline $
 
 Frequently Asked Questions for the OpenMap system.
@@ -64,19 +64,17 @@ Antarctica's kind of a cool place.
 <sect1>What types of data does OpenMap support?
 <p>
 OpenMap comes with built-in support for <htmlurl
-url="http://www.nima.mil/" name="NIMA"> DCW, VPF, and VMAP, and also
-<htmlurl url="http://www.esri.com/" name="ESRI"> Shapefiles.  OpenMap
-can display both vector and raster geospatial data.  You can use
-OpenMap to develop map layers which can display your own private
-formats.
+url="http://www.nima.mil/" name="NIMA"> DCW, VPF, VMAP and
+CADRG, CIB, RPF; OpenMap also has support for <htmlurl
+url="http://www.esri.com/" name="ESRI"> Shapefiles.  OpenMap can
+display both vector and raster geospatial data.  You can use OpenMap
+to develop map layers which can display your own private formats.
 
 
 <sect1>Can OpenMap display CADRG, CIB, RPF?
 <p>
-Yes and no. We have some code that can do it. We can't include it as
-part of this release until we iron out some copyright issues since
-part of the code to do RPF is from an outside contributor. We'll add
-it to the release as soon as we can.
+Yes, we have code that can display this data.  RPF support is new as
+of OpenMap 3.2.
 
 
 <sect1>What is CADRG, CIB, and RPF?
@@ -101,7 +99,8 @@ on getting a version out that's easy to build and easy to work with.
 <p>
 Questions concerning the core OpenMap source code.
 
-<sect1>When adding ESRI shape files to OpenMap I don't see (some/all) of the data.  What's wrong?
+<sect1>When adding ESRI shape files to OpenMap I don't see (some/all)
+of the data.  What's wrong?
 <p>
 The Openmap <htmlurl
 url="api/com.bbn.openmap.layer.shape.ShapeLayer.html"
@@ -124,7 +123,8 @@ Be sure to substitute the correct name of your shape file and layer
 for the word 'country' in the examples above.
 
 
-<sect1>I've written a layer that is part of the map but sometimes it doesn't show its data.
+<sect1>I've written a layer that is part of the map but sometimes it
+doesn't show its data.
 <p>
 Assuming you're using the LatLon OMGraphics objects to represent your
 graphical data, this situation occurs when you try to render the
@@ -152,7 +152,8 @@ suited for both dynamic and static data models.
 Questions concerning the basic OpenMap viewer application.
 
 
-<sect1>I've written my own layer and I want to see it using the OpenMap Viewer Application.
+<sect1>I've written my own layer and I want to see it using the
+OpenMap Viewer Application.
 <p>
 First you need to add the appropriate properties references to the
 <tt/openmap.properties/ file in your home directory or in the
@@ -202,7 +203,8 @@ installed the OpenMap package, launch the viewer like this:
 </verb>
 
 
-<sect1>Do you have any suggestions for debugging my layer/application with OpenMap?
+<sect1>Do you have any suggestions for debugging my layer/application
+with OpenMap?
 <p>
 As of writing this, most of us haven't yet come across a good Java
 debugger.  But <htmlurl url="http://www.cygnus.com/" name="Cygnus"> is
