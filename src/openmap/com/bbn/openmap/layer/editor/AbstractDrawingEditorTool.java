@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/Attic/AbstractDrawingEditorTool.java,v $
 // $RCSfile: AbstractDrawingEditorTool.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/09/04 18:21:12 $
+// $Revision: 1.7 $
+// $Date: 2003/09/22 23:50:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -185,6 +185,7 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
 	if (!value) {
 	    resetForNewGraphic();
 	}
+	getDrawingTool().setVisible(true);// Just to make sure...
     }
 
     /**
@@ -290,6 +291,7 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
      */
     public void actionPerformed(ActionEvent e) {
 	String command = e.getActionCommand();
+
 	if (command == RESET_CMD) {
 	    thingToCreate = null;
 	    setWantsEvents(false);
@@ -301,6 +303,7 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
 		// the tool was active with a different thing.
 		drawingTool.deactivate();
 		resetForNewGraphic();
+		drawingTool.showPalette();
 	    } else if (mouseDelegator != null) {
 		mouseDelegator.setActiveMouseModeWithID(getEditorLayer().getMouseMode().getID());
 		setWantsEvents(true);
@@ -320,10 +323,8 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
      */
     protected OMDrawingToolMouseMode activateDrawingTool(String ttc) {
 	if (drawingTool != null) {
-	    drawingTool.setBehaviorMask(OMDrawingTool.GUI_VIA_POPUP_BEHAVIOR_MASK |
-					OMDrawingTool.ALT_POPUP_BEHAVIOR_MASK |
-					OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
-	    if (drawingTool.create(ttc, ga, layer) == null) {
+	    drawingTool.setBehaviorMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
+	    if (drawingTool.create(ttc, ga, layer, true) == null) {
 		// Something bad happened, might as well try to clean up.
 		drawingTool.deactivate();
 		return null;
@@ -461,16 +462,20 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
 	ImageIcon icon = null;
 
 	if (face == null) {
+	    face = new JPanel();
+	    ((JPanel)face).setBorder(BorderFactory.createEmptyBorder());
 
-	    JToggleButton btn;
-	    face = new JToolBar();
-	    ((JToolBar)face).setFloatable(false);
+	    JToolBar faceTB = new JToolBar();
+	    faceTB.setFloatable(false);
+	    faceTB.setBorder(BorderFactory.createEmptyBorder());
+ 	    face.add(faceTB);
 
 	    Iterator it = loaderList.iterator();
 	    if (bg == null) {
 		bg = new ButtonGroup();
 	    }
 
+	    JToggleButton btn;
 	    while (it.hasNext()) {
 		EditToolLoader loader = (EditToolLoader)it.next();
 		String[] classnames = loader.getEditableClasses();
@@ -483,18 +488,22 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
 		    btn.addActionListener(this);
 		    bg.add(btn);
 
-		    face.add(btn);
+		    faceTB.add(btn);
 		}
 
-		unpickBtn = new JToggleButton("", false);
-		unpickBtn.setActionCommand(RESET_CMD);
-		unpickBtn.addActionListener(this);
-		unpickBtn.setVisible(false);
-		bg.add(unpickBtn);
-		face.add(unpickBtn);
 	    }
+
+	    unpickBtn = new JToggleButton("", false);
+	    unpickBtn.setActionCommand(RESET_CMD);
+	    unpickBtn.addActionListener(this);
+	    unpickBtn.setVisible(false);
+	    bg.add(unpickBtn);
+	    faceTB.add(unpickBtn);
 	    
-// 	    face.add(ga.getGUI());
+	    if (drawingTool != null) {
+		face.add(drawingTool);
+		drawingTool.showPalette();
+	    }
 
 	    face.setVisible(visible);
 	}
@@ -547,6 +556,7 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
 	    if (mmID != getEditorLayer().getMouseMode().getID()) {
 		totalReset();
 	    }
+	    drawingTool.showPalette(); // Reset to basic parameters
 	}
     }
     

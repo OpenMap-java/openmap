@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/DrawingEditorTool.java,v $
 // $RCSfile: DrawingEditorTool.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:50:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,6 +56,7 @@ public class DrawingEditorTool extends AbstractDrawingEditorTool {
     public DrawingEditorTool(EditorLayer layer) {
 	super(layer);
 
+	addEditToolLoader(new OMDistanceLoader());
 	addEditToolLoader(new OMLineLoader());
 	addEditToolLoader(new OMPolyLoader());
 	addEditToolLoader(new OMRectLoader());

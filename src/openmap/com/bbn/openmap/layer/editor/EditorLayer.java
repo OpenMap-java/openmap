@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayer.java,v $
 // $RCSfile: EditorLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/04 18:21:12 $
+// $Revision: 1.5 $
+// $Date: 2003/09/22 23:50:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -195,7 +195,7 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
     public boolean mousePressed(MouseEvent e) { 
 	if (editorTool != null && editorTool.wantsEvents()) {
 	    editorTool.mousePressed(e);
-	    return true;
+	    return consumeEvents;
 	} else {
 	    return super.mousePressed(e);
 	}
@@ -265,14 +265,11 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      */
     public boolean mouseDragged(MouseEvent e) {      
 	if (editorTool != null && editorTool.wantsEvents()) {
-	    Debug.output("EditorLayer.mouseDragged, passing event to tool");
 	    editorTool.mouseDragged(e);
-// 	    return true;
+ 	    return consumeEvents;
 	} else {
-// 	    return super.mouseDragged(e);
-	    super.mouseDragged(e);
+ 	    return super.mouseDragged(e) && consumeEvents;
 	}
-	return false;
     }
 
     /**
@@ -284,12 +281,10 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
     public boolean mouseMoved(MouseEvent e) {  
 	if (editorTool != null && editorTool.wantsEvents()) {
 	    editorTool.mouseMoved(e);
-// 	    return true;
+ 	    return consumeEvents;
 	} else {
-// 	    return super.mouseMoved(e);
-	    super.mouseMoved(e);
+ 	    return super.mouseMoved(e) && consumeEvents;
 	}
-	return false;
     }
     
     /**
@@ -335,25 +330,26 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
     }
     
     /** 
-     * The retrieval key for this tool.  We use the layer name in this
-     * case.
+     * The retrieval key for this tool.  We use the property prefix
+     * for the key.
      *
      * @return String The key for this tool.
-     **/
+     */
     public String getKey() {
-	return getName();
+	return getPropertyPrefix();
     }
     
     /** 
-     * Set the retrieval key for this tool.  This call sets the
-     * layer's name, so it doesn't need to be called if that is
-     * already done.
+     * Set the retrieval key for this tool.  This call sets the key
+     * used for the Tool interface method, which is generally the
+     * property prefix used for this layer.  Do not use this lightly,
+     * since the ToolPanel may be expecting to find a key that is
+     * reflected in the openmap.properties file.
      *
      * @param key The key for this tool.
      */
     public void setKey(String aKey) {
-	setName(aKey);
+	setPropertyPrefix(aKey);
     }
-
 }
 

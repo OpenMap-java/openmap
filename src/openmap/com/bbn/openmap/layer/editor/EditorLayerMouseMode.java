@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayerMouseMode.java,v $
 // $RCSfile: EditorLayerMouseMode.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/04 18:21:12 $
+// $Revision: 1.4 $
+// $Date: 2003/09/22 23:50:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -74,7 +74,6 @@ public class EditorLayerMouseMode extends CoordMouseMode {
 	super.findAndInit(someObj);
 	if (someObj instanceof SelectMouseMode && 
 	    ((SelectMouseMode)someObj).getID() == SelectMouseMode.modeID) {
-	    com.bbn.openmap.util.Debug.output("EditorLayerMouseMode connected to Gestures mouse mode.");
 	    gestures = (SelectMouseMode)someObj;
 	}
     }
@@ -134,7 +133,6 @@ public class EditorLayerMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mouseDragged(MouseEvent e) {
-	com.bbn.openmap.util.Debug.output("ELMM.mouseDragged, passing to gestures, then on to mouse support");
 	if (gestures != null) {
 	    gestures.mouseDragged(e);
 	}
