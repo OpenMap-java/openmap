@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolChooser.java,v $
 // $RCSfile: SymbolChooser.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/01/13 01:33:58 $
+// $Revision: 1.9 $
+// $Date: 2005/01/14 18:18:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -75,6 +75,7 @@ import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.image.ImageFormatter;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.FileUtils;
 import com.bbn.openmap.util.PaletteHelper;
@@ -294,11 +295,12 @@ public class SymbolChooser extends JPanel implements ActionListener {
                 ImageFormatter formatter = new AcmeGifFormatter();
                 byte[] imageBytes = formatter.formatImage(bi);
                 String newFileName = FileUtils.getFilePathFromUser("Pick File To Save");
-
-                FileOutputStream fos = new FileOutputStream(newFileName);
-                fos.write(imageBytes);
-                fos.flush();
-                fos.close();
+                if (newFileName != null) {
+                    FileOutputStream fos = new FileOutputStream(newFileName);
+                    fos.write(imageBytes);
+                    fos.flush();
+                    fos.close();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (FileNotFoundException e) {
@@ -497,13 +499,54 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
     public static void main(String[] args) {
         Debug.init();
-        Debug.put("symbology");
+
+        ArgParser ap = new ArgParser("SymbolChooser");
+        ap.add("type",
+                "Type of symbol image set being used (GIF or SVG, GIF is default)",
+                1);
+        ap.add("path",
+                "Path to root directory of symbol image set if not in classpath",
+                1);
+        ap.add("default", "15 character code for default icon", 1);
+        ap.add("verbose", "Print messages");
+
+        if (!ap.parse(args)) {
+            ap.printUsage();
+            System.exit(0);
+        }
+
+        String arg[];
+        arg = ap.getArgValues("type");
+        String symbolImageMakerClass = "com.bbn.openmap.tools.symbology.milStd2525.GIFSymbolImageMaker";
+        if (arg != null) {
+            if (arg[0].equalsIgnoreCase("SVG")) {
+                symbolImageMakerClass = "com.bbn.openmap.tools.symbology.milStd2525.SVGSymbolImageMaker";
+            }
+        }
+
+        String defaultSymbolCode = "SFPPV-----*****";
+        arg = ap.getArgValues("default");
+        if (arg != null) {
+            defaultSymbolCode = arg[0];
+        }
+
+        arg = ap.getArgValues("verbose");
+        if (arg != null) {
+            Debug.put("symbology");
+        }
+
         SymbolReferenceLibrary srl = new SymbolReferenceLibrary();
-        if (srl.setSymbolImageMaker("com.bbn.openmap.tools.symbology.milStd2525.GIFSymbolImageMaker") != null) {
+        if (srl.setSymbolImageMaker(symbolImageMakerClass) != null) {
+
+            arg = ap.getArgValues("path");
+            if (arg != null) {
+                srl.getSymbolImageMaker().setDataPath(arg[0]);
+            }
+
             SymbolChooser.showDialog(null,
                     "MIL-STD-2525B Symbol Chooser",
                     srl,
-                    "SFPPV-----*****");
+                    defaultSymbolCode);
         } else {
             Debug.output("Couldn't create SymbolImageMaker");
         }

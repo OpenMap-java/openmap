@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolReferenceLibrary.java,v $
 // $RCSfile: SymbolReferenceLibrary.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/12/10 14:17:12 $
+// $Revision: 1.10 $
+// $Date: 2005/01/14 18:18:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,7 +38,37 @@ import com.bbn.openmap.util.PropUtils;
  * The SymbolReferenceLibrary is a organizational class for creating
  * and managing a SymbolPart tree. It can handle requests for decoding
  * a Symbol code and providing a SymbolPart for that code, and can
- * fetch ImageIcons for codes and SymbolParts.
+ * fetch ImageIcons for codes and SymbolParts. This is the class you
+ * can put in the MapHandler for other components to use in order to
+ * create symbols. The DemoLayer, for instance, uses the
+ * MapHandler.findAndInit() method to find it and create a space
+ * shuttle icon.
+ * <P>
+ * 
+ * This SymbolReferenceLibrary has one property that lets you specify
+ * the SymbolImageMaker it should use to create image icons.
+ * 
+ * <pre>
+ * 
+ *  
+ *  symbolreferencelibrary.class=com.bbn.openmap.tools.symbology.milStd2525.SymbolReferenceLibrary
+ *  
+ *  # properties to use for GIF image data files
+ *  symbolreferencelibrary.imageMakerClass=com.bbn.openmap.tools.symbology.milStd2525.GIFSymbolImageMaker
+ *  # optional property used as a path to the parent of the data files if it's not in the classpath.
+ *  symbolreferencelibrary.path=&lt;path to image data file directory&gt;
+ *  # optional background color for icons if you want something other than clear.
+ *  symbolreferencelibrary.background=AAGGRRBB
+ *  
+ *  # properties to use for SVG image data files obtained from DISA.  You need to have Batik jars in 
+ *  # your classpath to use the SVG files, as well as the omsvg.jar file
+ *  symbolreferencelibrary.imageMakerClass=com.bbn.openmap.tools.symbology.milStd2525.SVGSymbolImageMaker
+ *  # optional property used as a path to the parent of the data files if it's not in the classpath.
+ *  symbolreferencelibrary.path=&lt;path to image data file directory&gt;
+ *  # optional background color for icons if you want something other than clear.
+ *  symbolreferencelibrary.background=AAGGRRBB
+ * 
+ * </pre>
  */
 public class SymbolReferenceLibrary extends OMComponent {
 
@@ -126,7 +156,8 @@ public class SymbolReferenceLibrary extends OMComponent {
 
     public SymbolImageMaker setSymbolImageMaker(String classname) {
         try {
-            setSymbolImageMaker((SymbolImageMaker) Class.forName(classname).newInstance());
+            setSymbolImageMaker((SymbolImageMaker) Class.forName(classname)
+                    .newInstance());
             return getSymbolImageMaker();
         } catch (InstantiationException e) {
             e.printStackTrace();

@@ -1,0 +1,49 @@
+<!-- *****************************************************************-->
+<!-- *                                                                -->
+<!-- *  BBNT Solutions LLC, A part of GTE -->
+<!-- *  10 Moulton St.                                                -->
+<!-- *  Cambridge, MA 02138                                           -->
+<!-- *  (617) 873-2000                                                -->
+<!-- *                                                                -->
+<!-- *  Copyright (C) 1999-2000                                            -->
+<!-- *  This software is subject to copyright protection              -->
+<!-- *  under the laws of the United States and other countries.      -->
+<!-- *                                                                -->
+<!-- *****************************************************************-->
+<!-- *                                                                -->
+<!-- * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/package.html,v $-->
+<!-- * $Revision: 1.1 $                                              -->
+<!-- * $Date: 2005/01/14 18:18:24 $                                   -->
+<!-- * $Author: dietrick $                                            -->
+<!-- *                                                                -->
+<!-- *****************************************************************-->
+
+<body>
+
+This package provides a way to create MIL-STD-2525B compliant symbols.
+The SymbolChooser class provides a GUI to selecting icons, and can be
+run in standalone mode to figure out a symbol code to use for the
+SymbolReferenceLibrary.<P>
+
+The SymbolReferenceLibrary is the main class to use to create images,
+though.  It parses the hierarchy.properties file to create the
+symbology tree, and parses the positions.properties file to create a
+different tree for understanding the significance of different
+positions in the symbol code.  The SymbolReferenceLibrary use
+SymbolImageMakers to create the icon based on a symbol code. <P>
+
+Not all symbols have been implemented, we hope to add to them over
+time.  The SymbolChooser lets you wander through the tree to find the
+icon that suites your need.  We're including a set of 100x100 pixel
+GIF icons that can be used with the GIFSymbolImageMaker.  DISA makes a set of SVG
+files  that can also be used by people who meet their distribution
+criteria.  You'll need the Batik package
+(http://xml.apache.org/batik) jar files in your classpath to be able
+to use these files, in addition to the omsvg.jar file from the
+OpenMap package.  In addition, the DISA symbol files come in a large
+directory tree, and for use with the OpenMap code, they need to be
+reorganized so that all of the .svg files are in one directory or in
+the top level of a jar file.  The SVGSymbolImageMaker can be used
+with those .svg files.
+
+</body>
