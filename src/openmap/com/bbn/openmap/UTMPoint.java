@@ -358,7 +358,7 @@ public class UTMPoint {
 				      LatLonPoint llpoint) {
 
 	return UTMtoLL(ellip, UTMNorthing, UTMEasting, ZoneNumber, 
-		       (isnorthern)? 'N' : 'M', new LatLonPoint());
+		       (isnorthern)? 'N' : 'M', llpoint);
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Attic/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/26 00:29:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import com.bbn.openmap.proj.Ellipsoid;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.omGraphics.*;
 
 /**
  * A class representing a MGRS coordinate that has the ability to
@@ -117,6 +118,11 @@ public class MGRSPoint extends UTMPoint {
 	easting = point.easting;
 	zone_number = point.zone_number;
 	zone_letter = point.zone_letter;
+    }
+
+    public MGRSPoint(float northing, float easting, int zoneNumber, char zoneLetter) {
+	super(northing, easting, zoneNumber, zoneLetter);
+	
     }
 
     /**
@@ -308,18 +314,35 @@ public class MGRSPoint extends UTMPoint {
 	float north100k = getNorthingFromChar(hunK.charAt(1), set);
 
 	// We have a bug where the northing may be 2000000 too low.  How 
-	// do we know when to roll over?  Every 18 degrees. Q - 3, S - 5, U - 5, W - 8
+	// do we know when to roll over?  Every 18 degrees. Q - 3, S -
+	// 5, U - 5, W - 8
 
-	if (zone_letter >= 'R') north100k += 2000000;
-	if (zone_letter >= 'T') north100k += 2000000;
-	if (zone_letter >= 'V') north100k += 2000000;
-	if (zone_letter >= 'X') north100k += 2000000;
+	if ((zone_letter == 'Q' && north100k < 1700000) ||
+	    (zone_letter >= 'R')) north100k += 2000000;
+
+	if ((zone_letter == 'S' && north100k < 3000000) ||
+	    (zone_letter >= 'T')) north100k += 2000000;
+
+	if ((zone_letter == 'U' && north100k < 5330000) ||
+	    (zone_letter >= 'V')) north100k += 2000000;
+
+	if (zone_letter >= 'X') {
+	    north100k += 2000000;
+	    if (north100k > 9500000) {
+		// There's a tiny sliver of space that does this...
+		north100k -= 2000000;
+	    }
+	}
+
+
+	// This (^^) may not be enough, we have to find out
+	// when we cross over a 18 degree line.
 
 	// calculate the char index for easting/northing separator
 	int remainder = length - i;
 
 	if (remainder%2 != 0) {
-	    throw new NumberFormatException("MGRSPoint has to have an even number of digits after the zone letter and two 100km letters - front half for easting meters, second half for northing meters" + mgrsString);
+	    throw new NumberFormatException("MGRSPoint has to have an even number \nof digits after the zone letter and two 100km letters - front \nhalf for easting meters, second half for \nnorthing meters" + mgrsString);
 	}
 	    
 	int sep = remainder / 2;
@@ -328,17 +351,24 @@ public class MGRSPoint extends UTMPoint {
 	float sepNorthing = 0f;
 
 	if (sep > 0) {
-	    sepEasting = Float.parseFloat(mgrsString.substring(i, i + sep));
-	    sepNorthing = Float.parseFloat(mgrsString.substring(i + sep));
+	    float accuracyBonus = 100000f/(float)Math.pow(10, sep);
+
+	    String sepEastingString = mgrsString.substring(i, i + sep);
+	    sepEasting = Float.parseFloat(sepEastingString) * accuracyBonus;
+	    String sepNorthingString = mgrsString.substring(i + sep);
+	    sepNorthing = Float.parseFloat(sepNorthingString) * accuracyBonus;
 	}
 	
 	easting = sepEasting + east100k;
 	northing = sepNorthing + north100k;
 
 	if (DEBUG) {
-	    Debug.output("Decoded " + mgrsString + " as zone number: " + zone_number + 
-			 ", zone letter: " + zone_letter + ", easting: " + easting +
-			 ", northing: " + northing	+ ", 100k: " + hunK);
+	    Debug.output("Decoded " + mgrsString + 
+			 " as zone number: " + zone_number + 
+			 ", zone letter: " + zone_letter + 
+			 ", easting: " + easting +
+			 ", northing: " + northing	+ 
+			 ", 100k: " + hunK);
 	}
     }
 
@@ -360,20 +390,19 @@ public class MGRSPoint extends UTMPoint {
 	StringBuffer sb = 
 	    new StringBuffer(zone_number + "" + (char)zone_letter + 
 			     get100kID(easting, northing, zone_number));
-	String seasting = Integer.toString((int)easting);
-	String snorthing = Integer.toString((int)northing);
-
-	if (digitAccuracy + 1 > seasting.length()) {
-	    digitAccuracy = seasting.length() - 1;
+	StringBuffer seasting = new StringBuffer(Integer.toString((int)easting));
+	StringBuffer snorthing = new StringBuffer(Integer.toString((int)northing));
+	
+	while (digitAccuracy > seasting.length()) {
+	    seasting.insert(0, '0');
 	}
-	seasting = seasting.substring(1, digitAccuracy + 1);
-	sb.append(seasting);
 
-	if (digitAccuracy + 1 > snorthing.length()) {
-	    digitAccuracy = snorthing.length() - 1;
+	while (digitAccuracy > snorthing.length()) {
+	    snorthing.insert(0, '0');
 	}
-	snorthing = snorthing.substring(1, digitAccuracy + 1);
-	sb.append(snorthing);
+
+	sb.append(seasting.substring(1, digitAccuracy + 1) + 
+		  snorthing.substring(1, digitAccuracy + 1));
 	
 	mgrs = sb.toString();
     }
@@ -622,6 +651,66 @@ public class MGRSPoint extends UTMPoint {
 	}
     }
 
+    public static OMGraphic getRectangle(LatLonPoint llp, int accuracy) {
+	MGRSPoint mgrs = new MGRSPoint();
+	mgrs.setAccuracy(accuracy);
+	LLtoMGRS(llp, Ellipsoid.WGS_84, mgrs);
+
+	Debug.output("------\n  Original - " + mgrs.getMGRS() + 
+		     ", with easting " + mgrs.easting + 
+		     ", northing " + mgrs.northing);
+
+	mgrs = new MGRSPoint(mgrs.getMGRS());
+
+	Debug.output("  corner point - " + mgrs.getMGRS() + 
+		     ", with easting " + mgrs.easting + 
+		     ", northing " + mgrs.northing);
+
+	LatLonPoint llp1 = mgrs.toLatLonPoint();
+
+	float accuracyBonus = 100000f/(float)Math.pow(10, accuracy);
+	Debug.output("adding " + accuracyBonus + " meters with accuracy");
+
+	LatLonPoint llp2 = UTMtoLL(Ellipsoid.WGS_84,
+				   mgrs.northing, 
+				   mgrs.easting + accuracyBonus,
+				   mgrs.zone_number, mgrs.zone_letter, null);
+
+	LatLonPoint llp3 = UTMtoLL(Ellipsoid.WGS_84,
+				   mgrs.northing + accuracyBonus, 
+				   mgrs.easting + accuracyBonus,
+				   mgrs.zone_number, mgrs.zone_letter, null);
+
+	LatLonPoint llp4 = UTMtoLL(Ellipsoid.WGS_84,
+				   mgrs.northing + accuracyBonus, 
+				   mgrs.easting,
+				   mgrs.zone_number, mgrs.zone_letter, null);
+
+	float[] llpoints = new float[10];
+	llpoints[0] = llp1.getLatitude();
+	llpoints[1] = llp1.getLongitude();
+	llpoints[2] = llp2.getLatitude();
+	llpoints[3] = llp2.getLongitude();
+	llpoints[4] = llp3.getLatitude();
+	llpoints[5] = llp3.getLongitude();
+	llpoints[6] = llp4.getLatitude();
+	llpoints[7] = llp4.getLongitude();
+	llpoints[8] = llp1.getLatitude();
+	llpoints[9] = llp1.getLongitude();
+
+	OMGraphicList list = new OMGraphicList();
+
+	OMPoly poly = new OMPoly(llpoints, OMGraphic.DECIMAL_DEGREES,
+				 OMGraphic.LINETYPE_GREATCIRCLE);
+	poly.setLinePaint(java.awt.Color.red);
+	list.add(poly);
+
+	OMPoint pt =new OMPoint(llp.getLatitude(), llp.getLongitude());
+	pt.setLinePaint(java.awt.Color.green);
+	list.add(pt);
+
+	return list;
+    }
 
     public static void main(String[] argv) {
 	Debug.init();
