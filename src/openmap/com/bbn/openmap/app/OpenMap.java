@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/09/22 22:34:14 $
+// $Revision: 1.9 $
+// $Date: 2003/09/25 18:46:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -139,8 +139,7 @@ public class OpenMap {
 
 	if (propertiesFile != null) {
 	    try {
-		URL propURL = PropUtils.getResourceOrFileOrURL(null, propertiesFile);
-		propertyHandler = new PropertyHandler(propURL);
+		propertyHandler = new PropertyHandler(propertiesFile);
 	    } catch (MalformedURLException murle) {
 		Debug.error(murle.getMessage());
 		murle.printStackTrace();
