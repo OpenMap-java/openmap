@@ -1,14 +1,20 @@
+-*- Mode: text-mode -*-
 $Source: /cvs/distapps/openmap/INSTALL,v $
 $RCSfile: INSTALL,v $
-$Revision: 1.3 $
-$Date: 1998/11/13 21:16:16 $
-$Author: aculline $
+$Revision: 1.4 $
+$Date: 1998/11/16 12:18:29 $
+$Author: tmitchel $
+
+Prerequisites
+=============
+
+   You need to have a Java compiler and VM to build and run the
+   OpenMap software.  You also need the Java Foundation Classes (JFC)
+   installed.  The JFC is available from Sun at
+   http://java.sun.com/products/jfc/ for free download.
 
 Basic Installation
 ==================
-
-   You need to have a Java compiler and VM to build and run the
-   OpenMap software.
 
    The `configure' shell script attempts to guess correct values for
    various system-dependent variables used during compilation.  It
@@ -58,9 +64,88 @@ The simplest way to compile this package is:
 Test Drive
 ==========
 
-    You can test OpenMap by running the default `openmap' viewer
-    script provided in the bin/ subdirectory of the installation.
-    `cd' to the bin/ directory and type `./openmap'.
+   You can test OpenMap by running the default `openmap' viewer
+   script provided in the bin/ subdirectory of the installation.
+   `cd' to the bin/ directory and type `./openmap'.
 
-    You can try out other example applications by running the scripts
-    provided in the examples/ subdirectory of the installation.
+   You can try out other example applications by running the scripts
+   provided in the examples/ subdirectory of the installation.
+
+Detailed Configuration
+======================
+
+  Summary:
+
+    ./configure --help
+
+  The configure script looks for certain libraries and executables on
+  your system and remembers their locations.  It then generates
+  Makefiles and scripts that include those locations.  While the
+  script should work on most systems, it may be necessary to help it
+  or override it on some systems.  These instructions tell you how to
+  do that.
+
+  Finding the Java Development Kit
+  --------------------------------
+
+    Summary:
+
+      ./configure --with-jdk=/opt/jdev
+
+    The script first looks in PATH for the JDK executables.  If it is
+    not found there, it looks in /usr/local/java, /usr/local/jdk, and
+    /usr/local/java/jdk.  You can override this searching by telling
+    the configure script where the JDK lives with the '--with-jdk'
+    command line option.  If your JDK was in /opt/jdev, for example,
+    you would enter "./configure --with-jdk=/opt/jdev".  The configure
+    script will verify that the necessary JDK executables are
+    available from /opt/jdev or /opt/jdev/bin.
+
+  Overriding Particular Executables
+  ---------------------------------
+
+    Summary:
+
+      JAVAC=/bin/jc JAVA=/bin/jav JAVADOC=/bin/jd JAR=/bin/can ./configure
+
+    You can override a particular executable on the command line.  If
+    your Java compiler is called 'latte', for example, you would enter
+    "JAVAC=/usr/bin/latte ./configure".  Here is a list of the
+    executables the configure script looks for and their default
+    names.
+
+          Variable     Description               Default
+          --------     -----------               -------
+
+          JAVAC        Java Compiler             javac
+
+          JAVA         Java Virtual Machine      java
+
+          JAVADOC      Java Documentation	 javadoc
+
+          JAR          Java Archive		 jar
+
+
+    Each of these default names can be overridden in a similar
+    fashion.  To take an extreme example:
+
+      JAVAC=/bin/jc JAVA=/bin/jav JAVADOC=/bin/jd JAR=/bin/can ./configure
+
+  Java Foundation Classes
+  -----------------------
+
+    Summary:
+
+      ./configure --with-swing=/usr/local/java/swing/swing.jar
+
+    The configure script looks for a swing jar file in your
+    CLASSPATH.  If it finds an entry with the string 'swing', ending
+    in '.jar' it assumes that is the swing jar file, and uses it.  If
+    you need to override this searching method to tell configure where
+    to find the swing jar file you can use the '--with-swing' option.
+    If you have installed swing as /usr/local/java/swing you could
+    enter "./configure --with-swing=/usr/local/java/swing/swing.jar".
+
+    OpenMap is known to run with swing 1.0.2 or later.  You can
+    use swing.jar or swingall.jar.  OpenMap only uses classes included
+    in swing.jar.
