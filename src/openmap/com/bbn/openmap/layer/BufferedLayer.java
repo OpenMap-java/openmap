@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/BufferedLayer.java,v $
 // $RCSfile: BufferedLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/10/10 15:44:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -220,9 +220,9 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
 	return mapBean.getComponents();
     }
 
-    public void firePaletteEvent(boolean isVisible) {
-	super.firePaletteEvent(isVisible);
-	hasActiveLayers = isVisible;
+    public void firePaletteEvent(ComponentEvent event) {
+	super.firePaletteEvent(event);
+	hasActiveLayers = (event.getID() == ComponentEvent.COMPONENT_SHOWN);
     }
 
     /**

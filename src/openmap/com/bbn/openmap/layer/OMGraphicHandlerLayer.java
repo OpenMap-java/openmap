@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.13 $
-// $Date: 2003/10/08 21:36:54 $
+// $Revision: 1.14 $
+// $Date: 2003/10/10 15:44:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,9 +26,9 @@ package com.bbn.openmap.layer;
 import java.awt.Graphics;
 import java.awt.Shape;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import javax.swing.JPopupMenu;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
@@ -1024,25 +1024,26 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     }
 
     /**
-     * If applicable, add contents to a popup menu for a location over
-     * the map.
-     * @return the provided JPopupMenu if no modifications are to be
-     * made, null if no popup should be displayed.  You can create a
-     * different JPopupMenu if you want and return that instead.
-     * Returns null by default.
+     * Return a JMenu with contents applicable to a popup menu for a
+     * location over the map.  The popup doesn't concern any
+     * OMGraphics, and should be presented for a click on the map
+     * background.
+     * @return a JMenu for the map.  Return null or empty List if
+     * no input required.
      */
-    public JPopupMenu modifyPopupMenuForMap(JPopupMenu jpm) {
+    public List getItemsForMapMenu() {
 	return null;
     }
 
     /**
-     * If applicable, add contents to a popup menu for a location over
-     * an OMGraphic.  
-     * @return the provided JPopupMenu if no modifications are to be
-     * made.You can create a different JPopupMenu if you want and
-     * return that instead. Returns null by default.
+     * Return a java.util.List containing input for a JMenu with
+     * contents applicable to a popup menu for a location over an
+     * OMGraphic.
+     * @return a List containing options for the given OMGraphic.
+     * Return null or empty list if there are no options.
      */
-    public JPopupMenu modifyPopupMenuFor(OMGraphic omg, JPopupMenu jpm) {
+    public List getItemsForOMGraphicMenu(OMGraphic omg) {
 	return null;
     }
+
 }
