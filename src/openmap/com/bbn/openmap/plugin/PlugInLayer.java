@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/08/21 22:02:13 $
+// $Revision: 1.8 $
+// $Date: 2003/09/05 21:01:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -348,19 +348,27 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * being added to the BeanContext.
      */
     public boolean getAddToBeanContext() {
+	boolean ret = false;
 	if (plugin != null && 
 
 	    (plugin instanceof BeanContextChild ||
-	     plugin instanceof BeanContextMembershipListener) ||
+	     plugin instanceof BeanContextMembershipListener)) {
 
-	    (plugin instanceof AbstractPlugIn && 
-	     ((AbstractPlugIn)plugin).getAddToBeanContext())) {
+	    if (plugin instanceof AbstractPlugIn) {
+		ret = ((AbstractPlugIn)plugin).getAddToBeanContext();
+	    } else {
+		ret = true;
+	    }
 
-	    Debug.message("plugin", getName() + ".addToBeanContext is true");
-	    return true;
 	} else {
-	    return super.getAddToBeanContext();
+	    ret = super.getAddToBeanContext();
 	}
+
+	if (Debug.debugging("plugin")) {
+	    Debug.output(getName() + ".addToBeanContext is " + ret);
+	}
+
+	return ret;
     }
 
     /** Method for BeanContextChild interface. */
