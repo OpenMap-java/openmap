@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriGraphic.java,v $
 // $RCSfile: EsriGraphic.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/16 01:37:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,4 +40,9 @@ public interface EsriGraphic {
      */
     public float[] getExtents();
 
+    /**
+     * Shallow copy this graphic.  The contract is that the cloned
+     * object should be capable of being placed on a different layer.
+     */
+    public EsriGraphic shallowCopy();
 }

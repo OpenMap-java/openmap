@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygonList.java,v $
 // $RCSfile: EsriPolygonList.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/16 01:37:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,6 +29,7 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import java.awt.geom.*;
 import java.util.Vector;
+import java.util.Iterator;
 
 /**
  * An EsriGraphicList ensures that only EsriPolygons are added to its list.
@@ -236,6 +237,15 @@ public class EsriPolygonList extends EsriGraphicList {
 	da.setTo(circleList);
 
 	return circleList;
+    }
+
+    public EsriGraphic shallowCopy() {
+	EsriPolygonList ret = new EsriPolygonList(size());
+	for (Iterator iter = iterator(); iter.hasNext(); ) {
+	    EsriGraphic g = (EsriGraphic)iter.next();
+	    ret.add((OMGraphic)g.shallowCopy());
+	}
+	return ret;
     }
 }
 

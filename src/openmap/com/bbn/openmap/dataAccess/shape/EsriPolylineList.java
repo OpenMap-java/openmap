@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolylineList.java,v $
 // $RCSfile: EsriPolylineList.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/16 01:37:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,7 @@ package com.bbn.openmap.dataAccess.shape;
 
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.util.Debug;
+import java.util.Iterator;
 
 /**
  * An EsriGraphicList ensures that only EsriPolygons are added to its list.
@@ -120,5 +121,13 @@ public class EsriPolylineList extends EsriGraphicList {
 	} else return null;
     }
 
+    public EsriGraphic shallowCopy() {
+	EsriPolylineList ret = new EsriPolylineList(size());
+	for (Iterator iter = iterator(); iter.hasNext(); ) {
+	    EsriGraphic g = (EsriGraphic)iter.next();
+	    ret.add((OMGraphic)g.shallowCopy());
+	}
+	return ret;
+    }
 }
 
