@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ComponentFactory.java,v $
 // $RCSfile: ComponentFactory.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/07/15 23:48:38 $
+// $Revision: 1.4 $
+// $Date: 2003/09/04 18:23:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -158,6 +158,8 @@ public class ComponentFactory {
 		if (matchInOutVectorSize) {
 		    vector.add(componentName);
 		}
+	    } else {
+		Debug.output("ComponentFactory: [" + className + "] NOT created. Set 'componentfactory' debug flag for details.");
 	    }
 	}
 
