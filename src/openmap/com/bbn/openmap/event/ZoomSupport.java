@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ZoomSupport.java,v $
 // $RCSfile: ZoomSupport.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/10/08 21:29:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,11 +23,7 @@
 
 package com.bbn.openmap.event;
 
-import java.io.Serializable;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.IOException;
-
+import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
@@ -35,14 +31,14 @@ import java.io.IOException;
  * instance of this class as a member field of your bean and delegate
  * work to it.
  */
-public class ZoomSupport implements java.io.Serializable {
+public class ZoomSupport extends ListenerSupport {
 
     /**
      * Construct a ZoomSupport.
      * @param sourceBean The bean to be given as the source for any events.
      */
     public ZoomSupport(Object sourceBean) {
-	source = sourceBean;
+	super(sourceBean);
     }
 
     /**
@@ -50,10 +46,7 @@ public class ZoomSupport implements java.io.Serializable {
      * @param listener The ZoomListener to be added
      */
     public synchronized void addZoomListener(ZoomListener listener) {
-	if (listeners == null) {
-	    listeners = new java.util.Vector();
-	}
-	listeners.addElement(listener);
+	addListener(listener);
     }
 
     /**
@@ -61,10 +54,7 @@ public class ZoomSupport implements java.io.Serializable {
      * @param listener The ZoomListener to be removed
      */
     public synchronized void removeZoomListener(ZoomListener listener) {
-	if (listeners == null) {
-	    return;
-	}
-	listeners.removeElement(listener);
+	removeListener(listener);
     }
 
     /**
@@ -81,54 +71,14 @@ public class ZoomSupport implements java.io.Serializable {
 					       "ZoomSupport.fireZoom()");
 	}
 
-	java.util.Vector targets;
-	synchronized (this) {
-	    if (listeners == null) {
-	    	return;
-	    }
-	    targets = (java.util.Vector) listeners.clone();
-	}
+	if (size() == 0) return;
+
         ZoomEvent evt = new ZoomEvent(source, zoomType, amount);
+	Iterator it = iterator();
 
-	for (int i = 0; i < targets.size(); i++) {
-	    ZoomListener target = (ZoomListener)targets.elementAt(i);
-	    target.zoom(evt);
+	while (it.hasNext()) {
+	    ((ZoomListener)it.next()).zoom(evt);
 	}
     }
 
-
-    private void writeObject(ObjectOutputStream s) throws IOException {
-        s.defaultWriteObject();
-
-	java.util.Vector v = null;
-	synchronized (this) {
-	    if (listeners != null) {
-	        v = (java.util.Vector) listeners.clone();
-            }
-	}
-
-	if (v != null) {
-	    for(int i = 0; i < v.size(); i++) {
-	        ZoomListener l = (ZoomListener)v.elementAt(i);
-	        if (l instanceof Serializable) {
-	            s.writeObject(l);
-	        }
-            }
-        }
-        s.writeObject(null);
-    }
-
-
-    private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
-        s.defaultReadObject();
-      
-        Object listenerOrNull;
-        while(null != (listenerOrNull = s.readObject())) {
-	  addZoomListener((ZoomListener)listenerOrNull);
-        }
-    }
-
-    transient private java.util.Vector listeners;
-    private Object source;
-    private int zoomSupportSerializedDataVersion = 1;
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/AbstractMouseMode.java,v $
 // $RCSfile: AbstractMouseMode.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/04 04:53:10 $
+// $Revision: 1.6 $
+// $Date: 2003/10/08 21:29:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -246,54 +246,70 @@ public class AbstractMouseMode extends OMComponent
 
     /**
      * Invoked when the mouse has been clicked on a component.
-     * This does nothing.  Extend this class to add functionality.
+     * Calls fireMapMouseClicked on MouseSupport.
      * @param e MouseEvent
      */
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) { 
+	mouseSupport.fireMapMouseClicked(e);
+    }
 
     /**
      * Invoked when a mouse button has been pressed on a component.
-     * This does nothing.  Extend this class to add functionality.
+     * Calls fiewMapMousePressed on the MouseSupport.  Also requests
+     * focus on the source of the MouseEvent, so that key events can
+     * be processed.
      * @param e MouseEvent
      */
-    public void mousePressed(MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {
+	e.getComponent().requestFocus();
+	mouseSupport.fireMapMousePressed(e);
+    }
 
     /**
      * Invoked when a mouse button has been released on a component.
-     * This does nothing.  Extend this class to add functionality.
+     * Calls fireMapMouseReleased on the MouseSupport.
      * @param e MouseEvent
      */
-    public void mouseReleased(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {
+	mouseSupport.fireMapMouseReleased(e);
+    }
 
     /**
-     * Invoked when the mouse enters a component.
-     * This does nothing.  Extend this class to add functionality.
+     * Invoked when the mouse enters a component.  Calls
+     * fireMapMouseEntered on the MouseSupport.
      * @param e MouseEvent
      */
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+	mouseSupport.fireMapMouseEntered(e);
+    }
 
     /**
      * Invoked when the mouse exits a component.
      * This does nothing.  Extend this class to add functionality.
      * @param e MouseEvent
      */
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+	mouseSupport.fireMapMouseExited(e);
+    }
 
     /**
      * Invoked when a mouse button is pressed on a component and then 
-     * dragged.
-     * This does nothing.  Extend this class to add functionality.
+     * dragged.  Calls fireMapMouseDragged on the MouseSupport.
      * @param e MouseEvent
      */
-    public void mouseDragged(MouseEvent e) {}
+    public void mouseDragged(MouseEvent e) {
+	mouseSupport.fireMapMouseDragged(e);
+    }
 
     /**
      * Invoked when the mouse button has been moved on a component
-     * (with no buttons no down).
-     * This does nothing.  Extend this class to add functionality.
+     * (with no buttons no down).  Calls fireMapMouseMoved on the
+     * MouseSupport.
      * @param e MouseEvent
      */
-    public void mouseMoved(MouseEvent e) {}
+    public void mouseMoved(MouseEvent e) {
+	mouseSupport.fireMapMouseMoved(e);
+    }
 
     /**
      * Part of the MapMouseMode interface.  Called when the MouseMode

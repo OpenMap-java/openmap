@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProgressSupport.java,v $
 // $RCSfile: ProgressSupport.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/10/08 21:29:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,12 +24,7 @@
 package com.bbn.openmap.event;
 
 import com.bbn.openmap.util.Debug;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.Vector;
+import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
@@ -37,14 +32,14 @@ import java.util.Vector;
  * instance of this class as a member field of your bean and delegate
  * work to it.
  */
-public class ProgressSupport implements Serializable {
+public class ProgressSupport extends ListenerSupport {
 
     /**
      * Construct a ProgressSupport.
      * @param sourceBean  The bean to be given as the source for any events.
      */
     public ProgressSupport(Object sourceBean) {
-	source = sourceBean;
+	super(sourceBean);
 	Debug.message("progresssupport","ProgressSupport | ProgressSupport");
     }
 
@@ -53,16 +48,8 @@ public class ProgressSupport implements Serializable {
      *
      * @param listener  The ProgressListener to be added
      */
-    public synchronized void addProgressListener(ProgressListener listener) {
-	if (listeners == null) {
-	    listeners = new Vector();
-	}
-	if (!listeners.contains(listener)) {
-	    listeners.addElement(listener);
-	    if (Debug.debugging("progresssupport")) {
-		Debug.output("ProgressSupport | addProgressListener " + listener.getClass() + " was added");
-	    }
-	}
+    public void addProgressListener(ProgressListener listener) {
+	addListener(listener);
     }
 
     /**
@@ -70,15 +57,8 @@ public class ProgressSupport implements Serializable {
      *
      * @param listener  The ProgressListener to be removed
      */
-    public synchronized void removeProgressListener(ProgressListener listener) {
-	if (listeners == null) {
-	    return;
-	}
-	listeners.removeElement(listener);
-    }
-
-    public void removeAll() {
-	listeners.clear();
+    public void removeProgressListener(ProgressListener listener) {
+	removeListener(listener);
     }
 
     /**
@@ -92,73 +72,22 @@ public class ProgressSupport implements Serializable {
 			   float finishedValue, 
 			   float currentValue) {
 	Debug.message("progresssupport","ProgressSupport | fireUpdate");
-	Vector targets;
+
 
 	boolean DEBUG = Debug.debugging("progresssupport");
 
-	synchronized (this) {
-	    if (listeners == null) {
-	    	return;
-	    }
-
-	    if (DEBUG) {
-		Debug.output("ProgressSupport | fireUpdate has " + listeners.size() + " listeners");
-	    }
-	    targets = (Vector) listeners.clone();
-
-	    if (DEBUG) {
-		Debug.output("ProgressSupport | fireUpdate has " + targets.size() + " listeners after cloning");
-	    }
+	if (DEBUG) {
+	    Debug.output("ProgressSupport | fireUpdate has " + size() + " listeners");
 	}
+
+	if (size() == 0) return;
 
         ProgressEvent evt = new ProgressEvent(source, type, taskname,
 					      finishedValue, currentValue);
 
-	if (DEBUG) {
-	    Debug.output("calling updateProgress on " + targets.size() + " objects");
-	}
-
-	for (int i = 0; i < targets.size(); i++) {
-	    ProgressListener target = (ProgressListener)targets.elementAt(i);
-	    target.updateProgress(evt);
+	Iterator it = iterator();
+	while (it.hasNext()) {
+	    ((ProgressListener)it.next()).updateProgress(evt);
 	}
     }
-
-    private void writeObject(ObjectOutputStream s) 
-	throws IOException {
-
-        s.defaultWriteObject();
-
-	Vector v = null;
-	synchronized (this) {
-	    if (listeners != null) {
-	        v = (Vector) listeners.clone();
-            }
-	}
-
-	if (v != null) {
-	    for(int i = 0; i < v.size(); i++) {
-	        ProgressListener l = (ProgressListener)v.elementAt(i);
-	        if (l instanceof Serializable) {
-	            s.writeObject(l);
-	        }
-            }
-        }
-        s.writeObject(null);
-    }
-
-    private void readObject(ObjectInputStream s) 
-	throws ClassNotFoundException, IOException {
-
-        s.defaultReadObject();
-      
-        Object listenerOrNull;
-        while(null != (listenerOrNull = s.readObject())) {
-	    addProgressListener((ProgressListener)listenerOrNull);
-        }
-    }
-
-    transient private Vector listeners;
-    private Object source;
-    private int progresssupportSerializedDataVersion = 1;
 }

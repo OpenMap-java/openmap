@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/PanSupport.java,v $
 // $RCSfile: PanSupport.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/10/08 21:29:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,10 +23,7 @@
 
 package com.bbn.openmap.event;
 
-import java.io.Serializable;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
@@ -34,36 +31,30 @@ import java.io.IOException;
  * instance of this class as a member field of your bean and delegate
  * work to it.
  */
-public class PanSupport implements java.io.Serializable {
+public class PanSupport extends ListenerSupport {
 
     /**
      * Construct a PanSupport.
      * @param sourceBean The bean to be given as the source for any events.
      */
     public PanSupport(Object sourceBean) {
-	source = sourceBean;
+	super(sourceBean);
     }
 
     /**
      * Add a PanListener to the listener list.
      * @param listener The PanListener to be added
      */
-    public synchronized void addPanListener(PanListener listener) {
-	if (listeners == null) {
-	    listeners = new java.util.Vector();
-	}
-	listeners.addElement(listener);
+    public void addPanListener(PanListener listener) {
+	addListener(listener);
     }
 
     /**
      * Remove a PanListener from the listener list.
      * @param listener The PanListener to be removed
      */
-    public synchronized void removePanListener(PanListener listener) {
-	if (listeners == null) {
-	    return;
-	}
-	listeners.removeElement(listener);
+    public void removePanListener(PanListener listener) {
+	removeListener(listener);
     }
 
     /**
@@ -106,59 +97,17 @@ public class PanSupport implements java.io.Serializable {
      * <code>-180 &lt;= Az &lt;= 180</code>
      * @param c arc distance in decimal degrees.
      */
-    public void firePan(float az, float c) {
-	java.util.Vector targets;
-	synchronized (this) {
-	    if (listeners == null) {
-	    	return;
-	    }
-	    targets = (java.util.Vector) listeners.clone();
-	}
+    public synchronized void firePan(float az, float c) {
+	Iterator it = iterator();
+
+	if (size() == 0) return;
+
         PanEvent evt = new PanEvent(source, az, c);
 
-	for (int i = 0; i < targets.size(); i++) {
-	    PanListener target = (PanListener)targets.elementAt(i);
-	    target.pan(evt);
+	while (it.hasNext()) {
+	    ((PanListener) it.next()).pan(evt);
 	}
     }
-
-    private void writeObject(ObjectOutputStream s)
-	throws IOException {
-
-        s.defaultWriteObject();
-
-	java.util.Vector v = null;
-	synchronized (this) {
-	    if (listeners != null) {
-	        v = (java.util.Vector) listeners.clone();
-            }
-	}
-
-	if (v != null) {
-	    for(int i = 0; i < v.size(); i++) {
-	        PanListener l = (PanListener)v.elementAt(i);
-	        if (l instanceof Serializable) {
-	            s.writeObject(l);
-	        }
-            }
-        }
-        s.writeObject(null);
-    }
-
-    private void readObject(ObjectInputStream s) 
-	throws ClassNotFoundException, IOException {
-
-        s.defaultReadObject();
-      
-        Object listenerOrNull;
-        while(null != (listenerOrNull = s.readObject())) {
-	  addPanListener((PanListener)listenerOrNull);
-        }
-    }
-
-    transient private java.util.Vector listeners;
-    private Object source;
-    private int panSupportSerializedDataVersion = 1;
 }
 
 

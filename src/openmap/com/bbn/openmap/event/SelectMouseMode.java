@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/SelectMouseMode.java,v $
 // $RCSfile: SelectMouseMode.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/05 15:44:50 $
+// $Revision: 1.3 $
+// $Date: 2003/10/08 21:29:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,63 +82,5 @@ public class SelectMouseMode extends CoordMouseMode {
      */
     public SelectMouseMode(String id, boolean consumeEvents) {
 	super(id, consumeEvents);
-    }
-
-    /**
-     * Fires the MapMouseSupport method.
-     * @param e mouse event.
-     */
-    public void mouseClicked(MouseEvent e) {
-	mouseSupport.fireMapMouseClicked(e);
-    }
-
-    /**
-     * Fires the MapMouseSupport method.
-     * @param e mouse event.
-     */
-    public void mousePressed(MouseEvent e) {
-	mouseSupport.fireMapMousePressed(e);
-    }
-
-    /**
-     * Fires the MapMouseSupport method.
-     * @param e mouse event.
-     */
-    public void mouseReleased(MouseEvent e) {
-	mouseSupport.fireMapMouseReleased(e);
-    }
-
-    /**
-     * Fires the MapMouseSupport method.
-     * @param e mouse event.
-     */
-    public void mouseEntered(MouseEvent e) {
-	mouseSupport.fireMapMouseEntered(e);
-    }
-
-    /**
-     * Fires the MapMouseSupport method.
-     * @param e mouse event.
-     */
-    public void mouseExited(MouseEvent e) {
-	mouseSupport.fireMapMouseExited(e);
-    }
-
-    /**
-     * Fires the MapMouseSupport method.
-     * @param e mouse event.
-     */
-    public void mouseDragged(MouseEvent e) {
-	fireMouseLocation(e);
-	mouseSupport.fireMapMouseDragged(e);
-    }
-
-    /**
-     * Fires the MapMouseSupport method.
-     * @param e mouse event.
-     */
-    public void mouseMoved(MouseEvent e) {
-	fireMouseLocation(e);
-	mouseSupport.fireMapMouseMoved(e);
     }
 }

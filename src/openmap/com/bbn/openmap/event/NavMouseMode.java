@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode.java,v $
 // $RCSfile: NavMouseMode.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:12:51 $
+// $Revision: 1.4 $
+// $Date: 2003/10/08 21:29:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -94,6 +94,8 @@ public class NavMouseMode extends CoordMouseMode {
 	if (Debug.debugging("mousemode")) {
 	    Debug.output(getID()+"|NavMouseMode.mousePressed()");
  	}
+	e.getComponent().requestFocus();
+
 	if (! mouseSupport.fireMapMousePressed(e) && 
 	    e.getSource() instanceof MapBean) {
 	    // set the new first point
@@ -154,6 +156,11 @@ public class NavMouseMode extends CoordMouseMode {
 			}
 		    }
 
+		    // reset the points here so the point doesn't get
+		    // rendered on the repaint.
+		    point1 = null;
+		    point2 = null;
+
 		    p.setCenter(llp);
 		    map.setProjection(p);
 		}
@@ -185,11 +192,14 @@ public class NavMouseMode extends CoordMouseMode {
 	    // the MapBean fire two ProjectionEvents.
 	    p.setScale(newScale);
 	    p.setCenter(center);
+
+	    // reset the points here so the point doesn't get rendered
+	    // on the repaint.
+	    point1 = null;
+	    point2 = null;
+
 	    map.setProjection(p);
 	}
-	// reset the points
-	point1 = null;
-	point2 = null;
     }
 
     /**
@@ -202,8 +212,7 @@ public class NavMouseMode extends CoordMouseMode {
 	if (Debug.debugging("mousemodedetail")) {
 	    Debug.output(getID()+"|NavMouseMode.mouseEntered()");
  	}
-
-	mouseSupport.fireMapMouseEntered(e);
+	super.mouseEntered(e);
 	autoZoom = true;
     }
 
@@ -221,7 +230,7 @@ public class NavMouseMode extends CoordMouseMode {
 	    Debug.output(getID()+"|NavMouseMode.mouseExited()");
  	}
 
-	mouseSupport.fireMapMouseExited(e);
+	super.mouseExited(e);
 
 	if (e.getSource() instanceof MapBean) {
 	    // don't zoom in, because the mouse is off the window.
@@ -251,7 +260,7 @@ public class NavMouseMode extends CoordMouseMode {
 	    Debug.output(getID()+"|NavMouseMode.mouseDragged()");
  	}
 	
-	mouseSupport.fireMapMouseDragged(e);
+	super.mouseDragged(e);
 
 	if (e.getSource() instanceof MapBean) {
 	    if (!autoZoom) return;
@@ -264,19 +273,6 @@ public class NavMouseMode extends CoordMouseMode {
 				   point1, e.getPoint());
 	    paintRectangle((MapBean)e.getSource(), point1, point2);
 	}
-	fireMouseLocation(e);
-    }
-
-    /**
-     * Handle a mouseMoved MouseMotionListener event. Nothing happens.
-     * @param e MouseEvent to be handled
-     */
-    public void mouseMoved(MouseEvent e) {
-	if (Debug.debugging("mousemodedetail")) {
-	    Debug.output(getID()+"|NavMouseMode.mouseMoved()");
- 	}
-	mouseSupport.fireMapMouseMoved(e);
-	fireMouseLocation(e);
     }
 
     /**

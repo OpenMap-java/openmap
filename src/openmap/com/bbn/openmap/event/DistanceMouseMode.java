@@ -286,6 +286,8 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mousePressed(MouseEvent e) {
+	e.getComponent().requestFocus();
+
 	if (e.getSource() instanceof MapBean) {
 	    // mouse has now been pressed
 	    mousePressed = true;

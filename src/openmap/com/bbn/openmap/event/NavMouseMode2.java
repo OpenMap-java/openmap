@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode2.java,v $
 // $RCSfile: NavMouseMode2.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:12:51 $
+// $Revision: 1.4 $
+// $Date: 2003/10/08 21:29:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -91,10 +91,14 @@ public class NavMouseMode2 extends NavMouseMode {
 	if (Debug.debugging("mousemode")) {
 	    Debug.output(getID()+"|NavMouseMode2.mouseReleased()");
  	}
+
 	Object obj = e.getSource();
+
 	if (! mouseSupport.fireMapMouseReleased(e)) {
+
 	    if (!(obj instanceof MapBean) || 
 		!autoZoom || point1 == null) return;
+
 	    MapBean map = (MapBean)obj;
 	    Projection projection = map.getProjection();
 	    Proj p = (Proj)projection;
@@ -124,6 +128,11 @@ public class NavMouseMode2 extends NavMouseMode {
 				p.setScale(p.getScale() / 2.0f);
 			    }
 			}
+
+			// reset the points here so the point doesn't
+			// get rendered on the repaint.
+			point1 = null;
+			point2 = null;
 
 			p.setCenter(llp);
 			map.setProjection(p);
@@ -155,11 +164,14 @@ public class NavMouseMode2 extends NavMouseMode {
 		// the MapBean fire two ProjectionEvents.
 		p.setScale(newScale);
 		p.setCenter(center);
+
+		// reset the points so they don't show up in the
+		// listener paint.
+		point1 = null;
+		point2 = null;
+
 		map.setProjection(p);
 	    }
-	    // reset the points
-	    point1 = null;
-	    point2 = null;
 	}
     }
 

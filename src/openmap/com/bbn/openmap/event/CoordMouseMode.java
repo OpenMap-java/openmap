@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CoordMouseMode.java,v $
 // $RCSfile: CoordMouseMode.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/28 22:02:14 $
+// $Revision: 1.3 $
+// $Date: 2003/10/08 21:29:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -79,6 +79,26 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
     }
 
     /**
+     * Fires a mouse location to the InformationDelegator, and then
+     * calls the super class method which calls the MouseSupport method.
+     * @param e MouseEvent to be handled
+     */
+    public void mouseMoved(MouseEvent e) {
+	fireMouseLocation(e);
+	super.mouseMoved(e);
+    }
+
+    /**
+     * Fires a mouse location to the InformationDelegator, and then
+     * calls the super class method which calls the MouseSupport method.
+     * @param e mouse event.
+     */
+    public void mouseDragged(MouseEvent e) {
+	fireMouseLocation(e);
+	super.mouseDragged(e);
+    }
+
+    /**
      * If the MouseMode has been made inactive, clean out any input
      * that might have been made to the info line.
      */
@@ -92,6 +112,10 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
 	}
     }
 
+    /**
+     * Sends the mouse event location, x/y and lat/lon, to the
+     * InformationDelegator.
+     */
     public void fireMouseLocation(MouseEvent e) {
 	int x = e.getX(); 
 	int y = e.getY();

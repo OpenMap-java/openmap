@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CenterSupport.java,v $
 // $RCSfile: CenterSupport.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/10/08 21:29:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,10 +23,7 @@
 
 package com.bbn.openmap.event;
 
-import java.io.Serializable;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
@@ -37,13 +34,13 @@ import java.io.IOException;
  * A center event is one that sets the center of a map by specifying
  * latitude and longitude.
  */
-public class CenterSupport implements java.io.Serializable {
+public class CenterSupport extends ListenerSupport {
 
     /**
      * @sourceBean  The bean to be given as the source for any events.
      */
     public CenterSupport(Object sourceBean) {
-	source = sourceBean;
+	super(sourceBean);
     }
 
     /**
@@ -52,10 +49,7 @@ public class CenterSupport implements java.io.Serializable {
      * @param listener  The CenterListener to be added
      */
     public synchronized void addCenterListener(CenterListener listener) {
-	if (listeners == null) {
-	    listeners = new java.util.Vector();
-	}
-	listeners.addElement(listener);
+	addListener(listener);
     }
 
     /**
@@ -64,10 +58,7 @@ public class CenterSupport implements java.io.Serializable {
      * @param listener  The CenterListener to be removed
      */
     public synchronized void removeCenterListener(CenterListener listener) {
-	if (listeners == null) {
-	    return;
-	}
-	listeners.removeElement(listener);
+	removeListener(listener);
     }
 
     /**
@@ -77,56 +68,15 @@ public class CenterSupport implements java.io.Serializable {
      * @param longitude the longitude
      * @see CenterEvent
      */
-    public void fireCenter(float latitude, float longitude) {
+    public synchronized void fireCenter(float latitude, float longitude) {
+	Iterator it = iterator();
+	if (size() == 0) return;
 
-	java.util.Vector targets;
-	synchronized (this) {
-	    if (listeners == null) {
-	    	return;
-	    }
-	    targets = (java.util.Vector) listeners.clone();
-	}
-        CenterEvent evt = new CenterEvent(source, latitude, longitude);
+	CenterEvent evt = new CenterEvent(source, latitude, longitude);
 
-	for (int i = 0; i < targets.size(); i++) {
-	    CenterListener target = (CenterListener)targets.elementAt(i);
-	    target.center(evt);
+	while (it.hasNext()) {
+	    ((CenterListener)it.next()).center(evt);
 	}
     }
-
-
-    private void writeObject(ObjectOutputStream s) throws IOException {
-        s.defaultWriteObject();
-
-	java.util.Vector v = null;
-	synchronized (this) {
-	    if (listeners != null) {
-	        v = (java.util.Vector) listeners.clone();
-            }
-	}
-
-	if (v != null) {
-	    for(int i = 0; i < v.size(); i++) {
-	        CenterListener l = (CenterListener)v.elementAt(i);
-	        if (l instanceof Serializable) {
-	            s.writeObject(l);
-	        }
-            }
-        }
-        s.writeObject(null);
-    }
-
-
-    private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
-        s.defaultReadObject();
-      
-        Object listenerOrNull;
-        while(null != (listenerOrNull = s.readObject())) {
-	  addCenterListener((CenterListener)listenerOrNull);
-        }
-    }
-
-    transient private java.util.Vector listeners;
-    private Object source;
-    private int centerSupportSerializedDataVersion = 1;
 }
+
