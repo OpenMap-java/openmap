@@ -207,8 +207,8 @@ public class Inspector implements ActionListener {
         String prefix, Properties props, Properties info) {
 
         if (Debug.debugging("inspectordetail")) {
-            Debug.output("Inspector creating GUI for " + prefix + "\n" +
-                         props + "\n" + info);
+            Debug.output("Inspector creating GUI for " + prefix + "\nPROPERTIES " +
+                         props + "\nPROP INFO " + info);
         }
 
         // collect the info needed...
@@ -228,10 +228,7 @@ public class Inspector implements ActionListener {
         }
 
         int num = sortedKeys.size();
-
         editors = new Hashtable(num);
-
-        Iterator it = sortedKeys.iterator();
 
         JButton doneButton = null, cancelButton = null;
         
@@ -246,8 +243,7 @@ public class Inspector implements ActionListener {
         propertyPanel.setLayout(gridbag);
 
         int i = 0;
-
-        while (it.hasNext()) { // iterate properties
+        for (Iterator it = sortedKeys.iterator();it.hasNext();) { // iterate properties
             String prop = (String)it.next();
 
             String marker = prop;
@@ -259,7 +255,8 @@ public class Inspector implements ActionListener {
                 marker = marker.substring(1);
             }
 
-            String editorClass = info.getProperty(marker + "." + PropertyConsumer.EditorProperty);
+            String editorMarker = marker + PropertyConsumer.ScopedEditorProperty;
+            String editorClass = info.getProperty(editorMarker);
             if (editorClass == null) {
                 editorClass = defaultEditorClass;
             }
@@ -294,12 +291,13 @@ public class Inspector implements ActionListener {
 
             // Customized labels for each property, instead of the
             // abbreviated nature of the true property names.
-            String labelText = (String)info.get(marker + PropertyConsumer.LabelEditorProperty);
+            String labelMarker = marker + PropertyConsumer.LabelEditorProperty;
+            String labelText = info.getProperty(labelMarker);
             if (labelText == null) {
                 labelText = marker;
             }
 
-            JLabel label = new JLabel(marker + ":");
+            JLabel label = new JLabel(labelText + ":");
             label.setHorizontalAlignment(SwingConstants.RIGHT);
 
             c.gridx = 0;
@@ -428,6 +426,7 @@ public class Inspector implements ActionListener {
     
     /** test cases. */
     public static void main(String[] args) {
+        Debug.init();
         String name = (args.length<1)?"com.bbn.openmap.layer.shape.ShapeLayer":args[0];
         PropertyConsumer propertyconsumer = null;
         try {
