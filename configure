@@ -1027,6 +1027,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/image/Makefile
 	com/bbn/openmap/omGraphics/Makefile
 	com/bbn/openmap/omGraphics/grid/Makefile
+	com/bbn/openmap/omGraphics/util/Makefile
 	com/bbn/openmap/proj/Makefile
 	com/bbn/openmap/util/Makefile
 	com/bbn/openmap/util/quadtree/Makefile
@@ -1156,6 +1157,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/image/Makefile
 	com/bbn/openmap/omGraphics/Makefile
 	com/bbn/openmap/omGraphics/grid/Makefile
+	com/bbn/openmap/omGraphics/util/Makefile
 	com/bbn/openmap/proj/Makefile
 	com/bbn/openmap/util/Makefile
 	com/bbn/openmap/util/quadtree/Makefile
