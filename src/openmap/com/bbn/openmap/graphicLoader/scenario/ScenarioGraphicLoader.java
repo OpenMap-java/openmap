@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/ScenarioGraphicLoader.java,v $
 // $RCSfile: ScenarioGraphicLoader.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2003/06/26 00:54:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -62,7 +62,7 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicHandler;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.plugin.graphicLoader.MMLGraphicLoader;
+import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -95,7 +95,7 @@ import com.bbn.openmap.util.DataBoundsProvider;
  *
  * Sample properties: <pre>
  *
- * scenario.class=com.bbn.openmap.plugin.graphicLoader.scenario.ScenarioGraphicLoader
+ * scenario.class=com.bbn.openmap.graphicLoader.scenario.ScenarioGraphicLoader
  * scenario.prettyName=Test Scenario
  * scenario.locationFile=org-list.csv
  * scenario.locationFileHasHeader=true

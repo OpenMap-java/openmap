@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/NetMapGraphicLoader.java,v $
 // $RCSfile: NetMapGraphicLoader.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2003/06/26 00:54:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,7 +36,7 @@ import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.plugin.PlugIn;
-import com.bbn.openmap.plugin.graphicLoader.MMLGraphicLoader;
+import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
 
 /**
  * The NetMapGraphicLoader is a component that can listen to a
