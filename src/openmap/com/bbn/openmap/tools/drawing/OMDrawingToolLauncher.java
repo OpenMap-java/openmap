@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/05 05:46:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,7 @@ package com.bbn.openmap.tools.drawing;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.gui.OMToolComponent;
+import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MapHandlerChild;
@@ -64,21 +65,10 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
 
     /** Default key for the DrawingToolLauncher Tool. */
     public static final String defaultKey = "omdrawingtoollauncher";
-    /** The ActionListener that will bring up the DrawingToolLauncher. */
-    protected ActionListener actionListener;
-    /**
-     * The frame used when the DrawingToolLauncher is used in an
-     * application.  
-     */
-    protected transient JFrame launcherWindowFrame;
-    /** 
-     * The frame used when the DrawingToolLauncher is used in an
-     * applet. 
-     */
-    protected transient JInternalFrame launcherWindow;
 
     public OMDrawingToolLauncher() {
 	super();
+	setWindowSupport(new WindowSupport(this, "Drawing Tool Launcher"));
 	setKey(defaultKey);
 	defaultGraphicAttributes.setRenderType(OMGraphic.RENDERTYPE_LATLON);
 	defaultGraphicAttributes.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
@@ -265,11 +255,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
 
 	dismiss.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-		    if (Environment.getBoolean(Environment.UseInternalFrames)) {
-			launcherWindow.setVisible(false);
-		    } else {
-			launcherWindowFrame.setVisible(false);
-		    }
+		    getWindowSupport().killWindow();
 		}
 	    });
     }
@@ -469,65 +455,23 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * @return ActionListener
      */
     public ActionListener getActionListener() {
+	return new ActionListener() {
+		public void actionPerformed(ActionEvent evt) {
+		    // -1 will get size from pack();
+		    int w = -1;
+		    int h = -1;
+		    int x = 10;
+		    int y = 10;
+	    
+		    Point loc = getWindowSupport().getComponentLocation();
+		    if (loc != null) {
+			x = (int) loc.getX();
+			y = (int) loc.getY();
+		    }
 
-	if (actionListener == null) {
-	    // Try to group the applet-specific stuff in here...
-	    if (Environment.getBoolean(Environment.UseInternalFrames)) {
-
-		launcherWindow = new JInternalFrame(
-		    "Drawing Tool Launcher",
-		    /*resizable*/ true,
-		    /*closable*/ true,
-		    /*maximizable*/ false,
-		    /*iconifiable*/ true);
-		//  		launcherWindow.setBounds(2, 2, 328, 300);
-		launcherWindow.setContentPane(this);
-		launcherWindow.setOpaque(true);
-		try {
-		    launcherWindow.setClosed(true);//don't show until it's needed
-		} catch (java.beans.PropertyVetoException e) {}
-
-		launcherWindow.pack();
-
-		actionListener = ( new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-			    try {
-				if (launcherWindow.isClosed()) {
-				    launcherWindow.setClosed(false);
-
-				    // hmmm is this the best way to do this?
-				    JLayeredPane desktop = 
-					Environment.getInternalFrameDesktop();
-
-				    if (desktop != null) {
-					desktop.remove(launcherWindow);
-					desktop.add(launcherWindow, 
-						    JLayeredPane.PALETTE_LAYER);
-					launcherWindow.setVisible(true);
-				    }
-				}
-			    } catch (java.beans.PropertyVetoException e) {
-				System.err.println(e);
-			    }
-			}
-		    });
-		
-	    } else { // Working as an application...
-		launcherWindowFrame = new JFrame("Drawing Tool Launcher");
-		launcherWindowFrame.setContentPane(this);
-		launcherWindowFrame.setVisible(false);//don't show until it's needed
-		
-		actionListener = ( new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-			    launcherWindowFrame.setVisible(true);
-			    launcherWindowFrame.setState(java.awt.Frame.NORMAL);
-			}
-		    });
-		launcherWindowFrame.pack();
-	    }
-	}
-
-	return actionListener;
+		    getWindowSupport().displayInWindow(x, y, w, h);
+		}
+	    };
     }
 
     /**
