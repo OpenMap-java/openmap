@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/02/04 16:06:15 $
-// $Author: dietrick $
+// $Revision: 1.11 $
+// $Date: 2004/02/11 03:36:39 $
+// $Author: bmackiew $
 // 
 // **********************************************************************
 
@@ -93,7 +93,7 @@ public class MapBean extends JComponent
     /**
      * OpenMap version.
      */
-    public static final String version = "4.6_beta";
+    public static final String version = "4.6";
 
     /**
      * Suppress the copyright message on initialization.
