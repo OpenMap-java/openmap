@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.11 $
+// $Date: 2004/02/06 19:06:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -216,22 +216,18 @@ public class DemoLayer extends OMGraphicHandlerLayer
         }
         omList.add(pointList);
 
-        OMPoly ell = getEllipse(new LatLonPoint(60f, -110), 
-                                Length.NM.toRadians(1000), 
-                                Length.NM.toRadians(300), 
-                                com.bbn.openmap.MoreMath.HALF_PI/2.0);
+        OMEllipse ell = new OMEllipse(new LatLonPoint(60f, -110), 
+                                      1000, 300, Length.NM,
+                                      com.bbn.openmap.MoreMath.HALF_PI/2.0);
 
         ell.setLinePaint(Color.blue);
         //      ell.setFillPaint(Color.yellow);
         omList.add(ell);
 
-        ell = getEllipse(new LatLonPoint(40f, -75), 
-                         Length.NM.toRadians(800), 
-                         Length.NM.toRadians(250), 
-                         Length.DECIMAL_DEGREE.toRadians(45));
+        ell = new OMEllipse(new LatLonPoint(40f, -75), 
+                            800, 250, Length.MILE, 0);
 
-        ell.setLinePaint(Color.blue);
-        //      ell.setFillPaint(Color.yellow);
+        ell.setFillPaint(Color.yellow);
         omList.add(ell);
 
         float[] llp2 = new float[] {0.41789755f, -1.435303f, 0.41813868f, -1.3967744f};
@@ -294,57 +290,6 @@ public class DemoLayer extends OMGraphicHandlerLayer
         arc1.setFillPaint(Color.yellow);
         arc1.setArcType(java.awt.geom.Arc2D.PIE);
         omList.add(arc1);
-    }
-
-    public OMPoly getEllipse(LatLonPoint m_centerLatLongPoint, double m_nMajorAxisSpan, double m_nMinorAxisSpan, double rotateAngle) {
-
-        int      i;
-        int      nMax=72;
-        double   angle=-Math.PI;
-        double   angleInc=2.0*Math.PI/nMax;
-        double   []distance=new double[nMax+1];
-        double   x;
-        double   y;
-        double   a;
-        double   b;
-        float    []azimuth=new float[nMax+1];
-        float    []llPoints=new float[2*(nMax+1)];
-
-        a = m_nMajorAxisSpan/2.0;
-        b = m_nMinorAxisSpan/2.0;
-
-        for (i=0;i<nMax;i++) {
-
-            x = Math.sqrt((a*a*b*b)/((b*b) + ((a*a)*Math.pow(Math.tan(angle), 2))));
-            double yt = (x*x)/(a*a);
-            if (yt > 1.0) {
-                yt = 1.0;
-            }
-            y = Math.sqrt((1.0 - yt)*(b*b));
-
-            distance[i]=Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
-            azimuth[i]=(float)angle + com.bbn.openmap.MoreMath.HALF_PI + (float)rotateAngle;
-
-            if (Debug.debugging("ellipse")) {
-                Debug.output(" " + i +" "+ (azimuth[i]*180/Math.PI) +
-                             " ( " + distance[i] + " ) " + (Debug.debugging("ellipsedetail")?("[from x:" + x + ", y:" + y + ", a:" + a + ", b:" + b + "]"):""));
-            }
-            angle+=angleInc;
-        }
-
-        distance[nMax]=distance[0];
-        azimuth[nMax]=azimuth[0];
-        int nCounter=0;
-
-        for (i=0;i<nMax+1;i++) {
-
-            LatLonPoint llPt = GreatCircle.spherical_between(ProjMath.degToRad(m_centerLatLongPoint.getLatitude()),ProjMath.degToRad(m_centerLatLongPoint.getLongitude()),(float)distance[i],azimuth[i]);
-
-            llPoints[nCounter++]=llPt.getLatitude();
-            llPoints[nCounter++]=llPt.getLongitude();
-        }
-
-        return new OMPoly(llPoints,OMGraphic.DECIMAL_DEGREES,OMGraphic.LINETYPE_STRAIGHT);
     }
 
     public void setProperties(String prefix, Properties props) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/02/05 18:15:08 $
+// $Revision: 1.12 $
+// $Date: 2004/02/06 19:06:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -666,12 +666,7 @@ public class RpfLayer extends OMGraphicHandlerLayer
      */
     public void paint(java.awt.Graphics g) {
         Debug.message("rpf", "RpfLayer.paint()");
-
-        OMGraphicList tmpGraphics = getGraphicList();
-
-        if (tmpGraphics != null) {
-            tmpGraphics.render(g);
-        }
+        super.paint(g);
 
         if (coverage != null && coverage.isInUse()) {
             coverage.paint(g);
