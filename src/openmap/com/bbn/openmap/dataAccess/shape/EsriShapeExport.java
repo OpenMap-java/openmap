@@ -10,6 +10,7 @@ package com.bbn.openmap.dataAccess.shape;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.util.*;
 import javax.swing.*;
 
@@ -18,8 +19,10 @@ import com.bbn.openmap.MapBean;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.dataAccess.shape.output.*;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * Provides methods for saving OMGraphicLists as ShapeFiles.  This
@@ -100,6 +103,24 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
 
         setGraphicList(list);
         projection = proj;
+        filePath = pathToFile;
+        DEBUG = Debug.debugging("shape");
+    }
+
+    /**
+     * Create an EsriShapeExport object.
+     * @param list the EsriGraphicList to export.
+     * @param dbf the DbfTableModel holding the attributes for the list objects.
+     * @param pathToFile the file path of the shape file to save to.
+     * If null, the user will be queried.  If not null, the files will
+     * be saved without any GUI confirmation.
+     */
+    public EsriShapeExport(EsriGraphicList list, 
+                           DbfTableModel dbf,
+                           String pathToFile) {
+
+        setGraphicList(list);
+        setMasterDBF(dbf);
         filePath = pathToFile;
         DEBUG = Debug.debugging("shape");
     }
@@ -296,10 +317,24 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * Separates the graphics from the OMGraphicList into Polygon,
      * Polyline and Point lists, then passes the desired shape lists
      * to their respective export functions to be added to an
-     * EsriLayer of the same type and prepared for export.<p>
+     * EsriLayer of the same type and prepared for export.  OMGraphics
+     * that are on sublists within the top-level OMGraphicList will be
+     * simply written to the appropriate list at the top level of that
+     * list.  They will be handled as multi-part geometries.<p>
+     *
      * Separating the graphics into the three types is necessary due
      * to shape file specification limitations which will only allow
-     * shape files to be of one type.
+     * shape files to be of one type.<P>
+     *
+     * For OMGraphicLists that are actually EsriGraphicLists, this
+     * export method will be redirected to a different method that
+     * will handle sub-OMGraphicLists as multi-part geometries.<P>
+     *
+     * If you want to write out multi-part geometries and have a
+     * regular OMGraphicList, you have to convert them to
+     * EsriGraphicLists first (and OMGraphics to EsriGraphics), which
+     * forces you to group shapes into like types (points, polylines
+     * and polygons).
      */
     public void export() {
         OMGraphicList list = getGraphicList();
@@ -338,9 +373,14 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * handled. The record should be set if the list is an embedded
      * list, reusing a record from the top level interation.  Set the
      * record to null at the top level iteration to cause the method
-     * to fetch the record from the masterDBF, if it exists.
-     * @param list the OMGraphicList to write
-     * @param record the record for the current list, used if the list
+     * to fetch the record from the masterDBF, if it exists.  If the
+     * list is an EsriGraphicList, then the export for
+     * EsriGraphicLists will be called.  The DbfTableModel for the
+     * list should be stored in the appObject member variable of the
+     * EsriGraphicList.
+     *
+     * @param list the OMGraphicList to write.
+     * @param masterRecord the record for the current list, used if the list
      * is actually a multipart geometry for the overall list.  May be
      * null anyway, though.
      * @param writeFiles Flag to note when this method is being called
@@ -348,21 +388,28 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * iterative, then the writing of the files should not be
      * performed on this round of the method call.
      */
-    protected void export(OMGraphicList list, ArrayList record, boolean writeFiles) {
+    protected void export(OMGraphicList list, ArrayList masterRecord, boolean writeFiles) {
         badGraphics = 0;
 
         if (list == null) {
             return;
+        } else if (list instanceof EsriGraphicList) {
+            export((EsriGraphicList)list);
+            return;
         }
 
         int dbfIndex = 0;
-        boolean iterative = false;
 
         //parse the graphic list and fill the individual lists with
         //the appropriate shape types
         Iterator it = list.iterator();
         while (it.hasNext()) {
             OMGraphic dtlGraphic = (OMGraphic) it.next();
+            // Reset the record to the master flag record, which will
+            // cause a new record to be read for the top level list
+            // contents, but duplicate the current masterRecord for
+            // iterative contents.
+            ArrayList record = masterRecord;
 
             if (record == null) {
                 record = getMasterDBFRecord(dbfIndex++);
@@ -467,6 +514,26 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         } else {
             writeFiles();
         }
+    }
+
+    /**
+     * Writes out EsriGraphicLists as shape files, assumes that the
+     * DbfTableModel representing the attribute data for the list
+     * objects is stored in the appObject member variable of the
+     * EsriGraphicList.  This export handles multi-part geometries,
+     * because it's assumed that the sorting of the graphic types have
+     * been handled and that any sub-lists are meant to be multi-part
+     * geometries.  If the filePath hasn't been set in the
+     * EsriShapeExport class, the user will be asked to provide it.
+     */
+    protected void export(EsriGraphicList egList) {
+        Object obj = egList.getAppObject();
+        if (obj == null) {
+            egList.setAppObject(getMasterDBF());
+        }
+
+        eseInterfaces.add(new ESEInterface(egList, filePath, null));
+        writeFiles();
     }
 
     /**
@@ -732,6 +799,61 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
             handleException(ioe);
         }
         return ret;
+    }
+
+    /**
+     * The main function is a test, reads in a Shape file (with the
+     * .shx and .dbf files) and writes them back out.
+     */
+    public static void main(String[] argv) {
+        Debug.init();
+        boolean toUpper = true;
+
+        ArgParser ap = new ArgParser("EsriShapeExport");
+        ap.add("shp", "A URL to a shape file (.shp).", 1);
+
+        if (argv.length < 1) {
+            ap.bail("", true);
+        }
+
+        ap.parse(argv);
+
+        String[] files = ap.getArgValues("shp");
+        if (files != null && files[0] != null) {
+            String shp = files[0];
+            String shx = null;
+            String dbf = null;
+
+            try {
+                shx = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_SHX;
+                dbf = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_DBF;
+
+                DbfTableModel model = 
+                    DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(null, dbf));
+
+                EsriGraphicList list = 
+                    EsriGraphicList.getEsriGraphicList(PropUtils.getResourceOrFileOrURL(null, shp), 
+                                                       PropUtils.getResourceOrFileOrURL(null, shx), 
+                                                       null, null);
+
+                Debug.output(list.getDescription());
+
+                EsriShapeExport ese = new EsriShapeExport(list, model, null);
+                ese.export();
+
+            } catch (MalformedURLException murle) {
+                Debug.error("EsriShapeExport: Malformed URL Exception\n" + murle.getMessage());
+            } catch (NullPointerException npe) {
+                Debug.error("EsriShapeExport: Path to shape file isn't good enough to find .dbf file and .shx file.");
+            } catch (Exception exception) {
+                Debug.error("EsriShapeExport: Exception\n" + exception.getMessage());
+                exception.printStackTrace();
+            }
+
+        } else {
+            ap.bail("Need a path to a Shape file (.shp)", true);
+        }
+        System.exit(0);
     }
 
     /**

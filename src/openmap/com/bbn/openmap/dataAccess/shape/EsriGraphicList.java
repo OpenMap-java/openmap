@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriGraphicList.java,v $
 // $RCSfile: EsriGraphicList.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/02/03 20:39:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -203,34 +203,31 @@ public abstract class EsriGraphicList extends OMGraphicList
 
         try {
             InputStream is = shx.openStream();
-            try{
-                xis = new ShxInputStream(is);
-                indexData = xis.getIndex();
-            } catch(Exception exception) {
-                System.out.println(exception);
-            }
+            xis = new ShxInputStream(is);
+            indexData = xis.getIndex();
             is.close();
         } catch (Exception e) {
             Debug.error("EsriGraphicList: Unable to stream SHX file");
+            if (Debug.debugging("shape")) {
+                e.printStackTrace();
+            }
             return null;
         }
         
         //Open and stream shp file
         try {
             InputStream is = shp.openStream();
-            try {
-                ShpInputStream pis = new ShpInputStream(is);
-                if (drawingAttributes != null) {
-                    pis.setDrawingAttributes(drawingAttributes);
-                }
-                list = pis.getGeometry(indexData);
-            } catch (Exception e) {
-                Debug.error("EsriGraphicList: Not able to stream SHP file");
-                return null;
+            ShpInputStream pis = new ShpInputStream(is);
+            if (drawingAttributes != null) {
+                pis.setDrawingAttributes(drawingAttributes);
             }
+            list = pis.getGeometry(indexData);
             is.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Debug.error("EsriGraphicList: Not able to stream SHP file");
+            if (Debug.debugging("shape")) {
+                e.printStackTrace();
+            }
             return null;
         }
 
