@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerStatusPane.java,v $
 // $RCSfile: LayerStatusPane.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:48 $
+// $Revision: 1.6 $
+// $Date: 2005/02/11 22:30:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,9 +42,6 @@ public class LayerStatusPane extends LayerPane implements LayerStatusListener {
     // the icons
     protected static transient ImageIcon layerWorking;
     protected static transient ImageIcon layerDone;
-
-    public transient final static String showPaletteCmd = "showPalette";
-    public transient final static String toggleLayerCmd = "toggleLayerCmd";
 
     protected Color offColor;
     protected Color onColor = new Color(0xFF0066CC);

@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
-//  BBN Technologies
-//  10 Moulton Street
-//  Cambridge, MA 02138
-//  (617) 873-8000
-// 
-//  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
+// BBN Technologies
+// 10 Moulton Street
+// Cambridge, MA 02138
+// (617) 873-8000
+//
+// Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerControlButtonPanel.java,v $
 // $RCSfile: LayerControlButtonPanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/02/02 13:14:26 $
+// $Revision: 1.7 $
+// $Date: 2005/02/11 22:30:29 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.gui;
@@ -34,10 +34,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
 import com.bbn.openmap.util.propertyEditor.OrientationPropertyEditor;
 
 /**
@@ -63,21 +65,26 @@ import com.bbn.openmap.util.propertyEditor.OrientationPropertyEditor;
  *  
  *   
  *    
- *     
- *      # Direction buttons are laid out,  vertical or horizontal (vertical is default).
- *      orientation=vertical
- *      # Flag on whether to insert buttons onto LayersPanel (true by default).
- *      embedded=true
- *      # Configuration setting when embedding into LayersPanel (WEST,
- *      # NORTH, EAST, SOUTH, NORTH_SOUTH) NORTH_SOUTH puts up button above
- *      # list, down button below list.
- *      configuration=WEST
- *      # Flag to put button that lets the user delete layers (true by default).
- *      delete=true
- *      # Flag to put button that lets the user add layers, if the
- *      # LayersAddPanel is discovered in the MapHandler (true by default)
- *      add=true
- *      
+ *    
+ *    
+ *    
+ *     # Direction buttons are laid out, vertical or horizontal (vertical is
+ *     default).
+ *     orientation=vertical
+ *     # Flag on whether to insert buttons onto LayersPanel (true by default).
+ *     embedded=true
+ *     # Configuration setting when embedding into LayersPanel (WEST,
+ *     # NORTH, EAST, SOUTH, NORTH_SOUTH) NORTH_SOUTH puts up button above
+ *     # list, down button below list.
+ *     configuration=WEST
+ *     # Flag to put button that lets the user delete layers (true by default).
+ *     delete=true
+ *     # Flag to put button that lets the user add layers, if the
+ *     # LayersAddPanel is discovered in the MapHandler (true by default)
+ *     add=true
+ *    
+ *    
+ *    
  *     
  *    
  *   
@@ -228,6 +235,7 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
             if (embedded) {
                 createInterface(); // again, reset for new config
                 // values
+
                 setLayout(new BoxLayout(this, orientation));
 
                 if (panel.getLayout() instanceof BorderLayout) {
@@ -248,7 +256,7 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
                 }
             }
             // Let the LayersPanel know who is controlling it.
-            panel.setControls(this);
+            //panel.setControls(this);
         }
     }
 
@@ -262,28 +270,36 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
         top = new JButton(topgif);
         top.setActionCommand(LayersPanel.LayerTopCmd);
         top.setPressedIcon(topclickedgif);
-        top.setToolTipText("Move selected layer to top");
+        top.setToolTipText(i18n.get(LayerControlButtonPanel.class,
+                "moveLayerToTop",
+                "Move selected layer to top"));
         top.addActionListener(this);
         add(top);
 
         up = new JButton(upgif);
         up.setActionCommand(LayersPanel.LayerUpCmd);
         up.setPressedIcon(upclickedgif);
-        up.setToolTipText("Move selected layer up one");
+        up.setToolTipText(i18n.get(LayerControlButtonPanel.class,
+                "moveLayerUpOne",
+                "Move selected layer up one"));
         up.addActionListener(this);
         add(up);
 
         down = new JButton(downgif);
         down.setPressedIcon(downclickedgif);
         down.setActionCommand(LayersPanel.LayerDownCmd);
-        down.setToolTipText("Move selected layer down one");
+        down.setToolTipText(i18n.get(LayerControlButtonPanel.class,
+                "moveLayerDownOne",
+                "Move selected layer down one"));
         down.addActionListener(this);
         add(down);
 
         bottom = new JButton(bottomgif);
         bottom.setPressedIcon(bottomclickedgif);
         bottom.setActionCommand(LayersPanel.LayerBottomCmd);
-        bottom.setToolTipText("Move selected layer to bottom");
+        bottom.setToolTipText(i18n.get(LayerControlButtonPanel.class,
+                "moveLayerToBottom",
+                "Move selected layer to bottom"));
         bottom.addActionListener(this);
         add(bottom);
 
@@ -293,7 +309,9 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
 
             delete = new JButton(deletegif);
             delete.setActionCommand(LayersPanel.LayerRemoveCmd);
-            delete.setToolTipText("Remove selected layer");
+            delete.setToolTipText(i18n.get(LayerControlButtonPanel.class,
+                    "removeLayer",
+                    "Remove selected layer"));
             delete.addActionListener(this);
             delete.setEnabled(false);
             add(delete);
@@ -314,7 +332,9 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
         if (layerAddPanel != null) {
             add = new JButton(addgif);
             add.setActionCommand(LayersPanel.LayerAddCmd);
-            add.setToolTipText("Add a layer");
+            add.setToolTipText(i18n.get(LayerControlButtonPanel.class,
+                    "addLayer",
+                    "Add a layer"));
             add.addActionListener(this);
             if (addLayers) {
                 this.add(add);
@@ -460,22 +480,69 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
-
-        props.put(ConfigurationProperty,
+        String interString = i18n.get(LayerControlButtonPanel.class,
+                ConfigurationProperty,
+                I18n.TOOLTIP,
                 "Pre-Defined Configuration String (WEST, EAST, NORTH, SOUTH, NORTH_SOUTH).");
-        props.put(OrientationProperty, "Horizontal or Vertical.");
+        props.put(ConfigurationProperty, interString);
+        props.put(ConfigurationProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.ComboBoxPropertyEditor");
+        props.put(ConfigurationProperty + OptionPropertyEditor.ScopedOptionsProperty,
+                "west east north south northsouth");
+        props.put(ConfigurationProperty + ".west", "WEST");
+        props.put(ConfigurationProperty + ".east", "EAST");
+        props.put(ConfigurationProperty + ".north", "NORTH");
+        props.put(ConfigurationProperty + ".south", "SOUTH");
+        props.put(ConfigurationProperty + ".northsouth", "NORTH_SOUTH");
+        interString = i18n.get(LayerControlButtonPanel.class, ConfigurationProperty, "Configuration");
+        props.put(ConfigurationProperty + LabelEditorProperty, interString);
+        
+        interString = i18n.get(LayerControlButtonPanel.class,
+                ConfigurationProperty,
+                I18n.TOOLTIP,
+                "Layout orientation for buttons.");
+        props.put(OrientationProperty, interString);
         props.put(OrientationProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.OrientationPropertyEditor");
-        props.put(EmbeddedProperty, "Insert itself into LayersPanel.");
+        interString = i18n.get(LayerControlButtonPanel.class, OrientationProperty, "Orientation");
+        props.put(OrientationProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(LayerControlButtonPanel.class,
+                EmbeddedProperty,
+                I18n.TOOLTIP,
+                "Insert itself into Layers panel.");
+        props.put(EmbeddedProperty, interString);
         props.put(EmbeddedProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        props.put(DeleteLayersProperty, "Include button to delete layers.");
+        interString = i18n.get(LayerControlButtonPanel.class, EmbeddedProperty, "Embedded");
+        props.put(EmbeddedProperty + LabelEditorProperty, interString);
+        
+        interString = i18n.get(LayerControlButtonPanel.class,
+                DeleteLayersProperty,
+                I18n.TOOLTIP,
+                "Include button to delete layers.");
+        props.put(DeleteLayersProperty, interString);
         props.put(DeleteLayersProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        props.put(AddLayersProperty, "Include button to add layers.");
+        interString = i18n.get(LayerControlButtonPanel.class, DeleteLayersProperty, "Add Remove Button");
+        props.put(DeleteLayersProperty + LabelEditorProperty, interString);
+        
+        interString = i18n.get(LayerControlButtonPanel.class,
+                AddLayersProperty,
+                I18n.TOOLTIP,
+                "Include button to add layers.");
+        props.put(AddLayersProperty, interString);
         props.put(AddLayersProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-
+        interString = i18n.get(LayerControlButtonPanel.class, AddLayersProperty, "Add Create Button");
+        props.put(AddLayersProperty + LabelEditorProperty, interString);
+        
+        props.put(initPropertiesProperty, ConfigurationProperty + " " +
+                EmbeddedProperty + " " +
+                OrientationProperty + " " +
+                AddLayersProperty + " " +
+                DeleteLayersProperty);
+        
         return props;
     }
 

@@ -14,29 +14,49 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/10/14 18:05:48 $
+// $Revision: 1.12 $
+// $Date: 2005/02/11 22:30:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Properties;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.BufferedLayerMapBean;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.LightMapHandlerChild;
+import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.event.LayerListener;
+import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -622,14 +642,24 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Set the LayerControlButtonPanel as the controls to this
-     * LayersPanel. This method is just settng the controls variable
-     * to point to the panel. No further hookups are made.
+     * Should be called internally, when the LayersPanel creates the
+     * LayerControlButtonPanel.  If called from the LCBP, a loop will ensue.
      * 
-     * @param lpb
+     * @param lcbp
      */
-    public void setControls(LayerControlButtonPanel lpb) {
-        controls = lpb;
+    protected void setControlsAndNotify(LayerControlButtonPanel lcbp) {
+        setControls(lcbp);
+        if (lcbp != null) {
+            lcbp.setLayersPanel(this);
+        }
+    }
+
+    /**
+     * Simply sets the controls.
+     * @param lcbp
+     */
+    public void setControls(LayerControlButtonPanel lcbp) {
+        controls = lcbp;
     }
 
     public LayerControlButtonPanel getControls() {
@@ -745,7 +775,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
             rejiggerMapLayers();
         } else if (command.equals(LayerRemoveCmd)) {
 
-            if (layerHandler == null) {
+            if (layerHandler == null || !lp.getLayer().removeConfirmed()) {
                 return;
             }
 
@@ -972,7 +1002,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                         + ControlButtonsProperty, props);
 
                 if (obj instanceof LayerControlButtonPanel) {
-                    ((LayerControlButtonPanel) obj).setLayersPanel(this);
+                    setControlsAndNotify((LayerControlButtonPanel) obj);
                 }
             }
         }

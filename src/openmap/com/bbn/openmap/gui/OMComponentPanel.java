@@ -14,21 +14,30 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMComponentPanel.java,v $
 // $RCSfile: OMComponentPanel.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:48 $
+// $Revision: 1.9 $
+// $Date: 2005/02/11 22:30:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import java.beans.*;
-import java.beans.beancontext.*;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
+import java.beans.beancontext.BeanContext;
+import java.beans.beancontext.BeanContextChild;
+import java.beans.beancontext.BeanContextChildSupport;
+import java.beans.beancontext.BeanContextMembershipEvent;
+import java.beans.beancontext.BeanContextMembershipListener;
 import java.util.Iterator;
 import java.util.Properties;
-import javax.swing.*;
 
-import com.bbn.openmap.*;
+import javax.swing.JPanel;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.LightMapHandlerChild;
+import com.bbn.openmap.PropertyConsumer;
 
 /**
  * The OMComponentPanel is a convienent super class intended to
@@ -96,7 +105,7 @@ public abstract class OMComponentPanel extends JPanel implements
     public void setProperties(String prefix, java.util.Properties props) {
         setPropertyPrefix(prefix);
 
-        //      String realPrefix =
+        // String realPrefix =
         // PropUtils.getScopedPropertyPrefix(prefix);
     }
 
@@ -120,7 +129,7 @@ public abstract class OMComponentPanel extends JPanel implements
             props = new Properties();
         }
 
-        //      String prefix =
+        // String prefix =
         // PropUtils.getScopedPropertyPrefix(propertyPrefix);
 
         return props;

@@ -1,35 +1,52 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
-//  BBN Technologies
-//  10 Moulton Street
-//  Cambridge, MA 02138
-//  (617) 873-8000
-// 
-//  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
+// BBN Technologies, a Verizon Company
+// 10 Moulton Street
+// Cambridge, MA 02138
+// (617) 873-8000
+//
+// Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerPane.java,v $
 // $RCSfile: LayerPane.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/11/26 03:42:03 $
+// $Revision: 1.9 $
+// $Date: 2005/02/11 22:30:29 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.io.Serializable;
 import java.net.URL;
 
-import javax.swing.*;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 
-import com.bbn.openmap.*;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -41,12 +58,8 @@ import com.bbn.openmap.util.Debug;
 public class LayerPane extends JPanel implements Serializable, ActionListener,
         ComponentListener {
 
-    protected transient JCheckBox onoffButton;
-
-    // Next line uncommented for toggle button
-    //      protected transient JCheckBox paletteButton;
-    // Comment next line out for toggle button
-    protected transient JButton paletteButton;
+    protected transient AbstractButton onoffButton;
+    protected transient AbstractButton paletteButton;
     protected transient JToggleButton layerName;
     protected transient boolean selected;
     protected transient Layer layer;
@@ -69,17 +82,19 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
     protected Color offColor;
     protected Color onColor = new Color(0xFF0066CC);
 
+    protected I18n i18n = Environment.getI18n();
+
     // default initializations
     static {
         url1 = LayerPane.class.getResource("PaletteOff.gif");
-        paletteIcon = new ImageIcon(url1, "palette");
+        paletteIcon = new ImageIcon(url1, "Palette");
         url2 = LayerPane.class.getResource("PaletteOn.gif");
-        paletteOnIcon = new ImageIcon(url2, "palette on");
+        paletteOnIcon = new ImageIcon(url2, "Palette on");
 
         url3 = LayerPane.class.getResource("BulbOn.gif");
-        layerOnIcon = new ImageIcon(url3, "layer selected");
+        layerOnIcon = new ImageIcon(url3, "Layer selected");
         url4 = LayerPane.class.getResource("BulbOff.gif");
-        layerOffIcon = new ImageIcon(url4, "layer not selected");
+        layerOffIcon = new ImageIcon(url4, "Layer not selected");
     }
 
     /**
@@ -101,57 +116,129 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
         GridBagConstraints c = new GridBagConstraints();
         setLayout(gridbag);
 
-        onoffButton = new JCheckBox(layerOffIcon);
-        onoffButton.setSelectedIcon(layerOnIcon);
-        onoffButton.setActionCommand(toggleLayerCmd);
-        onoffButton.addActionListener(this);
-        onoffButton.setToolTipText("Turn " + layer.getName() + " layer on/off");
-
-        // Determine if this layer has already been activated
-        onoffButton.setSelected(layer.isVisible());
-
-        // add the palette show/hide checkbutton
-        //      paletteButton = new JCheckBox(paletteIcon);
-        //      paletteButton.setSelected(false);
-        //      paletteButton.setSelectedIcon(paletteOnIcon);
-        //      paletteButton.setToolTipText("Display/Hide tools for "
-        //                                   + layer.getName() + " layer");
-
-        paletteButton = new JButton(paletteIcon);
-        paletteButton.setBorderPainted(false);
-        if (layer.getGUI() == null) {
-            paletteButton.setEnabled(false);
-            paletteButton.setToolTipText("No tools available for "
-                    + layer.getName() + " layer");
-        } else {
-            paletteButton.setToolTipText("Display tools for " + layer.getName()
-                    + " layer");
-        }
-
-        paletteButton.setActionCommand(showPaletteCmd);
-        paletteButton.addActionListener(this);
-
         layerName = new JToggleButton(layer.getName());
         layerName.setBorderPainted(false);
         layerName.addActionListener(this);
         offColor = layerName.getBackground();
-        layerName.setToolTipText("Click to select layer");
+        layerName.setToolTipText(i18n.get(LayerPane.class,
+                "clickToSelectLayer",
+                "Click to select layer"));
         layerName.setHorizontalAlignment(SwingConstants.LEFT);
         bg.add(layerName);
 
         c.gridy = 0;
         c.gridx = GridBagConstraints.RELATIVE;
         c.anchor = GridBagConstraints.WEST;
+        c.insets = new Insets(0, 0, 0, 0);
+
+        onoffButton = getOnOffButton();
         gridbag.setConstraints(onoffButton, c);
         add(onoffButton);
+
+        paletteButton = getPaletteButton();
         gridbag.setConstraints(paletteButton, c);
         add(paletteButton);
 
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(1, 2, 1, 15);
         gridbag.setConstraints(layerName, c);
         add(layerName);
+    }
+
+    /**
+     * Simply creates the AbstractButton object that turns the layer
+     * on/off. Override this if you want to change the kind of button
+     * used.
+     * 
+     * @return AbstractButton in an off state.
+     */
+    protected AbstractButton createOnOffButton() {
+        return new JCheckBox(layerOffIcon);
+    }
+
+    /**
+     * Calls createOnOFfButton to create the button, and then adds all
+     * the behavior settings to the button. Override this if you want
+     * to change everything about the button.
+     * 
+     * @return AbstractButton in an off state.
+     */
+    protected AbstractButton getOnOffButton() {
+        AbstractButton onoffButton = createOnOffButton();
+        onoffButton.setSelectedIcon(layerOnIcon);
+        onoffButton.setActionCommand(toggleLayerCmd);
+        onoffButton.addActionListener(this);
+
+        String interString = i18n.get(LayerPane.class,
+                "turnLayerOnOFF",
+                ("Turn " + LAYERNAME + " layer on/off"));
+
+        int index = interString.indexOf(LAYERNAME);
+        if (index > 0) {
+            String tooltiptext1 = interString.substring(0, index);
+            String tooltiptext2 = interString.substring(index
+                    + LAYERNAME.length());
+            onoffButton.setToolTipText(tooltiptext1 + layer.getName()
+                    + tooltiptext2);
+        } else {
+            onoffButton.setToolTipText(interString);
+        }
+        // Determine if this layer has already been activated
+        onoffButton.setSelected(layer.isVisible());
+        return onoffButton;
+    }
+
+    public final static String LAYERNAME = "%LAYERNAME%";
+
+    /**
+     * Simply creates the AbstractButton object that turns the layer
+     * palette on/off. Override this if you want to change the kind of
+     * button used.
+     * 
+     * @return AbstractButton in an off state.
+     */
+    protected AbstractButton createPaletteButton() {
+        return new JCheckBox(paletteIcon);
+    }
+
+    /**
+     * Calls createPaletteButton to create the button, and then adds
+     * all the behavior settings to the button. Override this if you
+     * want to change everything about the button.
+     * 
+     * @return AbstractButton in an off state.
+     */
+    protected AbstractButton getPaletteButton() {
+        AbstractButton paletteButton = createPaletteButton();
+        paletteButton.setSelectedIcon(paletteOnIcon);
+        paletteButton.setBorderPainted(false);
+        String interString;
+
+        if (layer.getGUI() == null) {
+            interString = i18n.get(LayerPane.class,
+                    "noPaletteAvailable",
+                    "No tools available for " + LAYERNAME + " layer");
+            paletteButton.setEnabled(false);
+        } else {
+            interString = i18n.get(LayerPane.class,
+                    "paletteAvailable",
+                    "Display tools for " + LAYERNAME + " layer");
+        }
+
+        int index = interString.indexOf(LAYERNAME);
+        if (index > 0) {
+            String tooltiptext1 = interString.substring(0, index);
+            String tooltiptext2 = interString.substring(index
+                    + LAYERNAME.length());
+            paletteButton.setToolTipText(tooltiptext1 + layer.getName()
+                    + tooltiptext2);
+        } else {
+            paletteButton.setToolTipText(interString);
+        }
+
+        paletteButton.setActionCommand(showPaletteCmd);
+        paletteButton.addActionListener(this);
+        return paletteButton;
     }
 
     /**
@@ -315,11 +402,7 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
 
         if (e.getSource().equals(paletteButton)) {
             setSelected(true);
-
-            // This for a JButton control
-            paletteButton.setIcon(paletteOnIcon);
             showPalette();
-
         } else if (e.getSource().equals(onoffButton)) {
             setSelected(true);
             // layer is selected, add it to or remove it from map
@@ -370,10 +453,7 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
                 }
             }
         } else if (comp == layer.getPalette()) {
-            // Next line uncommented for toggle button
-            //          paletteButton.setSelected(true);
-            // Comment next line out for toggle button
-            paletteButton.setIcon(paletteOnIcon);
+            setPaletteOn(true);
         }
     }
 
@@ -396,10 +476,7 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
                 }
             }
         } else if (comp == layer.getPalette()) {
-            // Next line uncommented for toggle button action
-            //          paletteButton.setSelected(false);
-            // Comment next line out for toggle button action
-            paletteButton.setIcon(paletteIcon);
+            setPaletteOn(false);
         } else if (comp == null) {
             if (Debug.debugging("layerspanel")) {
                 Debug.output("LayerPane: layer " + layer.getName()
@@ -417,3 +494,4 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
         return backgroundLayerSeparator;
     }
 }
+
