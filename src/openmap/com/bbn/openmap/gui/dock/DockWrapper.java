@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/DockWrapper.java,v $
 // $RCSfile: DockWrapper.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/08 17:33:14 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/09/08 20:55:05 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -44,7 +44,7 @@ import com.bbn.openmap.util.Debug;
  * A panel that contains controls that will either be docked, 
  * internal-framed or external framed...
  * @author Ben Lubin
- * @version $Revision: 1.1 $ on $Date: 2003/04/08 17:33:14 $
+ * @version $Revision: 1.2 $ on $Date: 2003/09/08 20:55:05 $
  * @since 12/5/02
  */
 public class DockWrapper extends JPanel {
@@ -187,6 +187,9 @@ public class DockWrapper extends JPanel {
     }
 
     private void untab(JComponent child) {
+	if (child == null) {
+	    throw new RuntimeException("Can't untab null");
+	}
 	removeChild(child);
 	if (children.size() == 1) {
 	    JComponent curChild = getChild();
