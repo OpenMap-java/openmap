@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:39:45 $
+// $Revision: 1.4 $
+// $Date: 2003/10/23 21:09:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -123,6 +123,30 @@ public class ScaleFilterLayer extends Layer
 	    layers = new Vector();
 	}
 	return layers;
+    }
+
+    /**
+     * Get the transition scales used to set the active layer.
+     */
+    public float[] getTransitionScales() {
+	return transitionScales;
+    }
+
+    /**
+     * Programmatic way to set layers and scales.  There should be one
+     * more layer on the list than there is scale in the float array.
+     * Layers that should be displayed for larger scale numbers
+     * (smaller scale) should be at the front of the Vector list, and
+     * larger numbers should be at the front of the scale array.  For
+     * scale numbers larger than the first number in the array, the
+     * first layer will be displayed.  As the scale number decreases,
+     * other layers will be displayed.
+     * @param list Vector of layers
+     * @param scales Array of transition scales.
+     */
+    public void setLayersAndScales(Vector list, float[] scales) {
+	layers = list;
+	transitionScales = scales;
     }
 
     /**
@@ -283,25 +307,28 @@ public class ScaleFilterLayer extends Layer
      */
     public boolean setTargetIndex(float scale) {
 	boolean changed = false;
-
 	float[] target = transitionScales;
-	int i;
-	for (i=0; i<target.length; i++) {
-	    if (scale > target[i]) {
-		if (targetIndex != i)
-		    changed = true;
-		targetIndex = i;
-		break;
+
+	int i = 0;
+	if (target != null) {
+	    for (i=0; i < target.length; i++) {
+		if (scale > target[i]) {
+		    break;
+		}
 	    }
 	}
-	if (i == target.length) {
-	    if (targetIndex != i)
-		changed = true;
-	    targetIndex = i;
+
+	if (targetIndex != i) {
+	    changed = true;
 	}
-	if (Debug.debugging("ScaleFilterLayer")) {
-	    Debug.output("layer targetIndex="+targetIndex);
+	targetIndex = i;
+
+	if (Debug.debugging("scalefilterlayer")) {
+	    Debug.output("ScaleFilterLayer(" + getName() + 
+			 ") targetIndex: " + targetIndex + 
+			 ", changed: " + changed);
 	}
+
 	return changed;
     }
 
@@ -310,7 +337,8 @@ public class ScaleFilterLayer extends Layer
      * old graphics, and requests new graphics from the spatial index
      * based on the bounding rectangle of the new <code>Projection</code>.
      *
-     * @param ev the new projection event */
+     * @param ev the new projection event 
+     */
     public void projectionChanged(ProjectionEvent ev) {
 	Projection proj = ev.getProjection();
 	Layer currentLayer = getAppropriateLayer();
@@ -342,10 +370,6 @@ public class ScaleFilterLayer extends Layer
 	getAppropriateLayer().paint(g);
 	fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
     }
-
-    //----------------------------------------------------------------
-    // Component Listener implementation
-    //----------------------------------------------------------------
 
     /**
      * Try to handle receiving LayerStatusEvents from child layers.

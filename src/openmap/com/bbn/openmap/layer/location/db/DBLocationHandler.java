@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/db/DBLocationHandler.java,v $
 // $RCSfile: DBLocationHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/24 23:36:04 $
+// $Revision: 1.3 $
+// $Date: 2003/10/23 21:09:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -292,9 +292,9 @@ public class DBLocationHandler extends AbstractLocationHandler
 
 		loc.setLocationHandler(this);
 
-		// let the layer default handle these initially...
-		loc.setShowName(false);
-		loc.setShowLocation(false);
+		// let the layer handler default set these initially...
+		loc.setShowName(isShowNames());
+		loc.setShowLocation(isShowLocations());
 
 		loc.setLocationPaint(getLocationColor());
 		loc.getLabel().setLinePaint(getNameColor());

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/DrawingEditorTool.java,v $
 // $RCSfile: DrawingEditorTool.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/03 22:25:20 $
+// $Revision: 1.7 $
+// $Date: 2003/10/23 21:09:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,6 +40,7 @@ import com.bbn.openmap.MouseDelegator;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.MapMouseMode;
+import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.gui.MouseModeButtonPanel;
 import com.bbn.openmap.gui.OMGraphicDeleteTool;
 import com.bbn.openmap.omGraphics.*;
@@ -582,13 +583,7 @@ public class DrawingEditorTool extends AbstractEditorTool
      */
     public Container getFace() {
 	if (face == null) {
-	    face = new JPanel();
-	    ((JPanel)face).setBorder(BorderFactory.createEmptyBorder());
-
-	    JToolBar faceTB = new JToolBar();
-	    faceTB.setFloatable(false);
-	    faceTB.setBorder(BorderFactory.createEmptyBorder());
- 	    face.add(faceTB);
+	    JToolBar faceTB = new GridBagToolBar();
 
 	    if (bg == null) {
 		bg = new ButtonGroup();
@@ -604,10 +599,11 @@ public class DrawingEditorTool extends AbstractEditorTool
 	    faceTB.add(unpickBtn);
 	    
 	    if (drawingTool != null && showAttributes) {
-		face.add(drawingTool);
+		faceTB.add(drawingTool);
 		drawingTool.showPalette();
 	    }
 
+	    face = faceTB;
 	    face.setVisible(visible);
 	}
 

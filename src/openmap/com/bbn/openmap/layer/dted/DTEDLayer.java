@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDLayer.java,v $
 // $RCSfile: DTEDLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:47:35 $
+// $Revision: 1.3 $
+// $Date: 2003/10/23 21:09:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,7 +38,6 @@ import java.util.StringTokenizer;
 /*  OpenMap  */
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.omGraphics.OMRect;
@@ -151,7 +150,7 @@ public class DTEDLayer extends Layer
      * The level of DTED to use.  Level 0 is 1km post spacing, Level
      * 1 is 100m post spacing. Level 2 is 30m post spacing 
      */
-    protected int dtedLevel;
+    protected int dtedLevel = DTEDFrameSubframe.LEVEL_0;
     /**
      * The display type for the dted images.  Slope shading is
      * greyscale terrain modeling with highlights and shading, with
@@ -160,13 +159,13 @@ public class DTEDLayer extends Layer
      * elevation.  Band shading colors the pixels according to a range
      * of elevations.
      */
-    protected int viewType;
+    protected int viewType = DTEDFrameSubframe.NOSHADING;
     /** The elevation range to use for each color in band shading. */
-    protected int bandHeight;
+    protected int bandHeight = 25;
     /** A contrast adjustment, for slope shading (1-5). */
-    protected int slopeAdjust;
-    protected int numColors = 216;
-    protected int opaqueness;
+    protected int slopeAdjust = DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST;
+    protected int numColors = DTEDFrameColorTable.DTED_COLORS;
+    protected int opaqueness = DTEDFrameColorTable.DEFAULT_OPAQUENESS;
     protected long minScale = 20000000;
     /** Flag to delete the cache if the layer is removed from the map. */
     protected boolean killCache = true;
@@ -349,12 +348,12 @@ public class DTEDLayer extends Layer
 	// defaults
 	paths = null;
 	paths2 = null;
-	opaqueness = DTEDFrameColorTable.DEFAULT_OPAQUENESS;
-	dtedLevel = DTEDFrameSubframe.LEVEL_0;
-	bandHeight = DTEDFrameSubframe.DEFAULT_BANDHEIGHT;
-	slopeAdjust = DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST;
-	viewType = DTEDFrameSubframe.COLOREDSHADING;
-	minScale = 20000000;
+	setOpaqueness(DTEDFrameColorTable.DEFAULT_OPAQUENESS);
+	setDtedLevel(DTEDFrameSubframe.LEVEL_0);
+	setBandHeight(DTEDFrameSubframe.DEFAULT_BANDHEIGHT);
+	setSlopeAdjust(DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
+	setViewType(DTEDFrameSubframe.COLOREDSHADING);
+	setMinScale(20000000);
     }
 
     /**
@@ -388,30 +387,25 @@ public class DTEDLayer extends Layer
 	super.setProperties(prefix, properties);
 	prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	paths = LayerUtils.initPathsFromProperties(properties, prefix + DTEDPathsProperty);
-	paths2 = LayerUtils.initPathsFromProperties(properties, prefix + DTED2PathsProperty);
-	opaqueness = LayerUtils.intFromProperties(properties, prefix + OpaquenessProperty, DTEDFrameColorTable.DEFAULT_OPAQUENESS);
+	paths = PropUtils.initPathsFromProperties(properties, prefix + DTEDPathsProperty);
+	paths2 = PropUtils.initPathsFromProperties(properties, prefix + DTED2PathsProperty);
+	setOpaqueness(PropUtils.intFromProperties(properties, prefix + OpaquenessProperty, getOpaqueness()));
 	
-	numColors = LayerUtils.intFromProperties(properties, prefix + NumColorsProperty, DTEDFrameColorTable.DTED_COLORS);
+	setNumColors(PropUtils.intFromProperties(properties, prefix + NumColorsProperty, getNumColors()));
 
-	dtedLevel = LayerUtils.intFromProperties(properties, prefix + DTEDLevelProperty, DTEDFrameSubframe.LEVEL_0);
+	setDtedLevel(PropUtils.intFromProperties(properties, prefix + DTEDLevelProperty, getDtedLevel()));
 
-	viewType = LayerUtils.intFromProperties(properties, prefix + DTEDViewTypeProperty, DTEDFrameSubframe.NOSHADING);
+	setViewType(PropUtils.intFromProperties(properties, prefix + DTEDViewTypeProperty, getViewType()));
 
-	slopeAdjust = LayerUtils.intFromProperties(properties, prefix + DTEDSlopeAdjustProperty, DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
+	setSlopeAdjust(PropUtils.intFromProperties(properties, prefix + DTEDSlopeAdjustProperty, getSlopeAdjust()));
 
-	bandHeight = LayerUtils.intFromProperties(properties, prefix + DTEDBandHeightProperty, 25);
+	setBandHeight(PropUtils.intFromProperties(properties, prefix + DTEDBandHeightProperty, getBandHeight()));
 
-	minScale =  (long) LayerUtils.intFromProperties(properties, prefix + DTEDMinScaleProperty, 20000000);
+	setMinScale((long) PropUtils.intFromProperties(properties, prefix + DTEDMinScaleProperty, (int)getMinScale()));
 	
-	cacheSize =  (int) LayerUtils.intFromProperties(properties, prefix + DTEDFrameCacheSizeProperty, DTEDCacheHandler.FRAME_CACHE_SIZE);
+	setCacheSize((int) PropUtils.intFromProperties(properties, prefix + DTEDFrameCacheSizeProperty, getCacheSize()));
 
-	if (minScale < 100) {
-	    minScale = 20000000;
-	    Debug.error("DTEDLayer: min.scale unreasonable, setting to 20M");
-	}
-
-	killCache = LayerUtils.booleanFromProperties(properties, prefix + DTEDKillCacheProperty, true);
+	setKillCache(PropUtils.booleanFromProperties(properties, prefix + DTEDKillCacheProperty, getKillCache()));
 
     }
 
@@ -626,6 +620,160 @@ public class DTEDLayer extends Layer
     }
 
 
+    /**
+     * Get the view type set for creating images.<P> <pre>
+     * 0: DTEDFrameSubframe.NOSHADING
+     * 1: DTEDFrameSubframe.SLOPESHADING
+     * 2: DTEDFrameSubframe.COLOREDSHADING
+     * 3: DTEDFrameSubframe.METERSHADING
+     * 4: DTEDFrameSubframe.FEETSHADING
+     * </pre>
+     */
+    public int getViewType() {
+	return viewType;
+    }
+
+    public void setViewType(int vt) {
+	switch (vt) {
+	case DTEDFrameSubframe.NOSHADING:
+	case DTEDFrameSubframe.SLOPESHADING:
+	case DTEDFrameSubframe.COLOREDSHADING:
+	case DTEDFrameSubframe.METERSHADING:
+	case DTEDFrameSubframe.FEETSHADING:
+	    viewType = vt;
+	    if (cache != null) {
+		DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
+		dfsi.viewType = viewType;
+	    }
+	    
+	    break;
+	default:
+	    // unchanged
+	}
+    }
+
+    /**
+     * Get the value for the interval between band colors for meter
+     * and feet shading view types.
+     */
+    public int getBandHeight() {
+	return bandHeight;
+    }
+
+    public void setBandHeight(int bh) {
+	bandHeight = bh;
+	if (cache != null) {
+	    DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
+	    dfsi.bandHeight = bandHeight;
+	}
+    }
+
+    /**
+     * Get the value for contrast adjustments, 1-5.
+     */
+    public int getSlopeAdjust() {
+	return slopeAdjust;
+    }
+
+    public void setSlopeAdjust(int sa) {
+	if (sa > 0 && sa <= 5) {
+	    slopeAdjust = sa;
+	    if (cache != null) {
+		DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
+		dfsi.slopeAdjust = slopeAdjust;
+	    }
+	} else {
+	    Debug.output("DTEDLayer (" + getName() + ") being told to set slope adjustment to invalid value (" + sa + "), must be 1-5");
+	}
+    }
+
+    /**
+     * Get the value set for which DTED level is being used, 0-2.
+     */
+    public int getDtedLevel() {
+	return dtedLevel;
+    }
+
+    public void setDtedLevel(int level) {
+	dtedLevel = level;
+    }
+
+    /**
+     * Get the opaqueness value used for the images, 0-255.
+     */
+    public int getOpaqueness() {
+	return opaqueness;
+    }
+
+    public void setOpaqueness(int o) {
+	if (o >= 0) {
+	    opaqueness = o;
+	    if (cache != null) {
+		cache.setOpaqueness(opaqueness);
+	    }
+	}
+    }
+
+    /**
+     * Get the minimum scale for when the DTED images will be shown.
+     */
+    public long getMinScale() {
+	return minScale;
+    }
+
+    public void setMinScale(long ms) {
+	if (ms < 100) {
+	    ms = 20000000;
+	    Debug.error("DTEDLayer: minimum scale setting unreasonable (" +
+			ms + "), setting to 20M");
+	}
+	minScale = ms;
+    }
+   
+    /**
+     * Get whether the cache will be killed when the layer is removed
+     * from the map.
+     */
+    public boolean getKillCache() {
+	return killCache;
+    }
+
+    public void setKillCache(boolean kc) {
+	killCache = kc;
+    }
+
+    /**
+     * Get the cache size, or how many DTED frames are held in memory.
+     */
+    public int getCacheSize() {
+	return cacheSize;
+    }
+
+    public void setCacheSize(int cs) {
+	if (cs > 0) {
+	    cacheSize = cs;
+	} else {
+	    Debug.output("DTEDLayer (" + getName() + ") being told to set cache size to invalid value (" + cs + ").");
+	}
+    }
+
+    /**
+     * Get the number of colors used in the DTED images.
+     */
+    public int getNumColors() {
+	return numColors;
+    }
+
+    public void setNumColors(int nc) {
+	if (nc > 0) {
+	    numColors = nc;
+
+	    if (cache != null) {
+		cache.setNumColors(numColors);
+	    }
+	}
+    }
+
     //----------------------------------------------------------------------
     // GUI
     //----------------------------------------------------------------------
@@ -764,7 +912,7 @@ public class DTEDLayer extends Layer
 	    // The DTED Contrast Adjuster
 	    JPanel contrastPanel = PaletteHelper.createPaletteJPanel("Contrast Adjustment");
 	    JSlider contrastSlide = new JSlider(
-		JSlider.HORIZONTAL, 1/*min*/, 5/*max*/, 3/*inital*/);
+		JSlider.HORIZONTAL, 1/*min*/, 5/*max*/, slopeAdjust/*inital*/);
 	    java.util.Hashtable dict = new java.util.Hashtable();
 	    dict.put(new Integer(1), new JLabel("min"));
 	    dict.put(new Integer(5), new JLabel("max"));
