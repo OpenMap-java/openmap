@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/FontSizer.java,v $
 // $RCSfile: FontSizer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/09/03 22:30:40 $
+// $Revision: 1.5 $
+// $Date: 2004/09/17 19:17:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,6 +39,10 @@ public class FontSizer {
     protected float curScale = -1;
     protected int minPointSize = font.getSize();
     protected int maxPointSize = font.getSize();
+    /**
+     * Default of 1.  Used against the base scale/current scale ratio
+     * to speed up or slow down font size changes based on scale.
+     */
     protected int multiplier = 1;
 
     /**
@@ -111,5 +115,15 @@ public class FontSizer {
     public Font getFont() {
         return font;
     }
+
+    public void setMultiplier(int mul) {
+        lastScale = -1;
+        multiplier = mul;
+    }
+
+    public int getMultiplier() {
+        return multiplier;
+    }
+
 
 }

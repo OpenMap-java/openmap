@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/02/01 21:14:12 $
+// $Revision: 1.14 $
+// $Date: 2004/09/17 19:17:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1090,6 +1090,76 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
     public OMGraphic findClosest(int x, int y, float limit) {
         return (OMGraphic) _findClosest(x, y, limit, false).omg;
     }
+
+    /**
+     * Find all of the OMGraphics on this list that are located within
+     * the pixel limit of the x, y pixel location.
+     * @param x the x coordinate on the component the graphics are
+     * displayed on.
+     * @param y the y coordinate on the component the graphics are
+     * displayed on.
+     * @param limit the max distance that a graphic has to be within
+     * to be returned, in pixels.
+     * @return OMGraphicList containing all of the OMGraphics within the limit, or
+     * null if none are found.
+     */
+//     public OMGraphicList findAll(int x, int y, float limit) {
+//         return _findAll(x, y, limit, null);
+//     }
+
+//     protected synchronized OMGraphicList _findAll(int x, int y, float limit, 
+//                                                   boolean resetSelect, OMGraphicList addTo) {
+
+//         if (addTo == null) {
+//             addTo = new OMGraphicList();
+//         }
+
+//         ListIterator iterator;
+//         int i;
+
+//         if (size() != 0) {
+//             if (traverseMode == FIRST_ADDED_ON_TOP) {
+//                 i = 0;
+//                 iterator = graphics.listIterator();
+//                 while (iterator.hasNext()) {
+//                     OMGeometry omg = (OMGeometry) iterator.next();
+//                     if (omg instanceof OMGraphicList) {
+//                         if (((OMGraphicList)omg).isVague()) {
+                            
+//                         }
+//                     }
+//                 }
+//             } else {
+//                 i = graphics.size();
+//                 iterator = graphics.listIterator(i);
+//                 while (iterator.hasPrevious()) {
+//                     tomd = findClosestTest(omd, i, (OMGeometry) iterator.previous(), 
+//                                            x, y, limit, resetSelect);
+//                     if (tomd == null) continue;
+//                     omd = tomd;  // for style
+//                     if (omd.d == 0) break;
+//                     i--;
+//                 }
+//             }
+//         }
+
+//         if (Debug.debugging("omgraphics")) {
+//             int size = size();
+//             if (omd.omg != null && isVague()) {
+//                 omd.omg = this;
+//                 Debug.output(this.getClass().getName() + "(" + size + 
+//                              ") detecting hit and vagueness, returning " + omd);
+//             } else if (omd.omg != null && !isVague()) {
+//                 Debug.output(this.getClass().getName() + "(" + size + 
+//                              ") detecting hit, no vagueness, returning contained "  + omd);
+//             } else {
+//                 Debug.output(this.getClass().getName() + "(" + size + 
+//                              ") omd.omg " + (omd.omg == null?"== null":"!= null"));
+//             }
+//         }
+
+//         return null;
+//     }
 
     /**
      * Finds the object located the closest to the point, regardless

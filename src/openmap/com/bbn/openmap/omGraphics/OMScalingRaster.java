@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingRaster.java,v $
 // $RCSfile: OMScalingRaster.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/03/05 21:17:41 $
+// $Revision: 1.6 $
+// $Date: 2004/09/17 19:17:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -375,6 +375,12 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                     // screen a little.
                     clipRect.width = (int)Math.ceil(iRect.width * xScaleFactor); //   scale the width
                     clipRect.height = (int)Math.ceil(iRect.height * yScaleFactor); //   scale the height
+
+                    // Make sure the rounding doesn't exceed the original icon bounds
+                    if (clipRect.width + clipRect.x > sourceRect.width)
+                        clipRect.width = sourceRect.width - clipRect.x;
+                    if (clipRect.height + clipRect.y > sourceRect.height)
+                        clipRect.height = sourceRect.height - clipRect.y;
                 }
 
                 // check width and height of clipRect, in case it got

@@ -118,6 +118,11 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
      * @param g java.awt.Graphics to paint the poly onto.
      */
     public void render(Graphics g) {
+        if (decorator == null) {
+            super.render(g);
+            return;
+        }
+
         if (shape != null) {
             decorator.draw(g, shape);
             return;
@@ -169,8 +174,7 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
                     decorator.draw(g, _x, _y);
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Trying to catch any clipping problems from within a JRE
             Debug.output(
                 "OMDecoratedSpline: caught Java rendering exception\n" + e.getMessage());
