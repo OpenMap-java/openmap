@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/Attic/AbstractGraphicLoader.java,v $
 // $RCSfile: AbstractGraphicLoader.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/11 23:59:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -81,15 +81,23 @@ public abstract class AbstractGraphicLoader extends OMComponent
 
     /**
      * The method where the AbstractGraphicLoader is expected to tell
-     * the receiver what the OMGraphics are.
+     * the receiver what the OMGraphics are.  This gets called by
+     * default by the actionPerformed() method, which is called by
+     * default by the built-in timer when it is running.
      * @see com.bbn.openmap.omGraphics.OMGraphicHandler#setList(OMGraphicList)
      */
     public abstract void manageGraphics();
 
     public abstract Component getGUI();
 
+    /**
+     * Calls manageGraphics() if projection is different().
+     */
     public void setProjection(Projection p) {
-	proj = p;
+	if (!p.equals(getProjection())) {
+	    proj = p;
+	    manageGraphics();
+	} 
     }
 
     public Projection getProjection() {
@@ -139,7 +147,14 @@ public abstract class AbstractGraphicLoader extends OMComponent
 	return updateInterval;
     }
 
-    public void actionPerformed(ActionEvent ae) {}
+    /**
+     * Method gets called by the timer if it's running.  Will also get
+     * called if any other component is using this class as an
+     * ActionListener.  By default, calls manageGraphics();
+     */
+    public void actionPerformed(ActionEvent ae) {
+	manageGraphics();
+    }
 
     /**
      * Return a pretty name for the GUI to let folks know what the
@@ -158,7 +173,7 @@ public abstract class AbstractGraphicLoader extends OMComponent
 
 	prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	name = props.getProperty(prefix + NameProperty);
+	name = props.getProperty(prefix + NameProperty, name);
     }
 
     public Properties getProperties(Properties props) {
