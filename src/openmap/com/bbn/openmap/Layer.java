@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.16 $
-// $Date: 2004/02/02 22:49:49 $
+// $Revision: 1.17 $
+// $Date: 2004/02/04 22:35:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,6 +33,7 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.*;
 
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.ProjectionPainter;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.gui.ScrollPaneWindowSupport;
@@ -227,6 +228,11 @@ public abstract class Layer extends JComponent
      * it.
      */
     protected final BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
+    /**
+     * All layers have access to an I18n object, which is provided by
+     * the Environment.
+     */
+    protected I18n i18n = Environment.getI18n();
 
     /**
      * Returns the package of the given class as a string.
@@ -335,7 +341,7 @@ public abstract class Layer extends JComponent
                 (LayerHandler)((MapHandler)bc).get("com.bbn.openmap.LayerHandler");
 
             if (lh != null) {
-                lh.updateLayerLabels();
+                lh.setLayers();
             }
         }
     }
@@ -398,21 +404,43 @@ public abstract class Layer extends JComponent
         if (list == null) {
             list = new Properties();
         }
-        
+
         list.put("class", "Class Name used for Layer.");
         list.put("class.editor",  "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
-        list.put(PrettyNameProperty, "Presentable name for Layer.");
+
+        String internString = i18n.get(Layer.class, PrettyNameProperty, I18n.TOOLTIP,
+                                       "Presentable name for Layer");
+        list.put(PrettyNameProperty, internString);
+        internString = i18n.get(Layer.class, PrettyNameProperty, "Layer Name");
+        list.put(PrettyNameProperty + LabelEditorProperty, internString);
         list.put(PrettyNameProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
-        list.put(AutoPaletteProperty, "Flag to automatically display palette when properties are set");
+
+        internString = i18n.get(Layer.class, AutoPaletteProperty, I18n.TOOLTIP, 
+                                "Flag to automatically display palette when properties are set");
+        list.put(AutoPaletteProperty, internString);
+        internString = i18n.get(Layer.class, AutoPaletteProperty, "Open Palette At Start");
+        list.put(AutoPaletteProperty + LabelEditorProperty, internString);
         list.put(AutoPaletteProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        list.put(AddAsBackgroundProperty, "Flag to use the layer as a background layer.");
+        internString = i18n.get(Layer.class, AddAsBackgroundProperty, I18n.TOOLTIP, 
+                                "Flag to use the layer as a background layer");
+        list.put(AddAsBackgroundProperty, internString);
+        internString = i18n.get(Layer.class, AddAsBackgroundProperty, "Background");
+        list.put(AddAsBackgroundProperty + LabelEditorProperty, internString);
         list.put(AddAsBackgroundProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        list.put(RemoveableProperty, "Flag to allow layer to be deleted.");
+        internString = i18n.get(Layer.class, RemoveableProperty, I18n.TOOLTIP, 
+                                "Flag to allow layer to be deleted.");
+        list.put(RemoveableProperty, internString);
+        internString = i18n.get(Layer.class, RemoveableProperty, "Removeable");
+        list.put(RemoveableProperty + LabelEditorProperty, internString);
         list.put(RemoveableProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        list.put(AddToBeanContextProperty, "Flag to give the layer access to all of the other application components.");
+        internString = i18n.get(Layer.class, AddToBeanContextProperty, I18n.TOOLTIP, 
+                                "Flag to give the layer access to all of the other application components.");
+        list.put(AddToBeanContextProperty, internString);
+        internString = i18n.get(Layer.class, AddToBeanContextProperty, "Add to MapHandler");
+        list.put(AddToBeanContextProperty + LabelEditorProperty, internString);
         list.put(AddToBeanContextProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return list;
