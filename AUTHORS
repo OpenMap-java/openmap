@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/AUTHORS,v $
 $RCSfile: AUTHORS,v $
-$Revision: 1.12 $
-$Date: 2002/07/21 05:05:37 $
+$Revision: 1.13 $
+$Date: 2002/11/07 23:31:47 $
 $Author: dietrick $
 
 People and organizations that have contributed to OpenMap
@@ -81,6 +81,14 @@ Scott Nevin
 
 Oliver Hinds
   Added code to provide a preview panel in OMColorChooser, that lets you see what the color will look like with the current transparency setting.
+
+Eliot Lebsack
+   Provided a couple of new classes:
+com.bbn.openmap.layer.shape.ShapeFileCrop, can create a new Shape file
+with shapes from a certain area of another Shape file, and
+com.bbn.openmap.gui.SaveAsVirtualImageMenuItem, which lets you set the
+size of an image to create from the current map.
+
 
 --------------------------------------
 
