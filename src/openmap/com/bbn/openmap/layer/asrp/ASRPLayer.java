@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/asrp/ASRPLayer.java,v $
 // $RCSfile: ASRPLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/03/23 18:51:16 $
+// $Revision: 1.5 $
+// $Date: 2004/05/11 23:18:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -103,6 +103,7 @@ public class ASRPLayer extends OMGraphicHandlerLayer
     public final static String THFProperty = "thf";
 
     public ASRPLayer() {
+        setName("ASRP");
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
         coverageDrawingAttributes = DrawingAttributes.getDefaultClone();
     }
