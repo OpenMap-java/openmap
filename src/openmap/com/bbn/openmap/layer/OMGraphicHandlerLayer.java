@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.16 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.17 $
+// $Date: 2004/02/05 18:15:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -464,9 +464,13 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * the OMGraphics returned on the list, and the current projection
      * is available by calling getProjection(); If you call prepare
      * directly, you may need to call repaint(), too.  If the
-     * SwingWorker calls prepare, it will call repaint().
+     * SwingWorker calls prepare, it will call repaint(). <P>
+     *
+     * The method is synchronized in case renderDataForProjection()
+     * gets called while in the middle of this method.  For a
+     * different projection, that would be bad.
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         OMGraphicList currentList = getList();
         Projection proj = getProjection(); 
 

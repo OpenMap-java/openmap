@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFLayer.java,v $
 // $RCSfile: MIFLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/27 21:01:40 $
+// $Revision: 1.7 $
+// $Date: 2004/02/05 18:15:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -100,7 +100,7 @@ public class MIFLayer extends OMGraphicHandlerLayer {
     /**
      * OMGraphicHandlerLayer method for gathering data.
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         if (mifl != null) {
             OMGraphicList list = mifl.getList();
             if (list != null) {

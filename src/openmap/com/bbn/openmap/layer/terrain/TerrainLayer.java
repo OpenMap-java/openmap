@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/TerrainLayer.java,v $
 // $RCSfile: TerrainLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.6 $
+// $Date: 2004/02/05 18:15:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -176,7 +176,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer
      * Layer needs to do any cleanups during the abort, it should do
      * so, but return out of the prepare asap.
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
 
         if (isCancelled()) {
             Debug.message("dted", getName()+"|TerrainLayer.prepare(): aborted.");

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.12 $
+// $Date: 2004/02/05 18:15:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -272,7 +272,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      *
      * @return new OMGraphicList filled by plugin.
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         Debug.message("plugin", getName()+"|PlugInLayer.prepare()");
 
         if (isCancelled()) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/13 19:45:59 $
+// $Revision: 1.7 $
+// $Date: 2004/02/05 18:15:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,7 +77,7 @@ import com.bbn.openmap.util.SwingWorker;
  * ############################
  * </pre></code>
  *
- * @version $Revision: 1.6 $ $Date: 2004/01/13 19:45:59 $
+ * @version $Revision: 1.7 $ $Date: 2004/02/05 18:15:08 $
  * @see SpatialIndex 
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -242,7 +242,7 @@ public class MultiShapeLayer extends ShapeLayer {
      * @return OMGraphicList containing an OMGraphicList containing
      * shapes from a particular shape file.
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
 
         if (spatialIndexes == null || spatialIndexes.size() == 0) {
             Debug.message("shape", "MultiShapeLayer: spatialIndexes is empty!");

@@ -12,8 +12,8 @@
  * **********************************************************************
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleDisplayLayer.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/01/26 18:18:08 $
+ * $Revision: 1.6 $
+ * $Date: 2004/02/05 18:15:07 $
  * $Author: dietrick $
  *
  * **********************************************************************
@@ -139,7 +139,7 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer  {
             defaultHeight);
     }
     
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         int w, h, left_x=0, right_x=0, lower_y=0, upper_y=0;
         Projection projection = getProjection();
         OMGraphicList graphics = new OMGraphicList();

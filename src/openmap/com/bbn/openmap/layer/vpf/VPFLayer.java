@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/02/02 22:54:37 $
+// $Revision: 1.12 $
+// $Date: 2004/02/05 18:15:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -546,7 +546,7 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * Create the OMGraphicList to use on the map.  OMGraphicHandler
      * methods call this.
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         if (lst == null) {
             try {
                 initLST();

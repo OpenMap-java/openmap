@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/BufferedLinkLayer.java,v $
 // $RCSfile: BufferedLinkLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.4 $
+// $Date: 2004/02/05 18:15:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -93,7 +93,7 @@ public class BufferedLinkLayer extends LinkLayer  {
      * so, but return out of the prepare asap.
      * @return a list of graphics.
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
 
         if (isCancelled()) {
             Debug.message("link", getName()+"|BufferedLinkLayer.prepare(): aborted.");

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/BufferedShapeLayer.java,v $
 // $RCSfile: BufferedShapeLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.4 $
+// $Date: 2004/02/05 18:15:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -107,7 +107,7 @@ public class BufferedShapeLayer extends ShapeLayer {
         return masterList;
     }
 
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
 
         OMGraphicList masterList = getList();
 

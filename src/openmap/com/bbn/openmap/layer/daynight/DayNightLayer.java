@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/DayNightLayer.java,v $
 // $RCSfile: DayNightLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.6 $
+// $Date: 2004/02/05 18:15:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -382,7 +382,7 @@ public class DayNightLayer extends OMGraphicHandlerLayer
      * so, but return out of the prepare asap.
      *
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
 
         OMGraphicList list = getList();
         if (list == null) {

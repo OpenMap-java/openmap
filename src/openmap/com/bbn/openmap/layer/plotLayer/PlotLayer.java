@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/PlotLayer.java,v $
 // $RCSfile: PlotLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.4 $
+// $Date: 2004/02/05 18:15:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -105,7 +105,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
         setList(plotDataSources());
     }
 
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         graph.resize(plotX, plotY, plotWidth, plotHeight);
         return super.prepare();
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/02/04 22:38:10 $
+// $Revision: 1.12 $
+// $Date: 2004/02/05 18:15:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.11 $ $Date: 2004/02/04 22:38:10 $
+ * @version $Revision: 1.12 $ $Date: 2004/02/05 18:15:08 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
@@ -303,7 +303,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer
      * Create the OMGraphics using the shape file and SpatialIndex.
      * @return OMGraphicList
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
 
         if (spatialIndex == null) {
             Debug.message("shape", "ShapeLayer: spatialIndex is null!");

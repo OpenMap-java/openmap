@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/02/04 00:26:48 $
+// $Revision: 1.7 $
+// $Date: 2004/02/05 18:15:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -455,7 +455,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
     /**
      * Creates the OMGraphic list with graticule lines.
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         return constructGraticuleLines();
     }
 

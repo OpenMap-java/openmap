@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationLayer.java,v $
 // $RCSfile: LocationLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/02 22:54:37 $
+// $Revision: 1.6 $
+// $Date: 2004/02/05 18:15:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -379,7 +379,7 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * Layer needs to do any cleanups during the abort, it should do
      * so, but return out of the prepare asap.
      */
-    public Vector prepare() {
+    public synchronized Vector prepare() {
 
         if (isCancelled()) {
             if (Debug.debugging("location")) {

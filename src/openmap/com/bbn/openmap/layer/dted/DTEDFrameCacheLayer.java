@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameCacheLayer.java,v $
 // $RCSfile: DTEDFrameCacheLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.3 $
+// $Date: 2004/02/05 18:15:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -274,7 +274,7 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer
      * so, but return out of the prepare asap.
      *
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
 
         if (isCancelled()) {
             Debug.message("dted", getName()+"|DTEDFrameCacheLayer.prepare(): aborted.");

@@ -179,7 +179,7 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
         drawingAttributes.setProperties(prefix, properties);
     }
 
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
 
         Projection proj = getProjection();
 

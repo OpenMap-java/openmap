@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/EarthquakeLayer.java,v $
 // $RCSfile: EarthquakeLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.5 $
+// $Date: 2004/02/05 18:15:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -121,7 +121,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer
      * Fetch data from finger sites, if needed, generate the
      * OMGraphics with the current projection regardless.
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         if (needToRefetchData()) {
             parseData(getEarthquakeData());
         }

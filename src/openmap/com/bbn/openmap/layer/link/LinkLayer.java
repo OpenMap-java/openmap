@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.12 $
+// $Date: 2004/02/05 18:15:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -327,7 +327,7 @@ public class LinkLayer extends OMGraphicHandlerLayer
      * so, but return out of the prepare asap.
      * @return a list of graphics.
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
 
         OMGraphicList currentList = getList();
 
