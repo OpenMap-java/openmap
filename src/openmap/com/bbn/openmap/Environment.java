@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Environment.java,v $
 // $RCSfile: Environment.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/14 20:09:38 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/11/18 14:51:29 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -822,6 +822,15 @@ public class Environment extends Properties {
      */
     public static JLayeredPane getInternalFrameDesktop() {
 	return env.desktop;
+    }
+
+
+    private static I18n i18n = new BasicI18n();
+    /**
+     * Get the Internationalization instance.
+     **/
+    public static I18n getI18n() {
+	return i18n;
     }
 }
 
