@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFileSearch.java,v $
 // $RCSfile: RpfFileSearch.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/07 21:46:53 $
+// $Revision: 1.3 $
+// $Date: 2003/07/07 23:18:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -119,9 +119,9 @@ public class RpfFileSearch {
 	    }
 
 	    if (dirTest){
-		if (Debug.debugging("maketoc")) {
+		if (Debug.debugging("maketocdetail")) {
 		    Debug.output("RpfFileSearch.handleEntry(" + file + ", " +
-				 RPFDirFound + "), file a directory");
+				 RPFDirFound + "), file is a directory");
 		}
 		File[] contents = new File[filenames.length]; // file.listFiles();
 		for (int i = 0; i < contents.length; i++) {
@@ -136,7 +136,7 @@ public class RpfFileSearch {
 		    handleEntry(contents[i], RPFDirFound || rpf);
 		}
 	    } else {
-		if (Debug.debugging("maketoc")) {
+		if (Debug.debugging("maketocdetail")) {
 		    Debug.output("RpfFileSearch.handleEntry(" + file + ", " +
 				 RPFDirFound + "), adding to list...");
 		}
