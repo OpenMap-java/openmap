@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.10 $
+// $Date: 2004/05/15 02:27:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,7 +36,6 @@ import javax.swing.*;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.gui.menu.DataBoundsViewMenuItem;
 import com.bbn.openmap.gui.menu.OMBasicMenu;
@@ -121,7 +120,6 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
     public GoToMenu() {
         super();
-        I18n i18n = Environment.getI18n();
         setText(i18n.get(this, "goto", defaultText));
         setMnemonic(i18n.get
                     (this, "goto", i18n.MNEMONIC, defaultMnemonic).charAt(0));

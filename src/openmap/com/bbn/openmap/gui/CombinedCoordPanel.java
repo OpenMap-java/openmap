@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/CombinedCoordPanel.java,v $
 // $RCSfile: CombinedCoordPanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/05/10 20:43:03 $
+// $Revision: 1.5 $
+// $Date: 2004/05/15 02:27:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,8 +49,6 @@ import java.io.Serializable;
 public class CombinedCoordPanel extends OMComponentPanel 
     implements Serializable, ActionListener, CenterListener {
         
-    protected I18n i18n = Environment.getI18n();
-
     protected transient JButton closebutton;
     protected transient JButton applybutton;
     protected transient JTabbedPane tabPane;

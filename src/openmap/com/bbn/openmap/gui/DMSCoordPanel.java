@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/DMSCoordPanel.java,v $
 // $RCSfile: DMSCoordPanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/05/10 20:43:03 $
+// $Revision: 1.5 $
+// $Date: 2004/05/15 02:27:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,8 +46,6 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
 
     protected transient JTextField degLat, minLat, secLat, degLon, minLon, secLon;
     
-    //protected I18n i18n = Environment.getI18n();
-
     /**
      *  Creates the panel.
      */

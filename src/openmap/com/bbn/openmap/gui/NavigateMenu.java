@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigateMenu.java,v $
 // $RCSfile: NavigateMenu.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/02/09 13:33:37 $
+// $Revision: 1.9 $
+// $Date: 2004/05/15 02:27:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,7 +31,6 @@ import java.awt.event.*;
 import java.util.Iterator;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.gui.menu.CoordsMenuItem;
 import com.bbn.openmap.gui.menu.ProjectionMenu;
@@ -66,7 +65,6 @@ public class NavigateMenu extends AbstractOpenMapMenu
      */
     public NavigateMenu() {
         super();
-        I18n i18n = Environment.getI18n();
         setText(i18n.get(this, "navigate",defaultText));
         setMnemonic
             (i18n.get

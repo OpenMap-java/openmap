@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/AbstractOpenMapMenu.java,v $
 // $RCSfile: AbstractOpenMapMenu.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.7 $
+// $Date: 2004/05/15 02:27:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -85,6 +85,10 @@ abstract public class AbstractOpenMapMenu extends JMenu
     implements BeanContextChild, BeanContextMembershipListener, 
               PropertyConsumer, MenuBarMenu, LightMapHandlerChild { 
 
+    /**
+     * All AbstractOpenMapMenus have access to an I18n object, which
+     * is provided by the Environment.
+     */
     public I18n i18n = Environment.getI18n();
 
     protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolComponent.java,v $
 // $RCSfile: OMToolComponent.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/02/04 22:36:33 $
+// $Revision: 1.8 $
+// $Date: 2004/05/15 02:27:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,7 +57,6 @@ import com.bbn.openmap.layer.util.LayerUtils;
 public abstract class OMToolComponent extends OMComponentPanel 
     implements Tool {
 
-    protected I18n i18n = Environment.getI18n();
     public final static String UseAsToolProperty = "isTool";
 
     public final static String defaultKey = "omtoolcomponent";
