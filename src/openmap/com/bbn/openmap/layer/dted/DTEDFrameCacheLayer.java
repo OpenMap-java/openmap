@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameCacheLayer.java,v $
 // $RCSfile: DTEDFrameCacheLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:54 $
+// $Revision: 1.7 $
+// $Date: 2004/10/15 14:38:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,12 +53,12 @@ import com.bbn.openmap.util.PropUtils;
 
 /**
  * The DTEDFrameCacheLayer fills the screen with DTED data. To view
- * the DTED iamges, the projection has to be set in the ARC
- * projection, which OpenMap calls the CADRG projection. In Gesture
- * mode, clicking on the map will cause the DTEDFrameCacheLayer to
- * place a point on the window and show the elevation of that point.
- * The Gesture response is not dependent on the scale or projection of
- * the screen.
+ * the DTED iamges, the projection has to be set in an ARC projection,
+ * which OpenMap calls the CADRG or LLXY projection. In Gesture mode,
+ * clicking on the map will cause the DTEDFrameCacheLayer to place a
+ * point on the window and show the elevation of that point. The
+ * Gesture response is not dependent on the scale or projection of the
+ * screen.
  * <P>
  * 
  * The DTEDFrameCacheLayer uses the DTEDCacheHandler to get the images
@@ -80,25 +80,38 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * <pre>
  * 
- *  #------------------------------
- *  # Properties for DTEDFrameCacheLayer
- *  #------------------------------
  *  
- *  # Level of DTED data to use 0, 1, 2
- *  dted.level=0
+ *   #------------------------------
+ *   # Properties for DTEDFrameCacheLayer
+ *   #------------------------------
+ *   
+ *   # Level of DTED data to use 0, 1, 2
+ *   dted.level=0
+ *   
+ *   # height (meters or feet) between color changes in band shading
+ *   dted.band.height=25
+ *   
+ *   # Minumum scale to display images. Larger numbers mean smaller scale, 
+ *   # and are more zoomed out.
+ *   dted.min.scale=20000000
+ *   
+ *   # Delete the cache if the layer is removed from the map.
+ *   dted.kill.cache=true
  *  
- *  # height (meters or feet) between color changes in band shading
- *  dted.band.height=25
+ *   # Need to set GeneratorLoaders for DTED rendering.  These properties get
+ *   # forwarded on to the DTEDFrameCacheHandler.
+ *   dted.generators=greys colors
+ *   dted.greys.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
+ *   dted.greys.prettyName=Slope Shading
+ *   dted.greys.colorsClass=com.bbn.openmap.omGraphics.grid.GreyscaleSlopeColors
+ *   dted.colors.class=com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader
+ *   dted.colors.prettyName=Elevation Shading
+ *   dted.colors.colorsClass=com.bbn.openmap.omGraphics.grid.ColoredShadingColors
  *  
- *  # Minumum scale to display images. Larger numbers mean smaller scale, 
- *  # and are more zoomed out.
- *  dted.min.scale=20000000
- *  
- *  # Delete the cache if the layer is removed from the map.
- *  dted.kill.cache=true
- *  #-------------------------------------
- *  # End of properties for DTEDFrameCacheLayer
- *  #-------------------------------------
+ *   #-------------------------------------
+ *   # End of properties for DTEDFrameCacheLayer
+ *   #-------------------------------------
+ *   
  *  
  * </pre>
  * 
