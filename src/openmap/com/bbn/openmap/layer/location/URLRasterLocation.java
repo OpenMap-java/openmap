@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/URLRasterLocation.java,v $
 // $RCSfile: URLRasterLocation.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/20 22:02:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,14 +29,16 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 
 /*  OpenMap  */
-import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMRaster;
 
 /**
- * A Location that takes an URL for an image and creates a Raster for a
- * Location marker.  The URL should be the contents of an image
- * file (gif, jpeg) that an ImageIcon object can use to create an
- * Image object.
+ * A Location that takes an URL for an image and creates a Raster for
+ * a Location marker.  The URL should be the contents of an image file
+ * (gif, jpeg) that an ImageIcon object can use to create an Image
+ * object.  The string for an icon can be a path to a resource, file
+ * or URL, and the URLRasterLocation will convert it to a URL.
  */
 public class URLRasterLocation extends Location {
     /** The spacing between the label and the outside of the image. */
@@ -269,10 +271,11 @@ public class URLRasterLocation extends Location {
 
     /**
      * Create an ImageIcon from a String to an image URL.
+     * @param iconURL can be a path to a resource, file or URL.
      */
     public static URL getIconRasterURL(String iconURL){
 	try {
-	    return new URL(iconURL);
+	    return LayerUtils.getResourceOrFileOrURL(null, iconURL);
 	} catch (java.net.MalformedURLException mue) {
 	    new com.bbn.openmap.util.HandleError(mue);
 	} catch (java.io.IOException ioe){
