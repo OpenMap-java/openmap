@@ -815,9 +815,12 @@ echo "$ac_t""$JAVA_VERSION" 1>&6
 JAVA2=`echo $JAVA_VERSION | grep '^1\.2'`
 if test ! -z "${JAVA2}" ; then
   JAVA2_SRCS="\${JAVA2_SRCS}"
+  JAVA2_DOC_ARGS="\${JAVA2_DOC_ARGS}"
 else
   JAVA2_SRCS=""
+  JAVA2_DOC_ARGS=""
 fi
+
 
 
 
@@ -1077,6 +1080,7 @@ s%@JAVAC@%$JAVAC%g
 s%@JAR@%$JAR%g
 s%@JAVADOC@%$JAVADOC%g
 s%@JAVA2_SRCS@%$JAVA2_SRCS%g
+s%@JAVA2_DOC_ARGS@%$JAVA2_DOC_ARGS%g
 s%@rootdir@%$rootdir%g
 s%@classpath@%$classpath%g
 s%@DEFAULT_TARGET@%$DEFAULT_TARGET%g

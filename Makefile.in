@@ -17,9 +17,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.23 $
-# $Date: 1999/02/19 20:19:31 $
-# $Author: dietrick $
+# $Revision: 1.24 $
+# $Date: 1999/03/09 15:10:29 $
+# $Author: aculline $
 # 
 # **********************************************************************
 
@@ -146,6 +146,11 @@ gmakefile:
 
 JAVADOC.dir = doc/api
 
+# use JDK 1.1 style javadocs.  we need to sort out any dependencies we
+# have on the flat 1.1 javadoc file layout.  wouldntya know it?: JDK
+# 1.2 uses a hierarchical javadoc file layout...
+JAVA2_DOC_ARGS = -1.1
+
 docs::
 	${RM} ${JAVADOC.dir}/*.html
 
@@ -155,7 +160,7 @@ ${JAVADOC.dir}:
 	${INSTALL.dir} $@
 
 javadocs:	${JAVADOC.dir}
-	${JAVADOC} -J-mx32m -version -d ${JAVADOC.dir} \
+	${JAVADOC} @JAVA2_DOC_ARGS@ -J-mx32m -version -d ${JAVADOC.dir} \
 		${Core.pkgs} ${App.pkgs} ${Layer.pkgs}
 
 ################
