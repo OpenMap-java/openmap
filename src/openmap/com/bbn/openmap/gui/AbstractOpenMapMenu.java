@@ -14,24 +14,37 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/AbstractOpenMapMenu.java,v $
 // $RCSfile: AbstractOpenMapMenu.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:47 $
+// $Revision: 1.9 $
+// $Date: 2005/02/02 13:14:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.beans.*;
-import java.beans.beancontext.*;
+import java.awt.Component;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
+import java.beans.beancontext.BeanContext;
+import java.beans.beancontext.BeanContextChild;
+import java.beans.beancontext.BeanContextChildSupport;
+import java.beans.beancontext.BeanContextMembershipEvent;
+import java.beans.beancontext.BeanContextMembershipListener;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
-import javax.swing.*;
 
-import com.bbn.openmap.*;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.LightMapHandlerChild;
+import com.bbn.openmap.MapHandler;
+import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -63,20 +76,22 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * <pre>
  * 
- * 
- *  # Title used in the Menu Bar.
- *  menu.prettyName=Menu Title
- *  # The letter to use as Mnemonic
- *  menu.mnemonic=M
- *  # A marker name list of items to use in the menu. 'sep' inserts a
- *  # separator, property classname definition not needed.
- *  menu.items=first second sep third
- *  first.class=Classname of first menu item
- *  # You can add properties for Menu Item, if it is a PropertyConsumer.
- *  #first.property1=prop1
- *  second.class=classname
- *  third.class=classname
  *  
+ *  
+ *   # Title used in the Menu Bar.
+ *   menu.prettyName=Menu Title
+ *   # The letter to use as Mnemonic
+ *   menu.mnemonic=M
+ *   # A marker name list of items to use in the menu. 'sep' inserts a
+ *   # separator, property classname definition not needed.
+ *   menu.items=first second sep third
+ *   first.class=Classname of first menu item
+ *   # You can add properties for Menu Item, if it is a PropertyConsumer.
+ *   #first.property1=prop1
+ *   second.class=classname
+ *   third.class=classname
+ *   
+ *   
  *  
  * </pre>
  * 
@@ -93,7 +108,7 @@ abstract public class AbstractOpenMapMenu extends JMenu implements
      * All AbstractOpenMapMenus have access to an I18n object, which
      * is provided by the Environment.
      */
-    public I18n i18n = Environment.getI18n();
+    protected I18n i18n = Environment.getI18n();
 
     protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
 

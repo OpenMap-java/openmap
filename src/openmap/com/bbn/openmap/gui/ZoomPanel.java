@@ -14,23 +14,31 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ZoomPanel.java,v $
 // $RCSfile: ZoomPanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.7 $
+// $Date: 2005/02/02 13:14:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import com.bbn.openmap.util.Debug;
-import javax.swing.*;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.net.URL;
 
-import com.bbn.openmap.event.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.event.ZoomEvent;
+import com.bbn.openmap.event.ZoomListener;
+import com.bbn.openmap.event.ZoomSupport;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Bean to zoom the Map.
@@ -112,7 +120,11 @@ public class ZoomPanel extends OMToolComponent implements ActionListener,
     public void setZoomInFactor(float factor) {
         if (factor < 1.0f) {
             zoomInFactor = factor;
-            zoomInButton.setToolTipText("zoom in X" + zoomInFactor);
+            zoomInButton.setToolTipText(i18n.get(ZoomPanel.class,
+                    zoomInCmd + "factor",
+                    I18n.TOOLTIP,
+                    "zoom in X" + zoomInFactor,
+                    new Float(zoomInFactor)));
         } else {
             throw new IllegalArgumentException("Zoom In factor too large (must be < 1.0)");
         }
@@ -138,7 +150,14 @@ public class ZoomPanel extends OMToolComponent implements ActionListener,
     public void setZoomOutFactor(float factor) {
         if (factor > 1.0f) {
             zoomOutFactor = factor;
-            zoomOutButton.setToolTipText("zoom out X" + zoomOutFactor);
+            //            zoomOutButton.setToolTipText("zoom out X" +
+            // zoomOutFactor);
+            zoomOutButton.setToolTipText(i18n.get(ZoomPanel.class,
+                    zoomOutCmd + "factor",
+                    I18n.TOOLTIP,
+                    "zoom out X" + zoomOutFactor,
+                    new Float(zoomOutFactor)));
+
         } else {
             throw new IllegalArgumentException("Zoom In factor too small (must be > 1.0)");
         }
@@ -157,7 +176,8 @@ public class ZoomPanel extends OMToolComponent implements ActionListener,
         ImageIcon icon = new ImageIcon(url, info);
         JButton b = new JButton(icon);
         b.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
-        b.setToolTipText(info);
+        //b.setToolTipText(info);
+        b.setToolTipText(i18n.get(ZoomPanel.class, command, I18n.TOOLTIP, info));
         b.setMargin(new Insets(0, 0, 0, 0));
         b.setActionCommand(command);
         b.addActionListener(this);

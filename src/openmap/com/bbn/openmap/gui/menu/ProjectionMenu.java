@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/ProjectionMenu.java,v $
 // $RCSfile: ProjectionMenu.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.6 $
+// $Date: 2005/02/02 13:13:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,7 +29,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.Vector;
-import javax.swing.*;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.event.ProjectionEvent;
@@ -42,11 +45,14 @@ import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.proj.ProjectionLoader;
 import com.bbn.openmap.util.Debug;
 
+
 /**
  * Provides ProjectionMenu items for selecting Projection type.
  */
 public class ProjectionMenu extends AbstractOpenMapMenu implements
         ActionListener, ProjectionListener, PropertyChangeListener {
+
+    public static final String defaultText = "Projection";
 
     protected transient ProjectionSupport projectionSupport = new ProjectionSupport(this);
     protected transient Projection projection;
@@ -58,7 +64,8 @@ public class ProjectionMenu extends AbstractOpenMapMenu implements
      */
     public ProjectionMenu() {
         super();
-        setText("Projection");
+        setText(i18n.get(this, "projectionMenu", defaultText));
+
     }
 
     public void configure(Vector loaders) {

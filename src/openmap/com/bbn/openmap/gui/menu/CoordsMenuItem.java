@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/CoordsMenuItem.java,v $
 // $RCSfile: CoordsMenuItem.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.6 $
+// $Date: 2005/02/02 13:13:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,6 +50,7 @@ public class CoordsMenuItem extends MapHandlerMenuItem implements
 
     public CoordsMenuItem() {
         super("Coordinates...");
+        this.setText(i18n.get(CoordsMenuItem.class, "name", "Coordinates..."));
         addActionListener(this);
         ccp = new CombinedCoordPanel(this);
     }
@@ -59,7 +60,9 @@ public class CoordsMenuItem extends MapHandlerMenuItem implements
             ws.killWindow();
         } else {
             if (ws == null) {
-                ws = new ScrollPaneWindowSupport(ccp, "Go To Coordinates...");
+                ws = new ScrollPaneWindowSupport(ccp, i18n.get(CoordsMenuItem.class,
+                        "combinedCoordDialog.title",
+                        "Go To Coordinates..."));
             }
 
             MapHandler mh = getMapHandler();

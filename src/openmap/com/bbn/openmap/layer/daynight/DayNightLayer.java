@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/DayNightLayer.java,v $
 // $RCSfile: DayNightLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:53 $
+// $Revision: 1.9 $
+// $Date: 2005/02/02 13:15:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -333,7 +333,7 @@ public class DayNightLayer extends OMGraphicHandlerLayer implements
                 + OverlayTimeProperty + " " + UpdateIntervalProperty + " "
                 + NighttimeColorProperty + " " + DoPolyTerminatorProperty + " "
                 + TerminatorVertsProperty + " " + DaytimeColorProperty + " "
-                + TermFadeProperty + " " + RemoveableProperty + " "
+                + TermFadeProperty + " " + RemovableProperty + " "
                 + AddAsBackgroundProperty);
 
         return props;

@@ -14,22 +14,32 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigatePanel.java,v $
 // $RCSfile: NavigatePanel.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:48 $
+// $Revision: 1.9 $
+// $Date: 2005/02/02 13:14:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import java.net.URL;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.net.URL;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.event.CenterListener;
+import com.bbn.openmap.event.CenterSupport;
+import com.bbn.openmap.event.PanListener;
+import com.bbn.openmap.event.PanSupport;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -171,7 +181,11 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
         ImageIcon icon = new ImageIcon(url, info);
         JButton b = new JButton(icon);
         b.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
-        b.setToolTipText(info);
+        //b.setToolTipText(info);
+        b.setToolTipText(i18n.get(NavigatePanel.class,
+                command,
+                I18n.TOOLTIP,
+                info));
         b.setMargin(new Insets(0, 0, 0, 0));
         b.setActionCommand(command);
         b.addActionListener(this);

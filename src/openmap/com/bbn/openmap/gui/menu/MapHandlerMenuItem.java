@@ -14,19 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/MapHandlerMenuItem.java,v $
 // $RCSfile: MapHandlerMenuItem.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.4 $
+// $Date: 2005/02/02 13:13:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui.menu;
 
+import java.beans.beancontext.BeanContext;
+
+import javax.swing.JMenuItem;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.LightMapHandlerChild;
 import com.bbn.openmap.MapHandler;
-
-import java.beans.beancontext.BeanContext;
-import javax.swing.JMenuItem;
 
 /**
  * A MapHandlerMenuItem is a JMenuItem that uses the MapHandler to
@@ -41,6 +44,8 @@ public abstract class MapHandlerMenuItem extends JMenuItem implements
         LightMapHandlerChild {
 
     protected MapHandler mapHandler = null;
+
+    protected I18n i18n = Environment.getI18n();
 
     public MapHandlerMenuItem(String title) {
         super(title);

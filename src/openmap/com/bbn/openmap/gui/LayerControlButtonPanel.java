@@ -14,27 +14,31 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerControlButtonPanel.java,v $
 // $RCSfile: LayerControlButtonPanel.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:48 $
+// $Revision: 1.6 $
+// $Date: 2005/02/02 13:14:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.Properties;
-import javax.swing.*;
+
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.propertyEditor.*;
+import com.bbn.openmap.util.propertyEditor.OrientationPropertyEditor;
 
 /**
  * A OMComponentPanel that provides controls to manupulate layer order
@@ -58,19 +62,23 @@ import com.bbn.openmap.util.propertyEditor.*;
  * 
  *  
  *   
- *    # Direction buttons are laid out,  vertical or horizontal (vertical is default).
- *    orientation=vertical
- *    # Flag on whether to insert buttons onto LayersPanel (true by default).
- *    embedded=true
- *    # Configuration setting when embedding into LayersPanel (WEST,
- *    # NORTH, EAST, SOUTH, NORTH_SOUTH) NORTH_SOUTH puts up button above
- *    # list, down button below list.
- *    configuration=WEST
- *    # Flag to put button that lets the user delete layers (true by default).
- *    delete=true
- *    # Flag to put button that lets the user add layers, if the
- *    # LayersAddPanel is discovered in the MapHandler (true by default)
- *    add=true
+ *    
+ *     
+ *      # Direction buttons are laid out,  vertical or horizontal (vertical is default).
+ *      orientation=vertical
+ *      # Flag on whether to insert buttons onto LayersPanel (true by default).
+ *      embedded=true
+ *      # Configuration setting when embedding into LayersPanel (WEST,
+ *      # NORTH, EAST, SOUTH, NORTH_SOUTH) NORTH_SOUTH puts up button above
+ *      # list, down button below list.
+ *      configuration=WEST
+ *      # Flag to put button that lets the user delete layers (true by default).
+ *      delete=true
+ *      # Flag to put button that lets the user add layers, if the
+ *      # LayersAddPanel is discovered in the MapHandler (true by default)
+ *      add=true
+ *      
+ *     
  *    
  *   
  *  
@@ -377,7 +385,7 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
 
             selected = (Layer) obj;
 
-            delete.setEnabled(selected.isRemoveable());
+            delete.setEnabled(selected.isRemovable());
 
             if (Debug.debugging("layercontrol")) {
                 Debug.output("LayerControlButtonPanel: got notification that layer is selected: "

@@ -14,21 +14,27 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ScaleTextPanel.java,v $
 // $RCSfile: ScaleTextPanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.5 $
+// $Date: 2005/02/02 13:14:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import javax.swing.*;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
+import javax.swing.JTextField;
+
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.event.ProjectionListener;
+import com.bbn.openmap.event.ZoomEvent;
+import com.bbn.openmap.event.ZoomListener;
+import com.bbn.openmap.event.ZoomSupport;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
@@ -71,7 +77,11 @@ public class ScaleTextPanel extends OMToolComponent implements Serializable,
         String command = setScaleCmd;
 
         scaleField = new JTextField(entry, 10);
-        scaleField.setToolTipText(info);
+        //        scaleField.setToolTipText(info);
+        scaleField.setToolTipText(i18n.get(ScaleTextPanel.class,
+                command,
+                I18n.TOOLTIP,
+                info));
         scaleField.setMargin(new Insets(0, 0, 0, 0));
         scaleField.setActionCommand(command);
         scaleField.addActionListener(this);
