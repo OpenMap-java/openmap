@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.33 $
-# $Date: 1998/11/12 17:35:07 $
+# $Revision: 1.34 $
+# $Date: 1998/11/12 18:53:44 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -329,7 +329,7 @@ cd $BuildDir/..
 tar cf $BuildDir/$BeanName.tar $PkgFiles
 jar cfM $BuildDir/$BeanName.zip $PkgFiles
 cd $BuildDir
-compress -c $BeanName.tar > $BeanName.tar.Z
+compress -cf $BeanName.tar > $BeanName.tar.Z
 gzip $BeanName.tar
 
 echo ""
