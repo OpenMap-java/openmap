@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameCacheLayer.java,v $
 // $RCSfile: DTEDFrameCacheLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/05 18:15:07 $
+// $Revision: 1.4 $
+// $Date: 2004/03/15 23:48:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,18 +76,6 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * # Level of DTED data to use 0, 1, 2
  * dted.level=0
- * 
- * # Type of display for the data
- * # 0 = no shading at all
- * # 1 = greyscale slope shading
- * # 2 = band shading, in meters
- * # 3 = band shading, in feet
- * # 4 = subframe testing
- * # 5 = elevation, colored
- * dted.view.type=5
- * 
- * # Contrast setting, 1-5
- * dted.contrast=3
  * 
  * # height (meters or feet) between color changes in band shading
  * dted.band.height=25
