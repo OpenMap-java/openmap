@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/23 20:43:25 $
-// $Author: wjeuerle $
+// $Revision: 1.7 $
+// $Date: 2004/01/13 19:45:59 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -108,10 +108,10 @@ public class ScaleFilterLayer extends Layer
      * Initializes an empty layer.
      */
     public ScaleFilterLayer() {
-	setLayout(new OverlayLayout(this));
-	// To get MouseDelegator, to make decisions on receiving mouse
-	// modes for child layers.
-	setAddToBeanContext(true);
+        setLayout(new OverlayLayout(this));
+        // To get MouseDelegator, to make decisions on receiving mouse
+        // modes for child layers.
+        setAddToBeanContext(true);
     }
 
     /**
@@ -120,17 +120,17 @@ public class ScaleFilterLayer extends Layer
      * used internally.
      */
     public Vector getLayers() {
-	if (layers == null) {
-	    layers = new Vector();
-	}
-	return layers;
+        if (layers == null) {
+            layers = new Vector();
+        }
+        return layers;
     }
 
     /**
      * Get the transition scales used to set the active layer.
      */
     public float[] getTransitionScales() {
-	return transitionScales;
+        return transitionScales;
     }
 
     /**
@@ -146,8 +146,8 @@ public class ScaleFilterLayer extends Layer
      * @param scales Array of transition scales.
      */
     public void setLayersAndScales(Vector list, float[] scales) {
-	layers = list;
-	transitionScales = scales;
+        layers = list;
+        transitionScales = scales;
     }
 
     /**
@@ -156,34 +156,34 @@ public class ScaleFilterLayer extends Layer
      * @param props the <code>Properties</code> holding settings for this layer
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
-	parseLayers(prefix, props);
-	parseScales(prefix, props);
+        super.setProperties(prefix, props);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        parseLayers(prefix, props);
+        parseScales(prefix, props);
     }
 
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	float[] ts = getTransitionScales();
-	StringBuffer tsBuffer = new StringBuffer();
-	if (ts != null) {
-	    for (int i = 0; i < ts.length; i++) {
-		tsBuffer.append(Float.toString(ts[i]) + " ");
-	    }
-	}
-	props.put(prefix + transitionScalesProperty, tsBuffer.toString());
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        float[] ts = getTransitionScales();
+        StringBuffer tsBuffer = new StringBuffer();
+        if (ts != null) {
+            for (int i = 0; i < ts.length; i++) {
+                tsBuffer.append(Float.toString(ts[i]) + " ");
+            }
+        }
+        props.put(prefix + transitionScalesProperty, tsBuffer.toString());
 
-	StringBuffer layerBuffer = new StringBuffer();
-	for (Iterator it = getLayers().iterator(); it.hasNext();) {
-	    Layer layer = (Layer)it.next();
-	    layerBuffer.append(layer.getPropertyPrefix() + " ");
-	    layer.getProperties(props);
-	}
-	props.put(prefix + layersProperty, layerBuffer.toString());
-	
-	return props;
+        StringBuffer layerBuffer = new StringBuffer();
+        for (Iterator it = getLayers().iterator(); it.hasNext();) {
+            Layer layer = (Layer)it.next();
+            layerBuffer.append(layer.getPropertyPrefix() + " ");
+            layer.getProperties(props);
+        }
+        props.put(prefix + layersProperty, layerBuffer.toString());
+        
+        return props;
     }
 
     /**
@@ -195,17 +195,17 @@ public class ScaleFilterLayer extends Layer
      * @return Layer 
      */
     protected Layer getAppropriateLayer() {
-	Vector target = getLayers();
-	if (target == null) {
-	    return SinkLayer.getSharedInstance();
-	}
+        Vector target = getLayers();
+        if (target == null) {
+            return SinkLayer.getSharedInstance();
+        }
 
-	if ((targetIndex < 0) || (targetIndex > target.size())) {
-	    return SinkLayer.getSharedInstance();
-	}
+        if ((targetIndex < 0) || (targetIndex > target.size())) {
+            return SinkLayer.getSharedInstance();
+        }
 
-	Layer l = (Layer)target.elementAt(targetIndex);
-	return l;
+        Layer l = (Layer)target.elementAt(targetIndex);
+        return l;
     }
 
     /**
@@ -214,50 +214,50 @@ public class ScaleFilterLayer extends Layer
      * @param props Properties
      */
     protected void parseLayers(String prefix, Properties props) {
-	String layersString = props.getProperty(prefix + layersProperty);
-	Vector layers = getLayers();
-	if (layersString == null || layersString.equals("")) {
-	    Debug.error("ScaleFilterLayer(): null layersString!");
-	    return;
-	}
-	StringTokenizer tok = new StringTokenizer(layersString);
-	while (tok.hasMoreTokens()) {
-	    Object obj;
-	    String layerName = tok.nextToken();
-	    String classProperty = layerName + ".class";
-	    String className = props.getProperty(classProperty);
-	    if (className == null) {
-		Debug.error("ScaleFilterLayer.parseLayers(): Failed to locate property \"" + 
-			    classProperty + "\"");
-		Debug.error("ScaleFilterLayer.parseLayers(): Skipping layer \"" + 
-			    layerName + "\"");
-		className = SinkLayer.class.getName();
-	    }
+        String layersString = props.getProperty(prefix + layersProperty);
+        Vector layers = getLayers();
+        if (layersString == null || layersString.equals("")) {
+            Debug.error("ScaleFilterLayer(): null layersString!");
+            return;
+        }
+        StringTokenizer tok = new StringTokenizer(layersString);
+        while (tok.hasMoreTokens()) {
+            Object obj;
+            String layerName = tok.nextToken();
+            String classProperty = layerName + ".class";
+            String className = props.getProperty(classProperty);
+            if (className == null) {
+                Debug.error("ScaleFilterLayer.parseLayers(): Failed to locate property \"" + 
+                            classProperty + "\"");
+                Debug.error("ScaleFilterLayer.parseLayers(): Skipping layer \"" + 
+                            layerName + "\"");
+                className = SinkLayer.class.getName();
+            }
 
-	    try {
-		if (className.equals(SinkLayer.class.getName())) {
-		    obj = SinkLayer.getSharedInstance();
-		} else {
-		    obj = Class.forName(className).newInstance();
-		}
-		if (Debug.debugging("ScaleFilterLayer")) {
-		    Debug.output("ScaleFilterLayer.parseLayers(): Instantiated " + className);
-		}
-	    } catch (Exception e) {
-		Debug.error("ScaleFilterLayer.parseLayers(): Failed to instantiate \"" +
-			    className + "\": " + e);
-		obj = SinkLayer.getSharedInstance();
-	    }
+            try {
+                if (className.equals(SinkLayer.class.getName())) {
+                    obj = SinkLayer.getSharedInstance();
+                } else {
+                    obj = Class.forName(className).newInstance();
+                }
+                if (Debug.debugging("ScaleFilterLayer")) {
+                    Debug.output("ScaleFilterLayer.parseLayers(): Instantiated " + className);
+                }
+            } catch (Exception e) {
+                Debug.error("ScaleFilterLayer.parseLayers(): Failed to instantiate \"" +
+                            className + "\": " + e);
+                obj = SinkLayer.getSharedInstance();
+            }
 
-	    // create the layer and set its properties
-	    if (obj instanceof Layer) {
-		Layer l = (Layer) obj;
-		l.setProperties(layerName, props);
-		l.addLayerStatusListener(this);
-		l.addInfoDisplayListener(this);
-		layers.addElement(l);
-	    }
-	}
+            // create the layer and set its properties
+            if (obj instanceof Layer) {
+                Layer l = (Layer) obj;
+                l.setProperties(layerName, props);
+                l.addLayerStatusListener(this);
+                l.addInfoDisplayListener(this);
+                layers.addElement(l);
+            }
+        }
     }
 
     /**
@@ -267,61 +267,61 @@ public class ScaleFilterLayer extends Layer
      * @param props Properties
      */
     protected void parseScales(String prefix, Properties props) {
-	StringTokenizer tok = null;
-	Vector layers = getLayers();
-	int size = layers.size();
-	if (size > 0) {
-	    --size;
-	}
-	transitionScales = new float[size];
+        StringTokenizer tok = null;
+        Vector layers = getLayers();
+        int size = layers.size();
+        if (size > 0) {
+            --size;
+        }
+        transitionScales = new float[size];
 
-	String scales = props.getProperty(prefix + transitionScalesProperty);
-	if (scales == null) {
-	    Debug.error("ScaleFilterLayer.parseScales(): Failed to locate property \"" + 
-			transitionScalesProperty + "\"");
-	    if (transitionScales.length > 0) {
-		transitionScales[0] = defaultTransitionScale;
-	    }
-	    for (int i=1; i<transitionScales.length; i++) {
-		transitionScales[i] = transitionScales[i-1]/3;
-	    }
-	    return;
-	}
+        String scales = props.getProperty(prefix + transitionScalesProperty);
+        if (scales == null) {
+            Debug.error("ScaleFilterLayer.parseScales(): Failed to locate property \"" + 
+                        transitionScalesProperty + "\"");
+            if (transitionScales.length > 0) {
+                transitionScales[0] = defaultTransitionScale;
+            }
+            for (int i=1; i<transitionScales.length; i++) {
+                transitionScales[i] = transitionScales[i-1]/3;
+            }
+            return;
+        }
 
-	try {
-	    tok = new StringTokenizer(scales);
-	    transitionScales[0] = (tok.hasMoreTokens())
-		? new Float(tok.nextToken()).floatValue()
-		: defaultTransitionScale;
-	} catch (NumberFormatException e) {
-	    Debug.error("ScaleFilterLayer.parseScales()1: " + e);
-	    transitionScales[0] = defaultTransitionScale;
-	}
+        try {
+            tok = new StringTokenizer(scales);
+            transitionScales[0] = (tok.hasMoreTokens())
+                ? new Float(tok.nextToken()).floatValue()
+                : defaultTransitionScale;
+        } catch (NumberFormatException e) {
+            Debug.error("ScaleFilterLayer.parseScales()1: " + e);
+            transitionScales[0] = defaultTransitionScale;
+        }
 
-	for (int i=1; i<transitionScales.length; i++) {
-	    try {
-		transitionScales[i] = (tok.hasMoreTokens())
-		    ? new Float(tok.nextToken()).floatValue()
-		    : transitionScales[i-1]/3;
-	    } catch (NumberFormatException e) {
-		Debug.error("ScaleFilterLayer.parseScales()2: " + e);
-		transitionScales[i] = transitionScales[i-1]/3;
-	    }
-	}
+        for (int i=1; i<transitionScales.length; i++) {
+            try {
+                transitionScales[i] = (tok.hasMoreTokens())
+                    ? new Float(tok.nextToken()).floatValue()
+                    : transitionScales[i-1]/3;
+            } catch (NumberFormatException e) {
+                Debug.error("ScaleFilterLayer.parseScales()2: " + e);
+                transitionScales[i] = transitionScales[i-1]/3;
+            }
+        }
     }
 
     /** 
      * Implementing the ProjectionPainter interface.
      */
     public synchronized void renderDataForProjection(Projection proj, java.awt.Graphics g){
-	if (proj == null){
-	    Debug.error("ScaleFilterLayer.renderDataForProjection: null projection!");
-	    return;
-	} else {
-	    boolean changed = setTargetIndex(proj.getScale());
-	    Layer layer = getAppropriateLayer();
-	    layer.renderDataForProjection(proj, g);
-	}
+        if (proj == null){
+            Debug.error("ScaleFilterLayer.renderDataForProjection: null projection!");
+            return;
+        } else {
+            boolean changed = setTargetIndex(proj.getScale());
+            Layer layer = getAppropriateLayer();
+            layer.renderDataForProjection(proj, g);
+        }
     }
 
     /**
@@ -333,30 +333,30 @@ public class ScaleFilterLayer extends Layer
      * new scale.  
      */
     public boolean setTargetIndex(float scale) {
-	boolean changed = false;
-	float[] target = transitionScales;
+        boolean changed = false;
+        float[] target = transitionScales;
 
-	int i = 0;
-	if (target != null) {
-	    for (i=0; i < target.length; i++) {
-		if (scale > target[i]) {
-		    break;
-		}
-	    }
-	}
+        int i = 0;
+        if (target != null) {
+            for (i=0; i < target.length; i++) {
+                if (scale > target[i]) {
+                    break;
+                }
+            }
+        }
 
-	if (targetIndex != i) {
-	    changed = true;
-	}
-	targetIndex = i;
+        if (targetIndex != i) {
+            changed = true;
+        }
+        targetIndex = i;
 
-	if (Debug.debugging("scalefilterlayer")) {
-	    Debug.output("ScaleFilterLayer(" + getName() + 
-			 ") targetIndex: " + targetIndex + 
-			 ", changed: " + changed);
-	}
+        if (Debug.debugging("scalefilterlayer")) {
+            Debug.output("ScaleFilterLayer(" + getName() + 
+                         ") targetIndex: " + targetIndex + 
+                         ", changed: " + changed);
+        }
 
-	return changed;
+        return changed;
     }
 
     /**
@@ -367,25 +367,25 @@ public class ScaleFilterLayer extends Layer
      * @param ev the new projection event 
      */
     public void projectionChanged(ProjectionEvent ev) {
-	Projection proj = ev.getProjection();
-	Layer currentLayer = getAppropriateLayer();
-	boolean changed = setTargetIndex(proj.getScale());
+        Projection proj = ev.getProjection();
+        Layer currentLayer = getAppropriateLayer();
+        boolean changed = setTargetIndex(proj.getScale());
 
-	// get the appropriate layer and invoke projectionChanged
-	Layer layer = getAppropriateLayer();
-	if (changed) {
-	    currentLayer.removeNotify();
-	    setPaletteTab(targetIndex);
-	    remove(currentLayer);
+        // get the appropriate layer and invoke projectionChanged
+        Layer layer = getAppropriateLayer();
+        if (changed) {
+            currentLayer.removeNotify();
+            setPaletteTab(targetIndex);
+            remove(currentLayer);
 
-	    // This will handle the repaint() requests from the layer...
-	    add(layer);
-	    layer.addNotify();
-	    checkMouseMode();
-	}
+            // This will handle the repaint() requests from the layer...
+            add(layer);
+            layer.addNotify();
+            checkMouseMode();
+        }
 
-	fireStatusUpdate(LayerStatusEvent.START_WORKING);
-	layer.projectionChanged(ev);
+        fireStatusUpdate(LayerStatusEvent.START_WORKING);
+        layer.projectionChanged(ev);
     }
 
     /**
@@ -394,8 +394,8 @@ public class ScaleFilterLayer extends Layer
      * @param g a graphics context
      */
     public void paint(Graphics g) {
-	getAppropriateLayer().paint(g);
-	fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+        getAppropriateLayer().paint(g);
+        fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
     }
 
     /**
@@ -406,8 +406,8 @@ public class ScaleFilterLayer extends Layer
      * @param evt LayerStatusEvent
      */
     public void updateLayerStatus(LayerStatusEvent evt) {
-	int status = evt.getStatus();
-	fireStatusUpdate(evt);
+        int status = evt.getStatus();
+        fireStatusUpdate(evt);
     }
 
     protected JPanel panel = null;
@@ -420,53 +420,73 @@ public class ScaleFilterLayer extends Layer
      * visibility control for the group layers.
      */
     public Component getGUI() {
-	if (panel == null) {
+        if (panel == null) {
 
-	    Iterator it = getLayers().iterator();
-	    panel = new JPanel();
-	    tabs = new JTabbedPane();
+            Iterator it = getLayers().iterator();
+            panel = new JPanel();
+            tabs = new JTabbedPane();
 
- 	    // bfPanel still needs controls for controlling scales, 
- 	    // etc, showing which one is showing, etc., as well as
- 	    // some indication as which layer is currently active.
+            // bfPanel still needs controls for controlling scales, 
+            // etc, showing which one is showing, etc., as well as
+            // some indication as which layer is currently active.
 
-	    JPanel bfPanel = new JPanel();
-	    GridBagLayout gridbag = new GridBagLayout();
-	    GridBagConstraints c = new GridBagConstraints();
-	    bfPanel.setLayout(gridbag);
+            JPanel bfPanel = new JPanel();
+            GridBagLayout gridbag = new GridBagLayout();
+            GridBagConstraints c = new GridBagConstraints();
+            bfPanel.setLayout(gridbag);
 
-	    tabs.addTab("Scale Filter Controls", bfPanel);
+            tabs.addTab("Scale Filter Controls", bfPanel);
 
-	    JButton gotoButton = new JButton("Go to Active Layer Tab");
-	    gotoButton.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent ae) {
-			setPaletteTab(targetIndex);
-		    }
-		});
+            JButton gotoButton = new JButton("Go to Active Layer Tab");
+            gotoButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        setPaletteTab(targetIndex);
+                    }
+                });
 
-	    c.gridy = 0;
-	    gridbag.setConstraints(gotoButton, c);
-	    bfPanel.add(gotoButton);
+            c.gridy = 0;
+            gridbag.setConstraints(gotoButton, c);
+            bfPanel.add(gotoButton);
 
-	    while (it.hasNext()) {
-		Layer layer = (Layer) it.next();
-		Component layerGUI = layer.getGUI();
-		if (layerGUI != null) {
-		    tabs.addTab(layer.getName(), layerGUI);
-		}
-	    }
-	    panel.add(tabs);
-	}
-	setPaletteTab(targetIndex);
-	return panel;
+            while (it.hasNext()) {
+                Layer layer = (Layer) it.next();
+                Component layerGUI = layer.getGUI();
+                if (layerGUI != null) {
+                    tabs.addTab(layer.getName(), layerGUI);
+                } else {
+                    tabs.addTab(layer.getName(), getEmptyGUIFiller(layer));
+                }
+            }
+            panel.add(tabs);
+        }
+        setPaletteTab(targetIndex);
+        return panel;
+    }
+
+    public Component getEmptyGUIFiller(Layer layer) {
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+
+        JPanel panel = new JPanel();
+        panel.setLayout(gridbag);
+
+        JLabel label = new JLabel("No properties available for");
+        JLabel label2 = new JLabel("the " + layer.getName() + ".");
+
+        c.gridwidth=GridBagConstraints.REMAINDER;
+        gridbag.setConstraints(label, c);
+        gridbag.setConstraints(label2, c);
+        panel.add(label);
+        panel.add(label2);
+        return panel;
     }
 
     protected void setPaletteTab(int layerIndex) {
-	Vector layers = getLayers();
-	if (layers.size() > layerIndex && tabs != null) {
-	    // +1 because the first tab is the ScaleFilterLayer tab
-	    tabs.setSelectedIndex(layerIndex + 1);
-	}
+        Vector layers = getLayers();
+        if (layers.size() > layerIndex && tabs != null && layerIndex < tabs.getTabCount()) {
+            // +1 because the first tab is the ScaleFilterLayer tab
+            tabs.setSelectedIndex(layerIndex + 1);
+        }
     }
 
     ////////////////////////////////
@@ -478,7 +498,7 @@ public class ScaleFilterLayer extends Layer
      * @param event InfoDisplayEvent
      */
     public void requestURL(InfoDisplayEvent event) {
-	fireRequestURL(new InfoDisplayEvent(this, event.getInformation()));
+        fireRequestURL(new InfoDisplayEvent(this, event.getInformation()));
     }
 
     /** 
@@ -486,7 +506,7 @@ public class ScaleFilterLayer extends Layer
      * @param event InfoDisplayEvent
      */
     public void requestMessage(InfoDisplayEvent event) {
-	fireRequestMessage(new InfoDisplayEvent(this, event.getInformation()));
+        fireRequestMessage(new InfoDisplayEvent(this, event.getInformation()));
     }
     
     /** 
@@ -495,7 +515,7 @@ public class ScaleFilterLayer extends Layer
      * @param event InfoDisplayEvent
      */
     public void requestInfoLine(InfoDisplayEvent event) {
-	fireRequestInfoLine(new InfoDisplayEvent(this, event.getInformation()));
+        fireRequestInfoLine(new InfoDisplayEvent(this, event.getInformation()));
     }
 
     /** 
@@ -504,7 +524,7 @@ public class ScaleFilterLayer extends Layer
      * @param event InfoDisplayEvent
      */
     public void requestBrowserContent(InfoDisplayEvent event) {
-	fireRequestBrowserContent(new InfoDisplayEvent(this, event.getInformation()));
+        fireRequestBrowserContent(new InfoDisplayEvent(this, event.getInformation()));
     }
 
     /**
@@ -512,7 +532,7 @@ public class ScaleFilterLayer extends Layer
      * @param cursor java.awt.Cursor to set over the MapBean.
      */
     public void requestCursor(java.awt.Cursor cursor) {
-	fireRequestCursor(cursor);
+        fireRequestCursor(cursor);
     }
 
     /**
@@ -522,21 +542,21 @@ public class ScaleFilterLayer extends Layer
      * requestor.  
      */
     public void requestShowToolTip(InfoDisplayEvent event) {
-	fireRequestToolTip(new InfoDisplayEvent(this, event.getInformation()));
+        fireRequestToolTip(new InfoDisplayEvent(this, event.getInformation()));
     }
 
     /**
      * Request a tool tip be hidden.
      */
     public void requestHideToolTip() {
-	fireHideToolTip();
+        fireHideToolTip();
     }
 
     /**
      * Try to handle mouse events for the current layer.
      */
     public synchronized MapMouseListener getMapMouseListener() {
-	return this;
+        return this;
     }
     
     /** The current active mouse mode ID. */
@@ -556,21 +576,21 @@ public class ScaleFilterLayer extends Layer
      * changes, or if the active mouse mode changes.
      */
     public synchronized boolean checkMouseMode() {
-	// check the current MouseMode with the current layer
-	coolMM = false;
-	Layer layer = getAppropriateLayer();
-	MapMouseListener mml = layer.getMapMouseListener();
-	setCurrentLayerMapMouseListener(mml);
-	if (mml != null) {
-	    String[] mmsl = mml.getMouseModeServiceList();
-	    for (int i = 0; i < mmsl.length; i++) {
-		if (mmsl[i].intern() == mmID) {
-		    coolMM = true;
-		    break;
-		}
-	    }
-	}
-	return coolMM;
+        // check the current MouseMode with the current layer
+        coolMM = false;
+        Layer layer = getAppropriateLayer();
+        MapMouseListener mml = layer.getMapMouseListener();
+        setCurrentLayerMapMouseListener(mml);
+        if (mml != null) {
+            String[] mmsl = mml.getMouseModeServiceList();
+            for (int i = 0; i < mmsl.length; i++) {
+                if (mmsl[i].intern() == mmID) {
+                    coolMM = true;
+                    break;
+                }
+            }
+        }
+        return coolMM;
     }
 
     /**
@@ -578,7 +598,7 @@ public class ScaleFilterLayer extends Layer
      * layer wants them.
      */
     public void setCurrentLayerMapMouseListener(MapMouseListener mml) {
-	clmml = mml;
+        clmml = mml;
     }
 
     /**
@@ -587,7 +607,7 @@ public class ScaleFilterLayer extends Layer
      * that case.
      */
     public MapMouseListener getCurrentLayerMapMouseListener() {
-	return clmml;
+        return clmml;
     }
 
     /**
@@ -595,10 +615,10 @@ public class ScaleFilterLayer extends Layer
      *  to the list of available mouse modes
      */
     public void propertyChange(PropertyChangeEvent evt) {
-	if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
-	    mmID = ((MapMouseMode)evt.getNewValue()).getID().intern();
-	    checkMouseMode();
-	}
+        if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
+            mmID = ((MapMouseMode)evt.getNewValue()).getID().intern();
+            checkMouseMode();
+        }
     }
 
     /**
@@ -610,9 +630,9 @@ public class ScaleFilterLayer extends Layer
      * receiving events in "select" mode:
      * <code>
      * <pre>
-     *	return new String[] {
-     *	    SelectMouseMode.modeID
-     *	};
+     *  return new String[] {
+     *      SelectMouseMode.modeID
+     *  };
      * </pre>
      * <code>
      * @return String[] of modeID's
@@ -621,25 +641,25 @@ public class ScaleFilterLayer extends Layer
      * @see NullMouseMode#modeID
      */
     public String[] getMouseModeServiceList() {
-	HashSet mmsl = new HashSet();
-	Iterator it = getLayers().iterator();
-	while (it.hasNext()) {
-	    Layer l = (Layer)it.next();
-	    MapMouseListener mml = l.getMapMouseListener();
-	    if (mml != null) {
-		String[] llist = mml.getMouseModeServiceList();
-		for (int i = 0; i < llist.length; i++) {
-		    mmsl.add(llist[i].intern());
-		}
-	    }
-	}
-	Object[] objs = mmsl.toArray();
-	String[] rets = new String[objs.length];
+        HashSet mmsl = new HashSet();
+        Iterator it = getLayers().iterator();
+        while (it.hasNext()) {
+            Layer l = (Layer)it.next();
+            MapMouseListener mml = l.getMapMouseListener();
+            if (mml != null) {
+                String[] llist = mml.getMouseModeServiceList();
+                for (int i = 0; i < llist.length; i++) {
+                    mmsl.add(llist[i].intern());
+                }
+            }
+        }
+        Object[] objs = mmsl.toArray();
+        String[] rets = new String[objs.length];
 
-	for (int i = 0; i < rets.length; i++) {
-	    rets[i] = (String) objs[i];
-	}
-	return rets;
+        for (int i = 0; i < rets.length; i++) {
+            rets[i] = (String) objs[i];
+        }
+        return rets;
     }
 
     // Mouse Listener events
@@ -651,11 +671,11 @@ public class ScaleFilterLayer extends Layer
      * @return true if the listener was able to process the event.
      */
     public boolean mousePressed(MouseEvent e) {
-	if (coolMM) {
-	    return getCurrentLayerMapMouseListener().mousePressed(e);
-	} else {
-	    return false;
-	}
+        if (coolMM) {
+            return getCurrentLayerMapMouseListener().mousePressed(e);
+        } else {
+            return false;
+        }
     }
  
     /**
@@ -664,11 +684,11 @@ public class ScaleFilterLayer extends Layer
      * @return true if the listener was able to process the event.
      */
     public boolean mouseReleased(MouseEvent e) {
-	if (coolMM) {
-	    return getCurrentLayerMapMouseListener().mouseReleased(e);
-	} else {
-	    return false;
-	}
+        if (coolMM) {
+            return getCurrentLayerMapMouseListener().mouseReleased(e);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -684,11 +704,11 @@ public class ScaleFilterLayer extends Layer
      * @return true if the listener was able to process the event.
      */
     public boolean mouseClicked(MouseEvent e) {
-	if (coolMM) {
-	    return getCurrentLayerMapMouseListener().mouseClicked(e);
-	} else {
-	    return false;
-	}
+        if (coolMM) {
+            return getCurrentLayerMapMouseListener().mouseClicked(e);
+        } else {
+            return false;
+        }
 
     }
 
@@ -697,9 +717,9 @@ public class ScaleFilterLayer extends Layer
      * @param e MouseEvent
      */
     public void mouseEntered(MouseEvent e) {
-	if (coolMM) {
-	    getCurrentLayerMapMouseListener().mouseEntered(e);
-	}
+        if (coolMM) {
+            getCurrentLayerMapMouseListener().mouseEntered(e);
+        }
 
     }
  
@@ -708,9 +728,9 @@ public class ScaleFilterLayer extends Layer
      * @param e MouseEvent
      */
     public void mouseExited(MouseEvent e) {
-	if (coolMM) {
-	    getCurrentLayerMapMouseListener().mouseExited(e);
-	}
+        if (coolMM) {
+            getCurrentLayerMapMouseListener().mouseExited(e);
+        }
     }
 
     // Mouse Motion Listener events
@@ -725,11 +745,11 @@ public class ScaleFilterLayer extends Layer
      * @return true if the listener was able to process the event.
      */
     public boolean mouseDragged(MouseEvent e) {
-	if (coolMM) {
-	    return getCurrentLayerMapMouseListener().mouseDragged(e);
-	} else {
-	    return false;
-	}
+        if (coolMM) {
+            return getCurrentLayerMapMouseListener().mouseDragged(e);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -739,11 +759,11 @@ public class ScaleFilterLayer extends Layer
      * @return true if the listener was able to process the event.
      */
     public boolean mouseMoved(MouseEvent e) {
-	if (coolMM) {
-	    return getCurrentLayerMapMouseListener().mouseMoved(e);
-	} else {
-	    return false;
-	}
+        if (coolMM) {
+            return getCurrentLayerMapMouseListener().mouseMoved(e);
+        } else {
+            return false;
+        }
 
     }
 
@@ -756,9 +776,9 @@ public class ScaleFilterLayer extends Layer
      * response.
      */
     public void mouseMoved() {
-	if (coolMM) {
-	    getCurrentLayerMapMouseListener().mouseMoved();
-	}
+        if (coolMM) {
+            getCurrentLayerMapMouseListener().mouseMoved();
+        }
     }
 
 
@@ -766,28 +786,28 @@ public class ScaleFilterLayer extends Layer
      * MapHandler child methods, passing found objects to child layers.
      */
     public void findAndInit(Object obj) {
-	if (obj instanceof MouseDelegator) {
-	    ((MouseDelegator)obj).addPropertyChangeListener(this);
-	}
+        if (obj instanceof MouseDelegator) {
+            ((MouseDelegator)obj).addPropertyChangeListener(this);
+        }
 
-	Iterator it = getLayers().iterator();
-	while (it.hasNext()) {
-	    ((Layer)it.next()).findAndInit(obj);
-	}
+        Iterator it = getLayers().iterator();
+        while (it.hasNext()) {
+            ((Layer)it.next()).findAndInit(obj);
+        }
     }
 
     /**
      * MapHandler child methods, passing removed objects to child layers.
      */
     public void findAndUndo(Object obj) {
-	if (obj instanceof MouseDelegator) {
-	    ((MouseDelegator)obj).removePropertyChangeListener(this);
-	}
+        if (obj instanceof MouseDelegator) {
+            ((MouseDelegator)obj).removePropertyChangeListener(this);
+        }
 
-	Iterator it = getLayers().iterator();
-	while (it.hasNext()) {
-	    ((Layer)it.next()).findAndUndo(obj);
-	}
+        Iterator it = getLayers().iterator();
+        while (it.hasNext()) {
+            ((Layer)it.next()).findAndUndo(obj);
+        }
     }
 
 }

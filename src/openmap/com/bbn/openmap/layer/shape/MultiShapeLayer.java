@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 20:43:30 $
-// $Author: wjeuerle $
+// $Revision: 1.6 $
+// $Date: 2004/01/13 19:45:59 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -77,7 +77,7 @@ import com.bbn.openmap.util.SwingWorker;
  * ############################
  * </pre></code>
  *
- * @version $Revision: 1.5 $ $Date: 2003/12/23 20:43:30 $
+ * @version $Revision: 1.6 $ $Date: 2004/01/13 19:45:59 $
  * @see SpatialIndex 
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -91,11 +91,11 @@ public class MultiShapeLayer extends ShapeLayer {
     public MultiShapeLayer() {}
 
     public void setSpatialIndexes(Collection siv) {
-	spatialIndexes = siv;
+        spatialIndexes = siv;
     }
 
     public Collection getSpatialIndexes() {
-	return spatialIndexes;
+        return spatialIndexes;
     }
 
     /**
@@ -105,99 +105,99 @@ public class MultiShapeLayer extends ShapeLayer {
      * this layer 
      */
     public void setProperties(String prefix, Properties props) {
-	// super.setProperties(prefix, props);
-	setPropertyPrefix(prefix);
+        // super.setProperties(prefix, props);
+        setPropertyPrefix(prefix);
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(this);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(this);
 
-	/// From Layer.java
+        /// From Layer.java
 
-	String prettyName = realPrefix + PrettyNameProperty;
-	
-	String defaultName = getName(); 
-	if (defaultName == null) {
-	    defaultName = "Anonymous";
-	}
+        String prettyName = realPrefix + PrettyNameProperty;
+        
+        String defaultName = getName(); 
+        if (defaultName == null) {
+            defaultName = "Anonymous";
+        }
 
-	setName(props.getProperty(prettyName, defaultName));
+        setName(props.getProperty(prettyName, defaultName));
 
-	setAddToBeanContext(PropUtils.booleanFromProperties(props, realPrefix + AddToBeanContextProperty, addToBeanContext));
+        setAddToBeanContext(PropUtils.booleanFromProperties(props, realPrefix + AddToBeanContextProperty, addToBeanContext));
 
-	autoPalette = PropUtils.booleanFromProperties(props, realPrefix + AutoPaletteProperty, autoPalette);
+        autoPalette = PropUtils.booleanFromProperties(props, realPrefix + AutoPaletteProperty, autoPalette);
 
-	/// end from Layer.java
+        /// end from Layer.java
 
-	setSpatialIndexes(realPrefix, props);
+        setSpatialIndexes(realPrefix, props);
 
-	shadowX = LayerUtils.intFromProperties(props, realPrefix + shadowXProperty, 0);
-	shadowY = LayerUtils.intFromProperties(props, realPrefix + shadowYProperty, 0);
+        shadowX = LayerUtils.intFromProperties(props, realPrefix + shadowXProperty, 0);
+        shadowY = LayerUtils.intFromProperties(props, realPrefix + shadowYProperty, 0);
     }
 
     /**
      */
     protected void setSpatialIndexes(String prefix, Properties p) {
-	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String listValue = p.getProperty(prefix + ShapeFileListProperty);
+        String listValue = p.getProperty(prefix + ShapeFileListProperty);
 
-	if (Debug.debugging("shape")){
-	    Debug.output(getName() + "| list = \"" + listValue + "\"");
-	}
+        if (Debug.debugging("shape")){
+            Debug.output(getName() + "| list = \"" + listValue + "\"");
+        }
 
-	if (listValue == null) {
-	    Debug.error("No property \"" + prefix + 
-			ShapeFileListProperty +
-			"\" found in application properties.");
-	    return;
-	}
+        if (listValue == null) {
+            Debug.error("No property \"" + prefix + 
+                        ShapeFileListProperty +
+                        "\" found in application properties.");
+            return;
+        }
 
-	// Divide up the names ...
-	StringTokenizer tokens = new StringTokenizer(listValue, " ");
-	Collection shapeFiles = new Vector();
-	while(tokens.hasMoreTokens()) {
-	    shapeFiles.add(tokens.nextToken());
-	}
+        // Divide up the names ...
+        StringTokenizer tokens = new StringTokenizer(listValue, " ");
+        Collection shapeFiles = new Vector();
+        while(tokens.hasMoreTokens()) {
+            shapeFiles.add(tokens.nextToken());
+        }
 
-	spatialIndexes = new Vector(shapeFiles.size());
-	Iterator list = shapeFiles.iterator();
+        spatialIndexes = new Vector(shapeFiles.size());
+        Iterator list = shapeFiles.iterator();
 
-	while (list.hasNext()) {
-	    String listName = (String)list.next();
-	    SpatialIndexHandler sih = 
-		new SpatialIndexHandler(prefix + listName, p);
-	    spatialIndexes.add(sih);
+        while (list.hasNext()) {
+            String listName = (String)list.next();
+            SpatialIndexHandler sih = 
+                new SpatialIndexHandler(prefix + listName, p);
+            spatialIndexes.add(sih);
 
-	    if (Debug.debugging("shape")) {
-		Debug.output("MultiShapeLayer adding: "+ sih);
-	    }
-	}
+            if (Debug.debugging("shape")) {
+                Debug.output("MultiShapeLayer adding: "+ sih);
+            }
+        }
     }
 
     /**
      * PropertyConsumer method.
      */    
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-	props.remove(prefix + shapeFileProperty);
-	props.remove(prefix + spatialIndexProperty);
-	props.remove(prefix + pointImageURLProperty);
+        props.remove(prefix + shapeFileProperty);
+        props.remove(prefix + spatialIndexProperty);
+        props.remove(prefix + pointImageURLProperty);
 
-	Iterator sis = spatialIndexes.iterator();
-	StringBuffer list = new StringBuffer();
-	while (sis.hasNext()) {
-	    SpatialIndexHandler sih = (SpatialIndexHandler)sis.next();
-	    sih.getProperties(props);
-	    String pp = sih.getPropertyPrefix();
-	    // Can't be null, if they are part of this layer...
-	    pp = pp.substring(pp.lastIndexOf('.') + 1);
-	    list.append(" " + pp);
-	}
+        Iterator sis = spatialIndexes.iterator();
+        StringBuffer list = new StringBuffer();
+        while (sis.hasNext()) {
+            SpatialIndexHandler sih = (SpatialIndexHandler)sis.next();
+            sih.getProperties(props);
+            String pp = sih.getPropertyPrefix();
+            // Can't be null, if they are part of this layer...
+            pp = pp.substring(pp.lastIndexOf('.') + 1);
+            list.append(" " + pp);
+        }
 
-	props.put(prefix + ShapeFileListProperty, list.toString());
-	return props;
+        props.put(prefix + ShapeFileListProperty, list.toString());
+        return props;
     }
 
     /**
@@ -218,22 +218,22 @@ public class MultiShapeLayer extends ShapeLayer {
      * PropertyConsumer.  
      */
     public Properties getPropertyInfo(Properties props) {
-	props = super.getPropertyInfo(props);
-	props.remove(shapeFileProperty);
-	props.remove(spatialIndexProperty);
-	props.remove(pointImageURLProperty);
-	props.remove(shapeFileProperty + ScopedEditorProperty);
-	props.remove(spatialIndexProperty + ScopedEditorProperty);
-	props.remove(pointImageURLProperty + ScopedEditorProperty);
+        props = super.getPropertyInfo(props);
+        props.remove(shapeFileProperty);
+        props.remove(spatialIndexProperty);
+        props.remove(pointImageURLProperty);
+        props.remove(shapeFileProperty + ScopedEditorProperty);
+        props.remove(spatialIndexProperty + ScopedEditorProperty);
+        props.remove(pointImageURLProperty + ScopedEditorProperty);
 
-	Iterator sis = spatialIndexes.iterator();
-	while (sis.hasNext()) {
-	    ((SpatialIndexHandler)sis.next()).getPropertyInfo(props);
-	}
+        Iterator sis = spatialIndexes.iterator();
+        while (sis.hasNext()) {
+            ((SpatialIndexHandler)sis.next()).getPropertyInfo(props);
+        }
 
-	props.put(ShapeFileListProperty, "List of marker names for SpatialIndexHandlers");
+        props.put(ShapeFileListProperty, "List of marker names for SpatialIndexHandlers");
 
-	return props;
+        return props;
     }
 
     /**
@@ -244,135 +244,146 @@ public class MultiShapeLayer extends ShapeLayer {
      */
     public OMGraphicList prepare() {
 
-	if (spatialIndexes == null || spatialIndexes.size() == 0) {
-	    Debug.message("shape", "MultiShapeLayer: spatialIndexes is empty!");
-	    return new OMGraphicList();
-	}
+        if (spatialIndexes == null || spatialIndexes.size() == 0) {
+            Debug.message("shape", "MultiShapeLayer: spatialIndexes is empty!");
+            return new OMGraphicList();
+        }
 
-	Projection projection = getProjection();
+        Projection projection = getProjection();
 
-	LatLonPoint ul = projection.getUpperLeft();
-	LatLonPoint lr = projection.getLowerRight();
-	float ulLat = ul.getLatitude();
-	float ulLon = ul.getLongitude();
-	float lrLat = lr.getLatitude();
-	float lrLon = lr.getLongitude();
+        if (projection == null) {
+            // This can happen if the layer is part of a
+            // ScaleFilterLayer, and the redraw button for this layer
+            // is pressed before the ScaleFilterLayer gives it a
+            // projection (which only happens if the layer is the
+            // active one).
+            Debug.message("basic", "MultiShapeLayer|" + getName() + 
+                         ": prepare called with null projection");
+            return new OMGraphicList();
+        }
 
-	OMGraphicList masterList = new OMGraphicList();
-	OMGraphicList list = null;
-	SpatialIndexHandler sih;
-	Iterator sii;
+        LatLonPoint ul = projection.getUpperLeft();
+        LatLonPoint lr = projection.getLowerRight();
+        float ulLat = ul.getLatitude();
+        float ulLon = ul.getLongitude();
+        float lrLat = lr.getLatitude();
+        float lrLon = lr.getLongitude();
 
-	// check for dateline anomaly on the screen.  we check for
-	// ulLon >= lrLon, but we need to be careful of the check for
-	// equality because of floating point arguments...
-	if ((ulLon > lrLon) ||
-		MoreMath.approximately_equal(ulLon, lrLon, .001f))
-	{
-	    if (Debug.debugging("shape")) {
-		Debug.output("MultiShapeLayer.computeGraphics(): Dateline is on screen");
-	    }
-	    
-	    double ymin = (double) Math.min(ulLat, lrLat);
-	    double ymax = (double) Math.max(ulLat, lrLat);
-	    
-	    sii = spatialIndexes.iterator();
-	    while (sii.hasNext()) {
-		sih = (SpatialIndexHandler)sii.next();
-		if (!sih.enabled) continue;
-		
-		try {
+        OMGraphicList masterList = new OMGraphicList();
+        OMGraphicList list = null;
+        SpatialIndexHandler sih;
+        Iterator sii;
 
-		    list = sih.getGraphics(ulLon, ymin, 180.0d, ymax, list);
-		    list = sih.getGraphics(-180.0d, ymin, lrLon, ymax, list);
-		} catch (java.io.IOException ex) {
-		    ex.printStackTrace();
-		} catch (FormatException fe) {
-		    fe.printStackTrace();
-		}
-		masterList.add(list);
-	    }
-	} else {
+        // check for dateline anomaly on the screen.  we check for
+        // ulLon >= lrLon, but we need to be careful of the check for
+        // equality because of floating point arguments...
+        if ((ulLon > lrLon) ||
+                MoreMath.approximately_equal(ulLon, lrLon, .001f))
+        {
+            if (Debug.debugging("shape")) {
+                Debug.output("MultiShapeLayer.computeGraphics(): Dateline is on screen");
+            }
+            
+            double ymin = (double) Math.min(ulLat, lrLat);
+            double ymax = (double) Math.max(ulLat, lrLat);
+            
+            sii = spatialIndexes.iterator();
+            while (sii.hasNext()) {
+                sih = (SpatialIndexHandler)sii.next();
+                if (!sih.enabled) continue;
+                
+                try {
 
-	    double xmin = (double) Math.min(ulLon, lrLon);
-	    double xmax = (double) Math.max(ulLon, lrLon);
-	    double ymin = (double) Math.min(ulLat, lrLat);
-	    double ymax = (double) Math.max(ulLat, lrLat);
+                    list = sih.getGraphics(ulLon, ymin, 180.0d, ymax, list);
+                    list = sih.getGraphics(-180.0d, ymin, lrLon, ymax, list);
+                } catch (java.io.IOException ex) {
+                    ex.printStackTrace();
+                } catch (FormatException fe) {
+                    fe.printStackTrace();
+                }
+                masterList.add(list);
+            }
+        } else {
 
-	    sii = spatialIndexes.iterator();
-	    while (sii.hasNext()) {
-		sih = (SpatialIndexHandler)sii.next();
+            double xmin = (double) Math.min(ulLon, lrLon);
+            double xmax = (double) Math.max(ulLon, lrLon);
+            double ymin = (double) Math.min(ulLat, lrLat);
+            double ymax = (double) Math.max(ulLat, lrLat);
 
-		if (!sih.enabled) continue;
+            sii = spatialIndexes.iterator();
+            while (sii.hasNext()) {
+                sih = (SpatialIndexHandler)sii.next();
 
-		if (Debug.debugging("shape")) {
-		    Debug.output("  Getting graphics from " + sih.prettyName + " spatial index");
-		}
-		try {
-		    list = sih.getGraphics(xmin, ymin, xmax, ymax, list);
-		} catch (java.io.IOException ex) {
-		    ex.printStackTrace();
-		} catch (FormatException fe) {
-		    fe.printStackTrace();
-		}
-		masterList.add(list);
-	    }
-	}
+                if (!sih.enabled) continue;
 
-	if (masterList != null) {
-	    masterList.generate(projection, true);//all new graphics
-	}
-	return masterList;
+                if (Debug.debugging("shape")) {
+                    Debug.output("  Getting graphics from " + sih.prettyName + " spatial index");
+                }
+                try {
+                    list = sih.getGraphics(xmin, ymin, xmax, ymax, list);
+                } catch (java.io.IOException ex) {
+                    ex.printStackTrace();
+                } catch (FormatException fe) {
+                    fe.printStackTrace();
+                }
+                masterList.add(list);
+            }
+        }
+
+        if (masterList != null) {
+            masterList.generate(projection, true);//all new graphics
+        }
+        return masterList;
     }
 
     public Component getGUI() {
-	if (box == null) {
+        if (box == null) {
 
-	    box = new JPanel();
-	    JTabbedPane tabs = new JTabbedPane();
+            box = new JPanel();
+            JTabbedPane tabs = new JTabbedPane();
 
-	    box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-  	    box.setAlignmentX(Component.LEFT_ALIGNMENT);
+            box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+            box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-	    Iterator sii = spatialIndexes.iterator();
-	    while (sii.hasNext()) {
-		SpatialIndexHandler sih = (SpatialIndexHandler)sii.next();
-		JPanel stuff = (JPanel)sih.getGUI();
-		if (stuff != null) {
-		    tabs.addTab(sih.getPrettyName(), stuff);
-		}
-	    }
+            Iterator sii = spatialIndexes.iterator();
+            while (sii.hasNext()) {
+                SpatialIndexHandler sih = (SpatialIndexHandler)sii.next();
+                JPanel stuff = (JPanel)sih.getGUI();
+                if (stuff != null) {
+                    tabs.addTab(sih.getPrettyName(), stuff);
+                }
+            }
 
-	    box.add(tabs);
+            box.add(tabs);
 
-	    JPanel pal2 = new JPanel();
-	    JButton redraw = new JButton("Redraw Layer");
-	    redraw.setActionCommand(RedrawCmd);
-	    redraw.addActionListener(this);
-	    pal2.add(redraw);
-	    box.add(pal2);
-	}
-	return box;
+            JPanel pal2 = new JPanel();
+            JButton redraw = new JButton("Redraw Layer");
+            redraw.setActionCommand(RedrawCmd);
+            redraw.addActionListener(this);
+            pal2.add(redraw);
+            box.add(pal2);
+        }
+        return box;
     }
     
     /**
      * DataBoundsInformer interface.
      */
     public DataBounds getDataBounds() {
-	DataBounds box = null;
+        DataBounds box = null;
 
-	ESRIBoundingBox bounds = new ESRIBoundingBox();	
-	Iterator sii = spatialIndexes.iterator();
-	while (sii.hasNext()) {
-	    SpatialIndex si = (SpatialIndex)sii.next();
-	    if (si != null) {
-		ESRIBoundingBox boundingBox = spatialIndex.getBounds();
-		if (bounds != null) {
-		    bounds.addBounds(boundingBox);
-		}
-	    }
-	}
-	return box;
+        ESRIBoundingBox bounds = new ESRIBoundingBox(); 
+        Iterator sii = spatialIndexes.iterator();
+        while (sii.hasNext()) {
+            SpatialIndex si = (SpatialIndex)sii.next();
+            if (si != null) {
+                ESRIBoundingBox boundingBox = spatialIndex.getBounds();
+                if (bounds != null) {
+                    bounds.addBounds(boundingBox);
+                }
+            }
+        }
+        return box;
     }
 
 }

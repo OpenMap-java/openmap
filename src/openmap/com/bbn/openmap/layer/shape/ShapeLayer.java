@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/11/14 20:38:51 $
+// $Revision: 1.8 $
+// $Date: 2004/01/13 19:45:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.7 $ $Date: 2003/11/14 20:38:51 $
+ * @version $Revision: 1.8 $ $Date: 2004/01/13 19:45:59 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
@@ -117,20 +117,20 @@ public class ShapeLayer extends OMGraphicHandlerLayer
      * Initializes an empty shape layer.
      */
     public ShapeLayer() { 
-	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
 
     public ShapeLayer(String shapeFileName) {
-	this();
-	spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
+        this();
+        spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
     }
 
     public void setSpatialIndex(SpatialIndex si) {
-	spatialIndex = si;
+        spatialIndex = si;
     }
 
     public SpatialIndex getSpatialIndex() {
-	return spatialIndex;
+        return spatialIndex;
     }
 
     /**
@@ -139,80 +139,80 @@ public class ShapeLayer extends OMGraphicHandlerLayer
      * @param props the <code>Properties</code> holding settings for this layer
      */
     public void setProperties(String prefix, Properties props) {
-	super.setProperties(prefix, props);
+        super.setProperties(prefix, props);
 
-	String realPrefix = PropUtils.getScopedPropertyPrefix(this);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(this);
 
-	shapeFileName = props.getProperty(realPrefix + shapeFileProperty);
-	spatialIndexFileName
-	    = props.getProperty(realPrefix + spatialIndexProperty);
+        shapeFileName = props.getProperty(realPrefix + shapeFileProperty);
+        spatialIndexFileName
+            = props.getProperty(realPrefix + spatialIndexProperty);
 
-	if (shapeFileName != null && !shapeFileName.equals("")) {
-	    if (spatialIndexFileName != null && !spatialIndexFileName.equals("")) {
-		spatialIndex = 
-		    SpatialIndex.locateAndSetShapeData(shapeFileName, 
-						       spatialIndexFileName);
-	    } else {
-		spatialIndex = 
-		    SpatialIndex.locateAndSetShapeData(shapeFileName);
-	    }
+        if (shapeFileName != null && !shapeFileName.equals("")) {
+            if (spatialIndexFileName != null && !spatialIndexFileName.equals("")) {
+                spatialIndex = 
+                    SpatialIndex.locateAndSetShapeData(shapeFileName, 
+                                                       spatialIndexFileName);
+            } else {
+                spatialIndex = 
+                    SpatialIndex.locateAndSetShapeData(shapeFileName);
+            }
 
-	    imageURLString = 
-		props.getProperty(realPrefix + pointImageURLProperty);
+            imageURLString = 
+                props.getProperty(realPrefix + pointImageURLProperty);
 
-	    try {
-		if (imageURLString != null && !imageURLString.equals("")) {
-		    URL imageURL = LayerUtils.getResourceOrFileOrURL(this, imageURLString);
-		    ImageIcon imageIcon = new ImageIcon(imageURL);
-		    spatialIndex.setPointIcon(imageIcon);
-		}
-	    } catch (MalformedURLException murle) {
-		Debug.error("ShapeLayer.setProperties: point image URL not so good: \n\t" + imageURLString);
-	    } catch (NullPointerException npe) {
-		// May happen if not connected to the internet.
-		fireRequestMessage("Can't access icon image: \n" + 
-				   imageURLString);
-	    }
+            try {
+                if (imageURLString != null && !imageURLString.equals("")) {
+                    URL imageURL = LayerUtils.getResourceOrFileOrURL(this, imageURLString);
+                    ImageIcon imageIcon = new ImageIcon(imageURL);
+                    spatialIndex.setPointIcon(imageIcon);
+                }
+            } catch (MalformedURLException murle) {
+                Debug.error("ShapeLayer.setProperties: point image URL not so good: \n\t" + imageURLString);
+            } catch (NullPointerException npe) {
+                // May happen if not connected to the internet.
+                fireRequestMessage("Can't access icon image: \n" + 
+                                   imageURLString);
+            }
 
-	} else {
-	    Debug.error("One of the following properties was null or empty:");
-	    Debug.error("\t" + realPrefix + shapeFileProperty);
-	    Debug.error("\t" + realPrefix + spatialIndexProperty);
-	}
+        } else {
+            Debug.error("One of the following properties was null or empty:");
+            Debug.error("\t" + realPrefix + shapeFileProperty);
+            Debug.error("\t" + realPrefix + spatialIndexProperty);
+        }
 
-	drawingAttributes = new DrawingAttributes(prefix, props);
+        drawingAttributes = new DrawingAttributes(prefix, props);
 
-	shadowX = LayerUtils.intFromProperties(props, realPrefix + shadowXProperty, 0);
-	shadowY = LayerUtils.intFromProperties(props, realPrefix + shadowYProperty, 0);
+        shadowX = LayerUtils.intFromProperties(props, realPrefix + shadowXProperty, 0);
+        shadowY = LayerUtils.intFromProperties(props, realPrefix + shadowYProperty, 0);
     }
 
     /**
      * PropertyConsumer method.
      */    
     public Properties getProperties(Properties props) {
-	props = super.getProperties(props);
+        props = super.getProperties(props);
 
-	String prefix = PropUtils.getScopedPropertyPrefix(this);
-	props.put(prefix + shapeFileProperty, 
-		  (shapeFileName==null?"":shapeFileName));
-	props.put(prefix + spatialIndexProperty, 
-		  (spatialIndexFileName==null?"":spatialIndexFileName));
-	props.put(prefix + pointImageURLProperty, 
-		  (imageURLString==null?"":imageURLString));
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        props.put(prefix + shapeFileProperty, 
+                  (shapeFileName==null?"":shapeFileName));
+        props.put(prefix + spatialIndexProperty, 
+                  (spatialIndexFileName==null?"":spatialIndexFileName));
+        props.put(prefix + pointImageURLProperty, 
+                  (imageURLString==null?"":imageURLString));
 
-	props.put(prefix + shadowXProperty, Integer.toString(shadowX));
-	props.put(prefix + shadowYProperty, Integer.toString(shadowY));
+        props.put(prefix + shadowXProperty, Integer.toString(shadowX));
+        props.put(prefix + shadowYProperty, Integer.toString(shadowY));
 
-	if (drawingAttributes != null) {
-	    drawingAttributes.setPropertyPrefix(getPropertyPrefix());
-	    drawingAttributes.getProperties(props);
-	} else {
-	    DrawingAttributes da = (DrawingAttributes)DrawingAttributes.DEFAULT.clone();
-	    da.setPropertyPrefix(getPropertyPrefix());
-	    da.getProperties(props);
-	}
+        if (drawingAttributes != null) {
+            drawingAttributes.setPropertyPrefix(getPropertyPrefix());
+            drawingAttributes.getProperties(props);
+        } else {
+            DrawingAttributes da = (DrawingAttributes)DrawingAttributes.DEFAULT.clone();
+            da.setPropertyPrefix(getPropertyPrefix());
+            da.getProperties(props);
+        }
 
-	return props;
+        return props;
     }
 
     /**
@@ -233,45 +233,45 @@ public class ShapeLayer extends OMGraphicHandlerLayer
      * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
-	list = super.getPropertyInfo(list);
+        list = super.getPropertyInfo(list);
 
-	DrawingAttributes da;
-	if (drawingAttributes != null) {
-	    da = drawingAttributes;
-	} else {
-	    da = DrawingAttributes.DEFAULT;
-	}
+        DrawingAttributes da;
+        if (drawingAttributes != null) {
+            da = drawingAttributes;
+        } else {
+            da = DrawingAttributes.DEFAULT;
+        }
 
-	da.getPropertyInfo(list);
+        da.getPropertyInfo(list);
 
-	list.put(initPropertiesProperty, shapeFileProperty + " " + spatialIndexProperty + " " + pointImageURLProperty + " " + shadowXProperty + " " + shadowYProperty + da.getInitPropertiesOrder() + " " + AddToBeanContextProperty);
+        list.put(initPropertiesProperty, shapeFileProperty + " " + spatialIndexProperty + " " + pointImageURLProperty + " " + shadowXProperty + " " + shadowYProperty + da.getInitPropertiesOrder() + " " + AddToBeanContextProperty);
 
-	list.put(shapeFileProperty,
-		 "Location of Shape file - .shp (File, URL or relative file path).");
-	list.put(shapeFileProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-	list.put(spatialIndexProperty, 
-		 "Location of Spatial Index file - .ssx (File, URL or relative file path).");
-	list.put(spatialIndexProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        list.put(shapeFileProperty,
+                 "Location of Shape file - .shp (File, URL or relative file path).");
+        list.put(shapeFileProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        list.put(spatialIndexProperty, 
+                 "Location of Spatial Index file - .ssx (File, URL or relative file path).");
+        list.put(spatialIndexProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-	list.put(pointImageURLProperty, "Image file to use for map location of point data (optional).");
-	list.put(pointImageURLProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        list.put(pointImageURLProperty, "Image file to use for map location of point data (optional).");
+        list.put(pointImageURLProperty + ScopedEditorProperty, 
+                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-	list.put(shadowXProperty, "Horizontal pixel offset for shadow image for shapes.");
-	list.put(shadowYProperty, "Vertical pixel offset for shadow image for shapes.");
+        list.put(shadowXProperty, "Horizontal pixel offset for shadow image for shapes.");
+        list.put(shadowYProperty, "Vertical pixel offset for shadow image for shapes.");
 
 
-	return list;
+        return list;
     }
 
     public void setDrawingAttributes(DrawingAttributes da) {
-	drawingAttributes = da;
+        drawingAttributes = da;
     }
 
     public DrawingAttributes getDrawingAttributes() {
-	return drawingAttributes;
+        return drawingAttributes;
     }
 
     /**
@@ -280,7 +280,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer
      * @deprecated use prepare() instead.
      */
     protected OMGraphicList computeGraphics() {
-	return prepare();
+        return prepare();
     } 
 
     /**
@@ -289,84 +289,86 @@ public class ShapeLayer extends OMGraphicHandlerLayer
      */
     public OMGraphicList prepare() {
 
-	if (spatialIndex == null) {
-	    Debug.message("shape", "ShapeLayer: spatialIndex is null!");
-	    return new OMGraphicList();
-	}
+        if (spatialIndex == null) {
+            Debug.message("shape", "ShapeLayer: spatialIndex is null!");
+            return new OMGraphicList();
+        }
 
-	Projection projection = getProjection();
+        Projection projection = getProjection();
 
-	if (projection == null) {
-	    return new OMGraphicList();
-	}
+        if (projection == null) {
+            Debug.message("basic", "ShapeLayer|" + getName() + 
+                         ": prepare called with null projection");
+            return new OMGraphicList();
+        }
 
-	LatLonPoint ul = projection.getUpperLeft();
-	LatLonPoint lr = projection.getLowerRight();
-	float ulLat = ul.getLatitude();
-	float ulLon = ul.getLongitude();
-	float lrLat = lr.getLatitude();
-	float lrLon = lr.getLongitude();
+        LatLonPoint ul = projection.getUpperLeft();
+        LatLonPoint lr = projection.getLowerRight();
+        float ulLat = ul.getLatitude();
+        float ulLon = ul.getLongitude();
+        float lrLat = lr.getLatitude();
+        float lrLon = lr.getLongitude();
 
-	OMGraphicList list = null;
+        OMGraphicList list = null;
 
-	// check for dateline anomaly on the screen.  we check for
-	// ulLon >= lrLon, but we need to be careful of the check for
-	// equality because of floating point arguments...
-	if ((ulLon > lrLon) ||
-		MoreMath.approximately_equal(ulLon, lrLon, .001f))
-	{
-	    if (Debug.debugging("shape")) {
-		Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
-	    }
+        // check for dateline anomaly on the screen.  we check for
+        // ulLon >= lrLon, but we need to be careful of the check for
+        // equality because of floating point arguments...
+        if ((ulLon > lrLon) ||
+                MoreMath.approximately_equal(ulLon, lrLon, .001f))
+        {
+            if (Debug.debugging("shape")) {
+                Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
+            }
 
-	    double ymin = (double) Math.min(ulLat, lrLat);
-	    double ymax = (double) Math.max(ulLat, lrLat);
+            double ymin = (double) Math.min(ulLat, lrLat);
+            double ymax = (double) Math.max(ulLat, lrLat);
 
-	    try {
-		ESRIRecord records1[] = spatialIndex.locateRecords(
-		    ulLon, ymin, 180.0d, ymax);
-		ESRIRecord records2[] = spatialIndex.locateRecords(
-		    -180.0d, ymin, lrLon, ymax);
-		int nRecords1 = records1.length;
-		int nRecords2 = records2.length;
-  		list = new OMGraphicList(nRecords1+nRecords2);
-		for (int i = 0; i < nRecords1; i++) {
-		    records1[i].addOMGraphics(list, drawingAttributes);
-		}
-		for (int i = 0; i < nRecords2; i++) {
-		    records2[i].addOMGraphics(list, drawingAttributes);
-		}
-	    } catch (java.io.IOException ex) {
-		ex.printStackTrace();
-	    } catch (FormatException fe) {
-		fe.printStackTrace();
-	    }
-	} else {
+            try {
+                ESRIRecord records1[] = spatialIndex.locateRecords(
+                    ulLon, ymin, 180.0d, ymax);
+                ESRIRecord records2[] = spatialIndex.locateRecords(
+                    -180.0d, ymin, lrLon, ymax);
+                int nRecords1 = records1.length;
+                int nRecords2 = records2.length;
+                list = new OMGraphicList(nRecords1+nRecords2);
+                for (int i = 0; i < nRecords1; i++) {
+                    records1[i].addOMGraphics(list, drawingAttributes);
+                }
+                for (int i = 0; i < nRecords2; i++) {
+                    records2[i].addOMGraphics(list, drawingAttributes);
+                }
+            } catch (java.io.IOException ex) {
+                ex.printStackTrace();
+            } catch (FormatException fe) {
+                fe.printStackTrace();
+            }
+        } else {
 
-	    double xmin = (double) Math.min(ulLon, lrLon);
-	    double xmax = (double) Math.max(ulLon, lrLon);
-	    double ymin = (double) Math.min(ulLat, lrLat);
-	    double ymax = (double) Math.max(ulLat, lrLat);
+            double xmin = (double) Math.min(ulLon, lrLon);
+            double xmax = (double) Math.max(ulLon, lrLon);
+            double ymin = (double) Math.min(ulLat, lrLat);
+            double ymax = (double) Math.max(ulLat, lrLat);
 
-	    try {
-		ESRIRecord records[] = spatialIndex.locateRecords(
-		    xmin, ymin, xmax, ymax);
-		int nRecords = records.length;
-  		list = new OMGraphicList(nRecords);
-		for (int i = 0; i < nRecords; i++) {
-		    records[i].addOMGraphics(list, drawingAttributes);
-		}
-	    } catch (java.io.IOException ex) {
-		ex.printStackTrace();
-	    } catch (FormatException fe) {
-		fe.printStackTrace();
-	    }
-	}
+            try {
+                ESRIRecord records[] = spatialIndex.locateRecords(
+                    xmin, ymin, xmax, ymax);
+                int nRecords = records.length;
+                list = new OMGraphicList(nRecords);
+                for (int i = 0; i < nRecords; i++) {
+                    records[i].addOMGraphics(list, drawingAttributes);
+                }
+            } catch (java.io.IOException ex) {
+                ex.printStackTrace();
+            } catch (FormatException fe) {
+                fe.printStackTrace();
+            }
+        }
 
-	if (list != null) {
-	    list.generate(projection, true);//all new graphics
-	}
-	return list;
+        if (list != null) {
+            list.generate(projection, true);//all new graphics
+        }
+        return list;
     }
 
     /**
@@ -375,85 +377,85 @@ public class ShapeLayer extends OMGraphicHandlerLayer
      * @param g a graphics context
      */
     public void paint(Graphics g) {
-	if (shadowX == 0 && shadowY == 0) {
-	    // Enabling buffer...
-	    super.paint(g);
-	} else {
-	    // grab local for thread safety
-	    OMGraphicList omg = getList();
+        if (shadowX == 0 && shadowY == 0) {
+            // Enabling buffer...
+            super.paint(g);
+        } else {
+            // grab local for thread safety
+            OMGraphicList omg = getList();
 
-	    if (omg != null) {
-		if (Debug.debugging("shape"))
-		    Debug.output("ShapeLayer.paint(): " + omg.size() +
-				 " omg" + " shadow=" + shadowX + "," + shadowY);
-	    
-		if (shadowX != 0 || shadowY != 0) {
-		    Graphics shadowG = g.create();
-		    shadowG.translate(shadowX, shadowY);
-		    omg.render(shadowG);
-		} else {
-		    omg.render(g);
-		}
+            if (omg != null) {
+                if (Debug.debugging("shape"))
+                    Debug.output("ShapeLayer.paint(): " + omg.size() +
+                                 " omg" + " shadow=" + shadowX + "," + shadowY);
+            
+                if (shadowX != 0 || shadowY != 0) {
+                    Graphics shadowG = g.create();
+                    shadowG.translate(shadowX, shadowY);
+                    omg.render(shadowG);
+                } else {
+                    omg.render(g);
+                }
 
-		if (Debug.debugging("shape")) {
-		    Debug.output("ShapeLayer.paint(): done");
-		}
-	    }
-	}
+                if (Debug.debugging("shape")) {
+                    Debug.output("ShapeLayer.paint(): done");
+                }
+            }
+        }
     }
     
     protected transient JPanel box;
 
     public Component getGUI() {
 
-	if (box == null) {
+        if (box == null) {
 
-	    box = new JPanel();
-	    box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-  	    box.setAlignmentX(Component.LEFT_ALIGNMENT);
+            box = new JPanel();
+            box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+            box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-	    JPanel stuff = new JPanel();
-//  	    stuff.setLayout(new BoxLayout(stuff, BoxLayout.X_AXIS));
-//    	    stuff.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JPanel stuff = new JPanel();
+//          stuff.setLayout(new BoxLayout(stuff, BoxLayout.X_AXIS));
+//          stuff.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-	    DrawingAttributes da = getDrawingAttributes();
-	    if (da != null) {
-		stuff.add(da.getGUI());
-	    }
-	    box.add(stuff);
+            DrawingAttributes da = getDrawingAttributes();
+            if (da != null) {
+                stuff.add(da.getGUI());
+            }
+            box.add(stuff);
 
-	    JPanel pal2 = new JPanel();
-	    JButton redraw = new JButton("Redraw Layer");
-	    redraw.setActionCommand(RedrawCmd);
-	    redraw.addActionListener(this);
-	    pal2.add(redraw);
+            JPanel pal2 = new JPanel();
+            JButton redraw = new JButton("Redraw Layer");
+            redraw.setActionCommand(RedrawCmd);
+            redraw.addActionListener(this);
+            pal2.add(redraw);
 
-	    box.add(pal2);
+            box.add(pal2);
 
-	}
-	return box;
+        }
+        return box;
     }
     
     public void actionPerformed(ActionEvent e) {
-	super.actionPerformed(e);
-	String cmd = e.getActionCommand();
-	if (cmd == RedrawCmd) {
-	    doPrepare();
-	}
+        super.actionPerformed(e);
+        String cmd = e.getActionCommand();
+        if (cmd == RedrawCmd) {
+            doPrepare();
+        }
     }
 
     /**
      * DataBoundsInformer interface.
      */
     public DataBounds getDataBounds() {
-	DataBounds box = null;
-	if (spatialIndex != null) {
-	    ESRIBoundingBox bounds = spatialIndex.getBounds();
-	    if (bounds != null) {
-		box = new DataBounds(bounds.min.x, bounds.min.y, 
-				     bounds.max.x, bounds.max.y);
-	    }
-	}
-	return box;
+        DataBounds box = null;
+        if (spatialIndex != null) {
+            ESRIBoundingBox bounds = spatialIndex.getBounds();
+            if (bounds != null) {
+                box = new DataBounds(bounds.min.x, bounds.min.y, 
+                                     bounds.max.x, bounds.max.y);
+            }
+        }
+        return box;
     }
 }
