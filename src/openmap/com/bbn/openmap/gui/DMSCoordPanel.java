@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/DMSCoordPanel.java,v $
 // $RCSfile: DMSCoordPanel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 00:30:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,25 +23,22 @@
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.Serializable;
 
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.accessibility.*;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.event.CenterSupport;
 import com.bbn.openmap.util.Debug;
 
-
 /**
- *  DMSCoordPanel is a simple gui with entry boxes and labels for
- *  Degree-Minute-Second representation of latitude and longitude. It
- *  sets the center of a map with the entered coordinates by firing
- *  CenterEvents.
+ * DMSCoordPanel is a simple gui with entry boxes and labels for
+ * Degree-Minute-Second representation of latitude and longitude. It
+ * sets the center of a map with the entered coordinates by firing
+ * CenterEvents.
  */
 public class DMSCoordPanel extends CoordPanel implements Serializable {
 

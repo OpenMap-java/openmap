@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MGRSCoordPanel.java,v $
 // $RCSfile: MGRSCoordPanel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 00:30:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,19 +23,17 @@
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.Serializable;
 
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.accessibility.*;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.event.CenterSupport;
+import com.bbn.openmap.proj.coords.MGRSPoint;
 import com.bbn.openmap.util.Debug;
-
 
 /**
  * MGRSCoordPanel is a simple gui with an entry box for a MGRS
