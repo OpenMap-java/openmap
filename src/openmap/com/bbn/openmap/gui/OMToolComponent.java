@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolComponent.java,v $
 // $RCSfile: OMToolComponent.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.7 $
+// $Date: 2004/02/04 22:36:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,6 +31,8 @@ import java.awt.GridBagLayout;
 import java.awt.LayoutManager;
 import java.util.Properties;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.layer.util.LayerUtils;
 
@@ -55,6 +57,7 @@ import com.bbn.openmap.layer.util.LayerUtils;
 public abstract class OMToolComponent extends OMComponentPanel 
     implements Tool {
 
+    protected I18n i18n = Environment.getI18n();
     public final static String UseAsToolProperty = "isTool";
 
     public final static String defaultKey = "omtoolcomponent";
@@ -185,7 +188,15 @@ public abstract class OMToolComponent extends OMComponentPanel
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
-        props.put(UseAsToolProperty, "Whether this component should contribute to the Tool Panel");
+
+        String internString = i18n.get(OMToolComponent.class, UseAsToolProperty, I18n.TOOLTIP,
+                                       "Whether this component should be added to the Tool Panel");
+        props.put(UseAsToolProperty, internString);
+
+        internString = i18n.get(OMToolComponent.class, UseAsToolProperty,
+                                "Add to Tool Panel");
+        props.put(UseAsToolProperty + LabelEditorProperty, internString);
+
         props.put(UseAsToolProperty + ScopedEditorProperty, 
                   "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
         return props;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MouseModePanel.java,v $
 // $RCSfile: MouseModePanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.5 $
+// $Date: 2004/02/04 22:36:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,7 +77,7 @@ public class MouseModePanel extends OMToolComponent
      * Set the MouseDelegator used to hold the different MouseModes
      * available to the map.  
      */
-    public void setMouseDelegator(MouseDelegator md){
+    public void setMouseDelegator(MouseDelegator md) {
 
         if (mouseDelegator != null) {
             mouseDelegator.removePropertyChangeListener(this);
@@ -121,23 +121,22 @@ public class MouseModePanel extends OMToolComponent
         rbs = new JPopupMenu("Mouse Modes");
         dim = titleButton.getMinimumSize();
         for (int i=0; i<modes.length; i++) {
-            JMenuItem rb = new JMenuItem(modes[i].getID());
-            rb.setActionCommand(newMouseModeCmd);
-            rb.setName(modes[i].getPrettyName());
+            JMenuItem rb = new JMenuItem(modes[i].getPrettyName());
+            rb.addActionListener(new MouseModeButtonListener(modes[i].getID(), this));
             rb.setBorderPainted(false);
             if (Debug.debugging("mousemode")) {
                 Debug.output("MouseModePanel.setPanel(): Adding " + 
                              modes[i].getID() + " mode to menu with label: " +
                              rb.getName());
             }
-            rb.addActionListener(this);
+
             if (activeMode.equals(modes[i].getID())) {
                 if (Debug.debugging("mousemode")) {
                     Debug.output("MouseModePanel.setPanel: Setting " + 
                                  activeMode + " to active");
                 }
                 rb.setSelected(true);
-                titleButton.setText(activeMode);
+                titleButton.setText(modes[i].getPrettyName());
             }
             rbs.add(rb);
             rb.setVisible(modes[i].isVisible());
@@ -160,6 +159,8 @@ public class MouseModePanel extends OMToolComponent
         this.setPreferredSize(new Dimension(140, 45));
         this.revalidate();
     }
+
+        
 
     public void actionPerformed(java.awt.event.ActionEvent e) {
 
@@ -186,13 +187,16 @@ public class MouseModePanel extends OMToolComponent
      */
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
-            String mmID = ((MapMouseMode)evt.getNewValue()).getID();
+            String mmID = ((MapMouseMode)evt.getNewValue()).getPrettyName();
             if (Debug.debugging("mousemode")){
                 Debug.output("propertyChange: action mode property " + mmID);
             }
             titleButton.setText(mmID);
-
         } else if (evt.getPropertyName() == MouseDelegator.MouseModesProperty) {
+            // This won't work if prettyNames for the mouse modes are
+            // different than the ID.  That's why the
+            // MouseModeButtonListener has been added to the class,
+            // and is used instead.
             Debug.message("mousemode", "propertyChange: mouse modes property");
             rbs.removeAll();
             setPanel(mouseDelegator);
@@ -222,6 +226,25 @@ public class MouseModePanel extends OMToolComponent
             Debug.message("mousemodepanel","MouseModePanel removing MouseDelegator.");
             if (someObj == getMouseDelegator()) {
                 setMouseDelegator(null);
+            }
+        }
+    }
+
+    public static class MouseModeButtonListener implements ActionListener {
+        String mmid = null;
+        MouseModePanel mouseModePanel = null;
+
+        public MouseModeButtonListener(String id, MouseModePanel mmp) {
+            mmid = id;
+            mouseModePanel = mmp;
+        }
+
+        public void actionPerformed(ActionEvent ae) {
+            if (mouseModePanel != null) {
+                MouseDelegator md = mouseModePanel.getMouseDelegator();
+                if (md != null) {
+                    md.setActiveMouseModeWithID(mmid);
+                }
             }
         }
     }
