@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.29 $
-# $Date: 1998/11/12 14:23:02 $
+# $Revision: 1.30 $
+# $Date: 1998/11/12 14:42:36 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -298,10 +298,10 @@ else
   exit 1;
 fi
 
-if /bin/mv $BuildDir/openmap/lib/om_core.jar $BuildDir/lib; then
-  echo "++Copied om_core.jar";
+if /bin/mv $BuildDir/openmap/lib/omcore.jar $BuildDir/lib; then
+  echo "++Copied omcore.jar";
 else
-  echo "++Copy failed: om_core.jar";
+  echo "++Copy failed: omcore.jar";
   exit 1;
 fi
 
