@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PolyDeleteNodeState.java,v $
 // $RCSfile: PolyDeleteNodeState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/22 16:10:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,7 +67,10 @@ public class PolyDeleteNodeState extends State {
 
     public boolean mouseMoved(MouseEvent e) {
 	Debug.message("eomgdetail", "PolyStateMachine|delete node state|mouseMoved");
-	if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
+	GrabPoint mp = graphic.getMovingPoint(e);
+
+	if (mp != null) { // Only change the cursor over a node
+// 	if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
 	    graphic.fireEvent(EOMGCursors.EDIT, 
 			      "Click a node to delete it.");
 	} else {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PolyAddNodeState.java,v $
 // $RCSfile: PolyAddNodeState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/22 16:10:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,7 +65,11 @@ public class PolyAddNodeState extends State {
 
     public boolean mouseMoved(MouseEvent e) {
 	Debug.message("eomgdetail", "PolyStateMachine|add node state|mouseMoved");
-	if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
+
+	GrabPoint mp = graphic.getMovingPoint(e);
+
+	if (mp != null) { // Only change the cursor over a node
+// 	if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
 	    graphic.fireEvent(EOMGCursors.EDIT, "Click on a node to add a point.");
 	} else {
 	    graphic.fireEvent(EOMGCursors.DEFAULT, "Click on a node to add a point.");
