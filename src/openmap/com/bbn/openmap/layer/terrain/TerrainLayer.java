@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/TerrainLayer.java,v $
 // $RCSfile: TerrainLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/10 22:04:54 $
+// $Revision: 1.4 $
+// $Date: 2004/01/24 03:42:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,17 +37,18 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
 /*  OpenMap  */
+import com.bbn.openmap.*;
+import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
+import com.bbn.openmap.event.*;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.layer.dted.*;
+import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.proj.*;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.SwingWorker;
-import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.layer.dted.*;
 
 /** 
  * The Terrain Layer is an example of creating a layer that acts as a
@@ -86,10 +87,8 @@ import com.bbn.openmap.layer.dted.*;
 public class TerrainLayer extends OMGraphicHandlerLayer
     implements ActionListener, MapMouseListener {
     /** The cache that knows how to handle DTED requests. */
-    public DTEDFrameCache frameCache = new DTEDFrameCache();
+    public DTEDFrameCache frameCache;
 
-    /** The paths to the DTED directories, telling where the data is. * */
-    String[] dtedDataPaths = null;
     /** Which tool is being used. */
     protected int mode;
     /** The code number for the profile tool. */
@@ -114,30 +113,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer
      * are set to their default values.
      */
     public TerrainLayer() {
-	this(null);
-    }
-
-    /**
-     * The default constructor for the Layer.  All of the attributes
-     * are set to their default values.
-     *
-     * @param pathsToTerrainDirs paths to the dted directories that hold
-     * the DTED data.  
-     * */
-    public TerrainLayer(String[] pathsToTerrainDirs) {
-	dtedDataPaths = pathsToTerrainDirs;
-	init();
-    }
-
-    /** How to set the paths to the DTED directories, if the first
-     * constructor is used.
-     *
-     * @param pathsToTerrainDirs paths to the dted directories that hold
-     * the DTED data.  
-     * */
-    public void setPaths(String[] pathsToTerrainDirs) {
-	dtedDataPaths = pathsToTerrainDirs;
-	frameCache.setDtedDirPaths(dtedDataPaths);
+        init();
     }
 
     /** Creates new tools. */
@@ -152,9 +128,15 @@ public class TerrainLayer extends OMGraphicHandlerLayer
      * are not found, or are invalid.  Usually not a good idea.
      */
     protected void setDefaultValues() {
-	// defaults
-	dtedDataPaths = null;
 	mode = PROFILE;
+    }
+
+    public void setFrameCache(DTEDFrameCache dfc) {
+        frameCache = dfc;
+    }
+
+    public DTEDFrameCache getFrameCache() {
+        return frameCache;
     }
 
     /** 
@@ -170,8 +152,6 @@ public class TerrainLayer extends OMGraphicHandlerLayer
 	setDefaultValues();
 	try{
 	    
-	    dtedDataPaths = LayerUtils.initPathsFromProperties(properties,
-							       prefix + DTEDPathsProperty);
 	    String defaultModeString = properties.getProperty(prefix + defaultModeProperty);
 	    if (defaultModeString.equalsIgnoreCase("LOS"))
 		setMode(LOS);
@@ -185,27 +165,8 @@ public class TerrainLayer extends OMGraphicHandlerLayer
 	    setDefaultValues();
 	    setMode(mode);
 	}		
-	setPaths(dtedDataPaths);
     }
     
-    /**
-     * Sets the current graphics list to the given list.
-     *
-     * @param aList a list of OMGraphics
-     * @deprecated use setList().
-     */
-    public synchronized void setGraphicList(OMGraphicList aList) {
-	setList(aList);
-    }
-
-    /**
-     * Retrieves the current graphics list.
-     * @deprecated use getList().
-     */
-    public synchronized OMGraphicList getGraphicList() {
-	return getList();
-    }
-
     /**
      * Prepares the graphics for the layer.  This is where the
      * getRectangle() method call is made on the dted.  <p>
@@ -237,13 +198,6 @@ public class TerrainLayer extends OMGraphicHandlerLayer
 	// after this call, the list is ready for painting.
 	LatLonPoint ll2 = projection.getLowerRight();
 	LatLonPoint ll1 = projection.getUpperLeft();
-
-        int cacheSize = (int)((Math.ceil(ll2.getLongitude())-
-			       Math.floor(ll1.getLongitude()))*
-			      (Math.ceil(ll1.getLatitude())-
-			       Math.floor(ll2.getLatitude())) * 2);
-
-        frameCache.resizeCache(cacheSize); 
 
 	profileTool.setScreenParameters(projection);
  	LOSTool.setScreenParameters(projection);
@@ -440,6 +394,18 @@ public class TerrainLayer extends OMGraphicHandlerLayer
 
     public int getMode() {
         return mode;
+    }
+
+    public void findAndInit(Object someObj) {
+        if (someObj instanceof DTEDFrameCache) {
+            setFrameCache((DTEDFrameCache)someObj);
+        }
+    }
+
+    public void findAndUndo(Object someObj) {
+        if (someObj == getFrameCache()) {
+            setFrameCache(null);
+        }
     }
 
 }

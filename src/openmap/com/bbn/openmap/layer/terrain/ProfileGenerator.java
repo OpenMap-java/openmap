@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileGenerator.java,v $
 // $RCSfile: ProfileGenerator.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/29 17:17:49 $
-// $Author: wjeuerle $
+// $Revision: 1.5 $
+// $Date: 2004/01/24 03:42:54 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -31,7 +31,7 @@ import java.util.*;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.image.AcmeGifFormatter;
-import com.bbn.openmap.layer.dted.*;
+import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.*;
@@ -180,6 +180,11 @@ public class ProfileGenerator implements TerrainTool {
 
 	Debug.message("terrain", "ProfileGenerator:createProfileImage(): Creating image");
     
+        if (layer == null || layer.frameCache == null) {
+            Debug.error("ProfileGenerator:  can't access the DTED data through the terrain layer.");
+            return;
+        }
+
 	// Set the final line, as it was drawn.
 	profileLine.setLocation(setLLPoints(), OMGraphic.RADIANS);
 

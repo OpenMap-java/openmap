@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/LOSGenerator.java,v $
 // $RCSfile: LOSGenerator.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2004/01/24 03:42:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.gui.ProgressListenerGauge;
-import com.bbn.openmap.layer.dted.*;
+import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.*;
@@ -123,15 +123,16 @@ public class LOSGenerator implements TerrainTool {
 
     /** Not the preferred way to create one of these.  It's full of defaults.
      * */
-    private LOSGenerator () {
+    private LOSGenerator() {
         init();
    }
 
-    /** The creation of the tool starts here.  The DTED data cache is
+    /** 
+     * The creation of the tool starts here.  The DTED data cache is
      * passed in, along with a path to the dted directory to get more
      * data if needed.
-     * */
-    public LOSGenerator (TerrainLayer tLayer) {
+     */
+    public LOSGenerator(TerrainLayer tLayer) {
 	layer = tLayer;
         init();
     }
@@ -175,16 +176,16 @@ public class LOSGenerator implements TerrainTool {
 	else setCancelled(true);
     }
 
-    /**  The TerrainWorker calls this method on the layer when it is
+    /**
+     * The TerrainWorker calls this method on the layer when it is
      * done working.  If the calling worker is not the same as the
      * "current" worker, then a new worker is created.
-     * */
-    protected synchronized void workerComplete () {
+     */
+    protected synchronized void workerComplete() {
 	if (!isCancelled()) {
 	    currentWorker = null;
 	    layer.repaint();
-	}
-	else{
+	} else {
 	    setCancelled(false);
 	    currentWorker = new LOSWorker();
 	    currentWorker.execute();
@@ -205,16 +206,18 @@ public class LOSGenerator implements TerrainTool {
 	return cancelled;
     }
 
-  /** without arguments, the reset() call makes both graphics go
-   *  offscreen in their smallest size. 
-   */
+    /** 
+     * Without arguments, the reset() call makes both graphics go
+     *  offscreen in their smallest size. 
+     */
     public void reset() {
         reset(true, true);
     }
 
-  /** circ is for the circle to be reset, and image is for the image
-   * to be reset.  Sometimes you only want one to be moved.
-   */
+    /** 
+     * Circ is for the circle to be reset, and image is for the image
+     * to be reset.  Sometimes you only want one to be moved.
+     */
     public void reset(boolean circ, boolean image) {
 	graphics.clear();
 	if(image) {
@@ -233,10 +236,11 @@ public class LOSGenerator implements TerrainTool {
 	stateMachine.reset();
     }
 
-  /** Called on every getRectangle, in order to let the cache get
-   *  sized right, and to reset the graphics if the scale changed
-   *  (since they won't make sense.
-   */
+    /**
+     * Called on every getRectangle, in order to let the cache get
+     * sized right, and to reset the graphics if the scale changed
+     * (since they won't make sense.
+     */
     public void setScreenParameters(Projection p) {
 	reset(true, true);
 	proj = p;
@@ -244,21 +248,28 @@ public class LOSGenerator implements TerrainTool {
 	graphics.generate(proj);
     }
 
-  /** Takes the member settings and manages the creation of the image.
-   * A large vector of slope values are created, depending on the size
-   * of the circle, and how many pixels are around it.  Each entry in
-   * the vector is the value of the largest slope value in that
-   * direction.  The image is created from the inside out, pixel by
-   * pixel.  The slope from the pixel to the center is calculated, and
-   * then compared with the value for that direction (in the vector).
-   * If the pixel's slope is larger, the point is visible, and is
-   * colored that way.  The vector is updated, and the cycle
-   * continues.   
-   */
+    /**
+     * Takes the member settings and manages the creation of the image.
+     * A large vector of slope values are created, depending on the size
+     * of the circle, and how many pixels are around it.  Each entry in
+     * the vector is the value of the largest slope value in that
+     * direction.  The image is created from the inside out, pixel by
+     * pixel.  The slope from the pixel to the center is calculated, and
+     * then compared with the value for that direction (in the vector).
+     * If the pixel's slope is larger, the point is visible, and is
+     * colored that way.  The vector is updated, and the cycle
+     * continues.   
+     */
     public synchronized void createLOSImage() {
         if (Debug.debugging("los")) {
 	    Debug.output("createLOSimage: Entered with diameter = " + LOSedge);
 	}
+
+        if (layer == null || layer.frameCache == null) {
+            Debug.error("LOSGenerator:  can't access the DTED data through the terrain layer.");
+            return;
+        }
+
 	int squareRadius = LOSedge/2 + 1;
 	int[] newPixels = new int[LOSedge*LOSedge];
 	float[] azimuthVals = new float[8*(squareRadius-1)];
@@ -426,9 +437,14 @@ public class LOSGenerator implements TerrainTool {
      * earth's curvature into account, based on the spherical model.
      */
     protected double calculateLOSslope(LatLonPoint cord, float arc_dist) {
-        int xyheight = layer.frameCache.getElevation(cord.getLatitude(), 
-						     cord.getLongitude());
+        DTEDFrameCache frameCache = layer.frameCache;
 
+        if (frameCache == null) {
+            return 0;
+        }
+
+        int xyheight = frameCache.getElevation(cord.getLatitude(), 
+                                               cord.getLongitude());
 	double ret = 0;
 	double P = Math.sin(arc_dist)*
 	    (xyheight+Planet.wgs84_earthEquatorialRadiusMeters);
@@ -465,11 +481,12 @@ public class LOSGenerator implements TerrainTool {
 //  	return ret;
     }
 
-    /** Called when the circle is started.  It starts the circle to be
+    /**
+     * Called when the circle is started.  It starts the circle to be
      * drawn, and sets the parameters that will be needed to figure
      * out the image.
      * @param event mouse event where the circle should be started.
-     * */
+     */
     public void setCenter(MouseEvent event) {
 	graphics.clear();
 	LOScenterP.x = event.getX();
@@ -484,10 +501,11 @@ public class LOSGenerator implements TerrainTool {
 	graphics.add(LOScirc);
     }
 
-    /** Used to modify the circle parameters with another mouse event.
+    /**
+     * Used to modify the circle parameters with another mouse event.
      * Takes care of resetting hte circle parameters and regenerating
      * the circle.
-     * */
+     */
     public void addLOSEvent(MouseEvent event) {
 	graphics.clear();
         LOSedge = TerrainLayer.numPixelsBetween(LOScenterP.x, 
@@ -502,11 +520,12 @@ public class LOSGenerator implements TerrainTool {
 	graphics.add(LOScirc);
     }
 
-    /** Sets the new object height to use at the center of the circle.
+    /**
+     * Sets the new object height to use at the center of the circle.
      * The old object is subtracted out first to get the center height
      * of the ground before the new value is added.
      * @param value height of the object in meters.
-     * */
+     */
     public void setLOSobjectHeight(int value) {
 	LOScenterHeight = LOScenterHeight - LOSobjectHeight; 
 	LOSobjectHeight = value;
