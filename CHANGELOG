@@ -1,3 +1,36 @@
+2003-06-26  Don Dietrick  <dietrick@bbn.com>
+
+	* Added the com.bbn.openmap.gui.time package, which has standard
+	GUI controls for controlling time on the map, and
+	mapping time rates (real time to some other scenario time).
+
+	* Added the com.bbn.openmap.graphicLoader.scenario package, which
+	uses location data and activity data to manage movement, against
+	time, over the map.  The ScenarioGraphicLoader uses a time slider
+	and several time control buttons.
+
+	* Misc changes and bug fixes:  Added getters/setters for
+	AreaHandler in AreaShapeLayer.  Fixed recursion bug in
+	com.bbn.openmap.omGraphics.FilterSupport.
+
+	* Added the com.bbn.openmap.tools.icon package, containing new
+	classes that can be used to create images with pre-packaged scaleable
+	geometries.  The application icons will be moving to use
+	ImageIcons created from the OMIconFactory and
+	IconPartCollections, instead of holding gif and png files in the
+	package.  In support of this package, more capabilities were
+	added to the com.bbn.openmap.omGraphics.DrawingAttributes class,
+	including the ability to render a java.awt.Shape object into a
+	java.awt.Graphics object using its parameters.
+
+	* Moved the GraphicLoader classes in
+	com.bbn.openmap.plugin.graphicLoader to their own package, in
+	com.bbn.openmap.graphicLoader.  The
+	com.bbn.openmap.plugin.graphicLoader package remains, for the
+	GraphicLoaderPlugIn and GraphicLoaderConnector, two classes that
+	use PlugIns and GraphicLoaders.  But the new package contains
+	just GraphicLoader stuff, and several implementations and superclasses.
+
 2003-04-25  Don Dietrick  <dietrick@bbn.com>
 
 	* Heavy modifications to the CORBA classes.  The build.xml file
