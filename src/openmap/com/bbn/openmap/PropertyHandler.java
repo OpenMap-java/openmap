@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.19 $
-// $Date: 2004/02/06 00:00:18 $
+// $Revision: 1.20 $
+// $Date: 2004/02/10 18:08:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,15 +82,17 @@ import com.bbn.openmap.Environment;
  *
  * If the debug.showprogress environment variable is set, the
  * PropertyHandler will display a progress bar when it is creating
- * components.
+ * components.  If the debug.properties file is set, the steps that
+ * the PropertyHandler takes in looking for property files will be
+ * displayed.
  */
 public class PropertyHandler extends MapHandlerChild implements SoloMapComponent {
 
-    /** The name of the properties file to read. */
-    public static String propsFileName = "openmap.properties";
+    /** The name of the properties file to read. (openmap.properties is default) */
+    public final static String propsFileName = "openmap.properties";
     
-    /** The name of the system directory containing a properties file. */
-    public static String configDirProperty = "openmap.configDir";
+    /** The name of the system directory containing a properties file. (openmap.configDir) */
+    public final static String configDirProperty = "openmap.configDir";
 
     /** 
      * The property name used to hold a list of marker names.  Each
@@ -103,7 +105,7 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
      * name3.class=com.bbn.openmap.LayerHandler
      * </PRE>
      */
-    public static String componentProperty = "openmap.components";
+    public final static String componentProperty = "openmap.components";
 
     /** 
      * The property name used to hold a list of marker names.  Each
@@ -115,7 +117,17 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
      * name2.URL=file:///usr/local/openmap/props/shape.properties
      * </PRE>
      */
-    public static String includeProperty = "openmap.include";
+    public final static String includeProperty = "openmap.include";
+
+    /** 
+     * The property name used to hold a file, resorce or URL of a file
+     * to use containing localized properties, like layer names.  This
+     * is optional, if it's not in the openmap.properties file or the
+     * properties file being read in, an openmap_&ltlocalization
+     * string&gt.properties file will be searched for in the
+     * classpath (i.e. openmap.localized=openmap_en_US.properties).
+     */
+    public final static String localizedProperty = "openmap.localized";
 
     /** Final openmap properties object. */
     protected Properties properties = new Properties();
@@ -146,6 +158,8 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
      */
     protected Hashtable prefixLibrarian = new Hashtable();
 
+    protected boolean DEBUG = false;
+
     /**
      * Create a PropertyHandler object that checks in the default
      * order for openmap.properties files.  It checks for the
@@ -167,6 +181,7 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
      * displayed to show the progress of building components.
      */
     public PropertyHandler(boolean provideProgressUpdates) {
+        DEBUG = Debug.debugging("properties");
         updateProgress = provideProgressUpdates;
         searchForAndLoadProperties();
     } 
@@ -185,6 +200,7 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
      * for a particular map.
      */
     public PropertyHandler(URL url) throws IOException {
+        DEBUG = Debug.debugging("properties");
         InputStream is = null;
 
         if (url != null) {
@@ -206,6 +222,7 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
      * context for a particular map.  
      */
     public PropertyHandler(Properties props) {
+        DEBUG = Debug.debugging("properties");
         init(props, null);
         Environment.init(getProperties());
     }
@@ -220,11 +237,17 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 
         Properties tmpProperties = new Properties();
         Properties includeProperties;
+        Properties localizedProperties;
         boolean foundProperties = false;
 
         boolean showDebugMessages = false;
         
-        if (Debug.debugging("properties")) {
+        if (Debug.debugging("locale")) {
+            java.util.Locale.setDefault(new java.util.Locale("pl", "PL"));
+        }
+
+        
+        if (DEBUG) {
             showDebugMessages = true;
         }
 
@@ -371,10 +394,72 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
         merge(includeProperties, "include file properties", userHomeDirectory);
 
         // Now, load the user home preferences last, since they take
-        // the highest precidence.
+        // the highest precedence.
         merge(tmpProperties, propsFileName, userHomeDirectory);
 
+        // Well, they used to take the highest precedence.  Now, we
+        // look for a localized property file, and write those
+        // properties on top.
+        localizedProperties = getLocalizedProperties(tmpProperties.getProperty(localizedProperty), 
+                                                     userHomeDirectory);
+        merge(localizedProperties, "localized properties", null);
+
         Environment.init(getProperties());
+    }
+
+    /**
+     * Load the localized properties that will take precidence over
+     * all other properties.  If the localizedPropertyFile is null, a
+     * localized version of the openmap.properties file will be
+     * searched for in the classpath and in the user home directory
+     * (if that isn't null as well).
+     */
+    protected Properties getLocalizedProperties(String localizedPropertyFile,
+                                                String userHomeDirectory) {
+        Properties props = null;
+        if (localizedPropertyFile == null) {
+            java.util.Locale loc = java.util.Locale.getDefault();
+            localizedPropertyFile = "openmap_" + loc.toString() + ".properties";
+        }        
+
+        boolean tryHomeDirectory = false;
+        if (DEBUG) {
+            Debug.output("PropertyHandler: Looking for localized file: " + localizedPropertyFile);
+        }
+
+        try {
+            URL propsURL = PropUtils.getResourceOrFileOrURL(localizedPropertyFile);
+            if (propsURL == null) {
+                tryHomeDirectory = true;
+            } else {
+                if (DEBUG) {
+                    Debug.output("Found localized properties in classpath");
+                }
+                props = fetchProperties(propsURL);
+            }
+        } catch (MalformedURLException murle) {
+            Debug.error("PropertyHandler can't find localized property file: " +
+                        localizedPropertyFile);
+            tryHomeDirectory = true;
+        }
+
+        if (tryHomeDirectory) {
+            props = new Properties();
+            if (!PropUtils.loadProperties(props, userHomeDirectory, 
+                                          localizedPropertyFile)) {
+                props = null;
+            } else {
+                if (DEBUG) {
+                    Debug.output("Found localized properties in home directory");
+                }
+            }
+        }
+
+        if (props == null) {
+            props = new Properties();
+        }
+
+        return props;
     }
 
     /**
@@ -405,7 +490,7 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 
         merge(props, "loaded", howString);
 
-        if (Debug.debugging("properties")) {
+        if (DEBUG) {
             Debug.output("PropertyHandler: loaded properties");
         }
     }
@@ -454,7 +539,7 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 
                     InputStream is = tmpInclude.openStream();
                     tmpProps.load(is);
-                    if (Debug.debugging("properties")) {
+                    if (DEBUG) {
                         Debug.output("PropertyHandler.getIncludeProperties(): located include properties file URL: " + include);
                     }
                     // Include properties noted in resources
@@ -537,7 +622,7 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
             }
             PropUtils.copyProperties(from, to);
         } else {
-            if (what != null && Debug.debugging("properties")) {
+            if (what != null && DEBUG) {
                 Debug.output("PropertyHandler.merge(): no " +
                              what + " found" + 
                              (where == null?".":(" in " + where)));
@@ -654,7 +739,7 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
         for (i = 0; i < size; i++) {
             String debugMarker = (String) debugList.elementAt(i);
             Debug.put(debugMarker);
-            if (Debug.debugging("properties")) {
+            if (DEBUG) {
                 Debug.output("PropertyHandler: adding " + debugMarker + 
                              " to Debug list.");
             }

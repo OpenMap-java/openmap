@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.8 $
+// $Date: 2004/02/10 18:08:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -305,7 +305,9 @@ public abstract class OMRasterObject extends OMGraphic
      */
     public void render(Graphics g) {
         if (getNeedToRegenerate() || getNeedToReposition() || !isVisible()) {
-            if (DEBUG) Debug.output("OMRasterObject.render(): need to regenerate or not visible!");
+            if (DEBUG) {
+                Debug.output("OMRasterObject.render(): need to regenerate or not visible!");
+            }
             return;
         }
 
@@ -419,10 +421,14 @@ public abstract class OMRasterObject extends OMGraphic
               point1.y += y;
               break;
           case RENDERTYPE_UNKNOWN:
-              Debug.output("OMRasterObject.position(): ignoring unknown rendertype, wingin' it");
+              if (DEBUG) {
+                  Debug.output("OMRasterObject.position(): ignoring unknown rendertype, wingin' it");
+              }
               if (lat == 0 && lon == 0) {
                   if (x == 0 && y == 0) {
-                      Debug.output("OMRasterObject.position(): Not enough info in object to place it reasonably.");
+                      if (DEBUG) {
+                          Debug.output("OMRasterObject.position(): Not enough info in object to place it reasonably.");
+                      }
                       point1 = new Point(-width, -height);
                       point2 = new Point(0,0);
                       return false;
@@ -763,7 +769,9 @@ public abstract class OMRasterObject extends OMGraphic
                 if (point1.x < 0) point1.x = 0;
                 if (point1.y < 0) point1.y = 0;
                 
-                if (DEBUG) Debug.output("OMRasterObject: newly located at " + point1);
+                if (DEBUG) {
+                    Debug.output("OMRasterObject: newly located at " + point1);
+                }
             } else if (DEBUG) {
                 Debug.output("OMRasterObject: not being trimmed due to projection");
             }
@@ -865,11 +873,15 @@ public abstract class OMRasterObject extends OMGraphic
         protected Image trimExcessPixels() {
 
             if (filteredWidth <= width && filteredHeight <= height) {
-                if (DEBUG) Debug.output("TrimScaleFilter.trimExcessPixels(): image not enlarged, using entire image.");
+                if (DEBUG) {
+                    Debug.output("TrimScaleFilter.trimExcessPixels(): image not enlarged, using entire image.");
+                }
                 return null;
             }
             
-            if (DEBUG) Debug.output("TrimScaleFilter.trimExcessPixels(): clipping enlarged image.");
+            if (DEBUG) {
+                Debug.output("TrimScaleFilter.trimExcessPixels(): clipping enlarged image.");
+            }
 
             //  Figure out the pixels of the old image being used in
             // the new image.  Figure out the proj location of the upper
