@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:50 $
+// $Revision: 1.3 $
+// $Date: 2003/03/03 19:35:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,7 +66,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.2 $ $Date: 2003/02/20 02:43:50 $
+ * @version $Revision: 1.3 $ $Date: 2003/03/03 19:35:52 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
@@ -277,26 +277,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer
     }
 
     /**
-     * Gets the record graphics for a record with multiple graphics.
-     * @return OMGraphicList
-     * @deprecated the ESRIRecord now does the right thing internally.
-     * Call ESRIRecord.addOMGraphics() directly.
-     */
-    protected OMGraphicList RecordList(ESRIRecord rec,
-				       DrawingAttributes drawingAttributes) {
-	int recNumber=rec.getRecordNumber();
- 	OMGraphicList recList = new OMGraphicList(10);
-	if (drawingAttributes == null) {
-	    drawingAttributes = new DrawingAttributes();
-	}
-	rec.addOMGraphics(recList, drawingAttributes);
-	
-	// Remember recordNumber to work with .dbf file
-	recList.setAppObject(new Integer(recNumber)); 
-	return recList;
-    }
-
-    /**
      * Create the OMGraphics using the shape file and SpatialIndex.
      * @return OMGraphicList
      * @deprecated use prepare() instead.
@@ -347,11 +327,9 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 		int nRecords2 = records2.length;
   		list = new OMGraphicList(nRecords1+nRecords2);
 		for (int i = 0; i < nRecords1; i++) {
-//   		    list.addOMGraphic(RecordList(records1[i], drawingAttributes));
 		    records1[i].addOMGraphics(list, drawingAttributes);
 		}
 		for (int i = 0; i < nRecords2; i++) {
-//   		    list.addOMGraphic(RecordList(records2[i], drawingAttributes));
 		    records2[i].addOMGraphics(list, drawingAttributes);
 		}
 	    } catch (java.io.IOException ex) {

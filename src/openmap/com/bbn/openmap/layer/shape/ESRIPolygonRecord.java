@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPolygonRecord.java,v $
 // $RCSfile: ESRIPolygonRecord.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/03 19:35:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import com.bbn.openmap.proj.ProjMath;
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
  * @author HACK-author blame it on aculline
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2003/03/03 19:35:52 $
  */
 public class ESRIPolygonRecord extends ESRIRecord {
 
@@ -168,6 +168,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
 	
 	if (nPolys > 1) {
 	    sublist = new OMGraphicList(10);
+	    sublist.setVague(true);  // Treat list as one object.
 	    list.add(sublist);
 	    sublist.setAppObject(new Integer(getRecordNumber())); 
 	}

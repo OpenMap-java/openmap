@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/02/24 23:36:08 $
+// $Revision: 1.8 $
+// $Date: 2003/03/03 19:35:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -191,7 +191,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	boolean ret = false;
 	OMGraphic omgr = ((OMGraphicList)getList()).findClosest(e.getX(), e.getY(), 4);
 
-	if (omgr != null) {
+	if (omgr != null && shouldEdit(omgr)) {
 	    OMDrawingTool dt = getDrawingTool();
 	    if (dt != null) {
 		dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
@@ -202,13 +202,6 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 				       OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
 		}
 
-		// The first check is to find out if the tool is already busy
-		// on another graphic.  If it is (null), then
-		// deactivate and try again.  If it fails again, then
-		// the tool can't handle the omgr.
-
-		// This is fine for OMGraphics that are not near to each 
-		// other, but not for neighbors.
 		if (dt.edit(omgr, layer, e) != null) {
 		    // OK, means we're editing - let's lock up the MouseMode
 		    if (e instanceof MapMouseEvent) {
@@ -294,22 +287,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      * @return false
      */
     public boolean mouseClicked(MouseEvent e) { 
-	boolean ret = false;
-
-// 	OMGraphic omgr = ((OMGraphicList)getList()).findClosest(e.getX(), e.getY(), 4);
-// 	if (omgr != null) {
-// 	    OMDrawingTool dt = getDrawingTool();
-// 	    if (dt != null) {
-// 		dt.setBehaviorMask(getDrawingToolEditBehaviorMask());
-// 		// We don't seem to need to check to find out if another
-// 		// graphic is using the drawing tool, the check in
-// 		// mousePressed takes care of that.
-// 		dt.edit(omgr, layer);
-// 	    }
-// 	    ret = true;
-// 	}
-	
-	return ret;
+	return false;
     }
     
     /**
@@ -372,6 +350,24 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
     }
     
     /**
+     * A method called from within different MapMouseListener methods
+     * to check whether an OMGraphic *should* be edited if the
+     * OMDrawingTool is able to edit it.  Can be used by subclasses to
+     * delineate between OMGraphics that are non-relocatable versus
+     * those that can be moved.  This method should work together with
+     * the getToolTipForOMGraphic() method so that OMGraphics that
+     * shouldn't be edited don't provide tooltips that suggest that
+     * they can be.
+     *
+     * By default, this method always
+     * returns true because the DrawingToolLayer always thinks the
+     * OMGraphic should be edited.
+     */
+    public boolean shouldEdit(OMGraphic omgr) {
+	return true;
+    }
+
+    /**
      * Called by default in the MouseMoved method, in order to fire a
      * ToolTip for a particular OMGraphic.  Return a String if you
      * want a ToolTip displayed, null if you don't.  By default,
@@ -381,7 +377,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      */
     protected String getToolTipForOMGraphic(OMGraphic omgr) {
 	OMDrawingTool dt = getDrawingTool();
-	if (dt.canEdit(omgr.getClass()) && !dt.isActivated()) {
+	if (shouldEdit(omgr) && dt.canEdit(omgr.getClass()) && !dt.isActivated()) {
 	    return "Click to Edit";
 	} else {
 	    return null;
