@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
 # $RCSfile: openmap.mk.in,v $
-# $Revision: 1.10 $
-# $Date: 1998/11/13 16:57:28 $
+# $Revision: 1.11 $
+# $Date: 1998/11/13 18:10:32 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -117,7 +117,7 @@ INSTALL.doc =		${INSTALL_DATA}
 # !! WARNING !!
 # TOP must be set by the Makefile that is including this makefile.
 #
-CLASSPATH = ${TOP}${PATH_SEP}${SWING_JAR}${PATH_SEP}@CORBA_CLASSPATH@
+CLASSPATH = ${TOP}${CLASSPATH_SEP}${SWING_JAR}${CLASSPATH_SEP}@CORBA_CLASSPATH@
 
 INSTALL_DIR = ${TOP}/tmp
 

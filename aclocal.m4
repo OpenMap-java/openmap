@@ -57,7 +57,7 @@ fi
 dnl AC_FIND_ENTRY_IN_PATH_REGEX(VARIABLE, REGEX, PATH)
 AC_DEFUN(AC_FIND_REGEX_IN_PATH,
 [# comment
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}${CLASSPATH_SEP}"
 dnl $ac_dummy forces splitting on constant user-supplied paths.
 dnl bash word splitting is done only on the output of word expansions,
 dnl not every word.  This closes a longstanding sh security hole.
