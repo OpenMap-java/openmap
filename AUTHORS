@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/AUTHORS,v $
 $RCSfile: AUTHORS,v $
-$Revision: 1.10 $
-$Date: 2002/05/28 23:51:15 $
+$Revision: 1.11 $
+$Date: 2002/07/20 04:09:02 $
 $Author: dietrick $
 
 People and organizations that have contributed to OpenMap
@@ -74,6 +74,7 @@ Doug Van Auken
 
 Karl Stuempfle and Lonnie Goad working for OptiMetrics, Inc
   Provided the code to convert OMGraphicList graphics to ESRI Shape files.
+  Provided EsriPlugIn GUI/selection modifications.
 
 Scott Nevin
   Added code to the MIFLayer to allow to read more graphic types.
