@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.49 $  $Date: 2001/03/26 21:57:54 $
+# $Revision: 1.50 $  $Date: 2001/04/25 17:25:03 $
 # **********************************************************************
 
 
@@ -91,6 +91,7 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.daynight \
 		com.bbn.openmap.layer.test \
 		com.bbn.openmap.layer.link \
+		com.bbn.openmap.layer.link.amp \
 		com.bbn.openmap.layer.link.shape \
 		com.bbn.openmap.layer.location \
 		com.bbn.openmap.layer.location.csv \
@@ -112,6 +113,7 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/daynight/*.class \
 		com/bbn/openmap/layer/test/*.class \
 		com/bbn/openmap/layer/link/*.class \
+		com/bbn/openmap/layer/link/amp/*.class \
 		com/bbn/openmap/layer/link/shape/*.class \
 		com/bbn/openmap/layer/location/*.class \
 		com/bbn/openmap/layer/location/csv/*.class \
