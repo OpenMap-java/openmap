@@ -1,3 +1,16 @@
+2004-05-24  Donald Dietrick  <dietrick@jader.local>
+
+	* Added the OptionPropertyEditor, a base class used for
+	presenting properties with a limited number of choices.  These
+	options are defined in properties, which is why the
+	PropertyConsumerPropertyEditor was written as the superclass.
+	The ComboBoxPropertyEditor is the first implementation of the
+	OptionPropertyEditor, using a JComboBox to display the choices.
+	The ColorPropertyEditor was modified to use the DrawingAttributes
+	fill paint button to display the color choice in addition to
+	showing the hex representation.  The Inspector was modified to
+	handle PropertyConsumerPropertyEditors.
+
 2004-05-14  Donald Dietrick  <dietrick@jader.local>
 
 	* Modified the ProjectionFactory to dynamically manage
