@@ -1075,6 +1075,9 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/layer/daynight/Makefile
 	com/bbn/openmap/layer/dted/Makefile
 	com/bbn/openmap/layer/etopo/Makefile
+	com/bbn/openmap/layer/esri/Makefile
+	com/bbn/openmap/layer/esri/input/Makefile
+	com/bbn/openmap/layer/esri/output/Makefile
 	com/bbn/openmap/layer/link/Makefile
 	com/bbn/openmap/layer/link/amp/Makefile
 	com/bbn/openmap/layer/link/shape/Makefile
@@ -1104,6 +1107,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/omGraphics/util/Makefile
 	com/bbn/openmap/plugin/Makefile
 	com/bbn/openmap/plugin/earthImage/Makefile
+	com/bbn/openmap/plugin/esri/Makefile
 	com/bbn/openmap/plugin/shis/Makefile
 	com/bbn/openmap/plugin/wms/Makefile
 	com/bbn/openmap/proj/Makefile
@@ -1221,6 +1225,9 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/layer/daynight/Makefile
 	com/bbn/openmap/layer/dted/Makefile
 	com/bbn/openmap/layer/etopo/Makefile
+	com/bbn/openmap/layer/esri/Makefile
+	com/bbn/openmap/layer/esri/input/Makefile
+	com/bbn/openmap/layer/esri/output/Makefile
 	com/bbn/openmap/layer/link/Makefile
 	com/bbn/openmap/layer/link/amp/Makefile
 	com/bbn/openmap/layer/link/shape/Makefile	
@@ -1250,6 +1257,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/omGraphics/util/Makefile
 	com/bbn/openmap/plugin/Makefile
 	com/bbn/openmap/plugin/earthImage/Makefile
+	com/bbn/openmap/plugin/esri/Makefile
 	com/bbn/openmap/plugin/shis/Makefile
 	com/bbn/openmap/plugin/wms/Makefile
 	com/bbn/openmap/proj/Makefile

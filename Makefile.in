@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.58 $  $Date: 2001/09/20 22:24:40 $
+# $Revision: 1.59 $  $Date: 2001/10/29 19:04:28 $
 # **********************************************************************
 
 
@@ -130,11 +130,13 @@ Layer.props =   com/bbn/openmap/layer/vpf/*.properties
 Layer.jar =	${Layer.classes} ${Layer.props}
 
 PlugIn.pkgs = 	com.bbn.openmap.plugin.earthImage \
+		com.bbn.openmap.plugin.esri \
 		com.bbn.openmap.plugin.shis \
 		com.bbn.openmap.plugin.wms
 
 PlugIn.classes = \
 		com/bbn/openmap/plugin/earthImage/*.class \
+		com/bbn/openmap/plugin/esri/*.class \
 		com/bbn/openmap/plugin/shis/*.class \
 		com/bbn/openmap/plugin/wms/*.class
 
