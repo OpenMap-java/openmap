@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Environment.java,v $
 // $RCSfile: Environment.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/23 22:48:47 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:09:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,14 +23,20 @@
 package com.bbn.openmap;
 
 import java.applet.Applet;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.awt.Color;
+import java.io.File;
+import java.util.Calendar;
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
 import javax.swing.JRootPane;
 import javax.swing.JLayeredPane;
 import javax.swing.JApplet;
 
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * An Environment is a set of property lists that together specify
@@ -767,13 +773,13 @@ public class Environment extends Properties {
      * which should be interpreted as an excuse to use the default
      * pretty blue embedded in the projection.  
      */
-    public static java.awt.Color getCustomBackgroundColor(){
+    public static Color getCustomBackgroundColor() {
 	String colorRep = get(BackgroundColor);
 	if (colorRep == null) {
 	    return null;
 	} else {
 	    try {
-		return com.bbn.openmap.layer.util.LayerUtils.parseColor(colorRep);
+		return PropUtils.parseColor(colorRep);
 	    } catch (NumberFormatException nfe){
 		return null;
 	    }

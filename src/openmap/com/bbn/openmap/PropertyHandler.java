@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.15 $
-// $Date: 2003/10/04 17:56:15 $
+// $Revision: 1.16 $
+// $Date: 2003/11/14 20:09:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 
 package com.bbn.openmap;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.util.*;
 import java.io.*;
@@ -35,6 +36,7 @@ import com.bbn.openmap.event.ProgressEvent;
 import com.bbn.openmap.event.ProgressListener;
 import com.bbn.openmap.event.ProgressSupport;
 import com.bbn.openmap.gui.ProgressListenerGauge;
+import com.bbn.openmap.plugin.PlugIn;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -571,6 +573,25 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
     }
 
     /**
+     * Get a properties object containing all the properties with the
+     * given prefix.
+     */
+    public Properties getProperties(String prefix) {
+	Properties prefixProperties = new Properties();
+	Properties props = getProperties();
+	if (prefix != null) {
+	    String scopedPrefix = prefix + ".";
+	    for (Enumeration e = props.keys() ; e.hasMoreElements() ;) {
+		String key = (String)e.nextElement();
+		if (key.startsWith(scopedPrefix)) {
+		    prefixProperties.put(key, props.get(key));
+		}
+	    }
+	}
+	return prefixProperties;
+    }
+
+    /**
      * Register an object with the prefix librarian against a specific
      * markername.
      */
@@ -685,6 +706,20 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 	removeProgressListener(plg);
     }
 
+    /**
+     * Creates a Properties object containing the current settings as
+     * defined by OpenMap components held by the MapHandler.  If the
+     * MapHandler contains a PropertyHandler, that property handler
+     * will be consulted for properties for different objects in case
+     * those objects don't know how to provide their settings
+     * correctly.
+     * @param mapHandler MapHandler containing components to use for Properties.
+     * @param ps PrintStream to write properties to, may be null if
+     * you just want the Properties object that is returned.
+     * @return Properties object containing everything written (or
+     * that would have been written, if the PrintStream is null) to
+     * PrintStream.
+     */
     public static Properties createOpenMapProperties(MapHandler mapHandler,
 						     PrintStream ps) {
 
@@ -721,19 +756,18 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 		mapBean = (MapBean) someObj;
 	    } else if (someObj instanceof LayerHandler) {
 		layerHandler = (LayerHandler) someObj;
-	    } else if (someObj instanceof Layer) {
+	    } else if (someObj instanceof Layer ||
+		       someObj instanceof PlugIn) {
 		// do nothing, layerhandler will handle
 	    } else if (someObj instanceof PropertyHandler) {
 		propertyHandler = (PropertyHandler) someObj;
 		if (infoDelegator != null) {
-		    Debug.output("Adding id to ph");
 		    propertyHandler.addProgressListener(infoDelegator);
 		}
 	    } else if (someObj instanceof InformationDelegator) {
 		infoDelegator = (InformationDelegator) someObj;
 		if (propertyHandler != null) {
 		    propertyHandler.addProgressListener((ProgressListener)someObj);
-		    Debug.output("Adding id to ph");
 		}
 	    } else {
 		// Add the rest to a component vector thingy.
@@ -755,40 +789,86 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 	ps.println("## Refer to original openmap.properties file\n## for instructions on how to modify this file.");
 	ps.println("######################################");
 
-	printMapProperties(mapBean, ps);
-	printComponentProperties(otherComponents, propertyHandler, ps);
-	printLayerProperties(layerHandler, ps);
+	printMapProperties(mapBean, ps, createdProperties);
+	printComponentProperties(otherComponents, propertyHandler, ps, createdProperties);
+	printLayerProperties(layerHandler, propertyHandler, ps, createdProperties);
+
+	if (Debug.debugging("properties") && createdProperties != null) {
+	    System.out.println(createdProperties);
+	}
 
 	return createdProperties;
     }
 
-    protected static void printMapProperties(MapBean mapBean, PrintStream ps) {
+    /**
+     * A simple helper method that writes key-value pairs to a print
+     * stream or Properties, whatever is not null.
+     */
+    protected static void printProperties(String key, String value, 
+					  PrintStream ps, 
+					  Properties createdProperties) {
+	if (ps != null) {
+	    ps.println(key + "=" + value);
+	}
+	if (createdProperties != null) {
+	    createdProperties.put(key, value);
+	}
+    }
+
+    /**
+     * A helper function to createOpenMapProperties that gets the
+     * current properties of the MapBean and prints them out to the
+     * PrintStream and the provided Properties object.
+     * @param mapBean MapBean to get parameters from.
+     * @param ps PrintStream to write properties to, may be null.
+     * @param createdProperties Properties object to store properties in, may be null.
+     */
+    protected static void printMapProperties(MapBean mapBean, PrintStream ps, 
+					     Properties createdProperties) {
 
 	//warning...hackish...
 	com.bbn.openmap.proj.Proj proj = mapBean.projection;
 
 	ps.println("\n### OpenMap initial Map Settings ###");
 	LatLonPoint llp = proj.getCenter();
-	ps.println(Environment.Latitude + "=" +
-		   Float.toString(llp.getLatitude()));
-	ps.println(Environment.Longitude + "=" + 
-		   Float.toString(llp.getLongitude()));
-	ps.println(Environment.Scale + "=" + 
-		   Float.toString(proj.getScale()));
-	ps.println(Environment.Projection + "=" + 
-		   proj.getName());
+
+	printProperties(Environment.Latitude, Float.toString(llp.getLatitude()),
+			ps, createdProperties);
+
+	printProperties(Environment.Longitude, Float.toString(llp.getLongitude()),
+			ps, createdProperties);
+
+	printProperties(Environment.Scale, Float.toString(proj.getScale()),
+			ps, createdProperties);
+
+	printProperties(Environment.Projection, proj.getName(),
+			ps, createdProperties);
+
+	printProperties(Environment.BackgroundColor, 
+			Integer.toHexString(mapBean.getBackground().getRGB()),
+			ps, createdProperties);
 
 	// Height and Width are in the OpenMapFrame properties, or
 	// whatever other component contains everything.
-
-	ps.println(Environment.BackgroundColor + "=" +
-		   Integer.toHexString(proj.getBackgroundColor().getRGB()));
-	
     }
 
+    /**
+     * A helper function to createOpenMapProperties that gets the
+     * current properties of the given components and prints them out
+     * to the PrintStream and the provided Properties object.
+     * @param components Vector of components to get parameters from.
+     * @param ph PropertyHandler that may have properties to use as a
+     * foundation for the properties for the components.  If the
+     * component can't provide properties reflecting its settings, the
+     * property handler will be consulted for properties it knows
+     * about for that component.
+     * @param ps PrintStream to write properties to, may be null.
+     * @param createdProperties Properties object to store properties in, may be null.
+     */
     protected static void printComponentProperties(Vector components,
 						   PropertyHandler ph,
-						   PrintStream ps) {
+						   PrintStream ps,
+						   Properties createdProperties) {
 
 	// this section looks at the components and trys to create
 	// the openmap.components list and then write out all the
@@ -822,7 +902,9 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 	    for (int i = 0; i < componentList.size(); i++) {
 		String markerNameClass = (String)componentList.elementAt(i) + ".class";
 		componentPropsString.append(markerNameClass + "=" +phProps.get(markerNameClass) + "\n");
-
+		if (createdProperties != null) {
+		    createdProperties.put(markerNameClass, phProps.get(markerNameClass));
+		}
 	    }
 	    componentListBuilt = true;
 	    
@@ -849,6 +931,16 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 		componentProperties.clear();
 		markerName = pc.getPropertyPrefix();
 
+		if (ph != null && markerName != null && !markerName.equals("openmap")) {
+		    // Gets the properties for the prefix that the
+		    // property handler was set with.  This should
+		    // handle components that aren't good
+		    // PropertyConsumers.
+		    componentProperties = ph.getProperties(markerName);
+		} else {
+		    componentProperties.clear();
+		}
+
 		if (!componentListBuilt) {
 		    if (markerName != null) {
 			componentMarkerString.append(" " + markerName);
@@ -860,17 +952,29 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 		
 		    componentPropsString.append(markerName + ".class=" +
 						someObj.getClass().getName() + "\n");
+
+		    if (createdProperties != null) {
+			createdProperties.put(markerName, someObj.getClass().getName());
+		    }
 		}
 		
 		pc.getProperties(componentProperties);
-		
+
+		TreeMap orderedProperties = new TreeMap(componentProperties);
+
 		if (componentProperties.size() > 0) {
 		    componentPropsString.append("####\n");
-		    Enumeration keys = componentProperties.keys();
-		    while (keys.hasMoreElements()) {
-			String key = (String) keys.nextElement();
+		    for (Iterator keys = orderedProperties.keySet().iterator(); keys.hasNext();) {
+			String key = (String) keys.next();
 			String value = componentProperties.getProperty(key);
-			componentPropsString.append(key + "=" + value + "\n");
+
+			if (value != null) {
+			    componentPropsString.append(key + "=" + value + "\n");
+			}
+
+			if (createdProperties != null && value != null) {
+			    createdProperties.put(key, value);
+			}
 		    }
 		}
 	    } else if (!componentListBuilt) {
@@ -878,20 +982,44 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 		componentMarkerString.append(" " + markerName);
 		componentPropsString.append(markerName + ".class=" +
 					    someObj.getClass().getName() + "\n");
+		if (createdProperties != null) {
+		    createdProperties.put(markerName, someObj.getClass().getName());
+		}
 	    }
 	}
 	
-	ps.println("\n\n### OpenMap Components ###");
-	ps.println(componentMarkerString.toString());
+	if (ps != null) {
+	    ps.println("\n\n### OpenMap Components ###");
+	    ps.println(componentMarkerString.toString());
 
-	ps.println("\n### OpenMap Component Properties ###");
-	// list created, add the actual component properties
-	ps.println(componentPropsString.toString());
-	ps.println("### End Component Properties ###");
+	    ps.println("\n### OpenMap Component Properties ###");
+	    // list created, add the actual component properties
+	    ps.println(componentPropsString.toString());
+	    ps.println("### End Component Properties ###");
+	}
+
+	if (createdProperties != null) {
+	    createdProperties.put(PropertyHandler.componentProperty, componentMarkerString.substring(PropertyHandler.componentProperty.length() + 1));
+	}
     }
 	
+    /**
+     * A helper function to createOpenMapProperties that gets the
+     * current properties of the layers in the LayerHandler and prints them out
+     * to the PrintStream and the provided Properties object.
+     * @param layerHandler LayerHandler to get layers from.
+     * @param ph PropertyHandler that may have properties to use as a
+     * foundation for the properties for the components.  If the
+     * component can't provide properties reflecting its settings, the
+     * property handler will be consulted for properties it knows
+     * about for that component.
+     * @param ps PrintStream to write properties to, may be null.
+     * @param createdProperties Properties object to store properties in, may be null.
+     */
     protected static void printLayerProperties(LayerHandler layerHandler,
-					       PrintStream ps) {
+					       PropertyHandler ph,
+					       PrintStream ps,
+					       Properties createdProperties) {
 
 	// Keep track of the LayerHandler.  Use it to get the layers,
 	// which can be used to get all the marker names for the
@@ -900,8 +1028,19 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 	// the layers to get their properties, since they all are
 	// PropertyConsumers.
 	String markerName;
-	StringBuffer layerMarkerString = new StringBuffer("openmap.layers=");
-	StringBuffer startUpLayerMarkerString = new StringBuffer("openmap.startUpLayers=");
+
+	String layerMarkerStringKey = 
+	    Environment.OpenMapPrefix + "." + LayerHandler.layersProperty;
+
+	StringBuffer layerMarkerString = 
+	    new StringBuffer(layerMarkerStringKey + "=");
+
+	String startUpLayerMarkerStringKey = 
+	    Environment.OpenMapPrefix + "." + LayerHandler.startUpLayersProperty;
+
+	StringBuffer startUpLayerMarkerString = 
+	    new StringBuffer(startUpLayerMarkerStringKey + "=");
+
 	StringBuffer layerPropertiesString = new StringBuffer();
 
 	Properties layerProperties = new Properties();
@@ -910,13 +1049,22 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 	int numLayers = 0;
 
 	for (int i = 0; i < layers.length; i++) {
-	    layerProperties.clear();
 
 	    markerName = layers[i].getPropertyPrefix();
 
 	    if (markerName == null) {
 		markerName = "layer" + (numLayers++);
 		layers[i].setPropertyPrefix(markerName);
+	    }
+
+	    if (ph != null) {
+		// Gets the properties for the prefix that the
+		// property handler was set with.  This should
+		// handle components that aren't good
+		// PropertyConsumers.
+		layerProperties = ph.getProperties(markerName);
+	    } else {
+		layerProperties.clear();
 	    }
 
 	    layerMarkerString.append(" " + markerName);
@@ -929,23 +1077,34 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
 	    layerPropertiesString.append("### -" + markerName +
 					 "- layer properties\n");
 
-	    if (layerProperties.size() > 0) {
-		Enumeration keys = layerProperties.keys();
-		while (keys.hasMoreElements()) {
-		    String key = (String) keys.nextElement();
-		    String value = layerProperties.getProperty(key);
+	    TreeMap orderedProperties = new TreeMap(layerProperties);
+	    for (Iterator keys = orderedProperties.keySet().iterator(); keys.hasNext();) {
+		String key = (String) keys.next();
+		String value = layerProperties.getProperty(key);
+
+		if (value != null) {
 		    layerPropertiesString.append(key + "=" + value + "\n");
+		}
+
+		if (createdProperties != null && value != null) {
+		    createdProperties.put(key, value);
 		}
 	    }
 
 	    layerPropertiesString.append("### end of -" + markerName + "- properties\n\n");
 	}
 
-	ps.println("\n### OpenMap Layers ###");
-	ps.println(layerMarkerString.toString());
- 	ps.println(startUpLayerMarkerString.toString());
- 	ps.println(layerPropertiesString.toString());
+	if (ps != null) {
+	    ps.println("\n### OpenMap Layers ###");
+	    ps.println(layerMarkerString.toString());
+	    ps.println(startUpLayerMarkerString.toString());
+	    ps.println(layerPropertiesString.toString());
+	}
 
+	if (createdProperties != null) {
+	    createdProperties.put(layerMarkerStringKey, layerMarkerString.substring(layerMarkerStringKey.length() + 1));
+	    createdProperties.put(startUpLayerMarkerStringKey, startUpLayerMarkerString.substring(startUpLayerMarkerStringKey.length() + 1));
+	}
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/09/04 18:12:50 $
+// $Revision: 1.6 $
+// $Date: 2003/11/14 20:09:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -165,6 +165,8 @@ public class MapBean extends JComponent
      */
     protected MapBeanRepaintPolicy repaintPolicy = null;
 
+    public final static Color DEFAULT_BACKGROUND_COLOR = new Color(191,239,255);
+
     /**
      * Return the OpenMap Copyright message.
      * @return String Copyright
@@ -183,6 +185,8 @@ public class MapBean extends JComponent
 	if (! suppressCopyright) {
 	    Debug.output(copyrightNotice);
 	}
+
+	background = DEFAULT_BACKGROUND_COLOR;
 
 	// Don't need one for every MapBean, just the first one.
 	suppressCopyright = true;
@@ -207,7 +211,8 @@ public class MapBean extends JComponent
 		});
 	}
 
-	setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
+	setPreferredSize(new Dimension(projection.getWidth(), 
+				       projection.getHeight()));
     }
 
     /**
@@ -487,7 +492,12 @@ public class MapBean extends JComponent
      * @param color java.awt.Color.  
      */
     public void setBackgroundColor(Color color) {
-	setBckgrnd(color);
+	setBackground(color);
+    }
+
+    public void setBackground(Color color) {
+	super.setBackground(color);
+	setBckgrnd((Paint)color);
     }
 
     /**
@@ -499,11 +509,6 @@ public class MapBean extends JComponent
      */
     public void setBckgrnd(Paint paint) {
 	setBufferDirty(true);
-
-	// This doesn't seem to the be right behavior.
-// 	projection.setBackgroundColor(color);
-// 	Environment.set(Environment.BackgroundColor,
-// 			Integer.toString(color.getRGB()));
 
 	// Instead, do this.
 	Paint oldBackground = background;
@@ -522,12 +527,13 @@ public class MapBean extends JComponent
      *
      * @return color java.awt.Color.  
      */
-    public Color getBackgroundColor() {
-	Paint ret = getBackground();
+    public Color getBackground() {
+	Paint ret = getBckgrnd();
 	if (ret instanceof Color) {
 	    return (Color)ret;
 	}
-	return null;
+
+	return super.getBackground();
     }
 
     /**
@@ -541,7 +547,8 @@ public class MapBean extends JComponent
     public Paint getBckgrnd() {
 	Paint ret = background;
 	if (ret == null) {
-	    ret = projection.getBackgroundColor();
+// 	    ret = projection.getBackgroundColor();
+	    ret = super.getBackground();
 	}
 	return ret;
     }
@@ -561,9 +568,7 @@ public class MapBean extends JComponent
     public void setProjection(Projection aProjection) {
 	if (aProjection != null) {
 	    setBufferDirty(true);
-	    Color bc = projection.getBackgroundColor();
 	    projection = (Proj)aProjection;
-	    projection.setBackgroundColor(bc);
 	    setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
 	    fireProjectionChanged();
 	}
@@ -777,7 +782,8 @@ public class MapBean extends JComponent
 	pcl.propertyChange(new PropertyChangeEvent(this, CursorProperty, 
 						   this.getCursor(), this.getCursor()));
 	pcl.propertyChange(new PropertyChangeEvent(this, BackgroundProperty,
-						   this.getBckgrnd(), this.getBckgrnd()));
+						   this.getBckgrnd(), 
+						   this.getBckgrnd()));
     }
 
     protected final void debugmsg(String msg) {
@@ -828,7 +834,7 @@ public class MapBean extends JComponent
   	    g.setClip(0, 0, getWidth(), getHeight());
 	}
 
-	projection.drawBackground(g);
+	projection.drawBackground((Graphics2D)g, getBckgrnd());
 	super.paintChildren(g);
 
 	// Take care of the PaintListeners...

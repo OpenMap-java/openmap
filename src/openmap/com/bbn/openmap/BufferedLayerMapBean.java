@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/BufferedLayerMapBean.java,v $
 // $RCSfile: BufferedLayerMapBean.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/14 19:59:01 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:09:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -58,7 +58,7 @@ import com.bbn.openmap.layer.BufferedLayer;
  */
 public class BufferedLayerMapBean extends BufferedMapBean {
 
-    protected BufferedLayer bufLayer;
+    protected BufferedLayer bufferedLayer;
 
     protected boolean DEBUG = false;
 
@@ -67,10 +67,6 @@ public class BufferedLayerMapBean extends BufferedMapBean {
      */
     public BufferedLayerMapBean() {
 	super();
-	bufLayer = new BufferedLayer();
-	addPropertyChangeListener(bufLayer);
-	bufLayer.setName("Background Layers");
-
 	DEBUG = Debug.debugging("mapbean");
     }
 
@@ -81,13 +77,27 @@ public class BufferedLayerMapBean extends BufferedMapBean {
      * @param color java.awt.Color.  
      */
     public void setBackgroundColor(Color color) {
-	bufLayer.setBackgroundColor(color);
-	super.setBackgroundColor(color);
+	super.setBackground(color);
+	getBufferedLayer().setBackground(color);
     }
 
     public void setBckgrnd(Paint paint) {
-	bufLayer.setBckgrnd(paint);
 	super.setBckgrnd(paint);
+	getBufferedLayer().setBckgrnd(paint);
+    }
+
+    public synchronized void setBufferedLayer(BufferedLayer bl) {
+	bufferedLayer = bl;
+    }
+
+    public synchronized BufferedLayer getBufferedLayer() {
+	if (bufferedLayer == null) {
+	    bufferedLayer = new BufferedLayer();
+	    addPropertyChangeListener(bufferedLayer);
+	    bufferedLayer.setName("Background Layers");
+	}
+
+	return bufferedLayer;
     }
 
     /**
@@ -99,9 +109,11 @@ public class BufferedLayerMapBean extends BufferedMapBean {
 	super.setMapBeanRepaintPolicy(mbrp);
 
 	MapBeanRepaintPolicy mbrp2 = (MapBeanRepaintPolicy)mbrp.clone();
-	MapBean mb = bufLayer.getMapBean();
-	mb.setMapBeanRepaintPolicy(mbrp2);
-	mbrp2.setMap(mb);
+	MapBean mb = getBufferedLayer().getMapBean();
+	if (mb != null) {
+	    mb.setMapBeanRepaintPolicy(mbrp2);
+	    mbrp2.setMap(mb);
+	}
     }
 
     /**
@@ -128,6 +140,12 @@ public class BufferedLayerMapBean extends BufferedMapBean {
 
 	boolean oldChange = getDoContainerChange();
 	setDoContainerChange(false);
+
+	BufferedLayer bufLayer;
+
+	synchronized (this) {
+	    bufLayer = getBufferedLayer();
+	}
 
 	// use LayerEvent.REPLACE when you want to remove all current layers
 	// add a new set
@@ -241,6 +259,11 @@ public class BufferedLayerMapBean extends BufferedMapBean {
 	Component[] comps = this.getComponents();
 	int ncomponents = comps.length;
 	int nBufLayerComponents = 0;
+
+	BufferedLayer bufLayer;
+	synchronized (this) {
+	    bufLayer = getBufferedLayer();
+	}
 
 	if (ncomponents == 0 || comps[ncomponents - 1] != bufLayer) {
 	    super.changeLayers(e);

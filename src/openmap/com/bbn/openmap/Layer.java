@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.11 $
-// $Date: 2003/10/10 18:33:12 $
+// $Revision: 1.12 $
+// $Date: 2003/11/14 20:09:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -323,6 +323,20 @@ public abstract class Layer extends JComponent
 	setRemoveable(PropUtils.booleanFromProperties(props, realPrefix + RemoveableProperty, removeable));
 
 	autoPalette = PropUtils.booleanFromProperties(props, realPrefix + AutoPaletteProperty, autoPalette);
+    }
+
+    public void setName(String name) {
+	super.setName(name);
+
+	BeanContext bc = getBeanContext();
+	if (bc != null && bc instanceof MapHandler) {
+	    LayerHandler lh = 
+		(LayerHandler)((MapHandler)bc).get("com.bbn.openmap.LayerHandler");
+
+	    if (lh != null) {
+		lh.updateLayerLabels();
+	    }
+	}
     }
 
     /**
@@ -1222,6 +1236,9 @@ public abstract class Layer extends JComponent
 		    }
 		};
 	    setWindowSupport(ws);
+	} else {
+	    ws.setTitle(getName());
+	    ws.setContent(getGUI());
 	}
 
 	if (ws != null) {
