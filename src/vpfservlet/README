@@ -17,6 +17,11 @@ out of his way to learn about specific J2EE capabilities.
 Each installation will need to modify web.xml to reflect the database
 name and path to the data for their server.
 
+To build the code, the build.xml file needs to be modified so the
+tomcat home directory is set.  You might have to set the servlet.jar
+file name (servlet-api.jar for tomcat 5) depending on the version of
+tomcat you are using.
+
 Among the improvements needed:
   HTML generation code should move to JSPs wherever possible, java
 code should just provide access to the JSP layer.

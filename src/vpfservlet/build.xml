@@ -10,14 +10,18 @@
 		<property name="vpf.classes" value="./WEB-INF/classes"/>
 
 		<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR TOMCAT INSTALLATION -->
-		<property name="tomcat.home" value="/wjeuerle/jakarta-tomcat-4.0.1"/>
+		<!--<property name="tomcat.home" value="/usr/local/java/jakarta-tomcat-4.0.1"/>-->
+		<property name="tomcat.home" value="/usr/local/java/jakarta-tomcat-5.0.18"/>
 
 		<property name="javac.excludes" value="**/*.in, **/Makefile, **/*.bat,
 		                                       **/ChangeLog, **/*.html, **/*.txt,
 						       **/*.*.txt, **/*.dat,
 						       **/*.pl" />
-
-		<property name="tomcat.jar" value="${tomcat.home}/common/lib/servlet.jar"/>
+                <!-- The first jar is the tomcat 4 version
+                     (servlet.jar), the second is the tomcat 5 version (servlet-api.jar).
+                     Use the one that fits what you have.  -->
+		<!--<property name="tomcat.jar" value="${tomcat.home}/common/lib/servlet.jar"/>-->
+		<property name="tomcat.jar" value="${tomcat.home}/common/lib/servlet-api.jar"/>
 		<property name="openmap.jar" value="${openmap.home}/lib/openmap.jar"/>
                 <property name="vpf.jar" value="${vpf.lib_dir}/openmap.jar"/>
 	</target>
