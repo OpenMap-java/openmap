@@ -1,0 +1,9 @@
+Included in this directory are two batch files for compiling and removing
+OpenMap Objects in a Windows/MS-DOS environment.  "buildall.bat" compiles
+the entire source tree.  It sets a number of environment variables at the 
+beginning of the file to point to software locations and set compiler flags.
+It then runs through the entire source tree and compiles all of the *.java
+files.
+
+"removeall.bat" runs through the entire tree, removing all of the *.class files
+that it finds.
