@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/03/10 22:04:54 $
+// $Revision: 1.5 $
+// $Date: 2003/07/28 20:13:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -336,7 +336,7 @@ public class OMGraphicHandlerLayer extends Layer {
      * LayerWorker will call workerComplete() which will call
      * repaint() on this layer.
      */
-    public void doPrepare() {
+    public synchronized void doPrepare() {
 	// If there isn't a worker thread working on a projection
 	// changed or other doPrepare call, then create a thread that
 	// will do the real work. If there is a thread working on
