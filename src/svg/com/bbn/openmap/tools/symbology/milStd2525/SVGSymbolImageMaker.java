@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: SVGSymbolImageMaker.java,v $
-//$Revision: 1.2 $
-//$Date: 2004/12/10 14:05:17 $
+//$Revision: 1.3 $
+//$Date: 2005/01/10 16:03:12 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -67,8 +67,10 @@ public class SVGSymbolImageMaker extends AbstractSymbolImageMaker {
             rasterizer = new SVGRasterizer(fileURL);
             return new ImageIcon(rasterizer.createBufferedImage(di));
         } catch (TranscoderException e) {
+            Debug.output("FYI (exception handled):");
             e.printStackTrace();
         } catch (IOException e) {
+            Debug.output("FYI (exception handled):");
             e.printStackTrace();
         } catch (NullPointerException npe) {
             if (Debug.debugging("symbology")) {
