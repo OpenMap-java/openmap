@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/LayerUtils.java,v $
 // $RCSfile: LayerUtils.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/04 14:27:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,11 +28,13 @@ package com.bbn.openmap.layer.util;
 import java.awt.Color;
 import java.awt.Paint;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
 /* OpenMap */
+import com.bbn.openmap.Environment;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 
@@ -358,7 +360,7 @@ public class LayerUtils {
 	    if (DEBUG) Debug.output("LayerUtil.getROFOU(): checking in general classpath");
 	    retval = Thread.currentThread().getContextClassLoader().getResource(name);
 	}
-	if (retval == null && !com.bbn.openmap.Environment.isApplet()) {
+	if (retval == null && !Environment.isApplet()) {
 	    // Check the classpath plus the share directory, which may
 	    // be in the openmap.jar file or in the development
 	    // environment.
@@ -366,32 +368,39 @@ public class LayerUtils {
 	    retval = ClassLoader.getSystemResource("share/" + name);
 	}
 
+	if (retval == null && Environment.isApplet()) {
+	    if (DEBUG) Debug.output("LayerUtil.getROFOU(): checking with URLClassLoader");
+	    URL[] cba = new URL[1];
+	    cba[0] =  Environment.getApplet().getCodeBase();
+	    URLClassLoader ucl = URLClassLoader.newInstance(cba);
+  	    retval = ucl.getResource(name);
+	}
+
 	// If there was no resource by that name available
 	if (retval == null) {
 	    if (DEBUG) Debug.output("LayerUtil.getROFOU(): not found as resource");
 
-	    java.io.File file = new java.io.File(name);
-	    if (file.exists()) {
-		retval = file.toURL();
-		if (DEBUG) Debug.output("LayerUtil.getROFOU(): found as file :)");
-
-	    } else {
-		// Otherwise treat it as a raw URL.
-		if (DEBUG) Debug.output("LayerUtil.getROFOU(): Not a file, checking as URL");
-		retval = new URL(name);
-		try {
+	    try {
+		java.io.File file = new java.io.File(name);
+		if (file.exists()) {
+		    retval = file.toURL();
+		    if (DEBUG) Debug.output("LayerUtil.getROFOU(): found as file :)");
+		} else {
+		    // Otherwise treat it as a raw URL.
+		    if (DEBUG) Debug.output("LayerUtil.getROFOU(): Not a file, checking as URL");
+		    retval = new URL(name);
 		    java.io.InputStream is = retval.openStream();
 		    is.close();
 		    if (DEBUG) Debug.output("LayerUtil.getROFOU(): OK as URL :)");
-		} catch (java.io.IOException ioe) {
-		    retval = null;
-		} catch (java.security.AccessControlException ace) {
-		    Debug.error("LayerUtils: AccessControlException trying to access " + name);
-		    retval = null;
-		} catch (Exception e) {
-		    Debug.error("LayerUtils: caught exception " + e.getMessage());
-		    retval = null;
 		}
+	    } catch (java.io.IOException ioe) {
+		retval = null;
+	    } catch (java.security.AccessControlException ace) {
+		Debug.error("LayerUtils: AccessControlException trying to access " + name);
+		retval = null;
+	    } catch (Exception e) {
+		Debug.error("LayerUtils: caught exception " + e.getMessage());
+		retval = null;
 	    }
 	}
 
