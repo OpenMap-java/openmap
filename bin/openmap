@@ -86,9 +86,15 @@ do
     fi
 done
 
-LOCALCLASSPATH=$LOCALCLASSPATH:${OPENMAP_HOME}/share
-CLASSPATH=${OPENMAP_HOME}:${CLASSPATH}
-LOCALCLASSPATH=${CLASSPATH}:${OPENMAP_HOME}/classes/openmap:${OPENMAP_HOME}/classes/corba_vb$LOCALCLASSPATH
+# Add OPENMAP_HOME to catch changes to openmap.properties file, and
+# put the classes directories in front so that modified, compiled
+# classes will be picked up even if the openmap.jar is not re-created.
+
+LOCALCLASSPATH=${OPENMAP_HOME}/classes/openmap:${OPENMAP_HOME}/classes/omcorba_vb:$LOCALCLASSPATH:${OPENMAP_HOME}:${OPENMAP_HOME}/share
+
+if [ "$CLASSPATH" != "" ] ; then
+  LOCALCLASSPATH=$CLASSPATH:$LOCALCLASSPATH
+fi
 
 # For Cygwin, switch paths to Windows format before running java
 if $cygwin; then
