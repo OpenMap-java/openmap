@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,32 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDLayer.java,v $
 // $RCSfile: DTEDLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/09/17 19:34:33 $
+// $Revision: 1.10 $
+// $Date: 2004/10/12 17:13:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
-
-
 package com.bbn.openmap.layer.dted;
 
-
 /*  Java Core  */
-import java.awt.Component;
-import java.awt.GridLayout;
-import java.awt.Point;
 import java.awt.event.*;
 import java.io.*;
-import java.net.URL;
-import java.util.Properties;
-import java.util.StringTokenizer;
 
 /*  OpenMap  */
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.*;
@@ -52,111 +42,127 @@ import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
-/** 
- * The DTEDLayer fills the screen with DTED data.  To view the DTED
- * iamges, the projection has to be set in the ARC projection, which
- * OpenMap calls the CADRG projection. In Gesture mode, clicking on
- * the map will cause the DTEDLayer to place a point on the window and
- * show the elevation of that point.  The Gesture response is not
- * dependent on the scale or projection of the screen.<P>
- *
+/**
+ * The DTEDLayer fills the screen with DTED data. To view the DTED
+ * iamges, the projection has to be set in a Equal ARC projection,
+ * which OpenMap calls the CADRG projection or the LLXY projection. In
+ * Gesture mode, clicking on the map will cause the DTEDLayer to place
+ * a point on the window and show the elevation of that point. The
+ * Gesture response is not dependent on the scale or projection of the
+ * screen.
+ * <P>
+ * 
  * The DTEDLayer uses the DTEDCacheManager to get the images it needs.
  * The DTEDLayer receives projection change events, and then asks the
  * cache manager for the images it needs based on the new projection.
- *
- * The DTEDLayer also relies on properties to set its
- * variables, such as the dted frame paths (there can be several at a
- * time), the opaqueness of the frame images, number of colors to use,
- * and some other display variables.  The DTEDLayer properties
- * look something like this:<P>
- *
+ * 
+ * The DTEDLayer also relies on properties to set its variables, such
+ * as the dted frame paths (there can be several at a time), the
+ * opaqueness of the frame images, number of colors to use, and some
+ * other display variables. The DTEDLayer properties look something
+ * like this:
+ * <P>
+ * 
  * NOTE: Make sure your DTED file and directory names are in lower
- * case.  You can use the com.bbn.openmap.layer.rpf.ChangeCase class
- * to make modifications if necessary.  <P>
+ * case. You can use the com.bbn.openmap.util.wanderer.ChangeCase
+ * class to make modifications if necessary.
+ * <P>
+ * 
  * <pre>
- * #------------------------------
- * # Properties for DTEDLayer
- * #------------------------------
- * # This property should reflect the paths to the dted level 0 and 1 directories, separated by a semicolon.
- * dted.paths=/usr/local/matt/data/dted;/cdrom/cdrom0/dted
  * 
- * # This property should reflect the paths to the dted level 2 directories
- * dted.level2.paths=/usr/local/matt/data/dted_level2
+ *  
+ *   
+ *    #------------------------------
+ *    # Properties for DTEDLayer
+ *    #------------------------------
+ *    # This property should reflect the paths to the dted level 0, 1 and newer 2 (file extension .dt2) data directories, separated by a semicolon.
+ *    dted.paths=/usr/local/matt/data/dted;/cdrom/cdrom0/dted
+ *    
+ *    # This property should reflect the paths to old dted level 2 data directories (file extension .dt1)
+ *    dted.level2.paths=/usr/local/matt/data/dted_level2
+ *    
+ *    # Number between 0-255: 0 is transparent, 255 is opaque
+ *    dted.opaque=255
+ *    
+ *    # Number of colors to use on the maps - 16, 32, 216
+ *    dted.number.colors=216
+ *    
+ *    # Level of DTED data to use 0, 1, 2
+ *    dted.level=0
+ *    
+ *    # Type of display for the data
+ *    # 0 = no shading at all
+ *    # 1 = greyscale slope shading
+ *    # 2 = band shading, in meters
+ *    # 3 = band shading, in feet
+ *    # 4 = subframe testing
+ *    # 5 = elevation, colored
+ *    dted.view.type=5
+ *    
+ *    # Contrast setting, 1-5
+ *    dted.contrast=3
+ *    
+ *    # height (meters or feet) between color changes in band shading
+ *    dted.band.height=25
+ *    
+ *    # Minumum scale to display images. Larger numbers mean smaller scale, 
+ *    # and are more zoomed out.
+ *    dted.min.scale=20000000
+ *    
+ *    # Delete the cache if the layer is removed from the map.
+ *    dted.kill.cache=true
+ *    # Number of frames to hold in the cache. The default is 
+ *    # DTEDFrameCache.FRAME_CACHE_SIZE, which is 15 to help smaller systems.  Better
+ *    # caching happens, the larger the number.
+ *    dted.cacheSize=40
+ *    #-------------------------------------
+ *    # End of properties for DTEDLayer
+ *    #-------------------------------------
+ *    
+ *   
+ *  
+ * </pre>
  * 
- * # Number between 0-255: 0 is transparent, 255 is opaque
- * dted.opaque=255
- * 
- * # Number of colors to use on the maps - 16, 32, 216
- * dted.number.colors=216
- * 
- * # Level of DTED data to use 0, 1, 2
- * dted.level=0
- * 
- * # Type of display for the data
- * # 0 = no shading at all
- * # 1 = greyscale slope shading
- * # 2 = band shading, in meters
- * # 3 = band shading, in feet
- * # 4 = subframe testing
- * # 5 = elevation, colored
- * dted.view.type=5
- * 
- * # Contrast setting, 1-5
- * dted.contrast=3
- * 
- * # height (meters or feet) between color changes in band shading
- * dted.band.height=25
- * 
- * # Minumum scale to display images. Larger numbers mean smaller scale, 
- * # and are more zoomed out.
- * dted.min.scale=20000000
- * 
- * # Delete the cache if the layer is removed from the map.
- * dted.kill.cache=true
- * # Number of frames to hold in the cache. The default is 
- * # DTEDFrameCache.FRAME_CACHE_SIZE, which is 15 to help smaller systems.  Better
- * # caching happens, the larger the number.
- * dted.cacheSize=40
- * #-------------------------------------
- * # End of properties for DTEDLayer
- * #-------------------------------------
- * </pre> 
- *
  * @see com.bbn.openmap.layer.rpf.ChangeCase
  */
-public class DTEDLayer extends Layer 
-    implements ActionListener, MapMouseListener, Serializable {
-    
+public class DTEDLayer extends Layer implements ActionListener,
+        MapMouseListener, Serializable {
+
     /** The cache manager. */
     protected transient DTEDCacheManager cache = null;
     /** The graphics list used for display. */
     protected OMGraphicList omGraphics;
     /**
      * Set when the projection has changed while a swing worker is
-     * gathering graphics, and we want him to stop early. 
+     * gathering graphics, and we want him to stop early.
      */
     protected boolean cancelled = false;
     /**
-     * The paths to the DTED Level 0, 1 directories, telling where
-     * the data is. 
+     * The paths to the DTED Level 0, 1 directories, telling where the
+     * data is. Newer level 2 data, with the .dt2 file extensions,
+     * should be set in this path property.
      */
     protected String[] paths;
     /**
-     * The paths to the DTED Level 2 directories, telling where the
-     * data is. 
+     * Because older DTED Level 2 data has the same name extension as
+     * Level 1 data, a separate array of pathnames is available for
+     * that old data. Level 0 and 1 data should be lumped together, or
+     * listed in the same array of paths. Newer level 2 data with the
+     * .dt2 extension should be listed in the regular dted path
+     * property with the level 0 and 1 data.
      */
     protected String[] paths2;
     /**
-     * The level of DTED to use.  Level 0 is 1km post spacing, Level
-     * 1 is 100m post spacing. Level 2 is 30m post spacing 
+     * The level of DTED to use. Level 0 is 1km post spacing, Level 1
+     * is 100m post spacing. Level 2 is 30m post spacing
      */
     protected int dtedLevel = DTEDFrameSubframe.LEVEL_0;
     /**
-     * The display type for the dted images.  Slope shading is
+     * The display type for the dted images. Slope shading is
      * greyscale terrain modeling with highlights and shading, with
-     * the 'sun' being in the NorthWest.  Colored Elevation shading is
+     * the 'sun' being in the NorthWest. Colored Elevation shading is
      * the same thing, except colors are added to indicate the
-     * elevation.  Band shading colors the pixels according to a range
+     * elevation. Band shading colors the pixels according to a range
      * of elevations.
      */
     protected int viewType = DTEDFrameSubframe.NOSHADING;
@@ -188,50 +194,47 @@ public class DTEDLayer extends Layer
     private String level1Command = "setLevelTo1";
     private String level2Command = "setLevelTo2";
 
-    /** The thread worker used to create the DTED images. */    
+    /** The thread worker used to create the DTED images. */
     DTEDWorker currentWorker;
     /** The elevation spot used in the gesture mode. */
     DTEDLocation location = null;
 
     /**
-     * Instances of this class are used to display elevation labels on the
-     * map.
+     * Instances of this class are used to display elevation labels on
+     * the map.
      */
     static class DTEDLocation {
         OMText text;
         OMRect dot;
 
         public DTEDLocation(int x, int y) {
-            text = new OMText(x+10, y, 
-                              (String) null, 
-                              (java.awt.Font) null, 
-                              OMText.JUSTIFY_LEFT);
+            text = new OMText(x + 10, y, (String) null, (java.awt.Font) null, OMText.JUSTIFY_LEFT);
 
-            dot = new OMRect(x-1, y-1, x+1, y+1);
+            dot = new OMRect(x - 1, y - 1, x + 1, y + 1);
             text.setLinePaint(java.awt.Color.red);
             dot.setLinePaint(java.awt.Color.red);
         }
 
         /**
          * Set the text to the elevation text.
-         *
+         * 
          * @param elevation elevation of the point in meters.
          */
         public void setElevation(int elevation) {
             // m - ft conversion
             if (elevation < -100)
-                text.setData ("No Data Here");
+                text.setData("No Data Here");
             else {
-                int elevation_ft = (int)((float)elevation * 3.280840f);
+                int elevation_ft = (int) ((float) elevation * 3.280840f);
                 text.setData(elevation + " m / " + elevation_ft + " ft");
             }
         }
 
         /** Set the x-y location of the combo in the screen */
         public void setLocation(int x, int y) {
-            text.setX(x+10);
+            text.setX(x + 10);
             text.setY(y);
-            dot.setLocation(x-1, y-1, x+1, y+1);
+            dot.setLocation(x - 1, y - 1, x + 1, y + 1);
         }
 
         public void render(java.awt.Graphics g) {
@@ -251,16 +254,18 @@ public class DTEDLayer extends Layer
             super();
         }
 
-        /** 
-         * Compute the value to be returned by the <code>get</code> method. 
+        /**
+         * Compute the value to be returned by the <code>get</code>
+         * method.
          */
         public Object construct() {
-            Debug.message("dted", getName()+"|DTEDWorker.construct()");
+            Debug.message("dted", getName() + "|DTEDWorker.construct()");
             fireStatusUpdate(LayerStatusEvent.START_WORKING);
             try {
                 return prepare();
             } catch (OutOfMemoryError e) {
-                String msg = getName()+"|DTEDLayer.DTEDWorker.construct(): "+e;
+                String msg = getName() + "|DTEDLayer.DTEDWorker.construct(): "
+                        + e;
                 Debug.error(msg);
                 fireRequestMessage(new InfoDisplayEvent(this, msg));
                 fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
@@ -270,8 +275,9 @@ public class DTEDLayer extends Layer
         }
 
         /**
-         * Called on the event dispatching thread (not on the worker thread)
-         * after the <code>construct</code> method has returned.
+         * Called on the event dispatching thread (not on the worker
+         * thread) after the <code>construct</code> method has
+         * returned.
          */
         public void finished() {
             workerComplete(this);
@@ -280,7 +286,7 @@ public class DTEDLayer extends Layer
     }
 
     /**
-     * The default constructor for the Layer.  All of the attributes
+     * The default constructor for the Layer. All of the attributes
      * are set to their default values.
      */
     public DTEDLayer() {
@@ -288,24 +294,24 @@ public class DTEDLayer extends Layer
     }
 
     /**
-     * The default constructor for the Layer.  All of the attributes
+     * The default constructor for the Layer. All of the attributes
      * are set to their default values.
-     *
+     * 
      * @param pathsToDTEDDirs paths to the DTED directories that hold
-     * level 0 and 1 data.  
+     *        level 0 and 1 data.
      */
     public DTEDLayer(String[] pathsToDTEDDirs) {
         this(pathsToDTEDDirs, null);
     }
 
-   /**
-     * The default constructor for the Layer.  All of the attributes
+    /**
+     * The default constructor for the Layer. All of the attributes
      * are set to their default values.
-     *
+     * 
      * @param pathsToDTEDDirs paths to the DTED directories that hold
-     * level 0 and 1 data.  
+     *        level 0 and 1 data.
      * @param pathsToDTED2Dirs paths to the DTED directories that hold
-     * level 2 data.  
+     *        level 2 data.
      */
     public DTEDLayer(String[] pathsToDTEDDirs, String[] pathsToDTED2Dirs) {
         setName("DTED");
@@ -315,8 +321,8 @@ public class DTEDLayer extends Layer
     }
 
     /**
-     * Set the paths to the DTED directories.  The DTED2 directories
-     * are for DTED Level 2 data files that end in .dt1.  If NIMA
+     * Set the paths to the DTED directories. The DTED2 directories
+     * are for DTED Level 2 data files that end in .dt1. If NIMA
      * changes the level 2 appendix, then the regular path will be
      * changed back to look there for .dt2 files.
      */
@@ -335,8 +341,8 @@ public class DTEDLayer extends Layer
     }
 
     /**
-     * Get the paths to the Level 2 DTED directories.  This is a
-     * workaround for dted level 2 data that ends in .dt1.  If NIMA
+     * Get the paths to the Level 2 DTED directories. This is a
+     * workaround for dted level 2 data that ends in .dt1. If NIMA
      * changes the level 2 data to have the .dt2 appendix, then the
      * level 2 data will be able to be listed in the regular dted
      * path.
@@ -359,7 +365,7 @@ public class DTEDLayer extends Layer
 
     /**
      * Sets the current graphics list to the given list.
-     *
+     * 
      * @param aList a list of OMGraphics
      */
     public synchronized void setGraphicList(OMGraphicList aList) {
@@ -388,32 +394,42 @@ public class DTEDLayer extends Layer
         super.setProperties(prefix, properties);
         prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        paths = PropUtils.initPathsFromProperties(properties, prefix + DTEDPathsProperty, paths);
-        paths2 = PropUtils.initPathsFromProperties(properties, prefix + DTED2PathsProperty, paths2);
-        setOpaqueness(PropUtils.intFromProperties(properties, prefix + OpaquenessProperty, getOpaqueness()));
-        
-        setNumColors(PropUtils.intFromProperties(properties, prefix + NumColorsProperty, getNumColors()));
+        paths = PropUtils.initPathsFromProperties(properties, prefix
+                + DTEDPathsProperty, paths);
+        paths2 = PropUtils.initPathsFromProperties(properties, prefix
+                + DTED2PathsProperty, paths2);
+        setOpaqueness(PropUtils.intFromProperties(properties, prefix
+                + OpaquenessProperty, getOpaqueness()));
 
-        setDtedLevel(PropUtils.intFromProperties(properties, prefix + DTEDLevelProperty, getDtedLevel()));
+        setNumColors(PropUtils.intFromProperties(properties, prefix
+                + NumColorsProperty, getNumColors()));
 
-        setViewType(PropUtils.intFromProperties(properties, prefix + DTEDViewTypeProperty, getViewType()));
+        setDtedLevel(PropUtils.intFromProperties(properties, prefix
+                + DTEDLevelProperty, getDtedLevel()));
 
-        setSlopeAdjust(PropUtils.intFromProperties(properties, prefix + DTEDSlopeAdjustProperty, getSlopeAdjust()));
+        setViewType(PropUtils.intFromProperties(properties, prefix
+                + DTEDViewTypeProperty, getViewType()));
 
-        setBandHeight(PropUtils.intFromProperties(properties, prefix + DTEDBandHeightProperty, getBandHeight()));
+        setSlopeAdjust(PropUtils.intFromProperties(properties, prefix
+                + DTEDSlopeAdjustProperty, getSlopeAdjust()));
 
-        setMinScale((long) PropUtils.intFromProperties(properties, prefix + DTEDMinScaleProperty, (int)getMinScale()));
-        
-        setCacheSize((int) PropUtils.intFromProperties(properties, prefix + DTEDFrameCacheSizeProperty, getCacheSize()));
+        setBandHeight(PropUtils.intFromProperties(properties, prefix
+                + DTEDBandHeightProperty, getBandHeight()));
 
-        setKillCache(PropUtils.booleanFromProperties(properties, prefix + DTEDKillCacheProperty, getKillCache()));
+        setMinScale((long) PropUtils.intFromProperties(properties, prefix
+                + DTEDMinScaleProperty, (int) getMinScale()));
+
+        setCacheSize((int) PropUtils.intFromProperties(properties, prefix
+                + DTEDFrameCacheSizeProperty, getCacheSize()));
+
+        setKillCache(PropUtils.booleanFromProperties(properties, prefix
+                + DTEDKillCacheProperty, getKillCache()));
 
     }
 
-    /** 
-     *  Called when the layer is no longer part of the map.  In this
-     *  case, we should disconnect from the server if we have a
-     *  link. 
+    /**
+     * Called when the layer is no longer part of the map. In this
+     * case, we should disconnect from the server if we have a link.
      */
     public void removed(java.awt.Container cont) {
         if (killCache) {
@@ -423,10 +439,10 @@ public class DTEDLayer extends Layer
     }
 
     /**
-     * Used to set the cancelled flag in the layer.  The swing worker
+     * Used to set the cancelled flag in the layer. The swing worker
      * checks this once in a while to see if the projection has
-     * changed since it started working.  If this is set to true, the
-     * swing worker quits when it is safe. 
+     * changed since it started working. If this is set to true, the
+     * swing worker quits when it is safe.
      */
     public synchronized void setCancelled(boolean set) {
         cancelled = set;
@@ -437,10 +453,11 @@ public class DTEDLayer extends Layer
         return cancelled;
     }
 
-    /** 
+    /**
      * Implementing the ProjectionPainter interface.
      */
-    public synchronized void renderDataForProjection(Projection proj, java.awt.Graphics g) {
+    public synchronized void renderDataForProjection(Projection proj,
+                                                     java.awt.Graphics g) {
         if (proj == null) {
             Debug.error("DTEDLayer.renderDataForProjection: null projection!");
             return;
@@ -455,7 +472,7 @@ public class DTEDLayer extends Layer
      * From the ProjectionListener interface.
      */
     public void projectionChanged(ProjectionEvent e) {
-        Debug.message("basic", getName()+"|DTEDLayer.projectionChanged()");
+        Debug.message("basic", getName() + "|DTEDLayer.projectionChanged()");
 
         if (setProjection(e) == null) {
             // Projection didn't change
@@ -468,19 +485,18 @@ public class DTEDLayer extends Layer
     }
 
     /**
-     * The DTEDWorker calls this method on the layer when it is
-     * done working.  If the calling worker is not the same as the
-     * "current" worker, then a new worker is created.
-     *
+     * The DTEDWorker calls this method on the layer when it is done
+     * working. If the calling worker is not the same as the "current"
+     * worker, then a new worker is created.
+     * 
      * @param worker the worker that has the graphics.
      */
     protected synchronized void workerComplete(DTEDWorker worker) {
         if (!isCancelled()) {
             currentWorker = null;
-            setGraphicList((OMGraphicList)worker.get());
+            setGraphicList((OMGraphicList) worker.get());
             repaint();
-        }
-        else{
+        } else {
             setCancelled(false);
             currentWorker = new DTEDWorker();
             currentWorker.execute();
@@ -499,30 +515,31 @@ public class DTEDLayer extends Layer
         if (currentWorker == null) {
             currentWorker = new DTEDWorker();
             currentWorker.execute();
-        }
-        else setCancelled(true);
+        } else
+            setCancelled(true);
         if (currentWorker == null) {
             fireStatusUpdate(LayerStatusEvent.START_WORKING);
             currentWorker = new DTEDWorker();
             currentWorker.execute();
-        }
-        else setCancelled(true);
+        } else
+            setCancelled(true);
     }
 
     /**
-     * Prepares the graphics for the layer.  This is where the
-     * getRectangle() method call is made on the dted.  <p>
-     * Occasionally it is necessary to abort a prepare call.  When
-     * this happens, the map will set the cancel bit in the
-     * LayerThread, (the thread that is running the prepare).  If this
-     * Layer needs to do any cleanups during the abort, it should do
-     * so, but return out of the prepare asap.
-     *
+     * Prepares the graphics for the layer. This is where the
+     * getRectangle() method call is made on the dted.
+     * <p>
+     * Occasionally it is necessary to abort a prepare call. When this
+     * happens, the map will set the cancel bit in the LayerThread,
+     * (the thread that is running the prepare). If this Layer needs
+     * to do any cleanups during the abort, it should do so, but
+     * return out of the prepare asap.
+     *  
      */
     public synchronized OMGraphicList prepare() {
 
         if (isCancelled()) {
-            Debug.message("dted", getName()+"|DTEDLayer.prepare(): aborted.");
+            Debug.message("dted", getName() + "|DTEDLayer.prepare(): aborted.");
             return null;
         }
 
@@ -537,8 +554,7 @@ public class DTEDLayer extends Layer
             Debug.output("DTEDLayer: Creating cache! (This is a one-time operation!)");
             cache = new DTEDCacheManager(paths, paths2, numColors, opaqueness);
             cache.setCacheSize(cacheSize);
-            DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(viewType, bandHeight, 
-                                                                   dtedLevel, slopeAdjust);
+            DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(viewType, bandHeight, dtedLevel, slopeAdjust);
             cache.setSubframeInfo(dfsi);
         }
 
@@ -551,64 +567,61 @@ public class DTEDLayer extends Layer
             return new OMGraphicList();
         }
 
-        Debug.message("basic", getName()+"|DTEDLayer.prepare(): doing it");
+        Debug.message("basic", getName() + "|DTEDLayer.prepare(): doing it");
 
-        // Setting the OMGraphicsList for this layer.  Remember, the
+        // Setting the OMGraphicsList for this layer. Remember, the
         // OMGraphicList is made up of OMGraphics, which are generated
-        // (projected) when the graphics are added to the list.  So,
+        // (projected) when the graphics are added to the list. So,
         // after this call, the list is ready for painting.
 
         // call getRectangle();
         if (Debug.debugging("dted")) {
-            Debug.output(
-                getName()+"|DTEDLayer.prepare(): " +
-                "calling getRectangle " +
-                " with projection: " + projection +
-                " ul = " + projection.getUpperLeft() + " lr = " + 
-                projection.getLowerRight()); 
+            Debug.output(getName() + "|DTEDLayer.prepare(): "
+                    + "calling getRectangle " + " with projection: "
+                    + projection + " ul = " + projection.getUpperLeft()
+                    + " lr = " + projection.getLowerRight());
         }
 
         OMGraphicList omGraphicList;
 
         if (projection.getScale() < minScale) {
-            omGraphicList = cache.getRectangle((EqualArc)projection);
+            omGraphicList = cache.getRectangle((EqualArc) projection);
         } else {
             fireRequestInfoLine("  The scale is too small for DTED viewing.");
-            Debug.error("DTEDLayer: scale (" + projection.getScale() + 
-                        ") is smaller than minimum (" + minScale + ") allowed.");
+            Debug.error("DTEDLayer: scale (" + projection.getScale()
+                    + ") is smaller than minimum (" + minScale + ") allowed.");
             omGraphicList = new OMGraphicList();
         }
         /////////////////////
         // safe quit
         int size = 0;
         if (omGraphicList != null) {
-            size = omGraphicList.size();        
-            Debug.message("basic", getName()+
-                          "|DTEDLayer.prepare(): finished with "+
-                          size+" graphics");
+            size = omGraphicList.size();
+            Debug.message("basic", getName()
+                    + "|DTEDLayer.prepare(): finished with " + size
+                    + " graphics");
 
-            // Don't forget to project them.  Since they are only
+            // Don't forget to project them. Since they are only
             // being recalled if the projection hase changed, then we
             // need to force a reprojection of all of them because the
             // screen position has changed.
             omGraphicList.project(projection, true);
 
         } else {
-            Debug.message("basic", getName()+
-              "|DTEDLayer.prepare(): finished with null graphics list");
+            Debug.message("basic", getName()
+                    + "|DTEDLayer.prepare(): finished with null graphics list");
         }
 
         return omGraphicList;
     }
 
-
     /**
      * Paints the layer.
-     *
+     * 
      * @param g the Graphics context for painting
      */
     public void paint(java.awt.Graphics g) {
-        Debug.message("dted", getName()+"|DTEDLayer.paint()");
+        Debug.message("dted", getName() + "|DTEDLayer.paint()");
 
         OMGraphicList tmpGraphics = getGraphicList();
 
@@ -616,18 +629,27 @@ public class DTEDLayer extends Layer
             tmpGraphics.render(g);
         }
 
-        if (location != null) location.render(g);
+        if (location != null)
+            location.render(g);
         location = null;
     }
 
-
     /**
-     * Get the view type set for creating images.<P> <pre>
-     * 0: DTEDFrameSubframe.NOSHADING
-     * 1: DTEDFrameSubframe.SLOPESHADING
-     * 2: DTEDFrameSubframe.COLOREDSHADING
-     * 3: DTEDFrameSubframe.METERSHADING
-     * 4: DTEDFrameSubframe.FEETSHADING
+     * Get the view type set for creating images.
+     * <P>
+     * 
+     * <pre>
+     * 
+     *  
+     *   
+     *    0: DTEDFrameSubframe.NOSHADING
+     *    1: DTEDFrameSubframe.SLOPESHADING
+     *    2: DTEDFrameSubframe.COLOREDSHADING
+     *    3: DTEDFrameSubframe.METERSHADING
+     *    4: DTEDFrameSubframe.FEETSHADING
+     *    
+     *   
+     *  
      * </pre>
      */
     public int getViewType() {
@@ -646,10 +668,10 @@ public class DTEDLayer extends Layer
                 DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
                 dfsi.viewType = viewType;
             }
-            
+
             break;
         default:
-            // unchanged
+        // unchanged
         }
     }
 
@@ -684,7 +706,9 @@ public class DTEDLayer extends Layer
                 dfsi.slopeAdjust = slopeAdjust;
             }
         } else {
-            Debug.output("DTEDLayer (" + getName() + ") being told to set slope adjustment to invalid value (" + sa + "), must be 1-5");
+            Debug.output("DTEDLayer (" + getName()
+                    + ") being told to set slope adjustment to invalid value ("
+                    + sa + "), must be 1-5");
         }
     }
 
@@ -725,12 +749,12 @@ public class DTEDLayer extends Layer
     public void setMinScale(long ms) {
         if (ms < 100) {
             ms = 20000000;
-            Debug.error("DTEDLayer: minimum scale setting unreasonable (" +
-                        ms + "), setting to 20M");
+            Debug.error("DTEDLayer: minimum scale setting unreasonable (" + ms
+                    + "), setting to 20M");
         }
         minScale = ms;
     }
-   
+
     /**
      * Get whether the cache will be killed when the layer is removed
      * from the map.
@@ -754,7 +778,9 @@ public class DTEDLayer extends Layer
         if (cs > 0) {
             cacheSize = cs;
         } else {
-            Debug.output("DTEDLayer (" + getName() + ") being told to set cache size to invalid value (" + cs + ").");
+            Debug.output("DTEDLayer (" + getName()
+                    + ") being told to set cache size to invalid value (" + cs
+                    + ").");
         }
     }
 
@@ -794,13 +820,13 @@ public class DTEDLayer extends Layer
             Box subbox2 = Box.createVerticalBox();
             Box subbox3 = Box.createHorizontalBox();
 
-//          palette = new JPanel();
-//          palette.setLayout(new GridLayout(0, 1));
+            //          palette = new JPanel();
+            //          palette.setLayout(new GridLayout(0, 1));
 
             // The DTED Level selector
             JPanel levelPanel = PaletteHelper.createPaletteJPanel("DTED Level");
             ButtonGroup levels = new ButtonGroup();
-            
+
             ActionListener al = new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     if (cache != null) {
@@ -810,10 +836,11 @@ public class DTEDLayer extends Layer
                             newLevel = DTEDFrameSubframe.LEVEL_2;
                         else if (ac.equalsIgnoreCase(level1Command))
                             newLevel = DTEDFrameSubframe.LEVEL_1;
-                        else newLevel = DTEDFrameSubframe.LEVEL_0;
+                        else
+                            newLevel = DTEDFrameSubframe.LEVEL_0;
                         DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
                         dfsi.dtedLevel = newLevel;
-//                      cache.setSubframeInfo(dfsi);
+                        //                      cache.setSubframeInfo(dfsi);
                     }
                 }
             };
@@ -832,9 +859,13 @@ public class DTEDLayer extends Layer
             levels.add(level1);
             levels.add(level2);
 
-            switch(dtedLevel) {
-            case 2: level2.setSelected(true); break;
-            case 1: level1.setSelected(true); break;
+            switch (dtedLevel) {
+            case 2:
+                level2.setSelected(true);
+                break;
+            case 1:
+                level1.setSelected(true);
+                break;
             case 0:
             default:
                 level0.setSelected(true);
@@ -846,27 +877,38 @@ public class DTEDLayer extends Layer
 
             // The DTED view selector
             JPanel viewPanel = PaletteHelper.createPaletteJPanel("View Type");
-            String[] viewStrings = { "None", "Shading", "Elevation Shading", 
-                                     "Elevation Bands (Meters)", "Elevation Bands (Feet)"};
+            String[] viewStrings = { "None", "Shading", "Elevation Shading",
+                    "Elevation Bands (Meters)", "Elevation Bands (Feet)" };
 
             JComboBox viewList = new JComboBox(viewStrings);
             viewList.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     JComboBox jcb = (JComboBox) e.getSource();
                     int newView = jcb.getSelectedIndex();
-                    switch(newView) {
-                    case 0: viewType = DTEDFrameSubframe.NOSHADING; break;
-                    case 1: viewType = DTEDFrameSubframe.SLOPESHADING; break;
-                    case 2: viewType = DTEDFrameSubframe.COLOREDSHADING; break;
-                    case 3: viewType = DTEDFrameSubframe.METERSHADING; break;
-                    case 4: viewType = DTEDFrameSubframe.FEETSHADING; break;
-                    default: viewType = DTEDFrameSubframe.NOSHADING;
+                    switch (newView) {
+                    case 0:
+                        viewType = DTEDFrameSubframe.NOSHADING;
+                        break;
+                    case 1:
+                        viewType = DTEDFrameSubframe.SLOPESHADING;
+                        break;
+                    case 2:
+                        viewType = DTEDFrameSubframe.COLOREDSHADING;
+                        break;
+                    case 3:
+                        viewType = DTEDFrameSubframe.METERSHADING;
+                        break;
+                    case 4:
+                        viewType = DTEDFrameSubframe.FEETSHADING;
+                        break;
+                    default:
+                        viewType = DTEDFrameSubframe.NOSHADING;
                     }
                     if (cache != null) {
                         DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
                         dfsi.viewType = viewType;
-//                      cache.setSubframeInfo(dfsi);
-                    }   
+                        //                      cache.setSubframeInfo(dfsi);
+                    }
 
                 }
             });
@@ -874,18 +916,18 @@ public class DTEDLayer extends Layer
             switch (viewType) {
             case 0:
             case 1:
-                selectedView = viewType; break;
+                selectedView = viewType;
+                break;
             case 2:
             case 3:
-                selectedView = viewType + 1; break;
+                selectedView = viewType + 1;
+                break;
             case 4:
                 // This puts the layer in testing mode, and the menu
                 // changes.
-                String[] viewStrings2 = {"None", "Shading", 
-                                         "Elevation Bands (Meters)", 
-                                         "Elevation Bands (Feet)", 
-                                         "Subframe Testing", 
-                                         "Elevation Shading"};
+                String[] viewStrings2 = { "None", "Shading",
+                        "Elevation Bands (Meters)", "Elevation Bands (Feet)",
+                        "Subframe Testing", "Elevation Shading" };
                 viewList = new JComboBox(viewStrings2);
                 viewList.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
@@ -894,13 +936,13 @@ public class DTEDLayer extends Layer
                         if (cache != null) {
                             DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
                             dfsi.viewType = newView;
-//                          cache.setSubframeInfo(dfsi);
-                        }       
+                            //                          cache.setSubframeInfo(dfsi);
+                        }
                     }
                 });
                 selectedView = viewType;
                 break;
-            case 5: 
+            case 5:
                 selectedView = 2; //DTEDFrameSubframe.COLOREDSHADING
                 break;
             default:
@@ -912,8 +954,7 @@ public class DTEDLayer extends Layer
 
             // The DTED Contrast Adjuster
             JPanel contrastPanel = PaletteHelper.createPaletteJPanel("Contrast Adjustment");
-            JSlider contrastSlide = new JSlider(
-                JSlider.HORIZONTAL, 1/*min*/, 5/*max*/, slopeAdjust/*inital*/);
+            JSlider contrastSlide = new JSlider(JSlider.HORIZONTAL, 1/* min */, 5/* max */, slopeAdjust/* inital */);
             java.util.Hashtable dict = new java.util.Hashtable();
             dict.put(new Integer(1), new JLabel("min"));
             dict.put(new Integer(5), new JLabel("max"));
@@ -926,25 +967,23 @@ public class DTEDLayer extends Layer
                 public void stateChanged(ChangeEvent ce) {
                     JSlider slider = (JSlider) ce.getSource();
                     if (slider.getValueIsAdjusting()) {
-                        fireRequestInfoLine(getName() + 
-                                            " - Contrast Slider value = " + 
-                                            slider.getValue());
+                        fireRequestInfoLine(getName()
+                                + " - Contrast Slider value = "
+                                + slider.getValue());
                         slopeAdjust = slider.getValue();
                         if (cache != null) {
                             DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
                             dfsi.slopeAdjust = slopeAdjust;
-//                          cache.setSubframeInfo(dfsi);
+                            //                          cache.setSubframeInfo(dfsi);
                         }
                     }
                 }
             });
             contrastPanel.add(contrastSlide);
 
-
             // The DTED Band Height Adjuster
             JPanel bandPanel = PaletteHelper.createPaletteJPanel("Band Elevation Spacing");
-            JSlider bandSlide = new JSlider(
-                JSlider.HORIZONTAL, 0/*min*/, 1000/*max*/, bandHeight/*inital*/);
+            JSlider bandSlide = new JSlider(JSlider.HORIZONTAL, 0/* min */, 1000/* max */, bandHeight/* inital */);
             bandSlide.setLabelTable(bandSlide.createStandardLabels(250));
             bandSlide.setPaintLabels(true);
             bandSlide.setMajorTickSpacing(250);
@@ -954,14 +993,13 @@ public class DTEDLayer extends Layer
                 public void stateChanged(ChangeEvent ce) {
                     JSlider slider = (JSlider) ce.getSource();
                     if (slider.getValueIsAdjusting()) {
-                        fireRequestInfoLine(getName() + 
-                                            " - Band Slider value = " + 
-                                            slider.getValue());
+                        fireRequestInfoLine(getName()
+                                + " - Band Slider value = " + slider.getValue());
                         bandHeight = slider.getValue();
                         if (cache != null) {
                             DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
                             dfsi.bandHeight = bandHeight;
-//                          cache.setSubframeInfo(dfsi);
+                            //                          cache.setSubframeInfo(dfsi);
                         }
                     }
                 }
@@ -985,7 +1023,6 @@ public class DTEDLayer extends Layer
 
         return palette;
     }
-
 
     //----------------------------------------------------------------------
     // ActionListener interface implementation
@@ -1011,25 +1048,41 @@ public class DTEDLayer extends Layer
     }
 
     public String[] getMouseModeServiceList() {
-        String[] services = {SelectMouseMode.modeID};
+        String[] services = { SelectMouseMode.modeID };
         return services;
     }
 
-    public boolean mousePressed(MouseEvent e) {return false;}
+    public boolean mousePressed(MouseEvent e) {
+        return false;
+    }
+
     public boolean mouseReleased(MouseEvent e) {
         Projection projection = getProjection();
         LatLonPoint ll = projection.inverse(e.getX(), e.getY());
         location = new DTEDLocation(e.getX(), e.getY());
-        location.setElevation(cache.getElevation(ll.getLatitude(), ll.getLongitude()));
+        location.setElevation(cache.getElevation(ll.getLatitude(),
+                ll.getLongitude()));
         location.generate(projection);
         repaint();
         return true;
     }
-    public boolean mouseClicked(MouseEvent e) {return false;}
+
+    public boolean mouseClicked(MouseEvent e) {
+        return false;
+    }
+
     public void mouseEntered(MouseEvent e) {}
+
     public void mouseExited(MouseEvent e) {}
-    public boolean mouseDragged(MouseEvent e) {return false;}
-    public boolean mouseMoved(MouseEvent e) {return false;}
+
+    public boolean mouseDragged(MouseEvent e) {
+        return false;
+    }
+
+    public boolean mouseMoved(MouseEvent e) {
+        return false;
+    }
+
     public void mouseMoved() {}
 
 }

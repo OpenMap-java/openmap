@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.7 $
+// $Date: 2004/10/12 17:13:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,12 +27,10 @@ import java.io.*;
 import java.util.Vector;
 import javax.swing.ImageIcon;
 
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.Environment;
 
 /**
  * A Spatial Index is a variation on a Shape Index, adding the
@@ -123,7 +121,7 @@ import com.bbn.openmap.Environment;
  * </UL>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.6 $ $Date: 2004/01/26 18:18:11 $
+ * @version $Revision: 1.7 $ $Date: 2004/10/12 17:13:44 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils {

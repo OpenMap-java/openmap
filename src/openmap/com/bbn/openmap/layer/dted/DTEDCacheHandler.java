@@ -2,7 +2,7 @@
 // 
 // <copyright>
 // 
-//  BBN Technologies, a Verizon Company
+//  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCacheHandler.java,v $
 // $RCSfile: DTEDCacheHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.4 $
+// $Date: 2004/10/12 17:13:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,16 +23,9 @@
 
 package com.bbn.openmap.layer.dted;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.io.BinaryBufferedFile;
-import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.proj.EqualArc;
-import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.omGraphics.OMRaster;
 
 /** The DTEDCacheHandler controls the real cache of DTED frames.  It
