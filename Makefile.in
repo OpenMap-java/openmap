@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.37 $
-# $Date: 2000/02/25 17:45:29 $
+# $Revision: 1.38 $
+# $Date: 2000/05/04 20:37:19 $
 # $Author: dietrick $
 # 
 # **********************************************************************
@@ -40,6 +40,7 @@ Core.pkgs =	com.bbn.openmap \
 		com.bbn.openmap.gui \
 		com.bbn.openmap.omGraphics \
 		com.bbn.openmap.omGraphics.grid \
+		com.bbn.openmap.omGraphics.util \
 		com.bbn.openmap.proj \
 		com.bbn.openmap.util \
 		com.bbn.openmap.util.quadtree \
@@ -50,6 +51,7 @@ Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/gui/*.class \
 		com/bbn/openmap/omGraphics/*.class \
 		com/bbn/openmap/omGraphics/grid/*.class \
+		com/bbn/openmap/omGraphics/util/*.class \
 		com/bbn/openmap/proj/*.class \
 		com/bbn/openmap/util/*.class \
 		com/bbn/openmap/util/quadtree/*.class \
