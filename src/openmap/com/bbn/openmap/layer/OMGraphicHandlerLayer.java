@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.12 $
-// $Date: 2003/10/06 19:26:50 $
+// $Revision: 1.13 $
+// $Date: 2003/10/08 21:36:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -972,10 +972,17 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     }
 
     /**
-     * Remove an OMGraphic from a layer. Not implemented yet.
+     * Remove OMGraphics from the layer.
      */
     public OMGraphicList cut(OMGraphicList omgl) {
-	return null;
+	OMGraphicList list = getList();
+	if (list != null && omgl != null) {
+	    Iterator it = omgl.iterator();
+	    while (it.hasNext()) {
+		list.remove((OMGraphic)it.next());
+	    }
+	}
+	return omgl;
     }
 
     /***
@@ -986,9 +993,17 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     }
 
     /**
-     * Add OMGraphic to Layer. Not implemented yet.
+     * Add OMGraphics to the Layer.
      */
-    public void paste(OMGraphicList omgl) {}
+    public void paste(OMGraphicList omgl) {
+	OMGraphicList list = getList();
+	if (list != null && omgl != null) {
+	    Iterator it = omgl.iterator();
+	    while (it.hasNext()) {
+		list.add((OMGraphic)it.next());
+	    }
+	}
+    }
 
     /**
      * If applicable, should return a short, informational string
