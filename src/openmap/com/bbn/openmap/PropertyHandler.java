@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.20 $
-// $Date: 2004/02/10 18:08:17 $
+// $Revision: 1.21 $
+// $Date: 2004/05/10 20:38:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,13 +78,18 @@ import com.bbn.openmap.Environment;
  * are smart enough to wire themselves together.  Order does matter
  * for the openmap.components property, especially for components that
  * get added to lists and menus.  Place the components in the list in
- * the order that you want components added to the MapHandler.
+ * the order that you want components added to the MapHandler. <P>
  *
  * If the debug.showprogress environment variable is set, the
  * PropertyHandler will display a progress bar when it is creating
  * components.  If the debug.properties file is set, the steps that
  * the PropertyHandler takes in looking for property files will be
- * displayed.
+ * displayed.<P>
+ *
+ * If the PropertyHandler is created with an empty constructor or with
+ * a null Properties object, it will do the search for an
+ * openmap.properties file.  If you don't want it to do that search,
+ * create it with an empty Properties object.
  */
 public class PropertyHandler extends MapHandlerChild implements SoloMapComponent {
 
@@ -165,7 +170,10 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
      * order for openmap.properties files.  It checks for the
      * openmap.properties file as a resource, in the configDir if
      * specified as a system property, and lastly, in the user's home
-     * directory.
+     * directory.  If you want an empty PropertyHandler that doesn't
+     * do the search, use the constructor that takes a
+     * java.util.Properties object and provide it with empty
+     * Properties.
      */
     public PropertyHandler() {
         this(false);
