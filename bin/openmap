@@ -87,10 +87,8 @@ do
 done
 
 LOCALCLASSPATH=$LOCALCLASSPATH:${OPENMAP_HOME}/share
-
-if [ "$CLASSPATH" != "" ] ; then
-  LOCALCLASSPATH=$CLASSPATH:${OPENMAP_HOME}/classes/openmap:${OPENMAP_HOME}/classes/corba_vb$LOCALCLASSPATH
-fi
+CLASSPATH=${OPENMAP_HOME}:${CLASSPATH}
+LOCALCLASSPATH=${CLASSPATH}:${OPENMAP_HOME}/classes/openmap:${OPENMAP_HOME}/classes/corba_vb$LOCALCLASSPATH
 
 # For Cygwin, switch paths to Windows format before running java
 if $cygwin; then
