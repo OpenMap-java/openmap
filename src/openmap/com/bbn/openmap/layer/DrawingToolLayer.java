@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.20 $
-// $Date: 2003/09/26 17:31:14 $
+// $Revision: 1.21 $
+// $Date: 2003/10/03 22:25:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -300,17 +300,12 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	OMDrawingTool dt = getDrawingTool();
 
 	if (dt != null && dt.canEdit(omg.getClass())) {
-	    if (!dt.getUseAsTool()) {
-		dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
-	    }
+
+	    dt.resetBehaviorMask();
 
 	    MapMouseMode omdtmm = dt.getMouseMode();
 	    if (!omdtmm.isVisible()) {
-		int behaviorMask = OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK;
-		if (!dt.getUseAsTool()) {
-		    behaviorMask |= OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK; 
-		}
-		dt.setBehaviorMask(behaviorMask);
+		dt.setMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
 	    }
 
 	    MapMouseInterpreter mmi = (MapMouseInterpreter)getMapMouseListener();

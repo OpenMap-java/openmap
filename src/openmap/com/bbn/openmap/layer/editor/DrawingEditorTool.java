@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/DrawingEditorTool.java,v $
 // $RCSfile: DrawingEditorTool.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/03 00:48:44 $
+// $Revision: 1.6 $
+// $Date: 2003/10/03 22:25:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -179,6 +179,7 @@ public class DrawingEditorTool extends AbstractEditorTool
      */
     public void initDrawingTool() {
 	drawingTool = createDrawingTool();
+	drawingTool.setUseAsTool(true); // prevents popup menu use.
 	drawingTool.getMouseMode().setVisible(false);
 	ga = drawingTool.getAttributes();
  	ga.setRenderType(OMGraphic.RENDERTYPE_LATLON);
@@ -244,6 +245,7 @@ public class DrawingEditorTool extends AbstractEditorTool
 	}
 
 	if (drawingTool != null && drawingTool.isActivated()) {
+	    drawingTool.resetGUIWhenDeactivated(true);
 	    drawingTool.deactivate();
 	}
 
@@ -306,6 +308,9 @@ public class DrawingEditorTool extends AbstractEditorTool
 	// Watch out, gets called when drawingTool.deactivate() gets
 	// called, so you can get in a loop if you try to do too much
 	// here with regard to setting up the next OMGraphic to create.
+	if (thingToCreate != null) {
+	    drawingTool.resetGUIWhenDeactivated(false);
+	}
 	omdtmm = null;
     }
 
@@ -404,7 +409,7 @@ public class DrawingEditorTool extends AbstractEditorTool
 		Debug.output("DrawingEditorTool.activateDrawingTool(" + ttc + ")");
 	    }
 
-	    drawingTool.setBehaviorMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
+	    drawingTool.setMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
 	    if (drawingTool.create(ttc, ga, (DrawingToolRequestor)getLayer(), true) == null) {
 		// Something bad happened, might as well try to clean up.
 		if (Debug.debugging("editortool")) {
