@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/05 05:46:57 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:32:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,14 +51,15 @@ import javax.swing.*;
 public class OMDrawingToolLauncher extends OMToolComponent implements ActionListener, PropertyChangeListener {
 
     protected DrawingTool drawingTool;
-    protected boolean useTextEditToolTitles = true;
+    protected boolean useTextEditToolTitles = false;
     protected GraphicAttributes defaultGraphicAttributes = new GraphicAttributes();
 
     protected TreeMap loaders = new TreeMap();
     protected Vector drawingToolRequestors = new Vector();
 
-    protected DrawingToolRequestor currentRequestor = null;
-    protected String currentCreation = null;
+    protected DrawingToolRequestor currentRequestor;
+    protected String currentCreation;
+    protected JComboBox requestors;
 
     String[] rtc = { "Lat/Lon", "X/Y", "X/Y Offset" };
     public final static String CreateCmd = "CREATE";
@@ -149,6 +150,17 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
     }
 
     /**
+     * Set the current requestor to receive a requested OMGraphic.
+     * Changes are reflected in the GUI, and setCurrentRequestor()
+     * will eventually be called.
+     */
+    public void setRequestor(String aName) {
+	if (requestors != null) {
+	    requestors.setSelectedItem(aName);
+	}
+    }
+
+    /**
      *  Build the stuff that goes in the launcher.
      */
     public void resetGUI() {
@@ -176,7 +188,12 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
 	    }
 	}
 
-	JComboBox requestors = new JComboBox(requestorNames);
+	Object oldChoice = null;
+	if (requestors != null) {
+	    oldChoice = requestors.getSelectedItem();
+	}
+
+	requestors = new JComboBox(requestorNames);
 	requestors.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    JComboBox jcb = (JComboBox) e.getSource();
@@ -186,7 +203,11 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
 	    });
 	
   	if (requestorNames.length > 0) {
-	    requestors.setSelectedIndex(0);
+	    if (oldChoice == null) {
+		requestors.setSelectedIndex(0);
+	    } else {
+		requestors.setSelectedItem(oldChoice);
+	    }
 	}
 
 	JPanel panel = PaletteHelper.createPaletteJPanel("Send To:");
@@ -325,6 +346,11 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
 	    bg.add(btn);
 
 	    iconBar.add(btn);
+
+	    // Just set one as active, the first one.
+	    if (i == 0) {
+		setCurrentCreation(pName);
+	    }
 	}
 
 	return iconBar;
@@ -332,7 +358,8 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
 
     /**
      * Set the component that will receive the new/edited OMGraphic
-     * from the DrawingTool.
+     * from the DrawingTool.  Does not change the GUI.  Called when
+     * the combo box changes.
      * @param name GUI pretty name of requestor.
      */
     public void setCurrentRequestor(String name) {
@@ -352,6 +379,13 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * Set the next thing to be created to be whatever the pretty name
      * represents.  Sets currentCreation.
      * @param name GUI pretty name of thing to be created, from one of
+
+
+
+
+
+
+
      * the EditToolLoaders.
      */
     public void setCurrentCreation(String name) {

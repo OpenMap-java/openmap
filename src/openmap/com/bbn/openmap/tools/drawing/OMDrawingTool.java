@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.10 $
-// $Date: 2003/08/28 22:35:28 $
+// $Revision: 1.11 $
+// $Date: 2003/09/22 23:32:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,6 +29,8 @@ import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MouseDelegator;
 import com.bbn.openmap.event.*;
+import com.bbn.openmap.gui.OMToolComponent;
+import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.omGraphics.event.*;
 import com.bbn.openmap.proj.Projection;
@@ -86,21 +88,26 @@ import javax.swing.event.*;
  * arrowheads on the lines, as well as set the amount of arc a line
  * has (it's currently not implemented). <P>
  */
-public class OMDrawingTool 
-    implements DrawingTool, BeanContextChild, 
-    BeanContextMembershipListener, Serializable, PropertyChangeListener,
+public class OMDrawingTool extends OMToolComponent
+    implements DrawingTool, Serializable, PropertyChangeListener,
     ProjectionListener, EOMGListener, PaintListener, SelectionProvider {
 
-    /** A GraphicAttributes object that describes the current coloring
-     *  parameters for the current graphic. */
-    protected GraphicAttributes graphicAttributes;
+    /**
+     * A GraphicAttributes object that describes the current coloring
+     * parameters for the current graphic. 
+     */
+    protected GraphicAttributes graphicAttributes = new GraphicAttributes();
     /** The current graphic being modified. */
     protected EditableOMGraphic currentEditable;
-    /** The MouseDelegator to use to get mouse events directed to the
-     *  DrawingTool.  */
+    /**
+     * The MouseDelegator to use to get mouse events directed to the
+     * DrawingTool.  
+     */
     protected MouseDelegator mouseDelegator;
-    /** A placeholder for the last mouse mode active before the
-     *  drawing tool took over.  */
+    /**
+     * A placeholder for the last mouse mode active before the
+     * drawing tool took over.  
+     */
     protected MapMouseMode formerMouseMode = null;
     /** The JComponent the drawing tool is servicing, usually the MapBean. */
     protected JComponent canvas;
@@ -114,14 +121,13 @@ public class OMDrawingTool
      */
     protected OMDrawingToolMouseMode dtmm;
 
-    // palette variables
-    protected transient JInternalFrame paletteWindow = null;
-    protected transient JFrame paletteWindow2 = null;
+//     // palette variables
+//     protected transient JInternalFrame paletteWindow = null;
+//     protected transient JFrame paletteWindow2 = null;
 
     protected DrawingToolRequestor requestor = null;
     /** The current projection. */
     protected Projection projection = null;
-    protected JTextField remarks = null;
 
     protected SelectionSupport selectionSupport = null;
     
@@ -189,18 +195,14 @@ public class OMDrawingTool
 
     protected boolean DEBUG = false;
 
-    /**
-     * BeanContextChildSupport object provides helper functions for
-     * BeanContextChild interface.
-     */
-    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
-
     protected InformationDelegator informationDelegator = null;
 
     /**
      * Create a OpenMap Drawing Tool.
      */
     public OMDrawingTool() {
+	super();
+ 	setBorder(BorderFactory.createEmptyBorder());
 	DEBUG = Debug.debugging("drawingtool");
 	selectionSupport = new SelectionSupport(this);
 	setAttributes(new GraphicAttributes());
@@ -294,8 +296,10 @@ public class OMDrawingTool
 	}
 
 	if (showGUI) {
+	    if (DEBUG) Debug.output("OMDrawingTool.create(): showing GUI per request");
 	    setMask(SHOW_GUI_BEHAVIOR_MASK);
 	} else {
+	    if (DEBUG) Debug.output("OMDrawingTool.create(): NOT showing GUI per request");
 	    unsetMask(SHOW_GUI_BEHAVIOR_MASK);
 	}
 
@@ -329,8 +333,9 @@ public class OMDrawingTool
 	    eomg = loader.getEditableGraphic(classname, ga);
 	}
 	setAttributes(ga);
-	eomg.setShowGUI(isMask(SHOW_GUI_BEHAVIOR_MASK));
 
+	eomg.setShowGUI(isMask(SHOW_GUI_BEHAVIOR_MASK));
+	
 	eomg.setActionMask(OMGraphic.ADD_GRAPHIC_MASK);
 
 	return edit(eomg, requestor);
@@ -388,8 +393,10 @@ public class OMDrawingTool
 	paletteTitle = DefaultPaletteTitle;
 
 	if (showGUI) {
+	    if (DEBUG) Debug.output("OMDrawingTool.edit(): showing GUI per request");
 	    setMask(SHOW_GUI_BEHAVIOR_MASK);
 	} else {
+	    if (DEBUG) Debug.output("OMDrawingTool.edit(): NOT showing GUI per request");
 	    unsetMask(SHOW_GUI_BEHAVIOR_MASK);
 	}
 
@@ -454,6 +461,9 @@ public class OMDrawingTool
 			  DrawingToolRequestor requestor) {
 
 	if (setCurrentEditable(eomg)) {
+
+	    getGUI();// reset GUI for current EOMG
+
 	    if (DEBUG) {
 		Debug.output("OMDrawingTool.edit success");
 	    }
@@ -737,61 +747,23 @@ public class OMDrawingTool
      * EOMG with a Dismiss button and a remarks text window.
      */
     public Component getGUI() {
-	JPanel palette = 
-	    PaletteHelper.createVerticalPanel(null);
-	palette.setLayout(new BoxLayout(palette, BoxLayout.Y_AXIS));
-//  	palette.setAlignmentX(Component.LEFT_ALIGNMENT);
-	palette.setAlignmentX(Component.CENTER_ALIGNMENT);
-//  	palette.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-	palette.setAlignmentY(Component.CENTER_ALIGNMENT);
+	removeAll();
+	Component eomgc = null;
 
-	// The graphicAttributes should be returned from the
-	// currentEditable if the currentEditable wants them to be
-	// edited.
 	if (currentEditable != null) {
-	    java.awt.Component eGUI = 
-		currentEditable.getGUI(graphicAttributes);
-	    if (eGUI != null) {
-		palette.add(eGUI);
-	    } else {
-		// If there isn't a GUI from the EditableOMGraphic,
-		// then don't put up a window.
-		return null;
+	    // GUI specific to a particular EditableOMGraphic type.
+	    eomgc = currentEditable.getGUI(graphicAttributes);
+	    if (eomgc != null) {
+		add(eomgc);
 	    }
-	} else {
-	    return null;
 	}
 
-	
-	JButton dismiss = new JButton("Done");
-	dismiss.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    deactivate();
-		}
-	    });
-	
-	if (remarks == null) {
-	    remarks = new JTextField("");
-	    remarks.setBorder(BorderFactory.createBevelBorder(
-		javax.swing.border.BevelBorder.LOWERED));
+	// Basic, generic GUI if eomgc wasn't set.
+	if (eomgc == null) {
+	    add(graphicAttributes.getGUI());
 	}
 
-	lastRemarks = "";
-	setRemarks(lastRemarks);
-
-	if (false) { // These just don't look good.
-	    palette.add(remarks);
-	}
-
-	JPanel dismissPanel = new JPanel();
-	Box dismissBox = Box.createHorizontalBox();
-	dismissBox.add(Box.createHorizontalGlue());
-	dismissBox.add(dismiss);
-	dismissBox.add(Box.createHorizontalGlue());
-	dismissPanel.add(dismissBox);
-	palette.add(dismissPanel);
-
-	return palette;
+	return this;
     }
 
     public void setInformationDelegator(InformationDelegator id) {
@@ -809,7 +781,6 @@ public class OMDrawingTool
 	if (informationDelegator != null) {
 	    informationDelegator.displayInfoLine(message, InformationDelegator.MAP_OBJECT_INFO_LINE);
 	}
-	remarks.setText(message);
     }
 
     /**
@@ -849,11 +820,6 @@ public class OMDrawingTool
 		}
 		formerMouseMode = mouseDelegator.getActiveMouseMode();
 		mouseDelegator.setActiveMouseMode(dtmm);
-
-		if (currentEditable.getGraphic() == null) {
-		    Debug.error("OMDrawingTool.activate():  setting up mouse mode caused something else to deactivate the DrawingTool.");
-		    return;
-		}
 
 	    } else if (canvas != null) {
 		// If a MouseDelegator is not being used, go directly to
@@ -967,9 +933,9 @@ public class OMDrawingTool
      * If the projection is not null, generate the OMGraphic.
      */
     protected void generateOMGraphic(OMGraphic g) {
-	if (g.getNeedToRegenerate()) {
+	if (g != null && g.getNeedToRegenerate()) {
 	    Projection proj = getProjection();
-	    if (proj != null && g != null) {
+	    if (proj != null) {
 		g.generate(proj);
 	    } else if (DEBUG) {
 		Debug.output("OMDrawingTool: graphic needs generation: " + g.getNeedToRegenerate());
@@ -1062,7 +1028,7 @@ public class OMDrawingTool
      * 
      * @param g the Graphics to draw into.
      */
-    public void paint(Graphics g) {
+    public void listenerPaint(Graphics g) {
 	// Call repaintRender here because if the graphic is in the
 	// middle of being moved, we'll draw it in the mouse event
 	// thread.  Otherwise, it gets set in the image for the
@@ -1119,65 +1085,13 @@ public class OMDrawingTool
 	return canvas;
     }
 
-    ////////////////  BeanContext stuff
-
-    /** Method for BeanContextChild interface. */
-    public BeanContext getBeanContext() {
-	return beanContextChildSupport.getBeanContext();
-    }
-  
-    /** 
-     * Method for BeanContextChild interface.  Called when the
-     * MouseMode is added to the BeanContext.
-     */
-    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
-	if (in_bc != null) {
-	    in_bc.addBeanContextMembershipListener(this);
-	    beanContextChildSupport.setBeanContext(in_bc);
-	    findAndInit(in_bc.iterator());
-	}
-    }
-  
-    /** Method for BeanContextChild interface. */
-    public void addPropertyChangeListener(String propertyName, 
-					  PropertyChangeListener in_pcl) {
-	beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
-    }
-
-    /** Method for BeanContextChild interface. */
-    public void removePropertyChangeListener(String propertyName, 
-					     PropertyChangeListener in_pcl) {
-	beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
-    }
-  
-    /** Method for BeanContextChild interface. */
-    public void addVetoableChangeListener(String propertyName, 
-					  VetoableChangeListener in_vcl) {
-	beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
-    }
-  
-    /** Method for BeanContextChild interface. */
-    public void removeVetoableChangeListener(String propertyName,
-					     VetoableChangeListener in_vcl) {
-	beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
-    }
-
     /**
-     * Called when objects are added to the MapHandler. so the
-     * OMDrawingTool can hook up with what it needs.  An
-     * InformationDelegator is used to provide map coordinates of the
-     * mouse movements.  The MouseDelegator is used to intercept
-     * MouseEvents when the OMDrawingTool is activated.  The MapBean
-     * is used to get mouse events if the MouseDelegator isn't
-     * loaded, and is also used to help out with smooth repaints() in
-     * general.  EditToolLoaders are looked for to load into the
-     * OMDrawingTool to handler different graphic requests.
+     * Set whether the Tool's face should be used.  The subclasses to
+     * this class should either remove all components from its face,
+     * or make its face invisible if this is set to false.
      */
-    protected void findAndInit(Iterator it) {
-	Object someObj;
-	while (it.hasNext()) {
-	    findAndInit(it.next());
-	}
+    public void setUseAsTool(boolean value) {
+	super.setUseAsTool(value);
     }
 
     /**
@@ -1214,29 +1128,6 @@ public class OMDrawingTool
 	}
     }
 
-    /** 
-     * BeanContextMembershipListener method.  Called when objects have
-     * been added to the parent BeanContext.
-     *
-     * @param bcme contains an iterator to use to go through the
-     * added objects.  
-     */
-    public void childrenAdded(BeanContextMembershipEvent bcme) {
-	findAndInit(bcme.iterator());
-    }
-
-    /** 
-     * BeanContextMembershipListener method.  Called when an object
-     * has been removed from the parent BeanContext. 
-     */
-    public void childrenRemoved(BeanContextMembershipEvent bcme) {
-	Iterator it = bcme.iterator();
-	Object someObj;
-	while (it.hasNext()) {
-	    findAndUndo(it.next());
-	}
-    }
-	
     /**
      * Called by childrenRemoved, it provides a good method for
      * handling any object you may want to take away from the
@@ -1272,63 +1163,58 @@ public class OMDrawingTool
     /**
      * Display the palette.
      */
-    protected void showPalette() {
-	java.awt.Component gui = getGUI();
-	if (gui == null) {
-	    return;
-	}
+    public void showPalette() {
+	Debug.message("drawingtool", "OMDrawingTool.showPalette()");
 
-	if (Environment.getBoolean(Environment.UseInternalFrames)) {
-	    final JLayeredPane desktop = 
-		Environment.getInternalFrameDesktop();
+	getGUI(); // resets the gui.
+	setVisible(true); // just to make sure.
 
-	    // get the window
-	    paletteWindow = PaletteHelper.getPaletteInternalWindow(gui, paletteTitle, new InternalFrameAdapter() {
-		    public void internalFrameClosed(InternalFrameEvent e) {
-			if (desktop != null) {
-			    desktop.remove(paletteWindow);
-			    desktop.repaint();
-			}
-			paletteWindow = null;
-		    };
-		});
-	    // add the window to the desktop
-	    if (desktop != null) {
-		desktop.add(paletteWindow);
-		paletteWindow.setVisible(true);
-	    }
-	} else {
-	    paletteWindow2 = PaletteHelper.getNoScrollPaletteWindow(gui, paletteTitle, new ComponentAdapter() {  
-		    public void componentHidden(ComponentEvent e){};
-		} );
+// 	if (!getUseAsTool() && getWindowSupport() == null) {
+// 	    Debug.output("Setting window support in OMDrawingTool");
+// 	    setWindowSupport(new WindowSupport(getGUI(), "Drawing Tool"));
+// 	}
+
+// 	WindowSupport ws = getWindowSupport();
+
+// 	if (ws != null && !getUseAsTool()) {
+// 	    Debug.output("OMDrawingTool.showPalette(): showing palette");
+// 	    int w = getWidth();
+// 	    int h = getHeight();
+// 	    Dimension dim = ws.getComponentSize();
+// 	    if (dim != null) {
+// 		w = (int)dim.getWidth();
+// 		h = (int)dim.getHeight();
+// 	    }
+
+// 	    int x = 10;
+// 	    int y = 10;
 	    
-	    paletteWindow2.setVisible(true);
-	    paletteWindow2.setState(java.awt.Frame.NORMAL);
-	}
+// 	    Point loc = ws.getComponentLocation();
+// 	    if (loc != null) {
+// 		x = (int) loc.getX();
+// 		y = (int) loc.getY();
+// 	    }
+
+// 	    ws.displayInWindow(x, y, w, h);
+// 	} else {
+// 	    Debug.output("OMDrawingTool.showPalette(): NOT showing palette, ws == null:" + 
+// 			 (ws == null) + ", used as tool:" + getUseAsTool());
+// 	}
+
     }
     
     /**
      * Hide the OMDrawingTool palette.
      */
-    protected void hidePalette() {
-	if (Environment.getBoolean(Environment.UseInternalFrames)){
-	    if (paletteWindow == null)
-		return;
+    public void hidePalette() {
+	Debug.message("drawingtool", "OMDrawingTool.hidePalette()");
+	getGUI();
 
-	    // close the palette
-	    try { paletteWindow.setClosed(true); }
-	    catch (java.beans.PropertyVetoException evt) {
-		com.bbn.openmap.util.Assert.assertExp(
-		    false, "OMDrawingTool.hidePalette(): " +
-		    "internal error!");
-	    }
-	} else {
-	    if (paletteWindow2 == null) {
-		return;
-	    } else {
-		paletteWindow2.setVisible(false);
-	    }
-	}
+// 	WindowSupport ws = getWindowSupport();
+// 	if (ws != null) {
+// 	    ws.killWindow();
+// 	}
+
     }
 
     /**
@@ -1424,7 +1310,7 @@ public class OMDrawingTool
 	// information, we can sent the info there, and it looks OK.
 
 	String message = event.getMessage().intern();
-	if (message != null && remarks != null && message != lastRemarks) {
+	if (message != null && message != lastRemarks) {
 	    lastRemarks = message;
 	    setRemarks(message);
 	}
@@ -1448,9 +1334,9 @@ public class OMDrawingTool
 		    MouseEvent me = event.getMouseEvent();
 		    boolean showPopup = false;
 
-		    boolean theCorrectMouseKeys = (me != null && (me.isControlDown() || (me.getModifiers() & InputEvent.BUTTON2_MASK) > 0));
+		    boolean theCorrectMouseKeys = (me != null && (me.isControlDown() || (me.getModifiers() & InputEvent.BUTTON3_MASK) > 0));
 
-		    if (popup == null && (theCorrectMouseKeys || isMask(USE_POPUP_BEHAVIOR_MASK))) {
+		    if (popup == null && (theCorrectMouseKeys || isMask(USE_POPUP_BEHAVIOR_MASK)) && !getUseAsTool()) {
 			popup = createPopupMenu();
 			showPopup = true;
 		    } else {
@@ -1501,32 +1387,35 @@ public class OMDrawingTool
 		}
 	    });
 
-	JMenuItem done = new JMenuItem("Done");
-	done.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    deactivate();
-		}
-	    });
+// 	JMenuItem done = new JMenuItem("Done");
+// 	done.addActionListener(new ActionListener() {
+// 		public void actionPerformed(ActionEvent ae) {
+// 		    deactivate();
+// 		}
+// 	    });
 
-	JMenuItem gui = new JMenuItem("Change Appearance...");
-	gui.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    EditableOMGraphic eomg = getCurrentEditable();
-		    if (eomg != null) {
-			boolean previous = eomg.getShowGUI();
-			eomg.setShowGUI(true);
-			showPalette();
-			eomg.setShowGUI(previous);
-			eomg.getStateMachine().setSelected();
-		    }
-		}
-	    });
+	JMenu gui = new JMenu("Change Appearance ");
+	gui.add(this);
 
-	JMenuItem cancel = new JMenuItem("Continue Making Changes");
-	cancel.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		}
-	    });
+// 	JMenuItem gui = new JMenuItem("Change Appearance ");
+// 	gui.addActionListener(new ActionListener() {
+// 		public void actionPerformed(ActionEvent ae) {
+// 		    EditableOMGraphic eomg = getCurrentEditable();
+// 		    if (eomg != null) {
+// 			boolean previous = eomg.getShowGUI();
+// 			eomg.setShowGUI(true);
+// 			showPalette();
+// 			eomg.setShowGUI(previous);
+// 			eomg.getStateMachine().setSelected();
+// 		    }
+// 		}
+// 	    });
+
+// 	JMenuItem cancel = new JMenuItem("Continue Making Changes");
+// 	cancel.addActionListener(new ActionListener() {
+// 		public void actionPerformed(ActionEvent ae) {
+// 		}
+// 	    });
 
 	JMenuItem reset = new JMenuItem("Undo Changes");
 	reset.setEnabled(false);
@@ -1538,39 +1427,17 @@ public class OMDrawingTool
 		}
 	    });
 
-	pum.add(done);
-	pum.addSeparator();
+// 	pum.add(done);
+// 	pum.addSeparator();
 	if (isMask(GUI_VIA_POPUP_BEHAVIOR_MASK)) {
-	    pum.add(gui);
+	    pum.add(this);
+	    pum.addSeparator();
 	}
- 	pum.add(reset);
+//  	pum.add(reset);
 	pum.add(delete);
-	pum.addSeparator();
-	pum.add(cancel);
+// 	pum.addSeparator();
+// 	pum.add(cancel);
 	return pum;
-    }
-
-    /**
-     * Add a PropertyChangeListener, and receive a Hastable of EditToolLoaders.
-     */
-    public void addPropertyChangeListener(PropertyChangeListener pcl){
-	beanContextChildSupport.addPropertyChangeListener(LoadersProperty, pcl);
-	pcl.propertyChange(new PropertyChangeEvent(this, LoadersProperty, 
-						   loaders, loaders));
-    }
-
-    /**
-     * Remove a PropertyChangeListener.
-     */
-    public void removePropertyChangeListener(PropertyChangeListener pcl){
-	beanContextChildSupport.removePropertyChangeListener(LoadersProperty, pcl);
-    }
-
-    /**
-     * Fire a PropertyChangeEvent to the listeners.
-     */
-    public void firePropertyChange(String property, Object oldValue, Object newValue){
-	beanContextChildSupport.firePropertyChange(property, oldValue, newValue);
     }
 
     //////////// SelectionListener support
@@ -1591,5 +1458,4 @@ public class OMDrawingTool
 	OMDrawingTool omdt = new OMDrawingTool();
 	omdt.showPalette();
     }
-
 }
