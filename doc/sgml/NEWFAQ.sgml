@@ -109,7 +109,8 @@ What do you need to run and develop with OpenMap?
 <sect1>What systems have you tested OpenMap on?
 <p>
 We've tested on Solaris 2.5, 2.5.1, 2.6, and 2.7 with Sun's JDK 1.2.  Under
-Linux, we've tested with RedHat 5.1, 5.2, and 6.0 with Blackdown's JVM.  
+Linux, we've tested with RedHat 5.1, 5.2, and 6.0 with 
+<htmlurl url="http://www.blackdown.org" name="Blackdown">'s JVM.  
 Under Windows NT, we've successfully tested using CygWin32 and Sun's JDK 1.2
 We've run OpenMap under Windows 95 and 98, and have built it under the CygWin32
 tools, but have run into problems with long command lines.  
@@ -144,7 +145,8 @@ While the bean is not all the way there, however, it should be
 relatively close.  Since OpenMap is open source, we welcome
 contributions from the user community, including the necessary
 modifications to bring the jar files up to spec.  If you're interested
-in contributing, send mail to openmap@bbn.com and let us know!
+in contributing, send mail to <htmlurl url="mailto:openmap@bbn.com"
+name="openmap@bbn.com"> and let us know!
 
 <sect>About the OpenMap Package
 <sect1> What does the OpenMap package contain?
@@ -301,7 +303,7 @@ the Java 2D API that JDK 1.2 provides.  The code that relies on JDK
 1.2 can be deleted from the build, and the majority of the components
 will build correctly.
 <p>
-We've built the code using CodeWarrior on a Mac.
+We've built the code using <htmlurl url="http://www.metrowerks.com/desktop/mactools/" name="CodeWarrior"> on a Mac.
 
 <sect1> How can I generate the Javadoc documentation?
 <p>
