@@ -49,8 +49,8 @@
 
     <jar jarfile="${openmap.home}/lib/omcore.jar"
          basedir="${openmap.home}"
-         includes="com/bbn/openmap/*.class,
-                   com/bbn/openmap/*.gif,
+         includes="com/bbn/openmap/*.class,	
+                   com/bbn/openmap/*.gif,	
                    com/bbn/openmap/event/*.class,
                    com/bbn/openmap/gui/*.class, 
                    com/bbn/openmap/gui/*.gif, 
@@ -59,6 +59,11 @@
                    com/bbn/openmap/graphics/event*.class, 
                    com/bbn/openmap/graphics/grid/*.class, 
                    com/bbn/openmap/graphics/util/*.class, 
+		   com/bbn/openmap/layer/util/*.class,
+		   com/bbn/openmap/layer/util/cacheHandler/*.class,
+		   com/bbn/openmap/layer/util/html/*.class,
+		   com/bbn/openmap/layer/util/http/*.class,
+		   com/bbn/openmap/layer/util/stateMachine/*.class,
                    com/bbn/openmap/proj/*.class, 
                    com/bbn/openmap/tools/drawing/*.class, 
                    com/bbn/openmap/util/*.class, 

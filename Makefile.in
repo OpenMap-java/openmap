@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.46 $  $Date: 2001/02/26 14:48:06 $
+# $Revision: 1.47 $  $Date: 2001/02/27 18:51:42 $
 # **********************************************************************
 
 
@@ -33,6 +33,11 @@ include ${TOP}/openmap.mk
 Core.pkgs =	com.bbn.openmap \
 		com.bbn.openmap.event \
 		com.bbn.openmap.gui \
+		com.bbn.openmap.layer.util \
+		com.bbn.openmap.layer.util.cacheHandler \
+		com.bbn.openmap.layer.util.html \
+		com.bbn.openmap.layer.util.http \
+		com.bbn.openmap.layer.util.stateMachine \
 		com.bbn.openmap.omGraphics \
 		com.bbn.openmap.omGraphics.editable \
 		com.bbn.openmap.omGraphics.event \
@@ -47,6 +52,11 @@ Core.pkgs =	com.bbn.openmap \
 Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/event/*.class \
 		com/bbn/openmap/gui/*.class \
+		com/bbn/openmap/layer/util/*.class \
+		com/bbn/openmap/layer/util/cacheHandler/*.class \
+		com/bbn/openmap/layer/util/html/*.class \
+		com/bbn/openmap/layer/util/http/*.class \
+		com/bbn/openmap/layer/util/stateMachine/*.class \
 		com/bbn/openmap/omGraphics/*.class \
 		com/bbn/openmap/omGraphics/editable/*.class \
 		com/bbn/openmap/omGraphics/event/*.class \
@@ -70,11 +80,6 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.plotLayer \
 		com.bbn.openmap.layer.shape \
 		com.bbn.openmap.layer.shape.areas \
-		com.bbn.openmap.layer.util \
-		com.bbn.openmap.layer.util.cacheHandler \
-		com.bbn.openmap.layer.util.html \
-		com.bbn.openmap.layer.util.http \
-		com.bbn.openmap.layer.util.stateMachine \
 		com.bbn.openmap.layer.rpf \
 		com.bbn.openmap.layer.vpf \
 		com.bbn.openmap.layer.daynight \
@@ -90,7 +95,6 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.etopo
 
 
-
 Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/dted/*.class \
 		com/bbn/openmap/layer/nitf/*.class \
@@ -98,11 +102,6 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/plotLayer/*.class \
 		com/bbn/openmap/layer/shape/*.class \
 		com/bbn/openmap/layer/shape/areas/*.class \
-		com/bbn/openmap/layer/util/*.class \
-		com/bbn/openmap/layer/util/cacheHandler/*.class \
-		com/bbn/openmap/layer/util/html/*.class \
-		com/bbn/openmap/layer/util/http/*.class \
-		com/bbn/openmap/layer/util/stateMachine/*.class \
 		com/bbn/openmap/layer/rpf/*.class \
 		com/bbn/openmap/layer/vpf/*.class \
 		com/bbn/openmap/layer/daynight/*.class \
