@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/09/22 23:49:04 $
+// $Revision: 1.8 $
+// $Date: 2003/11/14 20:36:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -573,9 +573,9 @@ public class RpfLayer extends OMGraphicHandlerLayer
 	}
 
 	// Check to make sure the projection is CADRG
-	if (!(projection instanceof CADRG) && 
+	if (!(projection instanceof EqualArc) && 
 	    (viewAttributes.showMaps || viewAttributes.showInfo)) {
-	    fireRequestInfoLine("RpfLayer requires the CADRG projection for images or attributes!");
+	    fireRequestInfoLine("RpfLayer requires an Equal Arc projection (CADRG/LLXY) for images or attributes!");
 	    return null;
 	}
 
@@ -599,9 +599,31 @@ public class RpfLayer extends OMGraphicHandlerLayer
 	    frameProvider.setViewAttributes(viewAttributes);
 	}
 
+	Projection cadrgProj = projection;
+	if (!(projection instanceof CADRG)) {
+	    cadrgProj = new CADRG(projection.getCenter(), projection.getScale(),
+				  projection.getWidth(), projection.getHeight());
+
+	    Point ulp = cadrgProj.forward(projection.getUpperLeft());
+	    Point lrp = cadrgProj.forward(projection.getLowerRight());
+
+	    int w = (int)Math.abs(lrp.getX() - ulp.getX());
+	    int h = (int)Math.abs(lrp.getY() - ulp.getY());
+
+// 	    float cadrgScale = ProjMath.getScale(projection.getUpperLeft(),
+// 						 projection.getLowerRight(),
+// 						 cadrgProj);
+
+	    cadrgProj = new CADRG(projection.getCenter(), projection.getScale(),
+				  w, h);
+	}
+
+	// Fetch the list with a CADRG projection, generate it with
+	// the real projection.
+
 	OMGraphicList omGraphicList;
 	try{
-	    omGraphicList = this.cache.getRectangle(projection);
+	    omGraphicList = this.cache.getRectangle(cadrgProj);
 	} catch (java.lang.NullPointerException npe) {
 	    Debug.error(getName() + 
 			"|RpfLayer.prepare(): Something really bad happened - \n " +

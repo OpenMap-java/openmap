@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCacheHandler.java,v $
 // $RCSfile: RpfCacheHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/28 22:33:30 $
+// $Revision: 1.3 $
+// $Date: 2003/11/14 20:36:36 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -865,7 +865,9 @@ public class RpfCacheHandler {
 	    lon2 = (float)(lon + coverageBox.subframeLonInterval);
 
 	    String data;
-	    if (viewAttributes.autofetchAttributes || viewAttributes.showInfo) {
+	    if (viewAttributes != null && 
+		(viewAttributes.autofetchAttributes || 
+		 viewAttributes.showInfo)) {
 		data = frameProvider.getSubframeAttributes(coverageBox.tocNumber,
 							   coverageBox.entryNumber,
 							   x, y);
