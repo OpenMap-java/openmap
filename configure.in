@@ -1,13 +1,11 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION(OpenMap $Revision: 1.13 $)
+AC_REVISION(OpenMap $Revision: 1.14 $)
 AC_INIT(openmap.mk.in)
 
 #
 ## Override default of /usr/local
 #
 AC_PREFIX_DEFAULT(/usr/local/openmap)
-
-dnl Check JDK argument
 
 #
 ## Determine what paths to check to find the JDK.
@@ -36,11 +34,11 @@ case $with_jdk in
     ;;
   "" | yes)
     # user specified --with-jdk, but didn't specify where to find it
-    JDK_PATH=$PATH:/usr/local/java/bin:/usr/local/jdk/bin:/usr/local/java/jdk/bin
+    JDK_PATH=$PATH${PATH_SEP}/usr/local/java/bin${PATH_SEP}/usr/local/jdk/bin${PATH_SEP}/usr/local/java/jdk/bin
     ;;
   *)
     # user specified a path, either relative or not
-    JDK_PATH=$with_jdk:$with_jdk/bin
+    JDK_PATH=$with_jdk${PATH_SEP}$with_jdk/bin
     ;;
 esac
 
@@ -58,6 +56,19 @@ fi
 
 
 dnl Checks for programs.
+
+#
+## Handle the possibility that we're on a Cygwin platform.
+#
+PATH_SEP=":"
+AC_MSG_CHECKING([for cygwin platform])
+if uname -s | grep -i cyg; then
+  AC_MSG_RESULT([yes])
+  PATH_SEP=";"
+  IFS=${IFS};
+else
+  AC_MSG_RESULT([no])
+fi
 
 AC_PROG_INSTALL
 
@@ -95,7 +106,7 @@ AC_SUBST(layer_clean_targets)
 if test "x$with_specialist" = "xyes"; then
   layer_build_targets="$layer_build_targets specialist_all"
   layer_clean_targets="$layer_clean_targets specialist_clean"
-  CORBA_CLASSPATH=\$\{TOP\}/lib/vbjall.jar:\$\{TOP\}/lib/cspec58.jar
+  CORBA_CLASSPATH=\$\{TOP\}/lib/vbjall.jar\$\{PATH_SEP\}\$\{TOP\}/lib/cspec58.jar
   AC_SUBST(CORBA_CLASSPATH)
   CORBA_DIRS="com/bbn/openmap/layer/specialist/Makefile com/bbn/openmap/layer/specialist/vpf/Makefile"
 fi

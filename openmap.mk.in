@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
 # $RCSfile: openmap.mk.in,v $
-# $Revision: 1.9 $
-# $Date: 1998/11/13 16:01:10 $
+# $Revision: 1.10 $
+# $Date: 1998/11/13 16:57:28 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -63,7 +63,7 @@ localstatedir = @localstatedir@
 JAVA = @JAVA@
 JAVAC = @JAVAC@
 JAR = @JAR@
-JAVADOC = CLASSPATH=$(CLASSPATH) @JAVADOC@
+JAVADOC = "CLASSPATH=$(CLASSPATH)" @JAVADOC@
 SWING_JAR = @SWING_JAR@
 
 # Java compiler flags for optimizing
@@ -104,7 +104,7 @@ INSTALL.doc =		${INSTALL_DATA}
 
 # *.java to *.class make rule
 .java.class:
-	CLASSPATH=$(CLASSPATH) $(JAVAC) $(JFLAGS) $<
+	"CLASSPATH=$(CLASSPATH)" $(JAVAC) $(JFLAGS) $<
 
 # ------------------------------------------------------------
 # End of Java to class file rule
@@ -117,7 +117,7 @@ INSTALL.doc =		${INSTALL_DATA}
 # !! WARNING !!
 # TOP must be set by the Makefile that is including this makefile.
 #
-CLASSPATH = ${TOP}:${SWING_JAR}:@CORBA_CLASSPATH@
+CLASSPATH = ${TOP}${PATH_SEP}${SWING_JAR}${PATH_SEP}@CORBA_CLASSPATH@
 
 INSTALL_DIR = ${TOP}/tmp
 

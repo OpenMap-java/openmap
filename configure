@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.12 
+# From configure.in OpenMap Revision: 1.13 
 
 
 
@@ -541,7 +541,6 @@ fi
 #
 
 
-
 #
 ## Determine what paths to check to find the JDK.
 ## There are three possible cases:
@@ -569,17 +568,31 @@ case $with_jdk in
     ;;
   "" | yes)
     # user specified --with-jdk, but didn't specify where to find it
-    JDK_PATH=$PATH:/usr/local/java/bin:/usr/local/jdk/bin:/usr/local/java/jdk/bin
+    JDK_PATH=$PATH${PATH_SEP}/usr/local/java/bin${PATH_SEP}/usr/local/jdk/bin${PATH_SEP}/usr/local/java/jdk/bin
     ;;
   *)
     # user specified a path, either relative or not
-    JDK_PATH=$with_jdk:$with_jdk/bin
+    JDK_PATH=$with_jdk${PATH_SEP}$with_jdk/bin
     ;;
 esac
 
 
 
 
+
+#
+## Handle the possibility that we're on a Cygwin platform.
+#
+PATH_SEP=":"
+echo $ac_n "checking for cygwin platform""... $ac_c" 1>&6
+echo "configure:589: checking for cygwin platform" >&5
+if uname -s | grep -i cyg; then
+  echo "$ac_t""yes" 1>&6
+  PATH_SEP=";"
+  IFS=${IFS};
+else
+  echo "$ac_t""no" 1>&6
+fi
 
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
@@ -611,7 +624,7 @@ ac_configure=$ac_aux_dir/configure # This should be Cygnus configure.
 # SVR4 /usr/ucb/install, which tries to use the nonexistent group "staff"
 # ./install, which can be erroneously created by make from ./install.sh.
 echo $ac_n "checking for a BSD compatible install""... $ac_c" 1>&6
-echo "configure:615: checking for a BSD compatible install" >&5
+echo "configure:628: checking for a BSD compatible install" >&5
 if test -z "$INSTALL"; then
 if eval "test \"`echo '$''{'ac_cv_path_install'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -664,7 +677,7 @@ test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 # Extract the first word of "java", so it can be a program name with args.
 set dummy java; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:668: checking for $ac_word" >&5
+echo "configure:681: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVA'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -704,7 +717,7 @@ fi
 # Extract the first word of "javac", so it can be a program name with args.
 set dummy javac; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:708: checking for $ac_word" >&5
+echo "configure:721: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVAC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -744,7 +757,7 @@ fi
 # Extract the first word of "jar", so it can be a program name with args.
 set dummy jar; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:748: checking for $ac_word" >&5
+echo "configure:761: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAR'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -784,7 +797,7 @@ fi
 # Extract the first word of "javadoc", so it can be a program name with args.
 set dummy javadoc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:788: checking for $ac_word" >&5
+echo "configure:801: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVADOC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -823,7 +836,7 @@ fi
 
 # locate swing in the classpath
 echo $ac_n "checking for swing""... $ac_c" 1>&6
-echo "configure:827: checking for swing" >&5
+echo "configure:840: checking for swing" >&5
 ac_swing_path=$CLASSPATH
 ac_swing_jar=""
 case $with_swing in
@@ -900,7 +913,7 @@ fi
 if test "x$with_specialist" = "xyes"; then
   layer_build_targets="$layer_build_targets specialist_all"
   layer_clean_targets="$layer_clean_targets specialist_clean"
-  CORBA_CLASSPATH=\$\{TOP\}/lib/vbjall.jar:\$\{TOP\}/lib/cspec58.jar
+  CORBA_CLASSPATH=\$\{TOP\}/lib/vbjall.jar\$\{PATH_SEP\}\$\{TOP\}/lib/cspec58.jar
   
   CORBA_DIRS="com/bbn/openmap/layer/specialist/Makefile com/bbn/openmap/layer/specialist/vpf/Makefile"
 fi
