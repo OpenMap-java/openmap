@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/BasicStrokeEditorMenu.java,v $
 // $RCSfile: BasicStrokeEditorMenu.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:10 $
+// $Revision: 1.4 $
+// $Date: 2004/10/28 19:53:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,14 +63,7 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
         } else {
             basicStroke = new BasicStroke(1f);
         }
-
-        setStrokeWidth(basicStroke.getLineWidth());
-        setMiterLimit(basicStroke.getMiterLimit());
-        setDash(basicStroke.getDashArray());
-        setDashPhase(basicStroke.getDashPhase());
-        setEndCaps(basicStroke.getEndCap());
-        setLineJoins(basicStroke.getLineJoin());
-
+        
         setBasicStroke(basicStroke);
     }
 
@@ -292,6 +285,12 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
 
     public void setBasicStroke(BasicStroke bs) {
         basicStroke = bs;
+        setStrokeWidth(basicStroke.getLineWidth());
+        setMiterLimit(basicStroke.getMiterLimit());
+        setDash(basicStroke.getDashArray());
+        setDashPhase(basicStroke.getDashPhase());
+        setLineJoins(basicStroke.getLineJoin());
+        setEndCaps(basicStroke.getEndCap());
     }
 
     public void setPropertyChangeSupport(
