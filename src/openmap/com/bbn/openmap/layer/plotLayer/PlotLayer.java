@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/plotLayer/PlotLayer.java,v $
 // $RCSfile: PlotLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/20 02:43:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,6 +32,7 @@ import javax.swing.*;
 
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
@@ -40,12 +41,11 @@ import com.bbn.openmap.util.PaletteHelper;
 /**
  *
  */
-public class PlotLayer extends Layer implements MapMouseListener
+public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
 {
 
     private static transient int counter = 0;
     private boolean boxy = true;
-    private OMGraphicList omgraphics = null;
 
     private ScatterGraph graph = null;
     private boolean show_plot_ = false;
@@ -102,61 +102,19 @@ public class PlotLayer extends Layer implements MapMouseListener
 				 temperature_data.overall_max_year_,
 				 temperature_data.overall_min_temp_, 
 				 temperature_data.overall_max_temp_);
-	omgraphics = plotDataSources();
+	setList(plotDataSources());
     }
 
-    /** 
-     * Implementing the ProjectionPainter interface.
-     */
-    public synchronized void renderDataForProjection(Projection proj, java.awt.Graphics g) {
-	if (proj == null) {
-	    Debug.error("PlotLayer.renderDataForProjection: null projection!");
-	    return;
-	}
-	
-	// The actual projection doesn't matter, since we are only 
-	// drawing points in XY space
-	setProjection(proj.makeClone());
-
-	// Redimension the graph, to 
+    public OMGraphicList prepare() {
 	graph.resize(plotX, plotY, plotWidth, plotHeight);
-	omgraphics.project(getProjection(), true);
-	paint(g);
+	return super.prepare();
     }
 
     /**
-     * Invoked when the projection has changed or this Layer has been added to
-     * the MapBean.
-     * <p>
-     * Perform some extra checks to see if reprojection of the graphics is
-     * really necessary.
-     * @param e ProjectionEvent
-     *
-     */    
-    public void projectionChanged(ProjectionEvent e) {
-
-	// The actual projection doesn't matter, since we are only 
-	// drawing points in XY space
-	setProjection(e);
-	// Redimension the graph, to 
-	graph.resize(plotX, plotY, plotWidth, plotHeight);
-	omgraphics.project(getProjection(), true);
-       	repaint();
-    }
-
-    /**
-     * Paints the layer.
-     *
-     * @param g the Graphics context for painting
+     * Search for the data in the directories listing in the
+     * CLASSPATH.  We should also check to see if the datafile is
+     * specified as a URL so that we can load it as such.
      */
-    public void paint(java.awt.Graphics g) {
-	Debug.message("basic", "PlotLayer.paint() " + omgraphics.size() + " graphics");
-	omgraphics.render(g);
-    }
-
-    // Search for the data in the directories listing in the
-    // CLASSPATH.  We should also check to see if the datafile is
-    // specified as a URL so that we can load it as such.
     private GLOBETempData getDataSource() {
 
 	if (temperature_data != null) {
@@ -206,7 +164,7 @@ public class PlotLayer extends Layer implements MapMouseListener
 	return temperature_data;
     }
 
-    // Put the data points on the map.
+    /** Put the data points on the map. */
     private OMGraphicList plotDataSources() {
 	Debug.message("basic", "PlotLayer.plotDataSources()");
 	int num_graphics = 0;
@@ -231,28 +189,29 @@ public class PlotLayer extends Layer implements MapMouseListener
 	return graphics;
     }
 
-
-
-    // Build and display the plot.
-    private void generatePlot() {
+    /** Build and display the plot. */
+    private OMGraphic generatePlot() {
 //  	System.out.println("Generating Plot ");
 	if (graph != null) {
 	    graph.setDataPoints(selectedGraphics);
 	    graph.plotData();
-	}	
+	    return graph.getPlotGraphics();
+	}
+	return null;
     }
 
     private void showPlot() {
 	show_plot_ = true;
 
-	generatePlot();
+	OMGraphic plot = generatePlot();
+	OMGraphicList list = getList();
 
-	if (graph != null) {
+	if (plot != null) {
 //  	    System.out.println("Making plot visible..");
-	    omgraphics.addOMGraphic(graph.getPlotGraphics());
+	    list.addOMGraphic(plot);
 	}
 	// generate the graphics for rendering.
-	omgraphics.generate(getProjection(), false);
+	list.generate(getProjection(), false);
 	repaint();
     }
 
@@ -260,22 +219,20 @@ public class PlotLayer extends Layer implements MapMouseListener
 //  	System.out.println("Making plot IN-visible..");
 	show_plot_ = false;
 	if (graph != null) {
-	    OMGraphic searchfor = graph.getPlotGraphics();
-	    for (int i = 0; i < omgraphics.size() ; i++) {
-		if ( searchfor.equals(omgraphics.getOMGraphicAt(i))) {
-		    omgraphics.removeOMGraphicAt(i);
-		}
+	    OMGraphic plot = graph.getPlotGraphics();
+	    OMGraphicList list = getList();
+
+	    if (list != null && plot != null) {
+		list.remove(plot);
 	    }
-	    omgraphics.project(getProjection(), false);
 	}
-	// We need to project here, in order to prepare 
-	// the plot for rendering.
-	//omgraphics.project(projection, false);
 	repaint();
     }
     
-    // add the data from the clicked site to the list of things 
-    // we are drawing
+    /**
+     * Add the data from the clicked site to the list of things 
+     * we are drawing.
+     */
     private void addSelectionToPlotList() {
 	if (selectedGraphic != null) {
 	    // Change the color of the clicked ones
@@ -516,6 +473,7 @@ public class PlotLayer extends Layer implements MapMouseListener
      */
     public boolean mouseMoved(MouseEvent e) {
 	OMGraphic newSelectedGraphic;
+
 	if ( show_plot_ && graph != null ) {
 	    
 	    newSelectedGraphic = graph.selectPoint(e.getX(), e.getY(), 4.0f);
@@ -530,37 +488,36 @@ public class PlotLayer extends Layer implements MapMouseListener
 	    }
 	    
 	} else {
-	    newSelectedGraphic = omgraphics.selectClosest(e.getX(),
-							  e.getY(),
-							  4.0f);
+	    newSelectedGraphic = 
+		getList().selectClosest(e.getX(), e.getY(), 4.0f);
 	
 	    if (newSelectedGraphic != null &&
 		(selectedGraphic == null ||
 		 newSelectedGraphic != selectedGraphic)) {
 
-		    Debug.message("basic", "Making selection...");
+		Debug.message("basic", "Making selection...");
 
-		    selectedGraphic = newSelectedGraphic;
-		    //selectedGraphic.setLineColor(Color.yellow);
-		    selectedGraphic.regenerate(getProjection());
+		selectedGraphic = newSelectedGraphic;
+		//selectedGraphic.setLineColor(Color.yellow);
+		selectedGraphic.regenerate(getProjection());
 		    
-		    // display site info on map
-		    GLOBESite site = (GLOBESite)(newSelectedGraphic.getAppObject());
-		    if (site != null) {
-			fireRequestInfoLine(site.getInfo());		
-		    }
+		// display site info on map
+		GLOBESite site = (GLOBESite)(newSelectedGraphic.getAppObject());
+		if (site != null) {
+		    fireRequestInfoLine(site.getInfo());		
+		}
 
-		    repaint();
+		repaint();
 	    } else if (selectedGraphic != null &&
-		     newSelectedGraphic == null) { 
+		       newSelectedGraphic == null) { 
 
-		    // revert color of un-moused object.
-		    Debug.message("basic", "Clearing selection...");
-		    //selectedGraphic.setLineColor(Color.red);
-		    selectedGraphic.regenerate(getProjection());
-		    fireRequestInfoLine("");
-		    selectedGraphic = null;
-		    repaint();
+		// revert color of un-moused object.
+		Debug.message("basic", "Clearing selection...");
+		//selectedGraphic.setLineColor(Color.red);
+		selectedGraphic.regenerate(getProjection());
+		fireRequestInfoLine("");
+		selectedGraphic = null;
+		repaint();
 	    }  
 	}
 	return true;
@@ -573,7 +530,7 @@ public class PlotLayer extends Layer implements MapMouseListener
      *
      * @see #getMouseModeServiceList */
     public void mouseMoved() {
-	omgraphics.deselectAll();
+	getList().deselectAll();
 	repaint();
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/20 02:43:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -171,6 +171,15 @@ public class LinkLayer extends OMGraphicHandlerLayer
 		System.err.println(ioe);
 	    }
 	}
+    }
+
+    /**
+     * Overriding what happens to the internal OMGraphicList when the
+     * projection changes.  For this layer, we want to reset the
+     * internal OMGraphicList when the projection changes.
+     */
+    protected void resetListForProjectionChange() {
+	setList(null);
     }
 
     /**

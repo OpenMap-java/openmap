@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFLayer.java,v $
 // $RCSfile: MIFLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/20 02:43:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,6 +54,15 @@ public class MIFLayer extends OMGraphicHandlerLayer {
     public MIFLayer() {}
 
     /**
+     * Overriding what happens to the internal OMGraphicList when the
+     * projection changes.  For this layer, we want to reset the
+     * internal OMGraphicList when the projection changes.
+     */
+    protected void resetListForProjectionChange() {
+	setList(null);
+    }
+
+    /**
      * Sets the accuracy of the rendering. The default is true. If set
      * to false then the regions will not always be drawn correctly
      * (ie. as they appear in MapInfo) however processing will be much
@@ -76,63 +85,30 @@ public class MIFLayer extends OMGraphicHandlerLayer {
      * this layer. Only the file property is used by the layer. This
      * is the MIF file that we will decode.  
      */
-    public void setProperties (String prefix, Properties props) {
+    public void setProperties(String prefix, Properties props) {
 	super.setProperties(prefix, props);
 
 	prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
 	String mifFileName = props.getProperty(prefix + MIF_FileProperty);
 	try{
-	    BufferedReader bfr=new BufferedReader(new FileReader(mifFileName));
-	    mifl=new MIFLoader(bfr,accurate);
+	    BufferedReader bfr = new BufferedReader(new FileReader(mifFileName));
+	    mifl = new MIFLoader(bfr,accurate);
 	} catch(IOException ioe) {
 	    Debug.error("MIFLayer: didn't find file " + mifFileName); 
 	    return;
 	}
     }
 
-    /** 
-     * Implementing the ProjectionPainter interface.
-     */
-    public synchronized void renderDataForProjection(Projection proj, 
-						     Graphics g) {
-	if (mifl != null && !mifl.isLoaded()) {
-	    setList(mifl.getList());
-	}
-
-	OMGraphicList omlist = getList();
-
-	if (proj != null && omlist != null) {
-	    setProjection(proj.makeClone());
-	    omlist.generate(proj);
-	    paint(g);
-	}
-    }
-
     /**
-     * Handles projection change notification events
-     * @param ev the new projection event
+     * Creates the OMGraphicList from the MIF file if needed, projects
+     * the list otherwise.
      */
-    public void projectionChanged(ProjectionEvent pe) {
+    public OMGraphicList prepare() {
 	if (mifl != null && !mifl.isLoaded()) {
 	    setList(mifl.getList());
 	}
 
-	Projection proj = setProjection(pe);
-	OMGraphicList omlist = getList();
-
-	if (proj != null && omlist != null) {
-	    omlist.project(proj, true);
-	}
-
-	repaint();
-    }
-
-
-    public void paint(java.awt.Graphics g) {    
-	OMGraphicList omlist = getList();
-	if (omlist != null) {
-	    omlist.render(g);
-	}
+	return super.prepare();
     }
 }

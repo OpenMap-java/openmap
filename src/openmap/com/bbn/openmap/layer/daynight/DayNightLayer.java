@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/DayNightLayer.java,v $
 // $RCSfile: DayNightLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/20 02:43:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -43,6 +43,7 @@ import com.bbn.openmap.util.CSVTokenizer;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.omGraphics.*;
 
@@ -100,16 +101,16 @@ import javax.swing.Timer;
  * </pre></code>
  *
  */
-public class DayNightLayer extends Layer 
+public class DayNightLayer extends OMGraphicHandlerLayer 
     implements ProjectionListener, ActionListener {
-    /** Default value of fade to the terminator line, set to .10f.
+    /**
+     * Default value of fade to the terminator line, set to .10f.
      * This means that the last 10% of the horizon will be faded
-     * out. */
+     * out. 
+     */
     public static final transient float DEFAULT_TERM_FADE = .10f;
     /** Default update interval, which is never - updates occur on re-projections. */
     public static final transient int DO_NOT_UPDATE = -1;
-    /** The image used to show lightness/darkness. */
-    protected OMGraphic overlay;
     /** The color of daytime - default is white and clear. */
     protected Color daytimeColor;
     /** Default color string for daytime */
@@ -118,11 +119,15 @@ public class DayNightLayer extends Layer
     protected Color nighttimeColor;
     /** Default color string for nighttime */
     protected String defaultNighttimeColorString = "7F000000";
-    /** Percentage of the distance from the horizon to the brightest
-     * point to start fading to darkness. (0 - .5) */
+    /**
+     * Percentage of the distance from the horizon to the brightest
+     * point to start fading to darkness. (0 - .5) 
+     */
     protected float termFade = DEFAULT_TERM_FADE;
-    /** If true, the layer will set the darkness according to the
-     * current time. */
+    /**
+     * If true, the layer will set the darkness according to the
+     * current time. 
+     */
     protected boolean currentTime = true;
     /** The time used to create the layer, in milliseconds from java/unix epoch. */
     protected long overlayTime;
@@ -150,51 +155,6 @@ public class DayNightLayer extends Layer
     public static final transient String UpdateIntervalProperty = ".updateInterval";
     public static final transient String DoPolyTerminatorProperty = ".doPolyTerminator";
     public static final transient String TerminatorVertsProperty = ".terminatorVerts";
-
-    /** The swing worker that goes off in it's own thread to get
-     * graphics.
-     * */
-    DayNightWorker currentWorker;
-    /** Set when the projection has changed while a swing worker is
-     * gathering graphics, and we want him to stop early. */
-    protected boolean cancelled = false;
-
-    /** Since we can't have the main thread taking up the time to
-     * create images, we use this worker thread to do it.
-     * */
-    class DayNightWorker extends SwingWorker {
-	/** Constructor used to create a worker thread. */
-	public DayNightWorker () {
-	    super();
-	}
-
-	/**  Compute the value to be returned by the <code>get</code>
-	 * method.  */
-	public Object construct() {
-	    Debug.message("daynight", getName()+
-			  "|DayNightWorker.construct()");
-	    fireStatusUpdate(LayerStatusEvent.START_WORKING);
-	    try {
-		return prepare();
-	    } catch (OutOfMemoryError e) {
-		String msg = getName() + 
-		    "|DayNightLayer.DayNightWorker.construct(): " + e;
-		System.err.println(msg);
-		e.printStackTrace();
-		fireRequestMessage(new InfoDisplayEvent(this, msg));
-		fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-		return null;
-	    }
-	}
-
-	/** Called on the event dispatching thread (not on the worker
-	 * thread) after the <code>construct</code> method has
-	 * returned.  */
-	public void finished() {
-	    workerComplete(this);
-	    fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-	}
-    }
 
     /** 
      * The default constructor for the Layer.  All of the attributes
@@ -317,7 +277,7 @@ public class DayNightLayer extends Layer
      * @return OMGraphic containing image to use for the layer.  The
      * image has been projected.
      */
-    protected OMGraphic createImage(Projection projection){
+    protected OMGraphic createImage(Projection projection) {
 
 	if (currentTime) overlayTime = System.currentTimeMillis();
 	LatLonPoint brightPoint = SunPosition.sunPosition(overlayTime);
@@ -402,103 +362,6 @@ public class DayNightLayer extends Layer
  	return ret;
     }
 
-    /** 
-     * Sets the current raster terminator overlay.
-     *
-     * @param raster image of overlay 
-     */
-    public synchronized void setOverlay (OMGraphic raster) {
-	overlay = raster;
-    }
-
-    /** 
-     * Get the current raster terminator overlay.
-     *
-     * @return raster image of overlay 
-     */
-    public synchronized OMGraphic getOverlay () {
-	return overlay;
-    }
-
-    /** 
-     * Used to set the cancelled flag in the layer.  The swing worker
-     * checks this once in a while to see if the projection has
-     * changed since it started working.  If this is set to true, the
-     * swing worker quits when it is safe. 
-     */
-    public synchronized void setCancelled(boolean set){
-	cancelled = set;
-    }
-
-    /** Check to see if the cancelled flag has been set. */
-    public synchronized boolean isCancelled(){
-	return cancelled;
-    }
-
-    /** 
-     * Implementing the ProjectionPainter interface.
-     */
-    public synchronized void renderDataForProjection(Projection proj, java.awt.Graphics g){
-	if (proj == null){
-	    Debug.error("DayNightLayer.renderDataForProjection: null projection!");
-	    return;
-	} else if (!proj.equals(getProjection())){
-	    setProjection(proj.makeClone());
-	    setOverlay(createImage(proj));
-	}
-	paint(g);
-    }
-
-    /** 
-     * The projectionListener interface method that lets the Layer
-     * know when the projection has changes, and therefore new graphics
-     * have to created /supplied for the screen.
-     *
-     * @param e The projection event, most likely fired from a map bean.
-     */
-    public void projectionChanged (ProjectionEvent e) {
-	Debug.message("basic", getName()+"|DayNightLayer.projectionChanged()");
-
-	if (setProjection(e) == null) {
-	    // Nothing to do, already have it and have acted on it...
-	    repaint();
-	    return;
-	}
-
- 	setOverlay(null);
-
-	// If there isn't a worker thread working on this already,
-	// create a thread that will do the real work. If there is
-	// a thread working on this, then set the cancelled flag
-	// in the layer.
-	if (currentWorker == null) {
-	    Debug.message("daynight", getName()+"| updating image via projection changed...");
-	    currentWorker = new DayNightWorker();
-	    currentWorker.execute();
-	}
-	else setCancelled(true);
-    }
-
-    /**  
-     * The DayNightWorker calls this method on the layer when it is
-     * done working.  If the calling worker is not the same as the
-     * "current" worker, then a new worker is created.
-     *
-     * @param worker the worker that has the graphics.
-     */
-    protected synchronized void workerComplete (DayNightWorker worker) {
-	if (!isCancelled()) {
-	    currentWorker = null;
-	    setOverlay((OMGraphic)worker.get());
-	    repaint();
-	}
-	else{
-	    setCancelled(false);
-	    currentWorker = new DayNightWorker();
-	    currentWorker.execute();
-	}
-    }
-
     /**
      * Prepares the graphics for the layer.  This is where the
      * getRectangle() method call is made on the location.  <p>
@@ -509,7 +372,14 @@ public class DayNightLayer extends Layer
      * so, but return out of the prepare asap.
      *
      */
-    public OMGraphic prepare() {
+    public OMGraphicList prepare() {
+
+	OMGraphicList list = getList();
+	if (list == null) {
+	    list = new OMGraphicList();
+	} else {
+	    list.clear();
+	}
 
 	if (isCancelled()) {
 	    Debug.message("daynight", getName()+
@@ -519,28 +389,11 @@ public class DayNightLayer extends Layer
 
 	Debug.message("basic", getName()+"|DayNightLayer.prepare(): doing it");
 
-	OMGraphic ret = createImage(getProjection());
+	OMGraphic ras = createImage(getProjection());
 	if (timer != null) timer.restart();
-	return ret;
-    }
+	list.add(ras);
 
-    /**
-     * A method that will launch a DayNightWorker to fetch the images
-     * that best suit the settings in the current attributes.
-     *
-     * If you call this AND change the projection of the MapBean, you
-     * double the work for the layer.
-     */
-    public void doPrepare() {
-	// If there isn't a worker thread working on a projection
-	// changed or other doPrepare call, then create a thread that
-	// will do the real work. If there is a thread working on
-	// this, then set the cancelled flag in the layer.
-	if (currentWorker == null) {
-	    currentWorker = new DayNightWorker();
-	    currentWorker.execute();
-	}
-	else setCancelled(true);
+	return list;
     }
 
     /**
@@ -592,18 +445,4 @@ public class DayNightLayer extends Layer
 	timer = t;
     }
 
-    /**
-     * Paints the layer.
-     *
-     * @param g the Graphics context for painting
-     *
-     */
-    public void paint (java.awt.Graphics g) {
-	Debug.message("daynight", getName()+"|DayNightLayer.paint()");
-	OMGraphic image = getOverlay();
-
-	if (image != null){
-	    image.render(g);
-	}
-    }
 }

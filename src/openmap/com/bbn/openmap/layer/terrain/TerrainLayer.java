@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/TerrainLayer.java,v $
 // $RCSfile: TerrainLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/20 02:43:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -146,13 +146,23 @@ public class TerrainLayer extends OMGraphicHandlerLayer
  	LOSTool = new LOSGenerator(this);
     }
 
-    /** Sets the default values for the variables, if the properties
+    /**
+     * Sets the default values for the variables, if the properties
      * are not found, or are invalid.  Usually not a good idea.
-     * */
+     */
     protected void setDefaultValues() {
 	// defaults
 	dtedDataPaths = null;
 	mode = PROFILE;
+    }
+
+    /**
+     * Overriding what happens to the internal OMGraphicList when the
+     * projection changes.  For this layer, we want to reset the
+     * internal OMGraphicList when the projection changes.
+     */
+    protected void resetListForProjectionChange() {
+	setList(null);
     }
 
     /** 

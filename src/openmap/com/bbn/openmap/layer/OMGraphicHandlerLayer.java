@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/20 02:43:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,21 +36,29 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.SwingWorker;
 
 /**
- * The OMGraphicHandlerLayer is an abstract layer that provides
- * OMGraphicHandler support.  With this support, the
- * OMGraphicHandlerLayer can accept OMAction instructions for managing
- * OMGraphics, and can perform display filtering as supported by the
- * FilterSupport object.<P>
+ * The OMGraphicHandlerLayer is a layer that provides OMGraphicHandler
+ * support.  With this support, the OMGraphicHandlerLayer can accept
+ * OMAction instructions for managing OMGraphics, and can perform
+ * display filtering as supported by the FilterSupport object.<P>
  *
  * The OMGraphicHandlerLayer already has an OMGraphicList variable, so
  * if you extend this class you don't have to manage another one.  You
  * can add your OMGraphics to the list provided. Make sure you
- * override resetListForProjectionChange() if you *DON"T* want the
- * internal list to be nulled out when the projection changes.  If you
- * create a list of OMGraphics that is reused and simply reprojected
- * when the projection changes, override the method so it does
- * nothing.  If you let prepare() create a new OMGraphicList, then do
- * nothing (see next paragraph for what prepare() does).<P>
+ * override resetListForProjectionChange() if you want the internal
+ * list to be nulled out when the projection changes.  If you create a
+ * list of OMGraphics that is reused and simply re[projected when the
+ * projection changes, do nothing - that's what happens anyway.  If
+ * you let prepare() create a new OMGraphicList based on the new
+ * projection, then have the resetListForProjectionChange set the list
+ * to null, or at least clear out the old graphics at some point. If
+ * you are managing a lot of OMGraphics and do not null out the list,
+ * you may see your layer appear to lag behind the projection changes.
+ * That's because another layer with less work to do finishes and
+ * calls repaint, and since your list is still set with OMGraphics
+ * ready for the old projection, it will just draw what it had, and
+ * then draw again when it has finished working.  Nulling out the list
+ * will prevent your layer from drawing anything on the new projection
+ * until it is ready.<P>
  *
  * The OMGraphicHandlerLayer has support built in for launching a
  * SwingWorker to do work for you in a separate thread.  If the
@@ -64,7 +72,7 @@ import com.bbn.openmap.util.SwingWorker;
  * create/manage OMGraphics any way you want.  The SwingWorker only
  * gets launched if doPrepare() gets called.
  */
-public abstract class OMGraphicHandlerLayer extends Layer {
+public class OMGraphicHandlerLayer extends Layer {
 
     /**
      * Filter support that can be used to manage OMGraphics.
@@ -176,21 +184,21 @@ public abstract class OMGraphicHandlerLayer extends Layer {
      * when the layer is part of the map, and whenever the map
      * projection changes. <p>
      *
-     * This method will set the internal OMGraphicList to null if the
-     * projection has changed.  The paint() method checks for a null
-     * OMGraphicList and handles that gracefully, so make sure you are
-     * aware of that if you override the paint method.  The reason the
-     * OMGraphicList is nulled out is so if another layer finishes
-     * before yours does and gets repainted, your old OMGraphics don't
-     * get painted along side their new ones - it's a mismatched
-     * situation.
+     * This method will not do anything to the internal OMGraphicList
+     * if the projection has changed.  The paint() method checks for a
+     * null OMGraphicList and handles that gracefully, so make sure
+     * you are aware of that if you override the paint method.  The
+     * reason the OMGraphicList is nulled out is so if another layer
+     * finishes before yours does and gets repainted, your old
+     * OMGraphics don't get painted along side their new ones - it's a
+     * mismatched situation.
      */
     public void projectionChanged(ProjectionEvent pe) {    
 	Projection proj = setProjection(pe);
 	// proj will be null if the projection hasn't changed, a 
 	// signal that work does not need to be done.
 	if (proj != null) {
-	    // reset list if desired, which is true by default.
+	    // reset list if desired, which is false by default.
 	    resetListForProjectionChange();
 	    // OK decision time.  If you need to do so much work that
 	    // the application appears to hang, launch a thread to do
@@ -223,7 +231,13 @@ public abstract class OMGraphicHandlerLayer extends Layer {
      * your old ones.
      */
     protected void resetListForProjectionChange() {
-	setList(null);
+	// If you are going to set new OMGraphics in the layer 
+	// depending on the projection, then clear or null out the
+	// list:
+// 	setList(null);
+
+        // Otherwise, do nothing, and the current OMGraphicList 
+	// will get reprojected.
     }
 
     /**
@@ -332,8 +346,12 @@ public abstract class OMGraphicHandlerLayer extends Layer {
      */
     public OMGraphicList prepare() {
 	OMGraphicList currentList = getList();
-	if (currentList != null) {
-	    currentList.generate(getProjection());
+	Projection proj = getProjection(); 
+
+	// if the layer hasn't been added to the MapBean 
+	// yet, the projectio could be null.
+	if (currentList != null && proj != null) {
+	    currentList.generate(proj);
 	}
 	return currentList;
     }

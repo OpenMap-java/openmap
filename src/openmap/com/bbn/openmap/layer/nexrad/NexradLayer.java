@@ -54,8 +54,7 @@ import com.bbn.openmap.util.Taskable;
  * NOTE: the color properties do not support alpha value if running on
  * JDK 1.1...
  */
-public class NexradLayer extends Layer
-{
+public class NexradLayer extends OMGraphicHandlerLayer {
     
     // property keys
     public final static transient String plotColorProperty = ".color.plot";
@@ -71,14 +70,10 @@ public class NexradLayer extends Layer
     protected URL dataURL = null;
     protected Font legendFont = Font.decode("SanSerif");
     
-    private OMGraphicList omgraphics;
-    
     /**
      * Construct the DateLayer.
      */
-    public NexradLayer() {
-        omgraphics = new OMGraphicList();
-    }
+    public NexradLayer() {}
     
     
     /**
@@ -120,33 +115,7 @@ public class NexradLayer extends Layer
 	
     }
     
-    /** 
-     * Implementing the ProjectionPainter interface.
-     */
-    public synchronized void renderDataForProjection(Projection proj, java.awt.Graphics g){
-	if (proj == null){
-	    Debug.error("NexradLayer.renderDataForProjection: null projection!");
-	    return;
-	}
-	setProjection(proj.makeClone());
-	omgraphics.project(proj, true);
-	paint(g);
-    }
-
-    /**
-     * Invoked when the projection has changed or this Layer has been
-     * added to the MapBean.
-     * @param e ProjectionEvent
-     */    
-    public void projectionChanged (ProjectionEvent e) {
-	Projection projection = setProjection(e);
-	if (projection != null) {
-	    omgraphics.project(projection, true);
-	}
-	repaint();
-    }
-    
-    public void loadData (URL theDataStream) {
+    public void loadData(URL theDataStream) {
 	try {
 	    BufferedReader f = new BufferedReader(
 	     new InputStreamReader(theDataStream.openStream()));
@@ -172,7 +141,7 @@ public class NexradLayer extends Layer
 		Debug.output("NexradLayer: Completed "+theDataStream+" "+
 			     maxx+" "+maxy);
 	    }
-	    createGraphics(omgraphics, ulhrapx, ulhrapy, maxx, maxy, rain);
+	    setList(createGraphics(ulhrapx, ulhrapy, maxx, maxy, rain));
 	    // } catch (java.io.IOException oops) {
         } catch (Exception oops) {
 	    Debug.error("NexradLayer.loadData: Failed to read "+theDataStream);
@@ -180,11 +149,12 @@ public class NexradLayer extends Layer
         } 
     }
     
-    public OMGraphicList createGraphics (OMGraphicList graphics,
-					 int ulhrapx, int ulhrapy,
-					 int xcount, int ycount,
-					 int rain[][]) {
-        graphics.clear();
+    public OMGraphicList createGraphics(int ulhrapx, int ulhrapy,
+					int xcount, int ycount,
+					int rain[][]) {
+
+        OMGraphicList graphics = new OMGraphicList();
+
         float ul[] = {0,0};
         float ur[] = {0,0};
         float ll[] = {0,0};
@@ -227,8 +197,8 @@ public class NexradLayer extends Layer
      * Paints the layer.
      * @param g the Graphics context for painting
      */
-    public void paint (Graphics g) {
-        omgraphics.render(g);
+    public void paint(Graphics g) {
+        super.paint(g);
 	plotScale(g);
     }
     
@@ -260,7 +230,7 @@ public class NexradLayer extends Layer
 			  alphaValue));
     }
     
-    public float[] hrap2lonlat (int xhrap, int yhrap) {
+    public float[] hrap2lonlat(int xhrap, int yhrap) {
 	float mesh = 4762.5f;
 	float earthr = 6371200.0f;
 	float stlond = -105.0f;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DateLayer.java,v $
 // $RCSfile: DateLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/20 02:43:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -74,8 +74,7 @@ import com.bbn.openmap.util.PropUtils;
  * JDK 1.1...
  */
 public class DateLayer extends LabelLayer
-    implements Taskable, MapMouseListener, ComponentListener
-{
+    implements Taskable, MapMouseListener {
 
     // property keys
     public final static transient String dateFormatProperty = "date.format";

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/LabelLayer.java,v $
 // $RCSfile: LabelLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/20 02:43:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -73,9 +73,8 @@ import com.bbn.openmap.util.Taskable;
  * NOTE: the color properties do not support alpha value if running on
  * JDK 1.1...
  */
-public class LabelLayer extends Layer
-    implements Taskable, MapMouseListener, ComponentListener
-{
+public class LabelLayer extends OMGraphicHandlerLayer
+    implements Taskable, MapMouseListener {
 
     // property keys
     public final static transient String fontProperty = ".font";
@@ -115,10 +114,7 @@ public class LabelLayer extends Layer
 	text.setShowBounds(true);
 	text.setBoundsLineColor(bgColor);
 	text.setBoundsFillColor(bgColor);
-
-	addComponentListener(this);
     }
-
 
     /**
      * Sets the properties for the <code>Layer</code>.
@@ -152,7 +148,7 @@ public class LabelLayer extends Layer
 
     }
 
-    // parse X-like geometry string
+    /** Parse X-like geometry string. */
     protected void parseGeometryString() {
 	int i=0;
 	byte[] bytes = geometryString.getBytes();
@@ -170,7 +166,7 @@ public class LabelLayer extends Layer
     }
     
     
-    // position the text graphic
+    /** Position the text graphic */
     protected void positionText(int w, int h) {
 	int xoff, yoff, justify;
 	if (xgrav.equals("+")) {
@@ -209,26 +205,6 @@ public class LabelLayer extends Layer
     }
 
     /**
-     * Invoked when the projection has changed or this Layer has been
-     * added to the MapBean.
-     * @param e ProjectionEvent
-     */    
-    public void projectionChanged(ProjectionEvent e) {
-	setProjection(e);
-	repaint();
-    }
-    
-    /** 
-     * Implementing the ProjectionPainter interface.
-     */
-    public synchronized void renderDataForProjection(Projection proj, Graphics g){
-	if (proj != null){
-	    setProjection(proj.makeClone());
-	    paint(g);
-	}
-    }
-    
-    /**
      * Paints the layer.
      * @param g the Graphics context for painting
      */
@@ -240,9 +216,8 @@ public class LabelLayer extends Layer
 	if (Debug.debugging("labellayer")) {
 	    System.out.println("labelLayer.paint(): "+labelText);
 	}
-        int w = Environment.getInteger(Environment.Width, 480);
-	int h = Environment.getInteger(Environment.Height, 480);
-	positionText(w, h);
+
+	positionText(p.getWidth(), p.getHeight());
 	text.setData(labelText);
 	text.generate(p);//to get bounds
 	
@@ -264,12 +239,6 @@ public class LabelLayer extends Layer
 	    System.out.println("LabelLayer.actionPerformed()");
 	}
 
-	// What is this for?
-//  	Object obj = e.getSource();
-
-	// generate and repaint the graphics.  This method should be
-	// overridden by subclasses if the graphics need to be
-	// calculated or regenerated.
 	repaint();
     }
     
@@ -305,7 +274,7 @@ public class LabelLayer extends Layer
      * @param e MouseEvent
      * @return false
      */
-    public boolean mousePressed(MouseEvent e){ 
+    public boolean mousePressed(MouseEvent e) { 
 	int x = e.getX();
 	int y = e.getY();
 	if (text.distance(x, y) <= 0f) {
@@ -322,7 +291,7 @@ public class LabelLayer extends Layer
      * @param e MouseEvent
      * @return false
      */
-    public boolean mouseReleased(MouseEvent e){
+    public boolean mouseReleased(MouseEvent e) {
 	dragging = false;
 	return false;
     }
@@ -332,7 +301,7 @@ public class LabelLayer extends Layer
      * @param e MouseEvent
      * @return false
      */
-    public boolean mouseClicked(MouseEvent e){
+    public boolean mouseClicked(MouseEvent e) {
 	return false;
     }
 
@@ -340,15 +309,13 @@ public class LabelLayer extends Layer
      * Invoked when the mouse enters a component.
      * @param e MouseEvent
      */
-    public void mouseEntered(MouseEvent e){
-    }
+    public void mouseEntered(MouseEvent e) {}
 
     /**
      * Invoked when the mouse exits a component.
      * @param e MouseEvent
      */
-    public void mouseExited(MouseEvent e){
-    }
+    public void mouseExited(MouseEvent e) {}
 
     // Mouse Motion Listener events
     ///////////////////////////////
@@ -359,7 +326,7 @@ public class LabelLayer extends Layer
      * @param e MouseEvent
      * @return false
      */
-    public boolean mouseDragged(MouseEvent e){
+    public boolean mouseDragged(MouseEvent e) {
 	Projection proj = getProjection();
 	int w = proj.getWidth();
 	int h = proj.getHeight();
@@ -395,7 +362,7 @@ public class LabelLayer extends Layer
      * @param e MouseEvent
      * @return false
      */
-    public boolean mouseMoved(MouseEvent e){
+    public boolean mouseMoved(MouseEvent e) {
 	return false;
     }
 
@@ -403,45 +370,7 @@ public class LabelLayer extends Layer
      * Handle a mouse cursor moving without the button being pressed.
      * Another layer has consumed the event.
      */
-    public void mouseMoved(){
-    }
-
-    //----------------------------------------------------------------------
-    // ComponentListener implementation
-    //----------------------------------------------------------------------
-
-    /**
-     * Invoked when component has been resized.
-     */
-    public void componentResized(ComponentEvent e) {
-	Rectangle bounds = e.getComponent().getBounds();
-
-	// move to home coordinates if out-of-bounds
-	Polygon poly = text.getPolyBounds();
-	if (poly != null) {
-	    if (!bounds.intersects(poly.getBounds())) {
-		positionText(bounds.width, bounds.height);
-	    }
-	}
-    }
-
-    /**
-     * Invoked when component has been moved.
-     */    
-    public void componentMoved(ComponentEvent e) {
-    }
-
-    /**
-     * Invoked when component has been shown.
-     */
-    public void componentShown(ComponentEvent e) {
-    }
-
-    /**
-     * Invoked when component has been hidden.
-     */
-    public void componentHidden(ComponentEvent e) {
-    }
+    public void mouseMoved() {}
 
     public int getSleepHint() {
         return 1000000;//update every 1000 seconds

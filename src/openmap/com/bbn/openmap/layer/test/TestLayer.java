@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/test/TestLayer.java,v $
 // $RCSfile: TestLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/20 02:43:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,6 +33,7 @@ import javax.swing.event.*;
 
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.*;
@@ -64,7 +65,7 @@ import com.bbn.openmap.util.*;
  * test.prettyName=Graticule
  * </pre></code>
  */
-public class TestLayer extends Layer implements MapMouseListener {
+public class TestLayer extends OMGraphicHandlerLayer implements MapMouseListener {
 
     public final static transient String LineVisibleProperty = ".line.visible";
     public final static transient String CircVisibleProperty = ".circ.visible";
@@ -103,13 +104,11 @@ public class TestLayer extends Layer implements MapMouseListener {
     protected Poly poly = new Poly();
 
     protected JPanel gui = null;// the GUI
-    protected OMGraphicList graphics = new OMGraphicList();
 
     /**
      * Construct the TestLayer.
      */
-    public TestLayer () {
-    }
+    public TestLayer() {}
 
     /**
      * The properties and prefix are managed and decoded here, for the
@@ -142,36 +141,18 @@ public class TestLayer extends Layer implements MapMouseListener {
 	}
     }
 
-    /** 
-     * Implementing the ProjectionPainter interface.
-     */
-    public void renderDataForProjection(Projection proj, java.awt.Graphics g){
-	if (proj == null){
-	    Debug.error("ShapeLayer.renderDataForProjection: null projection!");
-	    return;
-	} else {
-	    setProjection(proj.makeClone());
-	    generateGraphics();
+    public OMGraphicList prepare() {
+	if (getList() == null) {
+	    setList(generateGraphics());
 	}
-	paint(g);
-    }
-
-    /**
-     * Invoked when the projection has changed or this Layer has been
-     * added to the MapBean.
-     * @param e ProjectionEvent
-     */    
-    public void projectionChanged(ProjectionEvent e) {
-	setProjection(e);
-	generateGraphics();
-	repaint();
+	return super.prepare();
     }
 
     /**
      * Create and project the graphics.
      */
-    protected void generateGraphics () {
-	graphics.clear();
+    protected OMGraphicList generateGraphics() {
+	OMGraphicList graphics = new OMGraphicList();
 
 	// create OMLine from internal line representation
 	switch (line.rt) {
@@ -331,24 +312,16 @@ public class TestLayer extends Layer implements MapMouseListener {
 	graphics.add(omtext);
 	graphics.add(ompoly);
 	graphics.generate(getProjection());
+
+	return graphics;
     }
-
-
-    /**
-     * Paints the layer.
-     * @param g the Graphics context for painting
-     */
-    public void paint (Graphics g) {
-	graphics.render(g);
-    }
-
 
     /**
      * Gets the palette associated with the layer.
      * <p>
      * @return Component or null
      */
-    public Component getGUI () {
+    public Component getGUI() {
 	if (gui == null) {
 	    JPanel pal;
 
@@ -450,7 +423,7 @@ public class TestLayer extends Layer implements MapMouseListener {
      * @param title panel title
      * @return JPanel sub-palette
      */
-    protected JPanel getGraphicPalette (final GraphicBase obj, final String title) {
+    protected JPanel getGraphicPalette(final GraphicBase obj, final String title) {
 	JPanel pal;
 	final JComboBox jcb;
 	final JFrame jframe;
@@ -511,7 +484,7 @@ public class TestLayer extends Layer implements MapMouseListener {
      * return the delegate from this method instead.
      * @return MapMouseListener this
      */
-    public MapMouseListener getMapMouseListener(){
+    public MapMouseListener getMapMouseListener() {
 	return this;
     }
 
@@ -672,33 +645,33 @@ public class TestLayer extends Layer implements MapMouseListener {
 
 	// GUI code
 	protected abstract JPanel getGUI();
-	protected void setXYCoordinate (JTextField jtf, int i) {
+	protected void setXYCoordinate(JTextField jtf, int i) {
 	    try {
 		xypts[i] = Integer.parseInt(jtf.getText().trim());
 	    } catch (NumberFormatException ex) { return; }
 	}
-	protected void setLLCoordinate (JTextField jtf, int i) {
+	protected void setLLCoordinate(JTextField jtf, int i) {
 	    try {
 		llpts[i] = Float.valueOf(
 			jtf.getText().trim()).floatValue();
 	    } catch (NumberFormatException ex) { return; }
 	}
-	protected void setType (JComboBox jcb) {
+	protected void setType(JComboBox jcb) {
 	    type = jcb.getSelectedIndex()+1;
-	    generateGraphics();
+	    setList(generateGraphics());
 	    repaint();
 	}
-	protected void setRender (JComboBox jcb) {
+	protected void setRender(JComboBox jcb) {
 	    rt = jcb.getSelectedIndex()+1;
-	    generateGraphics();
+	    setList(generateGraphics());
 	    repaint();
 	}
-	protected void setSegs (JTextField jtf) {
+	protected void setSegs(JTextField jtf) {
 	    try {
 		nsegs = Integer.parseInt(jtf.getText().trim());
 	    } catch (NumberFormatException ex) { return; }
 	}
-	protected void makeFillCheckBox (JComponent parent) {
+	protected void makeFillCheckBox(JComponent parent) {
 	    JPanel pal = PaletteHelper.createCheckbox(
 		null,
 		new String[] {
@@ -710,14 +683,14 @@ public class TestLayer extends Layer implements MapMouseListener {
 		new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 			isFilled = !isFilled;
-			generateGraphics();
+			setList(generateGraphics());
 			repaint();
 		    }
 		}
 	    );
 	    parent.add(pal);
 	}
-	protected void makeColorBox (JComponent parent, String title, final boolean isFill) {
+	protected void makeColorBox(JComponent parent, String title, final boolean isFill) {
 	    JPanel pal = PaletteHelper.createVerticalPanel(title);
 	    final JComboBox jcb = new JComboBox();
 	    for (int i=0; i<NCOLORS; i++) {
@@ -730,7 +703,7 @@ public class TestLayer extends Layer implements MapMouseListener {
 			fillColor = jcb.getSelectedIndex();
 		    else
 			lineColor = jcb.getSelectedIndex();
-		    generateGraphics();
+		    setList(generateGraphics());
 		    repaint();
 		}
 	    });
@@ -738,12 +711,12 @@ public class TestLayer extends Layer implements MapMouseListener {
 	    parent.add(pal);
 	}
 	// get an OK button which refreshes the display.
-	protected JButton getOKButton () {
+	protected JButton getOKButton() {
 	    // add reset button
 	    JButton jb = new JButton("OK");
 	    jb.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-		    generateGraphics();
+		    setList(generateGraphics());
 		    repaint();
 		}
 	    });
@@ -803,7 +776,7 @@ public class TestLayer extends Layer implements MapMouseListener {
 				OMArrowHead.ARROWHEAD_DIRECTION_BOTH;
 			    break;
 		    }
-		    generateGraphics();
+		    setList(generateGraphics());
 		    repaint();
 		}
 	    });
@@ -920,7 +893,7 @@ public class TestLayer extends Layer implements MapMouseListener {
     }
 
     protected class Rect extends Line {
-	public Rect () {
+	public Rect() {
 	    llpts[0] = -80f; llpts[1] = 0f;
 	    llpts[2] = 10f; llpts[3] = 45f;
 	    xypts[0] = 250; xypts[1] = 100;
@@ -940,7 +913,7 @@ public class TestLayer extends Layer implements MapMouseListener {
 	    fillColor=0;
 	}
 
-	public JPanel getGUI () {
+	public JPanel getGUI() {
 	    // request focus
 	    requestFocus();
 
@@ -1054,7 +1027,7 @@ public class TestLayer extends Layer implements MapMouseListener {
 	protected float lon=0f;
 	protected int cMode=OMPoly.COORDMODE_ORIGIN;
 
-	public Poly () {
+	public Poly() {
 	    llpts = new float[8];
 	    xypts = new int[6];
 	    llpts[0] = 10f; llpts[1] = -20f;
@@ -1070,7 +1043,7 @@ public class TestLayer extends Layer implements MapMouseListener {
 	}
 
 	// set latlon vertices
-	protected void setVertices (String verts) {
+	protected void setVertices(String verts) {
 	    try {
 		String str;
 		StringTokenizer tok = new StringTokenizer(verts, "\n\r");
@@ -1100,18 +1073,18 @@ public class TestLayer extends Layer implements MapMouseListener {
 	    } catch (NumberFormatException ex) { return; }
 	}
 
-	protected void setXY (JTextArea jta) {
+	protected void setXY(JTextArea jta) {
 	    try {
 		if (false)
 		    throw new NumberFormatException("foo");
 	    } catch (NumberFormatException ex) { return; }
 	}
 
-	protected void setLL (JTextArea jta) {
+	protected void setLL(JTextArea jta) {
 	    setVertices(jta.getText().trim());
 	}
 
-	protected void setLLCoordinate (JTextField jtf, int i) {
+	protected void setLLCoordinate(JTextField jtf, int i) {
 	    try {
 		if (i==0)
 		    lat = Float.valueOf(
@@ -1122,7 +1095,7 @@ public class TestLayer extends Layer implements MapMouseListener {
 	    } catch (NumberFormatException ex) { return; }
 	}
 
-	public JPanel getGUI () {
+	public JPanel getGUI() {
 	    // request focus
 	    requestFocus();
 
@@ -1210,14 +1183,14 @@ public class TestLayer extends Layer implements MapMouseListener {
 	protected String font = "SansSerif-Bold-18";
 	protected int just = OMText.JUSTIFY_CENTER;
 
-	public Text () {
+	public Text() {
 	    llpts[0] = 42.35f; llpts[1] = -70.5f;
 	    xypts[0] = 20; xypts[1] = 10;
 	    lineColor = 10;
 	    data = "Boston";
 	}
 
-	public JPanel getGUI () {
+	public JPanel getGUI() {
 	    // request focus
 	    requestFocus();
 
@@ -1250,7 +1223,7 @@ public class TestLayer extends Layer implements MapMouseListener {
 	    jcb.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    just = jcb.getSelectedIndex();
-		    generateGraphics();
+		    setList(generateGraphics());
 		    repaint();
 		}
 	    });

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/20 02:43:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,7 +66,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/20 02:43:50 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
@@ -117,6 +117,15 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 
     public ShapeLayer(String shapeFileName) {
 	spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
+    }
+
+    /**
+     * Overriding what happens to the internal OMGraphicList when the
+     * projection changes.  For this layer, we want to reset the
+     * internal OMGraphicList when the projection changes.
+     */
+    protected void resetListForProjectionChange() {
+	setList(null);
     }
 
     public void setSpatialIndex(SpatialIndex si) {

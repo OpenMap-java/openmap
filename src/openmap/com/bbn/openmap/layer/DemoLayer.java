@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/18 00:44:44 $
+// $Revision: 1.3 $
+// $Date: 2003/02/20 02:43:49 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -206,13 +206,6 @@ public class DemoLayer extends OMGraphicHandlerLayer
 	    omList.add(point);
 	}
     }
-
-    /**
-     * Overriding what happens to the internal OMGraphicList when the
-     * projection changes.  For this layer, we don't want anything to
-     * happen.
-     */
-    protected void resetListForProjectionChange() {}
 
     public void setProperties(String prefix, Properties props) {
 	super.setProperties(prefix, props);

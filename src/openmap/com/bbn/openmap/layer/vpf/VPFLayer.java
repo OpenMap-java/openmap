@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/02/20 02:43:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -187,6 +187,15 @@ public class VPFLayer extends OMGraphicHandlerLayer
     public VPFLayer(String name) {
 	this();
 	setName(name);
+    }
+
+    /**
+     * Overriding what happens to the internal OMGraphicList when the
+     * projection changes.  For this layer, we want to reset the
+     * internal OMGraphicList when the projection changes.
+     */
+    protected void resetListForProjectionChange() {
+	setList(null);
     }
 
     /**
