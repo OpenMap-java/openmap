@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/21 22:39:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -123,7 +123,7 @@ import com.bbn.openmap.Environment;
  * </UL>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2003/03/21 22:39:13 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils {
@@ -152,6 +152,9 @@ public class SpatialIndex extends ShapeUtils {
     /** The icon to use for point objects. */
     protected ImageIcon pointIcon;
 
+    /** The bounds of all the shapes in the shape file. */
+    protected ESRIBoundingBox bounds = null;
+
     /**
      * Opens a spatial index file for reading.
      *
@@ -179,6 +182,30 @@ public class SpatialIndex extends ShapeUtils {
 
 	ssx = new BinaryBufferedFile(ssxFilename);
 	shp = new BinaryBufferedFile(shpFilename);
+    }
+
+    /**
+     * Get the box boundary containing all the shapes.
+     */
+    public ESRIBoundingBox getBounds() {
+	if (bounds == null) {
+	    try {
+		locateRecords(-180, -90, 180, 90);
+	    } catch (IOException ioe) {
+		bounds = null;
+	    } catch (FormatException fe) {
+		bounds = null;
+	    }
+	}
+	return bounds;
+    }
+
+    /**
+     * Reset the bounds so they will be recalculated the next time a
+     * file is read.
+     */
+    public void resetBounds() {
+	bounds = null;
     }
 
     /**
@@ -232,6 +259,14 @@ public class SpatialIndex extends ShapeUtils {
 				      double xmax, double ymax)
 	throws IOException, FormatException
     {
+
+	boolean gatherBounds = false;
+
+	if (bounds == null) {
+	    bounds = new ESRIBoundingBox();
+	    gatherBounds = true;
+	}
+
 	if (Debug.debugging("spatialindex")) {
 	    Debug.output("locateRecords:");
 	    Debug.output("\txmin: " + xmin + "; ymin: " + ymin);
@@ -269,6 +304,11 @@ public class SpatialIndex extends ShapeUtils {
 		    Debug.output("Looking at rec num " + recNum);
 		    Debug.output("  " + xmin2 + ", " + ymin2 +
 				 "\n  " + xmax2 + ", " + ymax2);
+		}
+
+		if (gatherBounds) {
+		    bounds.addPoint(xmin2, ymin2);
+		    bounds.addPoint(xmax2, ymax2);
 		}
 
 		if (intersects(xmin, ymin, xmax, ymax,

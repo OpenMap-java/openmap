@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/03/10 22:04:54 $
+// $Revision: 1.5 $
+// $Date: 2003/03/21 22:39:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,7 +37,10 @@ import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.util.DataBounds;
+import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.*;
@@ -66,11 +69,11 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.4 $ $Date: 2003/03/10 22:04:54 $
+ * @version $Revision: 1.5 $ $Date: 2003/03/21 22:39:13 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
-    implements ActionListener {
+    implements ActionListener, DataBoundsProvider {
 
     /** The name of the property that holds the name of the shape file. */ 
     public final static String shapeFileProperty = "shapeFile";
@@ -249,7 +252,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 
 	da.getPropertyInfo(list);
 
-	list.put(initPropertiesProperty, shapeFileProperty + " " + spatialIndexProperty + " " + pointImageURLProperty + " " + shadowXProperty + " " + shadowYProperty + da.getInitPropertiesOrder());
+	list.put(initPropertiesProperty, shapeFileProperty + " " + spatialIndexProperty + " " + pointImageURLProperty + " " + shadowXProperty + " " + shadowYProperty + da.getInitPropertiesOrder() + " " + AddToBeanContextProperty);
 
 	list.put(shapeFileProperty,
 		 "Location of Shape file - .shp (File, URL or relative file path).");
@@ -298,7 +301,13 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 	    Debug.message("shape", "ShapeLayer: spatialIndex is null!");
 	    return new OMGraphicList();
 	}
+
 	Projection projection = getProjection();
+
+	if (projection == null) {
+	    return new OMGraphicList();
+	}
+
 	LatLonPoint ul = projection.getUpperLeft();
 	LatLonPoint lr = projection.getLowerRight();
 	float ulLat = ul.getLatitude();
@@ -353,7 +362,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 		int nRecords = records.length;
   		list = new OMGraphicList(nRecords);
 		for (int i = 0; i < nRecords; i++) {
-//   		    list.addOMGraphic(RecordList(records[i], drawingAttributes));
 		    records[i].addOMGraphics(list, drawingAttributes);
 		}
 	    } catch (java.io.IOException ex) {
@@ -427,7 +435,9 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 	    redraw.setActionCommand(RedrawCmd);
 	    redraw.addActionListener(this);
 	    pal2.add(redraw);
+
 	    box.add(pal2);
+
 	}
 	return box;
     }
@@ -440,5 +450,18 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 	}
     }
 
-
+    /**
+     * DataBoundsInformer interface.
+     */
+    public DataBounds getDataBounds() {
+	DataBounds box = null;
+	if (spatialIndex != null) {
+	    ESRIBoundingBox bounds = spatialIndex.getBounds();
+	    if (bounds != null) {
+		box = new DataBounds(bounds.min.x, bounds.min.y, 
+				     bounds.max.x, bounds.max.y);
+	    }
+	}
+	return box;
+    }
 }

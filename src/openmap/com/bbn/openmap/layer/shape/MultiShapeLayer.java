@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/28 00:00:40 $
+// $Revision: 1.3 $
+// $Date: 2003/03/21 22:39:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,6 +37,7 @@ import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.*;
@@ -76,7 +77,7 @@ import com.bbn.openmap.util.SwingWorker;
  * ############################
  * </pre></code>
  *
- * @version $Revision: 1.2 $ $Date: 2003/02/28 00:00:40 $
+ * @version $Revision: 1.3 $ $Date: 2003/03/21 22:39:13 $
  * @see SpatialIndex 
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -354,4 +355,24 @@ public class MultiShapeLayer extends ShapeLayer {
 	return box;
     }
     
+    /**
+     * DataBoundsInformer interface.
+     */
+    public DataBounds getDataBounds() {
+	DataBounds box = null;
+
+	ESRIBoundingBox bounds = new ESRIBoundingBox();	
+	Iterator sii = spatialIndexes.iterator();
+	while (sii.hasNext()) {
+	    SpatialIndex si = (SpatialIndex)sii.next();
+	    if (si != null) {
+		ESRIBoundingBox boundingBox = spatialIndex.getBounds();
+		if (bounds != null) {
+		    bounds.addBounds(boundingBox);
+		}
+	    }
+	}
+	return box;
+    }
+
 }
