@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/BufferedImageHelper.java,v $
 // $RCSfile: BufferedImageHelper.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/12 14:08:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -164,7 +164,13 @@ public class BufferedImageHelper {
 
 	// If the whole image isn't wanted, do another operation...
 	if (bi != null && (x != 0 || y != 0 || w > 0 || h > 0)) {
-	    return getBufferedImage(bi, x, y, w, h);
+
+	    int imageType = BufferedImage.TYPE_INT_RGB;
+	    if (bi.getColorModel().hasAlpha()) {
+		imageType = BufferedImage.TYPE_INT_ARGB;
+	    }
+
+	    return getBufferedImage(bi, x, y, w, h, imageType);
 	} 
 	// else return null or the original image.
 	return bi;
@@ -211,7 +217,8 @@ public class BufferedImageHelper {
 	ImageIcon ii = new ImageIcon(url);
 	if (w <= 0) w = ii.getIconWidth();
 	if (h <= 0) h = ii.getIconHeight();
-	return getBufferedImage(ii.getImage(), x, y, w, h);
+	return getBufferedImage(ii.getImage(), x, y, w, h,
+				BufferedImage.TYPE_INT_ARGB);
     }
 
     /**
@@ -255,7 +262,8 @@ public class BufferedImageHelper {
 	ImageIcon ii = new ImageIcon(path);
 	if (w <= 0) w = ii.getIconWidth();
 	if (h <= 0) h = ii.getIconHeight();
-	return getBufferedImage(ii.getImage(), x, y, w, h);
+	return getBufferedImage(ii.getImage(), x, y, w, h, 
+				BufferedImage.TYPE_INT_ARGB);
     }
 
     /** 
