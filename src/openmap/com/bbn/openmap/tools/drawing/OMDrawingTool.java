@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.13 $
-// $Date: 2003/09/25 18:52:06 $
+// $Revision: 1.14 $
+// $Date: 2003/10/03 00:49:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ package com.bbn.openmap.tools.drawing;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.MapBean;
+import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MouseDelegator;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.gui.OMToolComponent;
@@ -462,7 +463,7 @@ public class OMDrawingTool extends OMToolComponent
 
 	if (setCurrentEditable(eomg)) {
 
-	    getGUI();// reset GUI for current EOMG
+//  	    getGUI();// reset GUI for current EOMG, called later anyway from activate
 
 	    if (DEBUG) {
 		Debug.output("OMDrawingTool.edit success");
@@ -758,6 +759,7 @@ public class OMDrawingTool extends OMToolComponent
 	removeAll();
 	Component eomgc = null;
 
+	graphicAttributes.setLineMenuAdditions(null);
 	if (currentEditable != null) {
 	    // GUI specific to a particular EditableOMGraphic type.
 	    eomgc = currentEditable.getGUI(graphicAttributes);
@@ -770,6 +772,8 @@ public class OMDrawingTool extends OMToolComponent
 	if (eomgc == null) {
 	    add(graphicAttributes.getGUI());
 	}
+
+	revalidate();
 
 	return this;
     }
@@ -1176,39 +1180,6 @@ public class OMDrawingTool extends OMToolComponent
 
 	getGUI(); // resets the gui.
 	setVisible(true); // just to make sure.
-
-// 	if (!getUseAsTool() && getWindowSupport() == null) {
-// 	    Debug.output("Setting window support in OMDrawingTool");
-// 	    setWindowSupport(new WindowSupport(getGUI(), "Drawing Tool"));
-// 	}
-
-// 	WindowSupport ws = getWindowSupport();
-
-// 	if (ws != null && !getUseAsTool()) {
-// 	    Debug.output("OMDrawingTool.showPalette(): showing palette");
-// 	    int w = getWidth();
-// 	    int h = getHeight();
-// 	    Dimension dim = ws.getComponentSize();
-// 	    if (dim != null) {
-// 		w = (int)dim.getWidth();
-// 		h = (int)dim.getHeight();
-// 	    }
-
-// 	    int x = 10;
-// 	    int y = 10;
-	    
-// 	    Point loc = ws.getComponentLocation();
-// 	    if (loc != null) {
-// 		x = (int) loc.getX();
-// 		y = (int) loc.getY();
-// 	    }
-
-// 	    ws.displayInWindow(x, y, w, h);
-// 	} else {
-// 	    Debug.output("OMDrawingTool.showPalette(): NOT showing palette, ws == null:" + 
-// 			 (ws == null) + ", used as tool:" + getUseAsTool());
-// 	}
-
     }
     
     /**
@@ -1218,11 +1189,38 @@ public class OMDrawingTool extends OMToolComponent
 	Debug.message("drawingtool", "OMDrawingTool.hidePalette()");
 	getGUI();
 
-// 	WindowSupport ws = getWindowSupport();
-// 	if (ws != null) {
-// 	    ws.killWindow();
-// 	}
+	WindowSupport ws = getWindowSupport();
+	if (ws != null) {
+	    ws.killWindow();
+	}
 
+    }
+
+    public void showInWindow() {
+	if (!getUseAsTool() && getWindowSupport() == null) {
+	    setWindowSupport(new WindowSupport(getGUI(), "Drawing Tool"));
+	}
+
+	WindowSupport ws = getWindowSupport();
+
+	if (ws != null && !getUseAsTool()) {
+	    MapHandler mh = (MapHandler) getBeanContext();
+	    Frame frame = null;
+	    int xoffset = 0;
+	    int yoffset = 0;
+	    if (mh != null) {
+		frame = (Frame)mh.get(java.awt.Frame.class);
+		if (frame != null) {
+		    xoffset = frame.getX();
+		    yoffset = frame.getY();
+		}
+	    }
+
+	    ws.displayInWindow(frame, windowx + xoffset, windowy + yoffset, -1, -1);
+	} else {
+	    Debug.output("OMDrawingTool.showPalette(): NOT showing palette, ws == null:" + 
+			 (ws == null) + ", used as tool:" + getUseAsTool());
+	}
     }
 
     /**
@@ -1298,6 +1296,7 @@ public class OMDrawingTool extends OMToolComponent
      */
     String lastRemarks = "";
     JPopupMenu popup = null;
+    int windowx, windowy;
 
     /**
      * This is a EOMGListener method, and gets called by the
@@ -1345,6 +1344,12 @@ public class OMDrawingTool extends OMToolComponent
 		    boolean theCorrectMouseKeys = (me != null && (me.isControlDown() || (me.getModifiers() & InputEvent.BUTTON3_MASK) > 0));
 
 		    if (popup == null && (theCorrectMouseKeys || isMask(USE_POPUP_BEHAVIOR_MASK)) && !getUseAsTool()) {
+			Shape ces = currentEditable.getGraphic().getShape();
+			if (ces != null) {
+			    Rectangle rect = ces.getBounds();
+			    windowx = (int)rect.getX();
+			    windowy = (int)rect.getY() - 50;
+			}
 			popup = createPopupMenu();
 			showPopup = true;
 		    } else {
@@ -1402,45 +1407,36 @@ public class OMDrawingTool extends OMToolComponent
 // 		}
 // 	    });
 
-	JMenu gui = new JMenu("Change Appearance ");
-	gui.add(this);
-
-// 	JMenuItem gui = new JMenuItem("Change Appearance ");
-// 	gui.addActionListener(new ActionListener() {
-// 		public void actionPerformed(ActionEvent ae) {
-// 		    EditableOMGraphic eomg = getCurrentEditable();
-// 		    if (eomg != null) {
-// 			boolean previous = eomg.getShowGUI();
-// 			eomg.setShowGUI(true);
-// 			showPalette();
-// 			eomg.setShowGUI(previous);
-// 			eomg.getStateMachine().setSelected();
-// 		    }
-// 		}
-// 	    });
-
-// 	JMenuItem cancel = new JMenuItem("Continue Making Changes");
-// 	cancel.addActionListener(new ActionListener() {
-// 		public void actionPerformed(ActionEvent ae) {
-// 		}
-// 	    });
-
-	JMenuItem reset = new JMenuItem("Undo Changes");
-	reset.setEnabled(false);
-	reset.addActionListener(new ActionListener() {
+	JMenuItem gui = new JMenuItem("Change Appearance ");
+	gui.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent ae) {
-		    if (currentEditable != null) {
-			currentEditable.reset();
+		    EditableOMGraphic eomg = getCurrentEditable();
+		    if (eomg != null) {
+			boolean previous = eomg.getShowGUI();
+			eomg.setShowGUI(true);
+			showInWindow();
+			eomg.setShowGUI(previous);
+			eomg.getStateMachine().setSelected();
 		    }
 		}
 	    });
 
+// 	JMenuItem reset = new JMenuItem("Undo Changes");
+// 	reset.setEnabled(false);
+// 	reset.addActionListener(new ActionListener() {
+// 		public void actionPerformed(ActionEvent ae) {
+// 		    if (currentEditable != null) {
+// 			currentEditable.reset();
+// 		    }
+// 		}
+// 	    });
+
 // 	pum.add(done);
 // 	pum.addSeparator();
-	if (isMask(GUI_VIA_POPUP_BEHAVIOR_MASK)) {
-	    pum.add(this);
+// 	if (isMask(GUI_VIA_POPUP_BEHAVIOR_MASK)) {
+	    pum.add(gui);
 	    pum.addSeparator();
-	}
+// 	}
 //  	pum.add(reset);
 	pum.add(delete);
 // 	pum.addSeparator();

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/26 19:11:17 $
+// $Revision: 1.5 $
+// $Date: 2003/10/03 00:49:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -512,7 +512,13 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
 			y = (int) loc.getY();
 		    }
 
-		    getWindowSupport().displayInWindow(x, y, w, h);
+		    MapHandler mh = (MapHandler) getBeanContext();
+		    Frame frame = null;
+		    if (mh != null) {
+			frame = (Frame)mh.get(java.awt.Frame.class);
+		    }
+
+		    getWindowSupport().displayInWindow(frame, x, y, w, h);
 		}
 	    };
     }
