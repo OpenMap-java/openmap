@@ -1,3 +1,11 @@
+2005-02-15  Donald Dietrick  <dietrick@dhcp89-077-080.bbn.com>
+
+	* added the cntry02 world boundary shape files to the package and
+	made them the default files used in the OpenMap application.
+	They're bigger files, and the application runs a little slower,
+	but they are much more accurate than the dcwpo-browse files.  The
+	dcwpo-browse files are still available if the old data is desired.
+
 2005-02-11  Donald Dietrick  <dietrick@jader.local>
 
 	* Updated many classes for internationalization, with help from
