@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/08/28 22:27:44 $
+// $Revision: 1.7 $
+// $Date: 2003/11/14 20:38:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.6 $ $Date: 2003/08/28 22:27:44 $
+ * @version $Revision: 1.7 $ $Date: 2003/11/14 20:38:51 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
@@ -148,7 +148,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 	    = props.getProperty(realPrefix + spatialIndexProperty);
 
 	if (shapeFileName != null && !shapeFileName.equals("")) {
-	    if (spatialIndexFileName != null ) {
+	    if (spatialIndexFileName != null && !spatialIndexFileName.equals("")) {
 		spatialIndex = 
 		    SpatialIndex.locateAndSetShapeData(shapeFileName, 
 						       spatialIndexFileName);
@@ -204,10 +204,11 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 	props.put(prefix + shadowYProperty, Integer.toString(shadowY));
 
 	if (drawingAttributes != null) {
+	    drawingAttributes.setPropertyPrefix(getPropertyPrefix());
 	    drawingAttributes.getProperties(props);
 	} else {
 	    DrawingAttributes da = (DrawingAttributes)DrawingAttributes.DEFAULT.clone();
-	    da.setPropertyPrefix(prefix);
+	    da.setPropertyPrefix(getPropertyPrefix());
 	    da.getProperties(props);
 	}
 

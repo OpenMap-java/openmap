@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/21 22:39:13 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:38:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,7 +77,7 @@ import com.bbn.openmap.util.SwingWorker;
  * ############################
  * </pre></code>
  *
- * @version $Revision: 1.3 $ $Date: 2003/03/21 22:39:13 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/14 20:38:51 $
  * @see SpatialIndex 
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -121,9 +121,9 @@ public class MultiShapeLayer extends ShapeLayer {
 
 	setName(props.getProperty(prettyName, defaultName));
 
-	setAddToBeanContext(com.bbn.openmap.layer.util.LayerUtils.booleanFromProperties(props, realPrefix + AddToBeanContextProperty, addToBeanContext));
+	setAddToBeanContext(PropUtils.booleanFromProperties(props, realPrefix + AddToBeanContextProperty, addToBeanContext));
 
-	autoPalette = com.bbn.openmap.layer.util.LayerUtils.booleanFromProperties(props, realPrefix + AutoPaletteProperty, autoPalette);
+	autoPalette = PropUtils.booleanFromProperties(props, realPrefix + AutoPaletteProperty, autoPalette);
 
 	/// end from Layer.java
 
