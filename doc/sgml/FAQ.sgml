@@ -1,9 +1,9 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/Attic/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.8 $
-$Date: 1999/04/07 19:45:20 $
-$Author: aculline $
+$Revision: 1.9 $
+$Date: 1999/07/29 12:53:51 $
+$Author: tmitchel $
 
 Frequently Asked Questions for the OpenMap system.
 -->
@@ -239,5 +239,54 @@ is set up properly to point to your layer code, this becomes:
 
 
 
+
+<sect>OpenMap as an Applet
+<p>
+Questions concerning using OpenMap as an Applet.
+
+
+<sect1>Can I run OpenMap as an applet?
+<p>
+Yes.
+
+<sect1>How?
+<p>
+Move the files share/omapplet.html and lib/openmap.jar to a directory
+where they can be served up by an HTTP (web) server.  Then point your
+browser at the omapplet.html file.  You will be prompted to download
+the Java Plug-in if you don't already have it installed.  Once the
+Plug-in is installed, you should see OpenMap load and display.
+
+<sect1>How do I get the Java Plug-in?
+<p>
+It's automatically loaded when the applet is accessed.  If you want to
+get it directly you can get it at 
+<tt><htmlurl url="http://java.sun.com/products/plugin/"></tt>.
+
+<sect1>How do I create my own Java Plug-in applet html files?
+<p>
+Create an html file with code for an applet as documented in almost
+any Java book.  Java in a Nutshell by David Flanagan (O'Reilly) has a
+good section for instance.  Then use Sun's HTML Converter to convert
+that file to an applet file that will automatically load the Java
+Plug-in.  You can find a pointer to the converter at
+<tt><htmlurl url="http://java.sun.com/products/plugin/"></tt>.
+
+<sect1>Why don't shape files work in an Applet?
+<p>
+The customer who paid for the Shape file work had specific
+requirements and constraints.  Those were met by using a
+RandomAccessFile implementation of a Shape file reader.  That customer
+was only interested in an OpenMap based application, not an applet.
+Unfortunately, applets do not have access to the file system, and
+RandomAccessFile only works if it has access to a file system.
+<p>
+In order for Shape files to work in an applet there will have to be an
+alternate implementation that can read the shape file via an input
+stream instead.  This would enable OpenMap to instantiate an input
+stream from a file or a URL.  There are no technical roadblocks to
+this sort of implementation.  We do not have a customer who wants to
+pay for that work.  If you're looking for a way to contribute to
+OpenMap this would be a great project.
 
 </article>
