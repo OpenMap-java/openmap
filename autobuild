@@ -1,0 +1,132 @@
+#!/bin/sh
+# **********************************************************************
+# 
+#    Use, duplication, or disclosure by the Government is subject to
+# 	     restricted rights as set forth in the DFARS.
+#  
+# 			   BBN Technologies
+# 			    A Division of
+# 			   BBN Corporation
+# 			  10 Moulton Street
+# 			 Cambridge, MA 02138
+# 			    (617) 873-3000
+#  
+# 	  Copyright 1998 by BBN Technologies, A Division of
+# 		BBN Corporation, all rights reserved.
+#  
+# **********************************************************************
+# 
+# $Source: /cvs/distapps/openmap/Attic/autobuild,v $
+# $RCSfile: autobuild,v $
+# $Revision: 1.1 $
+# $Date: 1998/04/20 21:44:21 $
+# $Author: tmitchel $
+# 
+# **********************************************************************
+#
+# The goal of this script is to build and package an openmap release
+# every night.  Log files will be kept, and emailed to the named
+# email addresses.
+#
+# **********************************************************************
+#
+# Parameters:
+#
+# buildDir  - The build directory
+#
+# **********************************************************************
+
+BuildRoot=/tmp/openmap
+
+
+DateString=`date +"%Y%m%d"`      # 17750419
+BeanDir=mapBean-$DateString
+BuildDir=$BuildRoot/$BeanDir
+
+CVSROOT=:server:blatz:/u4/rcs
+
+MattClassDir=/usr/local/matt/openmap/common/lib
+OpenMapClassPath=$MattClassDir/assembler.jar:$MattClassDir/cspec58.jar
+
+JDK=/usr/local/jdk1.1.5
+JdkClassPath=$JDK/lib/classes.zip
+
+SWING=/usr/local/java/swing-1.0.1
+SwingClassPath=$SWING/swing.jar
+
+VBJ=/usr/local/vbroker-java
+VbjClassPath=$VBJ/lib/vbj30.jar
+
+CLASSPATH=$OpenMapClassPath:$SwingClassPath:$JdkClassPath:$VbjClassPath:$BuildDir/openmap
+export CLASSPATH
+
+PATH=/usr/bin:/usr/local/gnu/bin:$JDK/bin
+export PATH
+
+CVSROOT=/u4/rcs
+export CVSROOT
+
+DocPackages="com.bbn.openmap com.bbn.openmap.dcwSpecialist com.bbn.openmap.event com.bbn.openmap.gui com.bbn.openmap.html com.bbn.openmap.http com.bbn.openmap.omGraphics com.bbn.openmap.overlay com.bbn.openmap.pluginLayer com.bbn.openmap.proj com.bbn.openmap.specialist"
+export DocPackages
+
+#echo $CLASSPATH
+
+rm -rf $BuildDir
+
+if mkdir -p $BuildDir ; then
+  echo "Created build directory $BuildDir.";
+else
+  # mkdir failed
+  echo "Failed to create directory $BuildDir.  Exiting.";
+  exit 1
+fi
+
+cd $BuildDir
+cvs export -Dnow openmap
+cd openmap
+gmake all
+jar cvfm0 ../mapBean.jar com/bbn/openmap/Manifest.txt `find com -name *.class -print`
+
+#
+## Add javadoc documentation
+#
+mkdir -p ../docs/api
+java -ms40m -mx80m sun.tools.javadoc.Main -version -d ../docs/api $DocPackages
+cp -r $JDK/docs/api/images ../docs/api/
+
+#
+## Add examples
+#
+mkdir -p ../examples
+cp -r com/bbn/openmap/examples/crew ../examples/
+
+#
+## Add other jar files
+#
+if cp /usr/local/matt/openmap/common/lib/assembler3.jar $BuildDir/; then
+  echo "++Copied assembler jar";
+else
+  echo "++Copy failed: assembler jar";
+  exit 1;
+fi
+
+if cp /usr/local/matt/openmap/common/lib/cspec58.jar $BuildDir/; then
+  echo "++Copied cspec jar";
+else
+  echo "++Copy failed: cspec jar";
+  exit 1;
+fi
+
+
+
+
+# Create packages in tar.Z, tar.gz, and zip format
+
+PkgFiles="$BeanDir/mapBean.jar $BeanDir/assembler3.jar $BeanDir/cspec58.jar $BeanDir/docs $BeanDir/examples"
+
+cd $BuildDir/..
+tar cf $BuildDir/$BeanDir.tar $PkgFiles
+jar cfM $BuildDir/$BeanDir.zip $PkgFiles
+cd $BuildDir
+compress -c $BeanDir.tar > $BeanDir.tar.Z
+gzip $BeanDir.tar
