@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageAttributeTable.java,v $
 // $RCSfile: CoverageAttributeTable.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:32 $
+// $Revision: 1.3 $
+// $Date: 2003/12/29 20:35:09 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -43,7 +43,7 @@ public class CoverageAttributeTable {
     /** are we tiled or untiled coverage */
     private boolean isTiled = false;
     /** coverage name to CoverageEntry map */
-    final private Hashtable coverages = new Hashtable();
+    final private Map coverages = new HashMap();
     /** The tiles that compose our coverage area.  The size of the
      *  array is going to be set to record count + 1, and the tiles
      *  will have their ID number as their index. */
@@ -420,12 +420,7 @@ public class CoverageAttributeTable {
      * would have "bnd", "tran", etc.)
      */
     public String[] getCoverageNames() {
-	String[] retval = new String[coverages.size()];
-	int i = 0;
-	for (Enumeration e = coverages.keys(); e.hasMoreElements();) {
-	    retval[i++] = (String)e.nextElement();
-	}
-	return retval;
+        return (String[])coverages.keySet().toArray(Constants.EMPTY_STRING_ARRAY);
     }
 
     /**

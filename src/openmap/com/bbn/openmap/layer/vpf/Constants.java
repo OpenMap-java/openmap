@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/Constants.java,v $
 // $RCSfile: Constants.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/29 20:35:09 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -125,4 +125,7 @@ public interface Constants {
     public static final String DCW_FCS_TABLE1KEY = "foreign_key";
     /** the feature class schema (fcs) table table2_key column for DCW */
     public static final String DCW_FCS_TABLE2KEY = "primary_key";
+
+    /** A string array with 0 elements */
+    public static final String[] EMPTY_STRING_ARRAY = new String[0];
 }

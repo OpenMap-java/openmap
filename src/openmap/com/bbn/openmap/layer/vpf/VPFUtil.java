@@ -15,9 +15,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFUtil.java,v $
 // $RCSfile: VPFUtil.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/29 20:35:09 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -52,9 +52,8 @@ public class VPFUtil {
      */
     public static final String listToString(List l) {
 	StringBuffer row = new StringBuffer();
-	ListIterator li = l.listIterator();
-	while (li.hasNext()) {
-	    row.append(li.next().toString()).append(" ");
+	for (Iterator i = l.iterator(); i.hasNext();) {
+	    row.append(i.next().toString()).append(" ");
 	}
 	return(row.toString());
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageTable.java,v $
 // $RCSfile: CoverageTable.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:32 $
+// $Revision: 1.4 $
+// $Date: 2003/12/29 20:35:09 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -42,9 +42,9 @@ public class CoverageTable {
     /** the directory for our coverage type */
     final protected String tablepath;
     /** a table to cache int.vdt information */
-    final private Hashtable intvdtrec = new Hashtable();
+    final private Map intvdtrec = new HashMap();
     /** a table to cache char.vdt information */
-    final private Hashtable charvdtrec = new Hashtable();
+    final private Map charvdtrec = new HashMap();
 
     /** hack - used by EdgeTable */
     public int cachedLineSchema[] = null;
@@ -789,9 +789,8 @@ public class CoverageTable {
 	return featureTypeInfo;
     }
     
-    /*
     public static void main(String [] args) {
-	if (args.length != 5) {
+        if (args.length != 5) {
 	    System.out.println("This main() is just assorted test code.");
 	    System.out.println("Usage: java classname librarypath coveragename");
 	    System.out.println("    tablename attribute value");
@@ -803,7 +802,6 @@ public class CoverageTable {
 	    System.out.println(desc);
 	}
     }
-    */
 }
 
 /**

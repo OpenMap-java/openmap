@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibrarySelectionTable.java,v $
 // $RCSfile: LibrarySelectionTable.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/29 17:16:30 $
+// $Revision: 1.6 $
+// $Date: 2003/12/29 20:35:09 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -52,9 +52,9 @@ public class LibrarySelectionTable {
     /** the names of the VPF libraries listed in the library attribute table */
     private String libraryname[] = null;  //library [i]
     /** the bounding rectangle of the respective libraries */
-    private Hashtable boundrec = new Hashtable();//bounding rect as [W,S,E,N]
+    private Map boundrec = new HashMap();//bounding rect as [W,S,E,N]
     /** the CoverageAttributeTables corresponding to the different libs */
-    private Hashtable CATs = new Hashtable();
+    private Map CATs = new HashMap();
     /** the names of the lat columns */
     final private static String LATColumns[] = {Constants.LAT_LIBNAME, Constants.LAT_XMIN, Constants.LAT_YMIN, Constants.LAT_XMAX, Constants.LAT_YMAX};
     /** the expected schema types for the library attribute table */
@@ -200,12 +200,7 @@ public class LibrarySelectionTable {
      * BROWSE, etc.
      */
     public String[] getLibraryNames() {
-	String[] retval = new String[CATs.size()];
-	int i = 0;
-	for (Enumeration e = CATs.keys(); e.hasMoreElements();) {
-	    retval[i++] = (String)e.nextElement();
-	}
-	return retval;
+        return (String[])CATs.keySet().toArray(Constants.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -278,9 +273,9 @@ public class LibrarySelectionTable {
 	CoverageTable redrawUntiled = null;
 	String useLibrary = warehouse.getUseLibrary();
 
-	for (Enumeration enum = CATs.elements(); enum.hasMoreElements();) {
+	for (Iterator i = CATs.values().iterator(); i.hasNext();) {
 
-	    CoverageAttributeTable cat = (CoverageAttributeTable)enum.nextElement();
+	    CoverageAttributeTable cat = (CoverageAttributeTable)i.next();
 	    if (Debug.debugging("vpf")) {
 		Debug.output("LST: checking library: " + cat.getLibraryName());
 	    }
@@ -374,8 +369,8 @@ public class LibrarySelectionTable {
 	CoverageTable redrawUntiled = null;
 	String useLibrary = warehouse.getUseLibrary();
 
-	for (Enumeration enum = CATs.elements(); enum.hasMoreElements();) {
-	    CoverageAttributeTable cat = (CoverageAttributeTable)enum.nextElement();
+	for (Iterator i = CATs.values().iterator(); i.hasNext();) {
+	    CoverageAttributeTable cat = (CoverageAttributeTable)i.next();
 
 	    if (useLibrary != null && !useLibrary.equalsIgnoreCase(cat.getLibraryName())) {
 		continue;
