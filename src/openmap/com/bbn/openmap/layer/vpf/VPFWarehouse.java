@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFWarehouse.java,v $
 // $RCSfile: VPFWarehouse.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/02/28 15:51:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,4 +76,25 @@ public interface VPFWarehouse {
      * line features, then point features.
      */
     public List getFeatures();
+
+    /**
+     * Get a library name to limit selections from.  Used by the
+     * LibrarySelectionTable to find out if selection from database
+     * should be limitied to tiles or feature from certain libraries.
+     * Specified here instead of the LibrarySelectionTable in case the
+     * LST is shared among layers, since the warehouse is specific to
+     * a particular layer.
+     */
+    public String getUseLibrary();
+
+    /**
+     * Set a library name to limit selections from.  Used by the
+     * LibrarySelectionTable to find out if selection from database
+     * should be limitied to tiles or feature from certain libraries.
+     * Specified here instead of the LibrarySelectionTable in case the
+     * LST is shared among layers, since the warehouse is specific to
+     * a particular layer.  If null the warehouse should use all
+     * libraries available to it to gather features.
+     */
+    public void setUseLibrary(String lib);
 }

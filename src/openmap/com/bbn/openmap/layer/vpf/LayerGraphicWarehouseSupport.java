@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LayerGraphicWarehouseSupport.java,v $
 // $RCSfile: LayerGraphicWarehouseSupport.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/02/28 15:51:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -105,6 +105,27 @@ public abstract class LayerGraphicWarehouseSupport
      * do nothing.  
      */
     public void resetForCAT() {}
+
+    /**
+     * Set which library to use. If null, all applicable libraries in
+     * database will be searched.
+     */
+    private String useLibrary = null;
+
+    /**
+     * Set the VPF library to use.  If null, all libraries will be
+     * searched.  Null is default.
+     */
+    public void setUseLibrary(String lib) {
+	useLibrary = lib;
+    }
+
+    /**
+     * Get the VPF library to use.
+     */
+    public String getUseLibrary() {
+	return useLibrary;
+    }
 
     /**
      * Return the GUI for certain warehouse attributes.  By default,

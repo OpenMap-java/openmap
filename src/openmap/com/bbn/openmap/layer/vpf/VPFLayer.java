@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:50 $
+// $Revision: 1.3 $
+// $Date: 2003/02/28 15:51:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,6 +78,9 @@ import com.bbn.openmap.util.SwingWorker;
  *#use this option for multiple coverage types, or when null pointer errors
  *#are encountered.
  *vmapPol.searchByFeature=true
+ *#Limit which VPF library is used (optional).  If not specified,
+ *#all available libraries will be checked and used.
+ *vmapPol.libraryName=noamer
  *#
  *# Choose either .defaultLayer or .coverageType
  *#
@@ -150,10 +153,12 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * graphics. 
      */
     public static final String searchByFeatureProperty = "searchByFeature";
-    /** alternate method for setting VPF data path */
+    /** Property method for setting VPF data path */
     public static final String libraryProperty = "libraryBean";
-    /** Method for setting VPF cutoff scale */
+    /** Property for setting VPF cutoff scale */
     public static final String cutoffScaleProperty = "cutoffScale";
+    /** Property for setting VPF library name to use */
+    public static final String LibraryNameProperty = "libraryName";
     /** the object that knows all the nitty-gritty vpf stuff */
     transient LibrarySelectionTable lst;
     /** our own little graphics factory */
@@ -174,6 +179,8 @@ public class VPFLayer extends OMGraphicHandlerLayer
     protected String coverageType = "po";
 
     protected int cutoffScale = LibrarySelectionTable.DEFAULT_BROWSE_CUTOFF;
+    /** the library name to focus on */
+    protected String libraryName = null;
 
     /**
      *  Construct a VPF layer.
@@ -248,6 +255,8 @@ public class VPFLayer extends OMGraphicHandlerLayer
 	searchByFeatures = LayerUtils.booleanFromProperties(props, realPrefix + searchByFeatureProperty, searchByFeatures);
 
 	libraryBeanName = props.getProperty(realPrefix + libraryProperty);
+
+	libraryName = props.getProperty(realPrefix + LibraryNameProperty);
 
 	try {
 	    //force lst and warehosue to re-init with current properties
@@ -457,6 +466,7 @@ public class VPFLayer extends OMGraphicHandlerLayer
 			warehouse = new VPFLayerGraphicWarehouse();
 		    }
 		    warehouse.setProperties(prefix, props);
+		    warehouse.setUseLibrary(libraryName);
 		}
 	    }
 	} catch (com.bbn.openmap.io.FormatException f) {

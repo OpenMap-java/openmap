@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibrarySelectionTable.java,v $
 // $RCSfile: LibrarySelectionTable.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/02/28 15:51:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,7 +65,6 @@ public class LibrarySelectionTable {
     private String databaseName;
     /** the database description of itself */
     private String databaseDesc;
-
     /** 
      * Construct a LibrarySelectionTable without a path to data.
      */
@@ -275,10 +274,19 @@ public class LibrarySelectionTable {
 	
 	int inArea = 0;
 	CoverageTable redrawUntiled = null;
+	String useLibrary = warehouse.getUseLibrary();
 
 	for (Enumeration enum = CATs.elements(); enum.hasMoreElements();) {
 
 	    CoverageAttributeTable cat = (CoverageAttributeTable)enum.nextElement();
+	    if (Debug.debugging("vpf")) {
+		Debug.output("LST: checking library: " + cat.getLibraryName());
+	    }
+
+	    if (useLibrary != null && !useLibrary.equalsIgnoreCase(cat.getLibraryName())) {
+		continue;
+	    }
+
 	    warehouse.resetForCAT();
 
 	    List tiles = cat.tilesInRegion(ll1.getLatitude(),
@@ -362,8 +370,14 @@ public class LibrarySelectionTable {
 	
 	int inArea = 0;
 	CoverageTable redrawUntiled = null;
+	String useLibrary = warehouse.getUseLibrary();
+
 	for (Enumeration enum = CATs.elements(); enum.hasMoreElements();) {
 	    CoverageAttributeTable cat = (CoverageAttributeTable)enum.nextElement();
+
+	    if (useLibrary != null && !useLibrary.equalsIgnoreCase(cat.getLibraryName())) {
+		continue;
+	    }
 
 	    if (scale < BROWSE_CUTOFF) {
 
@@ -460,6 +474,8 @@ public class LibrarySelectionTable {
 
 	try {
 	    LibrarySelectionTable lst = new LibrarySelectionTable(dcwbase);
+	    System.out.println("Database Name " + lst.getDatabaseName());
+	    
 	    String liblist[] = lst.getLibraryNames();
 	    for (int j = 0; j < liblist.length; j++) {
 		System.out.println("Library " + liblist[j]);
