@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/18 00:41:23 $
+// $Revision: 1.3 $
+// $Date: 2003/04/02 14:21:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -305,7 +305,7 @@ public class InformationDelegator extends OMComponentPanel
      */
     public void displayInfoLine(String infoLine) {
 	if (infoLineHolder != null) {
-	    setLabel(infoLine);
+	    setLabel((infoLine != null && infoLine.length() > 0)?infoLine:fudgeString);
 	}
     }
 
