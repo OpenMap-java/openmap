@@ -46,7 +46,7 @@ public class LineShapeDecoration extends SpacingShapeDecoration {
     }
 
     /**
-     * @see fr.free.lepicier.awt.ShapeDecoration#draw(Graphics, Point2D[], boolean)
+     * @see com.bbn.openmap.omGraphics.awt.ShapeDecoration#draw(Graphics, Point2D[], boolean)
      */
     public void draw(Graphics g, Point2D[] points, boolean complete) {
 	Graphics2D g2D = (Graphics2D)g;

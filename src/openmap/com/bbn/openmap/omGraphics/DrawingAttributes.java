@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/02 14:24:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -963,7 +963,7 @@ public class DrawingAttributes
      * @param prefix the token to prefix the property names
      * @param props the <code>Properties</code> object 
      */
-    public void setProperties(String prefix, java.util.Properties props) {
+    public void setProperties(String prefix, Properties props) {
 
 	propertyChangeSupport = new PropertyChangeSupport(this);
 	setPropertyPrefix(prefix);
@@ -998,16 +998,16 @@ public class DrawingAttributes
 	matted = LayerUtils.booleanFromProperties(props, realPrefix + mattedProperty, matted);
 
 	float lineWidth;
-	boolean strokeDefined = false;
+	boolean basicStrokeDefined = false;
 
 	if (stroke != null && stroke instanceof BasicStroke) {
-	    strokeDefined = true;
+	    basicStrokeDefined = true;
 	}
 	
 	lineWidth =
 	    LayerUtils.floatFromProperties(
 		props, realPrefix + lineWidthProperty,
-		(strokeDefined?((BasicStroke)stroke).getLineWidth():defaultLineWidth));
+		(basicStrokeDefined?((BasicStroke)stroke).getLineWidth():defaultLineWidth));
 
 	baseScale =
 	    LayerUtils.floatFromProperties(
@@ -1016,7 +1016,7 @@ public class DrawingAttributes
 	
 	// Look for a dash pattern properties to come up with a stroke
 	String dPattern = props.getProperty(realPrefix + dashPatternProperty);
-	if (strokeDefined && dPattern != null && !dPattern.equals("")) {
+	if (basicStrokeDefined && dPattern != null && !dPattern.equals("")) {
 	    float dashPhase;
 	    float[] lineDash;
 	    // OK, it exists, come up with a stroke.
@@ -1046,7 +1046,7 @@ public class DrawingAttributes
 	    }
 
 	    if (lineDash == null){
-		if (strokeDefined) {
+		if (basicStrokeDefined) {
 		    lineDash = ((BasicStroke)stroke).getDashArray();
 		} else {
 		    lineDash = new float[2];
@@ -1072,7 +1072,7 @@ public class DrawingAttributes
 		    dashPhase = defaultDashPhase;
 		}
 	    } else {
-		if (strokeDefined) {
+		if (basicStrokeDefined) {
 		    dashPhase = ((BasicStroke)stroke).getDashPhase();
 		} else {
 		    dashPhase = defaultDashPhase;
@@ -1084,7 +1084,7 @@ public class DrawingAttributes
 				      BasicStroke.JOIN_MITER, 10.0f, 
 				      lineDash, dashPhase));
 
-	} else if (!strokeDefined) {
+	} else if (basicStrokeDefined) {
 	    setStroke(new BasicStroke(lineWidth));
 	}
 
@@ -1292,7 +1292,3 @@ public class DrawingAttributes
 	return sb.toString();
     }
 }
-
-
-
-

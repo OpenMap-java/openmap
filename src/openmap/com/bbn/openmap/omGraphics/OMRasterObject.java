@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/02 14:24:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -464,6 +464,15 @@ public abstract class OMRasterObject extends OMGraphic
     }
     
     /**
+     * Always true for images, affects distance measurements.  Forces
+     * the omGraphics package to treat the OMRasterObject as a filled
+     * shape.
+     */
+    public boolean shouldRenderFill() {
+	return true;
+    }
+
+    /**
      * Set the pixels for the image for direct color model images.
      * Checks to see of the length matches the height * width, but
      * doesn't do anything if they don't match.  Make sure it does.
@@ -741,13 +750,7 @@ public abstract class OMRasterObject extends OMGraphic
 	    }
 	}
 
-
 	ImageProducer prod = new FilteredImageSource(bitmap.getSource(), imageFilter);
-	
-	//HACK How do we get the real toolkit?? i.e. for the
-	//GIFMapBean running without a display
-
-	// ANSWER: update this to use the BufferedImage methods.
 	if (Toolkit.getDefaultToolkit() != null)
 	    return Toolkit.getDefaultToolkit().createImage(prod);
 	else return bitmap;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/BasicStrokeEditor.java,v $
 // $RCSfile: BasicStrokeEditor.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/02 14:24:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -225,7 +225,7 @@ public class BasicStrokeEditor extends JDialog
     }
 
     public static float[] stringToDashArray(String das) {
-	if (das == NONE) {
+	if (das == NONE || das == null || das.equals("")) {
 	    return null;
 	}
 
