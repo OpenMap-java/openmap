@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/DockMapPanel.java,v $
 // $RCSfile: DockMapPanel.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/09/08 20:49:18 $
+// $Revision: 1.2 $
+// $Date: 2003/09/09 20:20:32 $
 // $Author: blubin $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.menu.MenuList;
 import com.bbn.openmap.gui.dock.DockPanel;
-import com.bbn.openmap.gui.dock.DockablePanel;
+import com.bbn.openmap.gui.dock.BasicDockPanel;
 import com.bbn.openmap.gui.dock.DockConstraint;
 import com.bbn.openmap.util.Debug;
 
@@ -50,9 +50,9 @@ import com.bbn.openmap.util.Debug;
  * get the MapHandler from it and add the component to that.  The
  * DockMapPanel also adds itself to its MapHandler
  */
-public class DockMapPanel extends BasicMapPanel implements DockablePanel {
+public class DockMapPanel extends BasicMapPanel implements DockPanel {
 
-    protected DockPanel dockPanel;
+    protected BasicDockPanel dockPanel;
 
     /**
      * Create a MapPanel that creates its own PropertyHandler, which
@@ -108,7 +108,7 @@ public class DockMapPanel extends BasicMapPanel implements DockablePanel {
     }
 
     protected void createComponents() {
-	dockPanel = new DockPanel();
+	dockPanel = new BasicDockPanel();
 	super.add(dockPanel, BorderLayout.CENTER);
 	super.createComponents();
     }

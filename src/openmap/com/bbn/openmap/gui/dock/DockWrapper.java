@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/DockWrapper.java,v $
 // $RCSfile: DockWrapper.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/08 20:55:05 $
+// $Revision: 1.3 $
+// $Date: 2003/09/09 20:20:32 $
 // $Author: blubin $
 // 
 // **********************************************************************
@@ -44,7 +44,7 @@ import com.bbn.openmap.util.Debug;
  * A panel that contains controls that will either be docked, 
  * internal-framed or external framed...
  * @author Ben Lubin
- * @version $Revision: 1.2 $ on $Date: 2003/09/08 20:55:05 $
+ * @version $Revision: 1.3 $ on $Date: 2003/09/09 20:20:32 $
  * @since 12/5/02
  */
 public class DockWrapper extends JPanel {
@@ -69,7 +69,7 @@ public class DockWrapper extends JPanel {
     /** Holds the tabbed pane if we are currently holding tabs. */
     private JTabbedPane tabPane = null;
 
-    DockPanel dockPanel;
+    BasicDockPanel dockPanel;
 
     /** Contents of this wrapper, size >1 if tabbed, 1 if not tabbed. */
     private List children = new ArrayList(1);
@@ -79,14 +79,14 @@ public class DockWrapper extends JPanel {
 
     private MouseHandler mouseHandler = new MouseHandler();
 
-    public DockWrapper(DockPanel dp) {
+    public DockWrapper(BasicDockPanel dp) {
 	dockPanel = dp;
 	setLayout(new BorderLayout());
 	setOpaque(false);
     }
 
     /** Special constructor for use in the cardinal DockWrappers */
-    /* package */ DockWrapper(DockPanel dp, int state) {
+    /* package */ DockWrapper(BasicDockPanel dp, int state) {
 	this(dp);
 	this.state = state;
     }

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/dock/DockLayout.java,v $
 // $RCSfile: DockLayout.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/08 17:33:14 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/09/09 20:20:32 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -31,12 +31,12 @@ import com.bbn.openmap.util.Debug;
 /**
  * A Layout manager used for the docking component...
  * @author Ben Lubin
- * @version $Revision: 1.1 $ on $Date: 2003/04/08 17:33:14 $
+ * @version $Revision: 1.2 $ on $Date: 2003/09/09 20:20:32 $
  * @since 12/5/02
  */
 public class DockLayout implements LayoutManager2 {    
 
-    private DockPanel p;
+    private BasicDockPanel p;
 
     /** Size of the background control */
     protected Rectangle occludingBounds;
@@ -44,7 +44,7 @@ public class DockLayout implements LayoutManager2 {
     /** Size of the background control */
     protected Rectangle backgroundBounds;
 
-    public DockLayout(DockPanel p) {
+    public DockLayout(BasicDockPanel p) {
 	this.p = p;
     }
 
