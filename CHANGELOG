@@ -1,3 +1,24 @@
+2003-04-23  Don Dietrick  <dietrick@bbn.com>
+
+	* Modified the OpenMapApplet to look for a PROPERTIES parameter
+	in case the properties file to use to configure the applet should
+	be different than the standard openmap.properties file.  The
+	properties file can be specified as a resource, file or URL, but
+	the applet rules apply.
+
+	* Added the ScaleDisplayLayer, contributed by David Ward. Modified
+	it to extend OMGraphicHandlerLayer.
+
+	* Misc bug fixes - the add/delete node states for the
+	EditableOMPoly only change to edit cursors when over a node, it's
+	now consistent with actual editing behavior.  The equator
+	distance for NM in the Planet class was modified to be 2160.
+	Modified CSVTokenizer to ignore quotation marks, although a
+	quotation mark at the start of a field forces the field to be
+	interpreted as a String, and escape characters force inclusion of
+	the next charater in a String field.  RpfTocHandler ignores
+	commas while checking scale fields.
+
 2003-04-16  Don Dietrick  <dietrick@bbn.com>
 
 	* Created the CombinedCoordPanel made from the contents of the
