@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/AUTHORS,v $
 $RCSfile: AUTHORS,v $
-$Revision: 1.11 $
-$Date: 2002/07/20 04:09:02 $
+$Revision: 1.12 $
+$Date: 2002/07/21 05:05:37 $
 $Author: dietrick $
 
 People and organizations that have contributed to OpenMap
@@ -78,6 +78,9 @@ Karl Stuempfle and Lonnie Goad working for OptiMetrics, Inc
 
 Scott Nevin
   Added code to the MIFLayer to allow to read more graphic types.
+
+Oliver Hinds
+  Added code to provide a preview panel in OMColorChooser, that lets you see what the color will look like with the current transparency setting.
 
 --------------------------------------
 
