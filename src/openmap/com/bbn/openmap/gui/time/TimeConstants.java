@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimeConstants.java,v $
 // $RCSfile: TimeConstants.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/05/14 17:24:27 $
+// $Revision: 1.3 $
+// $Date: 2003/06/02 18:27:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,7 +35,6 @@ public interface TimeConstants {
     public final static String TIMER_STEP_BACKWARD = "TIMER_STEP_BACKWARD";
     public final static String TIMER_FORWARD = "TIMER_FORWARD";
     public final static String TIMER_BACKWARD = "TIMER_BACKWARD";
-    public final static String TIMER_RUNNING = "TIMER_RUNNING";
     public final static String TIMER_STOPPED = "TIMER_STOPPED";
     public final static String TIMER_INACTIVE = "TIMER_INACTIVE";
 

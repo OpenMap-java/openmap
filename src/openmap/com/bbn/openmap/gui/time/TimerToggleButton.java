@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimerToggleButton.java,v $
 // $RCSfile: TimerToggleButton.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/05/06 23:06:46 $
+// $Revision: 1.2 $
+// $Date: 2003/06/02 18:27:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -104,7 +104,7 @@ public class TimerToggleButton extends JToggleButton
      * Set the appearance based on the timer's status.
      */
     protected void updateIcon(String status) {
-	if (status == TIMER_RUNNING) {
+	if (status == TIMER_FORWARD) {
 	    setSelected(true);
 	    setIcon(running);
 	} else {
@@ -131,8 +131,8 @@ public class TimerToggleButton extends JToggleButton
 		updateIcon(TIMER_STOPPED);
 	    } else if (obj == TIMER_INACTIVE) {
 		updateIcon(TIMER_INACTIVE);
-	    } else if (obj == TIMER_RUNNING) {
-		updateIcon(TIMER_RUNNING);
+	    } else if (obj == TIMER_FORWARD) {
+		updateIcon(TIMER_FORWARD);
 	    }
 	}
     }
