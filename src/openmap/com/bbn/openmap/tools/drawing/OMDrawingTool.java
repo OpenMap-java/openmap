@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/02/24 23:04:33 $
+// $Revision: 1.6 $
+// $Date: 2003/03/07 16:05:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -871,9 +871,26 @@ public class OMDrawingTool
      * MouseDelegator or canvas component, and removing the palette.
      * Called automatically from the mouse mode an GUI when
      * appropriate, although you can force a cleanup if needed by
-     * calling this method.
+     * calling this method.  Calling this version of deactivate() just
+     * uses the action mask stored in the EditableOMGraphic, which
+     * knows if the graphic is being updated or created.
      */
-    public synchronized void deactivate() {
+    public void deactivate() {
+	deactivate(currentEditable.getActionMask());
+    }
+
+    /**
+     * Turn the drawing tool off, disconnecting it from the
+     * MouseDelegator or canvas component, and removing the palette.
+     * This version can called when you want to control what action is
+     * taken by the receiver.
+     *
+     * @param actionToDoWithOMGraphic a masked int from
+     * OMGraphicConstants that describes an OMAction to take on the
+     * current editable.
+     * @see com.bbn.openmap.omGraphics.OMGraphicConstants
+     */
+    public synchronized void deactivate(int actionToDoWithOMGraphic) {
 	if (DEBUG) {
 	    Debug.output("OMDrawingTool: deactivate(" + 
 			 (activated?"while active":"while inactive") + ")");
@@ -912,7 +929,7 @@ public class OMDrawingTool
 	    if (g != null && requestor != null) {
 		g.setVisible(true);
 		OMAction action = new OMAction();
-		action.setMask(currentEditable.getActionMask());
+		action.setMask(actionToDoWithOMGraphic);
 		generateOMGraphic(g);
 		notifyListener(g, action);
 	    }
