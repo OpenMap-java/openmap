@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.15 $
-// $Date: 2004/09/30 22:36:17 $
+// $Revision: 1.16 $
+// $Date: 2004/10/01 20:36:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,10 +41,8 @@ import com.bbn.openmap.Environment;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MultipleSoloMapComponentException;
-import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.menu.MenuList;
-import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
@@ -179,12 +177,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         Object obj = mh.get(com.bbn.openmap.proj.ProjectionFactory.class);
         if (obj == null) {
             Debug.message("basic", "BasicMapPanel adding ProjectionFactory and projections to MapHandler since there are none to be found.");
-            mh.add(com.bbn.openmap.proj.ProjectionFactory.getInstance());
-            mh.add(new com.bbn.openmap.proj.MercatorLoader());
-            mh.add(new com.bbn.openmap.proj.OrthographicLoader());
-            mh.add(new com.bbn.openmap.proj.CADRGLoader());
-            mh.add(new com.bbn.openmap.proj.LLXYLoader());
-            mh.add(new com.bbn.openmap.proj.GnomonicLoader());
+            mh.add(ProjectionFactory.loadDefaultProjections());
         }
 
         // Environment will only get loaded after the property file is read.
