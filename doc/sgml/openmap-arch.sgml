@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
 $RCSfile: openmap-arch.sgml,v $
-$Revision: 1.9 $
-$Date: 2000/01/10 19:34:48 $
+$Revision: 1.10 $
+$Date: 2000/01/10 20:08:30 $
 $Author: bmackiew $
 
 OpenMap architecture document
@@ -433,7 +433,7 @@ yourself.  The easiest way to write your own layer is to derive it
 from another one already cooked up.  For some simple examples see the
 <htmlurl url="api/com/bbn/openmap/layer/GraticuleLayer.html"
 name="GraticuleLayer"> and <htmlurl
-url="api/com/bbn/openmap/layer/TestLayer.html" name="TestLayer">
+url="api/com/bbn/openmap/layer/test/TestLayer.html" name="TestLayer">
 classes.
 <P>
 Many layers get their data from the local disk or cdrom of the machine
@@ -444,7 +444,7 @@ Layer"></bf> is a good example of live layer.
 
 <sect2>OMGraphics<label id="sec-omgraphics">
 <p>
-<htmlurl url="./api/com/bbn/openmap/omGraphics/package-frame.html"
+<htmlurl url="./api/com/bbn/openmap/omGraphics/package-tree.html"
 name="OMGraphics"> help you to turn your vector or raster data into
 interactive graphics that can be rendered on the map canvas.
 Each OMGraphic provides a simple interface to manage projecting,
