@@ -36,8 +36,8 @@ public class UPSPoint {
     /**
      *  Constructor for the UPSPoint object
      *
-     *@param  easting   easting 
-     *@param  northing  northing
+     * @param  easting   easting 
+     * @param  northing  northing
      */
     public UPSPoint(double easting, double northing) {
         this.easting = easting;
@@ -46,13 +46,17 @@ public class UPSPoint {
     }
 
     /**
-     *  Constructor for the UPSPoint object
+     * Static method to create a UPSPoint object from lat/lon
+     * coordiantes.  Method avoids conflict with (double, double)
+     * constructor.
      *
-     *@param  lat  latitude in decimal degrees
-     *@param  lon  longitude in decimal degrees
+     * @param  lat  latitude in decimal degrees
+     * @param  lon  longitude in decimal degrees
      */
-    public void UPSPoint(double lat, double lon) {
-        this.toUPS(lat, lon);
+    public static UPSPoint createUPSPoint(double lat, double lon) {
+        UPSPoint ups = new UPSPoint();
+        ups.toUPS(lat, lon);
+        return ups;
     }
 
     /**

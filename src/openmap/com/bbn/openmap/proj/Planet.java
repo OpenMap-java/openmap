@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Planet.java,v $
 // $RCSfile: Planet.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.4 $
+// $Date: 2004/02/06 19:03:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,7 +40,9 @@ public class Planet {
 
     // WGS84 / GRS80 datums
     final public static transient float wgs84_earthPolarRadiusMeters = 6356752.3142f;
+    final public static transient double wgs84_earthPolarRadiusMeters_D = 6356752.3142;
     final public static transient float wgs84_earthEquatorialRadiusMeters = 6378137.0f;
+    final public static transient double wgs84_earthEquatorialRadiusMeters_D = 6378137.0;
     final public static transient float wgs84_earthFlat =
         1 - (wgs84_earthPolarRadiusMeters/wgs84_earthEquatorialRadiusMeters);// 1 - (minor/major) = 1/298.257
     final public static transient float wgs84_earthEccen =
@@ -54,6 +56,16 @@ public class Planet {
         wgs84_earthEquatorialCircumferenceKM*0.62137119f;//HACK use UNIX units?
     final public static transient float wgs84_earthEquatorialCircumferenceNMiles =
         21600.0f; // 60.0f * 360.0f; // sixty nm per degree
+
+    final public static transient double wgs84_earthEquatorialCircumferenceMeters_D =
+        MoreMath.TWO_PI_D*wgs84_earthEquatorialRadiusMeters_D;
+    final public static transient double wgs84_earthEquatorialCircumferenceKM_D =
+        wgs84_earthEquatorialCircumferenceMeters_D/1000;
+    final public static transient double wgs84_earthEquatorialCircumferenceMiles_D =
+        wgs84_earthEquatorialCircumferenceKM_D*0.62137119;//HACK use UNIX units?
+    final public static transient double wgs84_earthEquatorialCircumferenceNMiles_D =
+        21600.0; // 60.0f * 360.0f; // sixty nm per degree
+
 //      wgs84_earthEquatorialCircumferenceKM*0.5389892f; // calculated, same as line above.
 //      wgs84_earthEquatorialCircumferenceKM*0.5399568f;//HACK use UNIX units? << This was wrong.
 

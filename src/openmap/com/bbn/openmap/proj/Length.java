@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Length.java,v $
 // $RCSfile: Length.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.5 $
+// $Date: 2004/02/06 19:03:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,24 +36,24 @@ import com.bbn.openmap.util.Debug;
 public class Length {
 
     /** Miles, in WGS 84 spherical earth model units. */
-    public final static Length MILE = new Length("mile", "miles",  Planet.wgs84_earthEquatorialCircumferenceMiles);
+    public final static Length MILE = new Length("mile", "miles", Planet.wgs84_earthEquatorialCircumferenceMiles_D);
     /** Feet, in WGS 84 spherical earth model units. */
-    public final static Length FEET = new Length("feet", "feet",  Planet.wgs84_earthEquatorialCircumferenceMiles * 5280f);
+    public final static Length FEET = new Length("feet", "feet", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0);
     /** Meters, in WGS 84 Spherical earth model units. */
-    public final static Length METER = new Length("meter", "m", Planet.wgs84_earthEquatorialCircumferenceMeters);
+    public final static Length METER = new Length("meter", "m", Planet.wgs84_earthEquatorialCircumferenceMeters_D);
     /** Kilometers, in WGS 84 Spherical earth model units. */
-    public final static Length KM = new Length("kilometer", "km", Planet.wgs84_earthEquatorialCircumferenceKM);
+    public final static Length KM = new Length("kilometer", "km", Planet.wgs84_earthEquatorialCircumferenceKM_D);
     /** Nautical Miles, in WGS 84 Spherical earth model units. */
-    public final static Length NM = new Length("nautical mile", "nm", Planet.wgs84_earthEquatorialCircumferenceNMiles);
+    public final static Length NM = new Length("nautical mile", "nm", Planet.wgs84_earthEquatorialCircumferenceNMiles_D);
     /** Decimal Degrees, in WGS 84 Spherical earth model units. */
-    public final static Length DECIMAL_DEGREE = new Length("decimal degree", "deg", 360f);
+    public final static Length DECIMAL_DEGREE = new Length("decimal degree", "deg", 360.0);
     /** Radians, in terms of a spherical earth. */
-    public final static Length RADIAN = new Length("radian", "rad", com.bbn.openmap.MoreMath.TWO_PI);
+    public final static Length RADIAN = new Length("radian", "rad", com.bbn.openmap.MoreMath.TWO_PI_D);
     /** Data Mile, in WGS 84 spherical earth model units. */
-    public final static Length DM = new Length("datamile", "dm", Planet.wgs84_earthEquatorialCircumferenceMiles * 5280f/6000f);
+    public final static Length DM = new Length("datamile", "dm", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0/6000.0);
 
     /** Unit/radians */
-    protected final float constant;
+    protected final double constant;
     protected final String name;
     protected final String abbr;
     
@@ -62,9 +62,9 @@ public class Length {
      * go around the earth at its equator.  The name and abbreviation
      * are converted to lower case for consistency.
      */
-    public Length(String name, String abbr, float unitEquatorCircumference) {
+    public Length(String name, String abbr, double unitEquatorCircumference) {
         this.name = name.toLowerCase().intern();
-        constant = unitEquatorCircumference/com.bbn.openmap.MoreMath.TWO_PI;
+        constant = unitEquatorCircumference/com.bbn.openmap.MoreMath.TWO_PI_D;
         this.abbr = abbr.toLowerCase().intern();
     }
 
@@ -77,6 +77,14 @@ public class Length {
             Debug.output("Translating " + name + " from radians");
         }
 
+        return numUnits/(float)constant;
+    }
+
+    public double toRadians(double numUnits) {
+        if (Debug.debugging("length")) {
+            Debug.output("Translating " + name + " from radians");
+        }
+
         return numUnits/constant;
     }
 
@@ -85,6 +93,18 @@ public class Length {
      * represented by this length.
      */
     public float fromRadians(float numRadians) {
+        if (Debug.debugging("length")) {
+            Debug.output("Translating radians from " + name);
+        }
+        
+        return numRadians*(float)constant;
+    }
+
+    /**
+     * Given a number of radians, convert to the number of units
+     * represented by this length.
+     */
+    public double fromRadians(double numRadians) {
         if (Debug.debugging("length")) {
             Debug.output("Translating radians from " + name);
         }

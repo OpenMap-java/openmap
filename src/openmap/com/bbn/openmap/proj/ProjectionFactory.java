@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionFactory.java,v $
 // $RCSfile: ProjectionFactory.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.3 $
+// $Date: 2004/02/06 19:03:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,16 +25,55 @@
 package com.bbn.openmap.proj;
 
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.util.ComponentFactory;
+import com.bbn.openmap.util.Debug;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.Hashtable;
 
 /**
  * Create Projections.
  */
 public class ProjectionFactory {
 
-    private ProjectionFactory(){}
+    /**
+     * PropertyChangeSupport for letting listeners know about new
+     * projections that are available from the factory.
+     */
+    protected PropertyChangeSupport pcs;
 
-    protected static LatLonPoint llp = new LatLonPoint();
+    /**
+     * Memory saving center used for new projections.
+     */
+    protected LatLonPoint llp = new LatLonPoint();
+
+    /**
+     * Singleton instance.
+     */
+    protected static ProjectionFactory instance;
+
+    protected Hashtable projLoaders;
+
+    /**
+     * Singleton constructor.
+     */
+    private ProjectionFactory() {
+	pcs = new PropertyChangeSupport(this);
+	projLoaders = new Hashtable();
+    }
+
+    /**
+     * Get the singleton instance of the ProjectionFactory.
+     */
+    public static ProjectionFactory getInstance() {
+	if (instance == null) {
+	    instance = new ProjectionFactory();
+	}
+
+	return instance;
+    }
 
     /**
      * Create a projection.
@@ -45,6 +84,8 @@ public class ProjectionFactory {
      * @param width pixel width of projection
      * @param height pixel height of projection
      * @return Projection
+     * @deprecated The notion of a projection type number is going
+     * away, use the class name of the projection instead.
      */
     public static Projection makeProjection (int projType,
                                              float centerLat,
@@ -53,33 +94,90 @@ public class ProjectionFactory {
                                              int width,
                                              int height)
     {
-        llp.setLatLon(centerLat, centerLon);
-        switch (projType) {
-            case CADRG.CADRGType:
-                return new CADRG(llp, scale, width, height);
-            case Mercator.MercatorType:
-                return new Mercator(llp, scale, width, height);
-            case MercatorView.MercatorViewType:
-                return new MercatorView(llp, scale, width, height);
-            case LLXY.LLXYType:
-                return new LLXY(llp, scale, width, height);
-            case LLXYView.LLXYViewType:
-                return new LLXYView(llp, scale, width, height);
-            case Orthographic.OrthographicType:
-                return new Orthographic(llp, scale, width, height);
-            case OrthographicView.OrthographicViewType:
-                return new OrthographicView(llp, scale, width, height);
-//          case MassStatePlane.MassStatePlaneType:
-//              return new MassStatePlane(llp, scale, width, height);
-            case Gnomonic.GnomonicType:
-                return new Gnomonic(llp, scale, width, height);
-            default:
-                System.err.println("Unknown projection type " + projType +
-                                   " in ProjectionFactory.create()");
-                return null;
-        }
+
+	String classname = null;
+	switch (projType) {
+	case CADRG.CADRGType:
+	    classname = "com.bbn.openmap.proj.CADRG";
+	    break;
+	case Mercator.MercatorType:
+	    classname = "com.bbn.openmap.proj.Mercator";
+	    break;
+	case MercatorView.MercatorViewType:
+	    classname = "com.bbn.openmap.proj.MercatorView";
+	    break;
+	case LLXY.LLXYType:
+	    classname = "com.bbn.openmap.proj.LLXY";
+	    break;
+	case LLXYView.LLXYViewType:
+	    classname = "com.bbn.openmap.proj.LLXYView";
+	    break;
+	case Orthographic.OrthographicType:
+	    classname = "com.bbn.openmap.proj.Orthographic";
+	    break;
+	case OrthographicView.OrthographicViewType:
+	    classname = "com.bbn.openmap.proj.OrthographicView";
+	    break;
+// 	case MassStatePlane.MassStatePlaneType:
+// 	    classname = "com.bbn.openmap.proj.MassStatePlane";
+// 	    break;
+	case Gnomonic.GnomonicType:
+	    classname = "com.bbn.openmap.proj.Gnomonic";
+	    break;
+	default:
+	    System.err.println("Unknown projection type " + projType +
+			       " in ProjectionFactory.create()");
+	}
+	return makeProjection(classname, centerLat, centerLon, 
+			      scale, width, height);
     }
 
+    /**
+     * Create a projection.
+     * @param projType projection type
+     * @param centerLat center latitude in decimal degrees
+     * @param centerLon center latitude in decimal degrees
+     * @param scale float scale
+     * @param width pixel width of projection
+     * @param height pixel height of projection
+     * @return Projection
+     * @deprecated The notion of a projection type number is going
+     * away, use the class name of the projection instead.
+     */
+    public static Projection makeProjection(String projClassName,
+					    float centerLat,
+					    float centerLon,
+					    float scale,
+					    int width,
+					    int height)	{
+
+	Projection proj = null;
+
+	if (projClassName == null) {
+	    projClassName = "com.bbn.openmap.proj.Mercator";
+	}
+	    
+	Object[] args = new Object[] {
+	    new LatLonPoint(centerLat, centerLon), 
+	    new Float(scale),
+	    new Integer(width), 
+	    new Integer(height)};
+
+	Class[] argClasses = new Class[] {
+	    args[0].getClass(), Float.TYPE, Integer.TYPE, Integer.TYPE};
+
+	try {
+	    proj = (Projection)ComponentFactory.create(projClassName, args, argClasses);
+	} catch (ClassCastException cce) {
+	    proj = null;
+	}
+
+	if (proj == null) {
+	    Debug.error("ProjectionFactory.makeProjection() tried to create a Projection from a " + projClassName + ", failed.");
+	}
+
+	return proj;
+    }
 
     /**
      * Makes a new projection based on the given projection and given type.
@@ -89,6 +187,8 @@ public class ProjectionFactory {
      * the given projection, and the type is taken from the type argument.
      * @param newProjType the type for the resulting projection
      * @param p the projection from which to copy other parameters
+     * @deprecated The notion of a projection type number is going
+     * away, use the class name of the projection instead.
      */
     public static Projection makeProjection (int newProjType, Projection p) {
         LatLonPoint ctr = p.getCenter();
@@ -101,8 +201,10 @@ public class ProjectionFactory {
      * Return an int representing the OpenMap projection, given the
      * name of the projection. Useful for setting a projection based
      * on the name stated in a properties file.
+     * @deprecated The notion of a projection type number is going
+     * away, use the class name of the projection instead.
      */
-    public static int getProjType(String projName){
+    public static int getProjType(String projName) {
 
         int projType = Mercator.MercatorType;
 
@@ -152,4 +254,23 @@ public class ProjectionFactory {
         projNames[4] = Gnomonic.GnomonicName;
         return projNames;
     }
+
+    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+	pcs.addPropertyChangeListener(pcl);
+    }
+
+    public void addPropertyChangeListener(String propertyName,
+					  PropertyChangeListener pcl) {
+	pcs.addPropertyChangeListener(propertyName, pcl);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+	pcs.removePropertyChangeListener(pcl);
+    }
+
+    public void removePropertyChangeListener(String propertyName, 
+					     PropertyChangeListener pcl) {
+	pcs.removePropertyChangeListener(propertyName, pcl);
+    }
+
 }
