@@ -1,20 +1,14 @@
-Here's what you can do to take it for a test drive:
-
-cvs co openmap
-cd openmap
-./configure
-make
-chmod +x bin/openmap
-mkdir share
-cd share
- -- Get DCW shape data from ftp://wolfjaw/pub/dcwpo-browse.[shp, ssx]
-cd ..
-bin/openmap
+$Source: /cvs/distapps/openmap/INSTALL,v $
+$RCSfile: INSTALL,v $
+$Revision: 1.2 $
+$Date: 1998/11/13 16:06:02 $
+$Author: aculline $
 
 Basic Installation
 ==================
 
-   These are generic installation instructions.
+   You need to have a Java compiler and VM to build and run the
+   OpenMap software.
 
    The `configure' shell script attempts to guess correct values for
    various system-dependent variables used during compilation.  It
@@ -39,7 +33,7 @@ Basic Installation
 
 The simplest way to compile this package is:
 
-  1. `cd' to the directory containing the package's source code and type
+  1. `cd' to the toplevel directory of this package and type
      `./configure' to configure the package for your system.  If you're
      using `csh' on an old version of System V, you might need to type
      `sh ./configure' instead to prevent `csh' from trying to execute
@@ -57,3 +51,13 @@ The simplest way to compile this package is:
      source code directory by typing `make clean'.  To also remove the
      files that `configure' created (so you can compile the package for
      a different kind of computer), type `make distclean'.
+
+Test Drive
+==========
+
+    You can test OpenMap by running the default `openmap' viewer script
+    provided in the bin/ subdirectory of the installation.  `cd' to the
+    bin/ directory and type `./openmap'.
+
+    You can try out other example applications by running the scripts
+    provided in the examples/ subdirectory of the installation.
