@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/SaveAsMenu.java,v $
 // $RCSfile: SaveAsMenu.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/15 20:36:25 $
+// $Revision: 1.3 $
+// $Date: 2003/07/15 23:50:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -71,7 +71,7 @@ public class SaveAsMenu extends AbstractOpenMapMenu {
      */
     public void addSVGMenuItem(JMenu menu) {
 	try {
-	    Object obj = com.bbn.openmap.util.ComponentFactory.create("com.bbn.openmap.image.SVGFormatter", null);
+	    Object obj = com.bbn.openmap.util.ComponentFactory.create("com.bbn.openmap.image.SVGFormatter");
 
 	    if (obj != null) {
 		// This is a test to see if the batik package is

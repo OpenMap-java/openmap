@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerAddPanel.java,v $
 // $RCSfile: LayerAddPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/06/02 18:24:58 $
+// $Revision: 1.4 $
+// $Date: 2003/07/15 23:50:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -221,7 +221,7 @@ public class LayerAddPanel extends OMComponentPanel
 
 	    String newClassName = (String)layerClasses.get(prettyName);
 
-	    layer = ComponentFactory.create(newClassName, null, null);
+	    layer = ComponentFactory.create(newClassName);
 
 	    if (layer instanceof PropertyConsumer) {
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/BufferedImageHelper.java,v $
 // $RCSfile: BufferedImageHelper.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/12 14:08:03 $
+// $Revision: 1.3 $
+// $Date: 2003/07/15 23:51:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,7 +65,7 @@ public class BufferedImageHelper {
      */
     protected static Object getJAI() {
 	if (checkedForJAI == false) {
-	    jaiObj = ComponentFactory.create("javax.media.jai.JAI", null);
+	    jaiObj = ComponentFactory.create("javax.media.jai.JAI");
 	    checkedForJAI = true;
 	}
 	return jaiObj;
