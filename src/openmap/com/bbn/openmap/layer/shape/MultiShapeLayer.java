@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/05/14 20:18:34 $
+// $Revision: 1.10 $
+// $Date: 2004/05/17 21:37:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,7 +77,7 @@ import com.bbn.openmap.util.SwingWorker;
  * ############################
  * </pre></code>
  *
- * @version $Revision: 1.9 $ $Date: 2004/05/14 20:18:34 $
+ * @version $Revision: 1.10 $ $Date: 2004/05/17 21:37:11 $
  * @see SpatialIndex 
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -99,44 +99,28 @@ public class MultiShapeLayer extends ShapeLayer {
     }
 
     /**
-     * Initializes this layer from the given properties.
-     *
-     * @param props the <code>Properties</code> holding settings for
-     * this layer 
+     * This method gets called from setProperties.
+     * @param realPrefix This prefix has already been scoped, which
+     * means it is an empty string if setProperties was called with a
+     * null prefix, or it's a String ending with a period if it was
+     * defined with characters.
+     * @param props Properties containing information about files and
+     * the layer.
      */
-    public void setProperties(String prefix, Properties props) {
-        // super.setProperties(prefix, props);
-        setPropertyPrefix(prefix);
-
-        String realPrefix = PropUtils.getScopedPropertyPrefix(this);
-
-        /// From Layer.java
-
-        String prettyName = realPrefix + PrettyNameProperty;
-        
-        String defaultName = getName(); 
-        if (defaultName == null) {
-            defaultName = "Anonymous";
-        }
-
-        setName(props.getProperty(prettyName, defaultName));
-
-        setAddToBeanContext(PropUtils.booleanFromProperties(props, realPrefix + AddToBeanContextProperty, addToBeanContext));
-
-        autoPalette = PropUtils.booleanFromProperties(props, realPrefix + AutoPaletteProperty, autoPalette);
-
-        /// end from Layer.java
-
+    protected void setFileProperties(String prefix, Properties props) {
         setSpatialIndexes(prefix, props);
-
-        shadowX = LayerUtils.intFromProperties(props, realPrefix + shadowXProperty, 0);
-        shadowY = LayerUtils.intFromProperties(props, realPrefix + shadowYProperty, 0);
     }
-
+ 
     /**
+     * This method gets called from setFileProperties.
+     * @param prefix This prefix has already been scoped, which
+     * means it is an empty string if setProperties was called with a
+     * null prefix, or it's a String ending with a period if it was
+     * defined with characters.
+     * @param props Properties containing information about files and
+     * the layer.
      */
     protected void setSpatialIndexes(String prefix, Properties p) {
-        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         String listValue = p.getProperty(prefix + ShapeFileListProperty);
 

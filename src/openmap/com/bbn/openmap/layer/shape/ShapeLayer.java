@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/02/05 18:15:08 $
+// $Revision: 1.13 $
+// $Date: 2004/05/17 21:37:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.12 $ $Date: 2004/02/05 18:15:08 $
+ * @version $Revision: 1.13 $ $Date: 2004/05/17 21:37:11 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
@@ -134,16 +134,17 @@ public class ShapeLayer extends OMGraphicHandlerLayer
     }
 
     /**
-     * Initializes this layer from the given properties.
-     *
-     * @param props the <code>Properties</code> holding settings for this layer
+     * This method gets called from setProperties.
+     * @param realPrefix This prefix has already been scoped, which
+     * means it is an empty string if setProperties was called with a
+     * null prefix, or it's a String ending with a period if it was
+     * defined with characters.
+     * @param props Properties containing information about files and
+     * the layer.
      */
-    public void setProperties(String prefix, Properties props) {
-        super.setProperties(prefix, props);
-
-        String realPrefix = PropUtils.getScopedPropertyPrefix(this);
-
+    protected void setFileProperties(String realPrefix, Properties props) {
         shapeFileName = props.getProperty(realPrefix + shapeFileProperty);
+
         spatialIndexFileName
             = props.getProperty(realPrefix + spatialIndexProperty);
 
@@ -167,11 +168,10 @@ public class ShapeLayer extends OMGraphicHandlerLayer
                     spatialIndex.setPointIcon(imageIcon);
                 }
             } catch (MalformedURLException murle) {
-                Debug.error("ShapeLayer.setProperties: point image URL not so good: \n\t" + imageURLString);
+                Debug.error("ShapeLayer.setFileProperties: point image URL not so good: \n\t" + imageURLString);
             } catch (NullPointerException npe) {
                 // May happen if not connected to the internet.
-                fireRequestMessage("Can't access icon image: \n" + 
-                                   imageURLString);
+                fireRequestMessage("Can't access icon image: \n    " + imageURLString);
             }
 
         } else {
@@ -179,6 +179,19 @@ public class ShapeLayer extends OMGraphicHandlerLayer
             Debug.error("\t" + realPrefix + shapeFileProperty);
             Debug.error("\t" + realPrefix + spatialIndexProperty);
         }
+    }
+
+    /**
+     * Initializes this layer from the given properties.
+     *
+     * @param props the <code>Properties</code> holding settings for this layer
+     */
+    public void setProperties(String prefix, Properties props) {
+        super.setProperties(prefix, props);
+
+        String realPrefix = PropUtils.getScopedPropertyPrefix(this);
+
+        setFileProperties(realPrefix, props);
 
         drawingAttributes = new DrawingAttributes(prefix, props);
 
