@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/26 23:24:15 $
+// $Revision: 1.3 $
+// $Date: 2003/02/28 00:02:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -406,7 +406,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 	MGRSPoint mgrs = new MGRSPoint(northing, easting, zone_number, zone_letter);
 	mgrs.setAccuracy(mgrsBasePoint.getAccuracy());
 	MGRSPoint.MGRStoLL(mgrs, ellipsoid, llp1);
-	String mgrsString = new String(mgrs.getMGRS());
+	String mgrsString = mgrs.getMGRS();
 
 	if (Debug.debugging("utmgriddetail")) 
 	    Debug.output(" - assigning " + mgrsString + " to poly with " +
@@ -484,6 +484,9 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 		while (it.hasNext()) {
 		    PolygonGeometry.LL pll = (PolygonGeometry.LL)it.next();
 		    String labelString = (String)(pll).getAppObject();
+		    if (labelString == null) {
+			continue;
+		    }
 		    float[] ll = pll.getLatLonArray();
 		    llp.setLatLon(ll[0], ll[1], true);
 
@@ -535,6 +538,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 	Debug.message("utmgrid", "Done.");
         return list;
     } //end getRectangle
+
 
     public Component getGUI() {
 	JPanel panel = new JPanel();
@@ -814,5 +818,6 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 
     public Paint getDistanceGridPaint() {
 	return distanceGridPaint;
+
     }
 }
