@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PolyAddPointState.java,v $
 // $RCSfile: PolyAddPointState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/09/26 17:40:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,13 +39,9 @@ public class PolyAddPointState extends State {
     }
 
     /**
-     * In this state, we need to change states only if the graphic, or
-     * anyplace off the graphic is pressed down on.  If the end points
-     * are clicked on, then we do nothing except set the moving point
-     * and go to edit mode.
      */
     public boolean mouseReleased(MouseEvent e) {
-	Debug.message("eomg", "GraphicStateMachine|add point state|mouseReleased");
+	Debug.message("eomg", "PointStateMachine|add point state|mouseReleased");
 
 	if (e.getClickCount() > 1) {
 	    ((EditableOMPoly)graphic).evaluateEnclosed();
@@ -55,7 +51,7 @@ public class PolyAddPointState extends State {
 	    } else {
 		graphic.getStateMachine().setSelected();
 	    }
-//  	    ((EditableOMPoly)graphic).enablePolygonButton(false);
+
 	    graphic.redraw(e, true);
 	    return false;
 	}

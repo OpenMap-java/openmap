@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.4 $
+// $Date: 2003/09/26 17:40:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,6 +36,7 @@ import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -312,7 +313,7 @@ public class EditableOMPoly extends EditableOMGraphic {
      * @return GrabPoint that is touched by the MouseEvent, null if
      * none are.
      */
-    public GrabPoint getMovingPoint(java.awt.event.MouseEvent e) {
+    public GrabPoint getMovingPoint(MouseEvent e) {
 	GrabPoint gb = super.getMovingPoint(e);
 
 	// Since there may be an extra point enclosing the polygon, we
@@ -587,10 +588,6 @@ public class EditableOMPoly extends EditableOMGraphic {
      * @return the index for the point in the polygon, starting with 0.
      */
     public int addPoint(int x, int y, int position) {
-//  	if (polyGrabPoints.size() == 0) {
-//  	    return addPoint(new OffsetGrabPoint(x, y), position);
-//  	}
-
 	return addPoint(new OffsetGrabPoint(x, y), position);
     }
 
@@ -914,7 +911,7 @@ public class EditableOMPoly extends EditableOMGraphic {
      * just be called, and the movingPoint will make the adjustments
      * to the graphic that are needed.
      */
-    public void move(java.awt.event.MouseEvent e) {
+    public void move(MouseEvent e) {
 	// Need to check to see if the OffsetGrabPoint is currently
 	// being used.  If not, just use it, otherwise, will need to
 	// create a special one for the move.

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMDistance.java,v $
 // $RCSfile: EditableOMDistance.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.3 $
+// $Date: 2003/09/26 17:40:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,7 @@
 package com.bbn.openmap.omGraphics;
 
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.MapBean;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.*;
 import com.bbn.openmap.proj.Length;
@@ -32,11 +33,14 @@ import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.omGraphics.*;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -119,6 +123,31 @@ public class EditableOMDistance extends EditableOMPoly {
 	g = new OMDistance(new float[0], OMGraphic.RADIANS, lineType, Length.NM);
 	((OMDistance)g).setDoShapes(true);
 	return g;
+    }
+
+    /**
+     * A convenience method that gives an EditableOMGraphic a chance
+     * to modify the OMGraphic so it can be drawn quickly, by turning
+     * off labels, etc, right before the XORpainting happens.  The
+     * OMGraphic should be configured so that the render method does
+     * the least amount of painting possible.  Note that the
+     * DrawingAttributes for the OMGraphic have already been set to
+     * DrawingAttributes.DEFAULT (black line, clear fill).
+     */
+    protected void modifyOMGraphicForEditRender() {
+	((OMDistance)getGraphic()).paintOnlyPoly = true;
+    }
+
+    /**
+     * A convenience method that gives an EditableOMGraphic a chance
+     * to reset the OMGraphic so it can be rendered normally, after it
+     * has been modified for quick paints.  The DrawingAttributes for
+     * the OMGraphic have already been reset to their normal settings,
+     * from the DrawingAttributes.DEFAULT settings that were used for
+     * the quick paint.
+     */
+    protected void resetOMGraphicAfterEditRender() {
+	((OMDistance)getGraphic()).paintOnlyPoly = false;
     }
 
     /**

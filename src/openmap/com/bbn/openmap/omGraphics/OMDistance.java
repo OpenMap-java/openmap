@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMDistance.java,v $
 // $RCSfile: OMDistance.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.3 $
+// $Date: 2003/09/26 17:40:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -231,6 +231,12 @@ public class OMDistance extends OMPoly {
     }
 
     /**
+     * Flag used by the EditableOMDistance to do quick movement paints
+     * in a cleaner way.
+     */
+    protected boolean paintOnlyPoly = false;
+
+    /**
      * Paint the poly. 
      * This works if generate() has been successful.
      *
@@ -239,14 +245,16 @@ public class OMDistance extends OMPoly {
     public void render(Graphics g) {
 	super.render(g);
 
-	labels.setLinePaint(getLinePaint());
-	labels.setMattingPaint(getMattingPaint());
-	labels.setMatted(isMatted());
+	if (!paintOnlyPoly) {
+	    labels.setLinePaint(getLinePaint());
+	    labels.setMattingPaint(getMattingPaint());
+	    labels.setMatted(isMatted());
 
-	points.setLinePaint(getLinePaint());
-	points.setFillPaint(getLinePaint());
+	    points.setLinePaint(getLinePaint());
+	    points.setFillPaint(getLinePaint());
 
-	labels.render(g);
-	points.render(g);
+	    labels.render(g);
+	    points.render(g);
+	}
     }
 }

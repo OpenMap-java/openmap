@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.3 $
+// $Date: 2003/09/26 17:40:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -235,6 +235,36 @@ public class EditableOMRangeRings extends EditableOMCircle {
 	}
 	return rrToolBar;
     }
+
+    protected boolean drawLabelsHolder = true;
+
+    /**
+     * A convenience method that gives an EditableOMGraphic a chance
+     * to modify the OMGraphic so it can be drawn quickly, by turning
+     * off labels, etc, right before the XORpainting happens.  The
+     * OMGraphic should be configured so that the render method does
+     * the least amount of painting possible.  Note that the
+     * DrawingAttributes for the OMGraphic have already been set to
+     * DrawingAttributes.DEFAULT (black line, clear fill).
+     */
+    protected void modifyOMGraphicForEditRender() {
+	OMRangeRings omrr = (OMRangeRings)getGraphic(); 
+	drawLabelsHolder = omrr.getDrawLabels();
+	omrr.setDrawLabels(false);
+    }
+
+    /**
+     * A convenience method that gives an EditableOMGraphic a chance
+     * to reset the OMGraphic so it can be rendered normally, after it
+     * has been modified for quick paints.  The DrawingAttributes for
+     * the OMGraphic have already been reset to their normal settings,
+     * from the DrawingAttributes.DEFAULT settings that were used for
+     * the quick paint.
+     */
+    protected void resetOMGraphicAfterEditRender() {
+	((OMRangeRings)getGraphic()).setDrawLabels(drawLabelsHolder);
+    }
+
 }
 
 

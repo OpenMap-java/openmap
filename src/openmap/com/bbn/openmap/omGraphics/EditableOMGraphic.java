@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMGraphic.java,v $
 // $RCSfile: EditableOMGraphic.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.4 $
+// $Date: 2003/09/26 17:40:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import java.awt.event.MouseEvent;
 import java.awt.*;
 import javax.swing.JToolBar;
 
+import com.bbn.openmap.MapBean;
 import com.bbn.openmap.event.MapMouseAdapter;
 import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.omGraphics.editable.EOMGStateMachine;
@@ -358,13 +359,13 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      */
     public void cleanMap(MouseEvent e) {
 	Object obj = e.getSource();
-	if (!(obj instanceof com.bbn.openmap.MapBean)) {
+	if (!(obj instanceof MapBean)) {
 	    return;
 	}
 
 	// Could call repaint(), but I think we should paint in this
 	// thread...
-	com.bbn.openmap.MapBean map = (com.bbn.openmap.MapBean)obj;
+	MapBean map = (MapBean)obj;
 	// Gets the buffer cleaned out.
 	map.setBufferDirty(true);
   	map.paintChildren(map.getGraphics());
@@ -378,6 +379,8 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     public void redraw(MouseEvent e, boolean firmPaint) {
 	redraw(e, firmPaint, true);
     }
+
+    protected DrawingAttributes holder = new DrawingAttributes();
 
     /**
      * Given a MouseEvent, check the source, and if it's a MapBean,
@@ -405,16 +408,14 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
 	}
 
 	Object obj = e.getSource();
-	if (!(obj instanceof com.bbn.openmap.MapBean)) {
+	if (!(obj instanceof MapBean)) {
 	    return;
 	}
 	    
-	com.bbn.openmap.MapBean map = (com.bbn.openmap.MapBean)obj;
+	MapBean map = (MapBean)obj;
 	Graphics g = map.getGraphics();
 
 	OMGraphic graphic = getGraphic();
-	Paint holdFillPaint = graphic.getFillPaint();
-	Paint holdLinePaint = graphic.getLinePaint();
 
 	if (firmPaint) {
 	    // So, with a firm paint, we want to clean the screen.  If
@@ -423,24 +424,21 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
 	    // to get the image rebuilt.  Otherwise, a copy of the
 	    // graphic remains.
 	    map.setBufferDirty(true);
-//  	    map.paintChildren(map.getGraphics());
 	    graphic.generate(getProjection());
 	    map.repaint();
 	} else {
 	    // If we get here, we are painting a moving object, so we
 	    // only want to do the outline to make it as fast as
 	    // possible.
-	    graphic.setFillPaint(OMColor.clear);
-	    graphic.setLinePaint(Color.black);
+	    holder.setFrom(graphic);
+	    DrawingAttributes.DEFAULT.setTo(graphic);
 	    graphic.regenerate(getProjection());
+
+	    modifyOMGraphicForEditRender();
 
 	    if (drawXOR) {
 		g.setXORMode(Color.lightGray);
-		Paint paint = graphic.getDisplayPaint();
-
-		if (paint instanceof Color) {
-		    g.setColor((Color)paint);
-		}
+		g.setColor((Color)graphic.getDisplayPaint());
 
 		render(g);
 	    }
@@ -458,16 +456,37 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
 	if (!firmPaint) {
 	    generate(getProjection());
 	    render(g);
-
-	    graphic.setFillPaint(holdFillPaint);
-	    graphic.setLinePaint(holdLinePaint);
+	    holder.setTo(graphic);
 	}
+
+	resetOMGraphicAfterEditRender();
 	g.dispose();
 
 	lastMouseEvent = e;
     }
 
     private MouseEvent lastMouseEvent;
+
+    /**
+     * A convenience method that gives an EditableOMGraphic a chance
+     * to modify the OMGraphic so it can be drawn quickly, by turning
+     * off labels, etc, right before the XORpainting happens.  The
+     * OMGraphic should be configured so that the render method does
+     * the least amount of painting possible.  Note that the
+     * DrawingAttributes for the OMGraphic have already been set to
+     * DrawingAttributes.DEFAULT (black line, clear fill).
+     */
+    protected void modifyOMGraphicForEditRender() {}
+
+    /**
+     * A convenience method that gives an EditableOMGraphic a chance
+     * to reset the OMGraphic so it can be rendered normally, after it
+     * has been modified for quick paints.  The DrawingAttributes for
+     * the OMGraphic have already been reset to their normal settings,
+     * from the DrawingAttributes.DEFAULT settings that were used for
+     * the quick paint.
+     */
+    protected void resetOMGraphicAfterEditRender() {}
 
     public void repaint() {
 	if (lastMouseEvent != null) {
@@ -503,9 +522,6 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     public abstract void regenerate(Projection proj);
 
     public void repaintRender(Graphics g) {
-// 	if (getMovingPoint() != null) {
-// 	    return;
-// 	}
 	render(g);
     }
 

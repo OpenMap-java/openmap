@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PolyStateMachine.java,v $
 // $RCSfile: PolyStateMachine.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/09/26 17:40:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,7 +52,7 @@ public class PolyStateMachine extends EOMGStateMachine {
 
 	states[GRAPHIC_UNDEFINED] = new PolyUndefinedState((EditableOMPoly)graphic);
 	states[GRAPHIC_UNSELECTED] = new GraphicUnselectedState(graphic);
-	states[GRAPHIC_SELECTED] = new GraphicSelectedState((EditableOMPoly)graphic);
+	states[GRAPHIC_SELECTED] = new GraphicSelectedState(graphic);
 	states[GRAPHIC_EDIT] = new GraphicEditState(graphic);
 	states[GRAPHIC_SETOFFSET] = new PolySetOffsetState((EditableOMPoly)graphic);
 	states[POLY_ADD_POINT] = new PolyAddPointState((EditableOMPoly) graphic);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/14 23:02:48 $
+// $Revision: 1.4 $
+// $Date: 2003/09/26 17:40:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -704,6 +704,14 @@ public class OMPoly extends OMGraphic implements Serializable {
 
 	setNeedToRegenerate(false);
 	return true;
+    }
+
+    /**
+     * Return true of the fill color/paint should be rendered (not
+     * clear).
+     */
+    public boolean shouldRenderFill() {
+	return !isClear(getFillPaint()) && isPolygon();
     }
 
     /**

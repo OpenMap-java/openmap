@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.6 $
+// $Date: 2003/09/26 17:40:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,6 +48,7 @@ import com.bbn.openmap.tools.icon.BasicIconPart;
 import com.bbn.openmap.tools.icon.IconPart;
 import com.bbn.openmap.tools.icon.IconPartList;
 import com.bbn.openmap.tools.icon.OMIconFactory;
+import com.bbn.openmap.tools.icon.OpenMapAppPartCollection;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
@@ -521,7 +522,7 @@ public class DrawingAttributes
 	mattingPaint = mPaint;
 	
 	if (mattingColorButton != null) {
- 	    mattingColorButton.setIcon(getIconForPaint(mattingPaint, false));
+ 	    mattingColorButton.setIcon(getMattingIconForPaint());
 	}
 
 	if (mattedCheckBox != null) {
@@ -897,7 +898,7 @@ public class DrawingAttributes
 	    selectColorButton.addActionListener(this);
 	    selectColorButton.setToolTipText("Change Selected Edge Color (true/opaque)");
 	    
-	    mattingColorButton = new JButton(getIconForPaint(getMattingPaint(), false));
+	    mattingColorButton = new JButton(getMattingIconForPaint());
 	    mattingColorButton.setActionCommand(MattingColorCommand);
 	    mattingColorButton.addActionListener(this);
 	    mattingColorButton.setToolTipText("Change Matted Edge Color (true/opaque)");
@@ -954,7 +955,7 @@ public class DrawingAttributes
  	    selectColorButton.setIcon(getIconForPaint(getSelectPaint(), false));
 	}
 	if (mattingColorButton != null) {
- 	    mattingColorButton.setIcon(getIconForPaint(getMattingPaint(), false));
+ 	    mattingColorButton.setIcon(getMattingIconForPaint());
 	}
 
 	if (mattedCheckBox != null) {
@@ -1489,6 +1490,40 @@ public class DrawingAttributes
 	return paint;
     }
 
+    public ImageIcon getMattingIconForPaint() {
+
+	Paint paint = getMattingPaint();
+
+	DrawingAttributes da = new DrawingAttributes();
+ 	da.setLinePaint(paint);
+	da.setStroke(new BasicStroke(3));
+
+	DrawingAttributes innerda = new DrawingAttributes();
+ 	innerda.setLinePaint(Color.white);
+	innerda.setStroke(new BasicStroke(1));
+
+	OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
+	IconPartList parts = new IconPartList();
+
+	if (paint instanceof Color) {
+	    Color color = (Color)paint;
+	    Paint opaqueColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255);
+	    DrawingAttributes opaqueDA = new DrawingAttributes();
+	    opaqueDA.setLinePaint(opaqueColor);
+	    opaqueDA.setStroke(new BasicStroke(3));
+
+	    parts.add(collection.get("LR_TRI", opaqueDA));
+	    parts.add(collection.get("UL_TRI", da));
+	    parts.add(collection.get("LR_TRI", innerda));
+	    parts.add(collection.get("UL_TRI", innerda));
+	} else {
+	    parts.add(collection.get("BIG_BOX", da));
+	    parts.add(collection.get("BIG_BOX", innerda));
+	}
+
+	return OMIconFactory.getIcon(icon_width, icon_height, parts);
+    }
+
     public ImageIcon getIconForPaint(Paint paint, boolean fill) {
 
 	if (paint == null) paint = Color.black;
@@ -1496,47 +1531,23 @@ public class DrawingAttributes
 	DrawingAttributes da = new DrawingAttributes();
  	da.setLinePaint(paint);
 	da.setStroke(new BasicStroke(2));
+	if (fill) da.setFillPaint(paint);
 
-	DrawingAttributes opaqueDA = new DrawingAttributes();
-	Paint opaqueColor = paint;
-
-	Shape opaqueShape = null;
-	Shape trueShape = null;
+	OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
+	IconPartList parts = new IconPartList();
 
 	if (paint instanceof Color) {
 	    Color color = (Color)paint;
-	    opaqueColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255);
+	    Paint opaqueColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255);
+	    DrawingAttributes opaqueDA = new DrawingAttributes();
+	    opaqueDA.setLinePaint(opaqueColor);
+	    opaqueDA.setStroke(new BasicStroke(2));
+	    if (fill) opaqueDA.setFillPaint(opaqueColor);
 
-	    int[] opaqueXPoints = new int[] {20, 90, 90, 20};
-	    int[] opaqueYPoints = new int[] {90, 90, 20, 90};
-	    opaqueShape = new Polygon(opaqueXPoints, opaqueYPoints, opaqueXPoints.length);
-
-	    int[] trueXPoints = new int[] {10, 10, 80, 10};
-	    int[] trueYPoints = new int[] {10, 80, 10, 10};
-	    trueShape = new Polygon(trueXPoints, trueYPoints, trueXPoints.length);
+	    parts.add(collection.get("LR_TRI", opaqueDA));
+	    parts.add(collection.get("UL_TRI", da));
 	} else {
-	     int[] trueXPoints = new int[] {10, 10, 90, 10};
-	     int[] trueYPoints = new int[] {10, 90, 10, 10};
-	     trueShape = new Polygon(trueXPoints, trueYPoints, trueXPoints.length);
-	}
-
-	opaqueDA.setLinePaint(opaqueColor);
-	opaqueDA.setStroke(new BasicStroke(2));
-
-	if (fill) {
-	    da.setFillPaint(paint);
-	    opaqueDA.setFillPaint(opaqueColor);
-	}
-
-	BasicIconPart truePart = new BasicIconPart(trueShape);
-	truePart.setRenderingAttributes(da);
-	IconPartList parts = new IconPartList();
-	parts.add(truePart);
-
-	if (opaqueShape != null) {
-	    BasicIconPart opaquePart = new BasicIconPart(opaqueShape);
-	    opaquePart.setRenderingAttributes(opaqueDA);
-	    parts.add(opaquePart);
+	    parts.add(collection.get("BIG_BOX", da));
 	}
 
 	return OMIconFactory.getIcon(icon_width, icon_height, parts);
@@ -1556,29 +1567,12 @@ public class DrawingAttributes
  	fillda.setFillPaint(lp);
 	da.setStroke(new BasicStroke(2));
 
-	int[] outerXPoints = new int[] {10, 10, 90, 90, 10};
-	int[] outerYPoints = new int[] {10, 90, 90, 10, 10};
-	Shape outerShape = new Polygon(outerXPoints, outerYPoints, outerXPoints.length);
-
-	int[] innerXPoints = new int[] {30, 30, 70, 70, 30};
-	int[] innerYPoints = new int[] {30, 70, 70, 30, 30};
-	Shape innerShape = new Polygon(innerXPoints, innerYPoints, innerXPoints.length);
-
-	int[] fillXPoints = new int[] {10, 10, 50, 50, 30, 30, 70, 70, 50, 50, 90, 90, 10};
-	int[] fillYPoints = new int[] {10, 90, 90, 70, 70, 30, 30, 70, 70, 90, 90, 10, 10};
-	Shape fillShape = new Polygon(fillXPoints, fillYPoints, fillXPoints.length);
-
-	BasicIconPart fillPart = new BasicIconPart(fillShape);
-	fillPart.setRenderingAttributes(fillda);
-	BasicIconPart outerPart = new BasicIconPart(outerShape);
-	outerPart.setRenderingAttributes(da);
-	BasicIconPart innerPart = new BasicIconPart(innerShape);
-	innerPart.setRenderingAttributes(da);
+	OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
 
 	IconPartList parts = new IconPartList();
-	parts.add(fillPart);
-	parts.add(outerPart);
-	parts.add(innerPart);
+	parts.add(collection.get("FILL_BOX", fillda));
+	parts.add(collection.get("BIG_BOX", da));
+	parts.add(collection.get("SMALL_BOX", da));
 
 	return OMIconFactory.getIcon(icon_width, icon_height, parts);
     }
