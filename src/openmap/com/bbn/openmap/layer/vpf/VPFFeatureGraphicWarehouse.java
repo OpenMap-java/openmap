@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFFeatureGraphicWarehouse.java,v $
 // $RCSfile: VPFFeatureGraphicWarehouse.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/01 21:21:59 $
+// $Revision: 1.4 $
+// $Date: 2004/03/31 21:17:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -93,14 +93,11 @@ public class VPFFeatureGraphicWarehouse
             drawingAttributes = DrawingAttributes.getDefaultClone();
         }
 
-        for(Iterator fiter = features.iterator(); fiter.hasNext();) {
+        for (Iterator fiter = features.iterator(); fiter.hasNext();) {
             String feature = ((String)fiter.next()).intern();
             DrawingAttributes da = (DrawingAttributes)drawingAttributes.clone();
+            da.setStroke(drawingAttributes.cloneBasicStroke());
             da.setProperties(realPrefix + feature, props);
-            // If they are equal, don't save a copy.
-            if (da.equals(drawingAttributes)) {
-                da = drawingAttributes;
-            }
             featureDrawingAttributes.put(feature, da);
         }
     }
@@ -140,7 +137,7 @@ public class VPFFeatureGraphicWarehouse
         for (int i = 0; i < size; i++) {
             String currentFeature = (String) features.get(i);
             DrawingAttributes da = getAttributesForFeature(currentFeature);
-            if (da != null && !da.equals(drawingAttributes)) {
+            if (da != null) {// && !da.equals(drawingAttributes)) {
                 String desc = null;
                 try {
                     desc = lst.getDescription(currentFeature);
@@ -211,13 +208,14 @@ public class VPFFeatureGraphicWarehouse
                                      covtable.doAntarcticaWorkaround);
 
         getAttributesForFeature(featureType).setTo(py);
-//      drawingAttributes.setTo(py);
 
         // HACK to get tile boundaries to not show up for areas.
-        py.setLinePaint(py.getFillPaint());
-        py.setSelectPaint(py.getFillPaint());
+//         py.setLinePaint(py.getFillPaint());
+//         py.setSelectPaint(py.getFillPaint());
+        py.setLinePaint(OMColor.clear);
+        py.setSelectPaint(OMColor.clear);
 
-        graphics.add(py);
+        addArea(py);
     }
 
     /**
@@ -235,9 +233,9 @@ public class VPFFeatureGraphicWarehouse
 
         OMPoly py = createEdgeOMPoly(coords, ll1, ll2, dpplat, dpplon);
         getAttributesForFeature(featureType).setTo(py);
-//      drawingAttributes.setTo(py);
+        py.setFillPaint(OMColor.clear);
         py.setIsPolygon(false);
-        graphics.add(py);
+        addEdge(py);
     }
 
     /**
@@ -253,8 +251,7 @@ public class VPFFeatureGraphicWarehouse
 
         OMText txt = createOMText(text, latitude, longitude);
         getAttributesForFeature(featureType).setTo(txt);
-//      drawingAttributes.setTo(txt);
-        graphics.add(txt);
+        addText(txt);
     }
 
     /**
@@ -265,7 +262,7 @@ public class VPFFeatureGraphicWarehouse
                            boolean isEntityNode, String featureType) {
         OMPoint pt = createOMPoint(latitude, longitude);
         getAttributesForFeature(featureType).setTo(pt);
-        graphics.add(pt);
+        addPoint(pt);
     }
 
     public boolean needToFetchTileContents(String currentFeature, TileDirectory currentTile) {

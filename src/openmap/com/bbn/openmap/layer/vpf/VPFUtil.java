@@ -15,8 +15,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFUtil.java,v $
 // $RCSfile: VPFUtil.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.4 $
+// $Date: 2004/03/31 21:17:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -124,5 +124,32 @@ public class VPFUtil {
         } else {
             return false;
         }
+    }
+
+    public static String getTypeForFeatureCode(String featureCode) {
+        int lastCharIndex = featureCode.length() - 1;
+        if (lastCharIndex >= 0) {
+            char lastLetter = featureCode.charAt(lastCharIndex);
+
+            if (lastLetter == 'l') {
+                return VPFUtil.Edge;
+            }
+
+            if (lastLetter == 'a') {
+                return VPFUtil.Area;
+            }
+
+            if (lastLetter == 't') {
+                return VPFUtil.Text;
+            }
+
+//             if (lastLetter == 'p') {
+//                 // Can't tell at this point, it shouldn't matter for
+//                 // the feature cache stuff since the points are
+//                 return VPFUtil.EPoint;
+//             }
+        }
+
+        return null;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFFeatureCache.java,v $
 // $RCSfile: VPFFeatureCache.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/02/02 23:56:31 $
+// $Revision: 1.3 $
+// $Date: 2004/03/31 21:17:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,9 +59,10 @@ public class VPFFeatureCache extends CacheHandler {
      * @param featureType the feature code of the OMGraphic
      * @param pt the PrimitiveTable containing the path to the CoverageTile.
      */
-    protected void addToCachedList(OMGraphic omg, String featureType, PrimitiveTable pt) {
+    protected synchronized void addToCachedList(OMGraphic omg, String featureType, 
+                                                PrimitiveTable pt, String type) {
         String key = createTableCacheKey(featureType, pt.getTileDirectory().getPath());
-        OMGraphicList omgl = (OMGraphicList) get(key);
+        FeatureCacheGraphicList omgl = (FeatureCacheGraphicList) get(key);
         omgl.add(omg);
     }
 
@@ -98,16 +99,15 @@ public class VPFFeatureCache extends CacheHandler {
 
         // Will retrieve the old list if it exists, create a new one
         // if it doesn't.
-        FeatureCacheGraphicList fcgl = (FeatureCacheGraphicList)get(key);
-        // Setting the featureType in the OMGraphicList app object so
-        // the feature's drawing attributes can be set for the caller
-        // later in getGraphics().
-        fcgl.setFeatureName(featureType);
+
+        FeatureCacheGraphicList fcgl = (FeatureCacheGraphicList)get(key, VPFUtil.getTypeForFeatureCode(featureType));
+        if (fcgl.getFeatureName() == null) {
+            fcgl.setFeatureName(featureType);
+        }
         requestor.add(fcgl);
 
         // Might want to set the current attributes for the existing
         // contents of the list in case they were changed by the user.
-
         return exists;
     }
 
@@ -122,9 +122,9 @@ public class VPFFeatureCache extends CacheHandler {
      * requestor.
      * @return true if the CoverageTable needs to read the data files.
      */
-    public boolean needToFetchTileContents(String currentFeature, 
-                                           TileDirectory currentTile, 
-                                           OMGraphicList requestor) {
+    public synchronized boolean needToFetchTileContents(String currentFeature, 
+                                                        TileDirectory currentTile, 
+                                                        OMGraphicList requestor) {
         if (loadCachedGraphicList(currentFeature, currentTile.getPath(), requestor)) {
             if (Debug.debugging("vpf.cache")) {
                 Debug.output("VPFFeatureCache: Loaded Cached List: " + 
@@ -136,12 +136,42 @@ public class VPFFeatureCache extends CacheHandler {
     }
 
     /**
+     * Additional get method that will call a load() method that takes
+     * into account the featureType.  The regular get() method will
+     * not be used, unless something else calls it, which is not
+     * advised.
+     * @param key the created key for cached list, see createTableCacheKey
+     * @param featureType the kind of feature, VPFUtil.Area,
+     * VPFUtil.Edge, VPFUtil.Point or VPFUtil.Text.
+     */
+    public Object get(String key, String featureType) {
+        CacheObject ret = searchCache(key);
+        if (ret != null) return ret.obj;
+
+        ret = load(key, featureType);
+        if (ret == null) return null;
+
+        replaceLeastUsed(ret);
+        return ret.obj;
+    }
+
+    /**
+     * CacheHandler method to load the new OMGraphicLists
+     * (FeatureCacheGraphicLists).  Shouldn't be used because the
+     * FeatureCacheGraphicList type will be unknown.  This method is
+     * only defined to implement the CacheHandler abstract method.
+     */
+    public CacheObject load(String key) {
+        return load(key, null);
+    }
+
+    /**
      * CacheHandler method to load the new OMGraphicLists
      * (FeatureCacheGraphicLists).
      */
-    public CacheObject load(String key) {
+    public CacheObject load(String key, String featureType) {
         if (key != null) {
-            return new VPFListCacheObject(key, new FeatureCacheGraphicList());
+            return new VPFListCacheObject(key, FeatureCacheGraphicList.createForType(featureType));
         }
         return null;
     }

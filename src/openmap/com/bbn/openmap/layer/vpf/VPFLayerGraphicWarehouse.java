@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayerGraphicWarehouse.java,v $
 // $RCSfile: VPFLayerGraphicWarehouse.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/03/31 21:17:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -271,10 +271,12 @@ public class VPFLayerGraphicWarehouse
         drawingAttributes.setTo(py);
 
         // HACK to get tile boundaries to not show up for areas.
-        py.setLinePaint(py.getFillPaint());
-        py.setSelectPaint(py.getFillPaint());
+//         py.setLinePaint(py.getFillPaint());
+//         py.setSelectPaint(py.getFillPaint());
+        py.setLinePaint(OMColor.clear);
+        py.setSelectPaint(OMColor.clear);
 
-        graphics.add(py);
+        addArea(py);
     }
 
     /**
@@ -341,8 +343,9 @@ public class VPFLayerGraphicWarehouse
         
             OMPoly py = createEdgeOMPoly(coords, ll1, ll2, dpplat, dpplon);
             drawingAttributes.setTo(py);
+            py.setFillPaint(OMColor.clear);
             py.setIsPolygon(false);
-            graphics.add(py);
+            addEdge(py);
         }
 
     /**
@@ -367,7 +370,7 @@ public class VPFLayerGraphicWarehouse
         OMText txt = createOMText(text, latitude, longitude);
 
         drawingAttributes.setTo(txt);
-        graphics.add(txt);
+        addText(txt);
     }
 
     public void createNode(CoverageTable c, NodeTable nt, List nodeprim,
@@ -393,7 +396,7 @@ public class VPFLayerGraphicWarehouse
         OMPoint pt = createOMPoint(latitude, longitude);
 
         drawingAttributes.setTo(pt);
-        graphics.add(pt);
+        addPoint(pt);
     }
 
     public static void main(String argv[]) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFCachedFeatureGraphicWarehouse.java,v $
 // $RCSfile: VPFCachedFeatureGraphicWarehouse.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/02/02 23:56:31 $
+// $Revision: 1.3 $
+// $Date: 2004/03/31 21:17:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -98,10 +98,12 @@ public class VPFCachedFeatureGraphicWarehouse
         DrawingAttributes da = getAttributesForFeature(featureType);
         // Must make sure that line paint equals fill paint, the
         // boundary for areas isn't always the sum of the areas.
-        da.setLinePaint(da.getFillPaint());
-        da.setSelectPaint(da.getFillPaint());
+//         da.setLinePaint(da.getFillPaint());
+//         da.setSelectPaint(da.getFillPaint());
         da.setTo(py);
-        addToCachedList(py, featureType, areatable);
+        py.setLinePaint(da.getFillPaint());
+        py.setSelectPaint(da.getFillPaint());
+        addToCachedList(py, featureType, areatable, VPFUtil.Area);
     }
 
     /**
@@ -117,10 +119,13 @@ public class VPFCachedFeatureGraphicWarehouse
                            String featureType) {
 
         OMPoly py = createEdgeOMPoly(coords, ll1, ll2, dpplat, dpplon);
-        getAttributesForFeature(featureType).setTo(py);
+        DrawingAttributes da = getAttributesForFeature(featureType);
+//         da.setFillPaint(OMColor.clear);  // Just to make sure that it is always set in the DA.
+        da.setTo(py);
+        py.setFillPaint(OMColor.clear);
         py.setIsPolygon(false);
 
-        addToCachedList(py, featureType, edgetable);
+        addToCachedList(py, featureType, edgetable, VPFUtil.Edge);
     }
 
     /**
@@ -135,7 +140,7 @@ public class VPFCachedFeatureGraphicWarehouse
 
         OMText txt = createOMText(text, latitude, longitude);
         getAttributesForFeature(featureType).setTo(txt);
-        addToCachedList(txt, featureType, texttable);
+        addToCachedList(txt, featureType, texttable, VPFUtil.Text);
     }
 
     /**
@@ -146,18 +151,27 @@ public class VPFCachedFeatureGraphicWarehouse
                            boolean isEntityNode, String featureType) {
         OMPoint pt = createOMPoint(latitude, longitude);
         getAttributesForFeature(featureType).setTo(pt);
-        addToCachedList(pt, featureType, t);
+        addToCachedList(pt, featureType, t, isEntityNode?VPFUtil.EPoint:VPFUtil.CPoint);
     }
 
     /**
      * Calls addToCachedList on the feature cache if it's available.
      */
-    protected void addToCachedList(OMGraphic omg, String featureType, PrimitiveTable pt) {
+    protected synchronized void addToCachedList(OMGraphic omg, String featureType, 
+                                                PrimitiveTable pt, String type) {
         if (featureCache != null) {
-            featureCache.addToCachedList(omg, featureType, pt);
+            featureCache.addToCachedList(omg, featureType, pt, type);
         } else {
             // Main OMGraphicList stored in super class
-            graphics.add(omg);
+//             Debug.output("cachedfgw not adding to cached list for " + type);
+
+            if (type == VPFUtil.Area) addArea(omg);
+            else if (type == VPFUtil.Edge) addEdge(omg);
+            else if (type == VPFUtil.Text) addText(omg);
+            else addPoint(omg);
+
+            // Sorting by type, now.
+//             graphics.add(omg);
         }
     }
 
@@ -182,28 +196,43 @@ public class VPFCachedFeatureGraphicWarehouse
      * OMGraphicLst and sets the proper DrawingAttributes settings for
      * the particular features.
      */
-    public OMGraphicList getGraphics() {
+    public synchronized OMGraphicList getGraphics() {
         // Clone from the cache...
         if (featureCache != null) {
             // The main graphics object is made up of
             // FeatureCacheGraphicLists for features for applicable
-            // tiles.
+            // tiles.  All of the other warehouses are filling up the
+            // area, edge, text and point lists, but the cache is
+            // filling up the main list with these feature cache
+            // graphic lists. We need to sort them, reorganize and
+            // then return the newly sorted list so the areas are on
+            // the bottom.  We're going to assume that the area, edge,
+            // text, point sublists are null and empty, since the
+            // cached stuff has been added directly to graphics.
             OMGraphicList ret = new OMGraphicList();
+            ret.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
+
             for (Iterator it = graphics.iterator(); it.hasNext();) {
                 OMGraphic omg = (OMGraphic)it.next();
                 if (omg instanceof FeatureCacheGraphicList) {
                     FeatureCacheGraphicList fcgl = 
                         (FeatureCacheGraphicList)((FeatureCacheGraphicList)omg).clone();
                     fcgl.setDrawingAttributes(this);
-                    ret.add(fcgl);
+
+                    if (fcgl instanceof FeatureCacheGraphicList.AREA) addArea(fcgl);
+                    else if (fcgl instanceof FeatureCacheGraphicList.EDGE) addEdge(fcgl);
+                    else if (fcgl instanceof FeatureCacheGraphicList.TEXT) addText(fcgl);
+                    else addPoint(fcgl);
+
                 } else {
-                    ret.add(omg);
+                    // Add on top
+                    addPoint(omg);
                 }
             }
 
-            return ret;
+            return getGraphics(ret);
         } else {
-            return graphics;
+            return super.getGraphics();
         }
     }
 }

@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LayerGraphicWarehouseSupport.java,v $
-// $Revision: 1.6 $ $Date: 2004/02/01 21:21:59 $ $Author: dietrick $
+// $Revision: 1.7 $ $Date: 2004/03/31 21:17:58 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -76,8 +76,29 @@ public abstract class LayerGraphicWarehouseSupport
      * Get the current graphics list.
      * @return the OMGraphicList.
      */
-    public OMGraphicList getGraphics() {
-        return graphics;
+    public synchronized OMGraphicList getGraphics() {
+        return getGraphics(graphics);
+    }
+
+    /**
+     * Add the area, edge, text and point sublists to the provided
+     * list.
+     */
+    protected synchronized OMGraphicList getGraphics(OMGraphicList addToList) {
+        if (areaSubList != null) {
+            addToList.add(areaSubList);
+        }
+        if (edgeSubList != null) {
+            addToList.add(edgeSubList);
+        }
+        if (pointSubList != null) {
+            addToList.add(pointSubList);
+        }
+        if (textSubList != null) {
+            addToList.add(textSubList);
+        }
+
+        return addToList;
     }
 
     /**
@@ -138,11 +159,60 @@ public abstract class LayerGraphicWarehouseSupport
         }
     }
 
+    protected OMGraphicList areaSubList;
+    protected OMGraphicList edgeSubList;
+    protected OMGraphicList textSubList;
+    protected OMGraphicList pointSubList;
+
     /**
      * Clears the contained list of graphics.
      */
     public void clear() {
         graphics.clear();
+        if (areaSubList != null) {
+            areaSubList.clear();
+            areaSubList = null;
+        }
+        if (edgeSubList != null) {
+            edgeSubList.clear();
+            edgeSubList = null;
+        }
+        if (textSubList != null) {
+            textSubList.clear();
+            textSubList = null;
+        }
+        if (pointSubList != null) {
+            pointSubList.clear();
+            pointSubList = null;
+        }
+    }
+
+    protected void addArea(OMGraphic area) {
+        if (areaSubList == null) {
+            areaSubList = new OMGraphicList();
+        }
+        areaSubList.add(area);
+    }
+    
+    protected void addEdge(OMGraphic edge) {
+        if (edgeSubList == null) {
+            edgeSubList = new OMGraphicList();
+        }
+        edgeSubList.add(edge);
+    }
+
+    protected void addText(OMGraphic text) {
+        if (textSubList == null) {
+            textSubList = new OMGraphicList();
+        }
+        textSubList.add(text);
+    }
+
+    protected void addPoint(OMGraphic point) {
+        if (pointSubList == null) {
+            pointSubList = new OMGraphicList();
+        }
+        pointSubList.add(point);
     }
 
     /**
