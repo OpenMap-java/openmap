@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMScalingRaster.java,v $
 // $RCSfile: EditableOMScalingRaster.java,v $
-// $Revision: 1.3 $
-// $Date: 2005/01/12 19:34:34 $
+// $Revision: 1.4 $
+// $Date: 2005/02/11 22:35:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -123,7 +123,7 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
         stateMachine.setUndefined();
 
         /// This would be an ideal place to bring up a chooser!
-        String pathToFile = com.bbn.openmap.util.FileUtils.getFilePathFromUser("Choose Image File for Raster");
+        String pathToFile = com.bbn.openmap.util.FileUtils.getFilePathToOpenFromUser("Choose Image File for Raster");
         if (pathToFile == null)
             return;
 
