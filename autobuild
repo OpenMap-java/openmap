@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.6 $
-# $Date: 1998/04/30 15:49:05 $
+# $Revision: 1.7 $
+# $Date: 1998/05/06 14:06:14 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -101,7 +101,7 @@ gmake all
 #
 ## Create the bean jar file
 #
-jar cvfm0 ../mapBean.jar com/bbn/openmap/Manifest.txt `find com -name *.class -print`
+jar cvfm0 ../mapBean.jar com/bbn/openmap/Manifest.txt `find com \( -name *.class -o -name *.gif \) -print`
 
 
 #
