@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.5 
+# From configure.in OpenMap Revision: 1.6 
 ac_extraJavaPath=/usr/local/java/bin:/usr/local/jdk/bin
 
 
@@ -683,7 +683,7 @@ ac_swing_path=$CLASSPATH
 ac_swing_jar=""
 case $with_swing in
   no)
-    { echo "configure: error: cannot configure without swing" 1>&2; exit 1; }
+    # user specified --without-swing
     ;;
   /*)
     ac_swing_jar=$with_swing
@@ -717,6 +717,9 @@ if test -n "$ac_swing_jar"; then
   SWING_JAR=$ac_swing_jar
   
   echo "$ac_t""using $ac_swing_jar" 1>&6
+elif test "x$with_swing" = "xno"; then
+  # do nothing, user specified --without-swing
+  /bin/true
 else
   { echo "configure: error: couldn't locate swing in CLASSPATH" 1>&2; exit 1; }
 fi

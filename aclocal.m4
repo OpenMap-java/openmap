@@ -127,7 +127,7 @@ ac_swing_path=ifelse([$1], , $CLASSPATH, [$1])
 ac_swing_jar=""
 case $with_swing in
   no)
-    AC_MSG_ERROR([cannot configure without swing])
+    # user specified --without-swing
     ;;
   /*)
     ac_swing_jar=$with_swing
@@ -143,6 +143,9 @@ if test -n "$ac_swing_jar"; then
   SWING_JAR=$ac_swing_jar
   AC_SUBST(SWING_JAR)
   AC_MSG_RESULT([using $ac_swing_jar])
+elif test "x$with_swing" = "xno"; then
+  # do nothing, user specified --without-swing
+  /bin/true
 else
   AC_MSG_ERROR([couldn't locate swing in CLASSPATH])
 fi
