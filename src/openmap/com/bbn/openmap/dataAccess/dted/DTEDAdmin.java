@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDAdmin.java,v $
 // $RCSfile: DTEDAdmin.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.4 $
+// $Date: 2004/06/01 17:27:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -379,7 +379,7 @@ public class DTEDAdmin {
         ArgParser ap = new ArgParser("DTEDAdmin");
         ap.add("boundary", "upper lat, left lon, lower lat, right lon", 4, true);
         ap.add("copy", "Copy files to DTED directory.", 1);
-        ap.add("level", "DTED level to consider (0, 1, 2).", 1);
+        ap.add("level", "DTED level to consider (0, 1, 2), 0 is default.  Needs to be set for other levels.", 1);
         ap.add("outside", "Use files outside boundary.");
         ap.add("query", "Print out files that meet parameters.");
         ap.add("remove", "Delete DTED files.");
