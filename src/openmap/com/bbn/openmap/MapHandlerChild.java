@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapHandlerChild.java,v $
 // $RCSfile: MapHandlerChild.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 03:07:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -68,7 +68,7 @@ import java.util.Iterator;
  * for the benefit of subclasses.  
  */
 public class MapHandlerChild
-    implements BeanContextChild, BeanContextMembershipListener {
+    implements BeanContextChild, BeanContextMembershipListener, LightMapHandlerChild {
 
     /**
      * BeanContextChildSupport object provides helper functions for
