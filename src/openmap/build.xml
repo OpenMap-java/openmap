@@ -27,8 +27,7 @@
 		<property name="javac.excludes" value="${general.excludes}, 
 						       **/*.gif,
 						       **/*.png, 
-						       **/*.properties,
-						       **/OMTextLoader*" />
+						       **/*.properties" />
 
 		<property name="jar.excludes" value="${general.excludes}, **/*.java"/>
 
@@ -147,13 +146,18 @@
 	</target>
 
 	<target name="clean_docs.openmap"
+		depends="init.openmap"
                 description="Delete only the generated API documentation.">
-	     <delete dir="${openmap.docs}/com"/>
 	     <delete>
-	          <fileset dir="${openmap.docs}" includes="**/*.html" excludes="doc-index.html"/>
+	          <fileset dir="${openmap.docs}/api"
+			   includes="**/*.html,
+				     **/stylesheet.css, 
+				     **/package-list" 
+			   excludes="doc-index.html"/>
 	     </delete>
-	     <delete file="${openmap.docs}/stylesheet.css"/>
-	     <delete file="${openmap.docs}/package-list"/>
+	     <delete dir="${openmap.docs}/api/com"/>
+	     <delete dir="${openmap.docs}/api/Acme"/>
+	     <delete dir="${openmap.docs}/api/edu"/>
 	</target>
 
   <!--  ############################
