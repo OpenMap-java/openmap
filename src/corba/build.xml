@@ -173,7 +173,7 @@
   <target name="jar.jdkcorba"
 	  depends="init.corba"
 	  description="Builds jar files, placing them in the lib directory." 
-	  if="idl.compiler,idl.compiled">
+	  if="idl.compiled">
 
     <jar jarfile="${corba.jar}" 
 	 basedir="${corba.classes}"
@@ -186,8 +186,7 @@
 
   <target name="visibroker.idl" depends="init.corba"
 	  description="Create stub classes from idl files and compile stubs."
-	  unless="idl.compiled"
-	  if="idl.compiler">
+	  unless="idl.compiled" >
     <echo message="Creating CORBA stub classes from idls with Visibroker..."/>
 
     <!-- These compilations rely on the java invocation of the idl
@@ -210,9 +209,24 @@
       <jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
       <arg line='-root_dir ${corba.src} -package com.bbn.openmap.plugin.corbaImage com/bbn/openmap/plugin/corbaImage/CorbaImageServer.idl'/>
     </java>
+
+    <!-- 
+	 Update the idl.compiled property if the compilations
+	 passed. If the compilations failed, then these directories
+	 won't be created, and the other class files won't be given to
+	 the compiler and an empty jar file won't be created.  
+      -->
+    <condition property="idl.compiled">
+      <and>
+	<available file="${cspecialist.home}" /> 
+	<available file="${crfp.home}" /> 
+	<available file="${corbaimage.home}" /> 
+      </and>
+    </condition>
+
   </target>
 
-  <target name="visibroker.stubs" depends="visibroker.idl"
+  <target name="visibroker.stubs" depends="visibroker.idl" if="idl.compiled"
 	  description="Compile stub classes created from idl files.">
     <echo message="Compiling CORBA stub classes..."/>
     <javac srcdir="${corba.src}"
@@ -226,7 +240,7 @@
   <!-- Kick off bulding corba classes with visibroker -->
   <target name="classes.visibroker" depends="visibroker.stubs"
 	  description="Compiles the Corba classes with the Visibroker CORBA implementation. You must have Visibroker (http://www.borland.com/bes/visibroker) installed. (Call this to build CORBA classes) "
-	  if="do.visibroker">
+	  if="do.visibroker, idl.compiled">
 
     <echo message="Compiling CORBA classes with Visibroker..."/>
     <javac srcdir="${corba.src}"
@@ -250,11 +264,11 @@
   <target name="jar.visibroker"
 	  depends="init.corba"
 	  description="Builds jar files, placing them in the lib directory."
-	  if="do.visibroker">
+	  if="do.visibroker,idl.compiled">
 
     <jar jarfile="${corba_vb.jar}" 
 	 basedir="${corba.classes}"
-	 includes="**/*.class"/>
+	 includes="**/*.class" />
   </target>    
 
   <!--  ############################
