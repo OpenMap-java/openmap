@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyConsumer.java,v $
 // $RCSfile: PropertyConsumer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:47:43 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/02/03 23:38:10 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -37,16 +37,27 @@ public interface PropertyConsumer {
      *  property names, which should be displayed and editable when
      *  configuring a PropertyConsumer object interatively.  List is
      *  space seperated and the order is the order in which the
-     *  properties will appear.  
+     *  properties will appear (initProperties).  
      */
     public static final String initPropertiesProperty = "initProperties";
     
     /**
      * Keyword for PropertyEditor class from PropertyInfo
-     * Property object.
+     * Property object (editor).
      */
     public static final String EditorProperty = "editor";
+    /**
+     * Scoped keyword for PropertyEditor class from PropertyInfo
+     * Property object, same as EditorProperty with a period in front
+     * (.editor).
+     */
     public static final String ScopedEditorProperty = ".editor";
+    /**
+     * Scoped keyword for PropertyEditor class from PropertyInfo
+     * Property object, to scope the label for the property as
+     * displayed in the Inspector (label).
+     */
+    public static final String LabelEditorProperty = ".label";
 
     /**
      * Method to set the properties in the PropertyConsumer.  It is
