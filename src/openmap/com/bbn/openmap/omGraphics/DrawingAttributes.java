@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/06/25 15:33:25 $
+// $Revision: 1.4 $
+// $Date: 2003/06/26 01:05:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1396,7 +1396,11 @@ public class DrawingAttributes
      * @param shape java.awt.Shape to draw
      * @param replaceColorWithGradient flag to specify replacement of
      * fill and edge colors with a GradientPaint to give a light to
-     * dark look.
+     * dark look.  You can set the Paints in the DrawingAttributes
+     * object with GradientPaints if you want more control over the
+     * GradientPaint, but this will let the DrawingAttributes object
+     * take a shot at creating one for a Color that fits the shape
+     * given.
      */
     public void render(Graphics2D g, Shape shape, 
 		       boolean replaceColorWithGradient) {
@@ -1437,9 +1441,9 @@ public class DrawingAttributes
 	}
     }
 
-    public Paint getGradientPaintForShape(Shape shape, Paint paint) {
+    public static Paint getGradientPaintForShape(Shape shape, Paint paint) {
 	if (paint instanceof Color) {
-	    Color color = (Color)fillPaint;
+	    Color color = (Color)paint;
 	    Rectangle rect = shape.getBounds();
 	    paint = new GradientPaint((float)rect.getWidth()*.3f,
 				      (float)rect.getHeight()*.3f, 
