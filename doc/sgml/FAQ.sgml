@@ -1,8 +1,8 @@
 <!--
-$Source: /cvs/distapps/openmap/doc/sgml/Attic/FAQ.sgml,v $
+$source: /net/blatz/u4/rcs/openmap/doc/sgml/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.12 $
-$Date: 2000/02/25 20:15:03 $
+$Revision: 1.13 $
+$Date: 2000/02/28 17:20:59 $
 $Author: bmackiew $
 
 Frequently Asked Questions for the OpenMap system.
@@ -802,6 +802,14 @@ stream from a file or a URL.  There are no technical roadblocks to
 this sort of implementation.  We do not have a customer who wants to
 pay for that work.  If you're looking for a way to contribute to
 OpenMap this would be a great project.
+<p>
+Alternatively, Shape data can be displayed in an applet if it is displayed
+through a layer that is contacting a server (as opposed to having the data
+be local).  An example of this would be our link layer.   We will soon add
+entries to the FAQ about how to use this layer, but for now check out the
+<htmlurl url=".api/com/bbn/openmap/layer/link/LinkLayer.html" 
+name="API documentation">.  There's a shape directory in the link layer
+code that may give you some hints.
 
 </article>
 
