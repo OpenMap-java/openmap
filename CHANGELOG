@@ -1,3 +1,22 @@
+2003-04-25  Don Dietrick  <dietrick@bbn.com>
+
+	* Heavy modifications to the CORBA classes.  The build.xml file
+	was modified to use the jdk 1.4.1 corba tools and classes instead of
+	relying on VisiBroker.  The idl components have been changed to
+	work with POA instead of BOA.  Created the
+	com.bbn.openmap.util.corba.CORBASupport object to handle the
+	client-server startup and resolution functions.  This code used
+	to be duplicated across three packages, now they all use this
+	class.
+
+	* Added getToolBarGUI to EditableOMGraphic, with first
+	implemention in EditableOMPoly.  Will be used for small GUI
+	accessories that can be used to modify OMGraphics.
+
+	* Moved DMSLatLonPoint, UTMPoint and MGRSPoint to
+	com.bbn.openmap.proj.coords, added UPSPoint, NEDFrame and
+	EnuFrame there too as a contribution from Robert Hayes.
+
 2003-04-23  Don Dietrick  <dietrick@bbn.com>
 
 	* Modified the OpenMapApplet to look for a PROPERTIES parameter
