@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.19 $
-// $Date: 2003/09/25 18:59:14 $
+// $Revision: 1.20 $
+// $Date: 2003/09/26 17:31:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -318,6 +318,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	    MouseEvent mevent = null;
 	    if (mmi != null) {
 		mevent = mmi.getCurrentMouseEvent();
+	    }
+
+	    if (omg.isSelected()) {
+		omg.deselect();
 	    }
 
 	    if (dt.edit(omg, this, mevent) != null) {
