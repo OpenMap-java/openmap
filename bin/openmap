@@ -1,0 +1,118 @@
+#! /bin/sh
+
+# Modified from the ant startup script to start OpenMap instead.
+
+# Cygwin support.  $cygwin _must_ be set to either true or false.
+case "`uname`" in
+  CYGWIN*) cygwin=true ;;
+  *) cygwin=false ;;
+esac
+
+# For Cygwin, ensure paths are in UNIX format before anything is touched
+if $cygwin; then
+  [ -n "$OPENMAP_HOME" ] &&
+    OPENMAP_HOME=`cygpath --unix "$OPENMAP_HOME"`
+  [ -n "$JAVA_HOME" ] &&
+    JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
+  [ -n "$CLASSPATH" ] &&
+    CLASSPATH=`cygpath --path --unix "$CLASSPATH"`
+fi
+
+if [ "$OPENMAP_HOME" = "" ] ; then
+  # try to find OPENMAP
+  if [ -d /usr/local/openmap ] ; then 
+    OPENMAP_HOME=/usr/local/openmap
+  fi
+
+  if [ -d ${HOME}/openmap ] ; then 
+    OPENMAP_HOME=${HOME}/openmap
+  fi
+
+  ## resolve links - $0 may be a link to ant's home
+  PRG=$0
+  progname=`basename $0`
+  
+  while [ -h "$PRG" ] ; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "$ls" : '.*-> \(.*\)$'`
+    if expr "$link" : '.*/.*' > /dev/null; then
+	PRG="$link"
+    else
+	PRG="`dirname $PRG`/$link"
+    fi
+
+  done
+  
+  OPENMAP_HOME=`dirname "$PRG"`/..
+
+fi
+
+if [ "$JAVA_HOME" != "" ] ; then
+  if [ "$JAVACMD" = "" ] ; then 
+    JAVACMD=$JAVA_HOME/bin/java
+  fi
+else
+  if [ "$JAVACMD" = "" ] ; then 
+    JAVACMD=java
+  fi
+fi
+
+# add in the dependency .jar files
+DIRLIBS=${OPENMAP_HOME}/lib/*.jar
+
+# Change to match your installation
+
+# For SVG capabilities with the Batik package...
+#BATIK_HOME=/usr/local/java/batik-1.1.1
+#DIRLIBS=${DIRLIBS}" "${BATIK_HOME}/lib/*.jar
+
+# For CORBA capabilities using Visibroker...
+#VISIBROKER_HOME=/usr/local/java/visibroker-3.4
+#DIRLIBS=${DIRLIBS}" "${VISIBROKER_HOME}/lib/*.jar" "${JAVA_HOME}/jre/lib/rt.jar
+
+# For CORBA on Mac OS X
+#DIRLIBS=${DIRLIBS}" "${VISIBROKER_HOME}/lib/*.jar" "/System/Library/Frameworks/JavaVM.framework/Classes/*.jar"
+
+for i in ${DIRLIBS}
+do
+    # if the directory is empty, then it will return the input string
+    # this is stupid, so case for it
+    if [ "$i" != "${DIRLIBS}" ] ; then
+	LOCALCLASSPATH=$LOCALCLASSPATH:"$i"
+    fi
+done
+
+if [ "$CLASSPATH" != "" ] ; then
+  LOCALCLASSPATH=$CLASSPATH$LOCALCLASSPATH:${OPENMAP_HOME}/share
+fi
+
+# For Cygwin, switch paths to Windows format before running java
+if $cygwin; then
+  OPENMAP_HOME=`cygpath --path --windows "$OPENMAP_HOME"`
+  JAVA_HOME=`cygpath --path --windows "$JAVA_HOME"`
+  LOCALCLASSPATH=`cygpath --path --windows "$LOCALCLASSPATH"`
+fi
+
+#$JAVACMD -version
+
+ARGS=$@
+OPENMAP_ARGS=""
+JAVA_ARGS=""
+for i in ${ARGS}
+do
+#    if [ "$i" = "-D" ] ; then
+	JAVA_ARGS=$JAVA_ARGS" $i"
+#    else
+#	OPENMAP_ARGS=$OPENMAP_ARGS" $i"
+#    fi
+done
+
+if [ "$VISIBROKER_HOME" = "" ] ; then
+#    echo $JAVACMD -Xmx256m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
+    $JAVACMD -Xmx256m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
+else
+#    echo $JAVACMD -Xmx256m -Xbootclasspath:"$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
+    $JAVACMD -Xmx256m -Xbootclasspath:"$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
+fi
+
+
