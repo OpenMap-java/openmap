@@ -14,8 +14,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.67 $
-# $Date: 2002/04/18 21:30:13 $
+# $Revision: 1.68 $
+# $Date: 2002/04/29 19:17:02 $
 # $Author: dietrick $
 # 
 # **********************************************************************
@@ -53,7 +53,6 @@ Core.pkgs =	com.bbn.openmap \
 		com.bbn.openmap.plugin \
 		com.bbn.openmap.proj \
 		com.bbn.openmap.tools.drawing \
-#		com.bbn.openmap.tools.j3d \
 		com.bbn.openmap.tools.terrain \
 		com.bbn.openmap.util \
 		com.bbn.openmap.util.propertyEditor \
@@ -79,7 +78,6 @@ Core.classes =	com/bbn/openmap/*.class \
 	 	com/bbn/openmap/plugin/*.class \
 		com/bbn/openmap/proj/*.class \
 		com/bbn/openmap/tools/drawing/*.class \
-		com/bbn/openmap/tools/j3d/*.class \
 		com/bbn/openmap/tools/terrain/*.class \
 		com/bbn/openmap/util/*.class \
 		com/bbn/openmap/util/propertyEditor/*.class \
@@ -114,7 +112,6 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.terrain \
 		com.bbn.openmap.layer.etopo
 
-
 Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/dted/*.class \
 		com/bbn/openmap/layer/nitf/*.class \
@@ -135,7 +132,6 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/nexrad/*.class \
 		com/bbn/openmap/layer/terrain/*.class \
 		com/bbn/openmap/layer/etopo/*.class
-
 
 Layer.props =   com/bbn/openmap/layer/vpf/*.properties
 
@@ -225,6 +221,34 @@ GNUmakefile:
 
 gmakefile:
 	perl rename.pl GNUmakefile gmakefile
+
+#################################################
+# Installations that depend on outside packages #
+#################################################
+
+svg:	omcore
+	cd com/bbn/openmap/image && $(MAKE) $@
+	${JAR} cf lib/openmap.jar ${Core.jar} ${Layer.jar} ${PlugIn.jar} ${App.jar} ${Example.jar}
+
+J3D.jar: \
+	com/bbn/openmap/tools/j3d/*.class \
+	com/bbn/openmap/plugin/pilot/*.class
+
+j3d:	omcore
+	cd com/bbn/openmap/tools/j3d && $(MAKE) $@
+	cd com/bbn/openmap/plugin/pilot && $(MAKE) $@
+	${JAR} cf lib/openmap.jar ${Core.jar} ${J3D.jar} ${Layer.jar} ${PlugIn.jar} ${App.jar} ${Example.jar}
+
+corba:	omcore
+	cd com/bbn/openmap/layer/rpf/corba && ${MAKE} idl
+	cd com/bbn/openmap/layer/rpf/corba && ${MAKE}
+	cd com/bbn/openmap/layer/rpf/corba && ${MAKE} jar
+	cd com/bbn/openmap/layer/specialist && ${MAKE} idl
+	cd com/bbn/openmap/layer/specialist && ${MAKE} 
+	cd com/bbn/openmap/layer/specialist && ${MAKE} jar
+	cd com/bbn/openmap/plugin/corbaImage && ${MAKE} idl
+	cd com/bbn/openmap/plugin/corbaImage && ${MAKE} 
+	cd com/bbn/openmap/plugin/corbaImage && ${MAKE} jar
 
 #################
 # documentation #

@@ -14,9 +14,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
 # $RCSfile: openmap.mk.in,v $
-# $Revision: 1.19 $
-# $Date: 2002/04/04 04:34:37 $
-# $Author: bmackiew $
+# $Revision: 1.20 $
+# $Date: 2002/04/29 19:17:02 $
+# $Author: dietrick $
 # 
 # **********************************************************************
 
@@ -105,4 +105,16 @@ CLASSPATH_SEP =	@CLASSPATH_SEP@
 # computed settings #
 #####################
 
+## Only need BATIK settings for SVG components.  Do 'make svg' at top
+## level to make those components, and then 'make' to remake the
+## openmap.jar file to put the new class file in the jar.  Change
+## BATIK_HOME to the location of your Batik installation for SVG. The
+## Batik class files will still need to be placed in your classpath
+## for the CVG components to work at runtime.
+
+BATIK_HOME = /usr/local/java/batik
+
+BATIK_JARS=${BATIK_HOME}/lib/batik-svggen.jar:${BATIK_HOME}/lib/batik-awt-util.jar:${BATIK_HOME}/lib/batik-util.jar:${BATIK_HOME}/lib/batik-dom.jar:${BATIK_HOME}/lib/batik-ext.jar:${BATIK_HOME}/lib/batik-xml.jar::${BATIK_HOME}/lib/batik-svggen.jar:${BATIK_HOME}/lib/batik-awt-util.jar:${BATIK_HOME}/lib/batik-util.jar:${BATIK_HOME}/lib/batik-dom.jar:${BATIK_HOME}/lib/batik-ext.jar:${BATIK_HOME}/lib/batik-xml.jar:${BATIK_HOME}/lib/batik-svg-dom.jar
+
 CLASSPATH = @classpath@
+
