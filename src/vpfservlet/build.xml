@@ -1,53 +1,25 @@
 <?xml version="1.0"?>
 <project name="OpenMap VPF Servlets" default="all" basedir=".">
-
-  <!--  ############################
-	Set up the different builds.
-	############################ -->  
-
 	<target name="init" 
 	        description="Sets properties needed by the other targets.">
 		<tstamp/>
-		<!-- Replace 'classic' with 'jikes' if you want. -->
-		<property name="build.compiler" value="classic"/>
-		<property name="openmap.home" value="."/>
-		<property name="openmap.class_dir" value="./classes"/>
-		<property name="openmap.classes" value="./classes/openmap"/>
+		<property name="openmap.home" value="../.."/>
 		<property name="vpf.home" value="."/>
 		<property name="vpf.class_dir" value="./WEB-INF/src"/>
+		<property name="vpf.lib_dir" value="./WEB-INF/lib"/>
 		<property name="vpf.classes" value="./WEB-INF/classes"/>
 
 		<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR TOMCAT INSTALLATION -->
-		<property name="tomcat.home" value="d:/jakarta-tomcat-3.2.1"/>
+		<property name="tomcat.home" value="/wjeuerle/jakarta-tomcat-4.0.1"/>
 
 		<property name="javac.excludes" value="**/*.in, **/Makefile, **/*.bat,
 		                                       **/ChangeLog, **/*.html, **/*.txt,
 						       **/*.*.txt, **/*.dat,
 						       **/*.pl" />
-		<property name="jar.excludes" value="${javac.excludes}, **/*.java"/>
 
-		<!-- ############################ 
-		     These are properties for packages that 
-		     rely on other code packages (Non-standard).  
-		     ############################ -->
-
-		<property name="personal.excludes" 
-		          value="**/OMTextLoader.java"/>
-
-		<property name="tomcat.jars" value="${tomcat.home}/lib/servlet.jar;${tomcat.home}/lib/servlet.jar"/>
-		<property name="openmap.jars" value="${vpf.home}/WEB-INF/lib/openmap.jar"/>
-
-		<!-- These are packages that depend on other, non-standard java
-		     installations. You can remove these packages from this list if you
-		     have the packages installed, or generate them specifically
-		     with their target names.  -->
-		<property name="dependency.excludes" 
-		          value="${personal.excludes}"/>
-
-		<!-- ############################
-		     End of non-standard list
-		     ############################ -->  
-
+		<property name="tomcat.jar" value="${tomcat.home}/common/lib/servlet.jar"/>
+		<property name="openmap.jar" value="${openmap.home}/lib/openmap.jar"/>
+                <property name="vpf.jar" value="${vpf.lib_dir}/openmap.jar"/>
 	</target>
 
 	<!--  ############################
@@ -75,9 +47,9 @@
 		description="Builds jar files, placing them in the lib directory.">
 
 		<jar jarfile="${vpf.home}/vpfbrowse.war"
-		   basedir="${vpf.home}/WEB-INF"
-		   includes="**, **/*.jsp"
-		   excludes="**/*.war" /> 
+		   basedir="${vpf.home}"
+		   includes="**, **/*.jsp, **/*.html"
+		   excludes="**/*.war, **/build.xml, **/src/**" /> 
 
 	</target>    
   
@@ -87,10 +59,15 @@
 	<target name="vpf" depends="init" 
 		description="Compiles the VPF Servlet classes. ">
 	     <echo message="Building VPF Servlet classes..."/>
+	     <mkdir dir="${vpf.lib_dir}"/>
+             <copy todir="${vpf.lib_dir}">
+                <fileset dir="${openmap.home}/lib"
+                  includes="**/*.jar"/>
+             </copy>
 	     <mkdir dir="${vpf.classes}"/>
 	     <javac srcdir="${vpf.home}" 
 	            destdir="${vpf.classes}"
-		    classpath="${tomcat.jars};${openmap.jars}"
+		    classpath="${tomcat.jar};${vpf.jar}"
 		    excludes="${javac.excludes}, ${dependency.excludes}"/>
 	</target>
 
@@ -105,7 +82,6 @@
 			maxmemory="256m"
 	excludepackagenames="**unimplemented**"
 		      packagenames="com.bbn.openmap.*"
-			bootclasspath="${svg.jars}"
 		      author="true"
 		      version="true"
 		      use="true"
