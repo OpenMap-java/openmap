@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.19 $
-# $Date: 1999/01/06 20:57:28 $
+# $Revision: 1.20 $
+# $Date: 1999/01/06 22:23:55 $
 # $Author: aculline $
 # 
 # **********************************************************************
@@ -151,7 +151,7 @@ ${JAVADOC.dir}:
 	${INSTALL.dir} $@
 
 javadocs:	${JAVADOC.dir}
-	${JAVADOC} -J-ms64m -J-mx128m -version -d ${JAVADOC.dir} \
+	${JAVADOC} -J-mx32m -version -d ${JAVADOC.dir} \
 		${Core.pkgs} ${App.pkgs} ${Layer.pkgs}
 
 ################
