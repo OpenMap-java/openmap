@@ -18,9 +18,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.7 $
-# $Date: 1998/05/06 14:06:14 $
-# $Author: tmitchel $
+# $Revision: 1.8 $
+# $Date: 1998/05/07 18:32:41 $
+# $Author: aculline $
 # 
 # **********************************************************************
 #
@@ -39,8 +39,12 @@
 echo ""
 echo "MapBean build started at `date`"
 
+# if BuildRoot is already set, then use it
+if [ -z ${BuildRoot} ] ; then
+	BuildRoot=/u4/openmap/builds
+fi
+echo "building in $BuildRoot"
 
-BuildRoot=/u4/openmap/builds
 VersionID=Autobuild
 
 DateString=`date +"%Y%m%d"`      # 17750419
@@ -50,7 +54,7 @@ BuildDir=$BuildRoot/$BeanDir
 CVSROOT=:server:blatz:/u4/rcs
 
 MattClassDir=/usr/local/matt/openmap/common/lib
-OpenMapClassPath=$MattClassDir/assembler.jar:$MattClassDir/cspec58.jar
+OpenMapClassPath=$MattClassDir/cspec58.jar
 
 JDK=/usr/local/jdk1.1.5
 JdkClassPath=$JDK/lib/classes.zip
@@ -120,12 +124,12 @@ cp -r com/bbn/openmap/examples/crew ../examples/
 #
 ## Add other jar files
 #
-if cp /usr/local/matt/openmap/common/lib/assembler3.jar $BuildDir/; then
-  echo "++Copied assembler jar";
-else
-  echo "++Copy failed: assembler jar";
-  exit 1;
-fi
+#if cp /usr/local/matt/openmap/common/lib/assembler3.jar $BuildDir/; then
+#  echo "++Copied assembler jar";
+#else
+#  echo "++Copy failed: assembler jar";
+#  exit 1;
+#fi
 
 if cp /usr/local/matt/openmap/common/lib/cspec58.jar $BuildDir/; then
   echo "++Copied cspec jar";
@@ -139,7 +143,7 @@ fi
 
 # Create packages in tar.Z, tar.gz, and zip format
 
-PkgFiles="$BeanDir/mapBean.jar $BeanDir/assembler3.jar $BeanDir/cspec58.jar $BeanDir/docs $BeanDir/examples"
+PkgFiles="$BeanDir/mapBean.jar $BeanDir/cspec58.jar $BeanDir/docs $BeanDir/examples"
 
 cd $BuildDir/..
 tar cf $BuildDir/$BeanDir.tar $PkgFiles
