@@ -18,9 +18,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.15 $
-# $Date: 1998/06/01 23:30:14 $
-# $Author: tmitchel $
+# $Revision: 1.16 $
+# $Date: 1998/07/08 15:10:26 $
+# $Author: aculline $
 # 
 # **********************************************************************
 #
@@ -30,19 +30,34 @@
 
 
 #----------------------------------------------------------------------
-#
+# Functions
 #----------------------------------------------------------------------
 
 # Show the usage for this script
-#
 #
 showUsage () {
   echo "usage: $0 <args>"
   echo "Arguments:"
   echo "-d or --directory :   The build directory"
   echo "-v or --verbose :   Be vocal about things"
+  echo
+  echo "ENVVARS:"
+  echo "	CVSROOT"
+  echo "	JDK"
+  echo "	OpenMapClassPath"
+  echo "	SwingClassPath"
+  echo "	VbjClassPath"
+  echo
 }
 
+# set the build date
+setBuildDate() {
+	EnvClass=$1
+	buildDate=`/bin/date '+%Y%m%d@%H:%M'`
+	echo "buildDate = $buildDate"
+	/bin/cat $EnvClass | /bin/sed -e "s/\(\$\$BuildDate=\)/\1$buildDate/" > sed.out
+	/bin/mv	sed.out $EnvClass
+}
 
 
 #----------------------------------------------------------------------
@@ -107,28 +122,41 @@ fi
 # arguments.
 #----------------------------------------------------------------------
 
-CVSROOT=:server:blatz:/u4/rcs
+# set CVSROOT if not set (assume we're on blatz)
+if [ -z "${CVSROOT}" ] ; then
+	CVSROOT=/u4/rcs
+	export CVSROOT
+fi
 
-MattClassDir=/usr/local/matt/openmap/common/lib
-OpenMapClassPath=$MattClassDir/cspec58.jar
-
-JDK=/usr/local/blatz/jdk1.1.6
+# set JDK path if not set
+if [ -z "${JDK}" ] ; then
+	JDK=/usr/local/blatz/jdk1.1.6
+fi
 JdkClassPath=$JDK/lib/classes.zip
 
-SWING=/usr/local/blatz/swing-1.0.2
-SwingClassPath=$SWING/swing.jar
+# set openmap jar file(s) if not set
+if [ -z "${OpenMapClassPath} " ] ; then
+	MattClassDir=/usr/local/matt/openmap/common/lib
+	OpenMapClassPath=$MattClassDir/cspec58.jar
+fi
 
-VBJ=/usr/local/matt/VisiBroker3.2-java
-VbjClassPath=$VBJ/lib/vbjorb.jar
+# set swing jar file(s) if not set
+if [ -z "${SwingClassPath}" ] ; then
+	SWING=/usr/local/blatz/swing-1.0.2
+	SwingClassPath=$SWING/swing.jar
+fi
+
+# set vbj if not set
+if [ -z "${VbjClassPath}" ] ; then
+	VBJ=/usr/local/matt/VisiBroker3.2-java
+	VbjClassPath=$VBJ/lib/vbjorb.jar
+fi
 
 CLASSPATH=$OpenMapClassPath:$SwingClassPath:$JdkClassPath:$VbjClassPath
 export CLASSPATH
 
-PATH=/usr/bin:/usr/local/gnu/bin:$JDK/bin
+PATH=/bin:/usr/bin:/usr/local/gnu/bin:$JDK/bin
 export PATH
-
-CVSROOT=/u4/rcs
-export CVSROOT
 
 DocPackages="com.bbn.openmap com.bbn.openmap.dcwSpecialist com.bbn.openmap.event com.bbn.openmap.gui com.bbn.openmap.html com.bbn.openmap.http com.bbn.openmap.omGraphics com.bbn.openmap.overlay com.bbn.openmap.proj com.bbn.openmap.specialist"
 export DocPackages
@@ -147,8 +175,8 @@ fi
 #
 ## Create a build directory
 #
-rm -rf $BuildDir
-mkdir -p $BuildDir
+/bin/rm -rf $BuildDir
+/bin/mkdir -p $BuildDir
 cd $BuildDir
 
 #
@@ -165,6 +193,11 @@ CLASSPATH=$CLASSPATH:`pwd`
 export CLASSPATH
 
 #
+## set the builddate for the autobuild
+#
+setBuildDate com/bbn/openmap/Environment.java
+
+#
 ## Build the software
 #
 gmake all
@@ -178,15 +211,15 @@ jar cvfm0 ../mapBean.jar com/bbn/openmap/Manifest.txt `find com \( -name *.class
 #
 ## Add javadoc documentation
 #
-mkdir -p ../docs/api
+/bin/mkdir -p ../docs/api
 javadoc -J-ms64m -J-mx64m -version -d ../docs/api $DocPackages
-cp -r $JDK/docs/api/images ../docs/api/
+/bin/cp -r $JDK/docs/api/images ../docs/api/
 
 #
 ## Add examples
 #
-mkdir -p ../examples
-cp -r com/bbn/openmap/examples/crew ../examples/
+/bin/mkdir -p ../examples
+/bin/cp -r com/bbn/openmap/examples/crew ../examples/
 
 #
 ## Add other jar files
@@ -198,7 +231,7 @@ cp -r com/bbn/openmap/examples/crew ../examples/
 #  exit 1;
 #fi
 
-if cp /usr/local/matt/openmap/common/lib/cspec58.jar $BuildDir/; then
+if /bin/cp $OpenMapClassPath $BuildDir/; then
   echo "++Copied cspec jar";
 else
   echo "++Copy failed: cspec jar";
