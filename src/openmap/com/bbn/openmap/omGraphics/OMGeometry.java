@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometry.java,v $
 // $RCSfile: OMGeometry.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.4 $
+// $Date: 2004/05/10 20:45:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,6 +28,7 @@ import com.bbn.openmap.util.Debug;
 import java.awt.*;
 import java.awt.geom.*;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Base class of OpenMap OMGraphics geometry. <p>
@@ -133,6 +134,35 @@ public interface OMGeometry {
      */
     public Object getAppObject();
 
+    /**
+     * Set an attribute in an OMGeometry.
+     */
+    public void putAttribute(Object key, Object value);
+
+    /**
+     * Get an attribute from an OMGeometry.
+     */
+    public Object getAttribute(Object key);
+
+    /**
+     * Remove an attribute from the OMGeometry.
+     */
+    public Object removeAttribute(Object key);
+
+    /**
+     * Clear attributes from the OMGeometry.
+     */
+    public void clearAttributes();
+
+    /**
+     * Set all attributes on the OMGeometry.
+     */
+    public void setAttributes(Map attributes);
+
+    /**
+     * Get all attributes from the OMGeometry.
+     */
+    public Map getAttributes();
 
 //////////////////////////////////////////////////////////////////////////
 

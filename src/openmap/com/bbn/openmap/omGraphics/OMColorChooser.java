@@ -13,8 +13,8 @@
 // **********************************************************************
 // 
 // $RCSfile: OMColorChooser.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/10 01:27:50 $
+// $Revision: 1.5 $
+// $Date: 2004/05/10 20:45:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,8 +64,9 @@ public class OMColorChooser {
     }
 
     public static void main(String[] argv) {
-        Color testColor = showDialog(null, "Test of OMColorChooser", Color.red);
-        System.out.println("OMColorChooser ending with " + testColor);
+        Color testColor = showDialog(null, "Choose a Color", Color.white);
+        System.out.println("Color: " + testColor + 
+                           ", hex value: " + Integer.toHexString(testColor.getRGB()));
         System.exit(0);
     }
 }
@@ -112,6 +113,7 @@ class ColorTracker
         c = new Color(c.getRed(), c.getGreen(), c.getBlue(), transparency);
         preview.setColor(c);
         preview.repaint();
+        color = c;
     }
 
     /**
