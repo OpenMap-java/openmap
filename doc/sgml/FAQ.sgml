@@ -1,8 +1,8 @@
 <!--
 $source: /net/blatz/u4/rcs/openmap/doc/sgml/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.23 $
-$Date: 2001/06/13 20:24:06 $
+$Revision: 1.24 $
+$Date: 2001/06/20 00:45:56 $
 $Author: bmackiew $
 
 Frequently Asked Questions for the OpenMap system.
@@ -52,6 +52,18 @@ course, also available to provide you with OpenMap help or any other
 distributed systems software R&amp;D. If you want to learn more,
 contact us at <tt><htmlurl url="mailto:openmap@bbn.com"
 name="openmap@bbn.com"></tt> or browse our web site.
+
+<sect1>If OpenMap is open source, How can I contribute code back to you?
+<p>
+That's easy.  You can send it to us at 
+<tt><htmlurl url="mailto:openmap@bbn.com" name="openmap@bbn.com"></tt>, 
+letting us know what you've worked on.  Some source code can be dropped right
+into the codebase, but it won't be available until the next release of
+OpenMap.  We can place some code on our submissions page for immediate
+download.  In some cases, we'd like to get your formal permission to include
+the code into the OpenMap distribution, so we'll ask you to download, fill
+in, and return our <tt><htmlurl url="http://openmap.bbn.com/contrib.pdf"
+name="OpenMap Release Form"></tt>.
 
 <sect1>What's that funny-shaped thing in the Logo?
 <p>
