@@ -1070,6 +1070,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/examples/simple/simple2
 	com/bbn/openmap/gui/Makefile
 	com/bbn/openmap/image/Makefile
+	com/bbn/openmap/io/Makefile
 	com/bbn/openmap/layer/Makefile
 	com/bbn/openmap/layer/daynight/Makefile
 	com/bbn/openmap/layer/dted/Makefile
@@ -1213,6 +1214,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/examples/simple/simple2
 	com/bbn/openmap/gui/Makefile
 	com/bbn/openmap/image/Makefile
+	com/bbn/openmap/io/Makefile
 	com/bbn/openmap/layer/Makefile
 	com/bbn/openmap/layer/daynight/Makefile
 	com/bbn/openmap/layer/dted/Makefile
