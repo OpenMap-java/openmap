@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigatePanel.java,v $
 // $RCSfile: NavigatePanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/23 21:01:16 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/10/24 20:48:54 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -170,7 +170,10 @@ public class NavigatePanel extends OMToolComponent
      */
     protected JButton getButton(String name, String info, String command) {
 	URL url = NavigatePanel.class.getResource(name);
-	JButton b = new JButton(new ImageIcon(url, info));
+	ImageIcon icon = new ImageIcon(url, info);
+	JButton b = new JButton(icon);
+	b.setPreferredSize(new Dimension(icon.getIconWidth(), 
+					 icon.getIconHeight()));
 	b.setToolTipText(info);
 	b.setMargin(new Insets(0,0,0,0));
         b.setActionCommand(command);
