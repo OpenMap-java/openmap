@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
-//  BBN Technologies
+//
+//  BBN Technologies, a Verizon Company
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/AbstractPlugIn.java,v $
 // $RCSfile: AbstractPlugIn.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:06:19 $
+// $Revision: 1.10 $
+// $Date: 2005/02/02 13:19:30 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.plugin;
@@ -46,6 +46,17 @@ import com.bbn.openmap.util.PropUtils;
  */
 public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
         MapMouseListener {
+
+    /**
+     * Property 'removeable' to designate this layer as removeable
+     * from the application, or able to be deleted. True by default.
+     */
+    public static final String RemovableProperty = "removable";
+
+    /**
+     * Flag to designate the layer as removeable or not.
+     */
+    protected boolean removable = true;
 
     /** The parent component, usually the PlugInLayer. */
     protected Component component = null;
@@ -169,7 +180,7 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
      */
     public abstract OMGraphicList getRectangle(Projection p);
 
-    /** 
+    /**
      */
     public Component getGUI() {
         return null;
@@ -181,6 +192,33 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
 
     public boolean getAddToBeanContext() {
         return addToBeanContext;
+    }
+
+    /**
+     * Mark the plugin (and layer) as removeable, or one that can be
+     * deleted from the application. What that means is up to the
+     * LayerHandler or other application components.
+     */
+    public void setRemovable(boolean set) {
+        this.removable = set;
+        Component comp = getComponent();
+        if ((comp != null) && (comp instanceof Layer)) {
+            ((Layer) comp).setRemovable(set);
+        }
+    }
+
+    /**
+     * Check to see if the plugin (and layer) is marked as one that
+     * can be removed from an application.
+     * 
+     * @return true if plugin should be allowed to be deleted.
+     */
+    public boolean isRemovable() {
+        Component comp = getComponent();
+        if ((comp != null) && (comp instanceof Layer)) {
+            this.removable = ((Layer) comp).isRemovable();
+        }
+        return removable;
     }
 
     ////// PropertyConsumer Interface Methods
@@ -223,6 +261,8 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
         setAddToBeanContext(LayerUtils.booleanFromProperties(setList,
                 realPrefix + Layer.AddToBeanContextProperty,
                 addToBeanContext));
+        setRemovable(PropUtils.booleanFromProperties(setList, realPrefix
+                + RemovableProperty, removable));
     }
 
     /**
@@ -248,6 +288,8 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
         String realPrefix = PropUtils.getScopedPropertyPrefix(this);
         getList.put(realPrefix + Layer.AddToBeanContextProperty,
                 new Boolean(addToBeanContext).toString());
+        getList.put(prefix + RemovableProperty,
+                new Boolean(removable).toString());
         return getList;
     }
 
@@ -275,6 +317,16 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
         list.put(Layer.AddToBeanContextProperty,
                 "Flag to give the PlugIn access to all of the other application components.");
         list.put(Layer.AddToBeanContextProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+        String internString = i18n.get(AbstractPlugIn.class,
+                RemovableProperty,
+                I18n.TOOLTIP,
+                "Flag to allow layer to be deleted.");
+        list.put(RemovableProperty, internString);
+        internString = i18n.get(Layer.class, RemovableProperty, "Removeable");
+        list.put(RemovableProperty + LabelEditorProperty, internString);
+        list.put(RemovableProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return list;
