@@ -17,9 +17,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.33 $
-# $Date: 1999/11/15 22:13:36 $
-# $Author: gkeith $
+# $Revision: 1.34 $
+# $Date: 1999/11/19 18:51:59 $
+# $Author: dietrick $
 # 
 # **********************************************************************
 
@@ -42,7 +42,8 @@ Core.pkgs =	com.bbn.openmap \
 		com.bbn.openmap.omGraphics.grid \
 		com.bbn.openmap.proj \
 		com.bbn.openmap.util \
-		com.bbn.openmap.util.quadtree
+		com.bbn.openmap.util.quadtree \
+		com.bbn.openmap.image
 
 Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/event/*.class \
@@ -51,7 +52,8 @@ Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/omGraphics/grid/*.class \
 		com/bbn/openmap/proj/*.class \
 		com/bbn/openmap/util/*.class \
-		com/bbn/openmap/util/quadtree/*.class
+		com/bbn/openmap/util/quadtree/*.class \
+		com/bbn/openmap/image/*.class
 
 Core.extra =	com/bbn/openmap/*.gif \
 		com/bbn/openmap/gui/*.gif
@@ -64,6 +66,7 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.pluginLayer \
 		com.bbn.openmap.layer.plotLayer \
 		com.bbn.openmap.layer.shape \
+		com.bbn.openmap.layer.shape.areas \
 		com.bbn.openmap.layer.util \
 		com.bbn.openmap.layer.util.cacheHandler \
 		com.bbn.openmap.layer.util.html \
@@ -75,6 +78,9 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.test \
 		com.bbn.openmap.layer.link \
 		com.bbn.openmap.layer.link.shape \
+		com.bbn.openmap.layer.location \
+		com.bbn.openmap.layer.location.csv \
+		com.bbn.openmap.layer.location.db
 #		com.bbn.openmap.layer.terrain \
 
 
@@ -84,6 +90,7 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/pluginLayer/*.class \
 		com/bbn/openmap/layer/plotLayer/*.class \
 		com/bbn/openmap/layer/shape/*.class \
+		com/bbn/openmap/layer/shape/areas/*.class \
 		com/bbn/openmap/layer/util/*.class \
 		com/bbn/openmap/layer/util/cacheHandler/*.class \
 		com/bbn/openmap/layer/util/html/*.class \
@@ -95,6 +102,9 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/test/*.class \
 		com/bbn/openmap/layer/link/*.class \
 		com/bbn/openmap/layer/link/shape/*.class \
+		com/bbn/openmap/layer/location/*.class \
+		com/bbn/openmap/layer/location/csv/*.class \
+		com/bbn/openmap/layer/location/db/*.class
 #		com/bbn/openmap/layer/terrain/*.class \
 
 Layer.props =   com/bbn/openmap/layer/vpf/*.properties
