@@ -179,7 +179,7 @@
       <description>
         This servlet is the entry doing for most of the work.
       </description>
-      <servlet-class>DispatchServlet</servlet-class>
+      <servlet-class>com.bbn.openmap.vpfservlet.DispatchServlet</servlet-class>
       <!-- Load this servlet at server startup time 
       <load-on-startup>5</load-on-startup> -->
     </servlet>
@@ -189,7 +189,7 @@
       <description>
         This servlet is the entry doing for most of the work.
       </description>
-      <servlet-class>DirectoryServlet</servlet-class>
+      <servlet-class>com.bbn.openmap.vpfservlet.DirectoryServlet</servlet-class>
       <init-param>
         <param-name>listDirectories</param-name>
         <param-value>true</param-value>
@@ -201,7 +201,7 @@
       <description>
 	This servlet describes a VPF database.
       </description>
-      <servlet-class>DescribeDBServlet</servlet-class>
+      <servlet-class>com.bbn.openmap.vpfservlet.DescribeDBServlet</servlet-class>
       <!-- Load this servlet at server startup time 
       <load-on-startup>7</load-on-startup> -->
     </servlet>
@@ -211,7 +211,7 @@
       <description>
         This servlet dumps schema info.
       </description>
-      <servlet-class>Schema</servlet-class>
+      <servlet-class>com.bbn.openmap.vpfservlet.Schema</servlet-class>
     </servlet>
 
     <servlet>
@@ -219,7 +219,7 @@
       <description>
         This servlet dumps table data.
       </description>
-      <servlet-class>Data</servlet-class>
+      <servlet-class>com.bbn.openmap.vpfservlet.Data</servlet-class>
     </servlet>
 
     <servlet>
@@ -227,7 +227,7 @@
       <description>
         This servlet dumps documentation file data.
       </description>
-      <servlet-class>DocFileServlet</servlet-class>
+      <servlet-class>com.bbn.openmap.vpfservlet.DocFileServlet</servlet-class>
     </servlet>
 
     <servlet>
@@ -235,7 +235,7 @@
       <description>
         This servlet dumps thematic index file data.
       </description>
-      <servlet-class>ThematicIndexServlet</servlet-class>
+      <servlet-class>com.bbn.openmap.vpfservlet.ThematicIndexServlet</servlet-class>
     </servlet>
 
     <servlet>
@@ -243,14 +243,14 @@
       <description>
         This servlet dumps spatial index file data.
       </description>
-      <servlet-class>SpatialIndexServlet</servlet-class>
+      <servlet-class>com.bbn.openmap.vpfservlet.SpatialIndexServlet</servlet-class>
     </servlet>
     <servlet>
       <servlet-name>SpatialGraphic</servlet-name>
       <description>
         This servlet dumps spatial index file data.
       </description>
-      <servlet-class>SpatialGraphicServlet</servlet-class>
+      <servlet-class>com.bbn.openmap.vpfservlet.SpatialGraphicServlet</servlet-class>
     </servlet>
 
     <!-- Define mappings that are used by the servlet container to
