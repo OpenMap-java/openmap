@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationHandler.java,v $
 // $RCSfile: LocationHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/11/20 17:50:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,6 +59,8 @@ public interface LocationHandler extends PropertyConsumer {
     /** The default line color for names.  */
     public final static String defaultNameColorString = "FF339159"; // greenish
 
+    public static final String ForceGlobalProperty = "override";
+
     /** Property setting to show location splots on startup */
     public static final String ShowLocationsProperty = "showLocations";
     /** Property to use to set the color of the location splot */
@@ -68,6 +70,7 @@ public interface LocationHandler extends PropertyConsumer {
 
     public final static String showLocationsCommand = "showLocations";
     public final static String showNamesCommand = "showNames";
+    public final static String forceGlobalCommand = "forceGlobal";
     public final static String readDataCommand = "readData";
 
     /**
@@ -138,6 +141,16 @@ public interface LocationHandler extends PropertyConsumer {
      * level.
      */
     public void setShowLocations(boolean set);
+
+    /**
+     * Find out whether global settings should override local ones.
+     */
+    public boolean isForceGlobal();
+
+    /**
+     * Set whether global settings should override local ones.
+     */
+    public void setForceGlobal(boolean set);
 
     /**
      * A set of controls to manipulate and control the display of data

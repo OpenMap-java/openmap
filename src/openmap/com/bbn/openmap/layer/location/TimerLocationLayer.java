@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/TimerLocationLayer.java,v $
 // $RCSfile: TimerLocationLayer.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/08/20 19:00:59 $
+// $Revision: 1.2 $
+// $Date: 2003/11/20 17:50:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,7 +77,11 @@ public class TimerLocationLayer extends LocationLayer {
 
     public void projectionChanged(ProjectionEvent e) {
 	super.projectionChanged(e);
-	if (autoTimer && timer != null && !timer.isRunning()) {
+
+	if (autoTimer && timer != null && 
+	    ((timerButton != null && timerButton.isSelected()) || 
+	     (timerButton == null && getUpdateInterval() > 0))) {
+
 	    timer.restart();
 	    updateTimerButton();
 	}
@@ -130,6 +134,7 @@ public class TimerLocationLayer extends LocationLayer {
 			    }
 			}
 		    });
+		timerButton.setToolTipText("<HTML><BODY>Reload the map data from the original source at specified intervals.</BODY></HTML>");
 	    }		      
 
 	    JPanel tbp = new JPanel(new GridLayout(0, 1));
@@ -143,6 +148,7 @@ public class TimerLocationLayer extends LocationLayer {
 			    setAutoTimer(check.isSelected());
 			}
 		    });
+		autoTimerButton.setToolTipText("<HTML><BODY>Only run the timer when the layer is active on the map.</BODY></HTML>");
 	    }
 	    
 	    tbp.add(autoTimerButton);

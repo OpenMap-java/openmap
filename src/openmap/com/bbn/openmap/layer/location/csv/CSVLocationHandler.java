@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/csv/CSVLocationHandler.java,v $
 // $RCSfile: CSVLocationHandler.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/23 21:09:31 $
+// $Revision: 1.6 $
+// $Date: 2003/11/20 17:50:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -519,25 +519,33 @@ public class CSVLocationHandler extends AbstractLocationHandler
      * @return Component object representing the palette widgets.
      */
     public Component getGUI() {
-	if (box == null){
-	    JCheckBox showCSVLocationCheck, showNameCheck;
+	if (box == null) {
+	    JCheckBox showCSVLocationCheck, showNameCheck, forceGlobalCheck;
 	    JButton rereadFilesButton;
 	    
 	    showCSVLocationCheck = new JCheckBox("Show Locations", isShowLocations());
 	    showCSVLocationCheck.setActionCommand(showLocationsCommand);
 	    showCSVLocationCheck.addActionListener(this);
-	    
+	    showCSVLocationCheck.setToolTipText("<HTML><BODY>Show location markers on the map.</BODY></HTML>");
 	    showNameCheck = new JCheckBox("Show Location Names", isShowNames());
 	    showNameCheck.setActionCommand(showNamesCommand);
 	    showNameCheck.addActionListener(this);
+	    showNameCheck.setToolTipText("<HTML><BODY>Show location names on the map.</BODY></HTML>");
+	    
+	    forceGlobalCheck = new JCheckBox("Override Location Settings", isForceGlobal());
+	    forceGlobalCheck.setActionCommand(forceGlobalCommand);
+	    forceGlobalCheck.addActionListener(this);
+	    forceGlobalCheck.setToolTipText("<HTML><BODY>Make these settings override those set<BR>on the individual map objects.</BODY></HTML>");
 	    
 	    rereadFilesButton = new JButton("Reload Data From Source");
 	    rereadFilesButton.setActionCommand(readDataCommand);
 	    rereadFilesButton.addActionListener(this);
+	    rereadFilesButton.setToolTipText("<HTML><BODY>Reload the data file, and put these settings<br>on the individual map objects.</BODY></HTML>");
 	    
 	    box = Box.createVerticalBox();
 	    box.add(showCSVLocationCheck);
 	    box.add(showNameCheck);
+	    box.add(forceGlobalCheck);
 	    box.add(rereadFilesButton);
 	}
 	return box;
@@ -577,6 +585,10 @@ public class CSVLocationHandler extends AbstractLocationHandler
 	    } else {
 		ll.repaint();
 	    }
+	} else if (cmd == forceGlobalCommand) {
+	    JCheckBox forceGlobalCheck = (JCheckBox)e.getSource();
+	    setForceGlobal(forceGlobalCheck.isSelected());
+	    getLayer().repaint();
 	} else if (cmd == readDataCommand) {
 	    Debug.output("Re-reading Locations file");
 	    quadtree = null;

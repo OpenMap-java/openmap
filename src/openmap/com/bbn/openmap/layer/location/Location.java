@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/Location.java,v $
 // $RCSfile: Location.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/23 21:09:31 $
+// $Revision: 1.4 $
+// $Date: 2003/11/20 17:50:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -589,10 +589,17 @@ public abstract class Location extends OMGraphic {
      */
     public void renderName(Graphics g) {
 	boolean globalShowNames = false;
+	boolean forceGlobal = false;
 	if (handler != null) {
 	    globalShowNames = handler.isShowNames();
+	    forceGlobal = handler.isForceGlobal();
 	}
-	if (showName && label != null) {
+
+	if (location != null &&
+	    ((forceGlobal && globalShowNames) ||
+	     (!forceGlobal && showName))) {
+
+// 	if (showName && label != null) {
 	    label.render(g);
 	}
     }
@@ -610,10 +617,17 @@ public abstract class Location extends OMGraphic {
      */
     public void renderLocation(Graphics g) {
 	boolean globalShowLocations = false;
+	boolean forceGlobal = false;
 	if (handler != null) {
 	    globalShowLocations = handler.isShowLocations();
+	    forceGlobal = handler.isForceGlobal();
 	}
-	if (showLocation && location != null) {
+
+	if (location != null &&
+	    ((forceGlobal && globalShowLocations) ||
+	     (!forceGlobal && showLocation))) {
+
+// 	if (showLocation && location != null) {
 	    location.render(g);
 	}
     }

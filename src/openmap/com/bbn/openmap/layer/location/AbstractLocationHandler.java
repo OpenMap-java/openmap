@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/AbstractLocationHandler.java,v $
 // $RCSfile: AbstractLocationHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/24 23:36:04 $
+// $Revision: 1.3 $
+// $Date: 2003/11/20 17:50:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,7 +30,6 @@ import java.util.Properties;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.PropUtils;
 
@@ -42,13 +41,14 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  *
  * @see         com.bbn.openmap.layer.location.LocationHandler
- * @version    $Revision: 1.2 $ $Date: 2003/03/24 23:36:04 $
+ * @version    $Revision: 1.3 $ $Date: 2003/11/20 17:50:24 $
  * @author     Michael E. Los D530/23448
  *
  * locationhandler.locationColor=FF0000<BR>
  * locationhandler.nameColor=008C54<BR>
  * locationhandler.showNames=false<BR>
  * locationhandler.showLocations=true<BR>
+ * locationhandler.override=true<br>
  */
 public abstract class AbstractLocationHandler implements LocationHandler {
     
@@ -71,6 +71,12 @@ public abstract class AbstractLocationHandler implements LocationHandler {
     /** The color for the locations. */
     protected Color locationColor;
 
+    /**
+     * Force global settings to override local Location settings for
+     * showLocation and showName.
+     */
+    private boolean forceGlobal = true;
+    
     /**
      * Token uniquely identifying this LocationHandler in the application
      * properties.
@@ -145,6 +151,20 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      */
     public void setShowLocations(boolean set) {
 	showLocations = set;
+    }
+
+    /**
+     * Find out whether global settings should override local ones.
+     */
+    public boolean isForceGlobal() {
+	return forceGlobal;
+    }
+
+    /**
+     * Set whether global settings should override local ones.
+     */
+    public void setForceGlobal(boolean set) {
+	forceGlobal = set;
     }
 
     /**
@@ -224,13 +244,13 @@ public abstract class AbstractLocationHandler implements LocationHandler {
 
 	prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	showLocations = LayerUtils.booleanFromProperties(properties, prefix + ShowLocationsProperty, showLocations);
+	showLocations = PropUtils.booleanFromProperties(properties, prefix + ShowLocationsProperty, showLocations);
 	
-	locationColor = LayerUtils.parseColorFromProperties(properties, prefix + LocationColorProperty, defaultLocationColorString);
+	locationColor = PropUtils.parseColorFromProperties(properties, prefix + LocationColorProperty, defaultLocationColorString);
 	
-	showNames = LayerUtils.booleanFromProperties(properties, prefix + ShowNamesProperty, showNames);
-	
-	nameColor = LayerUtils.parseColorFromProperties(properties, prefix + NameColorProperty,	defaultNameColorString);
+	showNames = PropUtils.booleanFromProperties(properties, prefix + ShowNamesProperty, showNames);	
+	nameColor = PropUtils.parseColorFromProperties(properties, prefix + NameColorProperty,	defaultNameColorString);
+	forceGlobal = PropUtils.booleanFromProperties(properties, prefix + ForceGlobalProperty, forceGlobal);
 
     }
     
@@ -265,6 +285,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
 	props.put(prefix + ShowLocationsProperty, new Boolean(showLocations).toString());
 	props.put(prefix + LocationColorProperty,
 		  Integer.toHexString(locationColor.getRGB()));
+	props.put(prefix + ForceGlobalProperty, new Boolean(forceGlobal).toString());
 
 	return props;
     }
@@ -302,6 +323,8 @@ public abstract class AbstractLocationHandler implements LocationHandler {
 	list.put(ShowLocationsProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 	list.put(LocationColorProperty, "Color of location marker");
 	list.put(LocationColorProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+	list.put(ForceGlobalProperty, "Layer settings override map object settings");
+	list.put(ForceGlobalProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
 	return list;
     }

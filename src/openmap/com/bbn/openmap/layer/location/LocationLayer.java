@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationLayer.java,v $
 // $RCSfile: LocationLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:50 $
+// $Revision: 1.3 $
+// $Date: 2003/11/20 17:50:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -707,6 +707,8 @@ public class LocationLayer extends Layer implements MapMouseListener {
 			    doPrepare();
 			}
 		    });
+		declutterButton.setToolTipText("<HTML><BODY>Move location names so they don't overlap.<br>This may take awhile if you are zoomed out.</BODY></HTML>");
+
 		dbp.add(declutterButton);
 		box.add(dbp);
 	    }
