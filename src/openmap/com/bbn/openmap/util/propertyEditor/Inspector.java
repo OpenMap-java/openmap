@@ -64,7 +64,7 @@ public class Inspector implements ActionListener {
      * inspectPropertyConsumer. 
      */
     PropertyConsumer propertyConsumer = null;
-	
+        
     /** Handle to the GUI.  Used for setVisible(true/false). */
     protected WindowSupport windowSupport = null;
 
@@ -102,7 +102,7 @@ public class Inspector implements ActionListener {
      * be notified.  
      */
     public void addActionListener(java.awt.event.ActionListener al) {
-	actionListener = al;
+        actionListener = al;
     }
     
     /** Does nothing. */
@@ -110,7 +110,7 @@ public class Inspector implements ActionListener {
     
     /** Sets the actionListener. */
     public Inspector(ActionListener al) {
-	actionListener = al;
+        actionListener = al;
     }
     
     /**
@@ -120,47 +120,47 @@ public class Inspector implements ActionListener {
      * displayed to be edited. 
      */
     public void inspectPropertyConsumer(PropertyConsumer propertyConsumer) {
-	String prefix = propertyConsumer.getPropertyPrefix();
+        String prefix = propertyConsumer.getPropertyPrefix();
 
-	// construct GUI
-	if (windowSupport != null) {
-	    windowSupport.killWindow();
-	    windowSupport = null;
-	}
+        // construct GUI
+        if (windowSupport != null) {
+            windowSupport.killWindow();
+            windowSupport = null;
+        }
 
-	JComponent comp = createPropertyGUI(propertyConsumer);
-	windowSupport = new WindowSupport(comp, "Inspector - " + prefix);
-	windowSupport.setMaxSize(-1, 500);
-	windowSupport.displayInWindow();
+        JComponent comp = createPropertyGUI(propertyConsumer);
+        windowSupport = new WindowSupport(comp, "Inspector - " + prefix);
+        windowSupport.setMaxSize(-1, 500);
+        windowSupport.displayInWindow();
     }
     
     public Vector sortKeys(Collection keySet) {
-	Vector vector = new Vector(keySet.size());
+        Vector vector = new Vector(keySet.size());
 
-	//  OK, ok, this isn't the most efficient way to do this, but
-	//  it's simple.  Shouldn't matter for what we are using it
-	//  for...
-	Iterator it = keySet.iterator();
-	while (it.hasNext()) {
-	    String key = (String) it.next();
-	    int size = vector.size();
-	    for (int i = 0; i <= size; i++) {
-		if (i == size) {
-//    		    System.out.println("Adding " + key + " at " + i);
-		    vector.add(key);
-		    break;
-		} else {
-		    int compare = key.compareTo((String)vector.elementAt(i));
-		    if (compare < 0) {
-//  			System.out.println(key + " goes before " + 
-//  					   vector.elementAt(i) + " at " + i);
-			vector.add(i, key);
-			break;
-		    }
-		}
-	    }	    
-	}
-	return vector;
+        //  OK, ok, this isn't the most efficient way to do this, but
+        //  it's simple.  Shouldn't matter for what we are using it
+        //  for...
+        Iterator it = keySet.iterator();
+        while (it.hasNext()) {
+            String key = (String) it.next();
+            int size = vector.size();
+            for (int i = 0; i <= size; i++) {
+                if (i == size) {
+//                  System.out.println("Adding " + key + " at " + i);
+                    vector.add(key);
+                    break;
+                } else {
+                    int compare = key.compareTo((String)vector.elementAt(i));
+                    if (compare < 0) {
+//                      System.out.println(key + " goes before " + 
+//                                         vector.elementAt(i) + " at " + i);
+                        vector.add(i, key);
+                        break;
+                    }
+                }
+            }       
+        }
+        return vector;
     }
 
     /**
@@ -171,15 +171,15 @@ public class Inspector implements ActionListener {
      * properties.
      */
     public JComponent createPropertyGUI(PropertyConsumer pc) {
-	// fill variables
-	this.propertyConsumer = pc;
-	Properties props = new Properties();
-	props = pc.getProperties(props);
-	Properties info = new Properties();
-	info = pc.getPropertyInfo(info);
-	String prefix = pc.getPropertyPrefix();
+        // fill variables
+        this.propertyConsumer = pc;
+        Properties props = new Properties();
+        props = pc.getProperties(props);
+        Properties info = new Properties();
+        info = pc.getPropertyInfo(info);
+        String prefix = pc.getPropertyPrefix();
 
-	return createPropertyGUI(prefix, props, info);
+        return createPropertyGUI(prefix, props, info);
     }
 
     /**
@@ -204,146 +204,146 @@ public class Inspector implements ActionListener {
      * @return JComponent, a panel holding the interface to set the
      * properties.  */
     public JComponent createPropertyGUI(
-	String prefix, Properties props, Properties info) {
+        String prefix, Properties props, Properties info) {
 
-	if (Debug.debugging("inspectordetail")) {
-	    Debug.output("Inspector creating GUI for " + prefix + "\n" +
-			 props + "\n" + info);
-	}
+        if (Debug.debugging("inspectordetail")) {
+            Debug.output("Inspector creating GUI for " + prefix + "\n" +
+                         props + "\n" + info);
+        }
 
-	// collect the info needed...
-	Collection keySet = props.keySet();
-	String propertyList = info.getProperty(PropertyConsumer.initPropertiesProperty);
-	Vector sortedKeys;
+        // collect the info needed...
+        Collection keySet = props.keySet();
+        String propertyList = info.getProperty(PropertyConsumer.initPropertiesProperty);
+        Vector sortedKeys;
 
-	if (propertyList != null) {
-	    Vector propertiesToShow = PropUtils.parseSpacedMarkers(propertyList);
-	    for (int i=0; i < propertiesToShow.size(); i++) {
-		propertiesToShow.set(i, prefix + "." + propertiesToShow.get(i));
-	    }
-	    sortedKeys = propertiesToShow;
-	}  else {
-	    // otherwise, show them all, in alphabetical order
-	    sortedKeys = sortKeys(keySet);
-	}
+        if (propertyList != null) {
+            Vector propertiesToShow = PropUtils.parseSpacedMarkers(propertyList);
+            for (int i=0; i < propertiesToShow.size(); i++) {
+                propertiesToShow.set(i, prefix + "." + propertiesToShow.get(i));
+            }
+            sortedKeys = propertiesToShow;
+        }  else {
+            // otherwise, show them all, in alphabetical order
+            sortedKeys = sortKeys(keySet);
+        }
 
-	int num = sortedKeys.size();
+        int num = sortedKeys.size();
 
-	editors = new Hashtable(num);
+        editors = new Hashtable(num);
 
-  	Iterator it = sortedKeys.iterator();
+        Iterator it = sortedKeys.iterator();
 
-	JButton doneButton = null, cancelButton = null;
-	
-	JPanel component = new JPanel();
-	component.setLayout(new BorderLayout());
+        JButton doneButton = null, cancelButton = null;
+        
+        JPanel component = new JPanel();
+        component.setLayout(new BorderLayout());
 
-	JPanel propertyPanel = new JPanel();
+        JPanel propertyPanel = new JPanel();
 
-	GridBagLayout gridbag = new GridBagLayout();
-	GridBagConstraints c = new GridBagConstraints();
-	c.insets = new Insets(2, 20, 2, 20);
-	propertyPanel.setLayout(gridbag);
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(2, 20, 2, 20);
+        propertyPanel.setLayout(gridbag);
 
-	int i = 0;
+        int i = 0;
 
-	while (it.hasNext()) { // iterate properties
-	    String prop = (String)it.next();
+        while (it.hasNext()) { // iterate properties
+            String prop = (String)it.next();
 
-	    String marker = prop;
-	    if (prefix != null && prop.startsWith(prefix)) {
-		marker = prop.substring(prefix.length()+1);
-	    }
+            String marker = prop;
+            if (prefix != null && prop.startsWith(prefix)) {
+                marker = prop.substring(prefix.length()+1);
+            }
 
-	    if (marker.startsWith(".")) {
-		marker = marker.substring(1);
-	    }
+            if (marker.startsWith(".")) {
+                marker = marker.substring(1);
+            }
 
-	    String editorClass = info.getProperty(marker + "." + PropertyConsumer.EditorProperty);
-	    if (editorClass == null) {
-		editorClass = defaultEditorClass;
-	    }
+            String editorClass = info.getProperty(marker + "." + PropertyConsumer.EditorProperty);
+            if (editorClass == null) {
+                editorClass = defaultEditorClass;
+            }
 
-	    // instantiate PropertyEditor
-	    Class propertyEditorClass = null;
-	    PropertyEditor editor = null;
-	    try {
-		propertyEditorClass = Class.forName(editorClass);
-		editor = (PropertyEditor)propertyEditorClass.newInstance();
-		editors.put(prop, editor);
-	    } catch(Exception e) {
-		e.printStackTrace();
-		editorClass = null;
-	    }
-	    
-	    Component editorFace = null;
-	    if (editor != null && editor.supportsCustomEditor()) {
-		editorFace = editor.getCustomEditor();
-	    } else {
-		editorFace = new JLabel("Does not support custom editor");
-	    }
+            // instantiate PropertyEditor
+            Class propertyEditorClass = null;
+            PropertyEditor editor = null;
+            try {
+                propertyEditorClass = Class.forName(editorClass);
+                editor = (PropertyEditor)propertyEditorClass.newInstance();
+                editors.put(prop, editor);
+            } catch(Exception e) {
+                e.printStackTrace();
+                editorClass = null;
+            }
+            
+            Component editorFace = null;
+            if (editor != null && editor.supportsCustomEditor()) {
+                editorFace = editor.getCustomEditor();
+            } else {
+                editorFace = new JLabel("Does not support custom editor");
+            }
 
-	    if (editor != null) {
-		Object propVal = props.get(prop);
-		if (Debug.debugging("inspector")) {
-		    Debug.output("Inspector loading " + prop + "(" + 
-				 propVal + ")");
-		}
-		editor.setValue(propVal);
-	    }
+            if (editor != null) {
+                Object propVal = props.get(prop);
+                if (Debug.debugging("inspector")) {
+                    Debug.output("Inspector loading " + prop + "(" + 
+                                 propVal + ")");
+                }
+                editor.setValue(propVal);
+            }
 
-	    JLabel label = new JLabel(marker + ":");
-	    label.setHorizontalAlignment(SwingConstants.RIGHT);
+            JLabel label = new JLabel(marker + ":");
+            label.setHorizontalAlignment(SwingConstants.RIGHT);
 
-	    c.gridx = 0;
-	    c.gridy = i++;
-	    c.weightx = 0;
-	    c.fill = GridBagConstraints.NONE;
-	    c.anchor = GridBagConstraints.EAST;
+            c.gridx = 0;
+            c.gridy = i++;
+            c.weightx = 0;
+            c.fill = GridBagConstraints.NONE;
+            c.anchor = GridBagConstraints.EAST;
 
-	    gridbag.setConstraints(label, c);
-	    propertyPanel.add(label);
+            gridbag.setConstraints(label, c);
+            propertyPanel.add(label);
 
-	    c.gridx = 1;
-	    c.anchor = GridBagConstraints.WEST;
-	    c.fill = GridBagConstraints.HORIZONTAL;
-	    c.weightx = 1f;
+            c.gridx = 1;
+            c.anchor = GridBagConstraints.WEST;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.weightx = 1f;
 
-	    gridbag.setConstraints(editorFace, c);
-	    propertyPanel.add(editorFace);
+            gridbag.setConstraints(editorFace, c);
+            propertyPanel.add(editorFace);
 
-	    String toolTip = (String)info.get(marker);
-	    label.setToolTipText(toolTip==null ? "No further information available." : toolTip);
-	}
+            String toolTip = (String)info.get(marker);
+            label.setToolTipText(toolTip==null ? "No further information available." : toolTip);
+        }
 
-	// create the palette's scroll pane
-	JScrollPane scrollPane = new JScrollPane(
-	    propertyPanel,
-	    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-	    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-// 	scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-	scrollPane.setAlignmentY(Component.TOP_ALIGNMENT);
-	component.add(scrollPane, BorderLayout.CENTER);
+        // create the palette's scroll pane
+        JScrollPane scrollPane = new JScrollPane(
+            propertyPanel,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+//      scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+        scrollPane.setAlignmentY(Component.TOP_ALIGNMENT);
+        component.add(scrollPane, BorderLayout.CENTER);
 
-	JPanel buttons = new JPanel();
-	if (print) {
-	    doneButton = new JButton("Print");
-	    cancelButton = new JButton("Quit");
-	} else {
-	    doneButton = new JButton("OK");
-	    cancelButton = new JButton("Cancel");
-	}
-	doneButton.addActionListener(this);
-	doneButton.setActionCommand(doneCommand);
-	cancelButton.addActionListener(this);
-	cancelButton.setActionCommand(cancelCommand);
-	buttons.add(doneButton);
-	buttons.add(cancelButton);
+        JPanel buttons = new JPanel();
+        if (print) {
+            doneButton = new JButton("Print");
+            cancelButton = new JButton("Quit");
+        } else {
+            doneButton = new JButton("OK");
+            cancelButton = new JButton("Cancel");
+        }
+        doneButton.addActionListener(this);
+        doneButton.setActionCommand(doneCommand);
+        cancelButton.addActionListener(this);
+        cancelButton.setActionCommand(cancelCommand);
+        buttons.add(doneButton);
+        buttons.add(cancelButton);
 
-	component.add(buttons, BorderLayout.SOUTH);
+        component.add(buttons, BorderLayout.SOUTH);
 
-	component.validate();
-	return component;
+        component.validate();
+        return component;
     }
     
     /**
@@ -352,92 +352,96 @@ public class Inspector implements ActionListener {
      * Inspector GUI. 
      */
     public void actionPerformed(ActionEvent e) {
-	final String actionCommand = e.getActionCommand();
-	String prefix = propertyConsumer.getPropertyPrefix();
-	
-	if (actionCommand == doneCommand) {// confirmed
-	    Properties props = collectProperties();
+        final String actionCommand = e.getActionCommand();
+        String prefix = propertyConsumer.getPropertyPrefix();
+        
+        if (actionCommand == doneCommand) {// confirmed
+            Properties props = collectProperties();
 
-	    if (!print) {
-		windowSupport.killWindow();
-		propertyConsumer.setProperties(prefix, props);
-		if (actionListener != null) {
-		    actionListener.actionPerformed(e);
-		}
-	    } else {
-		Collection keys = props.keySet();
-		Iterator it = keys.iterator();
-		while (it.hasNext()) {
-		    String next = (String)it.next();
-		    System.out.println(next + "=" + props.get(next));
-		}
-	    }
+            if (!print) {
+                windowSupport.killWindow();
+                propertyConsumer.setProperties(prefix, props);
+                if (actionListener != null) {
+                    actionListener.actionPerformed(e);
+                }
+            } else {
+                Collection keys = props.keySet();
+                Iterator it = keys.iterator();
+                while (it.hasNext()) {
+                    String next = (String)it.next();
+                    System.out.println(next + "=" + props.get(next));
+                }
+            }
 
-	} else if (actionCommand == cancelCommand) {// canceled
-	    if (actionListener != null && actionListener != this) {
-		actionListener.actionPerformed(e);
-	    }
-	    propertyConsumer = null; // to be garb. coll'd
-	    windowSupport.killWindow();
+        } else if (actionCommand == cancelCommand) {// canceled
+            if (actionListener != null && actionListener != this) {
+                actionListener.actionPerformed(e);
+            }
+            propertyConsumer = null; // to be garb. coll'd
+            windowSupport.killWindow();
 
-	    if (print) {
-		System.exit(0);
-	    }
-	}
+            if (print) {
+                System.exit(0);
+            }
+        }
     }
     
     /** Extracts properties from textfield[]. */
     public Properties collectProperties() {
-	Properties props = new Properties();
+        Properties props = new Properties();
 
-	Iterator values = editors.keySet().iterator();
-	while (values.hasNext()) {
-	    String key = (String) values.next();
-	    PropertyEditor editor = (PropertyEditor)editors.get(key);
-	    if (editor != null) {
-		String stuff = editor.getAsText();
-		// If it's not defined with text, don't put it in the
-		// properties.  The layer should handle this and use
-		// its default settings.
-		if (!stuff.equals("")) {
-		    props.put(key, stuff);
-		}
-	    }
-	}
-	return props;
+        Iterator values = editors.keySet().iterator();
+        while (values.hasNext()) {
+            String key = (String) values.next();
+            PropertyEditor editor = (PropertyEditor)editors.get(key);
+            if (editor != null) {
+                String stuff = editor.getAsText();
+                // If it's not defined with text, don't put it in the
+                // properties.  The layer should handle this and use
+                // its default settings.
+                if (!stuff.equals("")) {
+                    props.put(key, stuff);
+                }
+            }
+        }
+        return props;
     }
     
     public void setPrint(boolean p) {
-	print = p;
+        print = p;
     }
 
     public boolean getPrint() {
-	return print;
+        return print;
+    }
+
+    public WindowSupport getWindowSupport() {
+        return windowSupport();
     }
     
     /** test cases. */
     public static void main(String[] args) {
-	String name = (args.length<1)?"com.bbn.openmap.layer.shape.ShapeLayer":args[0];
-	PropertyConsumer propertyconsumer = null;
-	try {
-	    Class c = Class.forName(name);
-	    propertyconsumer = (PropertyConsumer)c.newInstance();
-	} catch(Exception e) {
-	    e.printStackTrace(); System.exit(1);
-	}
-	
-	Properties props=new Properties(), info=new Properties();
-	System.out.println("Inspecting " + name);
+        String name = (args.length<1)?"com.bbn.openmap.layer.shape.ShapeLayer":args[0];
+        PropertyConsumer propertyconsumer = null;
+        try {
+            Class c = Class.forName(name);
+            propertyconsumer = (PropertyConsumer)c.newInstance();
+        } catch(Exception e) {
+            e.printStackTrace(); System.exit(1);
+        }
+        
+        Properties props=new Properties(), info=new Properties();
+        System.out.println("Inspecting " + name);
 
-	String pp = name.substring(name.lastIndexOf(".") + 1);
- 	propertyconsumer.setPropertyPrefix(pp.toLowerCase());
+        String pp = name.substring(name.lastIndexOf(".") + 1);
+        propertyconsumer.setPropertyPrefix(pp.toLowerCase());
 
-	props = propertyconsumer.getProperties(props);
-	info = propertyconsumer.getPropertyInfo(info);
-	
-	Inspector inspector = new Inspector();
-	inspector.setPrint(true);
-	inspector.addActionListener(inspector);
-	inspector.inspectPropertyConsumer(propertyconsumer);
+        props = propertyconsumer.getProperties(props);
+        info = propertyconsumer.getPropertyInfo(info);
+        
+        Inspector inspector = new Inspector();
+        inspector.setPrint(true);
+        inspector.addActionListener(inspector);
+        inspector.inspectPropertyConsumer(propertyconsumer);
     }
 }
