@@ -13,8 +13,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/NewVersion-HOWTO,v $
 # $RCSfile: NewVersion-HOWTO,v $
-# $Revision: 1.3 $
-# $Date: 1998/08/28 18:56:06 $
+# $Revision: 1.4 $
+# $Date: 1998/08/28 19:14:50 $
 # $Author: aculline $
 # 
 # **********************************************************************
@@ -44,7 +44,6 @@ Make any changes you need and check them back into the main branch.
 ---------------------
 
 Check out the version of OpenMap you want into your own openmap directory.
-
 	cvs co openmap
 
 Change the hardcoded version number in the Environment.java file to a stable
@@ -53,10 +52,15 @@ are stable releases, and odd minor numbers are development versions.  Any 3rd
 numbers are the patchlevel of the particular branch.  You should only tag,
 branch, and release versions like 2.0, 2.2, 3.0, etc.
 
+You may want to remove unnecessary directory hierarchies before performing the
+tag.  For instance:
+	/bin/rm -rf openmap/com/boutell
+	/bin/rm -rf openmap/com/bbn/oldopenmap
+	/bin/rm -rf openmap/com/bbn/openmap/deprecated
+	...
+
 Tag this version of the openmap source tree.  Do a...
-
 	cvs tag -b OpenMap_<major>_<minor> openmap
-
 ...where <major> and <minor> constitute the OpenMap version as hardcoded
 in Environment.java.
 
@@ -70,9 +74,7 @@ Commit this version back to the source tree.
 
 Run the autobuild script.  Try autobuild --help for a list of up-to-date
 arguments to the script.  Usually you will do something like...
-
 	./autobuild -d /tmp/openmap-<version> -t OpenMap_<major>_<minor>
-
 ...although you might have to specify additional arguments and envvars.
 
 Once the script has finished running you will have the .tar.gz, tar.Z, and
@@ -85,12 +87,10 @@ sequence.
 --------------
 
 Check out the sources from the main branch into your own openmap directory.
-
 	cvs update -A openmap
 
 Bump the version number in the Environment.java file to the next development
 version and commit it back in to the main branch.
-
 	cvs commit openmap/com/bbn/openmap/Environment.java
 
 Copy the release files out to the javamap/openmap FTP directories, and notify
