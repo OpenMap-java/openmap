@@ -1,9 +1,10 @@
 2004-02-13  Don Dietrick  <dietrick@dhcp89-077-065.bbn.com>
 
-	* Added Gordon Vidaver's route calculation package
-	(com.bbn.openmap.tools.roads), along with two layers that provide
-	routes based on the OMGraphics created from their data sources
-	(com.bbn.openmap.layer.shape.MultiRoadLayer and
+	* Added Gordon Vidaver's route calculation package (originally
+	derived from Ray Tomlinson's code)
+	(com.bbn.openmap.tools.roads), along with two layers that
+	provide routes based on the OMGraphics created from their data
+	sources (com.bbn.openmap.layer.shape.MultiRoadLayer and
 	com.bbn.openmap.layer.vpf.VPFRoadLayer).
 
 2004-02-11  Bill Mackiewicz <bmackiew@bbn.com>
