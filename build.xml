@@ -197,11 +197,14 @@
 	Build the documentation.
 	############################ -->  
 	<target name="docs" 
-	        depends="init"
+	        depends="init, visibroker.setup, presvg"
 		description="Make the javadoc API html documents.">
 	     <javadoc sourcepath="${openmap.home}"
-	              destdir="${openmap.home}/doc"
+	              destdir="${openmap.home}/doc/api"
+			maxmemory="256m"
+	excludepackagenames="**unimplemented**"
 		      packagenames="com.bbn.openmap.*"
+			bootclasspath="${visibroker.bootclasspath}:${svg.jars}"
 		      author="true"
 		      version="true"
 		      use="true"
