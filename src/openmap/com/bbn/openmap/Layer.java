@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/03/21 22:24:35 $
+// $Revision: 1.6 $
+// $Date: 2003/08/21 20:26:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -506,13 +506,24 @@ public abstract class Layer extends JComponent
     }
 
     /**
-     * Sends a request to the InfoDisplay listener to display the information
-     * on an single line display facility.
-     * The InfoDisplayEvent is created inside this function.
+     * Sends a request to the InfoDisplay listener to display the
+     * information on an single line display facility. The
+     * InfoDisplayEvent is created inside this function.
      * @param infoLine the string to put in the InfoDisplayEvent.  
      */
     public void fireRequestInfoLine(String infoLine) {
 	fireRequestInfoLine(new InfoDisplayEvent(this, infoLine));
+    }
+
+    /**
+     * Sends a request to the InfoDisplay listener to display the
+     * information on an single line display facility at preferred
+     * location. The InfoDisplayEvent is created inside this function.
+     * @param infoLine the string to put in the InfoDisplayEvent.
+     * @param loc the index of a preferred location, starting at 0.
+     */
+    public void fireRequestInfoLine(String infoLine, int loc) {
+        fireRequestInfoLine(new InfoDisplayEvent(this, infoLine, loc));
     }
 
     /**
