@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/Debug.java,v $
 // $RCSfile: Debug.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:30 $
+// $Revision: 1.6 $
+// $Date: 2004/12/08 01:10:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,7 +66,7 @@ import java.util.Properties;
  * 
  * @author Tom Mitchell (tmitchell@bbn.com)
  * @author $Author: dietrick $
- * @version $Revision: 1.5 $, $Date: 2004/10/14 18:06:30 $
+ * @version $Revision: 1.6 $, $Date: 2004/12/08 01:10:45 $
  */
 public abstract class Debug {
 
@@ -496,8 +496,8 @@ public abstract class Debug {
         try {
             Class mbClass = Class.forName("com.bbn.openmap.MapBean");
             java.lang.reflect.Method crMessage = mbClass.getDeclaredMethod("getCopyrightMessage",
-                    null);
-            message = (String) crMessage.invoke(mbClass, null);
+                    (Class[])null);
+            message = (String) crMessage.invoke(mbClass, (Object[])null);
         } catch (java.lang.reflect.InvocationTargetException ite) {
             System.out.println(ite.getMessage());
         } catch (IllegalArgumentException iae) {
