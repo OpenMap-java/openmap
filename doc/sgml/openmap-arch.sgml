@@ -1,9 +1,9 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
 $RCSfile: openmap-arch.sgml,v $
-$Revision: 1.11 $
-$Date: 2000/05/08 15:16:52 $
-$Author: wjeuerle $
+$Revision: 1.12 $
+$Date: 2001/11/02 17:34:05 $
+$Author: dietrick $
 
 OpenMap architecture document
 -->
@@ -14,7 +14,7 @@ OpenMap architecture document
 
 <title>OpenMap Architecture
 <author>BBNT Solutions LLC
-<date>2 February 1999
+<date>2 November 2001
 <abstract>
 This document contains information about the architecture of OpenMap,
 and how to use various components of the OpenMap Toolkit.
@@ -36,21 +36,25 @@ and how to use various components of the OpenMap Toolkit.
 <p>
 The <em/OpenMap Java Toolkit/ is made up of <htmlurl
 url="http://java.sun.com/beans/" name="Java Bean"> components, of
-which the <bf><ref id="sec-mapbean" name="MapBean"></bf> and <bf><ref
-id="sec-layers" name="Layer"></bf> components play central roles.
+which the <bf><ref id="sec-maphandler" name="MapHandler"></bf>,
+<bf><ref id="sec-mapbean" name="MapBean"></bf>, and <bf><ref
+id="sec-layers" name="Layer/PlugIn"></bf> components play central
+roles.
+
 <p>
-OpenMap makes it easy to build your own layers to present your own
-data.  With OpenMap you can integrate disparate data sources to
-compose a traditional overlay-based GIS.  But you are not limited to
-this approach.  OpenMap can display any type of graphical data such as
-JPEG images and custom-created charts and slides.  We hope that the
-OpenMap platform will foster many novel data visualization
-applications.
+OpenMap makes it easy to build your own components (layers and
+plugins) that fit into the architecture to present your own data.
+With OpenMap you can integrate disparate data sources to compose a
+traditional overlay-based GIS.  But you are not limited to this
+approach.  OpenMap can display any type of graphical data such as JPEG
+images and custom-created charts and slides.  We hope that the OpenMap
+platform will foster many novel data visualization applications.
 <p>
 The OpenMap components use only the standard Java classes provided
 with the Java 2 platform, so you can be assured that OpenMap will run
-anywhere supporting Java 2.  OpenMap also runs fine on the previous
-JDK 1.1.X/Swing 1.1 platform.
+anywhere supporting Java 2.  The last version of OpenMap that runs on
+the JDK 1.1.X/Swing 1.1 platform is 3.7, and that version can be
+downloaded from the website.
 <p>
 OpenMap has been integrated into various projects at BBN, and at other
 companies, and for U.S. government clients.  OpenMap works well with
@@ -59,6 +63,44 @@ a network and communicating with standard protocols.  <em>We look
 forward to hearing how you will use OpenMap!</em>
 
 
+<sect>MapHandler<label id="sec-maphandler">
+<p>
+The MapHandler is the central component that lets you manage and
+connect OpenMap components is a very flexible manner.  The MapHandler
+can be thought of as a conceptual map, which can contain the MapBean
+and other components that manage the layers, mouse events, and
+projection controls.
+
+<p>
+The MapHandler is really an extended version of Java's <htmlurl
+url="http://java.sun.com/j2se/1.3.0/docs/api/java/beans/beancontext/class-use/BeanContext.html"
+name="BeanContext">.  The BeanContext is a mechanism that Java Beans
+can use to find other beans that they can interact with.  The
+extensions that the MapHandler provides is a behavior that handles
+multiple cases of a <htmlurl
+url="api/com/bbn/openmap/SoloMapComponent.html"
+name="SoloMapComponent"> objects.  A MapHandler can only have one
+instance of any SoloMapComponent class, and can have a <htmlurl
+url="api/com/bbn/openmap/SoloMapComponentRejectPolicy.html"
+name="rejection"> or <htmlurl
+url="api/com/bbn/openmap/SoloMapComponentReplacePolicy.html"
+name="replacement policy"> for actions to take when a duplicate
+SoloMapComponent class is added to the MapHandler. As an example, the
+MapBean is a SoloMapComponent - the MapHandler can only use one
+MapBean at a time.
+
+<p>
+All OpenMap components have been designed to use the MapHandler to
+locate and connect to other components they need.  Other components
+that either extend the <htmlurl
+url="api/com/bbn/openmap/MapHandlerChild.html" name="MapHandlerChild">
+class or implement it's methods can easily be integrated into the
+OpenMap application framework.
+
+
+ <htmlurl url="" name="">
+ <htmlurl url="" name="">
+ <htmlurl url="" name="">
 
 <sect>MapBean<label id="sec-mapbean">
 <p>
@@ -186,8 +228,6 @@ graphics and render the new image.
 The OpenMap Viewer application uses the BufferedMapBean instead of the
 MapBean precisely because of the increased performance.
 
-
-
 <sect1>Integrating OpenMap into your own application<label id="sec-write-your-own-mapbean">
 <p>
 You can integrate OpenMap into your own Java application primarily by
@@ -299,7 +339,7 @@ Click this to add the layer to the map.
 Click this to remove the layer from the map.
 <item>
 <#if output=html>
-<IMG SRC="images/palette.png">
+<IMG SRC="images/palette_off.png">
 </#if>
 The GUI palette for the layer is not active.  Click this to display
 it.
