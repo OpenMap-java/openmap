@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/19 20:32:30 $
+// $Revision: 1.3 $
+// $Date: 2003/04/03 15:30:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -110,6 +110,8 @@ public class OpenMap {
      * @see #getMapHandler
      */
     public static OpenMap create(String propertiesFile) {
+	Debug.init();
+
 	PropertyHandler propertyHandler;
 
 	if (propertiesFile == null) {
@@ -149,8 +151,6 @@ public class OpenMap {
 	if (arg != null) {
 	    propArgs = arg[0];
 	}
-
-	Debug.init();
 
 	OpenMap.create(propArgs);
     }
