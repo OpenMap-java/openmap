@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMCircle.java,v $
 // $RCSfile: EditableOMCircle.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/08/19 23:19:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -538,7 +538,8 @@ public class EditableOMCircle extends EditableOMGraphic {
      * to the graphic that are needed.
      */
     public void move(java.awt.event.MouseEvent e) {
-	if (getGraphic().getRenderType() == OMGraphic.RENDERTYPE_LATLON) {
+	if (getGraphic().getRenderType() == OMGraphic.RENDERTYPE_LATLON &&
+	    getGraphic().distanceToEdge(e.getX(), e.getY()) < 2) {
 	    if (gpr == null) {
 		gpr = new GrabPoint(-1, -1);
 	    }
