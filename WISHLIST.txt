@@ -1,0 +1,15 @@
+OpenMap Wish List
+-----------------
+
+Format:
+------
+*Brief-Description,  Author/Email,  Date
+	More Descriptive Text...
+
+
+------------------------------------------------------------------------------
+
+*Day/Night Separator Layer,  aculline@bbn.com,  19981709
+	This layer would show you the current date/time, night/day separator,
+	and sub-solar position.  It would update at a constant rate.
+
