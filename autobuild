@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.31 $
-# $Date: 1998/11/12 16:48:45 $
+# $Revision: 1.32 $
+# $Date: 1998/11/12 16:58:45 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -267,12 +267,12 @@ make
 /bin/mkdir -p ../bin
 /bin/mkdir -p ../lib
 /bin/cp bin/openmap ../bin
-/bin/cp etc/scripts/OpenMap.bat ../bin
-/bin/cp etc/*.html ../etc/
-/bin/cp etc/overlays.txt ../etc/
-/bin/cp etc/README-install ../
-/bin/cp etc/README-runtime ../
-/bin/cp etc/.omprefs ../etc/ 
+#/bin/cp etc/scripts/OpenMap.bat ../bin
+#/bin/cp etc/*.html ../etc/
+#/bin/cp etc/overlays.txt ../etc/
+#/bin/cp etc/README-install ../
+#/bin/cp etc/README-runtime ../
+#/bin/cp etc/.omprefs ../etc/ 
 
 #
 ## Add other jar files
