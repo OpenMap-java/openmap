@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrameCacheHandler.java,v $
 // $RCSfile: DTEDFrameCacheHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/03/15 23:42:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -529,17 +529,19 @@ public class DTEDFrameCacheHandler extends CacheHandler
      * @return DTED frame, hidden as a CacheObject.
      */
     public CacheObject load(String key, double lat, double lon, int level) {
+        if (frameCache != null) {
 
-        DTEDFrame frame = frameCache.get(lat, lon, level); 
-        if (frame != null) {
-            OMGrid omgrid = frame.getOMGrid();
+            DTEDFrame frame = frameCache.get(lat, lon, level); 
+            if (frame != null) {
+                OMGrid omgrid = frame.getOMGrid();
 
-            // Need to create a unique generator for each OMGrid.
-            omgrid.setGenerator(getGenerator());
-            return new DTEDCacheObject(key, omgrid);
-        } else {
-            return null;
+                // Need to create a unique generator for each OMGrid.
+                omgrid.setGenerator(getGenerator());
+                return new DTEDCacheObject(key, omgrid);
+            }
         }
+
+        return null;
     }
 
     public CacheObject load(String key) {
