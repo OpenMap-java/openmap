@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Azimuth.java,v $
 // $RCSfile: Azimuth.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:21 $
+// $Revision: 1.6 $
+// $Date: 2004/12/08 01:05:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -564,6 +564,8 @@ public abstract class Azimuth extends Proj {
         //      and the extra processing needed for filled polys.
         //
 
+        boolean DEBUG = Debug.debugging("proj");
+        
         int len = rawllpts.length >>> 1;
         if (len < 2)
             return new ArrayList(0);
@@ -677,7 +679,7 @@ public abstract class Azimuth extends Proj {
                 ys = y_;
                 // case CC or AA (non-wrapping):
             } else {
-                if (isFilled && (az_save == null)) {
+                if (DEBUG && isFilled && (az_save == null)) {
                     Debug.output("AA, filled, no-wrap!");
                 }
                 azVar.index = i;
@@ -692,7 +694,7 @@ public abstract class Azimuth extends Proj {
             }
             // special case DD
         } else if (az_save != null) {
-            Debug.output("DD, filled!");
+            if (DEBUG) Debug.output("DD, filled!");
             sections.add(az_first);
             sections.add(az_save);
         }
