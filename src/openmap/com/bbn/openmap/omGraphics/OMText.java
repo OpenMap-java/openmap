@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/02/18 00:40:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -124,6 +124,8 @@ public class OMText extends OMGraphic implements Serializable {
 
     /** If we display a boundary rectangle around/underneath the text */
     protected boolean showBounds = false;
+
+    protected boolean useMaxWidthForBounds = false;
 
     /** The angle by which the text is to be rotated, in radians */
     protected double rotationAngle = DEFAULT_ROTATIONANGLE;
@@ -495,6 +497,26 @@ public class OMText extends OMGraphic implements Serializable {
      */
     public void setShowBounds(boolean show) {
 	showBounds = show;
+    }
+
+    /**
+     * Set flag to specify that the bounds, if displayed, should be
+     * rectangular.  Only really affects mult-line text.
+     * @param value if true, bounds for multi-line text will be
+     * retangular instead of closely following text.
+     */
+    public void setUseMaxWidthForBounds(boolean value) {
+	useMaxWidthForBounds = value;	
+    }
+
+    /**
+     * Get flag to specify that the bounds, if displayed, should be
+     * rectangular.  Only really affects mult-line text.
+     * @return true if bounds for multi-line text will be
+     * retangular instead of closely following text.
+     */
+    public boolean getUseMaxWidthForBounds() {
+	return useMaxWidthForBounds;
     }
 
     /**
@@ -1087,7 +1109,11 @@ public class OMText extends OMGraphic implements Serializable {
 	    }
 
 	    if (polyBounds != null) {
-		shape = new GeneralPath(polyBounds);
+		if (useMaxWidthForBounds) {
+		    shape = new GeneralPath(polyBounds.getBounds());
+		} else {
+		    shape = new GeneralPath(polyBounds);
+		}
 	    }
 
 	} else {
