@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/02/16 22:22:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1370,7 +1370,7 @@ public class OMDrawingTool
 
     public JPopupMenu createPopupMenu() {
 	JPopupMenu pum = new JPopupMenu();
-	JMenuItem delete = new JMenuItem("Delete Graphic");
+	JMenuItem delete = new JMenuItem("Delete");
 	delete.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent ae) {
 		    OMAction action = new OMAction();
@@ -1387,7 +1387,7 @@ public class OMDrawingTool
 		}
 	    });
 
-	JMenuItem done = new JMenuItem("Modifications Complete");
+	JMenuItem done = new JMenuItem("Done");
 	done.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent ae) {
 		    deactivate();
@@ -1408,7 +1408,7 @@ public class OMDrawingTool
 		}
 	    });
 
-	JMenuItem cancel = new JMenuItem("Cancel");
+	JMenuItem cancel = new JMenuItem("Continue Making Changes");
 	cancel.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent ae) {
 		}
