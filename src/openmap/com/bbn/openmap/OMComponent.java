@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/OMComponent.java,v $
 // $RCSfile: OMComponent.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 03:08:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,7 +36,7 @@ import java.util.Properties;
 public class OMComponent extends MapHandlerChild implements PropertyConsumer {
 
     /**
-     * Token uniquely identifying this compoentns in the application
+     * Token uniquely identifying this component in the application
      * properties.
      */
     protected String propertyPrefix = null;
@@ -57,8 +57,10 @@ public class OMComponent extends MapHandlerChild implements PropertyConsumer {
     public void setProperties(String prefix, java.util.Properties props) {
 	setPropertyPrefix(prefix);
 
+	// In a subclass, you can use this to get "" if the prefix 
+	// isn't defined, or "prefix." if it is.  Either way, you can
+	// then append the realPrefix with wild abandon...
 //  	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-
     }
 
     /**
