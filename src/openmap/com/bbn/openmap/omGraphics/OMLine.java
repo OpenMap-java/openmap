@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMLine.java,v $
 // $RCSfile: OMLine.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/07/15 23:59:37 $
+// $Revision: 1.4 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -306,6 +306,8 @@ public class OMLine extends OMGraphic implements Serializable {
         doArrowHead = value;
 	if (doArrowHead) {
 	    addArrowHead(OMArrowHead.ARROWHEAD_DIRECTION_FORWARD, 100);
+	} else {
+	    arrowhead = null;
 	}
     }
 

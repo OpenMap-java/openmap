@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OffsetGrabPoint.java,v $
 // $RCSfile: OffsetGrabPoint.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,10 +77,12 @@ public class OffsetGrabPoint extends GrabPoint {
      */
     public GrabPoint removeGrabPoint(GrabPoint rgp) {
 	if (offsetPoints != null) {
-	    return (GrabPoint)((Offset)offsetPoints.remove(rgp)).gp;
-	} else {
-	    return null;
-	}
+	    Offset offset = (Offset)offsetPoints.remove(rgp);
+	    if (offset != null) {
+		return (GrabPoint)(offset).gp;
+	    }
+	} 
+	return null;
     }
  
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.3 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -488,23 +488,4 @@ public class EditableOMPoint extends EditableOMGraphic {
 	return pToolBar;
     }    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -14,14 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMLine.java,v $
 // $RCSfile: EditableOMLine.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 
 package com.bbn.openmap.omGraphics;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import javax.swing.*;
 
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.*;
@@ -416,5 +422,110 @@ public class EditableOMLine extends EditableOMGraphic {
 		gpo.setVisible(false);
 	    }
 	}
+    }
+
+    public Component getGUI(GraphicAttributes graphicAttributes) {
+	if (graphicAttributes != null) {
+	    JMenu ahm = getArrowHeadMenu();
+	    graphicAttributes.setLineMenuAdditions(new JMenu[] {ahm});
+	    return graphicAttributes.getGUI();
+	}
+	return null;
+    }
+
+    protected JMenu arrowheadMenu = null;
+
+    public JMenu getArrowHeadMenu() {
+
+	if (arrowheadMenu == null) {
+	    arrowheadMenu = new JMenu("Arrows");
+
+	    ActionListener listener = new ActionListener() {
+		    public void actionPerformed(ActionEvent ae) {
+			String command  = ae.getActionCommand();
+			try {
+			    int what = Integer.parseInt(command);
+			    if (what < 0) {
+				((OMLine)getGraphic()).addArrowHead(false);
+			    } else {
+				((OMLine)getGraphic()).addArrowHead(what);
+			    }
+			    generate(getProjection());
+			    repaint();
+			} catch (NumberFormatException e) {}
+		    }
+		};
+
+	    boolean doArrowHead = ((OMLine)getGraphic()).doArrowHead;
+	    int currentDirection = ((OMLine)getGraphic()).arrowDirectionType;
+	    int descDir = -1; // this description direction
+
+	    ButtonGroup group = new ButtonGroup(); 
+	    ImageIcon ii = createArrowIcon(new BasicStroke(1), 50, 20, descDir);
+	    JRadioButtonMenuItem button = 
+		new JRadioButtonMenuItem(ii, doArrowHead == false);
+	    button.setActionCommand(String.valueOf(descDir));
+	    group.add(button);
+	    button.addActionListener(listener);
+	    arrowheadMenu.add(button);
+
+	    for (descDir = OMArrowHead.ARROWHEAD_DIRECTION_FORWARD;
+		 descDir <= OMArrowHead.ARROWHEAD_DIRECTION_BOTH; descDir++) {
+		ii = createArrowIcon(new BasicStroke(1), 50, 20, descDir);
+		button = new JRadioButtonMenuItem(ii, doArrowHead && currentDirection == descDir);
+		button.setActionCommand(String.valueOf(descDir));
+		group.add(button);
+		button.addActionListener(listener);
+		arrowheadMenu.add(button);
+	    }
+	}
+	return arrowheadMenu;
+    }
+
+    /** 
+     * Given some arrowhead parameters, create an ImageIcon that shows
+     * it.
+     *
+     * @param stroke the BasicStroke to draw on the Icon.
+     * @param width the width of the icon.
+     * @param height the height of the icon.
+     * @param arrowHeadType -1 for no arrowhead, use the OMArrowHead
+     * directions for other versions.
+     */
+    public ImageIcon createArrowIcon(BasicStroke stroke, 
+				     int width, int height, 
+				     int arrowHeadType) {
+
+	BufferedImage bigImage = new BufferedImage(width, height,
+						   BufferedImage.TYPE_INT_ARGB);
+	Graphics2D g = (Graphics2D)bigImage.getGraphics();
+
+	int middleY = height/2;
+
+	g.setBackground(OMColor.clear);
+	g.setPaint(OMColor.clear);
+	g.fillRect(0, 0, width, height);
+	g.setPaint(Color.black);
+	g.setStroke(stroke);
+	g.drawLine(0, middleY, width, middleY);
+
+	int upTip = (int)((float)height * .25);
+	int downTip = (int)((float)height * .75);
+
+	if (arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_FORWARD || 
+	    arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_BOTH) {
+	    int rightWingX = (int)((float)width * .75);
+  	    g.fill(new Polygon(new int[] {width, rightWingX, rightWingX},
+			       new int[] {middleY, upTip, downTip}, 3));
+	}
+
+	if (arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD || 
+	    arrowHeadType == OMArrowHead.ARROWHEAD_DIRECTION_BOTH) {
+	    int leftWingX = (int)((float)width * .25);
+ 	    g.fill(new Polygon(new int[] {0, leftWingX, leftWingX},
+			       new int[] {middleY, upTip, downTip}, 3));
+	}
+
+	return new ImageIcon(bigImage);
     }
 }

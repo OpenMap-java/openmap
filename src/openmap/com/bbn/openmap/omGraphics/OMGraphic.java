@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/07/29 15:09:44 $
+// $Revision: 1.5 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -884,4 +884,11 @@ public abstract class OMGraphic extends BasicGeometry
 	return ret;
     }
 
+    /**
+     * Used by the GraphicAttributes object to provide a choice on
+     * whether the line type choice can be changed.
+     */
+    protected boolean hasLineTypeChoice() {
+	return true;
+    }
 }

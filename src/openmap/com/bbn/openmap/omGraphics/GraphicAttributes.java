@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/GraphicAttributes.java,v $
 // $RCSfile: GraphicAttributes.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.4 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,6 +69,8 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
     protected int lineType = LINETYPE_STRAIGHT;
     /** The rendertype of a graphic.  Default is RENDERTYPE_XY. */
     protected int renderType = RENDERTYPE_XY;
+    /** Flag to disable choice of line type, from an external source. */
+    protected boolean enableLineTypeChoice = true;
 
     public final static GraphicAttributes DEFAULT = new GraphicAttributes();
 
@@ -141,6 +143,7 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
 	super.setTo(clone);
 	clone.renderType = renderType;
 	clone.lineType = lineType;
+	clone.enableLineTypeChoice = enableLineTypeChoice;
     }
 
     /**
@@ -189,10 +192,6 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
 	    rt == RENDERTYPE_OFFSET) {
 	    renderType = rt;
 
-	    if (lineTypeList != null) {
-		lineTypeList.setEnabled(renderType == RENDERTYPE_LATLON);
-	    }
-
 	} else {
 	    renderType = RENDERTYPE_UNKNOWN;
 	}
@@ -210,8 +209,8 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
 	super.setFrom(graphic);
 	lineType = graphic.getLineType();
 	renderType = graphic.getRenderType();
+	enableLineTypeChoice = graphic.hasLineTypeChoice();
     }
-
 
     /**
      * Set all the attributes for the graphic that are contained
@@ -226,75 +225,54 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
     }
 
     /**
-     * Get the GUI components that control the
-     * GraphicAttributes. Currently doesn't do anything but pass on
-     * the DrawingAttribute GUI.
+     * Method should be called on this GraphicAttributes object of the
+     * OMGraphic type doesn't support line types, like circles, range
+     * rings, points, etc. to disable the choice from the line menu.
      */
-    public Component getGUI() {
-	if (Debug.debugging("graphicattributes")) {
-	    Debug.output("GraphicAttributes: creating palette.");
-	}
-
-	Component gui = super.getGUI();
- 	((JComponent)gui).add(getLineTypeList());
-
-	int rt = getRenderType();
-
-	lineTypeList.setEnabled(renderType == RENDERTYPE_LATLON);
-
-	if (rt != RENDERTYPE_LATLON) {
-	    lineTypeList.setSelectedIndex(0);
-	    lineType = LineType.Straight;
-	} else {
-	    int currentLineType = getLineType();
-	    if (currentLineType == 0) currentLineType++;  // no unknowns
-
-	    lineTypeList.setSelectedIndex(currentLineType - 1); // reset to String[]
-	}
-
-	return gui;
+    public void setEnableLineTypeChoice(boolean value) {
+	enableLineTypeChoice = value;
     }
 
-    protected JComboBox lineTypeList = null;
-    public final static String StraightLineType = "Straight Lines";
-    public final static String GCLineType = "Great Circle Lines";
-    public final static String RhumbLineType = "Rhumb Lines";
+    public boolean getEnableLineTypeChoice() {
+	return enableLineTypeChoice;
+    }
 
-    protected JComboBox getLineTypeList() {
-	if (lineTypeList == null) {
-	    String[] lineTypes = new String[3];
-	    
-	    lineTypes[LineType.Straight - 1] = StraightLineType;
-	    lineTypes[LineType.GreatCircle - 1] = GCLineType;
-	    lineTypes[LineType.Rhumb - 1] = RhumbLineType;
-	    
-	    lineTypeList = new JComboBox(lineTypes);
-	    lineTypeList.setBorder(new javax.swing.border.EmptyBorder(0, 1, 0, 1));
-	    lineTypeList.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-			JComboBox jcb = (JComboBox) e.getSource();
-			String currentChoice = (String)jcb.getSelectedItem();
-			if (currentChoice == GCLineType) {
-			    setLineType(LineType.GreatCircle);
-			} else if (currentChoice == RhumbLineType) {
-			    setLineType(LineType.Rhumb);
-			} else {
-			    setLineType(LineType.Straight);
-			}		    
+    public JMenu getLineTypeMenu() {
+	JMenu lineTypeMenu = null;
+
+	if (renderType == RENDERTYPE_LATLON && enableLineTypeChoice) {
+	    lineTypeMenu = new JMenu("Line Type");
+
+	    ActionListener listener = new ActionListener() {
+		    public void actionPerformed(ActionEvent ae) {
+			String command  = ae.getActionCommand();
+			try {
+			    setLineType(Integer.parseInt(command));
+			} catch (NumberFormatException e) {}
 		    }
-		});
-	}
-	    
-	return lineTypeList;
-    }
+		};
 
-    /**
-     *  The DrawingAttributes method for handling ActionEvents.  Used
-     *  to handle the GUI actions, like changing the colors, line
-     *  widths, etc.
-     */
-    public void actionPerformed(ActionEvent e) {
-	super.actionPerformed(e);
+	    ButtonGroup group = new ButtonGroup(); 
+	    JRadioButtonMenuItem button = 
+		new JRadioButtonMenuItem("Great Circle", lineType == LineType.GreatCircle);
+	    button.setActionCommand(String.valueOf(LineType.GreatCircle));
+	    group.add(button);
+	    button.addActionListener(listener);
+	    lineTypeMenu.add(button);
+	
+	    button = new JRadioButtonMenuItem("Rhumb", lineType == LineType.Rhumb);
+	    button.setActionCommand(String.valueOf(LineType.Rhumb));
+	    group.add(button);
+	    button.addActionListener(listener);
+	    lineTypeMenu.add(button);
+
+	    button = new JRadioButtonMenuItem("Straight", lineType == LineType.Straight);
+	    button.setActionCommand(String.valueOf(LineType.Straight));
+	    group.add(button);
+	    button.addActionListener(listener);
+	    lineTypeMenu.add(button);
+	}
+	return lineTypeMenu;
     }
 
 }

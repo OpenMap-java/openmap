@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoint.java,v $
 // $RCSfile: OMPoint.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/07 16:27:58 $
+// $Revision: 1.4 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -287,6 +287,10 @@ public class OMPoint extends OMGraphic implements Serializable {
 
 	setNeedToRegenerate(false);
 	return true;
+    }
+
+    protected boolean hasLineTypeChoice() {
+	return false;
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/26 17:40:07 $
+// $Revision: 1.5 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -731,6 +731,15 @@ public class OMPoly extends OMGraphic implements Serializable {
 	// safety: grab local reference of projected points
 	int[][] xpts = xpoints;
 	int[][] ypts = ypoints;
+
+	if (xpts == null || ypts == null) {
+	    // Shouldn't get here, but crazy EditableOMPoly events
+	    // sometimes cause this to happen.  Catch and wait to
+	    // paint later.
+	    setNeedToRegenerate(true);
+	    return;
+	}
+
 	int[] _x, _y;
 	int i;
 	int len = xpts.length;
@@ -748,6 +757,10 @@ public class OMPoly extends OMGraphic implements Serializable {
 		_x = xpts[i];
 		_y = ypts[i];
 	    
+		if (_x == null || _y == null) {
+		    continue;
+		}
+
 		// render polygon
 		if (isPolygon) {
 		

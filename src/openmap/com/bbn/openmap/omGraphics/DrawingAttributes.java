@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/09/26 17:40:06 $
+// $Revision: 1.7 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -235,7 +235,18 @@ public class DrawingAttributes
 
     public static boolean alwaysSetTextToBlack = false;
 
-    protected BasicStrokeEditor bse;
+    protected BasicStrokeEditorMenu bse;
+
+    /**
+     * The JButton used to bring up the line menu.
+     */
+    protected JButton lineButton;
+
+    /**
+     * Any additional JMenu items that should be added to the line
+     * menu.
+     */
+    protected JMenu[] lineMenuAdditions = null;
 
     /**
      * Create a DrawingAttributes with the default settings - clear
@@ -340,7 +351,7 @@ public class DrawingAttributes
 	this.stroke = stroke;
 
 	if (stroke instanceof BasicStroke) {
-	    BasicStrokeEditor tmpbse = getBasicStrokeEditor();
+	    BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
 	    if (tmpbse != null) {
 		tmpbse.setBasicStroke((BasicStroke)stroke);
 	    }
@@ -882,62 +893,91 @@ public class DrawingAttributes
 	if (palette == null) {
 	    palette = new JPanel();
  	    palette.setBorder(BorderFactory.createEmptyBorder());
+	}	    
 
-	    lineColorButton = new JButton(getIconForPaint(getLinePaint(), false));
-	    lineColorButton.setActionCommand(LineColorCommand);
-	    lineColorButton.addActionListener(this);
-	    lineColorButton.setToolTipText("Change Edge Color (true/opaque)");
-
-	    fillColorButton = new JButton(getIconForPaint(getFillPaint(), true));
-	    fillColorButton.setActionCommand(FillColorCommand);
-	    fillColorButton.addActionListener(this);
-	    fillColorButton.setToolTipText("Change Fill Color (true/opaque)");	    
-	    
-	    selectColorButton = new JButton(getIconForPaint(getSelectPaint(), false));
-	    selectColorButton.setActionCommand(SelectColorCommand);
-	    selectColorButton.addActionListener(this);
-	    selectColorButton.setToolTipText("Change Selected Edge Color (true/opaque)");
-	    
-	    mattingColorButton = new JButton(getMattingIconForPaint());
-	    mattingColorButton.setActionCommand(MattingColorCommand);
-	    mattingColorButton.addActionListener(this);
-	    mattingColorButton.setToolTipText("Change Matted Edge Color (true/opaque)");
-
-	    mattedCheckBox = new JToggleButton(getMattedIcon(), isMatted());
-	    mattedCheckBox.setActionCommand(MattedCommand);
-	    mattedCheckBox.addActionListener(this);
-	    mattedCheckBox.setToolTipText("Enable/Disable Matting on Edge");
-	
-	} else {
-	    resetGUI();
-	}
+	resetGUI();
 
 	palette.removeAll();
 	palette.removeAll();
 
-	JToolBar colorTB = new JToolBar();
-	colorTB.setFloatable(false);
-	colorTB.setMargin(new Insets(0, 0, 0, 0));
-	colorTB.add(lineColorButton);
-	colorTB.add(fillColorButton);
-	colorTB.add(mattingColorButton);
-
-	JToolBar mattedTB = new JToolBar();
-	mattedTB.setFloatable(false);
-	mattedTB.setMargin(new Insets(0, 0, 0, 0));
-	mattedTB.add(mattedCheckBox);
-
-	palette.add(colorTB);
-	palette.add(mattedTB);
+	JToolBar toolbar = new JToolBar();
+	toolbar.setFloatable(false);
+	toolbar.setMargin(new Insets(0, 0, 0, 0));
+	toolbar.add(lineColorButton);
+	toolbar.add(fillColorButton);
+	toolbar.add(mattingColorButton);
+	toolbar.add(new JLabel(" "));
+	toolbar.add(mattedCheckBox);
 
 	if (stroke instanceof BasicStroke) {
-	    BasicStrokeEditor tmpbse = getBasicStrokeEditor();
+	    BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
 	    if (tmpbse != null) {
-		palette.add(tmpbse.getLaunchButton());
+		ImageIcon icon = BasicStrokeEditorMenu.createIcon(tmpbse.getBasicStroke(), 50, 
+								  icon_height, true);
+		lineButton = new JButton(icon);
+		lineButton.setToolTipText("Modify Line Parameters");
+		lineButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+			    JButton button = getLineButton();
+			    JPopupMenu popup = new JPopupMenu();
+
+			    JMenu menu = getLineTypeMenu();
+			    if (menu != null) {
+				popup.add(menu);
+			    }
+
+			    getBasicStrokeEditor().setGUI(popup);
+
+			    JMenu[] menus = getLineMenuAdditions();
+			    if (menus != null) {
+				for (int i = 0; i < menus.length; i++) {
+				    menu = menus[i];
+				    if (menu != null) {
+					popup.add(menu);
+				    }
+				}
+			    }
+
+			    popup.show(button, button.getWidth(), 0);
+			}
+		    });
+		tmpbse.setLaunchButton(lineButton);
+		toolbar.add(new JLabel(" "));
+		toolbar.add(lineButton);
 	    }
 	}
+
+	palette.add(toolbar);
 	   
 	return palette;
+    }
+
+    /**
+     * Get the JButton used to bring up the line menu.
+     */
+    protected JButton getLineButton() {
+	return lineButton;
+    }
+
+    /**
+     * Get the menu that adjusts the line type.  DrawingAttributes
+     * doesn't know about this, but GraphicAttributes, the subclass,
+     * does.
+     */
+    public JMenu getLineTypeMenu() {
+	return null;
+    }
+
+    /**
+     * A hook to add to the line menu brought up in the GUI for the
+     * DrawingAttributes.
+     */
+    public void setLineMenuAdditions(JMenu[] lma) {
+	lineMenuAdditions = lma;
+    }
+
+    public JMenu[] getLineMenuAdditions() {
+	return lineMenuAdditions;
     }
 
     /**
@@ -947,24 +987,52 @@ public class DrawingAttributes
     public void resetGUI() {
 	if (lineColorButton != null) {
  	    lineColorButton.setIcon(getIconForPaint(getLinePaint(), false));
+	} else {
+	    lineColorButton = new JButton(getIconForPaint(getLinePaint(), false));
+	    lineColorButton.setActionCommand(LineColorCommand);
+	    lineColorButton.addActionListener(this);
+	    lineColorButton.setToolTipText("Change Edge Color (true/opaque)");
 	}
+
 	if (fillColorButton != null) {
   	    fillColorButton.setIcon(getIconForPaint(getFillPaint(), true));
+	} else {
+	    fillColorButton = new JButton(getIconForPaint(getFillPaint(), true));
+	    fillColorButton.setActionCommand(FillColorCommand);
+	    fillColorButton.addActionListener(this);
+	    fillColorButton.setToolTipText("Change Fill Color (true/opaque)");	    
 	}
+
 	if (selectColorButton != null) {
  	    selectColorButton.setIcon(getIconForPaint(getSelectPaint(), false));
+	} else {
+	    selectColorButton = new JButton(getIconForPaint(getSelectPaint(), false));
+	    selectColorButton.setActionCommand(SelectColorCommand);
+	    selectColorButton.addActionListener(this);
+	    selectColorButton.setToolTipText("Change Selected Edge Color (true/opaque)");
 	}
+
 	if (mattingColorButton != null) {
  	    mattingColorButton.setIcon(getMattingIconForPaint());
+	} else {
+	    mattingColorButton = new JButton(getMattingIconForPaint());
+	    mattingColorButton.setActionCommand(MattingColorCommand);
+	    mattingColorButton.addActionListener(this);
+	    mattingColorButton.setToolTipText("Change Matted Edge Color (true/opaque)");
 	}
 
 	if (mattedCheckBox != null) {
 	    mattedCheckBox.setIcon(getMattedIcon());
 	    mattedCheckBox.setSelected(matted);
+	} else {
+	    mattedCheckBox = new JToggleButton(getMattedIcon(), isMatted());
+	    mattedCheckBox.setActionCommand(MattedCommand);
+	    mattedCheckBox.addActionListener(this);
+	    mattedCheckBox.setToolTipText("Enable/Disable Matting on Edge");
 	}
 
 	if (stroke instanceof BasicStroke) {
-	    BasicStrokeEditor tmpbse = getBasicStrokeEditor();
+	    BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
 	    if (tmpbse != null) {
 		tmpbse.setBasicStroke((BasicStroke)stroke);
 	    }
@@ -1039,10 +1107,10 @@ public class DrawingAttributes
 	setProperties(getPropertyPrefix(), props);
     }
 
-    public BasicStrokeEditor getBasicStrokeEditor() {
+    public BasicStrokeEditorMenu getBasicStrokeEditor() {
 	if (bse == null && stroke instanceof BasicStroke) {
 	    try {
-		bse = new BasicStrokeEditor((BasicStroke)getStroke());
+		bse = new BasicStrokeEditorMenu((BasicStroke)getStroke());
 		bse.getPropertyChangeSupport().addPropertyChangeListener(this);
 	    } catch (Exception e) {
 		// This happens if a java Toolkit is not available.
@@ -1396,7 +1464,7 @@ public class DrawingAttributes
     }
 
     public void propertyChange(PropertyChangeEvent pce) {
-	if (pce.getSource() instanceof BasicStrokeEditor) {
+	if (pce.getSource() instanceof BasicStrokeEditorMenu) {
 	    setStroke((BasicStroke)pce.getNewValue());
 	}
     }

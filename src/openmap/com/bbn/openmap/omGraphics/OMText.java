@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.6 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1241,4 +1241,9 @@ public class OMText extends OMGraphic implements Serializable {
     public float distance(int x, int y) {
 	return _distance(x, y);
     }
+
+    protected boolean hasLineTypeChoice() {
+	return false;
+    }
+
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/05/08 16:45:31 $
+// $Revision: 1.4 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -966,4 +966,7 @@ public abstract class OMRasterObject extends OMGraphic
        }
     }
 
+    protected boolean hasLineTypeChoice() {
+	return false;
+    }
 }

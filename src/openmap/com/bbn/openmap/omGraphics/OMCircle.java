@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMCircle.java,v $
 // $RCSfile: OMCircle.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/07/30 20:15:03 $
+// $Revision: 1.4 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -196,4 +196,7 @@ public class OMCircle extends OMArc implements Serializable {
 				  radius, nverts, !isClear(fillPaint));
     }
 
+    protected boolean hasLineTypeChoice() {
+	return false;
+    }
 }

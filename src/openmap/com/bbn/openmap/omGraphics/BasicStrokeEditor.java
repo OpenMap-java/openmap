@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/BasicStrokeEditor.java,v $
 // $RCSfile: BasicStrokeEditor.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.4 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,7 +38,7 @@ import com.bbn.openmap.util.*;
 /** 
  * The BasicStrokeEditor provides a GUI to adjust BasicStroke
  * parameters.  It can provide a default button to launch itself, or a
- * button can be set.
+ * button can be set.  This class is being replaced by the BasicStrokeEditorMenu.
  */
 public class BasicStrokeEditor extends JDialog
     implements ActionListener {

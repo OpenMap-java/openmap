@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/26 17:40:06 $
+// $Revision: 1.5 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1211,6 +1211,10 @@ public class EditableOMPoly extends EditableOMGraphic {
     }
 
     public JToolBar getPolyGUI() {
+	return getPolyGUI(true, true, true);
+    }
+
+    public JToolBar getPolyGUI(boolean includeEnclose, boolean includeAdd, boolean includeDelete) {
 	JToolBar buttonBox = new JToolBar();
 	buttonBox.setFloatable(false);
 	buttonBox.setMargin(new Insets(0, 1, 0, 1));
@@ -1234,7 +1238,9 @@ public class EditableOMPoly extends EditableOMGraphic {
 		    }
 		}
 	    });
-	buttonBox.add(polygonButton);
+	if (includeEnclose) {
+	    buttonBox.add(polygonButton);
+	}
 
 	if (addButton == null) {
 	    url = getImageURL("addpoint.gif");
@@ -1249,7 +1255,9 @@ public class EditableOMPoly extends EditableOMGraphic {
 		}
 	    });
 	addButton.setEnabled(false);
-	buttonBox.add(addButton);
+	if (includeAdd) {
+	    buttonBox.add(addButton);
+	}
 
 	if (deleteButton == null) {
 	    url = getImageURL("deletepoint.gif");
@@ -1264,7 +1272,9 @@ public class EditableOMPoly extends EditableOMGraphic {
 		}
 	    });
 	deleteButton.setEnabled(false);
-	buttonBox.add(deleteButton);
+	if (includeDelete) {
+	    buttonBox.add(deleteButton);
+	}
 
 	return buttonBox;
     }

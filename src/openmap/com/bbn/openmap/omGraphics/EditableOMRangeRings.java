@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/26 17:40:06 $
+// $Revision: 1.4 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -266,23 +266,3 @@ public class EditableOMRangeRings extends EditableOMCircle {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

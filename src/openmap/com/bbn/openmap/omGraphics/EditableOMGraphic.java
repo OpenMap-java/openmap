@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMGraphic.java,v $
 // $RCSfile: EditableOMGraphic.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/26 17:40:06 $
+// $Revision: 1.5 $
+// $Date: 2003/10/03 00:53:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -721,6 +721,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      */
     public Component getGUI(GraphicAttributes graphicAttributes) {
 	if (graphicAttributes != null) {
+	    graphicAttributes.setLineMenuAdditions(null);
 	    return graphicAttributes.getGUI();
 	}
 	return null;
