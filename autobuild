@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.10 $
-# $Date: 1998/05/12 16:45:07 $
+# $Revision: 1.11 $
+# $Date: 1998/05/12 17:59:18 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -72,7 +72,7 @@ export PATH
 CVSROOT=/u4/rcs
 export CVSROOT
 
-DocPackages="com.bbn.openmap com.bbn.openmap.dcwSpecialist com.bbn.openmap.event com.bbn.openmap.gui com.bbn.openmap.html com.bbn.openmap.http com.bbn.openmap.omGraphics com.bbn.openmap.overlay com.bbn.openmap.pluginLayer com.bbn.openmap.proj com.bbn.openmap.specialist"
+DocPackages="com.bbn.openmap com.bbn.openmap.dcwSpecialist com.bbn.openmap.event com.bbn.openmap.gui com.bbn.openmap.html com.bbn.openmap.http com.bbn.openmap.omGraphics com.bbn.openmap.overlay com.bbn.openmap.proj com.bbn.openmap.specialist"
 export DocPackages
 
 #echo $CLASSPATH
