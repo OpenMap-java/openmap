@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/03 00:49:57 $
+// $Revision: 1.6 $
+// $Date: 2003/10/06 19:30:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -388,13 +388,6 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * Set the next thing to be created to be whatever the pretty name
      * represents.  Sets currentCreation.
      * @param name GUI pretty name of thing to be created, from one of
-
-
-
-
-
-
-
      * the EditToolLoaders.
      */
     public void setCurrentCreation(String name) {
