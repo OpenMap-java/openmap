@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/08/28 21:57:00 $
+// $Revision: 1.8 $
+// $Date: 2003/09/09 15:42:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -160,10 +160,16 @@ public abstract class Layer extends JComponent
     /**
      * Used by the LayerHandler to check if the layer should be added
      * to the MapHandler BeanContext.  See the comments under the
-     * AddToBeanContextProperty.  False by default.
+     * AddToBeanContextProperty.  True by default.
      */
-    protected boolean addToBeanContext = false;
+    protected boolean addToBeanContext = true;
 
+    /**
+     * Flag used by the layer to indicate that it should be treated as
+     * a background layer, indicating that any cache mechanism
+     * available can enable extra buffering.  This may prevent mouse
+     * events from being received by the layer.
+     */
     protected boolean addAsBackground = false;
 
     /**
