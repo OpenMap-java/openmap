@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/util/ArcCalc.java,v $
 // $RCSfile: ArcCalc.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/05/14 17:13:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,7 +67,7 @@ public class ArcCalc {
     /**
      * For x-y and offset lines that have an arc drawn between them,
      * tell which way the arc should be drawn, toward the Equator, or
-     * away from it, generally.  Default is false, to make it look
+     * away from it, generally.  Default is true, to make it look
      * like great circle line for northern hemishere lines.
      */
     protected boolean arcUp = true;
