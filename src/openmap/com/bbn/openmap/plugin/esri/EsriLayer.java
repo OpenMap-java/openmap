@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriLayer.java,v $
 // $RCSfile: EsriLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/04 18:24:58 $
+// $Revision: 1.3 $
+// $Date: 2003/10/23 21:15:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,28 +23,29 @@
 
 package com.bbn.openmap.plugin.esri;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-import javax.swing.table.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.omGraphics.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Properties;
 
-import com.bbn.openmap.dataAccess.shape.*;
-import com.bbn.openmap.dataAccess.shape.input.*;
-import com.bbn.openmap.dataAccess.shape.output.*;
+import com.bbn.openmap.dataAccess.shape.DbfTableModel;
+import com.bbn.openmap.dataAccess.shape.EsriGraphicList;
+import com.bbn.openmap.dataAccess.shape.EsriPointList;
+import com.bbn.openmap.dataAccess.shape.EsriPolygonList;
+import com.bbn.openmap.dataAccess.shape.EsriPolylineList;
+import com.bbn.openmap.dataAccess.shape.ShapeConstants;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * EsriLayer loads Esri shape file sets from web servers or local file systems,
  * and it enables the creation of shape file sets.
  *
- * To create a file from a remote location:
+ * To create a shape file set from a remote location:
  * <code><pre>
  *   URL dbf = new URL("http://www.webserver.com/file.dbf");
  *   URL shp = new URL("http://www.webserver.com/file.shp");
@@ -54,10 +55,10 @@ import com.bbn.openmap.dataAccess.shape.output.*;
  *
  * To open a shape file set from the local file system:
  * <code><pre>
- *   File dbf = new File("c:/data/file.dbf");
- *   File shp = new File("c:/data/file.shp");
- *   File shx = new File("c:/data/file.shx");
- *   EsriLayer layer = new EsriLayer("name", dbf.toURL(), shp.toURL(), shx.toURL());
+ *   String dbf = "c:/data/file.dbf";
+ *   String shp = "c:/data/file.shp";
+ *   String shx = "c:/data/file.shx";
+ *   EsriLayer layer = new EsriLayer("name", dbf, shp, shx, DrawingAttributes.DEFAULT);
  * </pre></code>
  * <code>
  *
@@ -85,7 +86,7 @@ import com.bbn.openmap.dataAccess.shape.output.*;
  * </pre></code>
  *
  * To configure an EsriLayer through a properties file, specify file references
- * in terms of URLs.
+ * in terms of resources, files or URLs.
  *
  * To reference a file on Windows 2000:
  * <code><pre>
@@ -100,9 +101,9 @@ import com.bbn.openmap.dataAccess.shape.output.*;
  * <code><pre>
  *   esri.class = com.bbn.openmap.plugin.esri.EsriLayer
  *   esri.prettyName = Esri Example
- *   esri.dbf = file:///home/dvanauke/resources/shapefile.dbf
- *   esri.shp = file:///home/dvanauke/resources/shapefile.shp
- *   esri.shx = file:///home/dvanauke/resources/shapefile.shx
+ *   esri.dbf = /home/dvanauke/resources/shapefile.dbf
+ *   esri.shp = /home/dvanauke/resources/shapefile.shp
+ *   esri.shx = /home/dvanauke/resources/shapefile.shx
  * </pre></code>
  *
  * To reference a file on a web server:
@@ -115,25 +116,20 @@ import com.bbn.openmap.dataAccess.shape.output.*;
  * </pre></code>
  * @author Doug Van Auken
  */
-public class EsriLayer extends Layer implements ShapeConstants {
+public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
 
-    private EsriGraphicList _list = null;
-    private DbfTableModel _model = null;
-    private JFrame _tableFrame = null;
-    private JScrollPane _pane = null;
-    private int _type = -1;
-    
-    public static final String PARAM_DBF = ".dbf";
-    public static final String PARAM_SHX = ".shx";
-    public static final String PARAM_SHP = ".shp";
+    protected DbfTableModel _model = null;
+    protected String dbf;
+    protected String shx;
+    protected String shp;
+
+    protected DrawingAttributes drawingAttributes = DrawingAttributes.getDefaultClone();
     
     /**
      * Creates an EsriLayer that will be configured through the
      * <code>setProperties()</code> method
      */
-    public EsriLayer() {
-	System.out.println("in default constructor");
-    }
+    public EsriLayer() {}
     
     /**
      * Creates an empty EsriLayer, useable for adding features at run-time
@@ -146,16 +142,15 @@ public class EsriLayer extends Layer implements ShapeConstants {
 
 	switch (type) {
 	case SHAPE_TYPE_POINT:
-	    _list = new EsriPointList();
+	    setList(new EsriPointList());
 	    break;
 	case SHAPE_TYPE_POLYGON:
-	    _list = new EsriPolygonList();
+	    setList(new EsriPolygonList());
 	    break;
 	case SHAPE_TYPE_POLYLINE:
-	    _list = new EsriPolylineList();
+	    setList(new EsriPolylineList());
 	    break;
 	default:
-	    _list = null;
 	}
 
 	_model = new DbfTableModel(columnCount);
@@ -169,19 +164,49 @@ public class EsriLayer extends Layer implements ShapeConstants {
      * @param shp The url referencing the shp extension file
      * @param shx The url referencing the shx extension file 
      */
-    public EsriLayer(String name, URL dbf, URL shp, URL shx) {
-	setName(name);
-	_list = getGeometry(shp, shx);
-	_model = getDbfTableModel(dbf);
+    public EsriLayer(String name, String dbf, String shp, String shx, DrawingAttributes da) 
+	throws MalformedURLException {
+	this(name, 
+	     PropUtils.getResourceOrFileOrURL(dbf), 
+	     PropUtils.getResourceOrFileOrURL(shp),
+	     PropUtils.getResourceOrFileOrURL(shx), da);
     }
-    
-    
+
+    /**
+     * Creates an EsriLayer from a set of shape files
+     * @param label The name of the layer that may be used to
+     * reference the layer
+     * @param dbf The url referencing the dbf extension file
+     * @param shp The url referencing the shp extension file
+     * @param shx The url referencing the shx extension file 
+     */
+    public EsriLayer(String name, URL dbf, URL shp, URL shx) {
+	this(name, dbf, shp, shx, DrawingAttributes.getDefaultClone());
+    }
+
+    /**
+     * Creates an EsriLayer from a set of shape files
+     * @param label The name of the layer that may be used to
+     * reference the layer
+     * @param dbf The url referencing the dbf extension file
+     * @param shp The url referencing the shp extension file
+     * @param shx The url referencing the shx extension file 
+     * @param da DrawingAttributes to use to render the layer contents.
+     */
+    public EsriLayer(String name, URL dbf, URL shp, URL shx, DrawingAttributes da) {
+	setName(name);
+	drawingAttributes = da;
+	setModel(DbfTableModel.getDbfTableModel(dbf));
+	setList(EsriGraphicList.getEsriGraphicList(shp, shx, drawingAttributes, getModel()));
+    }
+        
     /**
      * Handles adding records to the geometry list and the DbfTableModel
      * @param graphic An OMGraphic to add the graphics list
      * @param record A record to add to the DbfTableModel
      */
     public void addRecord(OMGraphic graphic, ArrayList record) {
+	OMGraphicList _list = getList();
 	if (_list != null) {
 	    _list.add(graphic);
 	}
@@ -192,94 +217,11 @@ public class EsriLayer extends Layer implements ShapeConstants {
     }
     
     /**
-     * Creates a DbfTableModel for a given .dbf file
-     * @param dbf The url of the file to retrieve.
-     * @return The DbfTableModel for this layer
-     */
-    private DbfTableModel getDbfTableModel(URL dbf) {
-	URL url;
-	DbfTableModel model = null;
-	try {
-	    InputStream is = dbf.openStream();
-	    try{
-		model = new DbfTableModel(new DbfInputStream(is));
-	    }
-	    catch(Exception exception) {
-		System.out.println(exception);
-	    }
-	}
-	catch(Exception exception) {
-	    System.out.println(exception);
-	}
-	return model;
-    }
-    
-    public synchronized void renderDataForProjection(Projection proj,
-						     java.awt.Graphics g) {
-	if (_list != null && proj != null && !proj.equals(getProjection())) {
-	    _list.project(proj, true);
-	}
-	paint(g);
-    }
-
-    /**
      * Returns the EsriGraphicList for this layer
      * @return The EsriGraphicList for this layer
      */
     public EsriGraphicList getEsriGraphicList() {
-	return _list;
-    }
-    
-    /*
-     * Reads the contents of the SHX and SHP files.  The SHX file will
-     * be read first by utilizing the ShapeIndex.open method.  This
-     * method will return a list of offsets, which the
-     * AbstractSupport.open method will use to iterate through the
-     * contents of the SHP file.
-     * @param sho The url of the SHP file
-     * @param shx The url of the SHX file
-     * @return A new EsriGraphicList 
-     */
-    public EsriGraphicList getGeometry(URL shp, URL shx) {
-	EsriGraphicList list;
-	ShxInputStream xis;
-	int[][] indexData = null;
-	URL url;
-	Vector vector;
-	try {
-	    InputStream is = shx.openStream();
-	    try{
-		xis = new ShxInputStream(is);
-		indexData = xis.getIndex();
-	    }
-	    catch(Exception exception) {
-		System.out.println(exception);
-	    }
-	    is.close();
-	}
-	catch (Exception e) {
-	    System.out.println("Unable to stream shx file");
-	    return null;
-	}
-	
-	//Open and stream shp file
-	try {
-	    InputStream is = shp.openStream();
-	    try {
-		ShpInputStream pis = new ShpInputStream(is);
-		list = pis.getGeometry(indexData);
-	    }
-	    catch (Exception e) {
-		System.out.println("Not able to stream SHP file");
-		return null;
-	    }
-	    is.close();
-	}
-	catch (Exception e) {
-	    e.printStackTrace();
-	    return null;
-	}
-	return list;
+	return (EsriGraphicList) getList();
     }
     
     /**
@@ -297,20 +239,11 @@ public class EsriLayer extends Layer implements ShapeConstants {
      * Esri's shape file format specification 
      */
     public int getType() {
-	return _type;
-    }
-    
-    public void paint(Graphics g) {
-	if (_list != null) {
-	    _list.render(g);
+	EsriGraphicList egl = getEsriGraphicList();
+	if (egl != null) {
+	    return egl.getType();
 	}
-    }
-    
-    public void projectionChanged(ProjectionEvent e) {
-	if (_list != null) {
-	    _list.generate(e.getProjection());
-	    repaint();
-	}
+	return -1;
     }
     
     /**
@@ -322,23 +255,11 @@ public class EsriLayer extends Layer implements ShapeConstants {
     }
     
     /**
-     * Refreshes the display
-     * @param projection The projection of the current display
-     */
-    public void refresh(Projection projection) {
-	_list.generate(projection);
-	//_model.fireTableStructureChanged();
-	repaint();
-    }
-    
-    /**
      * Sets the DbfTableModel
      * @param DbfTableModel The DbfModel to set for this layer
      */
     public void setModel(DbfTableModel model) {
-	if(_model != null) {
-	    _model = model;
-	}
+	_model = model;
     }
     
     /**
@@ -348,17 +269,79 @@ public class EsriLayer extends Layer implements ShapeConstants {
      */
     public void setProperties(String prefix, Properties properties) {
 	super.setProperties(prefix, properties);
-	String dbf = properties.getProperty(prefix + PARAM_DBF);
-	String shx = properties.getProperty(prefix + PARAM_SHX);
-	String shp = properties.getProperty(prefix + PARAM_SHP);
+
+	drawingAttributes.setProperties(prefix, properties);
+
+	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+
+	dbf = properties.getProperty(prefix + PARAM_DBF);
+	shx = properties.getProperty(prefix + PARAM_SHX);
+	shp = properties.getProperty(prefix + PARAM_SHP);
 	
-	try{
-	    setName("testing");
-	    _list = getGeometry(new URL(shp), new URL(shx));
-	    _model = getDbfTableModel(new URL(dbf));
-	}
-	catch(Exception exception) {
-	    System.out.println(exception);
+	try {
+	    setModel(DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(dbf)));
+	    setList(EsriGraphicList.getEsriGraphicList(PropUtils.getResourceOrFileOrURL(shp),
+						       PropUtils.getResourceOrFileOrURL(shx), 
+						       drawingAttributes, getModel()));
+	} catch(Exception exception) {
+	    Debug.error("EsriLayer("+ getName() + ") exception reading Shape files:\n " +
+			exception.getMessage());
 	}
     }
+
+    /**
+     * PropertyConsumer method.
+     * @param properties the <code>Properties</code> object
+     * @return the <code>Properties</code> object
+     */
+    public Properties getProperties(Properties properties) {
+	properties = super.getProperties(properties);
+
+	String prefix = PropUtils.getScopedPropertyPrefix(this);
+	properties.setProperty(prefix + PARAM_DBF, PropUtils.unnull(dbf));
+	properties.setProperty(prefix + PARAM_SHX, PropUtils.unnull(shx));
+	properties.setProperty(prefix + PARAM_SHP, PropUtils.unnull(shp));
+
+	drawingAttributes.getProperties(properties);
+
+	return properties;
+    }
+
+    /**
+     * Method to fill in a Properties object with values reflecting
+     * the properties able to be set on this PropertyConsumer. The key
+     * for each property should be the raw property name (without a
+     * prefix) with a value that is a String that describes what the
+     * property key represents, along with any other information about the
+     * property that would be helpful (range, default value, etc.).
+     *
+     * @param list a Properties object to load the PropertyConsumer
+     * properties into. If getList equals null, then a new Properties
+     * object should be created.
+     * @return Properties object containing PropertyConsumer property
+     * values. If getList was not null, this should equal getList.
+     * Otherwise, it should be the Properties object created by the
+     * PropertyConsumer.
+     */
+    public Properties getPropertyInfo(Properties list) {
+	list = super.getPropertyInfo(list);
+
+	list.setProperty(PARAM_DBF, "Location URL of the dbf file.");
+	list.put(PARAM_DBF + ScopedEditorProperty, 
+		 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+	list.setProperty(PARAM_SHX, "Location URL of the shx file.");
+	list.put(PARAM_SHX + ScopedEditorProperty, 
+		 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+	list.setProperty(PARAM_SHP, "Location URL of the shp file.");
+	list.put(PARAM_SHP + ScopedEditorProperty, 
+		 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+
+	drawingAttributes.getPropertyInfo(list);
+
+	list.put(initPropertiesProperty, PARAM_SHP + " " + PARAM_SHX + " " + PARAM_DBF + " " + 
+		 drawingAttributes.getInitPropertiesOrder());
+
+	return list;
+    }
+
 }
