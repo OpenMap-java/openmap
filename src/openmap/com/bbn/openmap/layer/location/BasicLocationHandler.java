@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/BasicLocationHandler.java,v $
 // $RCSfile: BasicLocationHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/11/21 02:06:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -73,6 +73,13 @@ public class BasicLocationHandler
     }
 
     public void setShowLocations(boolean set) {
+    }
+
+    public boolean isForceGlobal() {
+	return true;
+    }
+
+    public void setForceGlobal(boolean set) {
     }
 
     /**
