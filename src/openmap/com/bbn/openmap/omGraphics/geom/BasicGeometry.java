@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.9 $
+// $Date: 2004/05/10 20:46:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,15 +31,30 @@ import com.bbn.openmap.util.Debug;
 import java.awt.*;
 import java.awt.geom.*;
 import java.io.Serializable;
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
- * Base class implementation of OpenMap OMGeometry. <p>
+ * Base class implementation of OpenMap OMGeometry, the super class for all OMGraphics.<p>
  *
  * The geometry classes are intended to pull the object location data
  * out of the OMGraphics.  If you have a bunch of OMGraphics that are
  * all rendered with common attributes, you can create a bunch of
  * OMGeometry objects to plavce in a OMGeometryList that will render
- * them all alike.
+ * them all alike. <p>
+ *
+ * The BasicGeometry can hold attributes.  Traditionally, there has
+ * been an appObject (Application Object) that could be set in the
+ * OMGeometry/OMGraphic to maintain a pointer for additional
+ * infomration about the shape.  This has been modified so that an
+ * attribute Map can be maintained for the BasicGeometry to let it
+ * hold on to a bunch of organized attributes.  To maintain backward
+ * compatibility, the setAppObject() and getAppObject() methods have
+ * been modified to manage a java.util.Map along with any Objects
+ * stored in the appObject.  Using the setAppObject() and
+ * getAppObject() methods in conjunction with other attributes will
+ * cause that object to be stored in the attribute Map under the
+ * APP_OBJECT_KEY Map key.
  *
  * @see PolygonGeometry
  * @see PolylineGeometry
@@ -85,6 +100,9 @@ public abstract class BasicGeometry
      * side of the earth.  
      */
     protected transient GeneralPath shape = null;
+
+    protected static final String APP_OBJECT_KEY = "app_object_key";
+    protected static final String ATT_MAP_KEY = "att_map_key";
 
   //////////////////////////////////////////////////////////  
 
@@ -183,21 +201,198 @@ public abstract class BasicGeometry
      * an OMGeometry for later retrieval.  For instance, when
      * the graphic is clicked on, the application gets the OMGeometry
      * object back from the OMGeometryList, and can then get back
-     * to the application level object through this pointer.
+     * to the application level object through this pointer. <P>
+     *
+     * The BasicGeometry has been updated to use an attribute Object
+     * Map to hold multiple attributes.  If no attributes have been
+     * added, then the appObject will just hold any object passed in
+     * here.  If attributes have already been added, then calling this
+     * method will add the object to the Map under the APP_OBJECT_KEY
+     * key.  getAppObject() will return the object set in this method.
      *
      * @param obj Object
      */
     public synchronized void setAppObject(Object obj) {
-        appObject = obj;
+        setAppObject(obj, true);
     }
 
     /**
-     * Gets the application's object pointer.
+     * Same as setAppObject with the option for disabling the attribute Map management.
+     * @param checkToReplaceObjWithMap if false, just sets obj to appObject.
+     */
+    protected synchronized void setAppObject(Object obj, boolean checkToReplaceObjWithMap) {
+        if (checkToReplaceObjWithMap && checkAttributeMap()) {
+            putAttribute(APP_OBJECT_KEY, obj);
+        } else {
+            appObject = obj;
+        }
+    }
+
+    /**
+     * Gets the application's object pointer.  If an attribute Map
+     * object is being used, returns the object stored in that map
+     * under the APP_OBJECT_KEY key.
      *
      * @return Object
      */
     public synchronized Object getAppObject() {
-        return appObject;
+        return getAppObject(true);
+    }
+
+    /**
+     * Same as getAppObject, with the option of disabling the attribute Map management.
+     * @param checkForObjOnMap if false, just returns the appObject.
+     */
+    protected synchronized Object getAppObject(boolean checkForObjOnMap) {
+        if (checkForObjOnMap && checkAttributeMap()) {
+            return getAttribute(APP_OBJECT_KEY);
+        } else {
+            return appObject;
+        }
+    }
+
+    /**
+     * A call used by the BasicGeometry to replace a current
+     * appication object with an Object Map while also adding that
+     * application object to the Map under the APP_OBJECT_KEY key
+     * value.
+     */
+    protected void replaceAppObjectWithAttributeMap() {
+        if (!checkAttributeMap()) {
+            Object appObj = getAppObject();
+            if (appObj == null) {
+                setAppObject(createAttributeMap(), false);
+            } else {
+                Map attributes = createAttributeMap();
+                attributes.put(APP_OBJECT_KEY, appObj);
+                attributes.put(ATT_MAP_KEY, attributes);
+                setAppObject(attributes, false);
+            }
+        }
+    }
+
+    /**
+     * Returns true if the appObject is a Map and if it's the
+     * attribute Map, false if the appObject is something different or
+     * null.
+     */
+    protected boolean checkAttributeMap() {
+        return checkAttributeMap(getAppObject(false));
+    }
+
+    /**
+     * Returns true of the Object is a Map and is pointing to itself
+     * in the Map under the ATT_MAP_KEY.
+     */
+    protected boolean checkAttributeMap(Object obj) {
+        return (obj instanceof Map &&
+                ((Map)obj).get(ATT_MAP_KEY) == obj);
+    }
+
+    /**
+     * Returns a Map that is being used as an attribute holder.  If a
+     * Map doesn't exist, one will be created.  If the current
+     * appObject isn't the map, a Map will be created and the
+     * appObject will be added to it under the APP_OBJECT_KEY.
+     * Regardless, the attribute map will be returned from this method
+     * call.
+     */
+    protected Map getAttributeMap() {
+        // replaceAppObjectWithAttributeMap will do nothing if
+        // attribute map is already set.
+        replaceAppObjectWithAttributeMap();
+        return (Map)getAppObject(false);
+    }
+
+    /**
+     * Method to extend if you don't like Hashtables used for
+     * attribute table.
+     */
+    protected Map createAttributeMap() {
+        return new Hashtable();
+    }
+    
+    /**
+     * Adds a key-value pair to the attribute Map.  The Map will be
+     * created if it doesn't exist.
+     */
+    public void putAttribute(Object key, Object value) {
+        getAttributeMap().put(key, value);
+    }
+
+    /**
+     * Returns the object stored in a Map stored in the appObject.  If
+     * the appObject is a Map, the key will be passed to it even if
+     * the Map isn't considered to be the 'official' attribute Map.
+     */
+    public Object getAttribute(Object key) {
+        Object appObj = getAppObject(false);
+        if (appObj instanceof Map) {
+            return ((Map)appObj).get(key);
+        }
+        // else
+        return null;
+    }
+
+    /**
+     * Removes the object stored in a Map stored in the appObject.  If
+     * the appObject is a Map, the key will be passed to it even if
+     * the Map isn't considered to be the 'official' attribute Map.
+     * Returns the removed value from the Map, or null if there wasn't
+     * a value for the given key.
+     */
+    public Object removeAttribute(Object key) {
+        Object appObj = getAppObject(false);
+        if (appObj instanceof Map) {
+            return ((Map)appObj).remove(key);
+        }
+        // else
+        return null;
+    }
+
+    /**
+     * Removes all of the objects stored in a Map stored in the appObject.  If
+     * the appObject is a Map, the clear command will be passed to it even if
+     * the Map isn't considered to be the 'official' attribute Map.
+     */
+    public void clearAttributes() {
+        Object appObj = getAppObject(false);
+        if (appObj instanceof Map) {
+            ((Map)appObj).clear();
+        }
+    }
+
+    /**
+     * Returns the 'official' attribute Map, null if it hasn't been set.
+     */
+    public Map getAttributes() {
+        Object appObj = getAppObject(false);
+        if (checkAttributeMap(appObj)) {
+            // Only returns the attribute Map if it's the official
+            // version, which is marked by having a pointer to itself
+            // under the ATT_MAP_KEY
+            return (Map)appObj;
+        }
+        // else
+        return null;
+    }
+
+    /**
+     * Sets the 'official' attribute Map, moving any appObject that
+     * isn't currently the 'official' attribute Map into the map under
+     * the APP_OBJECT_KEY.
+     */
+    public void setAttributes(Map atts) {
+        if (!checkAttributeMap()) {
+            atts.put(APP_OBJECT_KEY, appObject);
+        } else {
+            Object appObj = getAttribute(APP_OBJECT_KEY);
+            if (appObj != null) {
+                atts.put(APP_OBJECT_KEY, appObj);
+            }
+        }
+
+        setAppObject(atts, false);
     }
 
 //////////////////////////////////////////////////////////////////////////
