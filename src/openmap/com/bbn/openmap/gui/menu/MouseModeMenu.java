@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/MouseModeMenu.java,v $
 // $RCSfile: MouseModeMenu.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/06 02:31:29 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/11/18 14:51:44 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -49,11 +49,11 @@ public class MouseModeMenu extends AbstractOpenMapMenu
     protected transient JRadioButtonMenuItem[] mouseModeButtons =
     new JRadioButtonMenuItem[0];
     protected transient ButtonGroup group2 = null; 
-    protected I18n I18N = new I18n("GUI");
+    protected I18n i18n = Environment.getI18n();
     protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
     public MouseModeMenu() {
 	super();
-	setText(I18N.get("menu.control.mode",defaultText) );
+	setText(i18n.get(this, "mouseModeMenu",defaultText) );
 	addActionListener(this);
     }
 
@@ -97,11 +97,11 @@ public class MouseModeMenu extends AbstractOpenMapMenu
 	for (int mms = 0; mms < modes.length; mms++){
 	    Debug.message("mousemodemenuitem","MouseModeMenuItem.setUpItems adding "+modes[mms].getID());
 	    mouseModeButtons[mms] = 
-		(JRadioButtonMenuItem) this.add(
-		    new JRadioButtonMenuItem(I18N.get(
-			"menu.control.mode." 
-			+ modes[mms].getID(), 
-			modes[mms].getID())));
+		(JRadioButtonMenuItem) this.add
+		(new JRadioButtonMenuItem
+		 (i18n.get(this, 
+			   "mode." + modes[mms].getID(), 
+			   modes[mms].getID())));
 
 	    mouseModeButtons[mms].setActionCommand(mouseModeCmd);
 	    mouseModeButtons[mms].setName(modes[mms].getID());

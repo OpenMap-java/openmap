@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/ProjectionMenu.java,v $
 // $RCSfile: ProjectionMenu.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/06 03:47:01 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/11/18 14:51:44 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -62,7 +62,8 @@ public class ProjectionMenu extends AbstractOpenMapMenu
 	for (int i=0; i < availableProjections.length; i++) {
 	    rb = (JRadioButtonMenuItem) add(
 		new JRadioButtonMenuItem(
-		    I18N.get("menu.navigate.proj."+availableProjections[i], availableProjections[i])));
+		    i18n.get(this, "proj." + availableProjections[i], 
+			     availableProjections[i])));
 	    rb.setActionCommand(projCmd);
 	    rb.setName(""+ProjectionFactory.getProjType(availableProjections[i]));
 	    rb.addActionListener(this);

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigateMenu.java,v $
 // $RCSfile: NavigateMenu.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/09/22 23:20:42 $
-// $Author: dietrick $
+// $Revision: 1.6 $
+// $Date: 2003/11/18 14:51:44 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -31,6 +31,7 @@ import java.awt.event.*;
 import java.util.Iterator;
 
 import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.gui.menu.CoordsMenuItem;
 import com.bbn.openmap.gui.menu.ProjectionMenu;
@@ -50,7 +51,7 @@ public class NavigateMenu extends AbstractOpenMapMenu
   implements ActionListener {
 
     public static final String defaultText = "Navigate";
-    public static final int defaultMnemonic = 'N';
+    public static final String defaultMnemonic = "N";
 
     protected ZoomSupport zoomSupport = new ZoomSupport(this);
     public final static transient String zoomIn2Cmd = "zoomIn2Cmd";
@@ -65,31 +66,33 @@ public class NavigateMenu extends AbstractOpenMapMenu
      */
     public NavigateMenu() {
 	super();
-	setText(I18N.get("menu.navigate",defaultText));
-	setMnemonic(defaultMnemonic);
+	I18n i18n = Environment.getI18n();
+	setText(i18n.get(this, "navigate",defaultText));
+	setMnemonic
+	    (i18n.get
+	     (this, "navigate", i18n.MNEMONIC, defaultMnemonic).charAt(0));
 	add(new CoordsMenuItem());
     
 	JMenuItem mi;
 	JMenu submenu = (JMenu)add(new JMenu(
-	    I18N.get("menu.navigate.proj.zoomin", "Zoom In")));
+	    i18n.get(this, "zoomIn", "Zoom In")));
         mi = (JMenuItem) submenu.add(new JMenuItem(
-	    I18N.get("menu.navigate.proj.2X", "2X")));
+	    i18n.get(this, "zoomIn2X", "2X")));
 	mi.setActionCommand(zoomIn2Cmd);
 	mi.addActionListener(this);
         mi = (JMenuItem) submenu.add(new JMenuItem(
-	    I18N.get("menu.navigate.proj.4X", "4X")));
+	    i18n.get(this, "zoomIn4X", "4X")));
 	mi.setActionCommand(zoomIn4Cmd);
 	mi.addActionListener(this);
 
-
         submenu = (JMenu) add(new JMenu(
-	    I18N.get("menu.navigate.proj.zoomout", "Zoom Out")));
+	    i18n.get(this, "zoomOut", "Zoom Out")));
         mi = (JMenuItem) submenu.add(new JMenuItem(
-	    I18N.get("menu.navigate.proj.2X", "2X")));
+	    i18n.get(this, "zoomOut2X", "2X")));
 	mi.setActionCommand(zoomOut2Cmd);
 	mi.addActionListener(this);
         mi = (JMenuItem) submenu.add(new JMenuItem(
-	    I18N.get("menu.navigate.proj.4X", "4X")));
+	    i18n.get(this, "zoomOut4X", "4X")));
 	mi.setActionCommand(zoomOut4Cmd);
 	mi.addActionListener(this);
 

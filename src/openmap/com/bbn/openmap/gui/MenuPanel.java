@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/MenuPanel.java,v $
 // $RCSfile: MenuPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/16 22:12:32 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/11/18 14:51:44 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -58,7 +58,7 @@ public class MenuPanel extends JMenuBar
     public final static transient String redrawCmd = "redraw";
     public final static transient String coordCmd = "coordinates";
 
-    protected transient I18n I18N = null;
+    protected transient I18n i18n = null;
     protected transient CoordInternalFrame coordDialog=null;
     protected transient CoordDialog coordDialog2 = null;
     protected transient MouseDelegator mouseDelegator=null;
@@ -93,8 +93,7 @@ public class MenuPanel extends JMenuBar
 	projectionSupport = new ProjectionSupport(this);
 	zoomSupport = new ZoomSupport(this);
 
-	// HACK I18N needs to be redone.
-	I18N = new I18n("GUI");		// get the GUI properties
+	i18n = Environment.getI18n();
 
 	// create the default menu bar here.
 	createMenuBar();
@@ -160,10 +159,9 @@ public class MenuPanel extends JMenuBar
 		for (int mms = 0; mms < modes.length; mms++){
 		    mouseModeButtons[mms] = 
 			(JRadioButtonMenuItem) mouseModeSubmenu.add(
-			    new JRadioButtonMenuItem(I18N.get(
-				"menu.control.mode." 
-				+ modes[mms].getID(), 
-				modes[mms].getID())));
+			    new JRadioButtonMenuItem
+			    (i18n.get(this, "mode." + modes[mms].getID(),
+				      modes[mms].getID())));
 		    mouseModeButtons[mms].setActionCommand(mouseModeCmd);
 		    mouseModeButtons[mms].setName(modes[mms].getID());
 		    mouseModeButtons[mms].addActionListener(this);
@@ -426,12 +424,14 @@ public class MenuPanel extends JMenuBar
 	JMenuItem mi;
 
 	// navigate menu
-	JMenu navigateMenu = (JMenu) add(new JMenu(I18N.get(
-	    "menu.navigate", "Navigate")));
-	navigateMenu.setMnemonic('N');
+	JMenu navigateMenu = (JMenu) add
+	    (new JMenu(i18n.get(this, "navigateMenu", "Navigate")));
+	navigateMenu.setMnemonic(i18n.get(this, "navigateMenu",
+					  i18n.MNEMONIC, "N").charAt(0));
 
-        mi = (JMenuItem) navigateMenu.add(new JMenuItem(I18N.get(
-	    "menu.navigate.coords", "Coordinates...")));
+        mi = (JMenuItem) navigateMenu.add
+	    (new JMenuItem(i18n.get(this, "coordinatesMenu", 
+				    "Coordinates...")));
 	mi.addActionListener(this);
 	mi.setActionCommand(coordCmd);
 
@@ -442,33 +442,33 @@ public class MenuPanel extends JMenuBar
 	}
 
 
-        projsubmenu = (JMenu) navigateMenu.add(new JMenu(I18N.get(
-	    "menu.navigate.proj", "Projection")));
+        projsubmenu = (JMenu) navigateMenu.add
+	    (new JMenu(i18n.get(this, "projection", "Projection")));
 
 	createProjectionMenu();
 
 	navigateMenu.add(new JSeparator());
 
         JMenu submenu = (JMenu) navigateMenu.add(new JMenu(
-	    I18N.get("menu.navigate.proj.zoomin", "Zoom In")));
+	    i18n.get(this, "zoomIn", "Zoom In")));
         mi = (JMenuItem) submenu.add(new JMenuItem(
-	    I18N.get("menu.navigate.proj.2X", "2X")));
+	    i18n.get(this, "zoomIn2X", "2X")));
 	mi.setActionCommand(zoomIn2Cmd);
 	mi.addActionListener(this);
         mi = (JMenuItem) submenu.add(new JMenuItem(
-	    I18N.get("menu.navigate.proj.4X", "4X")));
+	    i18n.get(this, "zoomIn4X", "4X")));
 	mi.setActionCommand(zoomIn4Cmd);
 	mi.addActionListener(this);
 
 
         submenu = (JMenu) navigateMenu.add(new JMenu(
-	    I18N.get("menu.navigate.proj.zoomout", "Zoom Out")));
+	    i18n.get(this, "zoomOut", "Zoom Out")));
         mi = (JMenuItem) submenu.add(new JMenuItem(
-	    I18N.get("menu.navigate.proj.2X", "2X")));
+	    i18n.get(this, "zoomOut2X", "2X")));
 	mi.setActionCommand(zoomOut2Cmd);
 	mi.addActionListener(this);
         mi = (JMenuItem) submenu.add(new JMenuItem(
-	    I18N.get("menu.navigate.proj.4X", "4X")));
+	    i18n.get(this, "zoomOut4X", "4X")));
 	mi.setActionCommand(zoomOut4Cmd);
 	mi.addActionListener(this);
     }
@@ -486,7 +486,8 @@ public class MenuPanel extends JMenuBar
 	for(int i=0;i<availableProjections.length;i++){
 	    rb = (JRadioButtonMenuItem) projsubmenu.add(
 		new JRadioButtonMenuItem(
-		    I18N.get("menu.navigate.proj."+availableProjections[i], availableProjections[i])));
+		    i18n.get(this, "proj."+availableProjections[i], 
+			     availableProjections[i])));
 	    rb.setActionCommand(projCmd);
 	    rb.setName(""+ProjectionFactory.getProjType(availableProjections[i]));
 	    rb.addActionListener(this);
@@ -505,16 +506,16 @@ public class MenuPanel extends JMenuBar
 	JMenuItem mi;
 
 	// control menu
-	JMenu controlMenu = (JMenu) add(new JMenu(I18N.get(
-	    "menu.control", "Control")));
-	controlMenu.setMnemonic('C');
+	JMenu controlMenu = (JMenu) add
+	    (new JMenu(i18n.get(this, "controlMenu", "Control")));
+	controlMenu.setMnemonic(i18n.get(this, "controlMenu",
+					 i18n.MNEMONIC, "C").charAt(0));
 
-        mouseModeSubmenu = (JMenu) controlMenu.add(new JMenu(
-	    I18N.get("menu.control.mode", "Mouse Mode")));
+        mouseModeSubmenu = (JMenu) controlMenu.add
+	    (new JMenu(i18n.get(this, "mouseModeSubmenu", "Mouse Mode")));
 
-
-	mi = (JMenuItem) controlMenu.add(new JMenuItem(
-	    I18N.get("menu.control.redraw", "Redraw")));
+	mi = (JMenuItem) controlMenu.add
+	    (new JMenuItem(i18n.get(this, "redraw", "Redraw")));
 	mi.setActionCommand(redrawCmd);
 	mi.addActionListener(this);
     }
@@ -528,8 +529,9 @@ public class MenuPanel extends JMenuBar
      * information delegator.  
      */
     public void addHelpMenu() {
-	helpMenu =  new JMenu("Help");
-	helpMenu.setMnemonic('H');
+	helpMenu = new JMenu(i18n.get(this, "helpMenu", "Help"));
+	helpMenu.setMnemonic
+	    (i18n.get(this, "helpMenu", i18n.MNEMONIC, "H").charAt(0));
 	JMenuItem mi = helpMenu.add(new JMenuItem("OpenMap"));
 	mi.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -788,10 +790,10 @@ public class MenuPanel extends JMenuBar
 		mouseModeButtons = new JRadioButtonMenuItem[modes.length];
 		for (int mms = 0; mms < modes.length; mms++){
 		    mouseModeButtons[mms] = 
-			(JRadioButtonMenuItem) mouseModeSubmenu.add(
-			    new JRadioButtonMenuItem(I18N.get(
-				"menu.control.mode." + modes[mms].getID(), 
-				modes[mms].getID())));
+			(JRadioButtonMenuItem) mouseModeSubmenu.add
+			(new JRadioButtonMenuItem
+			 (i18n.get(this, "mode." + modes[mms].getID(), 
+				   modes[mms].getID())));
 		    mouseModeButtons[mms].setActionCommand(mouseModeCmd);
 		    mouseModeButtons[mms].setName(modes[mms].getID());
 		    mouseModeButtons[mms].addActionListener(this);

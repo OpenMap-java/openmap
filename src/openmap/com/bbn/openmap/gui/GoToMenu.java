@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/10/08 21:31:57 $
-// $Author: dietrick $
+// $Revision: 1.8 $
+// $Date: 2003/11/18 14:51:44 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -35,6 +35,8 @@ import java.util.Vector;
 import javax.swing.*;
 
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.gui.menu.DataBoundsViewMenuItem;
 import com.bbn.openmap.gui.menu.OMBasicMenu;
@@ -88,7 +90,7 @@ import com.bbn.openmap.layer.util.LayerUtils;
 public class GoToMenu extends AbstractOpenMapMenu {
 
     private String defaultText = "Views";
-    private int defaultMnemonic = 'v';
+    private String defaultMnemonic = "V";
 
     protected Hashtable dataBoundsProviders = new Hashtable();
     protected OMBasicMenu dataBoundsMenu;
@@ -119,8 +121,10 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
     public GoToMenu() {
 	super();
-	setText(I18N.get("menu.goto", defaultText));
-	setMnemonic(defaultMnemonic);
+	I18n i18n = Environment.getI18n();
+	setText(i18n.get(this, "goto", defaultText));
+	setMnemonic(i18n.get
+		    (this, "goto", i18n.MNEMONIC, defaultMnemonic).charAt(0));
 
 	dataBoundsMenu = new OMBasicMenu("Go Over Data");
 	add(new AddNewViewButton("Add Saved View..."));
