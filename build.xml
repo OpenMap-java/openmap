@@ -121,7 +121,7 @@
   <!-- depends="jar" -->
   <target name="run" description="Run the OpenMap application.">
     <java classname="com.bbn.openmap.app.OpenMap"
-	  classpath="lib/openmap.jar;share"
+	  classpath="lib/openmap.jar;lib/milStd2525_png.jar;share"
 	  fork="yes"/>
   </target>
 
