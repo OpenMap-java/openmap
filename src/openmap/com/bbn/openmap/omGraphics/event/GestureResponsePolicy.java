@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/GestureResponsePolicy.java,v $
 // $RCSfile: GestureResponsePolicy.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/09/08 22:32:19 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:24:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,54 +26,37 @@ package com.bbn.openmap.omGraphics.event;
 import java.awt.event.MouseEvent;
 import javax.swing.JPopupMenu;
 
-import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 
 public interface GestureResponsePolicy {
 
-    ////// Actions
-
-    public void leftClick(MouseEvent me);
-
-    public void leftClick(OMGeometry omg, MouseEvent me);
-
-    public void leftClickOff(OMGeometry omg, MouseEvent me);
-
-    public void rightClick(MouseEvent me);
-
-    public void rightClick(OMGeometry omg, MouseEvent me);
-
-    public void rightClickOff(OMGeometry omg, MouseEvent me);
-
-    public void mouseOver(MouseEvent me);
-
-    public void mouseOver(OMGeometry omg, MouseEvent me);
-
-    public void mouseNotOver(OMGeometry omg);
-
-    public void keyPressed(OMGeometry omg, int virtualKey);
-
     ////// Queries
 
-    public boolean isEditable(OMGeometry omgr);
+    public boolean isHighlightable(OMGraphic omgr);
 
-    public boolean isSelectable(OMGeometry omgr);
+    public boolean isSelectable(OMGraphic omgr);
 
     ////// Reactions
+    public void select(OMGraphicList omgl);
 
-    public void select(OMGeometry omg);
+    public void deselect(OMGraphicList omgl);
 
-    public void deselect(OMGeometry omg);
+    public OMGraphicList cut(OMGraphicList omgl);
 
-    public OMGeometry cut(OMGeometry omg);
+    public OMGraphicList copy(OMGraphicList omgl);
 
-    public OMGeometry copy(OMGeometry omg);
+    public void paste(OMGraphicList omgl);
 
-    public void paste(OMGeometry omg);
+    /** Fleeting change of appearance. */
+    public void highlight(OMGraphic omg);
 
-    public String getToolTipTextFor(OMGeometry omg);
+    public void unhighlight(OMGraphic omg);
 
-    public JPopupMenu modifyPopupMenuForMap(JPopupMenu jpm);
+    public String getToolTipTextFor(OMGraphic omg);
 
-    public JPopupMenu modifyPopupMenuFor(OMGeometry omg, JPopupMenu jpm);
+    public String getInfoText(OMGraphic omg);
+
+    public JPopupMenu modifyPopupMenuFor(OMGraphic omg, JPopupMenu jpm);
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/09/08 22:32:19 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:24:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,27 +24,66 @@
 package com.bbn.openmap.omGraphics.event;
 
 import java.awt.event.MouseEvent;
+import javax.swing.SwingUtilities;
 
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.util.Debug;
 
-public class StandardMapMouseInterpreter implements MapMouseInterpreter {
+public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMouseListener {
 
+    protected boolean DEBUG = false;
     protected OMGraphicHandlerLayer layer = null;
     protected String[] mouseModeServiceList = null;
-    protected OMGraphic lastSelected = null;
     protected String lastToolTip = null;
     protected GestureResponsePolicy grp = null;
-    protected OMGeometry omgci = null; // click interest
-    protected OMGeometry omgmi = null; // movement interest
+    protected GeometryOfInterest clickInterest = null;
+    protected GeometryOfInterest movementInterest = null;
 
-    public StandardMapMouseInterpreter() {}
+    public StandardMapMouseInterpreter() {
+	DEBUG = Debug.debugging("grp");
+    }
 
     public StandardMapMouseInterpreter(OMGraphicHandlerLayer l) {
 	setLayer(l);
+    }
+
+    public class GeometryOfInterest {
+	OMGraphic omg;
+	int button;
+	boolean leftButton;
+
+	public GeometryOfInterest(OMGraphic geom, MouseEvent me) {
+	    omg = geom;
+	    button = me.getButton();
+	    leftButton = isLeftMouseButton(me);
+	}
+
+	public boolean appliesTo(OMGraphic geom) {
+	    return (geom == omg);
+	}
+
+	public boolean appliesTo(OMGraphic geom, MouseEvent me) {
+	    return (geom == omg && sameButton(me));
+	}
+
+	public boolean sameButton(MouseEvent me) {
+	    return button == me.getButton();
+	}
+	
+	public OMGraphic getGeometry() {
+	    return omg;
+	}
+
+	public int getButton() {
+	    return button;
+	}
+
+	public boolean isLeftButton() {
+	    return leftButton;
+	}
     }
 
     public void setLayer(OMGraphicHandlerLayer l) {
@@ -59,6 +98,10 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 	mouseModeServiceList = list;
     }
 
+    public boolean isLeftMouseButton(MouseEvent me) {
+	return SwingUtilities.isLeftMouseButton(me) && !me.isControlDown();
+    }
+
     /**
      * Return a list of the modes that are interesting to the
      * MapMouseListener.  You MUST override this with the modes you're
@@ -68,20 +111,36 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 	return mouseModeServiceList;
     }
 
-    protected void setClickInterest(OMGeometry omg) {
-	omgci = omg;
+    protected void setClickInterest(GeometryOfInterest goi) {
+	clickInterest = goi;
     }
 
-    protected OMGeometry getClickInterest() {
-	return omgci;
+    protected GeometryOfInterest getClickInterest() {
+	return clickInterest;
     }
 
-    protected void setMovementInterest(OMGeometry omg) {
-	omgmi = omg;
+    protected void setMovementInterest(GeometryOfInterest goi) {
+	movementInterest = goi;
     }
 
-    protected OMGeometry getMovementInterest() {
-	return omgmi;
+    protected GeometryOfInterest getMovementInterest() {
+	return movementInterest;
+    }
+
+    /**
+     * Return the OMGraphic object that is under a mouse event
+     * occurance on the map, null if nothing applies.
+     */
+    public OMGraphic getGeometryUnder(MouseEvent me) {
+	OMGraphic omg = null;
+	OMGraphicList list = null;
+	if (layer != null) {
+	    list = layer.getList();
+	    if (list != null) {
+		omg = list.findClosest(me.getX(), me.getY(), 4);
+	    }
+	}
+	return omg;
     }
 
     // Mouse Listener events
@@ -94,19 +153,27 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
      */
     public boolean mousePressed(MouseEvent e) { 
 	boolean ret = false;
-	OMGraphicList list = null;
 
-	if (layer != null) {
-	    list = layer.getList();
+	GeometryOfInterest goi = getClickInterest();
+	OMGraphic omg = getGeometryUnder(e);
+
+	if (goi != null && !goi.appliesTo(omg, e)) {
+	    // If the click doesn't match the geometry or button
+	    // of the geometry of interest, need to tell the goi
+	    // that is was clicked off, and set goi to null.
+	    if (goi.isLeftButton()) {
+		leftClickOff(goi.getGeometry(), e);
+	    } else {
+		rightClickOff(goi.getGeometry(), e);
+	    }
+	    setClickInterest(null);
 	}
 
-	if (list != null) {
-	    OMGraphic omgr = list.findClosest(e.getX(), e.getY(), 4);
-	    if (omgr != null && grp.isSelectable(omgr)) {
-		setClickInterest(omgr);
-	    }
+	if (omg != null && grp.isSelectable(omg)) {
+	    setClickInterest(new GeometryOfInterest(omg, e));
 	    ret = true;
 	}
+
 	return ret;
     }
 
@@ -125,33 +192,38 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
      * @return false
      */
     public boolean mouseClicked(MouseEvent e) {
-	boolean ret = false;
-	OMGeometry omg = getClickInterest();
+	GeometryOfInterest goi = getClickInterest();
 
-	if (omg != null) {
-	    if (e.getButton() == MouseEvent.BUTTON2) {
-		grp.rightClick(omg, e);
+	// If there is a click interest
+	if (goi != null) {
+	    // Tell the policy it an OMGraphic was clicked.
+	    if (isLeftMouseButton(e)) {
+		leftClick(goi.getGeometry(), e);
 	    } else {
-		grp.leftClick(omg, e);
+		rightClick(goi.getGeometry(), e);
+	    }
+	} else {
+	    if (isLeftMouseButton(e)) {
+		leftClick(e);
+	    } else {
+		rightClick(e);
 	    }
 	}
 
-	return ret;
+	return true;
     }
 
     /**
      * Invoked when the mouse enters a component.
      * @param e MouseEvent
      */
-    public void mouseEntered(MouseEvent e) {
-    }
+    public void mouseEntered(MouseEvent e) {}
 
     /**
      * Invoked when the mouse exits a component.
      * @param e MouseEvent
      */
-    public void mouseExited(MouseEvent e) {
-    }
+    public void mouseExited(MouseEvent e) {}
 
     // Mouse Motion Listener events
     ///////////////////////////////
@@ -163,17 +235,12 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
      * @return false
      */
     public boolean mouseDragged(MouseEvent e) {
-	boolean ret = false;
-
-	OMGeometry omg = getClickInterest();
-	if (omg != null) {
+	GeometryOfInterest goi = getClickInterest();
+	if (goi != null) {
 	    setClickInterest(null);
-	    ret = true;
 	}
 
-	ret = mouseMoved(e);
-
-	return ret;
+	return mouseMoved(e);
     }
 
     /**
@@ -184,45 +251,31 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
      */
     public boolean mouseMoved(MouseEvent e) {
 	boolean ret = false;
-	OMGraphicList list = null;
 
-	if (layer != null) {
-	    list = layer.getList();
-	}
+	OMGraphic omg = getGeometryUnder(e);
+	GeometryOfInterest goi = getMovementInterest();
 
- 	if (list != null) {
- 	    OMGeometry omg = list.findClosest(e.getX(),e.getY(),4.0f);
+	if (omg != null && grp != null) {
 
- 	    if (omg != null) {
-		if (grp.isSelectable(omg)) {
-		    if (omg != lastSelected) {
-			lastToolTip = grp.getToolTipTextFor(omg);
-		    }
+	    // This gets called if the goi is new or if the goi
+	    // refers to a different OMGraphic as previously noted.
+	    if (goi == null || !goi.appliesTo(omg)) {
 
-		    if (layer != null) {
-			if (lastToolTip != null) {
-			    layer.fireRequestToolTip(e, lastToolTip);
-			    ret = true;
-			} else {
-			    layer.fireHideToolTip(e);
-			}
-		    }
-
-		    setMovementInterest(omg);
-		    grp.mouseOver(omg, e);
+		if (goi != null) {
+		    mouseNotOver(goi.getGeometry());
 		}
-	    } else {
-		if (lastToolTip != null && layer != null) {
-		    layer.fireHideToolTip(e);
-		}
-		lastToolTip = null;
 
-		omg = getMovementInterest();
-		if (omg != null) {
-		    grp.mouseNotOver(omg);
-		    setMovementInterest(null);
-		}
+		goi = new GeometryOfInterest(omg, e);
+		setMovementInterest(goi);
+		mouseOver(omg, e);
 	    }
+
+	} else {
+	    if (goi != null) {
+		mouseNotOver(goi.getGeometry());
+		setMovementInterest(null);
+	    }
+	    mouseOver(e);
 	}
 
 	return ret;
@@ -233,11 +286,135 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
      * Another layer has consumed the event.
      */
     public void mouseMoved() {
-	OMGeometry omg = getMovementInterest();
-	if (omg != null) {
-	    grp.mouseNotOver(omg);
+	GeometryOfInterest goi = getMovementInterest();
+	if (goi != null) {
+	    mouseNotOver(goi.getGeometry());
 	    setMovementInterest(null);
 	}
+    }
+
+    public boolean leftClick(MouseEvent me) {
+	if (DEBUG) {
+	    Debug.output("leftClick(MAP) at " + me.getX() + ", " + me.getY());
+	}
+
+	return false;
+    }
+
+    public boolean leftClick(OMGraphic omg, MouseEvent me) {
+	if (DEBUG) {
+	    Debug.output("leftClick(" + omg.getClass().getName() + ") at " + 
+			 me.getX() + ", " + me.getY());
+	}
+
+	if (grp != null && grp.isSelectable(omg)) {
+	    OMGraphicList omgl = new OMGraphicList();
+	    omgl.add(omg);
+	    grp.select(omgl);
+	}
+
+	return true;
+    }
+
+    public boolean leftClickOff(OMGraphic omg, MouseEvent me) {
+	if (DEBUG) {
+	    Debug.output("leftClickOff(" + omg.getClass().getName() + ") at " + 
+			 me.getX() + ", " + me.getY());
+	}
+
+	return false;
+    }
+
+    public boolean rightClick(MouseEvent me) {
+	if (DEBUG) {
+	    Debug.output("rightClick(MAP) at " + me.getX() + ", " + me.getY());
+	}
+
+	return false;
+    }
+
+    public boolean rightClick(OMGraphic omg, MouseEvent me) {
+	if (DEBUG) {
+	    Debug.output("rightClick(" + omg.getClass().getName() + ") at " + 
+			 me.getX() + ", " + me.getY());
+	}
+
+	return true;
+    }
+
+    public boolean rightClickOff(OMGraphic omg, MouseEvent me) {
+	if (DEBUG) {
+	    Debug.output("rightClickOff(" + omg.getClass().getName() + ") at " + 
+			 me.getX() + ", " + me.getY());
+	}
+
+	return false;
+    }
+
+    public boolean mouseOver(MouseEvent me) {
+	if (DEBUG) {
+	    Debug.output("mouseOver(MAP) at " + me.getX() + ", " + me.getY());
+	}
+
+	return false;
+    }
+
+    public boolean mouseOver(OMGraphic omg, MouseEvent me) {
+	if (DEBUG) {
+	    Debug.output("mouseOver(" + omg.getClass().getName() + ") at " + 
+			 me.getX() + ", " + me.getY());
+	}
+
+	if (grp != null) {
+	    lastToolTip = grp.getToolTipTextFor(omg);
+
+
+	    if (grp.isHighlightable(omg)) {
+		grp.highlight(omg);
+	    }
+
+	    if (layer != null) {
+
+		if (lastToolTip != null) {
+		    layer.fireRequestToolTip(me, lastToolTip);
+		} else {
+		    layer.fireHideToolTip(me);
+		}
+
+		String infoText = grp.getInfoText(omg);
+		if (infoText != null) {
+		    layer.fireRequestInfoLine(infoText);
+		}
+	    }
+	}
+	return true;
+    }
+
+    public boolean mouseNotOver(OMGraphic omg) {
+	if (DEBUG) {
+	    Debug.output("mouseNotOver(" + omg.getClass().getName() + ")");
+	}
+
+	if (grp != null) {
+	    grp.unhighlight(omg);
+	}
+
+	if (layer != null) {
+	    if (lastToolTip != null) {
+		layer.fireHideToolTip(null);
+	    }
+	    lastToolTip = null;
+
+	    layer.fireRequestInfoLine("");
+	}
+	return false;
+    }
+
+    public boolean keyPressed(OMGraphic omg, int virtualKey) {
+	if (DEBUG) {
+	    Debug.output("keyPressed(" + omg.getClass().getName() + " , " + virtualKey + ")");
+	}
+	return true;
     }
 
     public void setGRP(GestureResponsePolicy grp) {
