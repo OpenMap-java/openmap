@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.20 $
-// $Date: 2004/03/23 05:35:26 $
+// $Revision: 1.21 $
+// $Date: 2004/05/10 21:10:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,6 +34,7 @@ import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.InfoDisplayEvent;
 import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.MapMouseEvent;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.layer.policy.ProjectionChangePolicy;
@@ -1140,10 +1141,13 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * location over the map.  The popup doesn't concern any
      * OMGraphics, and should be presented for a click on the map
      * background.
+     * @param mme a MapMouseEvent describing the location over where
+     * the menu items should apply, in case different options are
+     * appropriate for different places.
      * @return a JMenu for the map.  Return null or empty List if
      * no input required.
      */
-    public List getItemsForMapMenu() {
+    public List getItemsForMapMenu(MapMouseEvent mme) {
         return null;
     }
 
@@ -1156,6 +1160,47 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      */
     public List getItemsForOMGraphicMenu(OMGraphic omg) {
         return null;
+    }
+
+    /**
+     * A query from the MapMouseInterpreter wondering if the
+     * GestureResponsePolicy wants events pertaining to mouse
+     * movements over the map that are not over an OMGraphic.  If the
+     * GestureResponsePolicy responds true, then the mouseOver and
+     * leftClick methods will be called on the GestureResponsePolicy
+     * by the interpreter.  There is no rightClick method that is
+     * called, because a right click will always cause a
+     * getItemsForMapMenu() method to be called.
+     */
+    public boolean receivesMapEvents() {
+        return false;
+    }
+
+    /**
+     * A notification that the mouse cursor has been moved over the
+     * map, not over any of the OMGraphics on the
+     * GestureResponsePolicy.  This only gets called if the response
+     * to receiveMapEvents is true.
+     * @param mme MapMouseEvent describing the location of the mouse.
+     * @return true of this information is to be considered consumed
+     * and should not be passed to anybody else.
+     */
+    public boolean mouseOver(MapMouseEvent mme) {
+        return false;
+    }
+
+    /**
+     * A notification that the mouse has been clicked with the left
+     * mouse button on the map, and not on any of the OMGraphics.
+     * This only gets called if the response to receiveMapEvents is
+     * true.  Right clicks on the map are always reported to the
+     * getItemsForMapMenu method.
+     * @param mme MapMouseEvent describing the location of the mouse.
+     * @return true of this information is to be considered consumed
+     * and should not be passed to anybody else.
+     */
+    public boolean leftClick(MapMouseEvent mme) {
+        return false;
     }
 
 }

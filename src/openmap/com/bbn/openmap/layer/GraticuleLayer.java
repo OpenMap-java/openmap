@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/02/05 18:15:07 $
+// $Revision: 1.8 $
+// $Date: 2004/05/10 21:10:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -477,6 +477,10 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
         OMGraphicList newgraphics = new OMGraphicList(20);
         // Lets figure out which lines should be painted...
         Projection projection = getProjection();
+
+        if (projection == null) {
+            return newgraphics;
+        }
 
         if (showOneAndFiveLines || showRuler) {
 

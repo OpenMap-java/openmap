@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/02/06 19:06:20 $
+// $Revision: 1.12 $
+// $Date: 2004/05/10 21:10:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,7 +29,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -38,8 +37,6 @@ import javax.swing.JPanel;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.awt.TextShapeDecoration;
-import com.bbn.openmap.event.LayerStatusEvent;
-import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.omGraphics.event.*;
@@ -48,10 +45,7 @@ import com.bbn.openmap.omGraphics.labeled.LabeledOMSpline;
 import com.bbn.openmap.omGraphics.meteo.OMColdSurfaceFront;
 import com.bbn.openmap.omGraphics.meteo.OMHotSurfaceFront;
 import com.bbn.openmap.omGraphics.meteo.OMOcclusion;
-import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.tools.drawing.DrawingTool;
 import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
@@ -80,10 +74,20 @@ public class DemoLayer extends OMGraphicHandlerLayer
     protected JPanel legend;
 
     public DemoLayer() {
+        // This is how to set the ProjectionChangePolicy, which
+        // dictates how the layer behaves when a new projection is
+        // received.
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this, true));
+        // Making the setting so this layer receives events from the
+        // SelectMouseMode, which has a modeID of "Gestures".  Other
+        // IDs can be added as needed.
         setMouseModeIDsForEvents(new String[] {"Gestures"});
     }
 
     public void paint(java.awt.Graphics g) {
+        // Super calls the RenderPolicy that makes decisions on how to
+        // paint the OMGraphicList.  The only reason we have this
+        // method overridden is to paint the legend if it exists.
         super.paint(g);
         if (legend != null) {
             legend.paint(g);
@@ -91,6 +95,16 @@ public class DemoLayer extends OMGraphicHandlerLayer
     }
 
     public void init() {
+
+        // This layer has a set OMGraphicList, created when the layer
+        // is created.  It uses the StandardPCPolicy for new
+        // projections, which keeps the list intact and simply calls
+        // generate() on it with the new projection, and repaint()
+        // which calls paint().  If you want a more dynamic layer,
+        // don't bother creating your list right away - Override the
+        // prepare() method, which gets called by the
+        // ProjectionChangePolicy when the projection changes.  See
+        // OMGraphicHandlerLayer.
 
         OMGraphicList omList = (OMGraphicList) getList();
 
@@ -302,6 +316,11 @@ public class DemoLayer extends OMGraphicHandlerLayer
      * Overriding the OMGraphicHandlerMethod, creating a list if it's null.
      */
     public OMGraphicList getList() {
+        // This isn't the default behavior of the
+        // OMGraphicHandlerLayer.  Normally, if the list is null, we
+        // leave it null because a null list can be easily used as a
+        // flag that work has to be done in the prepare() method to
+        // contact the data source and create OMGraphics.
         OMGraphicList list = super.getList();
         if (list == null) {
             list = new OMGraphicList();
@@ -752,13 +771,19 @@ public class DemoLayer extends OMGraphicHandlerLayer
     protected DrawingTool drawingTool;
 
     public DrawingTool getDrawingTool() {
+        // Usually set in the findAndInit() method.
         return drawingTool;
     }
 
     public void setDrawingTool(DrawingTool dt) {
+        // Called by the findAndInit method.
         drawingTool = dt;
     }
 
+    /**
+     * Called when the DrawingTool is complete, providing the layer
+     * with the modified OMGraphic.
+     */
     public void drawingComplete(OMGraphic omg, OMAction action) {
         Debug.message("demo", "DemoLayer: DrawingTool complete");
 
@@ -849,6 +874,11 @@ public class DemoLayer extends OMGraphicHandlerLayer
         return "Demo Layer Object";
     }
 
+    /**
+     * Called if isSelectable(OMGraphic) was true, so the list has the
+     * OMGraphic.  A list is used in case underlying code is written
+     * to handle more than one OMGraphic being selected at a time.
+     */
     public void select(OMGraphicList list) {
         if (list != null && list.size() > 0) {
             OMGraphic omg = list.getOMGraphicAt(0);
