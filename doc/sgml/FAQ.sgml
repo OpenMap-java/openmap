@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/Attic/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.1 $
-$Date: 1998/12/04 16:13:55 $
+$Revision: 1.2 $
+$Date: 1998/12/04 16:55:08 $
 $Author: aculline $
 
 Frequently Asked Questions for the OpenMap system.
@@ -74,7 +74,7 @@ The first two are data types, the latter is a format. These come from
 the US National Imagery and Mapping Agency
 <tt><htmlurl url="http://www.nima.mil"></tt> CADRG is Compressed ADRG, a form of
 raster map.  CIB is Controlled Image Base, an imagery product.  RPF is
-Raster Product Format, i.e. the underling format of CADRG and CIB.
+Raster Product Format, i.e. the underlying format of CADRG and CIB.
 <tt><htmlurl url="http://164.214.2.59:80/publications/specs/index.html"></tt>
 
 
