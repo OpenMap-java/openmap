@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/04/04 14:41:14 $
+// $Revision: 1.5 $
+// $Date: 2003/04/08 18:42:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,6 +38,7 @@ import com.bbn.openmap.event.*;
 import com.bbn.openmap.gui.MapPanelChild;
 import com.bbn.openmap.gui.OMComponentPanel;
 import com.bbn.openmap.gui.StatusLightPanel;
+import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -292,13 +293,14 @@ public class InformationDelegator extends OMComponentPanel
     }
     
     /**
-     * Try to display a String in a Web browser.
+     * Display a html String in a window.
      */
     public void displayBrowserContent(String content) {
-	WebBrowser wb = getBrowser();
-	if (wb != null) {
-	    wb.writeAndLaunch(content);
-	}	    
+	com.bbn.openmap.gui.MiniBrowser.display(content);
+// 	WebBrowser wb = getBrowser();
+// 	if (wb != null) {
+// 	    wb.writeAndLaunch(content);
+// 	}
     }
     
     /**
