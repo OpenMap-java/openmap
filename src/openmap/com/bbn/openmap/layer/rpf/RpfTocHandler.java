@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocHandler.java,v $
 // $RCSfile: RpfTocHandler.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.8 $
+// $Date: 2004/09/17 19:34:34 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -532,41 +532,48 @@ public class RpfTocHandler {
                     tempPath = frame.rpfdir + frame.directory + frame.filename;
                 } else {
                     tempPath = frame.directory + frame.filename;
+                    frame.rpfdir = null; // The path to the rpf dir is in frame.directory
                 }
 
                 long diskspace = 288000;
                 boolean exists = true;
-                if (local) {
-                    exists = BinaryFile.exists(tempPath);
-                    // This may fail because of FTP and/or CDROM filename
-                    // shinanagins.  The A.TOC file should always think
-                    // that the filenames are uppercase.  They may get
-                    // copied as lowercase, so we'll check that here.  If
-                    // they are actually lowercase, we'll change it here
-                    // so that everything will work at runtime. - DFD 8/20/99
 
-                    // OK, with the advent of the new BinaryFile that
-                    // will let these files be read from a jar file or
-                    // from a URL, we have to assume that the files
-                    // are there, and deal with it if they are not.
-                }
+                // Turns out this check is wicked expensive!!!!!!
+                // Assume it's there, the RPFFrame has been modified
+                // to try lower case names if needed.
 
-                if (exists) {
+//                 if (local) {
+//                     exists = BinaryFile.exists(tempPath);
+
+//                     // This may fail because of FTP and/or CDROM filename
+//                     // shinanagins.  The A.TOC file should always think
+//                     // that the filenames are uppercase.  They may get
+//                     // copied as lowercase, so we'll check that here.  If
+//                     // they are actually lowercase, we'll change it here
+//                     // so that everything will work at runtime. - DFD 8/20/99
+
+//                     // OK, with the advent of the new BinaryFile that
+//                     // will let these files be read from a jar file or
+//                     // from a URL, we have to assume that the files
+//                     // are there, and deal with it if they are not.
+//                 }
+
+//                 if (exists) {
                     frame.diskspace = diskspace;
                     frame.framePath = tempPath;
                     frame.exists = true;
-                } else if (!fullPathsInATOC) {
+//                 } else if (!fullPathsInATOC) {
 
-                    // This should only be an issue for local files.
-                    tempPath = frame.rpfdir + frame.directory.toLowerCase() +
-                        frame.filename.toLowerCase();
+//                     // This should only be an issue for local files.
+//                     tempPath = frame.rpfdir + frame.directory.toLowerCase() +
+//                         frame.filename.toLowerCase();
 
-                    if (BinaryFile.exists(tempPath)) {
-                        frame.diskspace = diskspace;
-                        frame.framePath = tempPath;
-                        frame.exists = true;
-                    }
-                }
+// //                     if (BinaryFile.exists(tempPath)) {
+//                         frame.diskspace = diskspace;
+//                         frame.framePath = tempPath;
+//                         frame.exists = true;
+// //                     }
+//                 }
 
                 if (frame.framePath == null) {
                     Debug.output("RpfTocHandler: Frame " + tempPath + " doesn't exist.  Please rebuild A.TOC file using MakeToc, or check read permissions for the file.");
@@ -832,32 +839,34 @@ public class RpfTocHandler {
 
         for (int i=0; i < numBoundaries; i++) {
 
+            RpfTocEntry currentEntry = entries[i];
+
             if (DEBUG_RPFTOCDETAIL) {
                 Debug.output("********************");
                 Debug.output("  tochandler: Boundary #" + i);
-                Debug.output(entries[i].toString());
+                Debug.output(currentEntry.toString());
             }
 
             // Try to get the boundary rectangle with the most
             // coverage, so reset the entry for this particular query.
-            entries[i].coverage.reset();
+            currentEntry.coverage.reset();
 
             //  Find the scale of the boundary rectangle
-            if (entries[i].info == null ||
-                entries[i].info.scale == RpfConstants.Various) {
+            if (currentEntry.info == null ||
+                currentEntry.info.scale == RpfConstants.Various) {
 
-                nscale = (int) textScaleToLong(entries[i].scale);
-                entries[i].info = new RpfProductInfo();
+                nscale = (int) textScaleToLong(currentEntry.scale);
+                currentEntry.info = new RpfProductInfo();
 
                 // Reset the RpfProductInfo to the listed parameters
                 // in the A.TOC file.
-                entries[i].info.scale = (float) nscale;
-                entries[i].info.scaleString = entries[i].scale;
-                entries[i].coverage.scale = (float) nscale;
+                currentEntry.info.scale = (float) nscale;
+                currentEntry.info.scaleString = currentEntry.scale;
+                currentEntry.coverage.scale = (float) nscale;
 
             } else {
-                entries[i].coverage.scale = entries[i].info.scale;
-                nscale = (int) entries[i].info.scale;
+                currentEntry.coverage.scale = currentEntry.info.scale;
+                nscale = (int) currentEntry.info.scale;
             }
 
             if (DEBUG_RPFTOCDETAIL) {
@@ -885,11 +894,11 @@ public class RpfTocHandler {
             if (scaleFactor >= lowerScaleFactorLimit &&
                 scaleFactor <= upperScaleFactorLimit &&
                 (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY) ||
-                 chartSeries.equalsIgnoreCase(entries[i].info.seriesCode))) {
+                 chartSeries.equalsIgnoreCase(currentEntry.info.seriesCode))) {
 
-                if ( isOkZone(entries[i].zone,okZones) ) {
-                    // sets entries[i].coverage.boundaryHits
-                    int hits = entries[i].coverage.setBoundaryHits(ullat, ullon, lrlat, lrlon);
+                if ( isOkZone(currentEntry.zone,okZones) ) {
+                    // sets currentEntry.coverage.boundaryHits
+                    int hits = currentEntry.coverage.setBoundaryHits(ullat, ullon, lrlat, lrlon);
 
                     if (DEBUG_RPFTOCDETAIL) {
                         Debug.output("getBestCoverageEntry(): Boundary Hits = " +  hits);
@@ -899,7 +908,7 @@ public class RpfTocHandler {
 
                         boolean betterScale = false;
 
-                        float newScaleDiff = RpfFrameCacheHandler.scaleDifference(proj, entries[i].coverage);
+                        float newScaleDiff = RpfFrameCacheHandler.scaleDifference(proj, currentEntry.coverage);
                         float bestScaleDiff = RpfFrameCacheHandler.scaleDifference(proj, bestEntry.coverage);
 
                         if (newScaleDiff <= bestScaleDiff) {
@@ -907,7 +916,7 @@ public class RpfTocHandler {
                         }
 
                         if (betterScale &&
-                            (entries[i].coverage.setPercentCoverage(ullat, ullon, lrlat, lrlon) >= bestEntry.coverage.getPercentCoverage()) &&
+                            (currentEntry.coverage.setPercentCoverage(ullat, ullon, lrlat, lrlon) >= bestEntry.coverage.getPercentCoverage()) &&
                             (hits >= prevBoundaryHits || hits >= 6)) {
 
                            // Add to list if has any hits and is
@@ -916,36 +925,36 @@ public class RpfTocHandler {
                            if (newScaleDiff < bestScaleDiff) {
                               coverageEntries.clear();
                            }
-                           coverageEntries.add(entries[i]);
+                           coverageEntries.add(currentEntry);
 
 
-                            bestEntry = entries[i];
+                            bestEntry = currentEntry;
                             prevBoundaryHits = hits;
 
                             if (DEBUG_RPFTOC) {
-                                Debug.output("getBestCoverageEntry(): Found a match in a BR with coverage of "+ entries[i].coverage.getPercentCoverage() + "%.");
+                                Debug.output("getBestCoverageEntry(): Found a match in a BR with coverage of "+ currentEntry.coverage.getPercentCoverage() + "%.");
                             }
                         }
                         else if (betterScale &&
-                           entries[i].coverage.getPercentCoverage() > 0f) {
+                           currentEntry.coverage.getPercentCoverage() > 0f) {
 
                           if (newScaleDiff < bestScaleDiff) {
                              coverageEntries.clear();
                           }
-                          coverageEntries.add(entries[i]);
+                          coverageEntries.add(currentEntry);
 
                        }
 
                     } else if (hits > prevBoundaryHits &&
-                               (entries[i].coverage.setPercentCoverage(ullat, ullon, lrlat, lrlon) > 0f)) {
-                        bestEntry = entries[i];
+                               (currentEntry.coverage.setPercentCoverage(ullat, ullon, lrlat, lrlon) > 0f)) {
+                        bestEntry = currentEntry;
                         prevBoundaryHits = hits;
 
                         // Add to list of coverageEntries
-                        coverageEntries.add(entries[i]);
+                        coverageEntries.add(currentEntry);
 
                         if (DEBUG_RPFTOC) {
-                            Debug.output("getBestCoverageEntry(): Found a match in a BR with coverage of " + entries[i].coverage.getPercentCoverage() + "%.");
+                            Debug.output("getBestCoverageEntry(): Found a match in a BR with coverage of " + currentEntry.coverage.getPercentCoverage() + "%.");
 
                         }
                     }

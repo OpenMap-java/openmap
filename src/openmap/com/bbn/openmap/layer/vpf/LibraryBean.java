@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibraryBean.java,v $
 // $RCSfile: LibraryBean.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/03/15 23:50:40 $
+// $Revision: 1.6 $
+// $Date: 2004/09/17 19:34:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -98,7 +98,7 @@ public class LibraryBean implements PropertyConsumer, Serializable {
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         paths = PropUtils.initPathsFromProperties(setList,
-                                                  realPrefix + pathProperty);
+                                                  realPrefix + pathProperty, paths);
 
         String beanName = setList.getProperty(realPrefix + nameProperty);
         this.beanName = (beanName == null) ? prefix : beanName;

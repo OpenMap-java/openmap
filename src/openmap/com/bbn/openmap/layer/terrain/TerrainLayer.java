@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/TerrainLayer.java,v $
 // $RCSfile: TerrainLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/05/11 23:23:21 $
+// $Revision: 1.8 $
+// $Date: 2004/09/17 19:34:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,23 +66,23 @@ import com.bbn.openmap.util.SwingWorker;
  *
  * <P>The tools require you to be in the gesture mode of OpenMap.
  * 
- * <P>When used in an overlay table, the layer takes a properties file
- * as an argument.  This properties file lets you define some things
- * that are needed at runtime.  An example of this file is shown:
- * <pre>
- *#----------------------------------------------------------------------
- *# Properties file for TerrainLayer
- *#----------------------------------------------------------------------
- *# This property should reflect the paths to the DTED directories
- *terrain.dted.paths=/usr/local/matt/data/dted
+ * <P>The TerrainLayer needs a DTEDFrameCache.  It can be added to the
+ * layer programmatically, or the layer will find it if the
+ * DTEDFrameCache is added to the MapHandler.  To do that in the
+ * OpenMap application, add the DTEDFrameCache to the
+ * openmap.components property in the openmap.properties file.
  *
- *# The default tool to use for the terrain layer.  Can be PROFILE or LOS.
- *terrain.default.mode=PROFILE
- *
- *#----------------------------------------------------------------------
- *# End of properties file for TerrainLayer
- *#----------------------------------------------------------------------
+ *  <pre>
+ * #----------------------------------------------------------------------
+ * # Properties file for TerrainLayer
+ * #----------------------------------------------------------------------
+ * # The default tool to use for the terrain layer.  Can be PROFILE or
+ * LOS.  terrain.default.mode=PROFILE
+ * #----------------------------------------------------------------------
+ * # End of properties file for TerrainLayer
+ * #----------------------------------------------------------------------
  * </pre>
+ * @see com.bbn.openmap.dataAccess.dted.DTEDFrameCache
  */
 public class TerrainLayer extends OMGraphicHandlerLayer
     implements ActionListener, MapMouseListener {
@@ -102,8 +102,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer
     public ProfileGenerator profileTool;
     public LOSGenerator LOSTool;
 
-    public static final String DTEDPathsProperty = ".dted.paths";
-    public static final String defaultModeProperty = ".default.mode";
+    public static final String defaultModeProperty = "default.mode";
 
     public final static String clearCommand = "clearTool";
     public final static String createCommand = "createTool";
@@ -151,6 +150,8 @@ public class TerrainLayer extends OMGraphicHandlerLayer
 
         super.setProperties(prefix, properties);
         setDefaultValues();
+        prefix = com.bbn.openmap.util.PropUtils.getScopedPropertyPrefix(prefix);
+
         try{
             
             String defaultModeString = properties.getProperty(prefix + defaultModeProperty);

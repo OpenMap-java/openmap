@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrameCacheHandler.java,v $
 // $RCSfile: RpfFrameCacheHandler.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.6 $
+// $Date: 2004/09/17 19:34:34 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -678,8 +678,11 @@ public class RpfFrameCacheHandler extends CacheHandler
             CacheObject obj = new CacheObject(rfe.framePath, frame);
             return obj;
         } else {
-            Debug.error("RpfFrameCacheHandler:  Couldn't find frame /" +
-                        rfe.framePath + "/ (" + rfe.framePath.length() + " chars)");
+            if (Debug.debugging("rpf")) {
+                Debug.error("RpfFrameCacheHandler:  Couldn't find frame /" +
+                            rfe.framePath + "/ (" + rfe.framePath.length() + " chars)");
+            }
+            rfe.exists = false;
         }
         return null;
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/05/11 23:17:13 $
+// $Revision: 1.14 $
+// $Date: 2004/09/17 19:34:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,19 +32,23 @@ import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.Properties;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.awt.MenuItem;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JMenuItem;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.awt.TextShapeDecoration;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.awt.*;
 import com.bbn.openmap.omGraphics.event.*;
 import com.bbn.openmap.omGraphics.geom.*;
 import com.bbn.openmap.omGraphics.labeled.LabeledOMSpline;
-import com.bbn.openmap.omGraphics.meteo.OMColdSurfaceFront;
-import com.bbn.openmap.omGraphics.meteo.OMHotSurfaceFront;
-import com.bbn.openmap.omGraphics.meteo.OMOcclusion;
+import com.bbn.openmap.omGraphics.meteo.*;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.tools.drawing.DrawingTool;
 import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
@@ -168,13 +172,35 @@ public class DemoLayer extends OMGraphicHandlerLayer
         omList.add(spline2);
 
         float[] llPoints =
-            { 55.0f, -10.0f, 50.0f, -5.0f, 45.0f, -7.0f, 43.0f, -12.0f };
-        OMColdSurfaceFront cf =
-            new OMColdSurfaceFront(
-                llPoints,
-                OMSpline.DECIMAL_DEGREES,
-                OMSpline.LINETYPE_STRAIGHT);
-        omList.add(cf);
+            { 55.0f, -10.0f, 50.0f, -5.0f, 45.0f, -7.0f, 43.0f, -12.0f, 55.0f, -10.0f};
+        OMDecoratedSpline omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES,
+                                                       OMSpline.LINETYPE_STRAIGHT);
+        ShapeDecorator sd = new ShapeDecorator();
+        sd.addDecoration(new LineShapeDecoration(5, com.bbn.openmap.omGraphics.OMColor.clear));
+        sd.addDecoration(new IceAreaShapeDecoration(7, 7, IceAreaShapeDecoration.RIGHT));
+        omds.setDecorator(sd);
+        omList.add(omds);
+
+        llPoints = new float[] { 56.0f, -11.0f, 51.0f, -6.0f, 46.0f, -8.0f, 44.0f, -13.0f, 56.0f, -11.0f };
+        omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES,
+                                     OMSpline.LINETYPE_STRAIGHT);
+        sd = new ShapeDecorator();
+        sd.addDecoration(new LineShapeDecoration(3, com.bbn.openmap.omGraphics.OMColor.clear));
+        sd.addDecoration(new CircleShapeDecoration(5, 5, Color.blue));
+        omds.setDecorator(sd);
+        omList.add(omds);
+
+        llPoints = new float[] { 57.0f, -12.0f, 52.0f, -7.0f, 47.0f, -9.0f, 45.0f, -14.0f, 57.0f, -12.0f };
+        omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES,
+                                     OMSpline.LINETYPE_STRAIGHT);
+        sd = new ShapeDecorator();
+        sd.addDecoration(new LineShapeDecoration(2, com.bbn.openmap.omGraphics.OMColor.clear));
+        sd.addDecoration(new CircleShapeDecoration(5, 5, Color.red));
+        sd.addDecoration(new LineShapeDecoration(2, com.bbn.openmap.omGraphics.OMColor.clear));
+        sd.addDecoration(new LineShapeDecoration(15, Color.red));
+        omds.setDecorator(sd);
+        omList.add(omds);
+
         float[] llPoints2 =
             { 55.0f, -12.0f, 50.0f, -7.0f, 45.0f, -9.0f, 43.0f, -14.0f };
         OMHotSurfaceFront hf =
@@ -300,11 +326,17 @@ public class DemoLayer extends OMGraphicHandlerLayer
         combo1.setFillPaint(Color.red);
         omList.add(combo1);
 
-        OMArc arc1 = new OMArc(100, 100, 200, 200, 0f, -45f); 
-        arc1.setLinePaint(Color.blue);
-        arc1.setFillPaint(Color.yellow);
-        arc1.setArcType(java.awt.geom.Arc2D.PIE);
-        omList.add(arc1);
+//         OMArc arc1 = new OMArc(100, 100, 200, 200, 0f, -45f); 
+//         arc1.setLinePaint(Color.blue);
+//         arc1.setFillPaint(Color.yellow);
+//         arc1.setArcType(java.awt.geom.Arc2D.PIE);
+//         omList.add(arc1);
+
+
+        OMText text = new OMText(30f, 80f, "Testing FontSizer", OMText.JUSTIFY_CENTER);
+        text.setFontSizer(new FontSizer(30000000f, 1, 5, 40));
+        omList.add(text);
+
     }
 
     public void setProperties(String prefix, Properties props) {
@@ -893,6 +925,14 @@ public class DemoLayer extends OMGraphicHandlerLayer
                 }
             }
         }
+    }
+
+    public List getItemsForOMGraphicMenu(OMGraphic omg) {
+        List l = new ArrayList();
+        l.add(new JMenuItem("When"));
+        l.add(new JMenuItem("Where"));
+        l.add(new JMenuItem("How"));
+        return l;
     }
 
 }

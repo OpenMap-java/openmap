@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/BufferedImageRenderPolicy.java,v $
 // $RCSfile: BufferedImageRenderPolicy.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/06 00:02:26 $
+// $Revision: 1.5 $
+// $Date: 2004/09/17 19:34:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,7 +42,7 @@ import java.awt.geom.AffineTransform;
  * need the image buffer to be transparent for parts of the map that
  * are not used by the layer.
  */
-public class BufferedImageRenderPolicy extends StandardRenderPolicy {
+public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
 
     public final static long bufferTriggerDelay = 150;
 
@@ -112,6 +112,7 @@ public class BufferedImageRenderPolicy extends StandardRenderPolicy {
                     setBuffer(null);
                 }
             } else {
+                super.setRenderingHints(g);
                 long startPaint = System.currentTimeMillis();
                 list.render(g);
                 long endPaint = System.currentTimeMillis();
@@ -119,6 +120,7 @@ public class BufferedImageRenderPolicy extends StandardRenderPolicy {
                 if (endPaint - startPaint > bufferTriggerDelay) {
                     setUseImageBuffer(true);
                 }
+
                 if (Debug.debugging("policy")) {
                     Debug.output("RenderingPolicy:" + layer.getName() + 
                                  ": rendering list, buffer(" + isUseImageBuffer() + ")");
@@ -144,8 +146,10 @@ public class BufferedImageRenderPolicy extends StandardRenderPolicy {
             int w = layer.getProjection().getWidth();
             int h = layer.getProjection().getHeight();
             bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = (Graphics2D)bufferedImage.getGraphics();
+            super.setRenderingHints(g2d);
             long startPaint = System.currentTimeMillis();
-            list.render((Graphics2D)bufferedImage.getGraphics());
+            list.render(g2d);
             long endPaint = System.currentTimeMillis();
             if (Debug.debugging("policy")) {
                 Debug.output("RenderingPolicy:" + layer.getName() + 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCoverageManager.java,v $
 // $RCSfile: DTEDCoverageManager.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.4 $
+// $Date: 2004/09/17 19:34:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,8 +95,9 @@ public class DTEDCoverageManager {
         progressSupport = new ProgressSupport(this);
 
         if (!readCoverageFile(coverageURL, coverageFile)) {
-            addProgressListener(new ProgressListenerGauge("Creating DTED Coverage File"));
-
+            // Swing issues with threading, this is trouble.
+//             ProgressListenerGauge plg = new ProgressListenerGauge("Creating DTED Coverage File");
+//             addProgressListener(plg);
             fireProgressUpdate(ProgressEvent.START,
                                "Building DTED Coverage file...", 0, 100);
 
@@ -121,6 +122,7 @@ public class DTEDCoverageManager {
             } else {
                 Debug.message("dtedcov", "DTEDCoverageManager: No file path specified to write coverage file!");
             }
+
             fireProgressUpdate(ProgressEvent.DONE,
                                "Wrote DTED Coverage file",
                                100, 100);
@@ -514,7 +516,7 @@ public class DTEDCoverageManager {
      * @param covFilename the file name to write the arrays into.
      */
     public void writeCoverageFile(String covFilename) {
-        try{
+        try {
             Debug.message("dtedcov","DTEDCoverageManager: Writing coverage summary file...");
             
             FileOutputStream binFile = new FileOutputStream(covFilename);
@@ -522,6 +524,9 @@ public class DTEDCoverageManager {
             byte[] row;
 
             for (int level = 0; level < 3; level++) {
+                if (Debug.debugging("dtedcov")) {
+                    Debug.output("-- level " + level);
+                }
                 for (int lat = 0; lat < 180; lat++) {
                     
                     if (level == 0) {
@@ -533,8 +538,12 @@ public class DTEDCoverageManager {
                     }
 
                     binFile.write(row);
+                    if (Debug.debugging("dtedcov")) {
+                        Debug.output("--- latitude " + lat);
+                    }
                 }
             }
+
             binFile.close();
 
         } catch (IOException ioe) {

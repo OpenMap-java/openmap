@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LayerGraphicWarehouseSupport.java,v $
-// $Revision: 1.7 $ $Date: 2004/03/31 21:17:58 $ $Author: dietrick $
+// $Revision: 1.8 $ $Date: 2004/09/17 19:34:34 $ $Author: dietrick $
 // **********************************************************************
 
 
@@ -319,6 +319,18 @@ public abstract class LayerGraphicWarehouseSupport
                 Debug.output("LayerGraphicsWarehouseSupport: ignoring feature: " + token);
             }
         }
+
+    }
+
+    public String getFeatureString() {
+        StringBuffer features = new StringBuffer();
+
+        if (drawAreaFeatures) features.append(VPFUtil.Area.toLowerCase() + " ");
+        if (drawEdgeFeatures) features.append(VPFUtil.Edge.toLowerCase() + " ");
+        if (drawEPointFeatures) features.append(VPFUtil.EPoint.toLowerCase() + " ");
+        if (drawCPointFeatures) features.append(VPFUtil.CPoint.toLowerCase() + " ");
+        if (drawTextFeatures) features.append(VPFUtil.Text.toLowerCase() + " ");
+        return features.toString();
     }
       
     /**
@@ -337,6 +349,24 @@ public abstract class LayerGraphicWarehouseSupport
         if (features != null) {
             setFeatures(features);
         }
+    }
+
+    /**
+     * set drawing attribute properties
+     * @param props the Properties object.
+     */
+    public Properties getProperties(Properties props) {
+        if (props == null) {
+            props = new Properties();
+        }
+        
+        String features;
+        
+        String realPrefix = PropUtils.getScopedPropertyPrefix(drawingAttributes);
+
+        props.put(realPrefix + VPFLayer.featureTypesProperty, getFeatureString());
+        drawingAttributes.getProperties(props);
+        return props;
     }
 
     /**

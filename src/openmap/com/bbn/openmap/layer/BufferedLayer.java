@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/BufferedLayer.java,v $
 // $RCSfile: BufferedLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/05/25 02:41:25 $
+// $Revision: 1.7 $
+// $Date: 2004/09/17 19:34:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,6 +36,8 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyVetoException;
+import java.beans.beancontext.BeanContext;
 import java.util.*;
 import javax.swing.*;
 
@@ -166,6 +168,8 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
                 startupLayersListProperty.append(" " + lPrefix);
             }
 
+            Debug.output("BufferedLayer: getting properties for " + layer.getName() + " " + layer.getProperties(new Properties()));
+
             layer.getProperties(props);
 
             if (unsetPrefix) {
@@ -225,15 +229,41 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      * Remove all layers from the group.
      */
     public void clearLayers() {
-        mapBean.removeAll();
+        Component[] layers = getLayers();
+        if (layers != null && layers.length > 0) {
+            for (int i = 0; i < layers.length; i++) {
+                removeLayer((Layer)layers[i]);
+            }
+        }
+
         resetPalette();
     }
 
     /**
-     * Add a layer to the group.
+     * Method for BeanContextChild interface. Gets an iterator from
+     * the BeanContext to call findAndInit() over.  Sets BeanContext on sub-layers.
+     */
+    public void setBeanContext(BeanContext in_bc) 
+        throws PropertyVetoException {
+        super.setBeanContext(in_bc);
+
+        Component[] layers = getLayers();
+        if (layers != null && layers.length > 0) {
+            for (int i = 0; i < layers.length; i++) {
+                ((Layer)layers[i]).setBeanContext(in_bc);
+            }
+        }
+    }
+
+    /**
+     * Add a layer to the group.  Sets the BeanContext on the added layer.
      */
     public void addLayer(Layer layer) {
         mapBean.add(layer);
+        try {
+            layer.setBeanContext(getBeanContext());
+        } catch (PropertyVetoException nve) {
+        }
         resetPalette();
     }
 

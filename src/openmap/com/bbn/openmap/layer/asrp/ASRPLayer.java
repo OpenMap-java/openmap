@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/asrp/ASRPLayer.java,v $
 // $RCSfile: ASRPLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/05/11 23:18:09 $
+// $Revision: 1.6 $
+// $Date: 2004/09/17 19:34:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -211,9 +211,9 @@ public class ASRPLayer extends OMGraphicHandlerLayer
         coverageDrawingAttributes.setProperties(prefix, props);
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
-        thfPaths = PropUtils.initPathsFromProperties(props, prefix + THFProperty);
+        thfPaths = PropUtils.initPathsFromProperties(props, prefix + THFProperty, thfPaths);
         if (thfPaths == null) {
-            asrpDirs = PropUtils.initPathsFromProperties(props, prefix + ASRPDirectoryProperty);
+            asrpDirs = PropUtils.initPathsFromProperties(props, prefix + ASRPDirectoryProperty, asrpDirs);
         }
 
         showCoverage = PropUtils.booleanFromProperties(props, prefix + ShowCoverageProperty, showCoverage);

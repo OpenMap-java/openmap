@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.14 $
-// $Date: 2004/05/11 23:21:21 $
+// $Revision: 1.15 $
+// $Date: 2004/09/17 19:34:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -233,7 +233,8 @@ public class RpfLayer extends OMGraphicHandlerLayer
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         paths = PropUtils.initPathsFromProperties(properties, 
-                                                  prefix + RpfPathsProperty);
+                                                  prefix + RpfPathsProperty, 
+                                                  paths);
 
         viewAttributes.setProperties(prefix, properties);
 

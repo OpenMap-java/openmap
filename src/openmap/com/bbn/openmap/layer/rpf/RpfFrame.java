@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrame.java,v $
 // $RCSfile: RpfFrame.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/23 21:10:38 $
+// $Revision: 1.5 $
+// $Date: 2004/09/17 19:34:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -88,13 +88,52 @@ public class RpfFrame {
 
     /** Loads the RpfFrame, given a complete path to the file. */
     public RpfFrame(String framePath) {
-
         DEBUG_RPFDETAIL = Debug.debugging("rpfdetail");
         DEBUG_RPFFRAME = Debug.debugging("rpfframe");
+        initFile(framePath);
+    }
 
+    /**
+     * Loads the RpfFrame, given the RpfFrameEntry that the
+     * RpfCacheHandler got from the RpfTocHandler.
+     */
+    public RpfFrame(RpfFrameEntry rfe) {
+        this(rfe.framePath);
+
+        if (!isValid() && rfe.exists && rfe.rpfdir != null) {
+            // Check lower case, if we think it exists and the rpf dir
+            // is not null.  If it is null, then the path we tried is
+            // a complete file path (not a relative one) and should be
+            // right.
+
+            String lowerCaseFramePath = rfe.directory + rfe.filename;
+            lowerCaseFramePath = lowerCaseFramePath.toLowerCase();
+
+            if (DEBUG_RPFFRAME) {
+                Debug.output("RpfFrame " + rfe.framePath + " not found, checking " + 
+                             rfe.rpfdir + lowerCaseFramePath);
+            }
+
+            if (initFile(rfe.rpfdir +lowerCaseFramePath)) {
+                // Update it for the next time we check
+                rfe.framePath = rfe.rpfdir + lowerCaseFramePath;
+            } else {
+                // Update check so we don't keep looking again.
+                rfe.exists = false;
+            }
+        }
+
+        Dchum = true;
+        chumVersion = Character.digit(rfe.filename.charAt(6), 10);
+    }
+
+//      public void finalize() {
+//      Debug.message("gc", "RpfFrame: getting GC'd");
+//      }
+
+    protected boolean initFile(String framePath) {
         try {
             BinaryFile binFile = new BinaryBufferedFile(framePath);
-//          BinaryFile binFile = new BinaryFile(framePath);
             read(binFile);
         } catch (FileNotFoundException e) {
             Debug.error("RpfFrame: file "+framePath+" not found");
@@ -108,21 +147,8 @@ public class RpfFrame {
             npe.printStackTrace();
             valid = false;
         }
+        return valid;
     }
-
-    /**
-     * Loads the RpfFrame, given the RpfFrameEntry that the
-     * RpfCacheHandler got from the RpfTocHandler.
-     */
-    public RpfFrame(RpfFrameEntry rfe) {
-        this(rfe.framePath);
-        Dchum = true;
-        chumVersion = Character.digit(rfe.filename.charAt(6), 10);
-    }
-
-//      public void finalize() {
-//      Debug.message("gc", "RpfFrame: getting GC'd");
-//      }
 
     public boolean isValid() {
         return valid;

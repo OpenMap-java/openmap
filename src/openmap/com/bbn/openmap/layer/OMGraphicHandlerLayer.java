@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.21 $
-// $Date: 2004/05/10 21:10:44 $
+// $Revision: 1.22 $
+// $Date: 2004/09/17 19:34:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -459,7 +459,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         // this, then set the cancelled flag in the layer.
         if (layerWorker == null) {
             layerWorker = new LayerWorker();
-            layerWorker.execute();
+            layerWorker.start();
         } else {
             if (Debug.debugging("layer")) {
                 Debug.output(getName() + " layer already working in prepare(), cancelling");
@@ -562,7 +562,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         else{
             setCancelled(false);
             layerWorker = new LayerWorker();
-            layerWorker.execute();
+            layerWorker.start();
         }
     }
 

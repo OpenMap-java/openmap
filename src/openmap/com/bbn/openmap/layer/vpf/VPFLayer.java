@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/03/15 23:50:40 $
+// $Revision: 1.14 $
+// $Date: 2004/09/17 19:34:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -270,6 +270,40 @@ public class VPFLayer extends OMGraphicHandlerLayer
         }
     }
 
+    public Properties getProperties(Properties props) {
+        super.getProperties(props);
+
+        String realPrefix = PropUtils.getScopedPropertyPrefix(this);
+
+        props.put(realPrefix + cutoffScaleProperty, Integer.toString(cutoffScale));
+
+        if (libraryBeanName != null) {
+            props.put(realPrefix + libraryProperty, libraryBeanName);
+        } else {
+            StringBuffer paths = new StringBuffer();
+            String[] ps = getPath();
+
+            for (int i = 0; ps != null && i < ps.length; i++) {
+                paths.append(ps[i]);
+                if (i < ps.length -1) paths.append(";");
+            }
+
+            props.put(realPrefix + pathProperty, paths.toString());
+        }
+
+        // For the library in a vpf package
+        libraryName = props.getProperty(realPrefix + LibraryNameProperty, libraryName);
+
+        props.put(realPrefix + coverageTypeProperty, getDataTypes());
+        props.put(realPrefix + searchByFeatureProperty, Boolean.toString(searchByFeatures));
+
+        if (warehouse != null) {
+            warehouse.getProperties(props);
+        }
+
+        return props;
+    }
+
     /** Where we store our default properties once we've loaded them. */
     private static Properties defaultProps;
 
@@ -450,6 +484,9 @@ public class VPFLayer extends OMGraphicHandlerLayer
                         if (obj instanceof LibraryBean) {
                             LibraryBean lb = (LibraryBean)obj;
                             if (libraryBeanName.equals(lb.getName())) {
+                                if (Debug.debugging("vpf")) {
+                                    Debug.output("VPFLayer|" + getName() + ": setting library bean to " + lb.getName());
+                                }
                                 libraryBean = lb;
                                 break;
                             }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDLayer.java,v $
 // $RCSfile: DTEDLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/05/11 23:23:21 $
+// $Revision: 1.9 $
+// $Date: 2004/09/17 19:34:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -388,8 +388,8 @@ public class DTEDLayer extends Layer
         super.setProperties(prefix, properties);
         prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        paths = PropUtils.initPathsFromProperties(properties, prefix + DTEDPathsProperty);
-        paths2 = PropUtils.initPathsFromProperties(properties, prefix + DTED2PathsProperty);
+        paths = PropUtils.initPathsFromProperties(properties, prefix + DTEDPathsProperty, paths);
+        paths2 = PropUtils.initPathsFromProperties(properties, prefix + DTED2PathsProperty, paths2);
         setOpaqueness(PropUtils.intFromProperties(properties, prefix + OpaquenessProperty, getOpaqueness()));
         
         setNumColors(PropUtils.intFromProperties(properties, prefix + NumColorsProperty, getNumColors()));

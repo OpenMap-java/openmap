@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/LOSGenerator.java,v $
 // $RCSfile: LOSGenerator.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.4 $
+// $Date: 2004/09/17 19:34:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -492,9 +492,11 @@ public class LOSGenerator implements TerrainTool {
         LOScenterP.x = event.getX();
         LOScenterP.y = event.getY();
         LOScenterLLP = proj.inverse(LOScenterP.x, LOScenterP.y);
-        LOScenterHeight = LOSobjectHeight + 
-              layer.frameCache.getElevation(LOScenterLLP.getLatitude(),
-                                            LOScenterLLP.getLongitude());
+        LOScenterHeight = LOSobjectHeight;
+        if (layer.frameCache != null) {
+            LOScenterHeight += layer.frameCache.getElevation(LOScenterLLP.getLatitude(),
+                                                             LOScenterLLP.getLongitude());
+        }
         LOScirc.setLatLon(LOScenterLLP.getLatitude(), LOScenterLLP.getLongitude());
         LOScirc.generate(proj);
 

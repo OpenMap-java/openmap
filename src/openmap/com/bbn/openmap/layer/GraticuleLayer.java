@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/05/11 23:17:13 $
+// $Revision: 1.10 $
+// $Date: 2004/09/17 19:34:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -758,7 +758,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
         }
 
         if (Debug.debugging("graticule")) {
-            Debug.output("GraticuleLayer.constructTenDegreeLines(): " +
+            Debug.output("GraticuleLayer.constructGraticuleLines(): " +
                          "constructed " + lines.size() + " graticule lines");
         }
         lines.generate(projection);
