@@ -1,7 +1,7 @@
 /* **********************************************************************
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/WebImagePlugIn.java,v $
- * $Revision: 1.3 $ 
- * $Date: 2004/01/26 18:18:13 $ 
+ * $Revision: 1.4 $ 
+ * $Date: 2004/02/06 00:05:52 $ 
  * $Author: dietrick $
  *
  * Code provided by Raj Singh from Syncline, rs@syncline.com
@@ -13,6 +13,8 @@ package com.bbn.openmap.plugin;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.*;
 import javax.swing.*;
 
@@ -107,8 +109,25 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
 
             // image
             } else if (urlc.getContentType().startsWith("image")) {
-                urlc.disconnect();
-                ImageIcon ii = new ImageIcon(url);
+                // disconnect and reconnect in ImageIcon is very expensive
+                // urlc.disconnect();				
+                // ImageIcon ii = new ImageIcon(url);
+
+                // this doesn't work always			
+                // ImageIcon ii = new ImageIcon((Image) urlc.getContent());
+
+                // the best way, no reconnect, but can be an additional 'in memory' image 
+                InputStream in = urlc.getInputStream();
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                int buflen = 2048; // 2k blocks
+                byte buf[] = new byte[buflen];
+                int len = -1;
+                while ((len = in.read(buf, 0, buflen)) != -1) {
+                    out.write(buf, 0, len);
+                }
+                out.flush();
+                out.close();
+                ImageIcon ii = new ImageIcon(out.toByteArray());
                 OMRaster image = new OMRaster((int)0, (int)0, ii);
                 list.add(image);
             } // end if image

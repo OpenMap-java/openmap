@@ -1,10 +1,10 @@
 /* **********************************************************************
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/wms/WMSPlugIn.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/01/26 18:18:14 $
+ * $Revision: 1.3 $
+ * $Date: 2004/02/06 00:05:52 $
  * $Author: dietrick $
  *
- * Code provided by Raj Singh from Syncline, rs@syncline.com
+ * Code provided by Raj Singh, raj@rajsingh.org
  * Updates provided by Holger Kohler, Holger.Kohler@dsto.defence.gov.au
  * Raj Singh updates in July 2002 to:
  *   - support WMS versions 1.0.8, 1.1.0 and 1.1.1
