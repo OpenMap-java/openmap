@@ -28,7 +28,7 @@
 	 the batik package is found. Change the location of batik.home
 	 if you want it to be different. -->
 
-    <property name="batik.home" value="/usr/local/java/batik-1.1.1"/>
+    <property name="batik.home" value="/usr/local/openmap/batik-1.1.1"/>
     <available file="${batik.home}" property="do.svg"/> 
 
     <property name="svg.jars" value="${batik.home}/lib/batik-svggen.jar;${batik.home}/lib/batik-awt-util.jar;${batik.home}/lib/batik-util.jar;${batik.home}/lib/batik-dom.jar;${batik.home}/lib/batik-ext.jar;${batik.home}/lib/batik-xml.jar;${batik.home}/lib/batik-svggen.jar;${batik.home}/lib/batik-awt-util.jar;${batik.home}/lib/batik-util.jar;${batik.home}/lib/batik-dom.jar;${batik.home}/lib/batik-ext.jar;${batik.home}/lib/batik-xml.jar;${batik.home}/lib/batik-svg-dom.jar"/>
