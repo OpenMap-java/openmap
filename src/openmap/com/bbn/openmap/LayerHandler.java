@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LayerHandler.java,v $
 // $RCSfile: LayerHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/21 16:19:49 $
+// $Revision: 1.3 $
+// $Date: 2003/09/09 16:54:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -219,6 +219,14 @@ public class LayerHandler extends OMComponent
      */
     public void init(Layer[] layers) {
 	setLayers(layers);
+    }
+
+    public void setPropertyHandler(PropertyHandler ph) {
+	propertyHandler = ph;
+    }
+
+    public PropertyHandler getPropertyHandler() {
+	return propertyHandler;
     }
 
     /**
@@ -826,7 +834,7 @@ public class LayerHandler extends OMComponent
 	    if (someObj instanceof PropertyHandler) {
 		// Used to notify the PropertyHandler of used property
 		// prefix names.
-		propertyHandler = (PropertyHandler)someObj;
+		setPropertyHandler((PropertyHandler)someObj);
 	    }
 	}
     }
@@ -841,9 +849,9 @@ public class LayerHandler extends OMComponent
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
 	Iterator it = bcme.iterator();
-	while(it.hasNext()){
+	while(it.hasNext()) {
 	    Object someObj = it.next();
-	    if (someObj instanceof com.bbn.openmap.event.LayerListener){	      
+	    if (someObj instanceof com.bbn.openmap.event.LayerListener) {      
 		Debug.message("layerhandler","LayerListener object is being removed");	  
 		removeLayerListener((LayerListener)someObj);	      
 	    }
@@ -853,8 +861,8 @@ public class LayerHandler extends OMComponent
 	    }
 
 	    if (someObj instanceof PropertyHandler &&
-		propertyHandler == someObj) {
-		propertyHandler = null;
+		someObj == getPropertyHandler()) {
+		setPropertyHandler(null);
 	    }
 	}
     }

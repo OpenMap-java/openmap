@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.11 $
-// $Date: 2003/09/08 20:53:27 $
-// $Author: blubin $
+// $Revision: 1.12 $
+// $Date: 2003/09/09 16:54:56 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -82,7 +82,7 @@ import com.bbn.openmap.Environment;
  * PropertyHandler will display a progress bar when it is creating
  * components.
  */
-public class PropertyHandler implements SoloMapComponent {
+public class PropertyHandler extends MapHandlerChild implements SoloMapComponent {
 
     /** The name of the properties file to read. */
     public static String propsFileName = "openmap.properties";
@@ -561,10 +561,27 @@ public class PropertyHandler implements SoloMapComponent {
 
     /**
      * Given a property prefix, or markername, from the properties
-     * file, get the object that was created for it.
+     * file, get the object that was created for it.  This method uses
+     * the prefix librarian.
      */
     public Object get(String markername) {
 	return prefixLibrarian.get(markername.intern());
+    }
+
+    /**
+     * Register an object with the prefix librarian against a specific
+     * markername.
+     */
+    public void put(String markername, Object obj) {
+	prefixLibrarian.put(markername.intern(), obj);
+    }
+
+    /**
+     * Remove an object from the prefix librarian register, returning
+     * that object if it has been found.
+     */
+    public Object remove(String markername) {
+	return prefixLibrarian.remove(markername);
     }
 
     /**
@@ -981,7 +998,14 @@ public class PropertyHandler implements SoloMapComponent {
      * unique prefix for its properties.  This function takes a prefix
      * string and checks it against all others it knows about.  If
      * there is a conflict, it adds a number to the end until it
-     * becomes unique.
+     * becomes unique.  This prefix will be logged by the
+     * PropertyHandler as a name given out, so duplicate instances of
+     * that string will not be given out later.  It doesn't, however,
+     * log that name in the prefixLibrarian.  That only occurs when
+     * the object is programmatically registered with the
+     * prefixLibrarian or when the PropertyHandler finds that object
+     * in the MapHandler (and even then that object must be a
+     * PropertyConsumer to be registered this way).
      */
     public String getUniquePrefix(String prefix) {
 	prefix = prefix.replace(' ', '_');
@@ -1005,7 +1029,7 @@ public class PropertyHandler implements SoloMapComponent {
     public boolean addUsedPrefix(String prefix) {
 	prefix.replace(' ', '_');
 
-	return usedPrefixes.add(prefix.intern());
+ 	return usedPrefixes.add(prefix.intern());
     }
 
     /**
@@ -1214,6 +1238,29 @@ public class PropertyHandler implements SoloMapComponent {
 	    }
 	}
 	return p;
+    }
+
+    /**
+     * All the PropertyHandler does with the MapHandler is look for
+     * PropertyConsumers and register their prefixes with the
+     * prefixLibarian.
+     */
+    public void findAndInit(Object obj) {
+	if (obj instanceof PropertyConsumer) {
+	    String prefix = ((PropertyConsumer)obj).getPropertyPrefix();
+	    if (prefix != null) {
+		getPrefixLibrarian().put(prefix, obj);
+	    }
+	}
+    }
+
+    public void findAndUndo(Object obj) {
+	if (obj instanceof PropertyConsumer) {
+	    String prefix = ((PropertyConsumer)obj).getPropertyPrefix();
+	    if (prefix != null) {
+		getPrefixLibrarian().remove(prefix);
+	    }
+	}
     }
 }
 
