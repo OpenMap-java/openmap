@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.3 $
-# $Date: 1998/04/21 13:16:29 $
+# $Revision: 1.4 $
+# $Date: 1998/04/22 22:15:38 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -41,7 +41,7 @@ echo "MapBean build started at `date`"
 
 
 BuildRoot=/tmp/openmap
-
+VersionID=Autobuild
 
 DateString=`date +"%Y%m%d"`      # 17750419
 BeanDir=mapBean-$DateString
