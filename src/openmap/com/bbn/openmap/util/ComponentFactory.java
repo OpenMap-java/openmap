@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ComponentFactory.java,v $
 // $RCSfile: ComponentFactory.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/10/14 18:06:30 $
+// $Revision: 1.12 $
+// $Date: 2005/02/11 22:42:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 import java.util.Vector;
 
+import com.bbn.openmap.BasicI18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.ProgressEvent;
 import com.bbn.openmap.event.ProgressSupport;
@@ -437,6 +438,16 @@ public class ComponentFactory {
                             + "\"");
                 }
                 ((PropertyConsumer) obj).setProperties(prefix, properties);
+
+                if (Debug.debugging(BasicI18n.DEBUG_CREATE)) {
+                    // If we're interested in creating resource bundle
+                    // files, we should cause these PropertyConsumers
+                    // to ask for their property info, since this is
+                    // where most of the elective GUI strings are
+                    // queried and found.
+                    ((PropertyConsumer) obj).getPropertyInfo(null);
+                }
+
                 if (DEBUG)
                     Debug.output(" - set properties");
             }
