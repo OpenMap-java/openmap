@@ -1,9 +1,9 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/Attic/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.3 $
-$Date: 1998/12/29 19:21:42 $
-$Author: bmackiew $
+$Revision: 1.4 $
+$Date: 1999/01/08 15:16:45 $
+$Author: aculline $
 
 Frequently Asked Questions for the OpenMap system.
 -->
@@ -93,9 +93,12 @@ Questions concerning the core OpenMap source code.
 data.  What's wrong?
 <p>
 
-Openmap uses a customized indexing scheme to efficiently draw the shape file
-data.  You'll need to create a spatial index from your shape file.  A spatial
-index is different from a shape index (.shx) file.
+The Openmap <htmlurl
+url="api/com.bbn.openmap.layer.shape.ShapeLayer.html"
+name="ShapeLayer"> uses a customized indexing scheme to efficiently
+draw the shape file data.  You'll need to create a spatial index from
+your shape file.  A spatial index is different from a shape index
+(.shx) file.
 
 To generate a spatial index from a "country.shp" file do the following:
 
