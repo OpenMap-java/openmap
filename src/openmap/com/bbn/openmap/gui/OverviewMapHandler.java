@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/03 00:46:13 $
+// $Revision: 1.7 $
+// $Date: 2003/10/10 15:42:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -896,27 +896,12 @@ public class OverviewMapHandler extends OMToolComponent
 	}
 
 	/**
-	 * Return how many listeners there are.
-	 */
-	public int size() {
-	    java.util.Vector targets = getListeners();
-	    return targets.size();
-	}
-
-	/**
 	 * Set the center coordinates on all registered listeners.
 	 * @param proj Projection
 	 */
 	public void setCenter(LatLonPoint llp) {
-	    java.util.Vector targets = getListeners();
-
-	    if (targets == null || targets.size() == 0) {
-		return;
-	    }
-	    
-	    int nTargets = targets.size();
-	    for (int i = 0; i < nTargets; i++) {
-		((MapBean)targets.elementAt(i)).setCenter(llp);
+	    for (Iterator it = iterator(); it.hasNext();) {
+		((MapBean)it.next()).setCenter(llp);
 	    }
 	}
 
@@ -925,15 +910,8 @@ public class OverviewMapHandler extends OMToolComponent
 	 * @param proj Projection
 	 */
 	public void setScale(float scale) {
-	    java.util.Vector targets = getListeners();
-
-	    if (targets == null || targets.size() == 0) {
-		return;
-	    }
-	    
-	    int nTargets = targets.size();
-	    for (int i = 0; i < nTargets; i++) {
-		((MapBean)targets.elementAt(i)).setScale(scale);
+	    for (Iterator it = iterator(); it.hasNext();) {
+		((MapBean)it.next()).setScale(scale);
 	    }
 	}
     }
@@ -943,7 +921,9 @@ public class OverviewMapHandler extends OMToolComponent
      * background changes.  Act on if necessary.
      */
     public void propertyChange(PropertyChangeEvent pce) {
-	if (pce.getPropertyName() == MapBean.BackgroundProperty && backgroundSlave) {
+	if (pce.getPropertyName() == MapBean.BackgroundProperty && 
+	    backgroundSlave) {
+
 	    map.setBckgrnd((Paint)pce.getNewValue());
 	}
     }

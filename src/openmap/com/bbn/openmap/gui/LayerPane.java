@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerPane.java,v $
 // $RCSfile: LayerPane.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/08 18:41:27 $
+// $Revision: 1.4 $
+// $Date: 2003/10/10 15:42:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -381,12 +381,8 @@ public class LayerPane extends JPanel
 			 " receiving componentHidden event");
 	}
 	Component comp = e.getComponent();
-	if (comp == null) {
-	    if (Debug.debugging("layerspanel")){
-		Debug.output("LayerPane: layer " + layer.getName() +
-			     " is now hidden.");
-	    }
-	} else if (comp == layer){
+
+	if (comp == layer) {
 	    if (isLayerOn() != false){
 		setLayerOn(false);
 		if (Debug.debugging("layerspanel")){
@@ -395,10 +391,15 @@ public class LayerPane extends JPanel
 		}
 	    }
 	} else if (comp == layer.getPalette()) {
-	    // Next line uncommented for toggle button
+	    // Next line uncommented for toggle button action
 //  	    paletteButton.setSelected(false);
-	    // Comment next line out for toggle button
+	    // Comment next line out for toggle button action
 	    paletteButton.setIcon(paletteIcon);
+	} else if (comp == null) {
+	    if (Debug.debugging("layerspanel")){
+		Debug.output("LayerPane: layer " + layer.getName() +
+			     " is now hidden.");
+	    }
 	}
     }
 

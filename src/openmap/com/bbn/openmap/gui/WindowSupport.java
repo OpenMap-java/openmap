@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/03 22:23:08 $
+// $Revision: 1.7 $
+// $Date: 2003/10/10 15:42:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,9 +25,11 @@ package com.bbn.openmap.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Iterator;
 import javax.swing.*;
 
 import com.bbn.openmap.*;
+import com.bbn.openmap.event.ListenerSupport;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -37,7 +39,8 @@ import com.bbn.openmap.util.Debug;
  * called.  The WindowSupport remembers size and location changes for
  * the window when it is recreated.
  */
-public class WindowSupport implements ComponentListener, ActionListener {
+public class WindowSupport extends ListenerSupport 
+    implements ComponentListener, ActionListener {
 
     protected Component content;
     protected String title;
@@ -49,10 +52,13 @@ public class WindowSupport implements ComponentListener, ActionListener {
 
     /** 
      * The frame used when the DrawingToolLauncher is used in an
-     * applet. 
+     * applet, or if Environment.useInternalFrames == true;
      */
     protected transient JInternalFrame iFrame;
 
+    /**
+     * The dialog used for non-internal windows.
+     */
     protected transient JDialog dialog;
 
     /**
@@ -61,6 +67,7 @@ public class WindowSupport implements ComponentListener, ActionListener {
      * @param windowTitle the title of the window.
      */
     public WindowSupport(Component content, String windowTitle) {
+	super(content);
 	this.content = content;
 	this.title = windowTitle;
     }
@@ -106,6 +113,11 @@ public class WindowSupport implements ComponentListener, ActionListener {
 	    source = ((JDialog)source).getContentPane();
 	}
 	setComponentSize(new Dimension(source.getWidth(), source.getHeight()));
+
+	Iterator it = iterator();
+	while (it.hasNext()) {
+	    ((ComponentListener)it.next()).componentResized(e);
+	}
     }
 
     /**
@@ -113,12 +125,21 @@ public class WindowSupport implements ComponentListener, ActionListener {
      */
     public void componentMoved(ComponentEvent e) {
 	setComponentLocation(((Component)e.getSource()).getLocation());
+	Iterator it = iterator();
+	while (it.hasNext()) {
+	    ((ComponentListener)it.next()).componentMoved(e);
+	}
     }
 
     /**
      * ComponentListener method.
      */
-    public void componentShown(ComponentEvent e) {}
+    public void componentShown(ComponentEvent e) {
+	Iterator it = iterator();
+	while (it.hasNext()) {
+	    ((ComponentListener)it.next()).componentShown(e);
+	}
+    }
 
     /**
      * ComponentListener method. WindowSupport kills the window when
@@ -128,6 +149,11 @@ public class WindowSupport implements ComponentListener, ActionListener {
 	Component source = (Component)e.getSource();
 	if (source == dialog || source == iFrame) {
 	    killWindow();
+	}
+
+	Iterator it = iterator();
+	while (it.hasNext()) {
+	    ((ComponentListener)it.next()).componentHidden(e);
 	}
     }
 
@@ -167,12 +193,7 @@ public class WindowSupport implements ComponentListener, ActionListener {
 	Dimension dim = getComponentSize();
 	if (dim != null) {
 	    content.setSize(dim);
-// 	    w = (int)dim.getWidth();
-// 	    h = (int)dim.getHeight();
 	}
-
-// 	if (w <= 0) w = content.getWidth();
-// 	if (h <= 0) h = content.getHeight();
 
 	int x = 10;
 	int y = 10;
@@ -183,7 +204,6 @@ public class WindowSupport implements ComponentListener, ActionListener {
 	    y = (int) loc.getY();
 	}
 
-// 	displayInWindow(x, y, w, h);
 	displayInWindow(owner, x, y, -1, -1);
     }
 
@@ -210,7 +230,8 @@ public class WindowSupport implements ComponentListener, ActionListener {
      * @param height the vertical size of the window, if less than or
      * equal to zero the content size will be used.
      */
-    public void displayInWindow(Frame owner, int x, int y, int width, int height) {
+    public void displayInWindow(Frame owner, int x, int y, 
+				int width, int height) {
 
  	if (iFrame == null && dialog == null) {
 	
@@ -227,9 +248,6 @@ public class WindowSupport implements ComponentListener, ActionListener {
 		iFrame.setOpaque(true);
 		iFrame.pack();
 		iFrame.addComponentListener(this);
-		if (content instanceof ComponentListener) {
-		    iFrame.addComponentListener((ComponentListener)content);
-		}
 		
 		JLayeredPane desktop = 
 		    Environment.getInternalFrameDesktop();
@@ -248,11 +266,11 @@ public class WindowSupport implements ComponentListener, ActionListener {
 		dialog.getContentPane().add(content);
 		dialog.pack();
 
-		if (content instanceof ComponentListener) {
-		    dialog.addComponentListener((ComponentListener)content);
-		}
-
 	    }
+	}
+
+	if (content instanceof ComponentListener) {
+	    addComponentListener((ComponentListener)content);
 	}
 
 	if (iFrame != null) {
@@ -266,12 +284,12 @@ public class WindowSupport implements ComponentListener, ActionListener {
 	    iFrame.show();
 	    iFrame.toFront();
 	} else if (dialog != null) {
+	    dialog.pack();
 	    if (height <= 0 || width <= 0) {
 		dialog.setLocation(x, y);
 	    } else {
 		dialog.setBounds(x, y, width, height);
 	    } 
-	    dialog.pack();
 	    dialog.show();
 	}
     }
@@ -283,17 +301,44 @@ public class WindowSupport implements ComponentListener, ActionListener {
 
 	if (dialog != null) {
 	    dialog.removeComponentListener(this);
-	    if (content instanceof ComponentListener) {
-		dialog.removeComponentListener((ComponentListener)content);
-	    }
 	    dialog.dispose();
+	    dialog = null;
 	} else if (iFrame != null) {
 	    iFrame.removeComponentListener(this);
-	    if (content instanceof ComponentListener) {
-		iFrame.removeComponentListener((ComponentListener)content);
-	    }
 	    iFrame.dispose();
 	    iFrame = null;
 	}
+
+	if (content instanceof ComponentListener) {
+	    removeComponentListener((ComponentListener)content);
+	}
+
     }
+
+    /**
+     * Add a component listener that is interested in hearing about
+     * what happens to the window.
+     */
+    public void addComponentListener(ComponentListener l) {
+	addListener(l);
+    }
+
+    /**
+     * Remove a component listener that was interested in hearing about
+     * what happens to the window.
+     */
+    public void removeComponentListener(ComponentListener l) {
+	removeListener(l);
+    }
+
+    /**
+     * Return the window displaying the content.  May be null.
+     */
+    public Container getWindow() {
+	if (dialog != null) {
+	    return dialog;
+	} 
+	return iFrame;
+    }
+
 }
