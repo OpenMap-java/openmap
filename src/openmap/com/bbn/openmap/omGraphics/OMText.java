@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/02/01 21:14:12 $
+// $Revision: 1.12 $
+// $Date: 2004/09/22 15:45:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,7 +24,9 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.PathIterator;
 import java.io.Serializable;
 
 import com.bbn.openmap.util.Debug;
@@ -970,6 +972,28 @@ public class OMText extends OMGraphic implements Serializable {
 
         computeBounds();
 
+        // If there is a rotation angle, the shape will be calculated
+        // for that rotation.  Don't need to rotate the Graphics for
+        // the shape.
+
+        if (shouldRenderFill()) {
+            setGraphicsForFill(g);
+            fill(g);
+            
+            if (textureMask != null && textureMask != fillPaint) {
+                setGraphicsColor(g, textureMask);
+                fill(g);
+            }
+        }
+
+        if (isSelected()) {
+            setGraphicsColor(g, getSelectPaint());
+            draw(g);
+        } else if (isMatted()) {
+            setGraphicsColor(g, getMattingPaint());
+            draw(g);
+        }
+
         // to use later to unset the transform, if used.
         double rx = 0.0;
         double ry = 0.0;
@@ -1000,24 +1024,6 @@ public class OMText extends OMGraphic implements Serializable {
             }
             //rotate about our text anchor point
             ((Graphics2D)g).rotate(rotationAngle, rx+woffset, pt.y);
-        }
-
-        if (shouldRenderFill()) {
-            setGraphicsForFill(g);
-            fill(g);
-            
-            if (textureMask != null && textureMask != fillPaint) {
-                setGraphicsColor(g, textureMask);
-                fill(g);
-            }
-        }
-
-        if (isSelected()) {
-            setGraphicsColor(g, getSelectPaint());
-            draw(g);
-        } else if (isMatted()) {
-            setGraphicsColor(g, getMattingPaint());
-            draw(g);
         }
 
         setGraphicsForEdge(g);
@@ -1168,6 +1174,37 @@ public class OMText extends OMGraphic implements Serializable {
                     shape = new GeneralPath(polyBounds.getBounds());
                 } else {
                     shape = new GeneralPath(polyBounds);
+                }
+
+
+                // Make sure the shape takes into account the current
+                // rotation angle.  Code taken from generate() method,
+                // so it should match up with the drawn text.
+                if (rotationAngle != DEFAULT_ROTATIONANGLE) {
+
+                    Rectangle rect = polyBounds.getBounds();
+
+                    double rx = rect.getX();
+                    double rw = rect.getWidth();
+                    double woffset = 0.0;
+            
+                    switch  (justify) {
+                    case JUSTIFY_LEFT:
+                        // woffset = 0.0;
+                        break;
+                    case JUSTIFY_CENTER:
+                        woffset = rw / 2;
+                        break;
+                    case JUSTIFY_RIGHT:
+                        woffset = rw;
+                    }
+
+                    AffineTransform at = new AffineTransform();
+                    at.rotate(rotationAngle, rx+woffset, pt.y);
+                    PathIterator pi = shape.getPathIterator(at);
+                    GeneralPath gp = new GeneralPath();
+                    gp.append(pi, false);
+                    shape = gp;
                 }
             }
 
