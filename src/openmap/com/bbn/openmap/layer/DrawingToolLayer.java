@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/03/03 21:04:55 $
+// $Revision: 1.10 $
+// $Date: 2003/03/06 03:10:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -235,12 +235,11 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 		    }
 
 		    fireHideToolTip(e);
+		    ret = true;
 		}
-
 	    }
-	    ret = true;
 	}
-	return false;
+	return ret;
     }
     
     protected MapMouseMode proxyMMM = null;
