@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/08/21 20:38:52 $
+// $Revision: 1.10 $
+// $Date: 2003/08/28 22:35:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -194,6 +194,9 @@ public class OMDrawingTool
      * BeanContextChild interface.
      */
     protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
+
+    protected InformationDelegator informationDelegator = null;
+
     /**
      * Create a OpenMap Drawing Tool.
      */
@@ -791,10 +794,21 @@ public class OMDrawingTool
 	return palette;
     }
 
+    public void setInformationDelegator(InformationDelegator id) {
+	informationDelegator = id;
+    }
+
+    public InformationDelegator getInformationDelegator() {
+	return informationDelegator;
+    }
+
     /**
      * Put the message in a display line that the OMDrawingTool is using.
      */
     public void setRemarks(String message) {
+	if (informationDelegator != null) {
+	    informationDelegator.displayInfoLine(message, InformationDelegator.MAP_OBJECT_INFO_LINE);
+	}
 	remarks.setText(message);
     }
 
@@ -1179,10 +1193,12 @@ public class OMDrawingTool
      */
     public void findAndInit(Object someObj) {
 
-	if (someObj instanceof InformationDelegator &&
-	    dtmm != null) {
+	if (someObj instanceof InformationDelegator) {
 	    if (DEBUG) Debug.output("DrawingTool: found InformationDelegator");
-	    dtmm.setInfoDelegator((InformationDelegator)someObj);
+	    if (dtmm != null) {
+		dtmm.setInfoDelegator((InformationDelegator)someObj);
+	    }
+	    setInformationDelegator((InformationDelegator)someObj);
 	}
 	if (someObj instanceof MouseDelegator) {
 	    if (DEBUG) Debug.output("DrawingTool: found MouseDelegator.");
@@ -1228,20 +1244,17 @@ public class OMDrawingTool
      * disconnect itseld from the object.
      */
     public void findAndUndo(Object someObj) {
-	if (someObj instanceof InformationDelegator && dtmm != null) {
-	    if (dtmm.getInfoDelegator() == (InformationDelegator)someObj) {
+	if (someObj == getInformationDelegator()) {
+	    if (dtmm != null && dtmm.getInfoDelegator() == (InformationDelegator)someObj) {
 		dtmm.setInfoDelegator(null);
 	    }
+	    setInformationDelegator(null);
 	}
-	if (someObj instanceof MouseDelegator) {
-	    if (getMouseDelegator() == (MouseDelegator)someObj) {
-		setMouseDelegator(null);
-	    }
+	if (someObj == getMouseDelegator()) {
+	    setMouseDelegator(null);
 	}
-	if (someObj instanceof MapBean) {
-	    if (getCanvas() == (JComponent)someObj) {
-		setCanvas(null);
-	    }
+	if (someObj == getCanvas()) {
+	    setCanvas(null);
 	}
 	if (someObj instanceof EditToolLoader) {
 	    removeLoader((EditToolLoader)someObj);
@@ -1405,6 +1418,10 @@ public class OMDrawingTool
 	// We might have used the InformationDelgator to put the comments
 	// in the info line, but that can't work, because we are
 	// already putting the lat/lon info on the info line.
+
+	// Updated, 4.6 - now that the InformationDelegator has new
+	// places for coordinate information and map object
+	// information, we can sent the info there, and it looks OK.
 
 	String message = event.getMessage().intern();
 	if (message != null && remarks != null && message != lastRemarks) {
