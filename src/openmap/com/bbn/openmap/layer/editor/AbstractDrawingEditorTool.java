@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/Attic/AbstractDrawingEditorTool.java,v $
 // $RCSfile: AbstractDrawingEditorTool.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/02/24 23:05:48 $
+// $Revision: 1.4 $
+// $Date: 2003/02/24 23:36:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -297,6 +297,8 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
 	    thingToCreate = null;
 	    setWantsEvents(false);
 	} else if (command != thingToCreate) {
+
+	    layer.releaseProxyMouseMode();
 
 	    if (thingToCreate != null) {
 		// the tool was active with a different thing.

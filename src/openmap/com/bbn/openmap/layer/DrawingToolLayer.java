@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/02/24 23:05:48 $
+// $Revision: 1.7 $
+// $Date: 2003/02/24 23:36:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -101,9 +101,26 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      */
     public void drawingComplete(OMGraphic omg, OMAction action) {
 	// First thing, release the proxy MapMouseMode, if there is one.
+	releaseProxyMouseMode();
+
+	getList(); // create a list if there isn't one.
+	doAction(omg, action);
+	repaint();
+
+	if (DTL_DEBUG) {
+	    Debug.output("DrawingToolLayer: DrawingTool complete");
+	}
+    }
+
+    /**
+     * If the DrawingToolLayer is using a hidden OMDrawingTool,
+     * release the proxy lock on the active MapMouseMode.
+     */
+    public void releaseProxyMouseMode() {
 	MapMouseMode pmmm = getProxyMouseMode();
-	if (pmmm != null) {
-	    if (pmmm.isProxyFor(getDrawingTool().getMouseMode())) {
+	OMDrawingTool dt = getDrawingTool();
+	if (pmmm != null && dt != null) {
+	    if (pmmm.isProxyFor(dt.getMouseMode())) {
 		if (DTL_DEBUG) {
 		    Debug.output("DTL: releasing proxy on " + pmmm.getID());
 		}
@@ -112,14 +129,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 		setProxyMouseMode(null);
 		fireRequestInfoLine(""); // hidden drawing tool put up coordinates, clean up.
 	    }
-	}
 
-	getList(); // create a list if there isn't one.
-	doAction(omg, action);
-	repaint();
-
-	if (DTL_DEBUG) {
-	    Debug.output("DrawingToolLayer: DrawingTool complete");
+	    if (dt.isActivated()) {
+		dt.deactivate();
+	    }
 	}
     }
 
