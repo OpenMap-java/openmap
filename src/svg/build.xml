@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="OpenMap_svg" default="all" basedir=".">
+<project name="OpenMap_svg" default="all.svg" basedir=".">
 
   <!--  ############################
 	Set up the different builds.
@@ -38,6 +38,8 @@
   <!--  ############################
 	Main targets
 	############################ -->  
+
+  <target name="all.svg" depends="classes.svg, jar.svg"/>
 
   <target name="classes.svg"
 	  depends="init.svg"
