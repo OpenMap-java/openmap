@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardPCPolicy.java,v $
 // $RCSfile: StandardPCPolicy.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.5 $
+// $Date: 2004/02/06 19:46:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,6 +69,13 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
         return layer;
     }
 
+    /**
+     * When the projection changes, the StandardPCPolicy sets the
+     * current projection on the layer, and calls prepare() on the
+     * layer.  repaint() will be automatically called.  This method
+     * does not generate the OMGraphics in the list.  The layer is
+     * still expected to do that in prepare().
+     */
     public void projectionChanged(ProjectionEvent pe) {
         if (layer != null) {
             Projection proj = layer.setProjection(pe);

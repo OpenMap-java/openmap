@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.17 $
-// $Date: 2004/02/05 18:15:07 $
+// $Revision: 1.18 $
+// $Date: 2004/02/06 19:46:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,17 +54,35 @@ import com.bbn.openmap.util.SwingWorker;
  * OMAction instructions for managing OMGraphics, and can perform
  * display filtering as supported by the FilterSupport object.<P>
  *
+ * When extending this class for a simple layer, they only method you
+ * need to override is the prepare() method.  This is a good class to
+ * use to start writing your own layers.  Start with overriding the
+ * prepare() method, having it return an OMGraphicList containing
+ * OMGraphics on the map that are appropriate for the current
+ * projection.<P>
+ *
  * The OMGraphicHandlerLayer already has an OMGraphicList variable, so
  * if you extend this class you don't have to manage another one.  You
- * can add your OMGraphics to the list provided. If you create a list
- * of OMGraphics that is reused and simply re-projected when the
- * projection changes, do nothing - that's what happens anyway based
- * on the default ProjectionChangePolicy set for the layer
- * (StandardPCPolicy).  If you let prepare() create a new
- * OMGraphicList based on the new projection, then make sure the
- * ProjectionChangePolicy for the layer is set to a
- * com.bbn.openmap.layer.policy.ResetListPCPolicy, or at least clear
- * out the old graphics at some point. You just have to do one, not
+ * can add your OMGraphics to the list provided with getList(). If you
+ * create a list of OMGraphics that is reused and simply re-projected
+ * when the projection changes, do nothing - that's what happens
+ * anyway based on the default ProjectionChangePolicy set for the
+ * layer (StandardPCPolicy).  You can either create an OMGraphicList
+ * in the constructor and set it by calling setList(OMGraphicList), or
+ * you can test for a null OMGraphicList returned from getList() in
+ * prepare() and create one if it needs to be.  If the list isn't
+ * null, make sure you still call generate on it.  The advantage of
+ * waiting to create the list in prepare is that the processing time
+ * to create the OMGraphics is delayed until the layer is added to the
+ * map.  If you create OMGraphics in the constructor, you delay the
+ * entire program (maybe startup of the map!) while the OMGraphics are
+ * created. <P>
+ *
+ * If you let prepare() create a new OMGraphicList based on the new
+ * projection, then make sure the ProjectionChangePolicy for the layer
+ * is set to a com.bbn.openmap.layer.policy.ResetListPCPolicy, or at
+ * least clear out the old graphics at some point before adding new
+ * OMGraphics to the list in that method. You just have to do one, not
  * both, of those things.  If you are managing a lot of OMGraphics and
  * do not null out the list, you may see your layer appear to lag
  * behind the projection changes.  That's because another layer with
@@ -457,14 +475,34 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     }
 
     /**
-     * The method that gets called by the swing worker thread to get
-     * something done.  Returns an OMGraphicList that is the fruit of
-     * all the labours.  This method, for the OMGraphicHandler class,
-     * just returns the current OMGraphicList.  You should generate
-     * the OMGraphics returned on the list, and the current projection
-     * is available by calling getProjection(); If you call prepare
-     * directly, you may need to call repaint(), too.  If the
-     * SwingWorker calls prepare, it will call repaint(). <P>
+     * This is the main method you should be concerned with when
+     * overriding this class.  You have to make sure that this method
+     * returns an OMGraphicList that is ready to be rendered.  That
+     * means they need to be generated with the current projection,
+     * which can be retrieved by calling getProjection(). <P>
+     *
+     * This method will be called in a separate thread if doPrepare()
+     * is called on the layer. This will automatically cause repaint()
+     * to be called, which lets java know to call paint() on this
+     * class. <P>
+     *
+     * Note that the default action of this method is to get the
+     * OMGraphicList as it is currently set in the layer, reprojects
+     * the list with the current projection (calls generate() on
+     * them), and then returns the current list.<P>
+     *
+     * If your layer needs to change what is on the list based on what
+     * the current projection is, you can either clear() the list
+     * yourself and add new OMGraphics to it (remember to call
+     * generate(Projection) on them), and return the list.  You also
+     * have the option of setting a ListResetPCPolicy, which will
+     * automatically set the list to null when the projection changes
+     * before calling this method. The OMGraphicHandlerList will
+     * ignore a null OMGraphicList.<P>
+     *
+     * NOTE: If you call prepare directly, you may need to call
+     * repaint(), too.  With all invocations of this method that are
+     * cause by a projection change, repaint() will be called for you.
      *
      * The method is synchronized in case renderDataForProjection()
      * gets called while in the middle of this method.  For a
@@ -848,7 +886,10 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     }
 
     /**
-     * Query asked from the MouseDelegator for interest in receiving MapMouseEvents.
+     * Query asked from the MouseDelegator for interest in receiving
+     * MapMouseEvents.  This returns a MapMouseInterpreter that has
+     * been told to listen for events from the MapMouseModes in
+     * setMouseModeIDsForEvents().
      */
     public synchronized MapMouseListener getMapMouseListener() {
         MapMouseListener mml = getMouseEventInterpreter();
