@@ -12,8 +12,8 @@
 <!-- *****************************************************************-->
 <!-- *                                                                -->
 <!-- * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/package.html,v $-->
-<!-- * $Revision: 1.1.1.1 $                                              -->
-<!-- * $Date: 2003/02/14 21:35:49 $                                   -->
+<!-- * $Revision: 1.2 $                                              -->
+<!-- * $Date: 2003/06/26 01:13:58 $                                   -->
 <!-- * $Author: dietrick $                                            -->
 <!-- *                                                                -->
 <!-- *****************************************************************-->
@@ -21,11 +21,10 @@
 <body>
 
 The GraphicLoader PlugIn package is designed to provide support for
-components that need to drive changes in OMGraphics over a map.  The
-GraphicLoader is an object that manages OMGraphics and their
-positions, and sends an OMGraphicList to its receiver when they need
-to be updated.  The AbstractGraphicLoader contains a timer that can
-be used to schedule updates to happen at regular updates.   <P>
+GraphicLoaders, which in turn are objects that need to drive changes in
+OMGraphics over a map.  The GraphicLoader is an object that manages
+OMGraphics and their positions, and sends an OMGraphicList to its
+receiver when they need to be updated. <P>
 
 The package consists of a GraphicLoaderPlugIn, which is a PlugIn that accepts
 graphics from another object, called the GraphicLoader.  The GraphicLoader
@@ -35,14 +34,7 @@ MapHander - when it finds a GraphicLoader in the MapHandler, it will
 automatically create a GraphicLoaderPlugIn for it, and
 will either give the GraphicLoaderPlugIn to the LayerHandler if it
 knows about one, or give the GraphicLoaderPlugIn to the MapHandler so
-it can be found by the LayerHandler later. The MMLGraphicLoader is an
-abstract extension to the AbstractGraphicLoader that can receive
-MouseEvents that occur over the map, in order to react accordingly.<P>
-
-The LOSGraphicLoader is an example of a GraphicLoader.  It manages
-GLPoints and PathGLPoints, along with a DTEDFrameCache (found in the
-MapHandler).  The GLPoints are moved around the map, and links are
-drawn between those points that have LOS between them. <P>
+it can be found by the LayerHandler later.<P>
 
 To add a GraphicLoader to the OpenMap application, you can do it
 several ways:
