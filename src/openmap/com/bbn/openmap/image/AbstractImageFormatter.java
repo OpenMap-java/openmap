@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AbstractImageFormatter.java,v $
 // $RCSfile: AbstractImageFormatter.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/15 20:37:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -86,43 +86,110 @@ public abstract class AbstractImageFormatter
      * @return byte[] representing an image of the map in it's current state.
      */
     public byte[] getImageFromMapBean(MapBean map) {
+	return getImageFromMapBean(map, -1, -1, false);
+    }
 
+    /**
+     * Take a MapBean, and get the image bytes that represent the current state.
+     * @param map the MapBean.
+     * @param width the pixel width of the desired image.
+     * @param height the pixel height of the desired image.
+     * @return byte[] representing an image of the map in it's current state.
+     */
+    public byte[] getImageFromMapBean(MapBean map, int width, int height) {
+	return getImageFromMapBean(map, width, height, true);
+    }
+
+    /**
+     * Take a MapBean, and get the image bytes that represent the current state.
+     * @param map the MapBean.
+     * @param width the pixel width of the desired image.
+     * @param height the pixel height of the desired image.
+     * @param useProjectionPainter if true, use the projection painter
+     * interface on the layers to create the image.  If false, uses
+     * the paintAll() method on the MapBean, so whatever is being
+     * painted on the screen gets on the image.
+     * @return byte[] representing an image of the map in it's current state.
+     */
+    public byte[] getImageFromMapBean(MapBean map, int width, int height, 
+				      boolean scaleImage) {
 	if (map == null) {
 	    return new byte[0];
 	}
 
 	Proj proj = (Proj)map.getProjection();
-	java.awt.Graphics graphics = getGraphics(proj.getWidth(), proj.getHeight());
 
-	if (true) {
+	boolean needToScale = (width != proj.getWidth() || 
+			       height != proj.getHeight());
+
+
+	if (Debug.debugging("formatter")) {
+	    Debug.output("AIF: called with w:" + width + ", h:" + height + 
+			 ", need to scale (" + needToScale + ")" +
+			 " and scaleImage (" + scaleImage + ")");
+	}
+
+	if (width == -1) width = proj.getWidth();
+	if (height == -1) height = proj.getHeight();
+
+	java.awt.Graphics graphics = getGraphics(width, height);
+
+	if (!needToScale) {
+	    if (Debug.debugging("formatter")) {
+		Debug.output("AIF: don't need to scale, painting normally.");
+	    }
 	    // This way just paints what the MapBean is displaying.
 	    map.paintAll(graphics);
 	} else {
-	    // alternative way, using ProjectionPainter interface.
-	    // This way makes sure that the layers draw what they
-	    // should, even if they don't appear ready on the screen
-	    // by visitiing each layer and waiting until they are
-	    // ready.  I'm not sure it's preferable, but I'm leaving
-	    // the code in here for informational purposes.  There is
-	    // commented out code at the bottom of the file, too.
+	    // One problem with this approach is that it will
+	    // use the ProjectionPainter interface on the layers.  So,
+	    // you may not get the same image that is on the map.  All
+	    // layers on the map will get painted in the image - so if
+	    // a layer hasn't painted itself on the map window, you
+	    // will see it in the image.
 
-// 	    map.addPropertyChangeListener(this);
+	    // This lets us know what the layers are
+	    map.addPropertyChangeListener(this);
 
-	    // Layers should be set...
-// 	    proj.drawBackground(graphics);
+// 	    Layers should be set...
+	    com.bbn.openmap.LatLonPoint cp = 
+		new com.bbn.openmap.LatLonPoint(map.getCenter());
 
-// 	    if (layers != null) {
-// 		for (int i = layers.length - 1; i >= 0; i--) {
-// 		    layers[i].renderDataForProjection(proj, graphics);
-// 		    Debug.output("rendering " + layers[i].getName());
-// 		}
+	    double scaleMod = 1f;// scale factor for image scale
+	    // If we need to scale the image, 
+	    // figure out the scale factor.
+	    if (scaleImage) {
+		if (Debug.debugging("formatter")) {
+		    Debug.output("AIF: scaling image to w:" + width + 
+				 ", h:" + height);
+		}
+		double area1 = (double) proj.getHeight() * (double) proj.getWidth();
+		double area2 = (double) height*(double) width;
+		scaleMod = Math.sqrt(area1/area2);
+	    }
 
-// 	    } else {
-// 		Debug.output("AbstractImageFormatter can't get layers from map!");
-// 	    }
+	    Proj tp = (Proj) com.bbn.openmap.proj.ProjectionFactory.makeProjection(
+		map.getProjectionType(), cp.getLatitude(), cp.getLongitude(),
+		map.getScale()*(float)scaleMod,	width,height);
 
-// 	    map.removePropertyChangeListener(this);
-// 	    layers = null;
+	    tp.drawBackground(graphics);
+
+	    if (layers != null) {
+		for (int i = layers.length - 1; i >= 0; i--) {
+		    layers[i].renderDataForProjection(tp, graphics);
+		    if (Debug.debugging("formatter")) {
+			Debug.output("AbstractImageFormatter: rendering " + 
+				     layers[i].getName());
+		    }
+		    layers[i].setProjection(proj);
+		}
+
+	    } else {
+		Debug.output("AbstractImageFormatter can't get layers from map!");
+	    }
+
+	    map.removePropertyChangeListener(this);
+	    layers = null;
 	}
 
 	return getImageBytes();
