@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/CoordInternalFrame.java,v $
 // $RCSfile: CoordInternalFrame.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/16 22:12:32 $
+// $Revision: 1.4 $
+// $Date: 2003/04/16 22:20:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -72,6 +72,25 @@ public class CoordInternalFrame extends JInternalFrame
 	getContentPane().add(ccp);
  	setOpaque(true);
      }
+
+    /**
+     * Add a CenterListener to the CombinedCoordPanel to receive
+     * events when the apply button is hit.
+     *
+     * @param listener  The CenterListener to be added
+     */
+    public void addCenterListener(CenterListener listener) {
+	ccp.addCenterListener(listener);
+    }
+
+    /**
+     * Remove a CenterListener from the listener list.
+     *
+     * @param listener  The CenterListener to be removed
+     */
+    public void removeCenterListener(CenterListener listener) {
+	ccp.removeCenterListener(listener);
+    }
 
     public void actionPerformed(java.awt.event.ActionEvent e) {
 	if (e.getActionCommand() == CombinedCoordPanel.CloseCmd) {

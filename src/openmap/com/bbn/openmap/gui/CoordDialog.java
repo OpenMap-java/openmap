@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/CoordDialog.java,v $
 // $RCSfile: CoordDialog.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/04/16 22:12:32 $
+// $Revision: 1.5 $
+// $Date: 2003/04/16 22:20:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -102,6 +102,25 @@ public class CoordDialog extends JDialog
      */
     public void setLatLon(LatLonPoint llpoint) {
 	ccp.setLatLon(llpoint);
+    }
+
+    /**
+     * Add a CenterListener to the CombinedCoordPanel to receive
+     * events when the apply button is hit.
+     *
+     * @param listener  The CenterListener to be added
+     */
+    public void addCenterListener(CenterListener listener) {
+	ccp.addCenterListener(listener);
+    }
+
+    /**
+     * Remove a CenterListener from the listener list.
+     *
+     * @param listener  The CenterListener to be removed
+     */
+    public void removeCenterListener(CenterListener listener) {
+	ccp.removeCenterListener(listener);
     }
 
     /**
