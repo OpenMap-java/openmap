@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCacheManager.java,v $
 // $RCSfile: DTEDCacheManager.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:53 $
+// $Revision: 1.7 $
+// $Date: 2005/01/14 16:48:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -141,6 +141,7 @@ public class DTEDCacheManager {
      */
     public void setDtedDirPaths(String[] paths) {
         dtedDirPaths = paths;
+        resetCaches();
     }
 
     /**
@@ -152,6 +153,15 @@ public class DTEDCacheManager {
     public void setDtedDirPaths(String[] paths, String[] paths2) {
         dtedDirPaths = paths;
         dted2DirPaths = paths2;
+        resetCaches();
+    }
+
+    /**
+     * Reset the DTEDCacheHandler array so the handlers will get created on the
+     * next frame request.
+     */
+    public void resetCaches() {
+        caches = new DTEDCacheHandler[MAX_NUM_BOXES];
     }
 
     /**
