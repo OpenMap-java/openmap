@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LatLonPoint.java,v $
 // $RCSfile: LatLonPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:05 $
+// $Revision: 1.3 $
+// $Date: 2004/09/29 21:43:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -329,6 +329,39 @@ public class LatLonPoint implements Cloneable, Serializable {
         radlat_ = ProjMath.degToRad(lat_);
         radlon_ = ProjMath.degToRad(lon_);
     }
+    
+	/**
+	 * Find a LatLonPoint a distance and direction away from this
+	 * point, based on the sphercal earth model.
+	 * @param dist distance, in radians.
+	 * @param az radians of azimuth (direction) east of north (-PI &lt;= Az &lt; PI)
+	 * @return LatLonPoint result
+	 */
+    public LatLonPoint getPoint(float dist, float az) {
+		return GreatCircle.spherical_between(radlat_, radlon_, dist, az);
+    }
+
+    /**
+     * Find the distance to another LatLonPoint, based on a earth spherical model.
+     * @param toPoint LatLonPoint
+     * @return distance, in radians.  You can use an com.bbn.openmap.proj.Length 
+     * to convert the radians to other units. 
+     */
+    	public float distance(LatLonPoint toPoint) {
+    		return GreatCircle.spherical_distance(radlat_, radlon_, toPoint.radlat_, toPoint.radlon_);
+    	}
+    	
+    /**
+     * Find the azimuth to another point, based on the sphercal earth model.
+     * @param toPoint LatLonPoint
+     * @return the azimuth `Az' east of north from this point 
+     * bearing toward the one provided as an argument.(-PI &lt;= Az &lt;= PI).
+     * 
+     */
+    public float azimuth(LatLonPoint toPoint) {
+    		return GreatCircle.spherical_azimuth(radlat_, radlon_, toPoint.radlat_, toPoint.radlon_);
+    }
+    
     /**
      * Used by the projection code for read-only quick access.
      * This is meant for quick backdoor access by the projection library.
@@ -344,6 +377,3 @@ public class LatLonPoint implements Cloneable, Serializable {
      */
     public transient float radlon_ = 0.0f;
 }
-
-
-
