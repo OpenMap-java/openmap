@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPointRecord.java,v $
 // $RCSfile: ESRIPointRecord.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/06/02 18:36:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,7 @@ import com.bbn.openmap.omGraphics.*;
  *
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.1.1.1 $ $Date: 2003/02/14 21:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/02 18:36:55 $
  */
 public class ESRIPointRecord extends ESRIRecord {
 
@@ -183,5 +183,19 @@ public class ESRIPointRecord extends ESRIRecord {
      */
     public int getShapeType() {
 	return SHAPE_TYPE_POINT;
+    }
+
+    /**
+     * Get the x coordinate for this record.
+     */
+    public double getX() {
+	return x;
+    }
+
+    /**
+     * Get the y coordinate for this record.
+     */
+    public double getY() {
+	return y;
     }
 }
