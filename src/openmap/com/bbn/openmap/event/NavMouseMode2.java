@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode2.java,v $
 // $RCSfile: NavMouseMode2.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/28 22:02:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -89,7 +89,7 @@ public class NavMouseMode2 extends NavMouseMode {
      */
     public void mouseReleased(MouseEvent e) {
 	if (Debug.debugging("mousemode")) {
-	    System.out.println(getID()+"|NavMouseMode2.mouseReleased()");
+	    Debug.output(getID()+"|NavMouseMode2.mouseReleased()");
  	}
 	Object obj = e.getSource();
 	if (! mouseSupport.fireMapMouseReleased(e)) {

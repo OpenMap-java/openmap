@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/AbstractMouseMode.java,v $
 // $RCSfile: AbstractMouseMode.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/24 23:03:36 $
+// $Revision: 1.3 $
+// $Date: 2003/08/28 22:02:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -111,7 +111,7 @@ public class AbstractMouseMode extends OMComponent
      * Returns the id (mode name).
      * @return String ID
      */
-    public String getID(){
+    public String getID() {
 	return ID;
     }
 
@@ -183,7 +183,7 @@ public class AbstractMouseMode extends OMComponent
      * active. 
      * @param l the MapMouseListener to add.
      */
-    public void addMapMouseListener (MapMouseListener l) {
+    public void addMapMouseListener(MapMouseListener l) {
 	mouseSupport.addMapMouseListener(l);
     }
 
@@ -191,14 +191,14 @@ public class AbstractMouseMode extends OMComponent
      * Remove a MapMouseListener from the MouseMode.
      * @param l the MapMouseListener to remove.
      */
-    public void removeMapMouseListener (MapMouseListener l) {
+    public void removeMapMouseListener(MapMouseListener l) {
 	mouseSupport.removeMapMouseListener(l);
     }
 
     /**
      * Remove all MapMouseListeners from the mode.
      */
-    public void removeAllMapMouseListeners () {
+    public void removeAllMapMouseListeners() {
 	mouseSupport.removeAllMapMouseListeners();
     }
 
@@ -297,9 +297,11 @@ public class AbstractMouseMode extends OMComponent
     }
 
     /**
-     * Request to have the MapMouseMode act as a proxy for a
+     * Request to have the parent MapMouseMode act as a proxy for a
      * MapMouseMode that wants to remain hidden.  Can be useful for
-     * directing events to one object.
+     * directing events to one object.  This version sets the proxy
+     * distribution mask to zero, which means that none of this
+     * support objects targets will be notified of events.
      *
      * @param mmm the hidden MapMouseMode for this MapMouseMode to
      * send events to.
@@ -308,7 +310,25 @@ public class AbstractMouseMode extends OMComponent
      * listener.
      */
     public boolean actAsProxyFor(MapMouseMode mmm) {
-	return mouseSupport.setProxyFor(mmm);
+	return actAsProxyFor(mmm, 0);
+    }
+
+    /**
+     * Request to have the MapMouseMode act as a proxy for a
+     * MapMouseMode that wants to remain hidden.  Can be useful for
+     * directing events to one object.
+     *
+     * @param mmm the hidden MapMouseMode for this MapMouseMode to
+     * send events to.
+     * @param pdm the proxy distribution mask to use, which lets this
+     * support object notify its targets of events if the parent is
+     * acting as a proxy.
+     * @return true if the proxy setup (essentially a lock) is
+     * successful, false if the proxy is already set up for another
+     * listener.
+     */
+    public boolean actAsProxyFor(MapMouseMode mmm, int pdm) {
+	return mouseSupport.setProxyFor(mmm, pdm);
     }
 
     /**
@@ -326,4 +346,21 @@ public class AbstractMouseMode extends OMComponent
 	mouseSupport.releaseProxy();
     }
 
+    /**
+     * Set the mask that dictates which events get sent to this
+     * support object's targets even if the parent mouse mode is
+     * acting as a proxy.
+     */
+    public void setProxyDistributionMask(int mask) {
+	mouseSupport.setProxyDistributionMask(mask);
+    }
+
+    /**
+     * Get the mask that dictates which events get sent to this
+     * support object's targets even if the parent mouse mode is
+     * acting as a proxy.
+     */
+    public int getProxyDistributionMask() {
+	return mouseSupport.getProxyDistributionMask();
+    }
 }

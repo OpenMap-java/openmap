@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode.java,v $
 // $RCSfile: NavMouseMode.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/28 22:02:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -92,7 +92,7 @@ public class NavMouseMode extends CoordMouseMode {
      */
     public void mousePressed(MouseEvent e) {
 	if (Debug.debugging("mousemode")) {
-	    System.out.println(getID()+"|NavMouseMode.mousePressed()");
+	    Debug.output(getID()+"|NavMouseMode.mousePressed()");
  	}
 	if (! mouseSupport.fireMapMousePressed(e) && 
 	    e.getSource() instanceof MapBean) {
@@ -115,7 +115,7 @@ public class NavMouseMode extends CoordMouseMode {
      */
     public void mouseReleased(MouseEvent e) {
 	if (Debug.debugging("mousemode")) {
-	    System.out.println(getID()+"|NavMouseMode.mouseReleased()");
+	    Debug.output(getID()+"|NavMouseMode.mouseReleased()");
  	}
 	Object obj = e.getSource();
 	if (! mouseSupport.fireMapMouseReleased(e)) {
@@ -170,12 +170,12 @@ public class NavMouseMode extends CoordMouseMode {
 									centery);
 
 		// Fire events on main map to change view to match rect1
-		// 	  System.out.println("point1: " +point1);
-		// 	  System.out.println("point2: " +point2);
-		//        System.out.println("Centerx: " +centerx + 
+		// 	  Debug.output("point1: " +point1);
+		// 	  Debug.output("point2: " +point2);
+		//        Debug.output("Centerx: " +centerx + 
 		//             " Centery: " + centery);
-//		System.out.println("New Scale: " + newScale);
-//		System.out.println("New Center: " +center);
+//		Debug.output("New Scale: " + newScale);
+//		Debug.output("New Center: " +center);
 
 		// Set the parameters of the projection and then set
 		// the projection of the map.  This way we save having
@@ -198,7 +198,7 @@ public class NavMouseMode extends CoordMouseMode {
      */
     public void mouseEntered(MouseEvent e) {
 	if (Debug.debugging("mousemodedetail")) {
-	    System.out.println(getID()+"|NavMouseMode.mouseEntered()");
+	    Debug.output(getID()+"|NavMouseMode.mouseEntered()");
  	}
 	if (! mouseSupport.fireMapMouseEntered(e)) {
 	    autoZoom = true;
@@ -216,7 +216,7 @@ public class NavMouseMode extends CoordMouseMode {
      */
     public void mouseExited(MouseEvent e) {
 	if (Debug.debugging("mousemodedetail")) {
-	    System.out.println(getID()+"|NavMouseMode.mouseExited()");
+	    Debug.output(getID()+"|NavMouseMode.mouseExited()");
  	}
 	if (! mouseSupport.fireMapMouseExited(e) && 
 	    e.getSource() instanceof MapBean) {
@@ -241,9 +241,9 @@ public class NavMouseMode extends CoordMouseMode {
      * it is erased.
      * @param e MouseEvent to be handled
      */
-    public void mouseDragged(MouseEvent e){
+    public void mouseDragged(MouseEvent e) {
 	if (Debug.debugging("mousemodedetail")) {
-	    System.out.println(getID()+"|NavMouseMode.mouseDragged()");
+	    Debug.output(getID()+"|NavMouseMode.mouseDragged()");
  	}
 	if (! mouseSupport.fireMapMouseDragged(e) && 
 	    e.getSource() instanceof MapBean) {
@@ -264,9 +264,9 @@ public class NavMouseMode extends CoordMouseMode {
      * Handle a mouseMoved MouseMotionListener event. Nothing happens.
      * @param e MouseEvent to be handled
      */
-    public void mouseMoved(MouseEvent e){
+    public void mouseMoved(MouseEvent e) {
 	if (Debug.debugging("mousemodedetail")) {
-	    System.out.println(getID()+"|NavMouseMode.mouseMoved()");
+	    Debug.output(getID()+"|NavMouseMode.mouseMoved()");
  	}
 	mouseSupport.fireMapMouseMoved(e);
 	fireMouseLocation(e);
@@ -310,12 +310,12 @@ public class NavMouseMode extends CoordMouseMode {
      * coordinates.
      * @param pt2 the opposite corner of the box.
      */
-    protected void paintRectangle(MapBean map, Point pt1, Point pt2){
+    protected void paintRectangle(MapBean map, Point pt1, Point pt2) {
 	Graphics g = map.getGraphics();
 	g.setXORMode(java.awt.Color.lightGray);
 	g.setColor(java.awt.Color.darkGray);
 
-	if (pt1 != null && pt2 != null){
+	if (pt1 != null && pt2 != null) {
 	    int width = Math.abs(pt2.x - pt1.x);
 	    int height = Math.abs(pt2.y - pt1.y);
 

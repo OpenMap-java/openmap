@@ -368,7 +368,7 @@ public class DistanceMouseMode extends CoordMouseMode {
 		    if (showAngle) infoLine = infoLine + ", angle (" + 
 				       df.format(azimuth) + ")";
 		    // setup the info event
-		    InfoDisplayEvent info = new InfoDisplayEvent(this, infoLine);
+		    InfoDisplayEvent info = new InfoDisplayEvent(this, infoLine, InformationDelegator.COORDINATE_INFO_LINE);
 		    // ask the infoDelegator to display the info
 		    infoDelegator.requestInfoLine(info);
 		}

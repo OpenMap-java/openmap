@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CoordMouseMode.java,v $
 // $RCSfile: CoordMouseMode.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/28 22:02:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -88,7 +88,7 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
 			 active + ")");
 	}
 	if (!active && infoDelegator != null) {
-	    infoDelegator.requestInfoLine(new InfoDisplayEvent(this, ""));
+	    infoDelegator.requestInfoLine(new InfoDisplayEvent(this, "", InformationDelegator.COORDINATE_INFO_LINE));
 	}
     }
 
@@ -106,7 +106,7 @@ public abstract class CoordMouseMode extends AbstractMouseMode {
 	    infoLine = createCoordinateInformationLine(x, y, llp);
 	    
 	    // setup the info event
-	    InfoDisplayEvent info = new InfoDisplayEvent(this, infoLine);
+	    InfoDisplayEvent info = new InfoDisplayEvent(this, infoLine, InformationDelegator.COORDINATE_INFO_LINE);
 	    // ask the infoDelegator to display the info
 	    infoDelegator.requestInfoLine(info);
 	}
