@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.14 $
-// $Date: 2003/09/23 22:48:47 $
+// $Revision: 1.15 $
+// $Date: 2003/10/04 17:56:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1174,10 +1174,16 @@ public class PropertyHandler extends MapHandlerChild implements SoloMapComponent
      * remove a marker from a space delimated set of properties.
      */
     public void removeMarker(String property, String marker) {
-	StringBuffer sb = 
-	    new StringBuffer(getProperties().getProperty(property, ""));
-	int idx = sb.indexOf(marker);
+	// Requires jdk 1.4
+// 	StringBuffer sb = 
+// 	    new StringBuffer(getProperties().getProperty(property, ""));
+// 	int idx = sb.indexOf(marker);
+
+ 	//jdk 1.3 version
+	String propertyString = getProperties().getProperty(property, "");
+	int idx = propertyString.indexOf(marker);
 	if (idx != -1) {
+	    StringBuffer sb = new StringBuffer(propertyString);
 	    sb.delete(idx, idx + marker.length());
 	    getProperties().setProperty(property, sb.toString());
 	}

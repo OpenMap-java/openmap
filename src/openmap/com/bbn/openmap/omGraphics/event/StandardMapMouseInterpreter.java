@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/09/29 20:37:16 $
-// $Author: blubin $
+// $Revision: 1.7 $
+// $Date: 2003/10/04 17:56:15 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -64,7 +64,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 
 	public GeometryOfInterest(OMGraphic geom, MouseEvent me) {
 	    omg = geom;
-	    button = me.getButton();
+	    button = getButton(me);
 	    leftButton = isLeftMouseButton(me);
 	}
 
@@ -77,7 +77,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 	}
 
 	public boolean sameButton(MouseEvent me) {
-	    return button == me.getButton();
+	    return button == getButton(me);
 	}
 	
 	public OMGraphic getGeometry() {
@@ -86,6 +86,25 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 
 	public int getButton() {
 	    return button;
+	}
+
+	/**
+	 * Utility method to get around MouseEvent.getButton 1.4
+	 * requirement.
+	 */
+	protected int getButton(MouseEvent me) {
+	    // jdk 1.4 version
+	    // return me.getButton();
+
+	    // jdk 1.3 version Don't know if the numbers are the same
+	    // as in me.getButton, shouldn't make a difference.
+	    if (SwingUtilities.isLeftMouseButton(me)) {
+		return 0;
+	    } else if (SwingUtilities.isRightMouseButton(me)) {
+		return 1;
+	    } else {
+		return 2;
+	    }
 	}
 
 	public boolean isLeftButton() {
