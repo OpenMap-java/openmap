@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/OMComponent.java,v $
 // $RCSfile: OMComponent.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:05 $
+// $Revision: 1.6 $
+// $Date: 2004/05/15 01:44:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,6 +34,12 @@ import java.util.Properties;
  * openmap.components property of the openmap.properties file.
  */
 public class OMComponent extends MapHandlerChild implements PropertyConsumer {
+
+    /**
+     * All OMComponents have access to an I18n object, which is provided by
+     * the Environment.
+     */
+    protected I18n i18n = Environment.getI18n();
 
     /**
      * Token uniquely identifying this component in the application

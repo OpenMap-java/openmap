@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/05/11 19:17:10 $
+// $Revision: 1.12 $
+// $Date: 2004/05/15 01:44:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -209,19 +209,26 @@ public class InformationDelegator extends OMComponentPanel
      * status line are deactivated.
      */
     public void propertyChange(PropertyChangeEvent evt) {
-
-        if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
-            MapMouseMode mmm = (MapMouseMode)evt.getNewValue();
-            setAllLabels(fudgeString);
-            setResetCursor(mmm.getModeCursor());
-        } else if (evt.getPropertyName() == MapBean.CursorProperty) {
+        String propName = evt.getPropertyName();
+        if (propName == MapBean.CursorProperty) {
             fallbackMapBeanCursor = ((Cursor)evt.getNewValue());
-        } else if (evt.getPropertyName() == MapBean.LayersProperty) {
-            resetForLayers((Layer[])evt.getNewValue(), (Layer[])evt.getOldValue());
-            setAllLabels(fudgeString);
-        } else if (evt.getPropertyName() == MapBean.ProjectionProperty) {
+        } else {
+            if (propName == MouseDelegator.ActiveModeProperty) {
+                MapMouseMode mmm = (MapMouseMode)evt.getNewValue();
+                setResetCursor(mmm.getModeCursor());
+            } else if (propName == MapBean.LayersProperty) {
+                resetForLayers((Layer[])evt.getNewValue(), (Layer[])evt.getOldValue());
+            } else if (propName != MapBean.ProjectionProperty) {
+                // For stuff we don't care about, just return from
+                // here.  Otherwise, reset the GUI below...
+                return;
+            }
+
+            // Clear out all the information lines, resetting the GUI
             setAllLabels(fudgeString);
         }
+        
+        initToolTip();
     }
 
     /**
@@ -315,11 +322,6 @@ public class InformationDelegator extends OMComponentPanel
         if (iLine != null) {
             iLine.setText(str);
         }
-
-        // HACK This wasn't necessary in JDK1.1.5 and Swing1.0.1, but is now.
-        // Without the following two lines, the infoline doesn't show up at all
-//      infoLineHolder.invalidate();
-//      this.validate();
     }
 
     /**
