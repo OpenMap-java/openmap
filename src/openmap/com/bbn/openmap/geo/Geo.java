@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/geo/Geo.java,v $
 // $RCSfile: Geo.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.5 $
+// $Date: 2004/05/15 04:32:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,8 @@
 
 package com.bbn.openmap.geo;
 
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.Planet;
 import java.util.Enumeration;
 
 /** 
@@ -45,9 +47,13 @@ public class Geo {
 
     /** Constants for the shape of the earth.
         see http://www.gfy.ku.dk/%7Eiag/HB2000/part4/groten.htm **/
-    public static final double radiusKM = 6378.13662; // in KM.
-    public static final double radiusNM = 3443.9182; // in NM.
-    public static final double flattening = 1.0/298.25642;
+    // Replaced by Length constants.
+//     public static final double radiusKM = 6378.13662; // in KM.
+//     public static final double radiusNM = 3443.9182; // in NM.
+
+    // Replaced with WGS 84 constants
+//     public static final double flattening = 1.0/298.25642;
+    public static final double flattening = 1.0/298.257223563;
     public static final double f = (1.0 - flattening)*(1.0 - flattening);
 
     /**
@@ -68,42 +74,42 @@ public class Geo {
      * Convert from degrees to radians. 
      */
     public static double radians(double degrees) {
-        return degrees*Math.PI/180.0; 
+        return Length.DECIMAL_DEGREE.toRadians(degrees);
     }
 
     /**
      * Convert from radians to degrees. 
      */
     public static double degrees(double radians) {
-        return  radians*180.0/Math.PI; 
+        return Length.DECIMAL_DEGREE.fromRadians(radians);
     }
 
     /**
      * Convert radians to kilometers. 
      */
     public static double km(double radians) {
-        return radians*radiusKM;
+        return Length.KM.fromRadians(radians);
     }
 
     /**
      * Convert kilometers to radians. 
      */
     public static double kmToAngle(double km) {
-        return km/radiusKM;
+        return Length.KM.toRadians(km);
     }
 
     /** 
      * Convert radians to nauticalMiles. 
      */
     public static double nm(double radians) {
-        return radians*radiusNM;
+        return Length.NM.fromRadians(radians);
     }
 
     /** 
      * Convert nautical miles to radians. 
      */
     public static double nmToAngle(double nm) {
-        return nm/radiusNM;
+        return Length.NM.toRadians(nm);
     }
 
     private double x;

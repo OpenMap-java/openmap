@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Ellipsoid.java,v $
 // $RCSfile: Ellipsoid.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.3 $
+// $Date: 2004/05/15 04:32:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -100,7 +100,7 @@ public class Ellipsoid {
      * @param radius The earth radius for this ellipsoid.
      * @param eccsq The square of the eccentricity for this ellipsoid.
      */
-    public Ellipsoid(String name, double radius, double eccsq){
+    public Ellipsoid(String name, double radius, double eccsq) {
         this.name=name;
         this.radius=radius; 
         this.eccsq=eccsq;
@@ -111,7 +111,7 @@ public class Ellipsoid {
      * 
      * @return An Ellipsoid[] array containing all the available ellipsoids
      */
-    public static Ellipsoid[] getAllEllipsoids(){
+    public static Ellipsoid[] getAllEllipsoids() {
 
         Ellipsoid[] all=
                 {AIRY,
