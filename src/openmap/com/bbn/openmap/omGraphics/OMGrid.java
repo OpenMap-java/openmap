@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGrid.java,v $
 // $RCSfile: OMGrid.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/17 00:22:34 $
+// $Revision: 1.4 $
+// $Date: 2004/01/24 03:37:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,6 +28,7 @@ import java.io.Serializable;
 
 import com.bbn.openmap.omGraphics.grid.*;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.MoreMath;
 
@@ -175,6 +176,12 @@ public class OMGrid extends OMGraphic {
      * array.  
      */
     protected boolean major = COLUMN_MAJOR;
+
+    /**
+     * The units, if needed, of the values contained in the grid data
+     * array.  Null value is default and acceptable.
+     */
+    protected Length units = null;
 
     /** Default constructor. */    
     public OMGrid() {
@@ -332,7 +339,7 @@ public class OMGrid extends OMGraphic {
      */
     protected void set(float lat, float lon, int x, int y, 
 		       float vResolution, float hResolution,
-		       int [][] data) {
+		       int[][] data) {
 	set(lat, lon, x, y, vResolution, hResolution,
 	    new OMGridData.Int(data));
     }
@@ -372,12 +379,24 @@ public class OMGrid extends OMGraphic {
 	}
     }
 
+    public void setLatitude(float lat) {
+        if (latitude == lat) return;
+        latitude = lat;
+        setNeedToRegenerate(true);
+    }
+
     /**
      * Get the latitude of the lower left anchor point of the grid, in
      * decimal degrees.
      */
     public float getLatitude() {
 	return latitude;
+    }
+
+    public void setLongitude(float lon) {
+        if (longitude == lon) return;
+        longitude = lon;
+        setNeedToRegenerate(true);
     }
 
     /**
@@ -467,12 +486,20 @@ public class OMGrid extends OMGraphic {
      * method to set the number of rows and columns accordingly.  The
      * values in the array will be interpreted to the OMGridGenerator
      * that you provide to this OMGrid.  The OMGridGenerator will
-     * create what gets drawn on the map based on this data.
+     * create what gets drawn on the map based on this data.  The
+     * int[][] will be wrapped by a GridData.Int object.
      */
     public void setData(int[][] data) {
 	setData(new OMGridData.Int(data));
     }
 
+    /**
+     * Set the data of the grid.  The major setting will cause this
+     * method to set the number of rows and columns accordingly.  The
+     * values in the array will be interpreted to the OMGridGenerator
+     * that you provide to this OMGrid.  The OMGridGenerator will
+     * create what gets drawn on the map based on this data.
+     */
     public void setData(GridData data) {
 	this.data = data;
     }
@@ -555,6 +582,20 @@ public class OMGrid extends OMGraphic {
     }
 
     /**
+     * Set the units for the grid data.
+     */
+    public void setUnits(Length length) {
+        units = length;
+    }
+
+    /**
+     * Get the units for the grid data.
+     */
+    public Length getUnits() {
+        return units;
+    }
+
+    /**
      * Generate OMGraphics based on the data array.  If there is an
      * OMGridGenerator, it will be used to generate OMGraphics from
      * the data array.  If not, the OMGridObjects will be used to
@@ -608,26 +649,27 @@ public class OMGrid extends OMGraphic {
 	}
 	
 	if (Debug.debugging("grid")) {
-            Debug.output("OMGrid. generated grid, at " + point1 + 
+            Debug.output("OMGrid generated grid, at " + point1 + 
                          " and " + point2 + " with height " + height + 
                          " and width " + width);
         }
 
+        setShape();
+
 	/** Now generate the grid in the desired way...*/
-	if (generator != null) {
+	if (generator != null && generator.needGenerateToRender()) {
 	    graphic = generator.generate(this, proj);
 	} else if (gridObjects != null) {
 	    graphic = generateGridObjects(proj);
-	} else {
-	    Debug.message("grid", "OMGrid: Nothing to use to generate a graphic.");
 	}
 
 	setNeedToRegenerate(false);
 
-	if (graphic == null) {
+	if (graphic != null) {
 	    return true;
-	}
-	else return false;
+	} else {
+            return false;
+        }
     }
 
     /**

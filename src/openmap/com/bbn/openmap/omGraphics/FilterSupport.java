@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/FilterSupport.java,v $
 // $RCSfile: FilterSupport.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/28 22:09:16 $
+// $Revision: 1.4 $
+// $Date: 2004/01/24 03:37:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,7 @@ package com.bbn.openmap.omGraphics;
 
 import java.awt.Shape;
 import java.awt.geom.Area;
+import java.io.Serializable;
 import java.util.Iterator;
 
 import com.bbn.openmap.util.Debug;
@@ -42,7 +43,7 @@ import com.bbn.openmap.util.Debug;
  * back on for all the OMGraphics.  If a graphic is not visible when a
  * filter is applied, then the filter test will automatically fail.
  */
-public class FilterSupport implements OMGraphicHandler {
+public class FilterSupport implements OMGraphicHandler, Serializable {
 
     /**
      * The source graphic list.
