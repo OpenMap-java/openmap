@@ -14,9 +14,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.66 $
-# $Date: 2002/04/03 20:10:51 $
-# $Author: bmackiew $
+# $Revision: 1.67 $
+# $Date: 2002/04/18 21:30:13 $
+# $Author: dietrick $
 # 
 # **********************************************************************
 
@@ -172,7 +172,8 @@ Example.jar =	com/bbn/openmap/examples/hello/*.class \
 		com/bbn/openmap/examples/hello/*.properties
 
 Contrib.jar =	Acme/*.class \
-		Acme/JPM/Encoders/*.class
+		Acme/JPM/Encoders/*.class \
+		doppelt/*.class
 
 #########
 # rules #
