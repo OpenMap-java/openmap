@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/10/23 21:09:31 $
+// $Revision: 1.5 $
+// $Date: 2003/11/14 20:29:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,6 +40,7 @@ import com.bbn.openmap.event.*;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * An OpenMap Layer that encapsulates other layers and acts as a scale
@@ -76,12 +77,12 @@ public class ScaleFilterLayer extends Layer
     /**
      * The layers property.
      */
-    public final static transient String layersProperty = ".layers";
+    public final static transient String layersProperty = "layers";
 
     /**
      * The transition scales property.
      */
-    public final static transient String transitionScalesProperty = ".transitionScales";
+    public final static transient String transitionScalesProperty = "transitionScales";
 
     /**
      * The layers.
@@ -108,8 +109,8 @@ public class ScaleFilterLayer extends Layer
      */
     public ScaleFilterLayer() {
 	setLayout(new OverlayLayout(this));
-	/** To get MouseDelegator, to make decisions on receiving
-	 * mouse modes for child layers. */
+	// To get MouseDelegator, to make decisions on receiving mouse
+	// modes for child layers.
 	setAddToBeanContext(true);
     }
 
@@ -156,8 +157,33 @@ public class ScaleFilterLayer extends Layer
      */
     public void setProperties(String prefix, Properties props) {
 	super.setProperties(prefix, props);
+	prefix = PropUtils.getScopedPropertyPrefix(prefix);
 	parseLayers(prefix, props);
 	parseScales(prefix, props);
+    }
+
+    public Properties getProperties(Properties props) {
+	props = super.getProperties(props);
+
+	String prefix = PropUtils.getScopedPropertyPrefix(this);
+	float[] ts = getTransitionScales();
+	StringBuffer tsBuffer = new StringBuffer();
+	if (ts != null) {
+	    for (int i = 0; i < ts.length; i++) {
+		tsBuffer.append(Float.toString(ts[i]) + " ");
+	    }
+	}
+	props.put(prefix + transitionScalesProperty, tsBuffer.toString());
+
+	StringBuffer layerBuffer = new StringBuffer();
+	for (Iterator it = getLayers().iterator(); it.hasNext();) {
+	    Layer layer = (Layer)it.next();
+	    layerBuffer.append(layer.getPropertyPrefix() + " ");
+	    layer.getProperties(props);
+	}
+	props.put(prefix + layersProperty, layerBuffer.toString());
+	
+	return props;
     }
 
     /**
@@ -248,6 +274,7 @@ public class ScaleFilterLayer extends Layer
 	    --size;
 	}
 	transitionScales = new float[size];
+
 	String scales = props.getProperty(prefix + transitionScalesProperty);
 	if (scales == null) {
 	    Debug.error("ScaleFilterLayer.parseScales(): Failed to locate property \"" + 

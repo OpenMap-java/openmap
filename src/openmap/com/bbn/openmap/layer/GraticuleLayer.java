@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/21 20:40:13 $
+// $Revision: 1.3 $
+// $Date: 2003/11/14 20:29:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,8 +35,6 @@ import com.bbn.openmap.event.*;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.*;
-import com.bbn.openmap.util.propertyEditor.Inspector;
-import com.bbn.openmap.layer.util.LayerUtils;
 
 /**
  * Layer that draws graticule lines.  If the showRuler property is
@@ -170,48 +168,48 @@ public class GraticuleLayer extends OMGraphicHandlerLayer
 	super.setProperties(prefix, properties);
 	prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	tenDegreeColor = LayerUtils.parseColorFromProperties(
+	tenDegreeColor = PropUtils.parseColorFromProperties(
 	    properties, prefix + TenDegreeColorProperty,
 	    defaultTenDegreeColorString);	
 
-	fiveDegreeColor = LayerUtils.parseColorFromProperties(
+	fiveDegreeColor = PropUtils.parseColorFromProperties(
 	    properties, prefix + FiveDegreeColorProperty,
 	    defaultFiveDegreeColorString);
 	
-	oneDegreeColor = LayerUtils.parseColorFromProperties(
+	oneDegreeColor = PropUtils.parseColorFromProperties(
 	    properties, prefix + OneDegreeColorProperty,
 	    defaultOneDegreeColorString);	
 	
-	equatorColor = LayerUtils.parseColorFromProperties(
+	equatorColor = PropUtils.parseColorFromProperties(
 	    properties, prefix + EquatorColorProperty,
 	    defaultEquatorColorString);	
 	
-	dateLineColor = LayerUtils.parseColorFromProperties(
+	dateLineColor = PropUtils.parseColorFromProperties(
 	    properties, prefix + DateLineColorProperty,
 	    defaultDateLineColorString);	
 	
-	specialLineColor = LayerUtils.parseColorFromProperties(
+	specialLineColor = PropUtils.parseColorFromProperties(
 	    properties, prefix + SpecialLineColorProperty,
 	    defaultSpecialLineColorString);	
 	
-	textColor = LayerUtils.parseColorFromProperties(
+	textColor = PropUtils.parseColorFromProperties(
 	    properties, prefix + TextColorProperty,
 	    defaultTextColorString);	
 
-	threshold = LayerUtils.intFromProperties(properties, 
+	threshold = PropUtils.intFromProperties(properties, 
 						 prefix + ThresholdProperty, 
 						 defaultThreshold);
 
-	fontSize = LayerUtils.intFromProperties(properties, 
+	fontSize = PropUtils.intFromProperties(properties, 
 						prefix + FontSizeProperty, 
 						fontSize);
 	font = new Font("Helvetica", java.awt.Font.PLAIN, fontSize);
 
-	setShowOneAndFiveLines(LayerUtils.booleanFromProperties(
+	setShowOneAndFiveLines(PropUtils.booleanFromProperties(
 	    properties, prefix + ShowOneAndFiveProperty, 
 	    defaultShowOneAndFiveLines));
 
-	setShowRuler(LayerUtils.booleanFromProperties(
+	setShowRuler(PropUtils.booleanFromProperties(
 	    properties, prefix + ShowRulerProperty, 
 	    defaultShowRuler));
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/BufferedLayer.java,v $
 // $RCSfile: BufferedLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/10 15:44:56 $
+// $Revision: 1.3 $
+// $Date: 2003/11/14 20:29:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -118,7 +118,6 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
 
 	// Adds the mapbean to the layer
 	MapBean mb = new BLMapBean(this);
-	mb.setBackgroundColor(OMColor.clear);
 
 	// Add it the layer properly...
 	setMapBean(mb);
@@ -258,7 +257,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      *
      * @param color java.awt.Color.  
      */
-    public void setBackgroundColor(Color color) {
+    public void setBackground(Color color) {
 	setBckgrnd(color);
     }
 
@@ -286,8 +285,8 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      *
      * @return color java.awt.Color  
      */
-    public Color getBackgroundColor() {
-	return mapBean.getBackgroundColor();
+    public Color getBackground() {
+	return mapBean.getBackground();
     }
 
     /**
@@ -429,6 +428,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
 	 */
 	public BLMapBean(Layer parent) {
 	    super();
+	    background = OMColor.clear;
 	    layer = parent;
 	}
 
@@ -446,7 +446,9 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
 		wipeImage();
 	    }
 
-	    layer.repaint();
+	    if (layer != null) {
+		layer.repaint();
+	    }
 	}
 
 	/**
@@ -463,7 +465,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
 	    // reset if the background is slighly transparent if any
 	    // layer can change between overall cleansings.
 
- 	    if (this.getBckgrnd() == OMColor.clear) {
+ 	    if (this.getBackground() == OMColor.clear) {
 		drawingBuffer = createImage(this.getWidth(), this.getHeight());
 	    }
 	}

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.14 $
-// $Date: 2003/10/10 15:44:56 $
+// $Revision: 1.15 $
+// $Date: 2003/11/14 20:29:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -602,18 +602,26 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 		Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for PropertyChangePolicy, but " + policyPrefix + ".class property is undefined.");
 	    } else {
 		Object obj = ComponentFactory.create(pcpClass, policyPrefix, props);
-		if (obj instanceof ProjectionChangePolicy) {
+		if (obj != null) {
+
 		    if (Debug.debugging("layer")) {
 			Debug.output("Layer " + getName() + " setting ProjectionChangePolicy [" + 
 				     obj.getClass().getName() + "]");
 		    }
-		    setProjectionChangePolicy((ProjectionChangePolicy)obj);
+
+		    try {
+			setProjectionChangePolicy((ProjectionChangePolicy)obj);
+		    } catch (ClassCastException cce) {
+			Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for ProjectionChangePolicy, but " + policyPrefix + ".class property (" + pcpClass + ") does not define a valid ProjectionChangePolicy. A " + obj.getClass().getName() + " was created instead.");
+		    }
+
 		} else {
 		    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for PropertyChangePolicy, but " + policyPrefix + ".class property does not define a valid PropertyChangePolicy.");
 		}
 	    }
 	} else if (Debug.debugging("layer")) {
-	    Debug.output("Layer " + getName() + " using default ProjectionChangePolicy [" + 
+	    Debug.output("Layer " + getName() + 
+			 " using default ProjectionChangePolicy [" + 
 			 getProjectionChangePolicy().getClass().getName() + "]");
 	}
 
@@ -625,17 +633,25 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	    if (rpClass == null) {
 		Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property is undefined.");
 	    } else {
-		Object obj = ComponentFactory.create(rpClass, policyPrefix, props);
-		if (obj instanceof RenderPolicy) {
+
+		Object rpObj = ComponentFactory.create(rpClass, policyPrefix, props);
+
+		if (rpObj != null) {
 		    if (Debug.debugging("layer")) {
 			Debug.output("Layer " + getName() + " setting RenderPolicy [" + 
-				     obj.getClass().getName() + "]");
+				     rpObj.getClass().getName() + "]");
 		    }
-		    setRenderPolicy((RenderPolicy)obj);
+
+		    try {
+			setRenderPolicy((RenderPolicy)rpObj);
+		    } catch (ClassCastException cce) {
+			Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property (" + rpClass + ") does not define a valid RenderPolicy. A " + rpObj.getClass().getName() + " was created instead.");
+		    }
 		} else {
-		    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property does not define a valid RenderPolicy.");
+		    Debug.error("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property (" + rpClass + ") isn't being created.");
 		}
 	    }
+
 	} else if (Debug.debugging("layer")) {
 	    Debug.output("Layer " + getName() + " using default RenderPolicy [" + 
 			 getRenderPolicy().getClass().getName() + "]");
@@ -670,6 +686,8 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	String prefix = PropUtils.getScopedPropertyPrefix(this);
 	String policyPrefix = null;
 
+	////// ProjectionChangePolicy
+
 	ProjectionChangePolicy pcp = getProjectionChangePolicy();
 	if (pcp instanceof PropertyConsumer) {
 	    policyPrefix = ((PropertyConsumer)pcp).getPropertyPrefix();
@@ -677,11 +695,19 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	}
 
 	if (policyPrefix == null) {
-	    policyPrefix = prefix + ".pcp";
+	    policyPrefix = prefix + "pcp";
 	}
-	
-	props.put(prefix + ProjectionChangePolicyProperty, policyPrefix);
-	props.put(policyPrefix + ".class", pcp.getClass().getName());
+
+	//Whoops, need to make sure pcp is valid but removing the
+	//OMGHL prefix from the front of the policy prefix (if
+	//applicable). Same for RenderPolicy
+
+	props.put(prefix + ProjectionChangePolicyProperty, 
+		  policyPrefix.substring(prefix.length()));
+	// This has to come after the above line, or the above
+	// property will have a trailing period.
+	policyPrefix = PropUtils.getScopedPropertyPrefix(policyPrefix);
+	props.put(policyPrefix + "class", pcp.getClass().getName());
 
 	RenderPolicy rp = getRenderPolicy();
 	if (rp instanceof PropertyConsumer) {
@@ -689,20 +715,30 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	    ((PropertyConsumer)rp).getProperties(props);
 	}
 
+	///// RenderPolicy
+
 	if (policyPrefix == null) {
-	    policyPrefix = prefix + ".rp";
+	    policyPrefix = prefix + "rp";
 	}
 
-	props.put(prefix + RenderPolicyProperty, policyPrefix);
-	props.put(policyPrefix + ".class", rp.getClass().getName());
+	props.put(prefix + RenderPolicyProperty,
+		  policyPrefix.substring(prefix.length()));
+	// This has to come after the above line, or the above
+	// property will have a trailing period.
+	policyPrefix = PropUtils.getScopedPropertyPrefix(policyPrefix);
+	props.put(policyPrefix + "class", rp.getClass().getName());
 
 	props.put(prefix + ConsumeEventsProperty, new Boolean(consumeEvents).toString());
-
 
 	String[] mm = getMouseModeIDsForEvents();
 	if (mm != null && mm.length > 0) {
 	    StringBuffer sb = new StringBuffer();
 	    for (int i = 0; i < mm.length; i++) {
+		// Don't need any MouseModes that have been scoped to
+		// the pretty name, those are automatically generated.
+		if (mm[i].equals(getName())) {
+		    continue;
+		}
 		sb.append(mm[i] + " ");
 	    }
 	    props.put(prefix + MouseModesProperty, sb.toString());
@@ -743,6 +779,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	RenderPolicy rp = getRenderPolicy();
 	if (rp instanceof PropertyConsumer) {
 	    policyPrefix = ((PropertyConsumer)rp).getPropertyPrefix();
+
 	    if (policyPrefix != null) {
 		int index = policyPrefix.indexOf(".");
 		if (index != -1) {
@@ -751,6 +788,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	    }
 
 	    ((PropertyConsumer)rp).getPropertyInfo(list);
+	} else {
 	}
 
 	if (policyPrefix == null) {

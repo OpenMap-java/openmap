@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.22 $
-// $Date: 2003/10/04 04:47:41 $
+// $Revision: 1.23 $
+// $Date: 2003/11/14 20:29:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -301,7 +301,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	    if (omgl.size() == 1) {
 		edit(omgl.getOMGraphicAt(0));
 	    } else {
-		Debug.output("DrawingToolLayer can't handle multiple OMGraphics at one time, yet!");
+		edit(omgl);
 	    }
 	}
     }
@@ -311,6 +311,11 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	OMDrawingTool dt = getDrawingTool();
 
 	if (dt != null && dt.canEdit(omg.getClass())) {
+
+// 	    if (dt.isEditing(omg)) {
+// 		dt.deselect(omg);
+// 		return;
+// 	    }
 
 	    dt.resetBehaviorMask();
 
@@ -330,7 +335,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 		omg.deselect();
 	    }
 
-	    if (dt.edit(omg, this, mevent) != null) {
+	    if (dt.select(omg, this, mevent)) {
 		// OK, means we're editing - let's lock up the MouseMode
 		if (DTL_DEBUG) {
 		    Debug.output("DTL: starting edit of OMGraphic...");
@@ -360,6 +365,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 				     "), or MouseEvent is not a MapMouseEvent(" +
 				     !(mevent instanceof MapMouseEvent) + ")");
 		    }
+		}
+	    } else {
+		if (DTL_DEBUG) {
+		    Debug.output("DTL.edit: dt.select returns false, avoiding modification over " + omg.getClass().getName());
 		}
 	    }
 	}

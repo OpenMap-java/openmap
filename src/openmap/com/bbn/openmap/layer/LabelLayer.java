@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/LabelLayer.java,v $
 // $RCSfile: LabelLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:50 $
+// $Revision: 1.3 $
+// $Date: 2003/11/14 20:29:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,11 +77,11 @@ public class LabelLayer extends OMGraphicHandlerLayer
     implements Taskable, MapMouseListener {
 
     // property keys
-    public final static transient String fontProperty = ".font";
-    public final static transient String fgColorProperty = ".color.fg";
-    public final static transient String bgColorProperty = ".color.bg";
-    public final static transient String geometryProperty = ".geometry";
-    public final static transient String labelProperty = ".text";
+    public final static transient String fontProperty = "font";
+    public final static transient String fgColorProperty = "color.fg";
+    public final static transient String bgColorProperty = "color.bg";
+    public final static transient String geometryProperty = "geometry";
+    public final static transient String labelProperty = "text";
 
     // properties
     protected String fontString = "SansSerif";
@@ -111,9 +111,7 @@ public class LabelLayer extends OMGraphicHandlerLayer
     public LabelLayer() {
 	text = new OMText(0, 0, "uninitialized", font, OMText.JUSTIFY_RIGHT);
 	text.setLinePaint(fgColor);
-	text.setShowBounds(true);
-	text.setBoundsLineColor(bgColor);
-	text.setBoundsFillColor(bgColor);
+ 	text.setFillPaint(bgColor);
     }
 
     /**
@@ -124,28 +122,27 @@ public class LabelLayer extends OMGraphicHandlerLayer
     public void setProperties(String prefix, Properties props) {
 	super.setProperties(prefix, props);
 
+	prefix = com.bbn.openmap.util.PropUtils.getScopedPropertyPrefix(prefix);
+
 	fontString = props.getProperty(prefix+fontProperty, fontString);
 
 	fgColor = ColorFactory.parseColorFromProperties(
-		props, prefix+fgColorProperty, ""+fgColorValue);
+	    props, prefix+fgColorProperty, Integer.toString(fgColorValue));
 
 	bgColor = ColorFactory.parseColorFromProperties(
-		props, prefix+bgColorProperty, ""+bgColorValue);
+	    props, prefix+bgColorProperty, Integer.toString(bgColorValue));
 
-	geometryString = props.getProperty(prefix+geometryProperty,
-		geometryString);
+	geometryString = props.getProperty(prefix+geometryProperty, geometryString);
 	parseGeometryString();
 
 	labelText = props.getProperty(
-		prefix+labelProperty, labelText);
+	    prefix+labelProperty, labelText);
 
 	// reset the property values
 	font = Font.decode(fontString);
 	text.setFont(font);
 	text.setLinePaint(fgColor);
-	text.setBoundsLineColor(bgColor);
-	text.setBoundsFillColor(bgColor);
-
+	text.setFillPaint(bgColor);
     }
 
     /** Parse X-like geometry string. */
