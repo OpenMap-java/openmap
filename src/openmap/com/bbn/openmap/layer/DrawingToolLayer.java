@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.14 $
-// $Date: 2003/08/22 14:36:15 $
+// $Revision: 1.15 $
+// $Date: 2003/08/22 16:14:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,6 +66,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
     protected boolean DTL_DEBUG = false;
 
     public DrawingToolLayer() {
+	setList(new OMGraphicList());
 	setAddToBeanContext(true);
 	DTL_DEBUG = Debug.debugging("dtl");
     }
