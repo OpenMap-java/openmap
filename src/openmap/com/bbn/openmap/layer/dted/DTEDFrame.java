@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrame.java,v $
 // $RCSfile: DTEDFrame.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:32:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,10 +24,12 @@
 package com.bbn.openmap.layer.dted;
 import java.io.*;
 
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.io.*;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMRasterObject;
+import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.proj.EqualArc;
+import com.bbn.openmap.util.Debug;
 
 /** 
  * The DTEDFrame is the representation of the DTED (Digital Terrain
@@ -539,10 +541,10 @@ public class DTEDFrame implements Closable {
      * want something different.  This method actually calls that
      * other method, so read the documentation for that as well.
      *
-     * @param proj CADRG projection to use to create image.  
+     * @param proj EqualArc projection to use to create image.  
      * @return raster image to display in OpenMap.  
      */
-    public OMRaster getOMRaster(com.bbn.openmap.proj.CADRG proj) {
+    public OMRaster getOMRaster(EqualArc proj) {
 	return getOMRaster(null, null, proj);
     }
 
@@ -562,11 +564,11 @@ public class DTEDFrame implements Closable {
      * @param dfsi the DTEDFrameSubframeInfo describing the subframe.
      * @param colortable the colortable to use when building the image.
      * @return raster image to display in OpenMap.  
-     * @param proj CADRG projection to use to create image.  
+     * @param proj EqualArc projection to use to create image.  
      */
     public OMRaster getOMRaster(DTEDFrameSubframeInfo dfsi, 
 				DTEDFrameColorTable colortable,
-				com.bbn.openmap.proj.CADRG proj) {
+				EqualArc proj) {
 	if (proj == null) {
 	    Debug.error("DTEDFrame.getOMRaster: need projection to create image.");
 	    return null;
@@ -966,9 +968,8 @@ public class DTEDFrame implements Closable {
 	float lat = df.dsi.lat_origin + .5f;
 	float lon = df.dsi.lon_origin + .5f;
 
-	com.bbn.openmap.proj.CADRG crg = 
-	    new com.bbn.openmap.proj.CADRG(new com.bbn.openmap.LatLonPoint(lat, lon), 
-					   1500000, 600, 600);
+	CADRG crg = new CADRG(new com.bbn.openmap.LatLonPoint(lat, lon), 
+			      1500000, 600, 600);
        	final OMRaster ras = df.getOMRaster(crg);
 
 	// Pushes the image to the left top of the frame.

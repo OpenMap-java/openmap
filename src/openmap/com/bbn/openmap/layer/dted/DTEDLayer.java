@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDLayer.java,v $
 // $RCSfile: DTEDLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/23 21:09:31 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:32:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -541,11 +541,11 @@ public class DTEDLayer extends Layer
 	    cache.setSubframeInfo(dfsi);
 	}
 
-	// Check to make sure the projection is CADRG
-	if (!(projection instanceof CADRG)) {
+	// Check to make sure the projection is EqualArc
+	if (!(projection instanceof EqualArc)) {
 	    if (viewType != DTEDFrameSubframe.NOSHADING) {
-		fireRequestInfoLine("  DTED requires the CADRG projection to view images.");
-		Debug.error("DTEDLayer: DTED requires the CADRG projection to view images.");
+		fireRequestInfoLine("  DTED requires an Equal Arc projection (CADRG/LLXY) to view images.");
+		Debug.error("DTEDLayer: DTED requires an Equal Arc projection (CADRG/LLXY) to view images.");
 	    }
 	    return new OMGraphicList();
 	}
@@ -570,7 +570,7 @@ public class DTEDLayer extends Layer
 	OMGraphicList omGraphicList;
 
 	if (projection.getScale() < minScale) {
-	    omGraphicList = cache.getRectangle((CADRG)projection);
+	    omGraphicList = cache.getRectangle((EqualArc)projection);
 	} else {
 	    fireRequestInfoLine("  The scale is too small for DTED viewing.");
 	    Debug.error("DTEDLayer: scale (" + projection.getScale() + 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDFrameCache.java,v $
 // $RCSfile: DTEDFrameCache.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:32:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,6 +31,7 @@ import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMRasterObject;
+import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.util.Debug;
@@ -342,7 +343,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     /** 
      * Return the two-dimensional matrix of elevation posts (heights)
      * representing coverage of a given geographical rectangle.  The
-     * matrix represents coverage in the CADRG (Equal ARC)
+     * matrix represents coverage in an Equal Arc
      * projection, and that's why the rectangle is defined by the
      * projection parameters.
      * @param proj the projection describing the wanted area
@@ -350,7 +351,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      * describes the geographicsal spacing between the posts.
      * @return array of elevations, in meters.  Spacing depends on the DTED level.
      */
-    public short[][] getElevations(com.bbn.openmap.proj.CADRG proj, int dtedLevel) {
+    public short[][] getElevations(EqualArc proj, int dtedLevel) {
 	LatLonPoint ul = proj.getUpperLeft();
 	LatLonPoint lr = proj.getLowerRight();
 
@@ -361,7 +362,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     /** 
      * Return the two-dimensional matrix of elevation posts (heights)
      * representing coverage of a given geographical rectangle.  The
-     * matrix represents coverage in the CADRG (Equal ARC) projection.
+     * matrix represents coverage in an Equal Arc projection.
      * Doesn't handle projections which cross the dateline - You must
      * handle that yourself by making two inquiries.
      * @param ullat upper latitude, in decimal degrees
@@ -379,7 +380,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
    /** 
     *  Return the two-dimensional matrix of elevation posts (heights)
     * representing coverage of a given geographical rectangle.  The
-    * matrix represents coverage in the CADRG (Equal ARC) projection.
+    * matrix represents coverage in an Equal Arc projection.
     * Doesn't handle projections which cross the dateline - You must
     * handle that yourself by making two inquiries. <P>This method is
     * slightly different that the one above, because it includes a

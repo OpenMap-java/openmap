@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCacheManager.java,v $
 // $RCSfile: DTEDCacheManager.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:32:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,7 +31,7 @@ import com.bbn.openmap.util.Debug;
 
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
-import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.LatLonPoint;
 
@@ -53,7 +53,6 @@ import com.bbn.openmap.LatLonPoint;
  * data on your system.  The getRectangle() call returns an
  * OMGraphicList of objects to draw, that cover the area asked for.
  */
-
 public class DTEDCacheManager {
     /** 
      * The size of the smaller caches, when more cachehandlers are
@@ -208,7 +207,7 @@ public class DTEDCacheManager {
      * @param proj The projection of the screen (CADRG).
      * @return List of rasters to display.
      */
-    public OMGraphicList getRectangle(CADRG proj) {
+    public OMGraphicList getRectangle(EqualArc proj) {
 	
 	float[] lat = new float[3];
 	float[] lon = new float[3];

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCacheHandler.java,v $
 // $RCSfile: DTEDCacheHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:32:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,7 +31,7 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.omGraphics.OMRaster;
 
@@ -160,9 +160,9 @@ public class DTEDCacheHandler {
      * projection looks like so it can figure out which frames (and
      * subframes) will be needed.
      *
-     * @param proj the CADRG projection of the screen.
+     * @param proj the EqualArc projection of the screen.
      */
-    public void setProjection(CADRG proj) {
+    public void setProjection(EqualArc proj) {
 	setProjection(proj, 
 		      proj.getUpperLeft().getLatitude(), 
 		      proj.getUpperLeft().getLongitude(), 
@@ -178,7 +178,7 @@ public class DTEDCacheHandler {
      * CacheHandler is dealing with just a part of the map, such as
      * when the map covers the dateline or equator.
      *
-     * @param proj the CADRG projection of the screen.
+     * @param proj the EqualArc projection of the screen.
      * @param lat1 latitude of the upper left corner of the window, in
      * decimal degrees.
      * @param lon1 longitude of the upper left corner of the window,
@@ -188,7 +188,7 @@ public class DTEDCacheHandler {
      * @param lon2 longitude of the lower right corner of the window,
      * in decimal degrees.  
      */
-    public void setProjection(CADRG proj, 
+    public void setProjection(EqualArc proj, 
 			      float lat1, float lon1, 
 			      float lat2, float lon2) {
 	
