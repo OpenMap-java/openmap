@@ -1,8 +1,8 @@
 <!--
 $source: /net/blatz/u4/rcs/openmap/doc/sgml/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.24 $
-$Date: 2001/06/20 00:45:56 $
+$Revision: 1.25 $
+$Date: 2001/06/20 00:50:32 $
 $Author: bmackiew $
 
 Frequently Asked Questions for the OpenMap system.
@@ -14,7 +14,7 @@ Frequently Asked Questions for the OpenMap system.
 
 <title>OpenMap FAQ
 <author>BBNT Solutions LLC (Formerly BBN Technologies)
-<date>13 June 2001
+<date>19 June 2001
 <abstract>
 This FAQ contains questions and answers about the OpenMap system.
 </abstract>
