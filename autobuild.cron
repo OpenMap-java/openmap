@@ -18,13 +18,11 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild.cron,v $
 # $RCSfile: autobuild.cron,v $
-# $Revision: 1.1 $
-# $Date: 1998/04/20 21:44:21 $
+# $Revision: 1.2 $
+# $Date: 1998/04/20 22:21:10 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
-
-/usr/ucb/mail -s "starting autobuild mapBean" tmitchell.pager
 
 DateString=`date +"%Y%m%d"`      # 17750419
 LogDir=/usr/local/openmap/autobuild/logs
@@ -32,25 +30,28 @@ LogFile=$LogDir/$DateString.log
 TmpDir=/tmp/mapBeanAuto
 
 
-if mkdir -p $LogDir; then
-  ;
+if /bin/mkdir -p $LogDir; then
+  /bin/true;
 else
-  echo "Failed to create log directory: $LogDir";
+  /bin/echo "Failed to create log directory: $LogDir";
   exit 1;
 fi
 
 
-if mkdir -p $TmpDir; then
-  ;
+if /bin/mkdir -p $TmpDir; then
+  /bin/true;
 else
-  echo "Failed to create tmp directory: $TmpDir";
+  /bin/echo "Failed to create tmp directory: $TmpDir";
   exit 1;
 fi
 
 
-cd $TmpDir
-cvs -d /u4/rcs export -Dnow openmap/autobuild
-sh openmap/autobuild > $LogFile 2>&1
+rm -rf $LogFile
+cd $TmpDir >> $LogFile 2>&1
+pwd >> $LogFile 2>&1
 
-/usr/ucb/mail -s "autobuild mapBean" tmitchell.pager
+
+/usr/local/gnu/bin/cvs -d /u4/rcs export -Dnow openmap/autobuild >> $LogFile 2>&1
+/bin/sh openmap/autobuild >> $LogFile 2>&1
+
 /usr/ucb/mail -s "autobuild mapBean" tmitchell < $LogFile
