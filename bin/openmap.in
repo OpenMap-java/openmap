@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# 
+
+PRG=`type -p $0` >/dev/null 2>&1
+
+#
+# If PRG is a symlink, trace it to the real home directory
+#
+while [ -L "$PRG" ]
+do
+    newprg=`expr "\`/bin/ls -l "$PRG"\`" : ".*$PRG -> \(.*\)"`
+    expr "$newprg" : / >/dev/null || newprg="`dirname $PRG`/$newprg"
+    PRG="$newprg"
+done
+
+OM_HOME=`dirname $PRG`/..
+progname=`basename $0`
+
+export CLASSPATH=$OM_HOME/lib/openmap.jar:@SWING_JAR@:@CORBA_CLASSPATH@
+@JAVA@ -mx64m com.bbn.openmap.app.OpenMap
