@@ -1,23 +1,21 @@
 # **********************************************************************
 # 
-#    Use, duplication, or disclosure by the Government is subject to
-# 	     restricted rights as set forth in the DFARS.
-#  
-# 			   BBNT Solutions LLC
-# 			      A Part of  
-# 			         GTE      
-# 			  10 Moulton Street
-# 			 Cambridge, MA 02138
-# 			    (617) 873-3000
-#  
-# 	  Copyright 1998, 2000 by BBNT Solutions LLC,
-# 		A part of GTE, all rights reserved.
-#  
+# <copyright>
+# 
+#  BBN Technologies, a Verizon Company
+#  10 Moulton Street
+#  Cambridge, MA 02138
+#  (617) 873-8000
+# 
+#  Copyright (C) BBNT Solutions LLC. All rights reserved.
+# 
+# </copyright>
 # **********************************************************************
 # 
 # $Source: /cvs/distapps/openmap/Attic/corba.mk,v $
-# $Revision: 1.2 $
-# $Date: 2000/11/29 19:46:34 $
+# $RCSfile: corba.mk,v $
+# $Revision: 1.3 $
+# $Date: 2002/05/08 22:32:36 $
 # $Author: dietrick $
 # 
 # **********************************************************************
@@ -37,9 +35,10 @@
 # Our specifics
 JAVA_HOME = /usr/local/java
 VISIBROKER_HOME = /usr/local/vbroker
-CSPEC_JAR = ${rootdir}/lib/cspec58.jar
-CORBA_CLASSES = ${VISIBROKER_HOME}/lib/vbjapp.jar:${VISIBROKER_HOME}/lib/vbjcosnm.jar:${VISIBROKER_HOME}/lib/vbjtools.jar:${VISIBROKER_HOME}/lib/vbjorb.jar:${CSPEC_JAR}
 
-#bootclasspath = <path to the corba jars (like Visibroker); development path to openmap; path to runtime jar (rt.jar)>
+CORBA_CLASSES = ${VISIBROKER_HOME}/lib/vbjapp.jar:${VISIBROKER_HOME}/lib/vbjcosnm.jar:${VISIBROKER_HOME}/lib/vbjtools.jar:${VISIBROKER_HOME}/lib/vbjorb.jar
+
+# bootclasspath = <path to the corba jars (like Visibroker);	\
+# development path to openmap; path to runtime jar (rt.jar)>
 bootclasspath =${CORBA_CLASSES}:${CLASSPATH}:${JAVA_HOME}/jre/lib/rt.jar
 
