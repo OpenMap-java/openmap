@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/WebBrowser.java,v $
 // $RCSfile: WebBrowser.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/08 18:56:01 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:34:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -134,12 +134,11 @@ public class WebBrowser {
 
 	    if (arch.equals("x86")) {
 		// Windows HACK
-		cmd = new String(Environment.get(Environment.WebBrowser) +
-				 " " + url);
+		cmd = Environment.get(Environment.WebBrowser) + " " + url;
 	    } else {
 		// Assume Unix HACK
-		cmd = new String (Environment.get(Environment.WebBrowser) +
-				  " -remote OpenURL(" + url + ")");
+		cmd = Environment.get(Environment.WebBrowser) +
+		    " -remote OpenURL(" + url + ")";
 	    }
 
 	    try {

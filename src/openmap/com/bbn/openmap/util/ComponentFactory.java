@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/ComponentFactory.java,v $
 // $RCSfile: ComponentFactory.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/09/08 20:55:21 $
-// $Author: blubin $
+// $Revision: 1.7 $
+// $Date: 2003/09/22 23:34:46 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -344,16 +344,19 @@ public class ComponentFactory {
 	} catch (InstantiationException ie) {
 	    errorMessage = "InstantiationException: " + ie.getMessage();
 	} catch (IllegalAccessException iae) {
+	    if (DEBUG) iae.printStackTrace();
 	    errorMessage = "IllegalAccessException: " + iae.getMessage();
 	} catch (IllegalArgumentException iae2) {
+	    if (DEBUG) iae2.printStackTrace();
 	    errorMessage = "IllegalArgumentException: " + iae2.getMessage();
 	} catch (InvocationTargetException ite) {
+	    if (DEBUG) ite.printStackTrace();
 	    errorMessage = "InvocationTargetException: " + ite.getMessage();
 	} catch (ClassNotFoundException cnfe) {
 	    errorMessage = "ClassNotFoundException: " + cnfe.getMessage();
 	}
 
-	if (Debug.debugging("basic")) {
+	if (Debug.debugging("componentfactory")) {
 	    Debug.error("ComponentFactory.create: Failed to create \"" + className + 
 			(prefix != null?"\" using component marker name \"" + prefix + "\"":"") + 
 			" - error message: " + errorMessage);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/HandleError.java,v $
 // $RCSfile: HandleError.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:34:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,6 +30,11 @@ package com.bbn.openmap.util;
  * handle it.
  */
 public class HandleError extends RuntimeException {
-    public HandleError(Exception e) { super(e.toString()); }
-    public HandleError(String s) { super(s); }
+    public HandleError(Exception e) { 
+	super(e.toString());
+    }
+ 
+    public HandleError(String s) { 
+	super(s); 
+    }
 }
