@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/Purge.java,v $
 // $RCSfile: Purge.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/09/30 22:44:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,7 +24,6 @@
 package com.bbn.openmap.util.wanderer;
 
 import java.io.*;
-import java.util.*;
 
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
@@ -120,7 +119,7 @@ public class Purge extends Wanderer implements WandererCallback {
         ArgParser ap = new ArgParser("Purge");
 
         if (argv.length == 0) {
-            ap.bail("", true);
+            ap.bail("Wanders through directory tree pruning '~' files.\nUsage: java com.bbn.openmap.util.wanderer.Purge <dir>", false);
         }
 
         Purge purge = new Purge(new String[] {".#"}, new String[] {"~"});

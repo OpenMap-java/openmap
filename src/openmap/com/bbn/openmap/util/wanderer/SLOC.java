@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/SLOC.java,v $
 // $RCSfile: SLOC.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/09/30 22:44:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,7 +24,6 @@
 package com.bbn.openmap.util.wanderer;
 
 import java.io.*;
-import java.util.*;
 
 import com.bbn.openmap.io.*;
 import com.bbn.openmap.util.ArgParser;
@@ -99,7 +98,7 @@ public class SLOC implements WandererCallback {
         ArgParser ap = new ArgParser("SLOC");
 
         if (argv.length == 0) {
-            ap.bail("", true);
+            ap.bail("Counts ';' and '}' to sum up Source Lines Of Code\nUsage: java com.bbn.openmap.util.wanderer.SLOC <dir>", false);
         }
 
         ap.parse(argv);
