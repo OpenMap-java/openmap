@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.10 $
-// $Date: 2003/09/05 20:58:50 $
-// $Author: dietrick $
+// $Revision: 1.11 $
+// $Date: 2003/09/08 20:53:27 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -589,7 +589,8 @@ public class PropertyHandler implements SoloMapComponent {
 	int i; // default counter
 
 	if (mapHandler == null) {
-	    Debug.message("properties", "PropertyHandler.createComponents(): null handler.");
+	    Debug.message("properties", 
+			  "PropertyHandler.createComponents(): null handler.");
 	    return;
 	}
 	
@@ -606,18 +607,21 @@ public class PropertyHandler implements SoloMapComponent {
 	    plg = null;
 	}
 
-	Vector debugList = PropUtils.parseSpacedMarkers(properties.getProperty(Environment.DebugList));
+	Vector debugList = PropUtils.parseSpacedMarkers
+	    (properties.getProperty(Environment.DebugList));
 	int size = debugList.size();
 
 	for (i = 0; i < size; i++) {
 	    String debugMarker = (String) debugList.elementAt(i);
 	    Debug.put(debugMarker);
 	    if (Debug.debugging("properties")) {
-		Debug.output("PropertyHandler: adding " + debugMarker + " to Debug list.");
+		Debug.output("PropertyHandler: adding " + debugMarker + 
+			     " to Debug list.");
 	    }
 	}
 
-	Vector componentList = PropUtils.parseSpacedMarkers(properties.getProperty(componentProperty));
+	Vector componentList = PropUtils.parseSpacedMarkers
+	    (properties.getProperty(componentProperty));
 
 	if (Debug.debugging("propertiesdetail")) {
 	    Debug.output("PropertyHandler: creating components from " + 
@@ -629,7 +633,8 @@ public class PropertyHandler implements SoloMapComponent {
 
 	Vector components = 
 	    ComponentFactory.create(componentList, properties, 
-				    (updateProgress?getProgressSupport():null), true);
+				    (updateProgress?getProgressSupport():null),
+				    true);
 
 	size = components.size();
 
@@ -637,18 +642,22 @@ public class PropertyHandler implements SoloMapComponent {
 	    Object obj = (Object) components.elementAt(i);
 	    try {
 		if (obj instanceof String) {
-		    Debug.error("PropertyHandler finding out that the " + obj + " wasn't created");
+		    Debug.error("PropertyHandler finding out that the " + obj +
+				" wasn't created");
 		    continue;
 		}
 
 		mapHandler.add(obj);
 
-		String markerName = ((String)componentList.elementAt(i)).intern();
+		String markerName = 
+		    ((String)componentList.elementAt(i)).intern();
 		prefixLibrarian.put(markerName, obj);
 		addUsedPrefix(markerName);
 
 	    } catch (MultipleSoloMapComponentException msmce) {
-		Debug.error("PropertyHandler.createComponents(): tried to add multiple components of the same type when only one is allowed! - " + msmce);
+		Debug.error("PropertyHandler.createComponents(): " +
+			    "tried to add multiple components of the same " +
+			    "type when only one is allowed! - " + msmce);
 	    }
 	}
 
@@ -1117,9 +1126,11 @@ public class PropertyHandler implements SoloMapComponent {
      */
     public void addProperties(Properties p) {
 	String[] specialProps = new String[] {
-	    Environment.OpenMapPrefix + LayerHandler.layersProperty,
-	    Environment.OpenMapPrefix + LayerHandler.startUpLayersProperty,
-	    Environment.OpenMapPrefix + componentProperty 
+	    Environment.OpenMapPrefix + "." + 
+	    LayerHandler.layersProperty,
+	    Environment.OpenMapPrefix + "." + 
+	    LayerHandler.startUpLayersProperty,
+	    componentProperty 
 	};
 
 	Properties tmp = new Properties();
@@ -1131,6 +1142,19 @@ public class PropertyHandler implements SoloMapComponent {
 	}
 
 	getProperties().putAll(tmp);
+    }
+
+    /**
+     * remove a marker from a space delimated set of properties.
+     */
+    public void removeMarker(String property, String marker) {
+	StringBuffer sb = 
+	    new StringBuffer(getProperties().getProperty(property, ""));
+	int idx = sb.indexOf(marker);
+	if (idx != -1) {
+	    sb.delete(idx, idx + marker.length());
+	    getProperties().setProperty(property, sb.toString());
+	}
     }
 
     /**
