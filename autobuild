@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.18 $
-# $Date: 1998/07/23 14:13:25 $
+# $Revision: 1.19 $
+# $Date: 1998/07/23 15:04:46 $
 # $Author: dietrick $
 # 
 # **********************************************************************
@@ -227,6 +227,8 @@ javadoc -J-ms64m -J-mx64m -version -d ../docs/api $DocPackages
 #
 /bin/mkdir -p ../examples
 /bin/cp -r com/bbn/openmap/examples/crew ../examples/
+/bin/mkdir -p ../examples/openmap
+/bin/grep -v "package com.bbn.openmap.app;" com/bbn/openmap/app/OpenMap.java > ../examples/openmap/OpenMap.java
 
 #
 ## Add scripts
