@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/03 00:46:13 $
+// $Revision: 1.6 $
+// $Date: 2003/10/03 22:23:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -262,6 +262,7 @@ public class WindowSupport implements ComponentListener, ActionListener {
 		iFrame.setBounds(x, y, width, height);
 	    }
 
+	    iFrame.pack();
 	    iFrame.show();
 	    iFrame.toFront();
 	} else if (dialog != null) {
@@ -270,6 +271,7 @@ public class WindowSupport implements ComponentListener, ActionListener {
 	    } else {
 		dialog.setBounds(x, y, width, height);
 	    } 
+	    dialog.pack();
 	    dialog.show();
 	}
     }
