@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.2 $
-# $Date: 1998/10/30 21:20:02 $
+# $Revision: 1.3 $
+# $Date: 1998/11/03 19:06:19 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -74,12 +74,12 @@ jar: 	om_core lib/openmap.jar
 
 all:	om_core jar
 
-clean:
+clean distclean::
 	cd com && $(MAKE) $@
 
-distclean:	clean
+distclean::
 	$(RM) Makefile openmap.mk bin/openmap
-	cd com && $(MAKE) $@
+	$(RM) config.cache config.log config.status
 
 lib:
 	${INSTALL.dir} $@
@@ -87,6 +87,11 @@ lib:
 lib/openmap.jar: lib
 	jar cvf $@ ${CORE.JAR}
 
+GNUmakefile:
+	perl rename.pl gmakefile GNUmakefile
+
+gmakefile:
+	perl rename.pl GNUmakefile gmakefile
 
 ################
 # installation #
