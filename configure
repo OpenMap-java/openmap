@@ -1,6 +1,7 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.4 
+# From configure.in OpenMap Revision: 1.5 
+ac_extraJavaPath=/usr/local/java/bin:/usr/local/jdk/bin
 
 
 
@@ -555,7 +556,7 @@ elif test "x$with_java" = "xyes" || test "x$with_java" = "x" ; then
   # Extract the first word of "java", so it can be a program name with args.
 set dummy java; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:559: checking for $ac_word" >&5
+echo "configure:560: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVA'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -565,7 +566,7 @@ else
   ;;
   *)
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
-  for ac_dir in $PATH; do
+  for ac_dir in $PATH:$ac_extraJavaPath$ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
       ac_cv_path_JAVA="$ac_dir/$ac_word"
@@ -584,12 +585,12 @@ else
 fi
 
   if test -z "$JAVA"; then
-    { echo "configure: error: no acceptable java found in \$PATH" 1>&2; exit 1; }
+    { echo "configure: error: no acceptable java found in $PATH" 1>&2; exit 1; }
   fi
 else
   # with_java is not no, or yes, or empty.  Assume it is a path.
   echo $ac_n "checking for java""... $ac_c" 1>&6
-echo "configure:593: checking for java" >&5
+echo "configure:594: checking for java" >&5
   JAVA=$with_java
   if test -f $JAVA && test -x $JAVA; then
     
@@ -600,16 +601,8 @@ echo "configure:593: checking for java" >&5
 fi
 # FIXME Check version number to be sure it is acceptable.
 echo $ac_n "checking java version""... $ac_c" 1>&6
-echo "configure:604: checking java version" >&5
+echo "configure:605: checking java version" >&5
 JAVA_VERSION=`$JAVA -version 2>&1 | head -1 | sed 's/^.*"\(.*\)".*/\1/'`
-# convert 1.2beta4 to 1.2.beta4
-ac_java_canon_version=`echo $JAVA_VERSION | sed 's/beta/\.beta/'`
-JAVA_VERSION_MAJOR=`echo $ac_java_canon_version | sed 's/\(.\)\..\..*/\1/'`
-JAVA_VERSION_MINOR=`echo $ac_java_canon_version | sed 's/.\.\(.\)\..*/\1/'`
-JAVA_VERSION_TEENY=`echo $ac_java_canon_version | sed 's/.\..\.\(.*\)/\1/'`
-
-
-
 
 echo "$ac_t""$JAVA_VERSION" 1>&6
 
@@ -624,7 +617,7 @@ elif test "x$with_javac" = "xyes" || test "x$with_javac" = "x" ; then
   # Extract the first word of "javac", so it can be a program name with args.
 set dummy javac; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:628: checking for $ac_word" >&5
+echo "configure:621: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVAC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -634,7 +627,7 @@ else
   ;;
   *)
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
-  for ac_dir in $PATH; do
+  for ac_dir in $PATH:$ac_extraJavaPath$ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
       ac_cv_path_JAVAC="$ac_dir/$ac_word"
@@ -658,7 +651,7 @@ fi
 else
   # with_java is not no, or yes, or empty.  Assume it is a path.
   echo $ac_n "checking for javac""... $ac_c" 1>&6
-echo "configure:662: checking for javac" >&5
+echo "configure:655: checking for javac" >&5
   JAVAC=$with_javac
   if test -f $JAVAC && test -x $JAVAC; then
     
@@ -669,14 +662,14 @@ echo "configure:662: checking for javac" >&5
 fi
 # FIXME Check that it actually works by compiling and running a test program
 echo $ac_n "checking the java compiler""... $ac_c" 1>&6
-echo "configure:673: checking the java compiler" >&5
+echo "configure:666: checking the java compiler" >&5
 	cat >test.java <<EOF
 	public class test { public static void main(String[] args) { 
 		System.out.println("present");
 	} }
 EOF
 	$JAVAC test.java
-	case `$JAVA test` in
+	case `CLASSPATH=. $JAVA test` in
 		*present*) echo "$ac_t""it seems to work" 1>&6 ;;
 		*)	{ echo "configure: error: $JAVAC failed to compile a simple test program" 1>&2; exit 1; } ;;
 	esac
@@ -685,7 +678,7 @@ EOF
 
 # locate swing in the classpath
 echo $ac_n "checking for swing""... $ac_c" 1>&6
-echo "configure:689: checking for swing" >&5
+echo "configure:682: checking for swing" >&5
 ac_swing_path=$CLASSPATH
 ac_swing_jar=""
 case $with_swing in
@@ -885,6 +878,7 @@ ac_given_srcdir=$srcdir
 trap 'rm -fr `echo "openmap.mk
 	Makefile
 	bin/openmap
+	bin/openmap.bash
 	com/Makefile
 	com/bbn/Makefile
 	com/bbn/util/Makefile
@@ -941,9 +935,6 @@ s%@infodir@%$infodir%g
 s%@mandir@%$mandir%g
 s%@JAVA@%$JAVA%g
 s%@JAVA_VERSION@%$JAVA_VERSION%g
-s%@JAVA_VERSION_MAJOR@%$JAVA_VERSION_MAJOR%g
-s%@JAVA_VERSION_MINOR@%$JAVA_VERSION_MINOR%g
-s%@JAVA_VERSION_TEENY@%$JAVA_VERSION_TEENY%g
 s%@JAVAC@%$JAVAC%g
 s%@SWING_JAR@%$SWING_JAR%g
 s%@BUILD_CORBA@%$BUILD_CORBA%g
@@ -993,6 +984,7 @@ cat >> $CONFIG_STATUS <<EOF
 CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	Makefile
 	bin/openmap
+	bin/openmap.bash
 	com/Makefile
 	com/bbn/Makefile
 	com/bbn/util/Makefile

@@ -1,9 +1,8 @@
-#!/usr/bin/ksh -p
+#!/bin/bash
 # @configure_input@
 # 
 
-PRG=`whence $0` >/dev/null 2>&1
-#PRG=`type -p $0` >/dev/null 2>&1
+PRG=`type -p $0` >/dev/null 2>&1
 
 #
 # If PRG is a symlink, trace it to the real home directory

@@ -1,3 +1,4 @@
+ac_extraJavaPath=/usr/local/java/bin:/usr/local/jdk/bin
 
 AC_DEFUN(AC_PROG_JAVA,
 [if test "x$with_java" = "xno"; then
@@ -7,9 +8,9 @@ elif test "x$with_java" = "xyes" || test "x$with_java" = "x" ; then
   # user specified to use java, but didn't help to locate it
   #   OR
   # user didn't identify a potential path for 'java'
-  AC_PATH_PROG(JAVA, java)
+  AC_PATH_PROG(JAVA, java,,$PATH:$ac_extraJavaPath)
   if test -z "$JAVA"; then
-    AC_MSG_ERROR([no acceptable java found in \$PATH])
+    AC_MSG_ERROR([no acceptable java found in $PATH])
   fi
 else
   # with_java is not no, or yes, or empty.  Assume it is a path.
@@ -30,19 +31,8 @@ AC_CHECK_JAVA_VERSION
 AC_DEFUN(AC_CHECK_JAVA_VERSION,
 [AC_MSG_CHECKING([java version])
 JAVA_VERSION=`$JAVA -version 2>&1 | head -1 | sed 's/^.*"\(.*\)".*/\1/'`
-# convert 1.2beta4 to 1.2.beta4
-ac_java_canon_version=`echo $JAVA_VERSION | sed 's/beta/\.beta/'`
-JAVA_VERSION_MAJOR=`echo $ac_java_canon_version | sed 's/\(.\)\..\..*/\1/'`
-JAVA_VERSION_MINOR=`echo $ac_java_canon_version | sed 's/.\.\(.\)\..*/\1/'`
-JAVA_VERSION_TEENY=`echo $ac_java_canon_version | sed 's/.\..\.\(.*\)/\1/'`
 AC_SUBST(JAVA_VERSION)
-AC_SUBST(JAVA_VERSION_MAJOR)
-AC_SUBST(JAVA_VERSION_MINOR)
-AC_SUBST(JAVA_VERSION_TEENY)
 AC_MSG_RESULT($JAVA_VERSION)
-dnl AC_MSG_RESULT(major: $ac_java_major)
-dnl AC_MSG_RESULT(minor: $ac_java_minor)
-dnl AC_MSG_RESULT(teeny: $ac_java_teeny)
 ])
 
 AC_DEFUN(AC_PROG_JAVAC,
@@ -53,7 +43,7 @@ elif test "x$with_javac" = "xyes" || test "x$with_javac" = "x" ; then
   # user specified to use javac, but didn't help to locate it
   #   OR
   # user didn't identify a potential path for 'javac'
-  AC_PATH_PROG(JAVAC, javac)
+  AC_PATH_PROG(JAVAC, javac,,$PATH:$ac_extraJavaPath)
   if test -z "$JAVAC"; then
     AC_MSG_ERROR([no acceptable javac found in \$PATH])
   fi
@@ -83,7 +73,7 @@ changequote(, )dnl
 EOF
 changequote([, ])dnl
 	$JAVAC test.java
-	case `$JAVA test` in
+	case `CLASSPATH=. $JAVA test` in
 		*present*) AC_MSG_RESULT([it seems to work]) ;;
 		*)	AC_MSG_ERROR([$JAVAC failed to compile a simple test program]) ;;
 	esac

@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
 # $RCSfile: openmap.mk.in,v $
-# $Revision: 1.2 $
-# $Date: 1998/10/30 21:20:05 $
+# $Revision: 1.3 $
+# $Date: 1998/11/05 15:06:56 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -29,10 +29,16 @@
 # ------------------------------------------------------------
 #srcdir = @srcdir@
 #top = @top_srcdir@
-prefix = @prefix@
-exec_prefix = @exec_prefix@
-bindir = @bindir@
-libdir = @libdir@
+prefix = @prefix@		#for architecture independent files
+exec_prefix = @exec_prefix@	#for architecture dependent files
+bindir = @bindir@		#for user executables
+libexecdir = @libexecdir@	#for executables that other programs run
+sbindir = @sbindir@		#for executables that administrators run
+libdir = @libdir@		#for object code libraries (jar files)
+datadir = @datadir@		#for read-only architecture independent data
+sysconfdir = @sysconfdir@	#for read-only single machine data
+sharedstatedir = @sharedstatedir@ #for modifiable architecture independent data
+localstatedir = @localstatedir@	#for modifiable single machine data
 
 JAVA = @JAVA@
 JAVAC = @JAVAC@
