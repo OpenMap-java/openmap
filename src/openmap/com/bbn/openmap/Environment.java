@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Environment.java,v $
 // $RCSfile: Environment.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/21 20:43:59 $
+// $Revision: 1.3 $
+// $Date: 2003/09/23 22:48:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -335,9 +335,12 @@ public class Environment extends Properties {
 	java.net.InetAddress addr = null;
 	try {
 	    addr = java.net.InetAddress.getLocalHost();
+	} catch (NullPointerException npe) {
+	    // Linux threw a npe when unconnected.
+	    Debug.output("Environment.init: Can't get hostname from InetAddress!");
 	} catch (java.net.UnknownHostException e) {
 	    Debug.output("Environment.init: I don't know my hostname!");
-	} catch (java.lang.IndexOutOfBoundsException ioobe) {
+	} catch (IndexOutOfBoundsException ioobe) {
 	    // Caught something weird here a couple of times when running unconnected.
 	    Debug.output("Environment.init: network may not be available");
 	}
