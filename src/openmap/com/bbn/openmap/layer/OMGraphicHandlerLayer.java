@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:50 $
+// $Revision: 1.3 $
+// $Date: 2003/02/21 17:47:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -182,7 +182,7 @@ public class OMGraphicHandlerLayer extends Layer {
     /**
      * From the ProjectionListener interface. The method gets called
      * when the layer is part of the map, and whenever the map
-     * projection changes. <p>
+     * projection changes.  Will trigger a repaint().<p>
      *
      * This method will not do anything to the internal OMGraphicList
      * if the projection has changed.  The paint() method checks for a
@@ -207,12 +207,16 @@ public class OMGraphicHandlerLayer extends Layer {
 	    // generate a large number of them, launch a thread.
 	    if (getUseLayerWorker()) {
 		doPrepare();
+		// doPrepare() takes care of status events and repainting.
+		return;
 	    } else {
 		prepare();
 		repaint();
 	    }
+	} else {
+	    repaint();
 	}
-	
+
 	fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
     }
 
@@ -349,7 +353,7 @@ public class OMGraphicHandlerLayer extends Layer {
 	Projection proj = getProjection(); 
 
 	// if the layer hasn't been added to the MapBean 
-	// yet, the projectio could be null.
+	// the projection could be null.
 	if (currentList != null && proj != null) {
 	    currentList.generate(proj);
 	}

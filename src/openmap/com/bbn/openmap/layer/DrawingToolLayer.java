@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/02/20 02:43:49 $
+// $Revision: 1.4 $
+// $Date: 2003/02/21 17:47:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -141,7 +141,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      * interested in.
      */
     public String[] getMouseModeServiceList() {
-	String[] services = {SelectMouseMode.modeID};// what are other possibilities in OpenMap
+	String[] services = {SelectMouseMode.modeID};
 	return services;
     }
     
@@ -167,7 +167,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 		// deactivate and try again.  If it fails again, then
 		// the tool can't handle the omgr.
 
-		// This is fine for OMGraphics that are not near to each other, but not for neighbors.
+		// This is fine for OMGraphics that are not near to each 
+		// other, but not for neighbors.
 		if (dt.edit(omgr, layer, e) == null) {
 		    dt.deactivate();
 		    dt.edit(omgr, layer, e);
@@ -283,11 +284,17 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      * Called by default in the MouseMoved method, in order to fire a
      * ToolTip for a particular OMGraphic.  Return a String if you
      * want a ToolTip displayed, null if you don't.  By default,
-     * returns 'Click to Edit'.  You can override and change, and also
-     * return different String for different OMGraphics.
+     * returns 'Click to Edit' if the drawing tool can edit the
+     * object.  You can override and change, and also return different
+     * String for different OMGraphics.
      */
     protected String getToolTipForOMGraphic(OMGraphic omgr) {
-	return "Click to Edit";
+	OMDrawingTool dt = getDrawingTool();
+	if (dt.canEdit(omgr.getClass())) {
+	    return "Click to Edit";
+	} else {
+	    return null;
+	}
     }
 
     /**
@@ -296,7 +303,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      */
     public void mouseMoved() {}
 
-    public java.awt.Component getGUI() {
+    public Component getGUI() {
 
 	JPanel box = PaletteHelper.createVerticalPanel("Save Layer Graphics");
 	box.setLayout(new java.awt.GridLayout(0, 1));
@@ -324,12 +331,4 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	return showHints;
     }
 }
-
-
-
-
-
-
-
-
 
