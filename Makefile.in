@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.40 $  $Date: 2000/05/30 17:25:18 $
+# $Revision: 1.41 $  $Date: 2000/08/02 18:46:20 $
 # **********************************************************************
 
 
@@ -79,6 +79,7 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.location.csv \
 		com.bbn.openmap.layer.location.db \
 		com.bbn.openmap.layer.nexrad
+		com.bbn.openmap.layer.etopo
 #		com.bbn.openmap.layer.terrain \
 
 
@@ -104,6 +105,7 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/location/csv/*.class \
 		com/bbn/openmap/layer/location/db/*.class \
 		com/bbn/openmap/layer/nexrad/*.class
+		com/bbn/openmap/layer/etopo/*.class
 #		com/bbn/openmap/layer/terrain/*.class \
 
 Layer.props =   com/bbn/openmap/layer/vpf/*.properties
