@@ -1,12 +1,13 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/user-guide.sgml,v $
 $RCSfile: user-guide.sgml,v $
-$Revision: 1.1 $
-$Date: 1998/12/01 19:38:07 $
+$Revision: 1.2 $
+$Date: 1998/12/04 16:13:55 $
 $Author: aculline $
 
 User's Guide for the OpenMap Viewer application.
-Launch the viewer with `java com.bbn.openmap.app.OpenMap'
+Launch the viewer with `java com.bbn.openmap.app.OpenMap' or by
+running the `openmap' script in the bin/ directory.
 -->
 
 <!doctype linuxdoc system>
@@ -24,6 +25,12 @@ OpenMap package.
 
 
 <toc>
+<p>
+The OpenMap Viewer application is our basic MapViewer application.  It
+allows you to add, remove, and change the positioning of different
+layers on the map, and to navigate over the map.  There are many other
+applications that use the OpenMap components.  We encourage you to try
+out the Viewer and to tweak it to fit your own needs.
 
 
 <sect>Launch Scripts
@@ -39,14 +46,15 @@ Windows, you may need to edit the paths referenced in the
 
 <sect>Properties File
 <p>
-The OpenMap Viewer loads properties from an <tt>openmap.properties</tt> file.
-It searches for this file in three locations: 1) in the JAR file or
-class directory, 2) in the installation "share" subdirectory, and 3)
-in the user's home directory.  If it finds the file in any of these
-places, it loads the properties from it, overriding previous settings.
-We suggest that you copy the <tt>openmap.properties</tt> file from the
-installation "share" subdirectory to your home directory, and edit the
-settings to your own liking.
+The OpenMap Viewer loads properties from an
+<tt>openmap.properties</tt> file.  It searches for this file in three
+locations: 1) in the JAR file or class directory, 2) in the
+installation "share" subdirectory, and 3) in the user's home
+directory.  If it finds the file in any of these places, it loads the
+properties from it, overriding previous settings.  We suggest that you
+copy the <tt>openmap.properties</tt> file from the installation
+"share" subdirectory to your home directory, and edit the settings to
+your own liking.
 
 
 <sect>Running the OpenMap Viewer
@@ -91,8 +99,10 @@ Earth with a 10° graticule.
 	<itemize>
 	<item><em>Coordinates...</em> Reposition map dialog.
 	<item><em>Projection</em> Set the map display projection.
-	<item><em>Zoom In</em> Zoom the map in by the specified amount.
-	<item><em>Zoom Out</em> Zoom the map out by the specified amount.
+	<item><em>Zoom In</em> Zoom the map in by the specified
+	amount.
+	<item><em>Zoom Out</em> Zoom the map out by the specified
+	amount.
 	</itemize>
 	<p>
 <item>Control Menu
@@ -144,8 +154,8 @@ Earth with a 10° graticule.
 <p>
 <itemize>
 	<item><em>Rosette</em>
-	The rosette pans the map in the specified direction and the middle button
-	recenters the view to the starting point.
+	The rosette pans the map in the specified direction and the
+	middle button recenters the view to the starting point.
 	<item><em>Magnifying Glass +</em>
 	Zooms in 2X over the center of the map.
 	<item><em>Magnifying Glass -</em>
@@ -165,11 +175,9 @@ Earth with a 10° graticule.
 <caption></caption>
 </figure>
 <p>
-In addition to adding and removing layers from the map, the Layer Editor
-allows you to change their vertical position in relation to each other,
-and bring up their specific palette controls.  In the above figure, you see
-the Layer Editor window, and a smaller window showing the controls for the
-Satellites layer.
+In addition to adding and removing layers from the map, the Layer
+Editor allows you to change their vertical position in relation to
+each other, and bring up their specific palette controls.
 <p>
 <itemize>
 

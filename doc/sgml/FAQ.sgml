@@ -1,0 +1,103 @@
+<!--
+$Source: /cvs/distapps/openmap/doc/sgml/Attic/FAQ.sgml,v $
+$RCSfile: FAQ.sgml,v $
+$Revision: 1.1 $
+$Date: 1998/12/04 16:13:55 $
+$Author: aculline $
+
+Frequently Asked Questions for the OpenMap system.
+-->
+
+<!doctype linuxdoc system>
+
+<article>
+
+<title>OpenMap FAQ
+<author>BBN Technologies
+<date>4 December 1998
+<abstract>
+This FAQ contains questions and answers about the OpenMap system.
+</abstract>
+
+
+<toc>
+
+
+
+<sect>General
+<p>
+Generic questions about OpenMap, GIS, Web Mapping, etc.
+
+
+
+<sect1>Why is everything copyrighted by BBN if this is GTE?
+<p>
+BBN is part of GTE. GTE bought BBN and created GTE Internetworking.
+BBN is still the legal entity under which we operate. You can see a
+history of BBN at <tt><htmlurl url="http://www.bbn.com"></tt>
+(actually at <tt><htmlurl
+url="http://www.bbn.com/aboutbbn/history.htm"</tt>) where you'll see
+that we helped build the ARPANET which eventually became the Internet.
+
+
+<sect1>Why is BBN Technologies releasing OpenMap as open source?
+<p>
+The OpenMap group is in the part of BBN that does contract R&amp;D
+work. We don't consider ourselves a product development group. We felt
+that the best thing we could do with OpenMap was release the sources,
+invite other people to help make it better, and benefit some of the
+Open GIS Consortium testbed efforts at the same time.  We are, of
+course, also available to provide you with OpenMap help or any other
+distributed systems software R&amp;D. If you want to learn more,
+contact us at <tt><htmlurl url="mailto:openmap@bbn.com"
+name="openmap@bbn.com"></tt> or browse our web site.
+
+
+<sect1>What's that funny-shaped thing in the Logo?
+<p>
+That's Antarctica. The "open" continent. Home of the penguin, and we
+do a lot of our work on Linux systems. Not to mention that
+Antarctica's kind of a cool place.
+
+
+<sect1>Can OpenMap display CADRG, CIB, RPF?
+<p>
+Yes and no. We have some code that can do it. We can't include it as
+part of this release until we iron out some copyright issues since
+part of the code to do RPF is from an outside contributor. We'll add
+it to the release as soon as we can.
+
+
+<sect1>What is CADRG, CIB, and RPF?
+<p>
+The first two are data types, the latter is a format. These come from
+the US National Imagery and Mapping Agency
+<tt><htmlurl url="http://www.nima.mil"></tt> CADRG is Compressed ADRG, a form of
+raster map.  CIB is Controlled Image Base, an imagery product.  RPF is
+Raster Product Format, i.e. the underling format of CADRG and CIB.
+<tt><htmlurl url="http://164.214.2.59:80/publications/specs/index.html"></tt>
+
+
+<sect1>Where's the CORBA part of OpenMap?
+<p>
+We'll release that in a future release. Right now we're concentrating
+on getting a version out that's easy to build and easy to work with.
+
+
+
+<sect>OpenMap Source Code
+<p>
+Questions concerning the core OpenMap source code.
+Please ask those questions!
+
+
+
+<sect>OpenMap Viewer Application
+<p>
+Questions concerning the basic OpenMap viewer application.
+Please ask those questions!
+
+
+
+
+</article>
