@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/BufferedImageRenderPolicy.java,v $
 // $RCSfile: BufferedImageRenderPolicy.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.4 $
+// $Date: 2004/02/06 00:02:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,7 @@ package com.bbn.openmap.layer.policy;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 import java.awt.Graphics;
@@ -94,6 +95,13 @@ public class BufferedImageRenderPolicy extends StandardRenderPolicy {
             BufferedImage bufferedImage = getBuffer();
 
             if (bufferedImage != null) {
+
+                Projection proj = layer.getProjection();
+                if (proj != null) {
+                    // Gets reset by JComponent
+                    g.setClip(0, 0, proj.getWidth(), proj.getHeight());
+                }
+
                 ((Graphics2D)g).drawRenderedImage((BufferedImage)bufferedImage,
                                                   new AffineTransform());
                 if (Debug.debugging("policy")) {
