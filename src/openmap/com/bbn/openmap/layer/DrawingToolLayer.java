@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.13 $
-// $Date: 2003/04/16 13:44:09 $
+// $Revision: 1.14 $
+// $Date: 2003/08/22 14:36:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,7 @@
 package com.bbn.openmap.layer;
 
 import com.bbn.openmap.Layer;
+import com.bbn.openmap.dataAccess.shape.EsriShapeExport;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.*;
@@ -76,18 +77,6 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	showHints = LayerUtils.booleanFromProperties(props, realPrefix + ShowHintsProperty, showHints);
     }
     
-    /**
-     * Overriding the OMGraphicHandlerMethod, creating a list if it's null.
-     */
-    public OMGraphicList getList() {
-	OMGraphicList list = super.getList();
-	if (list == null) {
-	    list = new OMGraphicList();
-	    super.setList(list);
-	}
-	return list;
-    }
-	
     public OMDrawingTool getDrawingTool() {
 	return drawingTool;
     }
@@ -113,9 +102,14 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	// First thing, release the proxy MapMouseMode, if there is one.
 	releaseProxyMouseMode();
 
-	getList(); // create a list if there isn't one.
-	doAction(omg, action);
-	repaint();
+	OMGraphicList list = getList();
+	if (list != null) {
+	    doAction(omg, action);
+	    repaint();
+	} else {
+	    Debug.error("Layer " + getName() + " received " + omg + " and " + action + 
+			" with no list ready");
+	}
     }
 
     /**
@@ -195,55 +189,60 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      */
     public boolean mousePressed(MouseEvent e) { 
 	boolean ret = false;
-	OMGraphic omgr = ((OMGraphicList)getList()).findClosest(e.getX(), e.getY(), 4);
+	OMGraphicList list = getList();
 
-	if (omgr != null && shouldEdit(omgr)) {
-	    OMDrawingTool dt = getDrawingTool();
-	    if (dt != null) {
-		dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
+	if (list != null) {
 
-		MapMouseMode omdtmm = dt.getMouseMode();
-		if (!omdtmm.isVisible()) {
-		    dt.setBehaviorMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK |
-				       OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
-		}
+	    OMGraphic omgr = list.findClosest(e.getX(), e.getY(), 4);
 
-		if (dt.edit(omgr, layer, e) != null) {
-		    // OK, means we're editing - let's lock up the MouseMode
-		    if (e instanceof MapMouseEvent) {
+	    if (omgr != null && shouldEdit(omgr)) {
+		OMDrawingTool dt = getDrawingTool();
+		if (dt != null) {
+		    dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
 
-			// Check to see if the DrawingToolMouseMode wants to 
-			// be invisible.  If it does, ask the current
-			// active MouseMode to be the proxy for it...
-			if (!omdtmm.isVisible()) {
-			    MapMouseMode mmm = ((MapMouseEvent)e).getMapMouseMode();
-			    if (mmm.actAsProxyFor(omdtmm)) {
-				if (DTL_DEBUG) {
-				    Debug.output("DTL: Setting " + mmm.getID() + " as proxy for drawing tool");
+		    MapMouseMode omdtmm = dt.getMouseMode();
+		    if (!omdtmm.isVisible()) {
+			dt.setBehaviorMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK |
+					   OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
+		    }
+
+		    if (dt.edit(omgr, layer, e) != null) {
+			// OK, means we're editing - let's lock up the MouseMode
+			if (e instanceof MapMouseEvent) {
+
+			    // Check to see if the DrawingToolMouseMode wants to 
+			    // be invisible.  If it does, ask the current
+			    // active MouseMode to be the proxy for it...
+			    if (!omdtmm.isVisible()) {
+				MapMouseMode mmm = ((MapMouseEvent)e).getMapMouseMode();
+				if (mmm.actAsProxyFor(omdtmm)) {
+				    if (DTL_DEBUG) {
+					Debug.output("DTL: Setting " + mmm.getID() + " as proxy for drawing tool");
+				    }
+				    setProxyMouseMode(mmm);
+				} else {
+				    // WHOA, couldn't get proxy lock - bail
+				    if (DTL_DEBUG) {
+					Debug.output("DTL: couldn't get proxy lock on " + mmm.getID() + " deactivating internal drawing tool");
+				    }
+				    dt.deactivate();
 				}
-				setProxyMouseMode(mmm);
 			    } else {
-				// WHOA, couldn't get proxy lock - bail
 				if (DTL_DEBUG) {
-				    Debug.output("DTL: couldn't get proxy lock on " + mmm.getID() + " deactivating internal drawing tool");
+				    Debug.output("DTL: OMDTMM wants to be visible");
 				}
-				dt.deactivate();
 			    }
 			} else {
 			    if (DTL_DEBUG) {
-				Debug.output("DTL: OMDTMM wants to be visible");
+				Debug.output("DTL: MouseEvent not a MapMouseEvent");
 			    }
 			}
-		    } else {
-			if (DTL_DEBUG) {
-			    Debug.output("DTL: MouseEvent not a MapMouseEvent");
-			}
-		    }
 
-		    fireHideToolTip(e);
-		    ret = true;
+			fireHideToolTip(e);
+			ret = true;
+		    }
 		}
-	    }
+	    } 
 	}
 	return ret;
     }
@@ -335,33 +334,35 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      * @return false
      */
     public boolean mouseMoved(MouseEvent e) {  
-	OMGraphic omgr = ((OMGraphicList)getList()).findClosest(e.getX(),e.getY(),4.0f);
 	boolean ret = false;
+	OMGraphic omgr = null;
+	OMGraphicList list = getList();
 
-	if (omgr != null) {
-//  	    fireRequestInfoLine("Click to edit graphic");
-	    if (showHints) {
-		if (omgr != lastSelected) {
-		    lastToolTip = getToolTipForOMGraphic(omgr);
+	if (list != null) {
+	    omgr = list.findClosest(e.getX(),e.getY(),4.0f);
+
+	    if (omgr != null) {
+		if (showHints) {
+		    if (omgr != lastSelected) {
+			lastToolTip = getToolTipForOMGraphic(omgr);
+		    }
+
+		    if (lastToolTip != null) {
+			fireRequestToolTip(e, lastToolTip);
+			ret = true;
+		    } else {
+			fireHideToolTip(e);
+		    }
 		}
-
-		if (lastToolTip != null) {
-		    fireRequestToolTip(e, lastToolTip);
-		    ret = true;
-		} else {
+	    } else {
+		if (showHints && lastToolTip != null) {
 		    fireHideToolTip(e);
 		}
+		lastToolTip = null;
 	    }
-	} else {
-// 	    fireRequestInfoLine("");
-	    if (showHints && lastToolTip != null) {
-		fireHideToolTip(e);
-	    }
-	    lastToolTip = null;
 	}
 
 	lastSelected = omgr;
-
 	return ret;
     }
     
@@ -413,9 +414,13 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	JButton button = new JButton("Save As Shape File");
 	button.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
-		    com.bbn.openmap.dataAccess.shape.EsriShapeExport ese = 
-			new com.bbn.openmap.dataAccess.shape.EsriShapeExport(getList(), getProjection(), null);
-		    ese.export();
+		    OMGraphicList list = getList();
+		    if (list != null) {
+			EsriShapeExport ese = new EsriShapeExport(list, getProjection(), null);
+			ese.export();
+		    } else {
+			fireRequestMessage("There's nothing on the map for this layer to save.");
+		    }
 		}
 	    });
 	box.add(button);
