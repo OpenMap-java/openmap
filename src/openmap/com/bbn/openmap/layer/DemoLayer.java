@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/02/27 23:59:34 $
+// $Revision: 1.5 $
+// $Date: 2003/03/01 00:27:23 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -198,6 +198,7 @@ public class DemoLayer extends OMGraphicHandlerLayer
 	line.setStroke(new BasicStroke(2));
 	omList.add(line);
 
+	OMGraphicList pointList = new OMGraphicList();
 	for (int i = 0; i < 100; i++) {
 	    point =
 		new OMPoint(
@@ -205,8 +206,9 @@ public class DemoLayer extends OMGraphicHandlerLayer
 		    (float) (Math.random() * -179f),
 		    3);
 	    point.setSelectPaint(Color.yellow);
-	    omList.add(point);
+	    pointList.add(point);
 	}
+	omList.add(pointList);
     }
 
     public void setProperties(String prefix, Properties props) {
@@ -827,12 +829,11 @@ public class DemoLayer extends OMGraphicHandlerLayer
      * Invoked when the mouse button has been moved on a component
      * (with no buttons down).
      * @param e MouseEvent
-     * @return false
+     * @return true if the layer reacted to a mouseMoved event.
      */
     public boolean mouseMoved(MouseEvent e) {
 
-	OMGraphic omgr =
-	    ((OMGraphicList) getList()).findClosest(e.getX(), e.getY(), 4.0f);
+	OMGraphic omgr = getList().findClosest(e.getX(), e.getY(), 4.0f);
 	boolean ret = false;
 
 	if (omgr != null) {
@@ -842,26 +843,27 @@ public class DemoLayer extends OMGraphicHandlerLayer
 		fireRequestToolTip(e, "Demo Layer Object");
 	    }
 	    ret = true;
-	}
-	else {
+	} else {
 	    fireRequestInfoLine("");
 	    fireHideToolTip(e);
-	    if (lastSelected != null) {
-		lastSelected.deselect();
-		lastSelected.generate(getProjection());
-		lastSelected = null;
-		repaint();
-		//System.out.println("MouseMove Kicking repaint");
-	    }
 	}
 
+	OMBitmap bm = null;
 	if (omgr instanceof OMBitmap) {
-	    omgr.select();
-	    omgr.generate(getProjection());
-	    lastSelected = omgr;
-	    //System.out.println("MouseMove Kicking repaint");
-	    repaint();
+	    bm = (OMBitmap)omgr;
+	    bm.select();
+	} else if (lastSelected instanceof OMBitmap) {
+	    bm = (OMBitmap)lastSelected;
+	    bm.deselect();
 	}
+
+	if (bm != null) {
+	    bm.generate(getProjection());
+	}
+
+	repaint();
+
+	lastSelected = omgr;
 
 	return ret;
     }
