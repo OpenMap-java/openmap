@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/01 00:26:16 $
+// $Revision: 1.4 $
+// $Date: 2003/03/13 16:58:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -995,9 +995,13 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 
 	if (currentDistance < limit && 
 	    currentDistance < current.d) {
-	    current.omg = graphic;
-	    current.d = currentDistance;
+	    if (!isVague()) {
+		current.omg = graphic;
+	    } else {
+		current.omg = this;
+	    }
 	    current.index = index;
+	    current.d = currentDistance;
 	    return current;
 	}
 
@@ -1096,7 +1100,10 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      *
      * @param x the x coordinate on the component the graphics are displayed on.
      * @param y the y coordinate on the component the graphics are displayed on.
-     * @return the closest OMGraphic on the list.
+     * @return the closest OMGraphic on the list, with selected having
+     * been called on that OMGraphics.  This OMGraphic will be within
+     * the limit or null if none found.  Will return this list if this
+     * list is set to be vague.
      */
     public OMGraphic selectClosest(int x, int y) {
         return (OMGraphic)_selectClosest(x, y, Float.MAX_VALUE);
@@ -1116,8 +1123,10 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * top of the window.
      * @param limit the max distance that a graphic has to be within
      * to be returned, in pixels.
-     * @return the closest OMGraphic on the list, within the limit or null if
-     * none found.  
+     * @return the closest OMGraphic on the list, with selected having
+     * been called on that OMGraphics.  This OMGraphic will be within
+     * the limit or null if none found.  Will return this list if this
+     * list is set to be vague.
      */
     public OMGraphic selectClosest(int x, int y, float limit) {
 	return (OMGraphic)_selectClosest(x, y, limit);
@@ -1137,8 +1146,10 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * top of the window.
      * @param limit the max distance that a graphic has to be within
      * to be returned, in pixels.
-     * @return the closest OMGeometry on the list, within the limit or null if
-     * none found.  
+     * @return the closest OMGraphic on the list, with selected having
+     * been called on that OMGraphics.  This OMGraphic will be within
+     * the limit or null if none found.  Will return this list if this
+     * list is set to be vague.
      */
     protected OMGeometry _selectClosest(int x, int y, float limit) {
 	OMDist omd = new OMDist();
@@ -1188,14 +1199,19 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param y the window vertical pixel value.
      * @return OMDist if the graphic passed in is the current closest.
      * OMGeometry will be set in OMDist and selected().  OMGeometry
-     * will be deselected if not the closest, and the OMDist will be null.
+     * will be deselected if not the closest, and the OMDist will be
+     * null.  This method will return this list if it is set to be
+     * vague and one of its children meet the criteria.
      */
     protected OMDist selectClosestTest(OMDist current, int index, OMGeometry graphic,
 				       int x, int y, float limit) {
 	OMGeometry oldGraphic = current.omg;
 	OMDist ret = findClosestTest(current, index, graphic, x, y, limit, true);
 
-	if (ret != null) {
+	// Test for the OMDist still holding the same OMGraphicList, 
+	// which will be the case if this list is vague.  The distance
+	// will be updated, though.
+	if (ret != null && oldGraphic != ret.omg) {
 	    if (oldGraphic != null) {
 		oldGraphic.deselect();
 	    }
@@ -1213,6 +1229,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      */
     public void select() {
 	selectAll();
+	super.select();
     }
 
     /**
@@ -1311,6 +1328,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      */
     public void deselect() {
 	deselectAll();
+	super.deselect();
     }
 
     /**
