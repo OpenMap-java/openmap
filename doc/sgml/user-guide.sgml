@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/user-guide.sgml,v $
 $RCSfile: user-guide.sgml,v $
-$Revision: 1.5 $
-$Date: 1999/02/08 19:31:02 $
+$Revision: 1.6 $
+$Date: 1999/04/05 19:06:42 $
 $Author: aculline $
 
 User's Guide for the OpenMap Viewer application.
@@ -47,7 +47,7 @@ Windows, you may need to edit the paths referenced in the
 <sect>Properties File<label id="sec-props">
 <p>
 The OpenMap Viewer loads properties from an <tt><htmlurl
-url="./app/openmap.properties" name="openmap.properties"></tt> file.
+url="../share/openmap.properties" name="openmap.properties"></tt> file.
 It searches for this file in three locations: 1) in the JAR file or
 class directory, 2) in the installation "share" subdirectory, and 3)
 in the user's home directory.  If it finds the file in any of these
@@ -127,7 +127,8 @@ Earth with a 10° graticule.
 	<img src="images/help-menu.gif">
 	</#if>
 	Bring up help in your Web Browser.  This option needs to be
-	configured in your <tt>openmap.properties</tt> file.
+	configured in your <tt><ref id="sec-props"
+	name="openmap.properties"></tt> file.
 </itemize>
 
 <sect1>Toolbar Options
@@ -175,7 +176,7 @@ Turn layer off/on.
 <img src="images/palette.gif">
 <img src="images/palette_on.gif">
 </#if>
-Turn layer palette controls off/on.
+Turn layer palette (GUI) controls off/on.
 
 <item>
 <#if output=html>
@@ -227,7 +228,7 @@ various MapBean components to create the Viewer application.  You can
 write your own application by copying and changing this file.
 <p>
 Be sure to check the toplevel documentation
-<htmlurl url="index.html" name="index"> for information on the OpenMap
+<htmlurl url="doc-index.html" name="index"> for information on the OpenMap
 core MapBean and Layer APIs.
 
 

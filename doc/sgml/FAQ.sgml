@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/Attic/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.6 $
-$Date: 1999/02/08 19:31:01 $
+$Revision: 1.7 $
+$Date: 1999/04/05 19:06:42 $
 $Author: aculline $
 
 Frequently Asked Questions for the OpenMap system.
@@ -36,8 +36,9 @@ BBN is part of GTE. GTE bought BBN and created GTE Internetworking.
 BBN is still the legal entity under which we operate. You can see a
 history of BBN at <tt><htmlurl url="http://www.bbn.com"></tt>
 (actually at <tt><htmlurl
-url="http://www.bbn.com/aboutbbn/history.htm"></tt>) where you'll see
-that we helped build the ARPANET which eventually became the Internet.
+url="http://www.bbn.com/roles/researcher/timeline/"></tt>) where
+you'll see that we helped build the ARPANET which eventually became
+the Internet.
 
 
 <sect1>Why is BBN Technologies releasing OpenMap as open source?
@@ -81,11 +82,12 @@ it to the release as soon as we can.
 <sect1>What is CADRG, CIB, and RPF?
 <p>
 The first two are data types, the latter is a format. These come from
-the US National Imagery and Mapping Agency
-<tt><htmlurl url="http://www.nima.mil"></tt> CADRG is Compressed ADRG, a form of
+the US National Imagery and Mapping Agency <tt><htmlurl
+url="http://www.nima.mil/"></tt> CADRG is Compressed ADRG, a form of
 raster map.  CIB is Controlled Image Base, an imagery product.  RPF is
 Raster Product Format, i.e. the underlying format of CADRG and CIB.
-<tt><htmlurl url="http://164.214.2.59:80/publications/specs/index.html"></tt>
+<tt><htmlurl
+url="http://164.214.2.59:80/publications/specs/index.html"></tt>
 
 
 <sect1>Where's the CORBA part of OpenMap?
@@ -176,7 +178,7 @@ want to appear in the list of layers.  These properties are passed to
 and processed by the base <tt><htmlurl
 url="./api/com.bbn.openmap.Layer.html" name="Layer"></tt> class via
 <tt/Layer.setProperties()/.  You can provide additional configuration
-strings to the <tt><htmlurl url="./app/openmap.properties"
+strings to the <tt><htmlurl url="../share/openmap.properties"
 name="openmap.properties"></tt> file and override
 <tt/Layer.setProperties()/ in your own layer to process them:
 <verb>

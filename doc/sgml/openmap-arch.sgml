@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
 $RCSfile: openmap-arch.sgml,v $
-$Revision: 1.6 $
-$Date: 1999/02/08 19:31:01 $
+$Revision: 1.7 $
+$Date: 1999/04/05 19:06:42 $
 $Author: aculline $
 
 OpenMap architecture document
@@ -89,7 +89,7 @@ passive and interactive maps.
 <p>
 This is a very simple example that shows how you use the MapBean and a
 layer which shows a map of the world.  This <htmlurl
-url="./examples/simple/SimpleMap.java" name="example"> uses the
+url="../com/bbn/openmap/examples/simple/SimpleMap.java" name="example"> uses the
 MapBean to create a static political map in a window with these
 steps:
 <itemize>
@@ -106,16 +106,17 @@ name="JFrame"> window.
 
 <sect2>SimpleMap2<label id="sec-mapbean-simplemap2">
 <p>
-This <htmlurl url="./examples/simple/SimpleMap2.java" name="example">
-is a little more complicated than the previous one, but is more
-usable.  It shows the same political layer along with a background
-<htmlurl url="./api/com.bbn.openmap.layer.GraticuleLayer.html"
+This <htmlurl url="../com/bbn/openmap/examples/simple/SimpleMap2.java"
+name="example"> is a little more complicated than the previous one,
+but is more usable.  It shows the same political layer along with a
+background <htmlurl
+url="./api/com.bbn.openmap.layer.GraticuleLayer.html"
 name="graticule"> and a <htmlurl
-url="./examples/simple/RouteLayer.java" name="foreground layer"> which
-shows hypothetical transportation routes.  This RouteLayer is a good
-example of how to extend the <htmlurl
-url="./api/com.bbn.openmap.Layer.html" name="Layer.java"> class to
-create your own Layer (More about this <bf><ref
+url="../com/bbn/openmap/examples/simple/RouteLayer.java"
+name="foreground layer"> which shows hypothetical transportation
+routes.  This RouteLayer is a good example of how to extend the
+<htmlurl url="./api/com.bbn.openmap.Layer.html" name="Layer.java">
+class to create your own Layer (More about this <bf><ref
 id="sec-write-your-own-layer" name="later"></bf> in this document).
 This example program also includes OpenMap GUI widgets for navigating
 around on the Map.  The steps involved in creating the program are:
@@ -147,23 +148,25 @@ which are used to control the MapBean.
 
 <sect2>HelloWorld<label id="sec-mapbean-helloworld">
 <p>
-The <htmlurl url="./examples/hello/HelloWorld.java" name="HelloWorld">
-example extends the ideas developed in the SimpleMap2 example.
-It again uses the MapBean to show a political map of the world, but
-this time with a blazing "Hello World!" painted over the map.  It also
-incorporates Mouse events to allow point-and-click navigation.
+The <htmlurl url="../com/bbn/openmap/examples/hello/HelloWorld.java"
+name="HelloWorld"> example extends the ideas developed in the
+SimpleMap2 example.  It again uses the MapBean to show a political map
+of the world, but this time with a blazing "Hello World!" painted over
+the map.  It also incorporates Mouse events to allow point-and-click
+navigation.
 
 <sect2>OpenMap Viewer<label id="sec-mapbean-viewer">
 <p>
-The <htmlurl url="./app/OpenMap.java" name="OpenMap Viewer"> example
-is the default "face" of OpenMap.  It combines many of the tricks of
-the above examples into one application.  See the viewer <htmlurl
-url="user-guide.html" name="User's Guide"> for more information.
+The <htmlurl url="../com/bbn/openmap/app/OpenMap.java" name="OpenMap
+Viewer"> example is the default "face" of OpenMap.  It combines many
+of the tricks of the above examples into one application.  See the
+viewer <htmlurl url="user-guide.html" name="User's Guide"> for more
+information.
 <p>
 You can <bf><ref id="sec-write-your-own-layer" name="write your own
 layer"></bf> that can be shown using the OpenMap Viewer.  Once you've
 written the layer, all you need to do is to add a reference to it in
-your <htmlurl url="./app/openmap.properties"
+your <htmlurl url="../share/openmap.properties"
 name="openmap.properties"> file.  The OpenMap Viewer reads this file
 to get configuration information.
 
@@ -194,7 +197,7 @@ of the simple examples.
 <sect2>GUI Beans<label id="sec-gui-beans">
 <P>
 You can use the various <htmlurl
-url="./api/Package-com.bbn.openmap.gui.html" name="Map GUI Beans"> in
+url="./api/package-com.bbn.openmap.gui.html" name="Map GUI Beans"> in
 your application to control the MapBean.  To use them, you need to
 hook them up with components they need to communicate with, and then
 add them to your user interface.
@@ -441,7 +444,7 @@ Layer"></bf> is a good example of live layer.
 
 <sect2>OMGraphics<label id="sec-omgraphics">
 <p>
-<htmlurl url="./api/Package-com.bbn.openmap.omGraphics.html"
+<htmlurl url="./api/package-com.bbn.openmap.omGraphics.html"
 name="OMGraphics"> help you to turn your vector or raster data into
 interactive graphics that can be rendered on the map canvas.
 Each OMGraphic provides a simple interface to manage projecting,
