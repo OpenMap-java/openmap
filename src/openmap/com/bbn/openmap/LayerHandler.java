@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/LayerHandler.java,v $
 // $RCSfile: LayerHandler.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/01/10 16:41:08 $
+// $Revision: 1.12 $
+// $Date: 2005/02/02 12:56:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -715,7 +715,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * @param layer to remove.
      */
     public void removeLayer(Layer layer) {
-        if (layer != null && layer.isRemoveable()) {
+        if (layer != null && layer.isRemovable()) {
             int index = -1;
             for (int i = 0; i < allLayers.length; i++) {
                 if (layer == allLayers[i]) {
@@ -769,7 +769,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
 
         for (int i = 0; i < oldLayers.length; i++) {
             Layer layer = oldLayers[i];
-            if (layer.isRemoveable()) {
+            if (layer.isRemovable()) {
                 turnLayerOn(false, layer);
                 layer.clearListeners();
                 if (bc != null) {
@@ -812,7 +812,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     protected void removeLayer(Layer[] currentLayers, int index) {
         Layer rLayer = currentLayers[index];
 
-        if (!rLayer.isRemoveable()) {
+        if (!rLayer.isRemovable()) {
             Debug.error("LayerHandler: received command to remove "
                     + rLayer.getName()
                     + ", which has been designated as *NOT* removeable");

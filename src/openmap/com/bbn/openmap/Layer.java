@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.22 $
-// $Date: 2004/10/14 18:05:39 $
+// $Revision: 1.23 $
+// $Date: 2005/02/02 12:56:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -145,10 +145,10 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     public static final String AddAsBackgroundProperty = "background";
 
     /**
-     * Property 'removeable' to designate this layer as removeable
+     * Property 'removable' to designate this layer as removable
      * from the application, or able to be deleted. True by default.
      */
-    public static final String RemoveableProperty = "removeable";
+    public static final String RemovableProperty = "removable";
 
     /**
      * The property to show the palette when the layer is created -
@@ -205,9 +205,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     protected boolean addAsBackground = false;
 
     /**
-     * Flag to designate the layer as removeable or not.
+     * Flag to designate the layer as removable or not.
      */
-    protected boolean removeable = true;
+    protected boolean removable = true;
 
     /**
      * A flag to have the layer display it's palette when the
@@ -348,8 +348,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
         setAddAsBackground(PropUtils.booleanFromProperties(props, realPrefix
                 + AddAsBackgroundProperty, addAsBackground));
 
-        setRemoveable(PropUtils.booleanFromProperties(props, realPrefix
-                + RemoveableProperty, removeable));
+        setRemovable(PropUtils.booleanFromProperties(props, realPrefix
+                + RemovableProperty, removable));
 
         autoPalette = PropUtils.booleanFromProperties(props, realPrefix
                 + AutoPaletteProperty, autoPalette);
@@ -400,8 +400,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
                 new Boolean(autoPalette).toString());
         props.put(prefix + AddAsBackgroundProperty,
                 new Boolean(addAsBackground).toString());
-        props.put(prefix + RemoveableProperty,
-                new Boolean(removeable).toString());
+        props.put(prefix + RemovableProperty,
+                new Boolean(removable).toString());
         props.put(prefix + AddToBeanContextProperty,
                 new Boolean(addToBeanContext).toString());
 
@@ -470,13 +470,13 @@ public abstract class Layer extends JComponent implements ProjectionListener,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         internString = i18n.get(Layer.class,
-                RemoveableProperty,
+                RemovableProperty,
                 I18n.TOOLTIP,
                 "Flag to allow layer to be deleted.");
-        list.put(RemoveableProperty, internString);
-        internString = i18n.get(Layer.class, RemoveableProperty, "Removeable");
-        list.put(RemoveableProperty + LabelEditorProperty, internString);
-        list.put(RemoveableProperty + ScopedEditorProperty,
+        list.put(RemovableProperty, internString);
+        internString = i18n.get(Layer.class, RemovableProperty, "Removable");
+        list.put(RemovableProperty + LabelEditorProperty, internString);
+        list.put(RemovableProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         internString = i18n.get(Layer.class,
@@ -1068,12 +1068,12 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Mark the layer as removeable, or one that can be deleted from
+     * Mark the layer as removable, or one that can be deleted from
      * the application. What that means is up to the LayerHandler or
      * other application components.
      */
-    public void setRemoveable(boolean set) {
-        removeable = set;
+    public void setRemovable(boolean set) {
+        removable = set;
     }
 
     /**
@@ -1082,8 +1082,16 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * 
      * @return true if layer should be allowed to be deleted.
      */
-    public boolean isRemoveable() {
-        return removeable;
+    public boolean isRemovable() {
+        return removable;
+    }
+
+    /**
+     * Check to see if the removable layer can be removed now.
+     * @return true if layer should be allowed to be deleted.
+     */    
+    public boolean removeConfirmed() {
+        return true;
     }
 
     /**
