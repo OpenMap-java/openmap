@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.19 
+# From configure.in OpenMap Revision: 1.20 
 
 
 
@@ -682,27 +682,24 @@ test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 set dummy java; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
 echo "configure:685: checking for $ac_word" >&5
-if eval "test \"`echo '$''{'ac_cv_path_JAVA'+set}'`\" = set"; then
+if eval "test \"`echo '$''{'ac_cv_prog_JAVA'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
-  case "$JAVA" in
-  /*)
-  ac_cv_path_JAVA="$JAVA" # Let the user override the test with a path.
-  ;;
-  *)
+  if test -n "$JAVA"; then
+  ac_cv_prog_JAVA="$JAVA" # Let the user override the test.
+else
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   for ac_dir in $JDK_PATH$ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
-      ac_cv_path_JAVA="$ac_dir/$ac_word"
+      ac_cv_prog_JAVA="java"
       break
     fi
   done
   IFS="$ac_save_ifs"
-  ;;
-esac
 fi
-JAVA="$ac_cv_path_JAVA"
+fi
+JAVA="$ac_cv_prog_JAVA"
 if test -n "$JAVA"; then
   echo "$ac_t""$JAVA" 1>&6
 else
@@ -721,28 +718,25 @@ fi
 # Extract the first word of "javac", so it can be a program name with args.
 set dummy javac; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:725: checking for $ac_word" >&5
-if eval "test \"`echo '$''{'ac_cv_path_JAVAC'+set}'`\" = set"; then
+echo "configure:722: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_prog_JAVAC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
-  case "$JAVAC" in
-  /*)
-  ac_cv_path_JAVAC="$JAVAC" # Let the user override the test with a path.
-  ;;
-  *)
+  if test -n "$JAVAC"; then
+  ac_cv_prog_JAVAC="$JAVAC" # Let the user override the test.
+else
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   for ac_dir in $JDK_PATH$ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
-      ac_cv_path_JAVAC="$ac_dir/$ac_word"
+      ac_cv_prog_JAVAC="javac"
       break
     fi
   done
   IFS="$ac_save_ifs"
-  ;;
-esac
 fi
-JAVAC="$ac_cv_path_JAVAC"
+fi
+JAVAC="$ac_cv_prog_JAVAC"
 if test -n "$JAVAC"; then
   echo "$ac_t""$JAVAC" 1>&6
 else
@@ -761,28 +755,25 @@ fi
 # Extract the first word of "jar", so it can be a program name with args.
 set dummy jar; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:765: checking for $ac_word" >&5
-if eval "test \"`echo '$''{'ac_cv_path_JAR'+set}'`\" = set"; then
+echo "configure:759: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_prog_JAR'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
-  case "$JAR" in
-  /*)
-  ac_cv_path_JAR="$JAR" # Let the user override the test with a path.
-  ;;
-  *)
+  if test -n "$JAR"; then
+  ac_cv_prog_JAR="$JAR" # Let the user override the test.
+else
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   for ac_dir in $JDK_PATH$ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
-      ac_cv_path_JAR="$ac_dir/$ac_word"
+      ac_cv_prog_JAR="jar"
       break
     fi
   done
   IFS="$ac_save_ifs"
-  ;;
-esac
 fi
-JAR="$ac_cv_path_JAR"
+fi
+JAR="$ac_cv_prog_JAR"
 if test -n "$JAR"; then
   echo "$ac_t""$JAR" 1>&6
 else
@@ -801,28 +792,25 @@ fi
 # Extract the first word of "javadoc", so it can be a program name with args.
 set dummy javadoc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:805: checking for $ac_word" >&5
-if eval "test \"`echo '$''{'ac_cv_path_JAVADOC'+set}'`\" = set"; then
+echo "configure:796: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_prog_JAVADOC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
-  case "$JAVADOC" in
-  /*)
-  ac_cv_path_JAVADOC="$JAVADOC" # Let the user override the test with a path.
-  ;;
-  *)
+  if test -n "$JAVADOC"; then
+  ac_cv_prog_JAVADOC="$JAVADOC" # Let the user override the test.
+else
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   for ac_dir in $JDK_PATH$ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
-      ac_cv_path_JAVADOC="$ac_dir/$ac_word"
+      ac_cv_prog_JAVADOC="javadoc"
       break
     fi
   done
   IFS="$ac_save_ifs"
-  ;;
-esac
 fi
-JAVADOC="$ac_cv_path_JAVADOC"
+fi
+JAVADOC="$ac_cv_prog_JAVADOC"
 if test -n "$JAVADOC"; then
   echo "$ac_t""$JAVADOC" 1>&6
 else
@@ -840,7 +828,7 @@ fi
 
 # locate swing in the classpath
 echo $ac_n "checking for swing""... $ac_c" 1>&6
-echo "configure:844: checking for swing" >&5
+echo "configure:832: checking for swing" >&5
 ac_swing_path=$CLASSPATH
 ac_swing_jar=""
 case $with_swing in
@@ -924,6 +912,21 @@ case $with_devtarget in
     ;;
 esac
 
+
+rootdir=$srcdir
+
+case $rootdir in
+  /*)
+    # Fully qualified path.  Leave it alone.
+    ;;
+  *)
+    # relative path.  fully qualify it.
+    om_curdir=`pwd`;
+    cd $srcdir;
+    rootdir=`pwd`;
+    cd $om_curdir;
+    ;;
+esac
 
 trap '' 1 2 15
 cat > confcache <<\EOF
@@ -1058,9 +1061,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/layer/nitf/Makefile
 	com/bbn/openmap/layer/plotLayer/Makefile
 	com/bbn/openmap/layer/pluginLayer/Makefile
-	com/bbn/openmap/layer/rpf/Makefile
 	com/bbn/openmap/layer/shape/Makefile
-	com/bbn/openmap/layer/terrain/Makefile
 	com/bbn/openmap/layer/util/Makefile
 	com/bbn/openmap/layer/util/cacheHandler/Makefile
 	com/bbn/openmap/layer/util/html/Makefile
@@ -1106,6 +1107,7 @@ s%@JAR@%$JAR%g
 s%@JAVADOC@%$JAVADOC%g
 s%@SWING_JAR@%$SWING_JAR%g
 s%@DEFAULT_TARGET@%$DEFAULT_TARGET%g
+s%@rootdir@%$rootdir%g
 
 CEOF
 EOF
@@ -1167,9 +1169,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/layer/nitf/Makefile
 	com/bbn/openmap/layer/plotLayer/Makefile
 	com/bbn/openmap/layer/pluginLayer/Makefile
-	com/bbn/openmap/layer/rpf/Makefile
 	com/bbn/openmap/layer/shape/Makefile
-	com/bbn/openmap/layer/terrain/Makefile
 	com/bbn/openmap/layer/util/Makefile
 	com/bbn/openmap/layer/util/cacheHandler/Makefile
 	com/bbn/openmap/layer/util/html/Makefile

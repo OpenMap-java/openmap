@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
 # $RCSfile: openmap.mk.in,v $
-# $Revision: 1.14 $
-# $Date: 1998/11/18 21:26:37 $
+# $Revision: 1.15 $
+# $Date: 1998/11/19 14:33:20 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -60,20 +60,12 @@ sharedstatedir = @sharedstatedir@
 #for modifiable single machine data
 localstatedir = @localstatedir@
 
+rootdir = @rootdir@
 JAVA = @JAVA@
 JAVAC = @JAVAC@
 JAR = @JAR@
 JAVADOC = CLASSPATH="${CLASSPATH}" @JAVADOC@
 SWING_JAR = @SWING_JAR@
-
-# Java compiler flags for optimizing
-JFLAGS_OPT = -J-mx128m -O
-
-# Java compiler flags for development
-JFLAGS_DEV = -J-mx128m -g -deprecation
-
-# Command line flags handed to the java compiler
-JFLAGS = $(JFLAGS_DEV)
 
 #
 # Install settings
@@ -106,7 +98,7 @@ CLASSPATH_SEP =	@CLASSPATH_SEP@
 
 # *.java to *.class make rule
 .java.class:
-	CLASSPATH="${CLASSPATH}" $(JAVAC) $(JFLAGS) $<
+	CLASSPATH="${CLASSPATH}" $(JAVAC) $<
 
 # ------------------------------------------------------------
 # End of Java to class file rule
@@ -119,4 +111,4 @@ CLASSPATH_SEP =	@CLASSPATH_SEP@
 # !! WARNING !!
 # TOP must be set by the Makefile that is including this makefile.
 #
-CLASSPATH = ${TOP}${CLASSPATH_SEP}${SWING_JAR}
+CLASSPATH = ${rootdir}${CLASSPATH_SEP}${SWING_JAR}

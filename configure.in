@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION(OpenMap $Revision: 1.20 $)
+AC_REVISION(OpenMap $Revision: 1.21 $)
 AC_INIT(openmap.mk.in)
 
 #
@@ -78,16 +78,16 @@ fi
 
 AC_PROG_INSTALL
 
-AC_PATH_PROG(JAVA,java,,$JDK_PATH)
+AC_CHECK_PROG(JAVA,java,java,,$JDK_PATH)
 AC_DIE_IF_NOT_FOUND(JAVA,java,$JDK_PATH)
 
-AC_PATH_PROG(JAVAC,javac,,$JDK_PATH)
+AC_CHECK_PROG(JAVAC,javac,javac,,$JDK_PATH)
 AC_DIE_IF_NOT_FOUND(JAVAC,javac,$JDK_PATH)
 
-AC_PATH_PROG(JAR,jar,,$JDK_PATH)
+AC_CHECK_PROG(JAR,jar,jar,,$JDK_PATH)
 AC_DIE_IF_NOT_FOUND(JAR,jar,$JDK_PATH)
 
-AC_PATH_PROG(JAVADOC,javadoc,,$JDK_PATH)
+AC_CHECK_PROG(JAVADOC,javadoc,javadoc,,$JDK_PATH)
 AC_DIE_IF_NOT_FOUND(JAVADOC,javadoc,$JDK_PATH)
 
 AC_FIND_SWING_JAR
@@ -125,6 +125,21 @@ case $with_devtarget in
 esac
 
 
+rootdir=$srcdir
+AC_SUBST(rootdir)
+case $rootdir in
+  /*)
+    # Fully qualified path.  Leave it alone.
+    ;;
+  *)
+    # relative path.  fully qualify it.
+    om_curdir=`pwd`;
+    cd $srcdir;
+    rootdir=`pwd`;
+    cd $om_curdir;
+    ;;
+esac
+
 AC_OUTPUT(openmap.mk
 	Makefile
 	bin/openmap
@@ -145,9 +160,7 @@ AC_OUTPUT(openmap.mk
 	com/bbn/openmap/layer/nitf/Makefile
 	com/bbn/openmap/layer/plotLayer/Makefile
 	com/bbn/openmap/layer/pluginLayer/Makefile
-	com/bbn/openmap/layer/rpf/Makefile
 	com/bbn/openmap/layer/shape/Makefile
-	com/bbn/openmap/layer/terrain/Makefile
 	com/bbn/openmap/layer/util/Makefile
 	com/bbn/openmap/layer/util/cacheHandler/Makefile
 	com/bbn/openmap/layer/util/html/Makefile
