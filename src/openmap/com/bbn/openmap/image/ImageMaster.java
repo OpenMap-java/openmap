@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageMaster.java,v $
 // $RCSfile: ImageMaster.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:23:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,8 +32,9 @@ import java.io.*;
 import com.bbn.openmap.*;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
+
 
 /** 
  * The ImageMaster is an organizer for running the ImageServer to
@@ -387,15 +388,15 @@ public class ImageMaster {
 
 	    String propPrefix = prefix + ".";
 
-	    float scale = LayerUtils.floatFromProperties(props, propPrefix + ImageScaleProperty, 20000000f);
-	    int height = LayerUtils.intFromProperties(props, propPrefix + ImageHeightProperty, 480);
-	    int width = LayerUtils.intFromProperties(props, propPrefix + ImageWidthProperty, 640);
-	    float longitude = LayerUtils.floatFromProperties(props,  propPrefix + ImageLongitudeProperty, -71f);
-	    float latitude = LayerUtils.floatFromProperties(props, propPrefix + ImageLatitudeProperty, 42f);
+	    float scale = PropUtils.floatFromProperties(props, propPrefix + ImageScaleProperty, 20000000f);
+	    int height = PropUtils.intFromProperties(props, propPrefix + ImageHeightProperty, 480);
+	    int width = PropUtils.intFromProperties(props, propPrefix + ImageWidthProperty, 640);
+	    float longitude = PropUtils.floatFromProperties(props,  propPrefix + ImageLongitudeProperty, -71f);
+	    float latitude = PropUtils.floatFromProperties(props, propPrefix + ImageLatitudeProperty, 42f);
 	    String projType = props.getProperty(propPrefix + ImageProjectionProperty);
 	    String uniquePropsURL = props.getProperty(propPrefix + ServerPropertiesProperty);
-	    scaleToWidth = LayerUtils.intFromProperties(props, propPrefix + ScaleToWidthProperty, -1);
-	    scaleToHeight = LayerUtils.intFromProperties(props, propPrefix + ScaleToHeightProperty, -1);
+	    scaleToWidth = PropUtils.intFromProperties(props, propPrefix + ScaleToWidthProperty, -1);
+	    scaleToHeight = PropUtils.intFromProperties(props, propPrefix + ScaleToHeightProperty, -1);
 
 	    outputFileName = props.getProperty(propPrefix + ImageNameProperty);
 	    outputLogFileName = props.getProperty(propPrefix + OutputLogFileProperty);
@@ -424,8 +425,8 @@ public class ImageMaster {
 	    proj = (Proj)ProjectionFactory.makeProjection (ProjectionFactory.getProjType(projType), latitude, longitude, scale, width, height);
 
 	    // Set the background color of the map
-	    String defaultBackgroundColor = Integer.toHexString(proj.getBackgroundColor().getRGB());
-	    proj.setBackgroundColor(LayerUtils.parseColorFromProperties(props, propPrefix + ImageBackgroundColorProperty, defaultBackgroundColor));
+	    Color background = (Color)PropUtils.parseColorFromProperties(props, propPrefix + ImageBackgroundColorProperty, MapBean.DEFAULT_BACKGROUND_COLOR);
+
 	    iMaster = master;
 
 	    Properties uniqueProps;
@@ -448,6 +449,7 @@ public class ImageMaster {
 	    if (uniqueProps != null && outputFileName != null) {
 		iServer = new ImageServer(propPrefix, uniqueProps, 
 					  instantiatedLayers);
+		iServer.setBackground(background);
 	    }
 	}
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServer.java,v $
 // $RCSfile: ImageServer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/14 22:53:24 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:23:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,7 +35,6 @@ import com.bbn.openmap.proj.*;
 import com.bbn.openmap.plugin.*;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.util.*;
-import com.bbn.openmap.layer.util.LayerUtils;
 
 /** 
  * The image server is the class you want to deal with when creating
@@ -284,7 +283,7 @@ public class ImageServer
 	    return new byte[0];
 	}
       
-	((Proj)proj).drawBackground(graphics);
+	((Proj)proj).drawBackground((Graphics2D)graphics, background);
 	int size = showLayers.size();
 
 	if (showLayers != null) {
@@ -356,15 +355,15 @@ public class ImageServer
 
 	ImageFormatter imageFormatter = formatter.makeClone();
 
-	java.awt.Graphics graphics = createGraphics(imageFormatter, 
-						    proj.getWidth(),
-						    proj.getHeight());
+	Graphics graphics = createGraphics(imageFormatter, 
+					   proj.getWidth(),
+					   proj.getHeight());
 
 	if (graphics == null) {
 	    return new byte[0];
 	}
 
-	((Proj)proj).drawBackground(graphics);
+	((Proj)proj).drawBackground((Graphics2D)graphics, background);
 
 	if (Debug.debugging("imageserver")) {
 	    Debug.output("ImageServer: considering " + layers.length + " for image...");
@@ -485,7 +484,7 @@ public class ImageServer
 
 	layers = getLayers(props, instantiatedLayers);
 	formatter = getFormatters(props);
-	doAntiAliasing = LayerUtils.booleanFromProperties(props, prefix+AntiAliasingProperty, false);
+	doAntiAliasing = PropUtils.booleanFromProperties(props, prefix+AntiAliasingProperty, false);
     }
 
     /**
@@ -828,6 +827,12 @@ public class ImageServer
 	    }
 	}
 	
+	Color background = MapBean.DEFAULT_BACKGROUND_COLOR;
+	background = (Color)PropUtils.parseColorFromProperties(
+	    props, Environment.BackgroundColor, background);
+	    
+	is.setBackground(background);
+
 	// Initialize the map projection, scale, center with
 	// user prefs or defaults
 	if (proj == null) {
@@ -839,20 +844,14 @@ public class ImageServer
 	    
 	    proj = ProjectionFactory.makeProjection(
 		projType,
-		LayerUtils.floatFromProperties(props, Environment.Latitude, 0f),
-		LayerUtils.floatFromProperties(props, Environment.Longitude, 0f),
-		LayerUtils.floatFromProperties(props, Environment.Scale,
+		PropUtils.floatFromProperties(props, Environment.Latitude, 0f),
+		PropUtils.floatFromProperties(props, Environment.Longitude, 0f),
+		PropUtils.floatFromProperties(props, Environment.Scale,
 					       MapBean.DEFAULT_SCALE),
-		LayerUtils.intFromProperties(props, Environment.Width,
+		PropUtils.intFromProperties(props, Environment.Width,
 					     MapBean.DEFAULT_WIDTH),
-		LayerUtils.intFromProperties(props, Environment.Height,
+		PropUtils.intFromProperties(props, Environment.Height,
 					     MapBean.DEFAULT_HEIGHT));
-	    ((Proj)proj).setBackgroundColor(
-		(Color)LayerUtils.parseColorFromProperties(
-		    props, 
-		    Environment.BackgroundColor, 
-		    ((Proj)proj).getBackgroundColor()));
-	    
 	}
 	
 	if (Debug.debugging("imageserver")) {
@@ -869,6 +868,25 @@ public class ImageServer
 	fos.close();
 
 	return finalOutputPath;
+    }
+
+    /**
+     * Paint object used for map backgrounds.
+     */
+    protected Paint background;
+
+    /**
+     * Set the Paint to use for image backgrounds.
+     */
+    public void setBackground(Paint bg) {
+	background = bg;
+    }
+
+    /**
+     * Get the Paint to use for image backgrounds.
+     */
+    public Paint getBackground() {
+	return background;
     }
 
     /**
@@ -913,7 +931,7 @@ public class ImageServer
 	    String ps = arg[0];
 	    try {
 
-		URL url = LayerUtils.getResourceOrFileOrURL(null, ps);
+		URL url = PropUtils.getResourceOrFileOrURL(null, ps);
 		InputStream inputStream = url.openStream();
 
 		props = new Properties();

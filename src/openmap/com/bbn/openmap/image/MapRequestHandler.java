@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapRequestHandler.java,v $
 // $RCSfile: MapRequestHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/26 01:01:24 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:23:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -312,6 +312,8 @@ public class MapRequestHandler extends ImageServer
 	throws IOException, MapRequestFormatException {
 
 	Proj projection = ImageServerUtils.createOMProjection(requestProperties, defaultProjection);
+
+	setBackground(ImageServerUtils.getBackground(requestProperties));
 
 	boolean formatFound = false;
 	

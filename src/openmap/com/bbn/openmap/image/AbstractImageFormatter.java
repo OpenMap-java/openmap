@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AbstractImageFormatter.java,v $
 // $RCSfile: AbstractImageFormatter.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/15 20:37:31 $
+// $Revision: 1.3 $
+// $Date: 2003/11/14 20:23:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,8 @@
 package com.bbn.openmap.image;
 
 import java.awt.image.BufferedImage;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
@@ -132,7 +134,7 @@ public abstract class AbstractImageFormatter
 	if (width == -1) width = proj.getWidth();
 	if (height == -1) height = proj.getHeight();
 
-	java.awt.Graphics graphics = getGraphics(width, height);
+	Graphics graphics = getGraphics(width, height);
 
 	if (!needToScale) {
 	    if (Debug.debugging("formatter")) {
@@ -172,7 +174,7 @@ public abstract class AbstractImageFormatter
 		map.getProjectionType(), cp.getLatitude(), cp.getLongitude(),
 		map.getScale()*(float)scaleMod,	width,height);
 
-	    tp.drawBackground(graphics);
+	    tp.drawBackground((Graphics2D)graphics, map.getBckgrnd());
 
 	    if (layers != null) {
 		for (int i = layers.length - 1; i >= 0; i--) {
@@ -206,10 +208,10 @@ public abstract class AbstractImageFormatter
      *
      * @param width pixel width of Graphics.
      * @param height pixel height of Graphics.
-     * @return java.awt.Graphics object to use.
+     * @return Graphics object to use.
      * @see java.awt.image.BufferedImage 
      */
-    public java.awt.Graphics getGraphics(int width, int height) {
+    public Graphics getGraphics(int width, int height) {
 	return getGraphics(width, height, BufferedImage.TYPE_INT_RGB);
     }
 
@@ -228,12 +230,12 @@ public abstract class AbstractImageFormatter
      * @return java.awt.Graphics object to use.
      * @see java.awt.image.BufferedImage 
      */
-    public java.awt.Graphics getGraphics(int width, int height, int imageType) {
+    public Graphics getGraphics(int width, int height, int imageType) {
 	bufferedImage = new BufferedImage(width, height, imageType);
 
 	GraphicsEnvironment ge = 
 	    GraphicsEnvironment.getLocalGraphicsEnvironment();
-	java.awt.Graphics g = ge.createGraphics(bufferedImage);
+	Graphics g = ge.createGraphics(bufferedImage);
 	g.setClip(0, 0, width, height);
 	return g;
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServerUtils.java,v $
 // $RCSfile: ImageServerUtils.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 01:01:24 $
+// $Revision: 1.3 $
+// $Date: 2003/11/14 20:23:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,11 +23,13 @@
 
 package com.bbn.openmap.image;
 
+import java.awt.Color;
+import java.awt.Paint;
 import java.util.Properties;
 
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * A class to contain convenience functions for parsing web image
@@ -41,19 +43,19 @@ public class ImageServerUtils implements ImageServerConstants {
      * from a map request, with the keywords being those defined in
      * the ImageServerConstants interface. 
      */
-    protected static Proj createOMProjection(Properties props, 
-					     Projection defaultProj) {
+    public static Proj createOMProjection(Properties props, 
+					  Projection defaultProj) {
 
-	float scale = LayerUtils.floatFromProperties(props, SCALE, 
+	float scale = PropUtils.floatFromProperties(props, SCALE, 
 						     defaultProj.getScale());
-	int height = LayerUtils.intFromProperties(props, HEIGHT, 
+	int height = PropUtils.intFromProperties(props, HEIGHT, 
 						  defaultProj.getHeight());
-	int width = LayerUtils.intFromProperties(props, WIDTH, 
+	int width = PropUtils.intFromProperties(props, WIDTH, 
 						 defaultProj.getWidth());
 	com.bbn.openmap.LatLonPoint llp = defaultProj.getCenter();
-	float longitude = LayerUtils.floatFromProperties(props,  LON, 
+	float longitude = PropUtils.floatFromProperties(props,  LON, 
 							 llp.getLongitude());
-	float latitude = LayerUtils.floatFromProperties(props, LAT, 
+	float latitude = PropUtils.floatFromProperties(props, LAT, 
 							llp.getLatitude());
 	String projType = props.getProperty(PROJTYPE);
 	int projID;
@@ -76,18 +78,27 @@ public class ImageServerUtils implements ImageServerConstants {
 	    projID, latitude, longitude, scale, width, height);
 	
 
-	boolean transparent = LayerUtils.booleanFromProperties(props,
-							       TRANSPARENT,
-							       false);
+	return (Proj) proj;
+    }
 
-	java.awt.Color backgroundColor = LayerUtils.parseColorFromProperties(props,
-								    BGCOLOR,
-								    "FFFFFF");
+    /**
+     * Create a Color object from the properties TRANSPARENT and
+     * BGCOLOR properties.
+     * @return Color object for background.
+     */
+    public static Color getBackground(Properties props) {
+	boolean transparent = 
+	    PropUtils.booleanFromProperties(props, TRANSPARENT, false);
+
+	Color backgroundColor = 
+	    PropUtils.parseColorFromProperties(props, BGCOLOR, "FFFFFF");
+
 	if (transparent) {
-	    backgroundColor = new java.awt.Color(backgroundColor.getRed(),
-						 backgroundColor.getGreen(),
-						 backgroundColor.getBlue(),
-						 0x00);
+	    backgroundColor = 
+		new Color(backgroundColor.getRed(),
+			  backgroundColor.getGreen(),
+			  backgroundColor.getBlue(),
+			  0x00);
 	}
 
 	if (Debug.debugging("imageserver")) {
@@ -96,10 +107,6 @@ public class ImageServerUtils implements ImageServerConstants {
 			 ", transparent(" + transparent + ")");
 	}
 
-
-	proj.setBackgroundColor(backgroundColor);
-
-	return (Proj) proj;
+	return backgroundColor;
     }
-    
 }
