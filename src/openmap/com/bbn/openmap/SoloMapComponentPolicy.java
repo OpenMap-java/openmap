@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/SoloMapComponentPolicy.java,v $
 // $RCSfile: SoloMapComponentPolicy.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/05 15:38:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,11 +32,14 @@ import java.beans.beancontext.BeanContextSupport;
 public interface SoloMapComponentPolicy {
 
     /**
-     * Add an object to the context.
+     * Ask whether an object can be added to the to the context.
      * @param bc the context to add to
      * @param obj the object to add
+     * @return true if the object can be added.
+     * @throws MultipleSoloMapComponentException describing the
+     * conflict if there is one and the object can't be added.
      */
-    public boolean add(BeanContextSupport bc, Object obj) 
+    public boolean canAdd(BeanContextSupport bc, Object obj) 
 	throws MultipleSoloMapComponentException;
 
 }

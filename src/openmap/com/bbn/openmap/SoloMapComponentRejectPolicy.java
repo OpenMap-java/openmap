@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/SoloMapComponentRejectPolicy.java,v $
 // $RCSfile: SoloMapComponentRejectPolicy.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/05 15:38:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,12 @@ import java.util.Iterator;
  */
 public class SoloMapComponentRejectPolicy implements SoloMapComponentPolicy {
 
-    public boolean add(BeanContextSupport bc, Object obj) 
+    /**
+     * @throws a MultipleSoloMapComponentException if a duplicate
+     * instance of SoloMapComponent exists.
+     * @returns true if the object can be added to the MapHandler.
+     */
+    public boolean canAdd(BeanContextSupport bc, Object obj) 
 	throws MultipleSoloMapComponentException {
 	if (obj instanceof SoloMapComponent) {
 	    Class firstClass = obj.getClass();
@@ -50,6 +55,6 @@ public class SoloMapComponentRejectPolicy implements SoloMapComponentPolicy {
 		}
 	    }
 	} 
-	return bc.add(obj);
+	return true;
     }
 }

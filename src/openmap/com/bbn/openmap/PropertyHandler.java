@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/05/14 18:45:11 $
+// $Revision: 1.9 $
+// $Date: 2003/09/05 15:38:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1071,6 +1071,129 @@ public class PropertyHandler implements SoloMapComponent {
 
     public boolean getUpdateProgress() {
 	return updateProgress;
+    }
+
+    //Property Functions:
+    /////////////////////
+	
+    /**
+     * Remove an existing property if it exists.
+     * @return true if a property was actually removed.
+     */
+    public boolean removeProperty(String property) {
+	return getProperties().remove(property) != null;
+    }
+
+    /** 
+     * Add (or overwrite) a property to the current properties
+     */
+    public void addProperty(String property, String value) {
+	getProperties().setProperty(property, value);
+    }
+
+    /** 
+     * Add in the properties from the given URL.  Any existing
+     * properties will be overwritten except for openmap.components,
+     * openmap.layers and openmap.startUpLayers which will be
+     * appended.
+     */
+    public void addProperties(URL urlToProperties) {
+	addProperties(fetchProperties(urlToProperties));
+    }
+
+    /** 
+     * Add in the properties from the given source, which can be a
+     * resorce, file or URL.  Any existing properties will be
+     * overwritten except for openmap.components, openmap.layers and
+     * openmap.startUpLayers which will be appended.
+     * @throws MalformedURLException if propFile doesn't resolve properly.
+     */
+    public void addProperties(String propFile) 
+	throws MalformedURLException {
+	addProperties(fetchProperties(PropUtils.getResourceOrFileOrURL(propFile)));
+    }
+
+    /** 
+     * Add in the properties from the given Properties object.  Any
+     * existing properties will be overwritten except for
+     * openmap.components, openmap.layers and openmap.startUpLayers
+     * where values will be prepended to any existing lists.
+     */
+    public void addProperties(Properties p) {
+	String[] specialProps = new String[] {
+	    Environment.OpenMapPrefix + LayerHandler.layersProperty,
+	    Environment.OpenMapPrefix + LayerHandler.startUpLayersProperty,
+	    Environment.OpenMapPrefix + componentProperty 
+	};
+
+	Properties tmp = new Properties();
+	tmp.putAll(p);
+
+	for (int i = 0; i < specialProps.length; i++) {
+	    prependProperty(specialProps[i], tmp);
+	    tmp.remove(specialProps[i]);
+	}
+
+	getProperties().putAll(tmp);
+    }
+
+    /**
+     * Append the given property into the current properties
+     */
+    public void appendProperty(String property, Properties src) {
+	appendProperty(property, src.getProperty(property, ""));
+    }
+
+    /**
+     * Append the given property into the current properties
+     */
+    public void appendProperty(String property, String value) {
+	String curVal = getProperties().getProperty(property, "");
+	getProperties().setProperty(property, curVal + " " + value);
+    }
+
+    /**
+     * Prepend the given property into the current properties
+     */
+    public void prependProperty(String property, Properties src) {
+	prependProperty(property, src.getProperty(property, ""));
+    }
+
+    /**
+     * Prepend the given property into the current properties
+     */
+    public void prependProperty(String property, String value) {
+	String curVal = getProperties().getProperty(property, "");
+	getProperties().setProperty(property, value + " " + curVal);
+    }
+
+    /**
+     * Load a Properties object from the classpath.  The method always
+     * returns a <code>Properties</code> object.  If there was an
+     * error loading the properties from <code>propsURL</code>, an
+     * empty <code>Properties</code> object is returned.
+     *
+     * @param propsURL the URL of the properties to be loaded
+     * @return the loaded properties, or an empty Properties object if
+     * there was an error.
+     */
+    public static Properties fetchProperties(URL propsURL) {
+	if (Debug.debugging("properties")) {
+	    Debug.output("PropertyHandler.getProperties(" + propsURL + ")");
+	}
+	Properties p = new Properties();
+	if (propsURL != null) {
+	    try {
+		InputStream is = propsURL.openStream();
+		p.load(is);
+		is.close();
+	    } catch (IOException e) {
+		Debug.error("PropertyHandler.getProperties(): " +
+			    "Exception reading map properties at " + propsURL +
+			    ": " + e);
+	    }
+	}
+	return p;
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/SoloMapComponentReplacePolicy.java,v $
 // $RCSfile: SoloMapComponentReplacePolicy.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/05 15:38:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,12 +27,16 @@ import java.beans.beancontext.BeanContextSupport;
 import java.util.Iterator;
 
 /**
- * A SoloMapComponentPolicy that replaces duplicate SoloMapComponents with
- * the new object.
+ * A SoloMapComponentPolicy that senses duplicate SoloMapComponents compared to 
+ * the new object, removing the previous object before advising addition.
  */
 public class SoloMapComponentReplacePolicy implements SoloMapComponentPolicy {
 
-    public boolean add(BeanContextSupport bc, Object obj) 
+    /**
+     * @returns true if the object can be added to the MapHandler, and
+     * will have removed the previous duplicate from the MapHandler.
+     */
+    public boolean canAdd(BeanContextSupport bc, Object obj) 
 	throws MultipleSoloMapComponentException {
 
 	if (obj == null) {
@@ -59,6 +63,6 @@ public class SoloMapComponentReplacePolicy implements SoloMapComponentPolicy {
 	    }
 	}
 
-	return bc.add(obj);
+	return true;
     }
 }

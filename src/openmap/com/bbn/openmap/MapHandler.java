@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapHandler.java,v $
 // $RCSfile: MapHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/05 15:38:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,7 +67,7 @@ import java.util.LinkedList;
  */
 public class MapHandler extends BeanContextServicesSupport {
 
-    protected SoloMapComponentPolicy policy = new SoloMapComponentRejectPolicy();
+    protected SoloMapComponentPolicy policy;
 
     public MapHandler() {}
 
@@ -88,6 +88,9 @@ public class MapHandler extends BeanContextServicesSupport {
      * SoloMapComponent.
      */
     public SoloMapComponentPolicy getPolicy() {
+	if (policy == null) {
+	    policy = new SoloMapComponentRejectPolicy();
+	}
 	return policy;
     }
 
@@ -102,13 +105,16 @@ public class MapHandler extends BeanContextServicesSupport {
      * @return true if addition is successful, false if not.
      * @throws MultipleSoloMapComponentException.
      */
-    public boolean add(SoloMapComponent smc) 
-	throws MultipleSoloMapComponentException {
+    public boolean add(Object obj) {
+	boolean passedSoloMapComponentTest = true;
+	if (obj instanceof SoloMapComponent) {
+	    passedSoloMapComponentTest = getPolicy().canAdd(this, obj);
+	} 
 
-	if (policy != null) {
-	    return policy.add(this, smc);
+	if (obj != null && passedSoloMapComponentTest) {
+	    return super.add(obj);
 	} else {
-	    return super.add(smc);
+	    return false;
 	}
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MultipleSoloMapComponentException.java,v $
 // $RCSfile: MultipleSoloMapComponentException.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/05 15:38:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,7 +27,7 @@ package com.bbn.openmap;
  * An Exception indicating that an attempt was made to add a duplicate
  * SoloMapComponent to BeanContext.
  */
-public class MultipleSoloMapComponentException extends Exception {
+public class MultipleSoloMapComponentException extends RuntimeException {
 
     /**
      * Constuct an exception without a reason.
