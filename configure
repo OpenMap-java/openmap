@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.20 
+# From configure.in OpenMap Revision: 1.21 
 
 
 
@@ -678,28 +678,34 @@ test -z "$INSTALL_PROGRAM" && INSTALL_PROGRAM='${INSTALL}'
 test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 
 
+# Check for the Java executables, and make sure to use full pathnames.
+# This solves the case where the user specified --with-jdk=<jdk path>,
+# but doesn't have the executables referenced in PATH.
 # Extract the first word of "java", so it can be a program name with args.
 set dummy java; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:685: checking for $ac_word" >&5
-if eval "test \"`echo '$''{'ac_cv_prog_JAVA'+set}'`\" = set"; then
+echo "configure:688: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_path_JAVA'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
-  if test -n "$JAVA"; then
-  ac_cv_prog_JAVA="$JAVA" # Let the user override the test.
-else
+  case "$JAVA" in
+  /*)
+  ac_cv_path_JAVA="$JAVA" # Let the user override the test with a path.
+  ;;
+  *)
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   for ac_dir in $JDK_PATH$ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
-      ac_cv_prog_JAVA="java"
+      ac_cv_path_JAVA="$ac_dir/$ac_word"
       break
     fi
   done
   IFS="$ac_save_ifs"
+  ;;
+esac
 fi
-fi
-JAVA="$ac_cv_prog_JAVA"
+JAVA="$ac_cv_path_JAVA"
 if test -n "$JAVA"; then
   echo "$ac_t""$JAVA" 1>&6
 else
@@ -718,25 +724,28 @@ fi
 # Extract the first word of "javac", so it can be a program name with args.
 set dummy javac; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:722: checking for $ac_word" >&5
-if eval "test \"`echo '$''{'ac_cv_prog_JAVAC'+set}'`\" = set"; then
+echo "configure:728: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_path_JAVAC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
-  if test -n "$JAVAC"; then
-  ac_cv_prog_JAVAC="$JAVAC" # Let the user override the test.
-else
+  case "$JAVAC" in
+  /*)
+  ac_cv_path_JAVAC="$JAVAC" # Let the user override the test with a path.
+  ;;
+  *)
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   for ac_dir in $JDK_PATH$ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
-      ac_cv_prog_JAVAC="javac"
+      ac_cv_path_JAVAC="$ac_dir/$ac_word"
       break
     fi
   done
   IFS="$ac_save_ifs"
+  ;;
+esac
 fi
-fi
-JAVAC="$ac_cv_prog_JAVAC"
+JAVAC="$ac_cv_path_JAVAC"
 if test -n "$JAVAC"; then
   echo "$ac_t""$JAVAC" 1>&6
 else
@@ -755,25 +764,28 @@ fi
 # Extract the first word of "jar", so it can be a program name with args.
 set dummy jar; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:759: checking for $ac_word" >&5
-if eval "test \"`echo '$''{'ac_cv_prog_JAR'+set}'`\" = set"; then
+echo "configure:768: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_path_JAR'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
-  if test -n "$JAR"; then
-  ac_cv_prog_JAR="$JAR" # Let the user override the test.
-else
+  case "$JAR" in
+  /*)
+  ac_cv_path_JAR="$JAR" # Let the user override the test with a path.
+  ;;
+  *)
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   for ac_dir in $JDK_PATH$ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
-      ac_cv_prog_JAR="jar"
+      ac_cv_path_JAR="$ac_dir/$ac_word"
       break
     fi
   done
   IFS="$ac_save_ifs"
+  ;;
+esac
 fi
-fi
-JAR="$ac_cv_prog_JAR"
+JAR="$ac_cv_path_JAR"
 if test -n "$JAR"; then
   echo "$ac_t""$JAR" 1>&6
 else
@@ -792,25 +804,28 @@ fi
 # Extract the first word of "javadoc", so it can be a program name with args.
 set dummy javadoc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:796: checking for $ac_word" >&5
-if eval "test \"`echo '$''{'ac_cv_prog_JAVADOC'+set}'`\" = set"; then
+echo "configure:808: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_path_JAVADOC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
-  if test -n "$JAVADOC"; then
-  ac_cv_prog_JAVADOC="$JAVADOC" # Let the user override the test.
-else
+  case "$JAVADOC" in
+  /*)
+  ac_cv_path_JAVADOC="$JAVADOC" # Let the user override the test with a path.
+  ;;
+  *)
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   for ac_dir in $JDK_PATH$ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
-      ac_cv_prog_JAVADOC="javadoc"
+      ac_cv_path_JAVADOC="$ac_dir/$ac_word"
       break
     fi
   done
   IFS="$ac_save_ifs"
+  ;;
+esac
 fi
-fi
-JAVADOC="$ac_cv_prog_JAVADOC"
+JAVADOC="$ac_cv_path_JAVADOC"
 if test -n "$JAVADOC"; then
   echo "$ac_t""$JAVADOC" 1>&6
 else
@@ -828,7 +843,7 @@ fi
 
 # locate swing in the classpath
 echo $ac_n "checking for swing""... $ac_c" 1>&6
-echo "configure:832: checking for swing" >&5
+echo "configure:847: checking for swing" >&5
 ac_swing_path=$CLASSPATH
 ac_swing_jar=""
 case $with_swing in
