@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s0="http://winmap.bbn.com/ImageWebService" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://winmap.bbn.com/ImageWebService" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://winmap.bbn.com/ImageWebService">
+      <s:element name="StartNewImageServer">
+        <s:complexType />
+      </s:element>
+      <s:element name="StartNewImageServerResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="StartNewImageServerResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="KillImageServer">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="procId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="KillImageServerResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="KillImageServerResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="KillAllImageServers">
+        <s:complexType />
+      </s:element>
+      <s:element name="KillAllImageServersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="KillAllImageServersResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetLayers">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetLayersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetLayersResult" type="s0:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="string" nillable="true" type="s:string" />
+      <s:element name="ArrayOfString" nillable="true" type="s0:ArrayOfString" />
+    </s:schema>
+  </types>
+  <message name="StartNewImageServerSoapIn">
+    <part name="parameters" element="s0:StartNewImageServer" />
+  </message>
+  <message name="StartNewImageServerSoapOut">
+    <part name="parameters" element="s0:StartNewImageServerResponse" />
+  </message>
+  <message name="KillImageServerSoapIn">
+    <part name="parameters" element="s0:KillImageServer" />
+  </message>
+  <message name="KillImageServerSoapOut">
+    <part name="parameters" element="s0:KillImageServerResponse" />
+  </message>
+  <message name="KillAllImageServersSoapIn">
+    <part name="parameters" element="s0:KillAllImageServers" />
+  </message>
+  <message name="KillAllImageServersSoapOut">
+    <part name="parameters" element="s0:KillAllImageServersResponse" />
+  </message>
+  <message name="GetLayersSoapIn">
+    <part name="parameters" element="s0:GetLayers" />
+  </message>
+  <message name="GetLayersSoapOut">
+    <part name="parameters" element="s0:GetLayersResponse" />
+  </message>
+  <message name="StartNewImageServerHttpGetIn" />
+  <message name="StartNewImageServerHttpGetOut">
+    <part name="Body" element="s0:string" />
+  </message>
+  <message name="KillImageServerHttpGetIn">
+    <part name="procId" type="s:string" />
+  </message>
+  <message name="KillImageServerHttpGetOut">
+    <part name="Body" element="s0:string" />
+  </message>
+  <message name="KillAllImageServersHttpGetIn" />
+  <message name="KillAllImageServersHttpGetOut">
+    <part name="Body" element="s0:string" />
+  </message>
+  <message name="GetLayersHttpGetIn" />
+  <message name="GetLayersHttpGetOut">
+    <part name="Body" element="s0:ArrayOfString" />
+  </message>
+  <message name="StartNewImageServerHttpPostIn" />
+  <message name="StartNewImageServerHttpPostOut">
+    <part name="Body" element="s0:string" />
+  </message>
+  <message name="KillImageServerHttpPostIn">
+    <part name="procId" type="s:string" />
+  </message>
+  <message name="KillImageServerHttpPostOut">
+    <part name="Body" element="s0:string" />
+  </message>
+  <message name="KillAllImageServersHttpPostIn" />
+  <message name="KillAllImageServersHttpPostOut">
+    <part name="Body" element="s0:string" />
+  </message>
+  <message name="GetLayersHttpPostIn" />
+  <message name="GetLayersHttpPostOut">
+    <part name="Body" element="s0:ArrayOfString" />
+  </message>
+  <portType name="ProperServiceSoap">
+    <operation name="StartNewImageServer">
+      <documentation>This method starts a new java image server.</documentation>
+      <input message="s0:StartNewImageServerSoapIn" />
+      <output message="s0:StartNewImageServerSoapOut" />
+    </operation>
+    <operation name="KillImageServer">
+      <documentation>This method kills an image server on a machine.</documentation>
+      <input message="s0:KillImageServerSoapIn" />
+      <output message="s0:KillImageServerSoapOut" />
+    </operation>
+    <operation name="KillAllImageServers">
+      <documentation>This method kills all the running java image server processes.</documentation>
+      <input message="s0:KillAllImageServersSoapIn" />
+      <output message="s0:KillAllImageServersSoapOut" />
+    </operation>
+    <operation name="GetLayers">
+      <documentation>This method returns arrays of available and default layers.</documentation>
+      <input message="s0:GetLayersSoapIn" />
+      <output message="s0:GetLayersSoapOut" />
+    </operation>
+  </portType>
+  <portType name="ProperServiceHttpGet">
+    <operation name="StartNewImageServer">
+      <documentation>This method starts a new java image server.</documentation>
+      <input message="s0:StartNewImageServerHttpGetIn" />
+      <output message="s0:StartNewImageServerHttpGetOut" />
+    </operation>
+    <operation name="KillImageServer">
+      <documentation>This method kills an image server on a machine.</documentation>
+      <input message="s0:KillImageServerHttpGetIn" />
+      <output message="s0:KillImageServerHttpGetOut" />
+    </operation>
+    <operation name="KillAllImageServers">
+      <documentation>This method kills all the running java image server processes.</documentation>
+      <input message="s0:KillAllImageServersHttpGetIn" />
+      <output message="s0:KillAllImageServersHttpGetOut" />
+    </operation>
+    <operation name="GetLayers">
+      <documentation>This method returns arrays of available and default layers.</documentation>
+      <input message="s0:GetLayersHttpGetIn" />
+      <output message="s0:GetLayersHttpGetOut" />
+    </operation>
+  </portType>
+  <portType name="ProperServiceHttpPost">
+    <operation name="StartNewImageServer">
+      <documentation>This method starts a new java image server.</documentation>
+      <input message="s0:StartNewImageServerHttpPostIn" />
+      <output message="s0:StartNewImageServerHttpPostOut" />
+    </operation>
+    <operation name="KillImageServer">
+      <documentation>This method kills an image server on a machine.</documentation>
+      <input message="s0:KillImageServerHttpPostIn" />
+      <output message="s0:KillImageServerHttpPostOut" />
+    </operation>
+    <operation name="KillAllImageServers">
+      <documentation>This method kills all the running java image server processes.</documentation>
+      <input message="s0:KillAllImageServersHttpPostIn" />
+      <output message="s0:KillAllImageServersHttpPostOut" />
+    </operation>
+    <operation name="GetLayers">
+      <documentation>This method returns arrays of available and default layers.</documentation>
+      <input message="s0:GetLayersHttpPostIn" />
+      <output message="s0:GetLayersHttpPostOut" />
+    </operation>
+  </portType>
+  <binding name="ProperServiceSoap" type="s0:ProperServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+    <operation name="StartNewImageServer">
+      <soap:operation soapAction="http://winmap.bbn.com/ImageWebService/StartNewImageServer" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="KillImageServer">
+      <soap:operation soapAction="http://winmap.bbn.com/ImageWebService/KillImageServer" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="KillAllImageServers">
+      <soap:operation soapAction="http://winmap.bbn.com/ImageWebService/KillAllImageServers" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="GetLayers">
+      <soap:operation soapAction="http://winmap.bbn.com/ImageWebService/GetLayers" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <binding name="ProperServiceHttpGet" type="s0:ProperServiceHttpGet">
+    <http:binding verb="GET" />
+    <operation name="StartNewImageServer">
+      <http:operation location="/StartNewImageServer" />
+      <input>
+        <http:urlEncoded />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="KillImageServer">
+      <http:operation location="/KillImageServer" />
+      <input>
+        <http:urlEncoded />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="KillAllImageServers">
+      <http:operation location="/KillAllImageServers" />
+      <input>
+        <http:urlEncoded />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="GetLayers">
+      <http:operation location="/GetLayers" />
+      <input>
+        <http:urlEncoded />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+  </binding>
+  <binding name="ProperServiceHttpPost" type="s0:ProperServiceHttpPost">
+    <http:binding verb="POST" />
+    <operation name="StartNewImageServer">
+      <http:operation location="/StartNewImageServer" />
+      <input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="KillImageServer">
+      <http:operation location="/KillImageServer" />
+      <input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="KillAllImageServers">
+      <http:operation location="/KillAllImageServers" />
+      <input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+    <operation name="GetLayers">
+      <http:operation location="/GetLayers" />
+      <input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </input>
+      <output>
+        <mime:mimeXml part="Body" />
+      </output>
+    </operation>
+  </binding>
+  <service name="ProperService">
+    <documentation>This Web Service is responsible for starting and killing Java Image servers, updating user sessions, keeping information about layers used.</documentation>
+    <port name="ProperServiceSoap" binding="s0:ProperServiceSoap">
+      <soap:address location="http://winmap.bbn.com/ImageWebService/ProperService.asmx" />
+    </port>
+    <port name="ProperServiceHttpGet" binding="s0:ProperServiceHttpGet">
+      <http:address location="http://winmap.bbn.com/ImageWebService/ProperService.asmx" />
+    </port>
+    <port name="ProperServiceHttpPost" binding="s0:ProperServiceHttpPost">
+      <http:address location="http://winmap.bbn.com/ImageWebService/ProperService.asmx" />
+    </port>
+  </service>
+</definitions>
