@@ -6,8 +6,8 @@
  * **********************************************************************
  * 
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/SwingWorker.java,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:49 $
+ * $Revision: 1.2 $
+ * $Date: 2003/02/27 23:58:02 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -112,15 +112,7 @@ public abstract class SwingWorker {
                     thread = null;
                 }
 
-		// This is key, if the layer is going to be used with
-		// the GIFMapBean.  If the AWT is not available, then
-		// we need to finish up everything in this thread.
-		// Otherwise, finish everything up in the AWT thread.
-		// Assuming that if the AWT is not available for one
-		// layer, it's not available for any of them.
-		if (Layer.isAWTAvailable())
-		    SwingUtilities.invokeLater(doFinished);
-		else finished();
+		SwingUtilities.invokeLater(doFinished);
             }
         };
 
