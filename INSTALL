@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/INSTALL,v $
 $RCSfile: INSTALL,v $
-$Revision: 1.2 $
-$Date: 1998/11/13 16:06:02 $
+$Revision: 1.3 $
+$Date: 1998/11/13 21:16:16 $
 $Author: aculline $
 
 Basic Installation
@@ -34,30 +34,33 @@ Basic Installation
 The simplest way to compile this package is:
 
   1. `cd' to the toplevel directory of this package and type
-     `./configure' to configure the package for your system.  If you're
-     using `csh' on an old version of System V, you might need to type
-     `sh ./configure' instead to prevent `csh' from trying to execute
-     `configure' itself.
+     `./configure' to configure the package for your system.  If
+     you're using `csh' on an old version of System V, you might need
+     to type `sh ./configure' instead to prevent `csh' from trying to
+     execute `configure' itself.
 
      Running `configure' takes awhile.  While running, it prints some
      messages telling which features it is checking for.
 
   2. Type `make' to compile the package.
 
-  3. Type `make install' to install the programs and any data files and
-     documentation.
+  3. Type `make install' to install the programs and any data files
+     and documentation.
 
-  4. You can remove the program binaries and object files from the
+  4. If you want documentation, type `make docs', and
+     `make install-docs'.
+
+  5. You can remove the program binaries and object files from the
      source code directory by typing `make clean'.  To also remove the
-     files that `configure' created (so you can compile the package for
-     a different kind of computer), type `make distclean'.
+     files that `configure' created (so you can compile the package
+     for a different kind of computer), type `make distclean'.
 
 Test Drive
 ==========
 
-    You can test OpenMap by running the default `openmap' viewer script
-    provided in the bin/ subdirectory of the installation.  `cd' to the
-    bin/ directory and type `./openmap'.
+    You can test OpenMap by running the default `openmap' viewer
+    script provided in the bin/ subdirectory of the installation.
+    `cd' to the bin/ directory and type `./openmap'.
 
     You can try out other example applications by running the scripts
     provided in the examples/ subdirectory of the installation.
