@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionStack.java,v $
 // $RCSfile: ProjectionStack.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.4 $
+// $Date: 2004/05/15 02:21:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -311,14 +311,14 @@ public class ProjectionStack extends OMComponent
 
     public class ProjHolder {
 
-        public int projType;
+        public Class projClass;
         public float scale;
         public LatLonPoint center;
         protected Point tmpPoint1;
         protected Point tmpPoint2;
 
         public ProjHolder(Projection proj) {
-            projType = proj.getProjectionType();
+            projClass = proj.getClass();
             scale = proj.getScale();
             center = proj.getCenter();
         }
@@ -336,7 +336,7 @@ public class ProjectionStack extends OMComponent
             Point tmpPoint1 = proj.forward(proj.getCenter());
             Point tmpPoint2 = proj.forward(center);
 
-            boolean same = (projType == proj.getProjectionType() &&
+            boolean same = (projClass == proj.getClass() &&
                             scale == proj.getScale() &&
 
                             // NOT GOOD ENOUGH!  Sometimes, the
@@ -356,14 +356,14 @@ public class ProjectionStack extends OMComponent
         }
 
         public Projection create(int width, int height) {
-            return ProjectionFactory.makeProjection(projType, 
+            return ProjectionFactory.makeProjection(projClass, 
                                                     center.getLatitude(),
                                                     center.getLongitude(),
                                                     scale, width, height);
         }
 
         public String toString() {
-            return ("[ProjHolder: projType(" + projType + "), scale(" +
+            return ("[ProjHolder: class(" + projClass.getName() + "), scale(" +
                     scale + "), center(" + center + ")]");
         }
 
