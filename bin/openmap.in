@@ -2,6 +2,10 @@
 # @configure_input@
 # 
 
+# variables to be configured
+JAVA=@JAVA@
+SWING_JAR=@SWING_JAR@
+
 
 DIR=`dirname $0` >/dev/null 2>&1
 PRG=`basename $0` >/dev/null 2>&1
@@ -21,7 +25,7 @@ do
 done
 
 OM_HOME=`dirname $PRG`/..
-CLASSPATH=$OM_HOME:$OM_HOME/lib/openmap.jar:$OM_HOME/share:@SWING_JAR@
+CLASSPATH=$OM_HOME:$OM_HOME/lib/openmap.jar:$OM_HOME/share:$SWING_JAR
 export CLASSPATH
 
-@JAVA@ -mx64m -Dopenmap.configDir=$OM_HOME/share com.bbn.openmap.app.OpenMap
+$JAVA -mx64m -Dopenmap.configDir=$OM_HOME/share com.bbn.openmap.app.OpenMap
