@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/04/08 16:28:37 $
+// $Revision: 1.6 $
+// $Date: 2003/05/14 17:17:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,9 +34,9 @@ import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.BasicMapPanel;
 import com.bbn.openmap.gui.MapPanel;
 import com.bbn.openmap.gui.OpenMapFrame;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The OpenMap application framework.  This class creates a
@@ -72,6 +72,10 @@ public class OpenMap {
      * PropertyHandler may be null.
      */
     public OpenMap(PropertyHandler propertyHandler) {
+	if (propertyHandler == null) {
+	    propertyHandler = new PropertyHandler();
+	}
+
 	mapPanel = new BasicMapPanel(propertyHandler);
 	mapPanel.getMapHandler().add(new OpenMapFrame());
 	mapPanel.getMapBean().showLayerPalettes();
@@ -118,7 +122,7 @@ public class OpenMap {
 
 	if (propertiesFile != null) {
 	    try {
-		URL propURL = LayerUtils.getResourceOrFileOrURL(null, propertiesFile);
+		URL propURL = PropUtils.getResourceOrFileOrURL(null, propertiesFile);
 		propertyHandler = new PropertyHandler(propURL);
 	    } catch (MalformedURLException murle) {
 		Debug.error(murle.getMessage());
