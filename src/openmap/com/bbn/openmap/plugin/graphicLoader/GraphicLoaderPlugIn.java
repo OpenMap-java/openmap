@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/GraphicLoaderPlugIn.java,v $
 // $RCSfile: GraphicLoaderPlugIn.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/06/25 16:10:39 $
+// $Revision: 1.4 $
+// $Date: 2003/06/26 00:53:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,10 +29,11 @@ import java.beans.beancontext.*;
 import java.util.Properties;
 import javax.swing.*;
 
+import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.MapMouseListener;
+import com.bbn.openmap.graphicLoader.GraphicLoader;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.plugin.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.*;
