@@ -17,9 +17,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.31 $
-# $Date: 1999/07/19 17:33:41 $
-# $Author: wjeuerle $
+# $Revision: 1.32 $
+# $Date: 1999/08/05 16:17:26 $
+# $Author: pmanghwa $
 # 
 # **********************************************************************
 
@@ -48,6 +48,7 @@ Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/event/*.class \
 		com/bbn/openmap/gui/*.class \
 		com/bbn/openmap/omGraphics/*.class \
+		com/bbn/openmap/omGraphics/grid/*.class \
 		com/bbn/openmap/proj/*.class \
 		com/bbn/openmap/util/*.class
 
@@ -71,6 +72,8 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.vpf \
 		com.bbn.openmap.layer.daynight \
 		com.bbn.openmap.layer.test \
+		com.bbn.openmap.layer.link \
+		com.bbn.openmap.layer.link.shape \
 #		com.bbn.openmap.layer.terrain \
 
 
@@ -89,6 +92,8 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/vpf/*.class \
 		com/bbn/openmap/layer/daynight/*.class \
 		com/bbn/openmap/layer/test/*.class \
+		com/bbn/openmap/layer/link/*.class \
+		com/bbn/openmap/layer/link/shape/*.class \
 #		com/bbn/openmap/layer/terrain/*.class \
 
 Layer.props =   com/bbn/openmap/layer/vpf/*.properties
