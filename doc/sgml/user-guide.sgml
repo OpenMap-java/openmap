@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/user-guide.sgml,v $
 $RCSfile: user-guide.sgml,v $
-$Revision: 1.3 $
-$Date: 1999/01/07 15:00:38 $
+$Revision: 1.4 $
+$Date: 1999/01/14 17:19:46 $
 $Author: aculline $
 
 User's Guide for the OpenMap Viewer application.
@@ -44,17 +44,17 @@ Windows, you may need to edit the paths referenced in the
 <p>
 
 
-<sect>Properties File
+<sect>Properties File<label id="sec-props">
 <p>
-The OpenMap Viewer loads properties from an
-<tt>openmap.properties</tt> file.  It searches for this file in three
-locations: 1) in the JAR file or class directory, 2) in the
-installation "share" subdirectory, and 3) in the user's home
-directory.  If it finds the file in any of these places, it loads the
-properties from it, overriding previous settings.  We suggest that you
-copy the <tt>openmap.properties</tt> file from the installation
-"share" subdirectory to your home directory, and edit the settings to
-your own liking.
+The OpenMap Viewer loads properties from an <tt><htmlurl
+url="./app/openmap.properties" name="openmap.properties"></tt> file.
+It searches for this file in three locations: 1) in the JAR file or
+class directory, 2) in the installation "share" subdirectory, and 3)
+in the user's home directory.  If it finds the file in any of these
+places, it loads the properties from it, overriding previous settings.
+We suggest that you copy the <tt>openmap.properties</tt> file from the
+installation "share" subdirectory to your home directory, and edit the
+settings to your own liking.
 
 
 <sect>Running the OpenMap Viewer
@@ -217,11 +217,12 @@ will be recentered over the position indicated.
 <sect>Extending the Viewer
 <p>
 A simple way to extend the Viewer is to use different map layers.  You
-can add and remove layers by editing the <tt>openmap.properties</tt>
-file.
+can add and remove layers by editing the <tt><ref id="sec-props"
+name="openmap.properties"></tt> file.
 <p>
-The source code for the OpenMap Viewer is the
-<tt>com/bbn/openmap/app/OpenMap.java</tt> file.  It hooks together
+The source code for the OpenMap Viewer is the <tt><htmlurl
+url="./api/com.bbn.openmap.app.OpenMap.html"
+name="com/bbn/openmap/app/OpenMap.java"></tt> file.  It hooks together
 various MapBean components to create the Viewer application.  You can
 write your own application by copying and changing this file.
 <p>
