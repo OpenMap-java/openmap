@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Attic/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/02/26 23:24:15 $
+// $Revision: 1.4 $
+// $Date: 2003/02/27 23:57:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -351,10 +351,6 @@ public class MGRSPoint extends UTMPoint {
 		if (DEBUG) Debug.output(" - rolling back to " + north100k);
 	    }
 	}
-
-
-	// This (^^) may not be enough, we have to find out
-	// when we cross over a 18 degree line.
 
 	// calculate the char index for easting/northing separator
 	int remainder = length - i;

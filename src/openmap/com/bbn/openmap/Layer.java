@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/27 23:57:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -166,7 +166,7 @@ public abstract class Layer extends JComponent
      * the repaint() method to fire a LayerStatusEvent.FINISH_WORKING
      * instead.
      */
-    protected static boolean AWTAvailable = true;
+//     protected static boolean AWTAvailable = true;
     
     /**
      * Token uniquely identifying this layer in the application
@@ -210,17 +210,20 @@ public abstract class Layer extends JComponent
      * Set AWTAvailable flag.
      * Your layer should not need to call this.
      * @param value boolean
+     * @deprecated use ProjectionPainter interface method instead.
      */
     public static void setAWTAvailable(boolean value) {
-	AWTAvailable = value;
+// 	AWTAvailable = value;
     }
 
     /**
      * Check AWTAvailable flag.
      * @return boolean
+     * @deprecated use ProjectionPainter interface method instead.
      */
     public static boolean isAWTAvailable() {
-	return AWTAvailable;
+	return true;
+// 	return AWTAvailable;
     }
 
     /**
@@ -810,16 +813,15 @@ public abstract class Layer extends JComponent
      * @param evt LayerStatusEvent
      */
     public void fireStatusUpdate(LayerStatusEvent evt) {
-	if (AWTAvailable) {
-	    LayerStatusListener[] temp = getSynchronizedStatusListeners();
-	    if (temp != null) {
-		for (int i = 0; i < temp.length; i++) {
-		    temp[i].updateLayerStatus(evt);
-		}
-	    } else if (Debug.debugging("layer")) {
-		Debug.output(getName() + 
-			     "|Layer.fireStatusUpdate(): no LayerStatusListener!");
+	// AWTAvailable conditional removed, not used, not useful.
+	LayerStatusListener[] temp = getSynchronizedStatusListeners();
+	if (temp != null) {
+	    for (int i = 0; i < temp.length; i++) {
+		temp[i].updateLayerStatus(evt);
 	    }
+	} else if (Debug.debugging("layer")) {
+	    Debug.output(getName() + 
+			 "|Layer.fireStatusUpdate(): no LayerStatusListener!");
 	}
     }
 
@@ -829,32 +831,6 @@ public abstract class Layer extends JComponent
      */
     public void fireStatusUpdate(int status) {
 	fireStatusUpdate(new LayerStatusEvent(this, status));
-    }
-
-    /**
-     * Repaint the layer.
-     * You should not need to override this.
-     */
-    public void repaint() {
-	if (AWTAvailable) {
-	    super.repaint();
-	} else {
-	    // This looks like a fireStatusUpdate, right?  But that is
-	    // disabled if !AWTAvailable.  The only way to fire the
-	    // status is finished is by calling a repaint.  Doing
-	    // anything else confuses the GIFMapBean.  The firing of
-	    // this status update may be redundant for layers that use
-	    // the status updates already, but we have to play smart
-	    // for all layers, especially for those who don't play
-	    // nice.
-	    LayerStatusEvent evt = new LayerStatusEvent(this, LayerStatusEvent.FINISH_WORKING);
-	    LayerStatusListener[] temp = getSynchronizedStatusListeners();
-	    if (temp != null) {
-		for (int i = 0; i < temp.length; i++) {
-		    temp[i].updateLayerStatus(evt);
-		}
-	    }
-	}
     }
 
     /**
@@ -883,6 +859,8 @@ public abstract class Layer extends JComponent
 	    // components.  It's this call here that makes the
 	    // BufferedLayer work right.
 	    p.repaint();
+	} else if (p != null) {
+	    p.repaint(tm, x, y, width, height);
 	} else {
 	    super.repaint(tm, x, y, width, height);
 	}
@@ -906,7 +884,6 @@ public abstract class Layer extends JComponent
     public void renderDataForProjection(Projection proj, Graphics g) {
 	paint(g);
     }
-
 
     /**
      * This method is called when the layer is added to the MapBean
