@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/BufferedMapBean.java,v $
 // $RCSfile: BufferedMapBean.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/28 21:57:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.*;
 
 import com.bbn.openmap.util.Debug;
@@ -125,6 +126,8 @@ public class BufferedMapBean extends MapBean {
 
 	    // draw the old image
 	    Graphics gr = drawingBuffer.getGraphics();
+// 	    ((Graphics2D)gr).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+// 					      RenderingHints.VALUE_ANTIALIAS_ON);
 	    if (clip == null) {
   		gr.setClip(0, 0, w, h);
 	    } else {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/InformationDelegator.java,v $
 // $RCSfile: InformationDelegator.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/04/08 18:42:32 $
+// $Revision: 1.6 $
+// $Date: 2003/08/28 21:57:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -74,6 +74,8 @@ public class InformationDelegator extends OMComponentPanel
     implements InfoDisplayListener, PropertyChangeListener, ProgressListener, MapPanelChild {
 
     protected JLabel infoLineHolder;
+    protected JLabel infoLineHolder2;
+
     protected WebBrowser browser;
     protected StatusLightPanel statusBar;
 
@@ -113,6 +115,11 @@ public class InformationDelegator extends OMComponentPanel
     protected boolean showInfoLine = true;
     public final static String ShowInfoLineProperty = "showInfoLine";
 
+    public final static int MAP_OBJECT_INFO_LINE = 0; // Default
+    public final static int COORDINATE_INFO_LINE = 1;
+
+    protected ArrayList infoLineOrganizer = new ArrayList();
+
     public InformationDelegator() {
 	super();
 
@@ -139,19 +146,39 @@ public class InformationDelegator extends OMComponentPanel
 	add(progressBar);
 	progressBar.setVisible(false);
 
-	infoLineHolder = new JLabel(fudgeString);
+	JPanel infoLinePanel = new JPanel();
 	c.weightx=1;
-	c.gridwidth=GridBagConstraints.RELATIVE;
 	c.anchor=GridBagConstraints.WEST;
-	c.insets = new Insets(3, 10, 3, 10);
-	gridbag.setConstraints(infoLineHolder, c);
-	add(infoLineHolder);
-	infoLineHolder.setVisible(showInfoLine);
+	c.fill=GridBagConstraints.HORIZONTAL;
+
+	gridbag.setConstraints(infoLinePanel, c);
+
+	GridBagLayout gridbag2 = new GridBagLayout();
+	GridBagConstraints c2 = new GridBagConstraints();
+	infoLinePanel.setLayout(gridbag2);
+
+	infoLineHolder = new JLabel(fudgeString);
+	c2.weightx = 1;
+	c2.fill=GridBagConstraints.HORIZONTAL;
+	c2.anchor=GridBagConstraints.WEST;
+	c2.insets = new Insets(3, 10, 3, 10);
+	gridbag2.setConstraints(infoLineHolder, c2);
+	infoLinePanel.add(infoLineHolder);
+
+	infoLineHolder2 = new JLabel(fudgeString, SwingConstants.RIGHT);
+	c2.weightx = 0;
+	c2.anchor=GridBagConstraints.EAST;
+	gridbag2.setConstraints(infoLineHolder2, c2);
+	infoLinePanel.add(infoLineHolder2);
+
+	addInfoLine(COORDINATE_INFO_LINE, infoLineHolder);
+	addInfoLine(MAP_OBJECT_INFO_LINE, infoLineHolder2);
+
+	add(infoLinePanel);
+	infoLinePanel.setVisible(showInfoLine);
 
 	c.weightx=0;
 	c.anchor=GridBagConstraints.EAST;
-	c.gridwidth=GridBagConstraints.REMAINDER;
-
  	statusBar = new StatusLightPanel();
 	gridbag.setConstraints(statusBar, c);
 	add(statusBar);
@@ -185,12 +212,15 @@ public class InformationDelegator extends OMComponentPanel
 
   	if (evt.getPropertyName() == MouseDelegator.ActiveModeProperty) {
 	    MapMouseMode mmm = (MapMouseMode)evt.getNewValue();
-	    setLabel(fudgeString);
+	    setAllLabels(fudgeString);
   	    setResetCursor(mmm.getModeCursor());
   	} else if (evt.getPropertyName() == MapBean.CursorProperty) {
 	    fallbackMapBeanCursor = ((Cursor)evt.getNewValue());
 	} else if (evt.getPropertyName() == MapBean.LayersProperty) {
 	    resetForLayers((Layer[])evt.getNewValue(), (Layer[])evt.getOldValue());
+	    setAllLabels(fudgeString);
+	} else if (evt.getPropertyName() == MapBean.ProjectionProperty) {
+	    setAllLabels(fudgeString);
 	}
     }
 
@@ -237,12 +267,54 @@ public class InformationDelegator extends OMComponentPanel
 	}
     }
 
+    public void addInfoLine(int refIndex, JLabel iLine) {
+	try {
+	    infoLineOrganizer.set(refIndex, iLine);
+	} catch (IndexOutOfBoundsException ioobe) {
+	    while (refIndex > 0 && infoLineOrganizer.size() <= refIndex + 1) {
+		infoLineOrganizer.add(iLine);
+	    }
+	}
+    }
+
+    public void removeInfoLine(int refIndex) {
+	try {
+	    infoLineOrganizer.set(refIndex, null);
+	} catch (IndexOutOfBoundsException iiobe) {}
+    }
+
     /**
      * Set the information line label.
      * @param str String
      */
     public void setLabel(String str) {
-	infoLineHolder.setText(str);
+	setLabel(str, MAP_OBJECT_INFO_LINE);
+    }
+
+    public void setAllLabels(String str) {
+	for (int i = 0; i < infoLineOrganizer.size(); i++) {
+	    setLabel(str, i);
+	}
+    }
+
+    /**
+     * Set the information line label.
+     * @param str String
+     * @param int the designator used to specify which information
+     * line to use to display the string.
+     */
+    public void setLabel(String str, int infoLineDesignator) {
+	JLabel iLine;
+	try {
+	    iLine = (JLabel)infoLineOrganizer.get(infoLineDesignator);
+	} catch (IndexOutOfBoundsException ioobe) {
+	    // This should be OK.
+	    iLine = (JLabel)infoLineOrganizer.get(MAP_OBJECT_INFO_LINE);
+	}
+
+	if (iLine != null) {
+	    iLine.setText(str);
+	}
 
 	// HACK This wasn't necessary in JDK1.1.5 and Swing1.0.1, but is now.
 	// Without the following two lines, the infoline doesn't show up at all
@@ -304,11 +376,18 @@ public class InformationDelegator extends OMComponentPanel
     }
     
     /**
-     * Display a line of text in the info line.
+     * Display a line of text in a info line.
      */
     public void displayInfoLine(String infoLine) {
+	displayInfoLine(infoLine, MAP_OBJECT_INFO_LINE);
+    }
+
+    /**
+     * Display a line of text in a designated info line.
+     */
+    public void displayInfoLine(String infoLine, int labelDesignator) {
 	if (infoLineHolder != null) {
-	    setLabel((infoLine != null && infoLine.length() > 0)?infoLine:fudgeString);
+	    setLabel((infoLine != null && infoLine.length() > 0)?infoLine:fudgeString, labelDesignator);
 	}
     }
 
@@ -353,7 +432,7 @@ public class InformationDelegator extends OMComponentPanel
      * @param event InfoDisplayEvent
      */
     public void requestInfoLine(InfoDisplayEvent event) {
-	displayInfoLine(event.getInformation());
+	displayInfoLine(event.getInformation(), event.getPreferredLocation());
     }
 
     /**

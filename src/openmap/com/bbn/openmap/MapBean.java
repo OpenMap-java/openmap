@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/10 21:57:22 $
+// $Revision: 1.4 $
+// $Date: 2003/08/28 21:57:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -360,8 +360,11 @@ public class MapBean extends JComponent
      * need to know about a projection change.
      */
     protected void fireProjectionChanged() {
-	projectionSupport.fireProjectionChanged(getProjection());
+	// Fire the property change, so the messages get cleared out.
+	// Then, if any of the layers have a problem with their new
+	// projection, their messages will be displayed.
 	firePropertyChange(ProjectionProperty, null, getProjection());
+	projectionSupport.fireProjectionChanged(getProjection());
 	purgeAndNotifyRemovedLayers();
     }
 
@@ -813,6 +816,9 @@ public class MapBean extends JComponent
      * not have all it's objects painted.
      */
     public void paintChildren(Graphics g, Rectangle clip) {
+
+// 	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+// 					 RenderingHints.VALUE_ANTIALIAS_ON);
 
 	if (clip != null) {
 	    g.setClip(clip);

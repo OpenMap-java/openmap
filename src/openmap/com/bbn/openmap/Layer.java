@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/08/21 20:26:15 $
+// $Revision: 1.7 $
+// $Date: 2003/08/28 21:57:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,7 +35,6 @@ import javax.swing.event.*;
 
 import com.bbn.openmap.ProjectionPainter;
 import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
@@ -235,24 +234,22 @@ public abstract class Layer extends JComponent
     }
 
     /**
-     * Sets the properties for the <code>Layer</code>.  This allows
-     * <code>Layer</code>s to get a richer set of parameters than the
-     * <code>setArgs</code> method.  This particular method assumes
-     * that the marker name is not needed, because all of the contents
-     * of this Properties object are to be used for this layer, and
-     * scoping the properties with a prefix is unnecessary.
+     * Sets the properties for the <code>Layer</code>.  This
+     * particular method assumes that the marker name is not needed,
+     * because all of the contents of this Properties object are to be
+     * used for this layer, and scoping the properties with a prefix
+     * is unnecessary.
      * @param props the <code>Properties</code> object.
-     * @see #setArgs 
      */
-    public void setProperties(java.util.Properties props) {
+    public void setProperties(Properties props) {
 	setProperties(getPropertyPrefix(), props);
     }
 
     /**
-     * Sets the properties for the <code>Layer</code>.  This allows
-     * <code>Layer</code>s to get a richer set of parameters than the
-     * <code>setArgs</code> method. Part of the PropertyConsumer interface.
-     * Layers which override this method should do something like:
+     * Sets the properties for the <code>Layer</code>.  Part of the
+     * PropertyConsumer interface.  Layers which override this method
+     * should do something like:
+     *
      * <code><pre>
      * public void setProperties (String prefix, Properties props) {
      *     super.setProperties(prefix, props);
@@ -265,9 +262,8 @@ public abstract class Layer extends JComponent
      *
      * @param prefix the token to prefix the property names
      * @param props the <code>Properties</code> object
-     * @see #setArgs
      */
-    public void setProperties(String prefix, java.util.Properties props) {
+    public void setProperties(String prefix, Properties props) {
 	String prettyName = PrettyNameProperty;
 	setPropertyPrefix(prefix);
 
@@ -282,11 +278,11 @@ public abstract class Layer extends JComponent
 
 	setName(props.getProperty(prettyName, defaultName));
 
-	setAddToBeanContext(LayerUtils.booleanFromProperties(props, realPrefix + AddToBeanContextProperty, addToBeanContext));
+	setAddToBeanContext(PropUtils.booleanFromProperties(props, realPrefix + AddToBeanContextProperty, addToBeanContext));
 
-	setAddAsBackground(LayerUtils.booleanFromProperties(props, realPrefix + AddAsBackgroundProperty, addAsBackground));
+	setAddAsBackground(PropUtils.booleanFromProperties(props, realPrefix + AddAsBackgroundProperty, addAsBackground));
 
-	autoPalette = LayerUtils.booleanFromProperties(props, realPrefix + AutoPaletteProperty, autoPalette);
+	autoPalette = PropUtils.booleanFromProperties(props, realPrefix + AutoPaletteProperty, autoPalette);
     }
 
     /**
@@ -318,7 +314,7 @@ public abstract class Layer extends JComponent
 	}
 
 	props.put(prefix + AutoPaletteProperty, new Boolean(autoPalette).toString());
-// 	props.put(prefix + AddAsBackgroundProperty, new Boolean(addAsBackground).toString());
+ 	props.put(prefix + AddAsBackgroundProperty, new Boolean(addAsBackground).toString());
 	props.put(prefix + AddToBeanContextProperty, new Boolean(addToBeanContext).toString());
 
 	return props;
@@ -354,8 +350,8 @@ public abstract class Layer extends JComponent
 	list.put(AutoPaletteProperty, "Flag to automatically display palette when properties are set");
 	list.put(AutoPaletteProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-// 	list.put(AddAsBackgroundProperty, "Flag to use the layer as a background layer.");
-// 	list.put(AddAsBackgroundProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+	list.put(AddAsBackgroundProperty, "Flag to use the layer as a background layer.");
+	list.put(AddAsBackgroundProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
 	list.put(AddToBeanContextProperty, "Flag to give the layer access to all of the other application components.");
 	list.put(AddToBeanContextProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
