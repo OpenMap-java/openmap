@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXY.java,v $
 // $RCSfile: LLXY.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:56:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import com.bbn.openmap.util.Debug;
  * Implements the LLXY projection, which is basically something where
  * the lat/lon and pixel ratios are the same.
  */
-public class LLXY extends Cylindrical {
+public class LLXY extends Cylindrical implements EqualArc {
 
     /**
      * The LLXY name.
@@ -245,4 +245,23 @@ public class LLXY extends Cylindrical {
     public String getName() {
 	return LLXYName;
     }
+
+    /**
+     * Returns the x pixel constant of the projection. This was
+     * calcuated when the projection was created.  Represents the
+     * number of pixels around the earth (360 degrees).
+     */
+    public double getXPixConstant() {
+	return (double)ppd * 360;
+    }
+
+    /**
+     * Returns the y pixel constant of the projection. This was
+     * calcuated when the projection was created.  Represents the
+     * number of pixels from 0 to 90 degrees.
+     */
+    public double getYPixConstant() {
+	return (double)ppd * 90;
+    }
+
 }

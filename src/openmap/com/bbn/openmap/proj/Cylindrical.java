@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Cylindrical.java,v $
 // $RCSfile: Cylindrical.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/30 20:11:13 $
+// $Revision: 1.3 $
+// $Date: 2003/11/14 20:56:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -358,14 +358,6 @@ public abstract class Cylindrical extends Proj {
 	Debug.output("");
     }
 
-
-    /**
-     * Draw the background for the projection.
-     * @param g Graphics
-     */
-    public void drawBackground(Graphics g) {
-	drawBackground((Graphics2D)g, backgroundColor);
-    }
 
     /**
      * Draw the background for the projection.

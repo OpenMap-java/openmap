@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionStack.java,v $
 // $RCSfile: ProjectionStack.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:56:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -124,12 +124,9 @@ public class ProjectionStack extends OMComponent
 		Debug.output("ProjectionStack.actionPerformed() changing mapbean projection to : " + currentProjection);
 	    }
 
-	    // Background color changes didn't translate to previous
-	    // projections, this fixes that - thanks to George Uecker
-	    // for the fix.
-	    Projection currProj = currentProjection.create(mapBean.getWidth(),
-							   mapBean.getHeight());
-	    ((Proj)currProj).setBackgroundColor(mapBean.getBackgroundColor());
+	    Projection currProj = 
+		currentProjection.create(mapBean.getWidth(),
+					 mapBean.getHeight());
 	    mapBean.setProjection(currProj);
 	    fireStackStatus();
 	}

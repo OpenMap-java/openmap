@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/CADRG.java,v $
 // $RCSfile: CADRG.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:56:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,7 +33,7 @@ import com.bbn.openmap.util.Debug;
  * This is really an Equal Arc Projection with pixel spacings as dictated by
  * the RPF specification.
  */
-public class CADRG extends Cylindrical {
+public class CADRG extends Cylindrical implements EqualArc {
 
     /**
      * The CADRG name.
@@ -75,7 +75,7 @@ public class CADRG extends Cylindrical {
      * @param h height of screen
      *
      */
-    public CADRG (LatLonPoint center, float scale, int width, int height) {
+    public CADRG(LatLonPoint center, float scale, int width, int height) {
 	super(center, scale, width, height, CADRGType);
 	minscale = (float)1000000/(float)CADRG_SCALE_LIMIT;
     }
@@ -113,7 +113,7 @@ public class CADRG extends Cylindrical {
      * @see Projection#getProjectionID
      *
      */
-    public String toString () {
+    public String toString() {
 	return "CADRG[ spps_x=" + spps_x + " spps_y=" + spps_y +
 	    " x_pix=" + x_pix_constant + " y_pix=" + y_pix_constant +
 	    /*" ox=" + ox +*/ " oy=" + oy + " ul(" +
@@ -127,14 +127,14 @@ public class CADRG extends Cylindrical {
      *
      * @return the zone of the projection.
      * */
-    public int getZone(){
+    public int getZone() {
 	return zone;
     }
 
     /**
      * Given a letter for a zone, return the CADRG zone equivalent,
      */
-    public static int getProjZone(char asciiZone){
+    public static int getProjZone(char asciiZone) {
 	int z = (int) asciiZone;
 	
 	if (z == 74) z--; // Fix J to a zone.
@@ -186,10 +186,10 @@ public class CADRG extends Cylindrical {
 	/** Pixels per degree */
 	double ppd = y_pix_constant/90;
 	
-	if (upper_zone_extents == null){
+	if (upper_zone_extents == null) {
 	    upper_zone_extents = new float[CADRG_get_zone_old_extents.length];
 	}
-	if (lower_zone_extents == null){
+	if (lower_zone_extents == null) {
 	    lower_zone_extents = new float[CADRG_get_zone_old_extents.length + 1];
 	}
 
@@ -241,7 +241,7 @@ public class CADRG extends Cylindrical {
      * calcuated when the projection was created.  Represents the
      * number of pixels around the earth (360 degrees).
      */
-    public double getXPixConstant(){
+    public double getXPixConstant() {
 	return x_pix_constant;
     }
 
@@ -250,7 +250,7 @@ public class CADRG extends Cylindrical {
      * calcuated when the projection was created.  Represents the
      * number of pixels from 0 to 90 degrees.
      */
-    public double getYPixConstant(){
+    public double getYPixConstant() {
 	return y_pix_constant;
     }
 
@@ -259,7 +259,7 @@ public class CADRG extends Cylindrical {
      * current scale. This only makes sense if the projection is at
      * the same scale as the chart data you are interested in.
      */
-    public float getUpperZoneExtent(int zone){
+    public float getUpperZoneExtent(int zone) {
 	if (zone < 1) zone = 1;
 	if (zone > 8) zone = 9;
 	return upper_zone_extents[zone-1];
@@ -270,7 +270,7 @@ public class CADRG extends Cylindrical {
      * current scale. This only makes sense if the projection is at
      * the same scale as the chart data you are interested in. 
      */
-    public float getLowerZoneExtent(int zone){
+    public float getLowerZoneExtent(int zone) {
 	if (zone < 1) zone = 1;
 	if (zone > 8) zone = 9;
 	return lower_zone_extents[zone-1];
@@ -285,7 +285,7 @@ public class CADRG extends Cylindrical {
      * @return number of frame columes in the current zone, to go
      * around the world.  
      */
-    public int numHorizontalFrames(){
+    public int numHorizontalFrames() {
 	return (int) Math.ceil(x_pix_constant/(1536.0));
     }
 
@@ -297,7 +297,7 @@ public class CADRG extends Cylindrical {
      *
      * @return number of frame rows in the current zone.
      */
-    public int numVerticalFrames(){
+    public int numVerticalFrames() {
 	return (int) Math.round((upper_zone_extents[zone-1] - 
 				 lower_zone_extents[zone-1]) *
 				(y_pix_constant/90.0)/(1536.0));
@@ -565,7 +565,7 @@ public class CADRG extends Cylindrical {
 	}
 	// What zone are we in?
 	zone = getZone(ProjMath.radToDeg(ctrLat), y_pix_constant);
-	if (Debug.debugging("proj")){
+	if (Debug.debugging("proj")) {
 	    Debug.output("Zone = " + zone);
 	}
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Proj.java,v $
 // $RCSfile: Proj.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/07/30 20:11:13 $
+// $Revision: 1.5 $
+// $Date: 2003/11/14 20:56:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -138,8 +138,6 @@ public abstract class Proj implements Projection, Cloneable {
     protected int type = Mercator.MercatorType;	// Mercator is default
     protected String projID = null;		// identifies this projection
     protected Mercator mercator = null;		// for rhumbline calculations (if needed)
-    public final static Color defaultBackgroundColor = new Color(191,239,255);
-    protected Color backgroundColor = defaultBackgroundColor;
 
     /**
      * Construct a projection.
@@ -150,11 +148,11 @@ public abstract class Proj implements Projection, Cloneable {
      * @param type projection type
      * @see ProjectionFactory
      */
-    public Proj(LatLonPoint center, float s, int w, int h, int type)
-    {
+    public Proj(LatLonPoint center, float s, int w, int h, int type) {
 	if (Debug.debugging("proj")) {
 	    Debug.output("Proj()");
 	}
+
 	this.type = type;
 	setParms(center, s, w, h);
 	projID = null;
@@ -162,11 +160,6 @@ public abstract class Proj implements Projection, Cloneable {
 	// for rhumbline projecting
 	if (!(this instanceof Mercator)) {
 	    mercator = new Mercator(center, scale, width, height);
-	}
-
-	Color bc = Environment.getCustomBackgroundColor();
-	if (bc != null) {
-	    backgroundColor = bc;
 	}
     }
 
@@ -1293,38 +1286,12 @@ public abstract class Proj implements Projection, Cloneable {
 	pan(-90f);
     }
 
-
-    /**
-     * Draw the background for the projection.
-     * @param g Graphics
-     *
-     */
-    abstract public void drawBackground(Graphics g);
-
-
     /**
      * Draw the background for the projection.
      * @param g Graphics2D
      * @param p Paint to use for the background
      */
     abstract public void drawBackground(Graphics2D g, Paint p);
-
-    /**
-     * Get the background color.
-     * @return Color
-     */
-    public Color getBackgroundColor() {
-	return backgroundColor;
-    }
-
-
-    /**
-     * Set the background color.
-     * @param color Color
-     */
-    public void setBackgroundColor(Color color) {
-	backgroundColor = color;
-    }
 
     /**
      * Get the name string of the projection.

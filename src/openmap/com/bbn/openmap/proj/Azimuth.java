@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Azimuth.java,v $
 // $RCSfile: Azimuth.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:56:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1065,14 +1065,6 @@ public abstract class Azimuth extends Proj {
 //	Debug.output("");
 //    }
 
-
-    /**
-     * Draw the background for the projection.
-     * @param g Graphics
-     */
-    public void drawBackground(Graphics g) {
-	drawBackground((Graphics2D)g, backgroundColor);
-    }
 
     /**
      * Draw the background for the projection.

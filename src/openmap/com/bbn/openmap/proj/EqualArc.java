@@ -1,0 +1,46 @@
+// **********************************************************************
+// 
+// <copyright>
+// 
+//  BBN Technologies, a Verizon Company
+//  10 Moulton Street
+//  Cambridge, MA 02138
+//  (617) 873-8000
+// 
+//  Copyright (C) BBNT Solutions LLC. All rights reserved.
+// 
+// </copyright>
+// **********************************************************************
+// 
+// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/EqualArc.java,v $
+// $RCSfile: EqualArc.java,v $
+// $Revision: 1.1 $
+// $Date: 2003/11/14 20:56:43 $
+// $Author: dietrick $
+// 
+// **********************************************************************
+
+
+package com.bbn.openmap.proj;
+
+/**
+ * A designator interface to let layers know that a Projection is an
+ * Equal Arc projection, meaning that the variations in latitide and
+ * longitude are constant.
+ */
+public interface EqualArc extends Projection {
+
+    /**
+     * Returns the x pixel constant of the projection. This was
+     * calcuated when the projection was created.  Represents the
+     * number of pixels around the earth (360 degrees).
+     */
+    public double getXPixConstant();
+
+    /**
+     * Returns the y pixel constant of the projection. This was
+     * calcuated when the projection was created.  Represents the
+     * number of pixels from 0 to 90 degrees.
+     */
+    public double getYPixConstant();
+}

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/OrthographicView.java,v $
 // $RCSfile: OrthographicView.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:56:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -262,14 +262,6 @@ public class OrthographicView extends Orthographic {
      */
     public LatLonPoint inverse(Point pt, LatLonPoint llp) {
 	return inverse(pt.x, pt.y, llp);
-    }
-
-    /**
-     * Draw the background for the projection.
-     * @param g Graphics
-     */
-    public void drawBackground(Graphics g) {
-	drawBackground((Graphics2D)g, backgroundColor);
     }
 
     /**
