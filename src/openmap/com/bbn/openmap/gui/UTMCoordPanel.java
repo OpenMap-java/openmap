@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/UTMCoordPanel.java,v $
 // $RCSfile: UTMCoordPanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/05/10 20:43:03 $
+// $Revision: 1.5 $
+// $Date: 2004/09/22 14:56:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ public class UTMCoordPanel extends CoordPanel implements Serializable {
 	GridBagConstraints c = new GridBagConstraints();
 
 	setLayout(gridbag);
-        locText = i18n.get(UTMCoordPanel.class,"border","Zone Number|Zone Letter|Easting|Northing");
+        locText = i18n.get(UTMCoordPanel.class,"border","Zone Number|Hemisphere|Easting|Northing");
 	setBorder(new TitledBorder(new EtchedBorder(), locText));
 
         locText = i18n.get(UTMCoordPanel.class,"utmLabel","UTM: ");
@@ -80,11 +80,13 @@ public class UTMCoordPanel extends CoordPanel implements Serializable {
 
 	c.gridx = GridBagConstraints.RELATIVE;
 	zoneNumber = new JTextField(3);
+        zoneNumber.setToolTipText(i18n.get(UTMCoordPanel.class, "zone", I18n.TOOLTIP, "Zone Number: 0-60"));
 	gridbag.setConstraints(zoneNumber, c);
 	add(zoneNumber);
 
 	zoneLetter = new JTextField(2);
-	gridbag.setConstraints(zoneLetter, c);
+        zoneLetter.setToolTipText(i18n.get(UTMCoordPanel.class, "hemi", I18n.TOOLTIP, "Hemisphere: N or S"));	
+        gridbag.setConstraints(zoneLetter, c);
 	add(zoneLetter);
 
 	easting = new JTextField(8);
@@ -121,7 +123,7 @@ public class UTMCoordPanel extends CoordPanel implements Serializable {
 	    return utm.toLatLonPoint();
 
 	} catch (NumberFormatException except) {
-//  	    System.out.println(except.toString());
+  	    Debug.output(except.toString());
 	    clearTextBoxes();
 	}
 	return null;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimeSliderSupport.java,v $
 // $RCSfile: TimeSliderSupport.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/09/17 18:12:36 $
+// $Revision: 1.6 $
+// $Date: 2004/09/22 14:56:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,6 +66,9 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
                 timeSlider.setValue(maximum);
             } else {
                 double diff = endTime - startTime;
+                if (diff == 0) {
+                    diff = 1;
+                }
                 double val = minimum;
                 if (diff != 0) {
                     val = ((double)(time - startTime)/diff) * (maximum - minimum);
@@ -104,7 +107,10 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
         try {
             return (startTime + (long)((endTime - startTime) * value/(maximum - minimum)));
         } catch (ArithmeticException ae) {
-            Debug.error(ae.getMessage());
+            Debug.error("TimeSliderSupport.getTime(): " + ae.getMessage());
+            if (Debug.debugging("timedetail")) {
+                ae.printStackTrace();
+            }
             return startTime;
         }
     }
