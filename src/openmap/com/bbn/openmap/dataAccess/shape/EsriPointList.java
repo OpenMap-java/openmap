@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPointList.java,v $
 // $RCSfile: EsriPointList.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/16 01:37:42 $
+// $Revision: 1.3 $
+// $Date: 2003/10/01 12:39:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -108,6 +108,7 @@ public class EsriPointList extends EsriGraphicList {
 
     public EsriGraphic shallowCopy() {
 	EsriPointList ret = new EsriPointList(size());
+	ret.setAppObject(getAppObject());
 	for (Iterator iter = iterator(); iter.hasNext(); ) {
 	    EsriGraphic g = (EsriGraphic)iter.next();
 	    ret.add((OMGraphic)g.shallowCopy());

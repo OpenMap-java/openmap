@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygon.java,v $
 // $RCSfile: EsriPolygon.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/16 01:37:42 $
+// $Revision: 1.3 $
+// $Date: 2003/10/01 12:39:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -96,7 +96,7 @@ public class EsriPolygon extends OMPoly implements Cloneable, EsriGraphic {
 	    DrawingAttributes attributes = new DrawingAttributes();
 	    attributes.setFrom(ompoly);
 	    attributes.setTo(ePoly);
-
+	    ePoly.setAppObject(ompoly.getAppObject());
 	    return ePoly;
 	} else {
 	    return null;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygonList.java,v $
 // $RCSfile: EsriPolygonList.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/16 01:37:42 $
+// $Revision: 1.3 $
+// $Date: 2003/10/01 12:39:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -135,6 +135,7 @@ public class EsriPolygonList extends EsriGraphicList {
 
         //using the OMRect data create an OMPoly
         OMPoly poly = new OMPoly(rectPoints, omRect.DECIMAL_DEGREES, omRect.getLineType());
+	poly.setAppObject(omRect.getAppObject());
 	DrawingAttributes da = new DrawingAttributes();
 	da.setFrom(omRect);
 	da.setTo(poly);
@@ -177,6 +178,7 @@ public class EsriPolygonList extends EsriGraphicList {
 
         //using the circle data create an OMPoly
 	OMPoly poly = new OMPoly(circlePoints, omCircle.DECIMAL_DEGREES, omCircle.getLineType());
+	poly.setAppObject(omCircle.getAppObject());
 	DrawingAttributes da = new DrawingAttributes();
 	da.setFrom(omCircle);
 	da.setTo(poly);
@@ -187,11 +189,12 @@ public class EsriPolygonList extends EsriGraphicList {
     //converts range rings to circles which are passed to the
     //convertCircles() method to be converted to OMPolys
     public static OMGraphicList convert(OMRangeRings omRR, 
-					 Projection proj) {
+					Projection proj) {
         //get the array of circles
         OMCircle[] circles = omRR.createCircles();
 	OMCircle circ;
 	OMGraphicList circleList = new OMGraphicList();
+	circleList.setAppObject(omRR.getAppObject());
 
         //get the line color and fill color that are to be passed with
         //the dbf info
@@ -245,6 +248,7 @@ public class EsriPolygonList extends EsriGraphicList {
 	    EsriGraphic g = (EsriGraphic)iter.next();
 	    ret.add((OMGraphic)g.shallowCopy());
 	}
+	ret.setAppObject(getAppObject());
 	return ret;
     }
 }

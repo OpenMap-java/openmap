@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolyline.java,v $
 // $RCSfile: EsriPolyline.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/16 01:37:42 $
+// $Revision: 1.3 $
+// $Date: 2003/10/01 12:39:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -92,6 +92,7 @@ public class EsriPolyline extends OMPoly implements EsriGraphic, Cloneable {
 	    System.arraycopy(rawLL, 0, degreePoints, 0, rawLL.length);
 
 	    EsriPolyline ePoly = new EsriPolyline(degreePoints, OMGraphic.RADIANS, ompoly.getLineType());
+	    ePoly.setAppObject(ompoly.getAppObject());
 	    DrawingAttributes attributes = new DrawingAttributes();
 	    attributes.setFrom(ompoly);
 	    attributes.setTo(ePoly);

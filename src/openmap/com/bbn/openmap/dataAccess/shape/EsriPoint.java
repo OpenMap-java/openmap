@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPoint.java,v $
 // $RCSfile: EsriPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/16 01:37:42 $
+// $Revision: 1.3 $
+// $Date: 2003/10/01 12:39:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,6 +64,7 @@ public class EsriPoint extends OMPoint
 	if (ompoint.getRenderType() == RENDERTYPE_LATLON) {
 	    EsriPoint ePoint = new EsriPoint(ompoint.getLat(), 
 					     ompoint.getLon());
+	    ePoint.setAppObject(ompoint.getAppObject());
 	    DrawingAttributes attributes = new DrawingAttributes();
 	    attributes.setFrom(ompoint);
 	    attributes.setTo(ePoint);

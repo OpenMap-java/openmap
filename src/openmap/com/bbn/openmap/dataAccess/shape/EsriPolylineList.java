@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolylineList.java,v $
 // $RCSfile: EsriPolylineList.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/16 01:37:42 $
+// $Revision: 1.3 $
+// $Date: 2003/10/01 12:39:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -114,6 +114,7 @@ public class EsriPolylineList extends EsriGraphicList {
 	    OMPoly poly = new OMPoly(omLine.getLL(), 
 				     omLine.DECIMAL_DEGREES, 
 				     omLine.getLineType());
+	    poly.setAppObject(omLine.getAppObject());
 	    DrawingAttributes da = new DrawingAttributes();
 	    da.setFrom(omLine);
 	    da.setTo(poly);
@@ -123,6 +124,7 @@ public class EsriPolylineList extends EsriGraphicList {
 
     public EsriGraphic shallowCopy() {
 	EsriPolylineList ret = new EsriPolylineList(size());
+	ret.setAppObject(getAppObject());
 	for (Iterator iter = iterator(); iter.hasNext(); ) {
 	    EsriGraphic g = (EsriGraphic)iter.next();
 	    ret.add((OMGraphic)g.shallowCopy());
