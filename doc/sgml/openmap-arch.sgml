@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
 $RCSfile: openmap-arch.sgml,v $
-$Revision: 1.1 $
-$Date: 1998/12/02 20:51:37 $
+$Revision: 1.2 $
+$Date: 1998/12/17 16:25:00 $
 $Author: aculline $
 
 OpenMap architecture document
@@ -101,7 +101,9 @@ The OMGraphics help you to turn your vector or raster data into
 graphics rendered on the map.  You can create OMGraphics out of XY or
 LatLon points, or raster images.  For LatLon vector graphics, the
 OMGraphics manage the projecting of the vertices.  Furthermore the
-OMGraphics manage rendering and user gesturing.
+OMGraphics manage rendering and user gesturing.  See the
+<htmlurl url="api/com.bbn.openmap.omGraphics.OMGraphic.html"
+name="OMGraphic"> class.
 
 
 <sect1>Projections
