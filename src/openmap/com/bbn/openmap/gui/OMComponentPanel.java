@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMComponentPanel.java,v $
 // $RCSfile: OMComponentPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/19 20:36:50 $
+// $Revision: 1.3 $
+// $Date: 2003/04/05 05:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,6 +51,16 @@ public abstract class OMComponentPanel extends JPanel
 
     protected OMComponentPanel() {
 	super();
+    }
+
+    protected WindowSupport windowSupport;
+
+    public void setWindowSupport(WindowSupport ws) {
+	windowSupport = ws;
+    }
+
+    public WindowSupport getWindowSupport() {
+	return windowSupport;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -158,13 +168,9 @@ public abstract class OMComponentPanel extends JPanel
     ////   the MapHandler to find any SelectionProviders.
     ///////////////////////////////////////////////////////////////////////////
 
-    public void findAndInit(Object obj) {
+    public void findAndInit(Object obj) {}
 
-    }
-
-    public void findAndUndo(Object obj) {
-
-    }
+    public void findAndUndo(Object obj) {}
 
     /**
      * BeanContextChildSupport object provides helper functions for

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ProgressListenerGauge.java,v $
 // $RCSfile: ProgressListenerGauge.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/05 05:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,6 +36,9 @@ public class ProgressListenerGauge extends JPanel
     protected JLabel message;
     protected JProgressBar jpb;
 
+    protected boolean createWindowsForDisplay = false;
+    protected String title;
+
     /**
      * The frame used when the ProgressPanel is used in an application.  
      */
@@ -52,28 +55,63 @@ public class ProgressListenerGauge extends JPanel
     public ProgressListenerGauge(String windowTitle) {
 	init();
 
-	// Try to group the applet-specific stuff in here...
-	if (Environment.getBoolean(Environment.UseInternalFrames)) {
-	    
-	    progressWindow = new JInternalFrame(
-		windowTitle,
-		/*resizable*/ true,
-		/*closable*/ true,
-		/*maximizable*/ false,
-		/*iconifiable*/ true);
-	    progressWindow.setContentPane(this);
-	    progressWindow.pack();
-	    progressWindow.setOpaque(true);
-	    try {
-		progressWindow.setClosed(true);//don't show until it's needed
-	    } catch (java.beans.PropertyVetoException e) {}
-	    setPosition(progressWindow);
-	} else { // Working as an application...
-	    progressWindowFrame = new JFrame(windowTitle);
-	    progressWindowFrame.setContentPane(this);
-	    progressWindowFrame.pack();
-	    progressWindowFrame.setVisible(false);//don't show until it's needed
-	    setPosition(progressWindowFrame);
+	createWindowsForDisplay = true;
+	title = windowTitle;
+    }
+
+    protected void manageWindow(boolean visible) {
+	if (visible) {
+	    if (progressWindow == null && progressWindowFrame == null) {
+		// create one or the other, try to group the
+		// applet-specific stuff in here...
+		if (Environment.getBoolean(Environment.UseInternalFrames)) {
+		    progressWindow = new JInternalFrame(
+			title,
+			/*resizable*/ true,
+			/*closable*/ true,
+			/*maximizable*/ false,
+			/*iconifiable*/ true);
+		    progressWindow.setContentPane(this);
+		    progressWindow.pack();
+		    progressWindow.setOpaque(true);
+		    progressWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		    setPosition(progressWindow);
+
+		    JLayeredPane desktop = 
+			Environment.getInternalFrameDesktop();
+		
+		    if (desktop != null) {
+			desktop.remove(progressWindow);
+			desktop.add(progressWindow, 
+				    JLayeredPane.POPUP_LAYER);
+			progressWindow.show();
+		    }
+
+		} else { // Working as an application...
+		    progressWindowFrame = new JFrame(title);
+		    progressWindowFrame.setContentPane(this);
+		    progressWindowFrame.pack();
+		    setPosition(progressWindowFrame);
+		    progressWindowFrame.setState(Frame.NORMAL);
+		    progressWindowFrame.show();
+		    progressWindowFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		}
+	    }
+
+	    if (progressWindow != null) {
+		progressWindow.toFront();
+	    } else if (progressWindowFrame != null) {
+		progressWindowFrame.toFront();
+	    }
+
+	} else {
+	    if (progressWindow != null) {
+		progressWindow.dispose();
+		progressWindow = null;
+	    } else if (progressWindowFrame != null) {
+		progressWindowFrame.dispose();
+		progressWindowFrame = null;
+	    }
 	}
     }
 
@@ -99,27 +137,8 @@ public class ProgressListenerGauge extends JPanel
     }
 
     public void setVisible(boolean set) {
-
-	if (progressWindow != null) {
-	    if (progressWindow.isClosed()) {
-		try {
-		    progressWindow.setClosed(!set);
-		} catch (java.beans.PropertyVetoException e) {}
-
-		// hmmm is this the best way to do this?
-		JLayeredPane desktop = 
-		    Environment.getInternalFrameDesktop();
-		
-		if (desktop != null) {
-		    desktop.remove(progressWindow);
-		    desktop.add(progressWindow, 
-				JLayeredPane.POPUP_LAYER);
-		    progressWindow.setVisible(set);
-		}
-	    }
-	} else if (progressWindowFrame != null) {
-	    progressWindowFrame.setVisible(set);
-	    progressWindowFrame.setState(Frame.NORMAL);
+	if (createWindowsForDisplay) {
+	    manageWindow(set);
 	} else {
 	    super.setVisible(set);
 	}
@@ -133,7 +152,6 @@ public class ProgressListenerGauge extends JPanel
 	    type == ProgressEvent.UPDATE) {
 
 	    setVisible(true);
-	    toFront();
 	    message.setText(evt.getTaskDescription());
 	    jpb.setValue(evt.getPercentComplete());
 	} else {

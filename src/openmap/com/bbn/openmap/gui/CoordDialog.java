@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/CoordDialog.java,v $
 // $RCSfile: CoordDialog.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/28 00:36:20 $
+// $Revision: 1.3 $
+// $Date: 2003/04/05 05:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -108,9 +108,6 @@ public class CoordDialog extends JDialog
 	bigPanel.add(buttonPanel);
 	contentPane.add(bigPanel);
 	pack();
-// 	setSize(200, 150);
-//   	setSize(300, 210);
-
     }
 
     /**
@@ -171,38 +168,7 @@ public class CoordDialog extends JDialog
 	centerDelegate.removeCenterListener(listener);
     }
 
-//     /**
-//      * Add a CenterListener to the listener list.
-//      *
-//      * @param listener  The CenterListener to be added
-//      */
-//     public synchronized void addCenterListener(CenterListener listener) {
-// 	coordPanel.addCenterListener(listener);
-// 	dmsPanel.addCenterListener(listener);
-//     }
-
-//     /**
-//      * Remove a CenterListener from the listener list.
-//      *
-//      * @param listener  The CenterListener to be removed
-//      */
-//     public synchronized void removeCenterListener(CenterListener listener) {
-// 	coordPanel.removeCenterListener(listener);
-// 	dmsPanel.removeCenterListener(listener);
-//     }
-
     public void center(CenterEvent centerEvent) {
 	setLatLon(new LatLonPoint(centerEvent.getLatitude(), centerEvent.getLongitude()));
     }
-
-    /*
-    public static void main(String[] args) {
-	JFrame frame = new JFrame("CoordDialog");
-	frame.setSize(240,90);
-	CoordDialog cb = new CoordDialog();
-	cb.setVisible(true);
-	frame.setVisible(true);
-	
-    }
-    */
 }

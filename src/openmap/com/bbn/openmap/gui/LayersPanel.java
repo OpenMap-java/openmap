@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/20 06:59:05 $
+// $Revision: 1.4 $
+// $Date: 2003/04/05 05:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,6 +35,7 @@ import java.util.LinkedList;
 import java.util.Properties;
 
 import javax.swing.*;
+import javax.swing.event.InternalFrameEvent;
 import javax.accessibility.*;
 
 import com.bbn.openmap.*;
@@ -174,10 +175,14 @@ public class LayersPanel extends OMToolComponent
     /** The ActionListener that will bring up the LayersPanel. */
     protected ActionListener actionListener;
     /**
-     * The frame used when the LayersPanel is used in an application.  
+     * The frame used when the LayersPanel is used in an application
+     * and the actionListener is called.
      */
     protected transient JFrame layersWindowFrame;
-    /** The frame used when the LayersPanel is used in an applet. */
+    /**
+     * The frame used when the LayersPanel is used in an applet and
+     * the actionListener is called.
+     */
     protected transient JInternalFrame layersWindow;
     /** The set of buttons that control the layers. */
     protected LayerControlButtonPanel controls = null;
@@ -218,6 +223,7 @@ public class LayersPanel extends OMToolComponent
 	super();
 	setKey(defaultKey);
 	setLayout(new BorderLayout());
+	setWindowSupport(new WindowSupport(this, "Layers"));
     }
 
     /**
@@ -327,63 +333,29 @@ public class LayersPanel extends OMToolComponent
      * @return ActionListener
      */
     public ActionListener getActionListener() {
+	return new ActionListener() {
+		public void actionPerformed(ActionEvent evt) {
+		    WindowSupport ws = getWindowSupport();
+		    int w = 328;
+		    int h = 300;
+	    
+		    Dimension dim = ws.getComponentSize();
+		    if (dim != null) {
+			w = (int)dim.getWidth();
+			h = (int)dim.getHeight();
+		    }
 
-	if (actionListener == null) {
-	    // Try to group the applet-specific stuff in here...
-	    if (Environment.getBoolean(Environment.UseInternalFrames)) {
-
-		layersWindow = new JInternalFrame(
-		    "Layers",
-		    /*resizable*/ true,
-		    /*closable*/ true,
-		    /*maximizable*/ false,
-		    /*iconifiable*/ true);
- 		layersWindow.setBounds(2, 2, 328, 300);
-		layersWindow.setContentPane(this);
-		layersWindow.setOpaque(true);
-		try {
-		    layersWindow.setClosed(true);//don't show until it's needed
-		} catch (java.beans.PropertyVetoException e) {}
-		
-		actionListener = ( new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-			    try {
-				if (layersWindow.isClosed()) {
-				    layersWindow.setClosed(false);
-				    // hmmm is this the best way to do this?
-
-				    JLayeredPane desktop = 
-					Environment.getInternalFrameDesktop();
-
-				    if (desktop != null) {
-					desktop.remove(layersWindow);
-					desktop.add(layersWindow, 
-						    JLayeredPane.PALETTE_LAYER);
-					layersWindow.setVisible(true);
-				    }
-				}
-			    } catch (java.beans.PropertyVetoException e) {
-				System.err.println(e);
-			    }
-			}
-		    });
-		
-	    } else { // Working as an application...
-		layersWindowFrame = new JFrame("Layers");
- 		layersWindowFrame.setBounds(2, 2, 328, 300);
-		layersWindowFrame.setContentPane(this);
-		layersWindowFrame.setVisible(false);//don't show until it's needed
-		
-		actionListener = ( new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-			    layersWindowFrame.setVisible(true);
-			    layersWindowFrame.setState(java.awt.Frame.NORMAL);
-			}
-		    });
-	    }
-	}
-
-	return actionListener;
+		    int x = 10;
+		    int y = 10;
+	    
+		    Point loc = ws.getComponentLocation();
+		    if (loc != null) {
+			x = (int) loc.getX();
+			y = (int) loc.getY();
+		    }
+		    ws.displayInWindow(x, y, w, h);
+		}
+	    };
     }
 
     /**

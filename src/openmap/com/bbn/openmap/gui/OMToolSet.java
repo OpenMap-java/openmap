@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolSet.java,v $
 // $RCSfile: OMToolSet.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 04:22:04 $
+// $Revision: 1.3 $
+// $Date: 2003/04/05 05:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -236,30 +236,6 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
 	zoomPanel.findAndUndo(someObj);
 	scaleField.findAndUndo(someObj);
     }
-
-    /*
-    public static void main(String[] args) {
-	// Create a window.  Use JFrame since this window will include 
-	// lightweight components.
-	JFrame frame = new JFrame("OMToolSet");
-
-
-	WindowListener l = new WindowAdapter() {
-	    public void windowClosing(WindowEvent e) {System.exit(0);}
-	};
-	frame.addWindowListener(l);
-	OMToolSet tools = new OMToolSet();
-	//Map map = new MapPanel();
-	//tools.setMap(map);
-	ZoomPanel zp = tools.getZoomPanel();
-	zp.setZoomInFactor(0.9f);
-	zp.setZoomOutFactor(4.5f);
-
-	frame.getContentPane().add("Center", tools);
-	frame.pack();
-	frame.show();
-    }
-    */
 
     /**
      * Method to set the properties in the PropertyConsumer.  The

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/MenuPanel.java,v $
 // $RCSfile: MenuPanel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/05 05:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -938,29 +938,4 @@ public class MenuPanel extends JMenuBar
 	beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
     }
 
-    /*
-      public static void main(String[] args) {
-
-      com.bbn.openmap.app.OpenMap.init(null);
-
-      // Create a window.  Use JFrame since this window will include 
-      // lightweight components.
-
-      JFrame frame = new JFrame("ToolPanel");
-
-
-      WindowListener l = new WindowAdapter() {
-      public void windowClosing(WindowEvent e) {System.exit(0);}
-      };
-      frame.addWindowListener(l);
-
-      MenuPanel menu = new MenuPanel();
-      Map map = new MapPanel();
-      menu.setMap(map);
-
-      frame.setJMenuBar(menu);
-      frame.pack();
-      frame.show();
-      }
-    */
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/CoordInternalFrame.java,v $
 // $RCSfile: CoordInternalFrame.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/05 05:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,7 +39,7 @@ import com.bbn.openmap.*;
 import com.bbn.openmap.event.CenterListener;
 
 /**
- *  An Internal Frame wrapper for a CoordPanel
+ * An Internal Frame wrapper for a CoordPanel
  */
 public class CoordInternalFrame extends JInternalFrame
     implements Serializable, ActionListener {
@@ -51,10 +51,11 @@ public class CoordInternalFrame extends JInternalFrame
     protected transient CoordPanel coordPanel;
 
     /** 
-     *  Creates the internal frame with a CoordPanel and Apply and 
-     *  Close buttons.<br> 
-     *  You MUST call addCenterListener() for the Apply button to do anything.
-     *  @param desltp the JLayeredPane on which the internal frame is to be placed
+     * Creates the internal frame with a CoordPanel and Apply and 
+     * Close buttons.<br> 
+     * You MUST call addCenterListener() for the Apply button to do anything.
+     * @param desltp the JLayeredPane on which the internal frame is
+     * to be placed.
      */
     public CoordInternalFrame() {
 	super("Go To Coordinates",
@@ -67,8 +68,8 @@ public class CoordInternalFrame extends JInternalFrame
     }
 
     /**
-     *  Creates a CoordPanel (which has latitude and longitude entry boxes)
-     *  and Apply and Close buttons
+     * Creates a CoordPanel (which has latitude and longitude entry boxes)
+     * and Apply and Close buttons
      */
     protected void setup() {
 
@@ -104,20 +105,21 @@ public class CoordInternalFrame extends JInternalFrame
      }
 
     /**
-     *  @return the LatLonPoint represented by contents of the 
-     *  entry boxes in the CoordPanel
+     * @return the LatLonPoint represented by contents of the 
+     * entry boxes in the CoordPanel
      */
-    public com.bbn.openmap.LatLonPoint getLatLon() {
+    public LatLonPoint getLatLon() {
 
 	return coordPanel.getLatLon();
     }
 
     /**
-     *  Sets the contents of the latitude and longitude entry 
-     *  boxes in CoordPanel
-     *  @param llpoint the object containt the coordinates that should go in the boxes
+     * Sets the contents of the latitude and longitude entry 
+     * boxes in CoordPanel
+     * @param llpoint the object containt the coordinates that should
+     * go in the boxes
      */
-    public void setLatLon(com.bbn.openmap.LatLonPoint llpoint) {
+    public void setLatLon(LatLonPoint llpoint) {
         if (tabPane.getSelectedComponent() == coordPanel)
 	    coordPanel.setLatLon(llpoint);
 	else
@@ -125,7 +127,7 @@ public class CoordInternalFrame extends JInternalFrame
     }
 
     /**
-     *  Tells the CoordPanel to set the center of the map
+     * Tells the CoordPanel to set the center of the map
      */
     public boolean setCenter() {
         if (tabPane.getSelectedComponent() == coordPanel)
@@ -161,8 +163,6 @@ public class CoordInternalFrame extends JInternalFrame
 	}
     }
 
-
-
     /**
      * Add a CenterListener to the listener list.
      *
@@ -173,7 +173,6 @@ public class CoordInternalFrame extends JInternalFrame
 	dmsPanel.addCenterListener(listener);
     }
 
-
     /**
      * Remove a CenterListener from the listener list.
      *
@@ -183,19 +182,4 @@ public class CoordInternalFrame extends JInternalFrame
 	coordPanel.removeCenterListener(listener);
 	dmsPanel.removeCenterListener(listener);
     }
-
-
-    /*
-    public static void main(String[] args) {
-	JFrame frame = new JFrame("CoordInternalFrame");
-	JLayeredPane jp = new JLayeredPane();
-	frame.setSize(250,200);
-	CoordInternalFrame cb = new CoordInternalFrame();
-	cb.setDesktop(jp);
-	jp.add(cb);
-	frame.getContentPane().add(jp);
-	frame.setVisible(true);
-	
-    }
-    */
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerAddPanel.java,v $
 // $RCSfile: LayerAddPanel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/05 05:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,7 +30,6 @@ import java.beans.beancontext.*;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.*;
-
 
 import javax.swing.*;
 import javax.accessibility.*;
@@ -78,8 +77,6 @@ public class LayerAddPanel extends OMComponentPanel
     protected JComboBox list = null;
     /** The String to use as a prefix for the new Layer's properties. */
     protected JTextField prefixTextField = null;
-    /** The LayerAddPanel GUI. */
-    protected JFrame window = null;
     /** Action command String for JButton. */
     protected final String configureActionCommand = "configureActionCommand";
     /** Contains Layer classes to be instantiated.  */
@@ -96,6 +93,7 @@ public class LayerAddPanel extends OMComponentPanel
 	super();
 	inspector = new Inspector();
 	inspector.addActionListener((java.awt.event.ActionListener)this);
+	setWindowSupport(new WindowSupport(this, "Add Layer"));
     }
     
     /** 
@@ -139,8 +137,7 @@ public class LayerAddPanel extends OMComponentPanel
      * the layerTypes property.
      */
     public void createPanel() {
-	window = new JFrame("Add a Layer");
-	JPanel panel = new JPanel();
+	removeAll();
 	JButton configureButton = new JButton("Configure");
 	configureButton.addActionListener(this);
 	configureButton.setActionCommand(configureActionCommand);
@@ -154,17 +151,15 @@ public class LayerAddPanel extends OMComponentPanel
 	Object[] layerTypes = layerClasses.keySet().toArray();
 
 	if (layerTypes.length == 0) {
-	    panel.add(new JLabel("No Layers available for creation."));
+	    add(new JLabel("No Layers available for creation."));
 	} else {
 	    list = new JComboBox(layerTypes);
-	    panel.add(list);
-	    panel.add(prefixTextField);
-	    panel.add(configureButton);
+	    add(list);
+	    add(prefixTextField);
+	    add(configureButton);
 	}
-	
-	window.getContentPane().add(panel);
-	window.pack();// window.setVisible(true);
-    }	
+	invalidate();
+    }
     
     /** 
      * Gets Layer information from PropertyHandler.  These layers are
@@ -265,9 +260,9 @@ public class LayerAddPanel extends OMComponentPanel
 		}
 		prefixTextField.setText(DefaultLayerName);
 	    } else if (layerHandler != null) {
-		JOptionPane.showMessageDialog(window, "Layer Handler not found.\nCan't find anything to add the layer to.");
+		JOptionPane.showMessageDialog(this, "Layer Handler not found.\nCan't find anything to add the layer to.");
 	    } else {
-		JOptionPane.showMessageDialog(window, "No Layer instantiated");
+		JOptionPane.showMessageDialog(this, "No Layer instantiated");
 	    }
 	} else if (e.getActionCommand() == inspector.cancelCommand) {
 	    if (layer != null && propertyHandler != null) {
@@ -279,18 +274,23 @@ public class LayerAddPanel extends OMComponentPanel
     }
 
     public void showPanel() {
-	if (window == null) {
-	    createPanel();
+	createPanel();
+	prefixTextField.setText(DefaultLayerName);
+
+	int x = 10;
+	int y = 10;
+	
+	WindowSupport ws = getWindowSupport();
+
+	Point loc = ws.getComponentLocation();
+	if (loc != null) {
+	    x = (int) loc.getX();
+	    y = (int) loc.getY();
 	}
 
-	prefixTextField.setText(DefaultLayerName);
-	window.setVisible(true);
+	ws.displayInWindow(x, y, -1, -1);
     }
 
-    public void hidePanel() {
-	window.setVisible(false);
-    }
-    
     /**
      * Looks for PropertyHandler and LayerHandler.
      */

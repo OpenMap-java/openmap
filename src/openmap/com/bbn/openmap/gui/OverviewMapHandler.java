@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/20 18:15:42 $
+// $Revision: 1.4 $
+// $Date: 2003/04/05 05:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -104,8 +104,7 @@ import javax.swing.*;
  * up in the application.  
  */
 public class OverviewMapHandler extends OMToolComponent
-    implements ProjectionListener, ComponentListener, 
-               Serializable, PropertyConsumer, PropertyChangeListener {
+    implements ProjectionListener, Serializable, PropertyConsumer, PropertyChangeListener, ComponentListener {
     
     public final static String OverviewMapHandlerLayerProperty = "overviewLayers";
     public final static String ScaleFactorProperty = "overviewScaleFactor";
@@ -163,6 +162,7 @@ public class OverviewMapHandler extends OMToolComponent
      * applet. 
      */
     protected transient JInternalFrame overviewWindow = null;
+    
     /**
      * The thing listening for a request to bring up a JFrame or
      * JInternalFrame.
@@ -185,7 +185,6 @@ public class OverviewMapHandler extends OMToolComponent
     
     public final static int INITIAL_WIDTH = 200;
     public final static int INITIAL_HEIGHT = 100;
-
   
     /**
      * Default constructor.  make sure init(someProperties) is
@@ -198,6 +197,8 @@ public class OverviewMapHandler extends OMToolComponent
 
 	// Set up a default...
 	projection = createStartingProjection(null);
+	addComponentListener(this);
+	setWindowSupport(new WindowSupport(this, "Overview Map"));
     }
     
     /**
@@ -215,7 +216,9 @@ public class OverviewMapHandler extends OMToolComponent
      * the OverviewMapHandler.
      * @param props properties object.  
      */
-    public OverviewMapHandler(String prefix, Properties props) throws Exception {
+    public OverviewMapHandler(String prefix, Properties props) 
+	throws Exception {
+
 	this();
 	setProperties(prefix,props);
     }
@@ -255,7 +258,8 @@ public class OverviewMapHandler extends OMToolComponent
     }
 
     /**
-     * Initialize an OverviewMapHandler with properties that do contain a prefix. 
+     * Initialize an OverviewMapHandler with properties that do
+     * contain a prefix.
      *
      * @param prefix the prefix to place in front of each property -
      * i.e., so that each property will be under prefix.propertyName.
@@ -769,24 +773,6 @@ public class OverviewMapHandler extends OMToolComponent
     }
 
     /**
-     * Invoked when component has been resized.  This component should
-     * be the component that contains the OverviewMapHandler.
-     */
-    public void componentResized(ComponentEvent e) {
-	if (projection != null) {
-	    projection.setWidth(((java.awt.Component)e.getSource()).getWidth());
-	    projection.setHeight(((java.awt.Component)e.getSource()).getHeight());
-	    map.setProjection(projection);
-	}
-    }
-
-    /**
-     * Invoked when component has been moved.  This component should
-     * be the component that contains the OverviewMapHandler.  
-     */
-    public void componentMoved(ComponentEvent e) {}
-
-    /**
      * Invoked when component has been shown.  This component should
      * be the component that contains the OverviewMapHandler.  
      */
@@ -806,82 +792,43 @@ public class OverviewMapHandler extends OMToolComponent
 	}
     }
 
+    public void componentResized(ComponentEvent e) {}
+    public void componentMoved(ComponentEvent e) {}
+
     /**
      * Return an ActionListener that will bring up an independent
      * window with an Overview Map.    
      *
-     * @param controlMap true to enable gesture controls on the
-     * overview map to change the projection on the source map.
-     * @param frameTitle the title to put on the JFrame window.  
      * @return ActionListener that brings up a Window when an
      * actionPerformed is called.
      */
     public ActionListener getOverviewFrameActionListener() {     
-	if (overviewFrameActionListener == null) {
-	    // Try to group the applet-specific stuff in here...
-	    if (Environment.getBoolean(Environment.UseInternalFrames)) {
-		
-		overviewWindow = new JInternalFrame(
-		    frameTitle,
-		    /*resizable*/ true,
-		    /*closable*/ true,
-		    /*maximizable*/ false,
-		    /*iconifiable*/ true);
-		overviewWindow.setBounds(2, 2, INITIAL_WIDTH, INITIAL_HEIGHT);
-		overviewWindow.setContentPane(this);
-		overviewWindow.addComponentListener(this);
-		if (controlSourceMap) {
-		    addControlledMap(sourceMap);
-		}
-		overviewWindow.setOpaque(true);
-		try {
-		    overviewWindow.setClosed(true);//don't show until it's needed
-		} catch (java.beans.PropertyVetoException e) {}
-		
-		overviewFrameActionListener = ( new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-			    try {
-				if (overviewWindow.isClosed()) {
-				    overviewWindow.setClosed(false);
-				    // hmmm is this the best way to do this?
+	return new ActionListener() {
+		public void actionPerformed(ActionEvent evt) {
+		    WindowSupport ws = getWindowSupport();
 
-				    JLayeredPane desktop = 
-					Environment.getInternalFrameDesktop();
-		
-				    if (desktop != null) {
-					desktop.remove(overviewWindow);
-					desktop.add(overviewWindow, 
-						    JLayeredPane.PALETTE_LAYER);
-					overviewWindow.setVisible(true);
-				    }
-				}
-			    } catch (java.beans.PropertyVetoException e) {
-				Debug.error(e.toString());
-			    }
-			}
-		    });
-		
-	    } else { // Working as an application...
-		overviewWindowFrame = new JFrame(frameTitle);
-		overviewWindowFrame.setBounds(2, 2, 200, 100);
-		overviewWindowFrame.setContentPane(this);
-		overviewWindowFrame.addComponentListener(this);
-		if (controlSourceMap) {
-		    addControlledMap(sourceMap);
+		    int w = INITIAL_WIDTH;
+		    int h = INITIAL_HEIGHT;
+		    Dimension dim = ws.getComponentSize();
+		    if (map != null && dim != null) {
+			w = (int)dim.getWidth();
+			h = (int)dim.getHeight();
+		    }
+
+		    int x = 10;
+		    int y = 10;
+	    
+		    Point loc = ws.getComponentLocation();
+		    if (loc != null) {
+			x = (int) loc.getX();
+			y = (int) loc.getY();
+		    }
+
+		    ws.displayInWindow(x, y, w, h);
 		}
-		overviewWindowFrame.setVisible(false);//don't show until it's needed
-		
-		overviewFrameActionListener = ( new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-			    overviewWindowFrame.setVisible(true);
-			    overviewWindowFrame.setState(java.awt.Frame.NORMAL);
-			}
-		    });
-	    }	   
-	}
-	return overviewFrameActionListener; 
+	    };
     }
-    
+
     /** Tool interface method. */
     public Container getFace() {
 	JButton b = null;
@@ -913,16 +860,6 @@ public class OverviewMapHandler extends OMToolComponent
 	    Debug.message("overview","OverviewMapHandler found a MapBean object");
 	    setSourceMap((MapBean)someObj);
 	}
-
-// 	if (someObj instanceof com.bbn.openmap.PropertyHandler) {
-// 	    try {
-// 		PropertyHandler ph = (PropertyHandler)someObj;
-// 		init(ph.getProperties());
-// 	    } catch (Exception e) {
-// 		Debug.error(e.getMessage());
-// 		e.printStackTrace(Debug.getErrorStream());
-// 	    }
-// 	}
     }
 
     /**

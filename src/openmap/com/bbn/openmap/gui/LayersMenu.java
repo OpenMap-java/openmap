@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersMenu.java,v $
 // $RCSfile: LayersMenu.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/06 03:09:04 $
+// $Revision: 1.4 $
+// $Date: 2003/04/05 05:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -315,12 +315,6 @@ public class LayersMenu extends AbstractOpenMapMenu
     {
 	/** The layer that the button triggers. */
         Layer layer;
-	/** The applet palette to bring up if this is a palette
-	 *  menu. */
-	JInternalFrame paletteWindow;
-	/** The application palette to bring up if this is a palette
-	 *  menu. */
-	JFrame paletteWindow2;
 
 	/**
 	 * Construct the menu item, connected to the given layer.

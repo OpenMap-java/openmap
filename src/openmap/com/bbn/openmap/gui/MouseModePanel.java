@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MouseModePanel.java,v $
 // $RCSfile: MouseModePanel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/05 05:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -225,48 +225,4 @@ public class MouseModePanel extends OMToolComponent
 	}
     }
 
-    /*
-    public static void main(String args[]) {
-	final JFrame frame = new JFrame("Mouse Modes");
-	final MouseDelegator md = new MouseDelegator();
-	final MouseModePanel mmp = new MouseModePanel(md);
-	frame.setSize(400, 110);
-	frame.setVisible(true);
-	JPanel panel = new JPanel();
-
-	JButton but1 = new JButton("add");
-	but1.addActionListener( new ActionListener(){
-	    public void actionPerformed(ActionEvent e) {
-		SelectMouseMode gmed = 
-		    new SelectMouseMode(true);
-		md.addMouseMode(gmed);
-		System.out.println("SelectMouseMode ID " +gmed.getID());
-	    }
-	});
-
-	JButton but2 = new JButton("remove");
-	but2.addActionListener( new ActionListener(){
-	    public void actionPerformed(ActionEvent e) {
-		md.removeMouseMode("Select");
-		mmp.repaint();
-	    }
-	});
-
-	JButton but3 = new JButton("init");
-	but3.addActionListener( new ActionListener(){
-	    public void actionPerformed(ActionEvent e) {
-		md.setDefaultMouseModes();
-		mmp.repaint();
-	    }
-	});
-
-	panel.add(but3);
-	panel.add(but1);
-	panel.add(but2);
-	panel.add(mmp);
-	    
-	frame.getContentPane().add(panel);
-	
-    }
-    */
 }

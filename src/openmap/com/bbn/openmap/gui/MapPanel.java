@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MapPanel.java,v $
 // $RCSfile: MapPanel.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/04 14:34:25 $
+// $Revision: 1.2 $
+// $Date: 2003/04/05 05:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -73,14 +73,19 @@ public class MapPanel extends OMComponentPanel {
      * components for the MapPanel.
      */
     public MapPanel() {
-	this(new PropertyHandler());
+	this(null);
     }
 
     /**
      * Create a MapPanel that configures itself with the properties
-     * contained in the PropertyHandler provided.
+     * contained in the PropertyHandler provided. If the
+     * PropertyHandler is null, a new one will be created.
      */
     public MapPanel(PropertyHandler propertyHandler) {
+	if (propertyHandler == null) {
+	    propertyHandler = new PropertyHandler();
+	}
+
 	setLayout(createLayoutManager());
 	createComponents(propertyHandler);
     }
