@@ -1025,6 +1025,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/examples/simple/simple2
 	com/bbn/openmap/gui/Makefile
 	com/bbn/openmap/omGraphics/Makefile
+	com/bbn/openmap/omGraphics/grid/Makefile
 	com/bbn/openmap/proj/Makefile
 	com/bbn/openmap/util/Makefile
 	com/bbn/openmap/util/quadtree/Makefile
@@ -1035,6 +1036,10 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/layer/pluginLayer/Makefile
 	com/bbn/openmap/layer/rpf/Makefile
 	com/bbn/openmap/layer/shape/Makefile
+	com/bbn/openmap/layer/specialist/Makefile
+	com/bbn/openmap/layer/specialist/rpf/Makefile
+	com/bbn/openmap/layer/specialist/dted/Makefile
+	com/bbn/openmap/layer/specialist/vpf/Makefile
 	com/bbn/openmap/layer/util/Makefile
 	com/bbn/openmap/layer/util/cacheHandler/Makefile
 	com/bbn/openmap/layer/util/html/Makefile
@@ -1044,6 +1049,8 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/layer/daynight/Makefile
 	com/bbn/openmap/layer/test/Makefile
 	com/bbn/openmap/layer/csvLocation/Makefile
+	com/bbn/openmap/layer/link/Makefile
+	com/bbn/openmap/layer/link/shape/Makefile
 	" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
@@ -1143,6 +1150,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/examples/simple/simple2
 	com/bbn/openmap/gui/Makefile
 	com/bbn/openmap/omGraphics/Makefile
+	com/bbn/openmap/omGraphics/grid/Makefile
 	com/bbn/openmap/proj/Makefile
 	com/bbn/openmap/util/Makefile
 	com/bbn/openmap/util/quadtree/Makefile
@@ -1153,6 +1161,10 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/layer/pluginLayer/Makefile
 	com/bbn/openmap/layer/rpf/Makefile
 	com/bbn/openmap/layer/shape/Makefile
+	com/bbn/openmap/layer/specialist/Makefile
+	com/bbn/openmap/layer/specialist/rpf/Makefile
+	com/bbn/openmap/layer/specialist/dted/Makefile
+	com/bbn/openmap/layer/specialist/vpf/Makefile
 	com/bbn/openmap/layer/util/Makefile
 	com/bbn/openmap/layer/util/cacheHandler/Makefile
 	com/bbn/openmap/layer/util/html/Makefile
@@ -1162,6 +1174,8 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/layer/daynight/Makefile
 	com/bbn/openmap/layer/test/Makefile
 	com/bbn/openmap/layer/csvLocation/Makefile
+	com/bbn/openmap/layer/link/Makefile
+	com/bbn/openmap/layer/link/shape/Makefile
 	"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
@@ -1245,7 +1259,9 @@ echo "chmod +x bin/openmap"
 echo "chmod +x com/bbn/openmap/examples/hello/hello-world"
 echo "chmod +x com/bbn/openmap/examples/simple/simple"
 echo "chmod +x com/bbn/openmap/examples/simple/simple2"
+echo "Setting openmap.mk.don to openmap.mk"
 chmod +x bin/openmap
 chmod +x com/bbn/openmap/examples/hello/hello-world
 chmod +x com/bbn/openmap/examples/simple/simple
 chmod +x com/bbn/openmap/examples/simple/simple2
+cp openmap.mk.don openmap.mk
