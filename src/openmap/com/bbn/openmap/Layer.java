@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/03/10 21:57:22 $
+// $Revision: 1.4 $
+// $Date: 2003/03/19 20:31:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -420,8 +420,8 @@ public abstract class Layer extends JComponent
 	}
 	
 	list.put("class", "Class Name used for Layer.");
-	list.put(PrettyNameProperty, "Presentable name for Layer.");
 	list.put("class.editor",  "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
+	list.put(PrettyNameProperty, "Presentable name for Layer.");
 	list.put(PrettyNameProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
 	list.put(AutoPaletteProperty, "Flag to automatically display palette when properties are set");
 	list.put(AutoPaletteProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
