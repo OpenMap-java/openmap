@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/Data.java,v $
-// $Revision: 1.3 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2004/02/09 05:32:05 $ $Author: wjeuerle $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -173,15 +173,15 @@ public class Data extends VPFHttpServlet {
         String jointablekey = request.getParameter(JoinOtherTableKeyParam);
         if ((joincol != null) && (jointable != null)) {
             String isTiledJoin = request.getParameter(IsTiledParam);
-            boolean isTiled = new Boolean(isTiledJoin).booleanValue();
-            if ("id".equals(jointablekey)) {
+            boolean isTiled = Boolean.valueOf(isTiledJoin).booleanValue();
+            if (Constants.ID.equals(jointablekey)) {
                 rm = new JoinRowMaker(drf, joincol, jointable, isTiled);
             } else {
                 rm = new ComplexJoinRowMaker(drf, joincol,
                                              jointable, jointablekey, isTiled);
             }
-        } else if (drf.getTableName().equals("char.vdt") ||
-                   drf.getTableName().equals("int.vdt")) {
+        } else if (drf.getTableName().equals(Constants.charVDTTableName) ||
+                   drf.getTableName().equals(Constants.intVDTTableName)) {
             rm = new VDTRowMaker(request, response, basepath, drf);
         } else if (drf.getTableName().equals("fcs")) {
             rm = new FCSRowMaker(request, response, basepath, drf);

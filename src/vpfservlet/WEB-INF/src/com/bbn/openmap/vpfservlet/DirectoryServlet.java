@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/DirectoryServlet.java,v $
-// $Revision: 1.2 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
+// $Revision: 1.3 $ $Date: 2004/02/09 05:32:05 $ $Author: wjeuerle $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -114,6 +114,6 @@ public class DirectoryServlet extends VPFHttpServlet {
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        listFiles = new Boolean(config.getInitParameter("listDirectories")).booleanValue();
+        listFiles = Boolean.valueOf(config.getInitParameter("listDirectories")).booleanValue();
     }
 }
