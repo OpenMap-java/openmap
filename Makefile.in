@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.44 $  $Date: 2000/11/29 16:51:41 $
+# $Revision: 1.45 $  $Date: 2000/12/15 01:48:28 $
 # **********************************************************************
 
 
@@ -35,6 +35,7 @@ Core.pkgs =	com.bbn.openmap \
 		com.bbn.openmap.gui \
 		com.bbn.openmap.omGraphics \
 		com.bbn.openmap.omGraphics.editable \
+		com.bbn.openmap.omGraphics.event \
 		com.bbn.openmap.omGraphics.grid \
 		com.bbn.openmap.omGraphics.util \
 		com.bbn.openmap.proj \
@@ -48,6 +49,7 @@ Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/gui/*.class \
 		com/bbn/openmap/omGraphics/*.class \
 		com/bbn/openmap/omGraphics/editable/*.class \
+		com/bbn/openmap/omGraphics/event/*.class \
 		com/bbn/openmap/omGraphics/grid/*.class \
 		com/bbn/openmap/omGraphics/util/*.class \
 		com/bbn/openmap/proj/*.class \
