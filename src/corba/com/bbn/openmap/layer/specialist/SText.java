@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SText.java,v $
 // $RCSfile: SText.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 22:24:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,7 +55,7 @@ public class SText extends SGraphic /* used to be _TextImplBase*/ {
 	    DeclutterType.DC_None);
       ll1_ =  new LLPoint(0f, 0f);
       p1_ = new XYPoint((short)0, (short)0);
-      data_ = new String("");
+      data_ = "";
       realFont_ = new java.awt.Font("Helvetica", java.awt.Font.PLAIN, 10);
       justify_ = 0;
   }
@@ -157,7 +157,7 @@ public class SText extends SGraphic /* used to be _TextImplBase*/ {
    */
   public String resolveFont(java.awt.Font font) {
     //-foundry(who made it)
-    String ret = new String("-*");
+    String ret = "-*";
     //-font family(name)
     ret = ret.concat("-"+font.getName());
     //-weight(bold, medium)

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/util/corba/IOR.java,v $
 // $RCSfile: IOR.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/13 17:34:21 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 22:24:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -192,7 +192,7 @@ public class IOR {
 	} else if (('A' <= hex) && (hex <= 'F')) {
 	    return (int)(10 + (hex - 'A'));
 	} else {
-	    throw new NumberFormatException(new String("byte: " + b));
+	    throw new NumberFormatException("byte: " + b);
 	}
     }
 

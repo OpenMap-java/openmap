@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/CSpecLayer.java,v $
 // $RCSfile: CSpecLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/26 02:00:34 $
+// $Revision: 1.4 $
+// $Date: 2003/09/22 22:24:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -786,7 +786,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
 
     public String[] getMouseModeServiceList() {
 	String[] ret = new String[1];
-	ret[0] = new String(SelectMouseMode.modeID);
+	ret[0] = SelectMouseMode.modeID;
 	return ret;
     }
 

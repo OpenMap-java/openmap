@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CorbaRpfLayer.java,v $
 // $RCSfile: CorbaRpfLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 22:24:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -150,7 +150,7 @@ public class CorbaRpfLayer extends RpfLayer {
 
 	setFrameProvider((RpfFrameProvider) new CRFPClient());
 
-	if (props != null) {
+	if (props != null && frameProvider != null) {
 	    // Set default settings...
 	    ((CRFPClient)frameProvider).setProperties(getPropertyPrefix(), props);
 	}

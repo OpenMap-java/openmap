@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/dted/DTEDCoverageSpecialist.java,v $
 // $RCSfile: DTEDCoverageSpecialist.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 22:24:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -230,7 +230,7 @@ public class DTEDCoverageSpecialist extends Specialist {
 		
 		retPaths = new String[numPaths];
 		for (int i = 0; i < numPaths; i++) {
-		    retPaths[i] = new String(token.nextToken());
+		    retPaths[i] = token.nextToken();
 		}		    
 		return retPaths;
 	    } catch (java.util.NoSuchElementException e) {

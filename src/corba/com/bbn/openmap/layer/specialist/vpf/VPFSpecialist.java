@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/vpf/VPFSpecialist.java,v $
 // $RCSfile: VPFSpecialist.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 02:00:34 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 22:24:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -70,7 +70,7 @@ public class VPFSpecialist extends Specialist {
     private Hashtable checkboxes = new Hashtable();
     private LibrarySelectionTable lst;
     private Hashtable comphash = new Hashtable();
-    public static final String prefix = new String("VPFSpec");
+    public static final String prefix = "VPFSpec";
     public static final float altCovScale = 30000000f;
     
     /** default constructor is called when we're loading the class
@@ -429,7 +429,7 @@ public class VPFSpecialist extends Specialist {
 		
 		ret = new String[numPaths];
 		for (int i = 0; i < numPaths; i++){
-		    ret[i] = new String(token.nextToken());
+		    ret[i] = token.nextToken();
 		}		    
 		return ret;
 	    } catch (java.util.NoSuchElementException e) {
