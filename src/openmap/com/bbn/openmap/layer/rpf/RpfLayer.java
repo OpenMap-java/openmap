@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/03/29 07:15:38 $
+// $Revision: 1.6 $
+// $Date: 2003/06/25 15:28:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -349,11 +349,14 @@ public class RpfLayer extends OMGraphicHandlerLayer
 
 	viewAttributes.getPropertyInfo(list);
 
-	if (coverage == null) {
-	    new RpfCoverage(this).getPropertyInfo(list);
-	} else {
-	    coverage.getPropertyInfo(list);
+	RpfCoverage tmpCov = coverage;
+	if (tmpCov == null) {
+	    tmpCov = new RpfCoverage(this);
 	}
+
+	tmpCov.getPropertyInfo(list);
+
+	list.put(initPropertiesProperty, RpfPathsProperty + " " + KillCacheProperty + " " + CacheSizeProperty + " " + AuxCacheSizeProperty + " " + viewAttributes.getInitPropertiesOrder() + " " + AddToBeanContextProperty + " " + CoverageProperty + " " + tmpCov.getInitPropertiesOrder());
 
 	return list;
     }

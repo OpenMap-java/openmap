@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCoverage.java,v $
 // $RCSfile: RpfCoverage.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/06/25 15:28:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -327,7 +327,7 @@ public class RpfCoverage implements ActionListener, RpfConstants, PropertyConsum
      * @return Properties object containing PropertyConsumer property
      * values.  If getList was not null, this should equal getList.
      * Otherwise, it should be the Properties object created by the
-p     * PropertyConsumer. 
+     * PropertyConsumer. 
      */
     public Properties getPropertyInfo(Properties list) {
 	if (list == null) {
@@ -372,6 +372,13 @@ p     * PropertyConsumer.
 		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 	
 	return list;
+    }
+
+    /**
+     * Specify what order properties should be presented in an editor.
+     */
+    public String getInitPropertiesOrder() {
+	return " " + FillProperty + " " + OpaquenessProperty + " " + GNCColorProperty + " " + JNCColorProperty + " " + ONCColorProperty + " " + TPCColorProperty + " " + JOGColorProperty + " " + TLMColorProperty + " " + CIB10ColorProperty + " " + CIB5ColorProperty + " " + MISCColorProperty;
     }
 
     /**
