@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/MouseModeMenu.java,v $
 // $RCSfile: MouseModeMenu.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.4 $
+// $Date: 2004/02/03 23:39:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,13 +95,9 @@ public class MouseModeMenu extends AbstractOpenMapMenu
         mouseModeButtons = new JRadioButtonMenuItem[modes.length];
     
         for (int mms = 0; mms < modes.length; mms++){
-            Debug.message("mousemodemenuitem","MouseModeMenuItem.setUpItems adding "+modes[mms].getID());
+            Debug.message("mousemodemenuitem","MouseModeMenuItem.setUpItems adding "+ modes[mms].getID());
             mouseModeButtons[mms] = 
-                (JRadioButtonMenuItem) this.add
-                (new JRadioButtonMenuItem
-                 (i18n.get(this, 
-                           "mode." + modes[mms].getID(), 
-                           modes[mms].getID())));
+		(JRadioButtonMenuItem) this.add(new JRadioButtonMenuItem(modes[mms].getPrettyName()));
 
             mouseModeButtons[mms].setActionCommand(mouseModeCmd);
             mouseModeButtons[mms].setName(modes[mms].getID());
