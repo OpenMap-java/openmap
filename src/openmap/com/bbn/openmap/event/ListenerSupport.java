@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ListenerSupport.java,v $
 // $RCSfile: ListenerSupport.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/10/08 21:29:17 $
+// $Revision: 1.2 $
+// $Date: 2003/10/10 15:40:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,7 +29,9 @@ import java.io.Serializable;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -108,15 +110,15 @@ public class ListenerSupport implements java.io.Serializable {
     }
 
     /**
-     * Return an iterator over the listeners.  If listeners is null,
-     * it will return an empty iterator.
+     * Return an iterator over a clone of the listeners.  If listeners
+     * is null, it will return an empty iterator.
      */
-    public Iterator iterator() {
+    public synchronized Iterator iterator() {
 	if (listeners != null) {
-	    return listeners.iterator();
+	    return new ArrayList(listeners).iterator();
 	}
 	// Failsafe, return an empty iterator
-	return new Vector().iterator();
+	return new ArrayList().iterator();
     }
 
     /**
@@ -133,14 +135,14 @@ public class ListenerSupport implements java.io.Serializable {
 
     /**
      * Return a cloned list of Listeners.
-     * @return Vector of listeners, null if none have been added.
+     * @return List of listeners, null if none have been added.
      */
-    public synchronized Vector getListeners() {
+    public synchronized List getListeners() {
 	if (listeners == null) {
 	    return null;
 	}
 
-	return (Vector) listeners.clone();
+	return (List) listeners.clone();
     }
 
     /**
@@ -149,7 +151,7 @@ public class ListenerSupport implements java.io.Serializable {
     public void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
-	Vector v = getListeners();
+	List v = getListeners();
 	if (v != null) {
 	    Iterator it = v.iterator();
 	    while (it.hasNext()) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProjMapBeanKeyListener.java,v $
 // $RCSfile: ProjMapBeanKeyListener.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/10/08 21:29:17 $
+// $Revision: 1.2 $
+// $Date: 2003/10/10 15:40:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -132,14 +132,12 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener
      */
     protected void fireProjectionStackEvent(String command) {
 	if (projListeners.size() == 0) {
-	    Debug.output("no projection stack listeners");
 	    return;
 	}
 
 	ActionEvent event = new ActionEvent(this, 0, command);
 	Iterator it = projListeners.iterator();
 	while (it.hasNext()) {
-	    Debug.output("Firing " + command + " to listener");
 	    ((ActionListener)it.next()).actionPerformed(event);
 	}
 
