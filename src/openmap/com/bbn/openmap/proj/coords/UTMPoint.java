@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/09/17 18:26:38 $
+// $Revision: 1.6 $
+// $Date: 2004/09/22 14:53:10 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -48,7 +48,7 @@ public class UTMPoint {
      */
     public int zone_number;
     /**
-     * The zone letter of the coordinate.
+     * For UTM, 'N' or 'S', to designate the northern or southern hemisphere.
      */
     public char zone_letter;
 
@@ -64,21 +64,16 @@ public class UTMPoint {
      * @param northing The northing component.
      * @param easting The easting component.
      * @param zone_number The zone of the coordinate.
+     * @param zone_letter. For UTM, 'N' or 'S', to designate the
+     * northern or southern hemisphere.  If the letter is something
+     * else instead of 'N' or 'S', 'N' is assumed.
      */
     public UTMPoint(float northing, float easting,
                     int zone_number, char zone_letter) {
-        if (zone_letter <= 'A' ||
-            zone_letter == 'B' ||
-            zone_letter == 'Y' ||
-            zone_letter >= 'Z' ||
-            zone_letter == 'I' ||
-            zone_letter == 'O') {
-            throw new NumberFormatException("Invalid UTMPoint zone letter: " + zone_letter);
-        }
         this.northing =(float) Math.rint(northing);
         this.easting = (float)Math.rint(easting);
         this.zone_number = zone_number;
-        this.zone_letter = zone_letter;
+        this.zone_letter = checkZone(zone_letter);
     }
 
     /**
@@ -103,6 +98,21 @@ public class UTMPoint {
     public UTMPoint(LatLonPoint llpoint, Ellipsoid ellip) {
         this();
         LLtoUTM(llpoint, ellip, this);
+    }
+
+    /**
+     * Method that provides a check for UTM zone letters.  Returns an
+     * uppercase version of any valid letter passed in, 'N' or 'S'.
+     * @throws NumberFormatException if zone letter is invalid.
+     */
+    protected char checkZone(char zone) {
+        zone = Character.toUpperCase(zone);
+
+        if (zone != 'N' && zone != 'S') {
+            throw new NumberFormatException("Invalid UTMPoint zone letter: " + zone);
+        } 
+
+        return zone;
     }
 
     /**
@@ -134,7 +144,7 @@ public class UTMPoint {
      * @return String representation
      */
     public String toString () {
-        return "UTMPoint[zone_number="+zone_number + ", easting=" + easting + "northing=" + northing + "]";
+        return "UTMPoint[zone_number="+zone_number + ", easting=" + easting + ", northing=" + northing + ", hemisphere=" + zone_letter + "]";
     }
 
     /**
@@ -236,52 +246,35 @@ public class UTMPoint {
             UTMNorthing += 10000000.0f; //10000000 meter offset for southern hemisphere
         }
 
-        if (utmpoint != null) {
-            utmpoint.northing = (float)Math.rint(UTMNorthing);
-            utmpoint.easting = (float)Math.rint(UTMEasting);
-            utmpoint.zone_number = ZoneNumber;
-            utmpoint.zone_letter = UTMLetterDesignator(Lat);
-            return utmpoint;
-        } else {
-            return new UTMPoint(UTMNorthing, UTMEasting, ZoneNumber, UTMLetterDesignator(Lat));
+        if (utmpoint == null) {
+            utmpoint = new UTMPoint();
         }
+
+
+        utmpoint.northing = (float)Math.rint(UTMNorthing);
+        utmpoint.easting = (float)Math.rint(UTMEasting);
+        utmpoint.zone_number = ZoneNumber;
+        utmpoint.zone_letter = utmpoint.getLetterDesignator(Lat);
+
+        return utmpoint;
     }
 
     /**
-     * Determines the correct UTM letter designator for the given latitude
-     * returns 'Z' if latitude is outside the UTM limits of 84N to 80S.
+     * Returns 'N' if the latitude is equal to or above the equator,
+     * 'S' if it's below.
      *
-     * @param Lat The float value of the latitude.
+     * @param lat The float value of the latitude.
      *
-     * @return A char value which is the UTM zone letter.
+     * @return A char value
      */
-    protected static char UTMLetterDesignator(double Lat) {
+    protected char getLetterDesignator(double lat) {
+        char letterDesignator='N';
 
-        //This is here as an error flag to show that the Latitude is
-        //outside UTM limits
-        char LetterDesignator='Z';
+        if (lat < 0) {
+            letterDesignator = 'S';
+        }
 
-        if((84 >= Lat) && (Lat >= 72)) LetterDesignator = 'X';
-        else if((72 > Lat) && (Lat >= 64)) LetterDesignator = 'W';
-        else if((64 > Lat) && (Lat >= 56)) LetterDesignator = 'V';
-        else if((56 > Lat) && (Lat >= 48)) LetterDesignator = 'U';
-        else if((48 > Lat) && (Lat >= 40)) LetterDesignator = 'T';
-        else if((40 > Lat) && (Lat >= 32)) LetterDesignator = 'S';
-        else if((32 > Lat) && (Lat >= 24)) LetterDesignator = 'R';
-        else if((24 > Lat) && (Lat >= 16)) LetterDesignator = 'Q';
-        else if((16 > Lat) && (Lat >= 8)) LetterDesignator = 'P';
-        else if(( 8 > Lat) && (Lat >= 0)) LetterDesignator = 'N';
-        else if(( 0 > Lat) && (Lat >= -8)) LetterDesignator = 'M';
-        else if((-8> Lat) && (Lat >= -16)) LetterDesignator = 'L';
-        else if((-16 > Lat) && (Lat >= -24)) LetterDesignator = 'K';
-        else if((-24 > Lat) && (Lat >= -32)) LetterDesignator = 'J';
-        else if((-32 > Lat) && (Lat >= -40)) LetterDesignator = 'H';
-        else if((-40 > Lat) && (Lat >= -48)) LetterDesignator = 'G';
-        else if((-48 > Lat) && (Lat >= -56)) LetterDesignator = 'F';
-        else if((-56 > Lat) && (Lat >= -64)) LetterDesignator = 'E';
-        else if((-64 > Lat) && (Lat >= -72)) LetterDesignator = 'D';
-        else if((-72 > Lat) && (Lat >= -80)) LetterDesignator = 'C';
-        return LetterDesignator;
+        return letterDesignator;
     }
 
     /**
