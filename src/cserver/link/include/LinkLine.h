@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/LinkLine.h,v $
  * $RCSfile: LinkLine.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -43,10 +43,10 @@
  */
 
 int WriteLinkLineLatLon(LinkSocket *linkSocket,
-			double lat_1, double lon_1, 
-			double lat_2, double lon_2, 
-			int lineType, int nsegs,
-			LinkArgs *linkArgs);
+                        double lat_1, double lon_1, 
+                        double lat_2, double lon_2, 
+                        int lineType, int nsegs,
+                        LinkArgs *linkArgs);
 
 /**
  * Writes a line between two points in X-Y space to the link socket.  The
@@ -62,9 +62,9 @@ int WriteLinkLineLatLon(LinkSocket *linkSocket,
  */
 
 int WriteLinkLineXY(LinkSocket *linkSocket,
-		    int x1, int y1, 
-		    int x2, int y2,
-		    LinkArgs *linkArgs);
+                    int x1, int y1, 
+                    int x2, int y2,
+                    LinkArgs *linkArgs);
 
 /**
  * Writes a line between two X-Y points, offset from a lat-long point, to 
@@ -83,10 +83,10 @@ int WriteLinkLineXY(LinkSocket *linkSocket,
  */
 
 int WriteLinkLineOffset(LinkSocket *linkSocket,
-			double lat_1, double lon_1, 
-			int x1, int y1, 
-			int x2, int y2, 
-			LinkArgs *linkArgs);
+                        double lat_1, double lon_1, 
+                        int x1, int y1, 
+                        int x2, int y2, 
+                        LinkArgs *linkArgs);
 
 /**
  * Writes a buffered line between two points in lat-long space to the link 
@@ -106,10 +106,10 @@ int WriteLinkLineOffset(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkLineLatLon(LinkSocket *linkSocket,
-				double lat_1, double lon_1, 
-				double lat_2, double lon_2, 
-				int lineType, int nsegs,
-				LinkArgs *linkArgs);
+                                double lat_1, double lon_1, 
+                                double lat_2, double lon_2, 
+                                int lineType, int nsegs,
+                                LinkArgs *linkArgs);
 /**
  * Writes a buffered line between two points in X-Y space to the link socket.
  * The X and Y values are offset from the upper left corner of the canvas.
@@ -127,9 +127,9 @@ int BufferedWriteLinkLineLatLon(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkLineXY(LinkSocket *linkSocket,
-			    int x1, int y1, 
-			    int x2, int y2,
-			    LinkArgs *linkArgs);
+                            int x1, int y1, 
+                            int x2, int y2,
+                            LinkArgs *linkArgs);
 
 /**
  * Writes a buffered line between two X-Y points, offset from a lat-long 
@@ -150,10 +150,10 @@ int BufferedWriteLinkLineXY(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkLineOffset(LinkSocket *linkSocket,
-				double lat_1, double lon_1, 
-				int x1, int y1, 
-				int x2, int y2, 
-				LinkArgs *linkArgs);
+                                double lat_1, double lon_1, 
+                                int x1, int y1, 
+                                int x2, int y2, 
+                                LinkArgs *linkArgs);
 
 #endif
 

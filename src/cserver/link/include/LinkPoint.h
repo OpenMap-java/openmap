@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/LinkPoint.h,v $
  * $RCSfile: LinkPoint.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -43,7 +43,7 @@
  */
 
 int WriteLinkPointLatLon(LinkSocket *link, double lat, double lon, int radius,
-			 LinkArgs *linkArgs);
+                         LinkArgs *linkArgs);
 
 /**
  * Writes a point object in X-Y space to the link socket.  X-Y values are
@@ -58,7 +58,7 @@ int WriteLinkPointLatLon(LinkSocket *link, double lat, double lon, int radius,
  */
 
 int WriteLinkPointXY(LinkSocket *link, int x, int y, int radius,
-		     LinkArgs *linkArgs);
+                     LinkArgs *linkArgs);
 
 /**
  * Writes a point object with an offset to the link socket.  X-Y values
@@ -75,6 +75,6 @@ int WriteLinkPointXY(LinkSocket *link, int x, int y, int radius,
  */
 
 int WriteLinkPointOffset(LinkSocket *link, double lat, double lon,
-			 int x, int y, int radius, LinkArgs *linkArgs);
+                         int x, int y, int radius, LinkArgs *linkArgs);
 
 #endif

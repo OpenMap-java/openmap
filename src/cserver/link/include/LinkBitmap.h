@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/LinkBitmap.h,v $
  * $RCSfile: LinkBitmap.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -48,10 +48,10 @@
  */
 
 int WriteLinkBitmapLatLon(LinkSocket *linkSocket, 
-			  double lat, double lon, 
-			  int width, int height,
-			  int numberOfbytes, char *bitmap,
-			  LinkArgs *linkArgs);
+                          double lat, double lon, 
+                          int width, int height,
+                          int numberOfbytes, char *bitmap,
+                          LinkArgs *linkArgs);
 
 /**
  * Writes a buffered bitmap object to the link socket. <b>DEPRECATED</b>
@@ -70,10 +70,10 @@ int WriteLinkBitmapLatLon(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkBitmapLatLon(LinkSocket *linkSocket, 
-				  double lat, double lon, 
-				  int width, int height,
-				  int numberOfbytes, char *bitmap,
-				  LinkArgs *linkArgs);
+                                  double lat, double lon, 
+                                  int width, int height,
+                                  int numberOfbytes, char *bitmap,
+                                  LinkArgs *linkArgs);
 
 /**
  * Writes a bitmap object in X-Y space to the link socket.  The X and Y
@@ -91,10 +91,10 @@ int BufferedWriteLinkBitmapLatLon(LinkSocket *linkSocket,
  */
 
 int WriteLinkBitmapXY(LinkSocket *linkSocket,  
-		      int x, int y,
-		      int width, int height,
-		      int numberOfbytes, char *bitmap,
-		      LinkArgs *linkArgs);
+                      int x, int y,
+                      int width, int height,
+                      int numberOfbytes, char *bitmap,
+                      LinkArgs *linkArgs);
 
 /**
  * Writes a buffered bitmap object in X-Y space to the link socket.  The X 
@@ -115,10 +115,10 @@ int WriteLinkBitmapXY(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkBitmapXY(LinkSocket *linkSocket,  
-			      int x, int y,
-			      int width, int height,
-			      int numberOfbytes, char *bitmap,
-			      LinkArgs *linkArgs);
+                              int x, int y,
+                              int width, int height,
+                              int numberOfbytes, char *bitmap,
+                              LinkArgs *linkArgs);
 
 /**
  * Writes a bitmap object with an offset to the link socket.  The X and Y
@@ -138,11 +138,11 @@ int BufferedWriteLinkBitmapXY(LinkSocket *linkSocket,
  */
 
 int WriteLinkBitmapOffset(LinkSocket *linkSocket,
-			  double lat, double lon,
-			  int x, int y,			   
-			  int width, int height,
-			  int numberOfbytes, char *bitmap,
-			  LinkArgs *linkArgs);
+                          double lat, double lon,
+                          int x, int y,                    
+                          int width, int height,
+                          int numberOfbytes, char *bitmap,
+                          LinkArgs *linkArgs);
 
 /**
  * Writes a buffered bitmap object with an offset to the link socket.  The X 
@@ -165,10 +165,10 @@ int WriteLinkBitmapOffset(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkBitmapOffset(LinkSocket *linkSocket,
-				  double lat, double lon,
-				  int x, int y,			   
-				  int width, int height,
-				  int numberOfbytes, char *bitmap,
-				  LinkArgs *linkArgs);
+                                  double lat, double lon,
+                                  int x, int y,                    
+                                  int width, int height,
+                                  int numberOfbytes, char *bitmap,
+                                  LinkArgs *linkArgs);
 
 #endif

@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/LinkSocket.h,v $
  * $RCSfile: LinkSocket.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -62,7 +62,7 @@ typedef struct LinkSocket LinkSocket;
   Write functions  will attempt to write entire data into the buffer.
   ..if not succesful, write functions would flush the buffer first and
   write data directly to the socket.
-  ..if successful, data would remain untill flush is called.	
+  ..if successful, data would remain untill flush is called.    
 */
 
 /**

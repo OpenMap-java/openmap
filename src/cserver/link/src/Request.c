@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/Request.c,v $
  * $RCSfile: Request.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -45,9 +45,9 @@ int ReadBoundingPolygons(LinkSocket *linkSocket, BoundingPolygon *bpoly)
     /*Read them*/
     for(i=0; i < bpoly->numberOfPolygons; i++)
     {
-	check = check || ReadPolygons(linkSocket, &bpoly->polygons[i]);
-	if (check == -1)
-	  return -1; /* Memory allocation error */
+        check = check || ReadPolygons(linkSocket, &bpoly->polygons[i]);
+        if (check == -1)
+          return -1; /* Memory allocation error */
     }
     return check;
 }
@@ -72,7 +72,7 @@ int ReadPolygons(LinkSocket *linkSocket, Polygon *poly)
     /*Read Points*/
     for(i=0;i < poly->numberOfPoints; i++)
     {
-	check = check || ReadLatLonPoint(linkSocket, &poly->points[i]);        
+        check = check || ReadLatLonPoint(linkSocket, &poly->points[i]);        
     }
     
     return check;
@@ -89,7 +89,7 @@ void FreeBoundingPolygons(BoundingPolygon *bpoly)
     int i;
     for(i=0; i < bpoly->numberOfPolygons; i++ )
     {
-	FreePolygons(&bpoly->polygons[i]);   
+        FreePolygons(&bpoly->polygons[i]);   
     }
 
    free(bpoly->polygons);

@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/ActionRequest.c,v $
  * $RCSfile: ActionRequest.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -60,30 +60,30 @@ int ReadActionRequest(Link *link)
        || action->descriptor.MOUSE_ENTER || action->descriptor.MOUSE_EXIT
        || action->descriptor.MOUSE_DRAGGED)
     {
-	if (Debug(LINK)) printf("ReadActionRequest: Mouse event\n");
+        if (Debug(LINK)) printf("ReadActionRequest: Mouse event\n");
      
-	action->mouseEvent = (MouseEvent *)malloc(sizeof(MouseEvent));
-	if (NULL == action->mouseEvent)
-	  return -1; /* Memory allocation error */
-	check = check || ReadMouseEvent(link->socket, action->mouseEvent);
+        action->mouseEvent = (MouseEvent *)malloc(sizeof(MouseEvent));
+        if (NULL == action->mouseEvent)
+          return -1; /* Memory allocation error */
+        check = check || ReadMouseEvent(link->socket, action->mouseEvent);
     }
     else  /*Either a mouse event will come or keyboard event...but not both*/
     {
-	if (Debug(LINK)) printf("ReadActionRequest: Key event\n");
+        if (Debug(LINK)) printf("ReadActionRequest: Key event\n");
 
-	if(action->descriptor.KEY_PRESSED || action->descriptor.KEY_RELEASED)
-	{
-	    action->keyboardEvent = (KeyboardEvent *)malloc(sizeof(KeyboardEvent));
-	    if (NULL == action->keyboardEvent)
-	      return -1; /* Memory allocation error */
-	    check = check || ReadKeyboardEvent(link->socket, action->keyboardEvent);
-	    if (check == -1)
-	      return -1; /* Memory allocation error */
-	}
-	else
-	{
-	    if (Debug(LINK)) printf("Error: Client broke Gesture contract\n");
-	}     
+        if(action->descriptor.KEY_PRESSED || action->descriptor.KEY_RELEASED)
+        {
+            action->keyboardEvent = (KeyboardEvent *)malloc(sizeof(KeyboardEvent));
+            if (NULL == action->keyboardEvent)
+              return -1; /* Memory allocation error */
+            check = check || ReadKeyboardEvent(link->socket, action->keyboardEvent);
+            if (check == -1)
+              return -1; /* Memory allocation error */
+        }
+        else
+        {
+            if (Debug(LINK)) printf("Error: Client broke Gesture contract\n");
+        }     
     }
 
     if (Debug(LINK)) printf("ReadActionRequest: Reading Args.\n");
@@ -101,11 +101,11 @@ void FreeActionRequest(ActionRequest *actionrequest)
     
     if(actionrequest->keyboardEvent)
     {
-	free(actionrequest->keyboardEvent);
+        free(actionrequest->keyboardEvent);
     }
     if(actionrequest->mouseEvent)
     {
-	free(actionrequest->mouseEvent);
+        free(actionrequest->mouseEvent);
     }
 
     FreeLinkArgs(&actionrequest->linkargs);
@@ -141,12 +141,12 @@ int SendServerInterest(LinkSocket *linkSocket, Descriptor *descriptor)
     int des;
     /** Write the ActionRequestHeader here... */
     if (Debug(LINK))
-	printf("SendServerInterest: writing ACTION Request header %s\n",
-	       GESTURE_RESPONSE_HEADER);
+        printf("SendServerInterest: writing ACTION Request header %s\n",
+               GESTURE_RESPONSE_HEADER);
     WriteChars(linkSocket, ACTION_REQUEST_HEADER, lACTION_REQUEST_HEADER); 
     
     if (Debug(LINK))
-	printf("SendServerInterest: writing version %f\n", VERSION);
+        printf("SendServerInterest: writing version %f\n", VERSION);
     WriteFloat(linkSocket, VERSION); /*writing version 0.2*/
 
     des =  *((int *)descriptor);

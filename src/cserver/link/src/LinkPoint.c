@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/LinkPoint.c,v $
  * $RCSfile: LinkPoint.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -33,14 +33,14 @@ int WritePointHeader(LinkSocket *linkSocket)
 {
     int check = OK;
     check = check || WriteChars(linkSocket, POINT_HEADER,
-				lPOINT_HEADER);
+                                lPOINT_HEADER);
     check = check || WriteInteger(linkSocket, GRAPHICTYPE_POINT);
     return check;
 }
 
 int WriteLinkPointLatLon(LinkSocket *linkSocket, 
-			 double lat, double lon,
-			 int radius, LinkArgs *linkArgs)
+                         double lat, double lon,
+                         int radius, LinkArgs *linkArgs)
 {
     int check = OK;
     check = check || WritePointHeader(linkSocket);
@@ -56,7 +56,7 @@ int WriteLinkPointLatLon(LinkSocket *linkSocket,
 
 
 int WriteLinkPointXY(LinkSocket *linkSocket,
-		     int x, int y, int radius, LinkArgs *linkArgs)
+                     int x, int y, int radius, LinkArgs *linkArgs)
 {
     int check = OK;
     check = check || WritePointHeader(linkSocket);
@@ -72,9 +72,9 @@ int WriteLinkPointXY(LinkSocket *linkSocket,
 
 
 int WriteLinkPointOffset(LinkSocket *linkSocket,
-			 double lat, double lon,
-			 int x, int y, int radius,			   
-			 LinkArgs *linkArgs)
+                         double lat, double lon,
+                         int x, int y, int radius,                         
+                         LinkArgs *linkArgs)
 {
     int check = OK;
     check = check || WritePointHeader(linkSocket);

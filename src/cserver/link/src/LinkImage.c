@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/LinkImage.c,v $
  * $RCSfile: LinkImage.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -39,7 +39,7 @@ int WriteDirectImage(LinkSocket *linkSocket, DirectImage *directimage)
        directimage->numberOfPixels*N_BYTES_PER_INTEGER); */
     for(i=0;i<directimage->numberOfPixels;i++)
     {
-	check = check || WriteInteger(linkSocket, directimage->image[i]);
+        check = check || WriteInteger(linkSocket, directimage->image[i]);
     }
     return check;
 }
@@ -49,7 +49,7 @@ int BufferedWriteDirectImage(char *toBuffer, DirectImage *directimage)
     int byteswritten = 0,i;
     /*Write number of pixels a client is supposed to read*/ 
     byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
-					 directimage->numberOfPixels);
+                                         directimage->numberOfPixels);
   
     /*Write the values*/
     /*An optimized version. Write the entire buffer instead of writing every integer*/
@@ -59,8 +59,8 @@ int BufferedWriteDirectImage(char *toBuffer, DirectImage *directimage)
 
     for(i=0;i<directimage->numberOfPixels;i++)
     {
-	byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
-					     directimage->image[i]);
+        byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
+                                             directimage->image[i]);
     }
     return byteswritten;
 }
@@ -68,7 +68,7 @@ int BufferedWriteDirectImage(char *toBuffer, DirectImage *directimage)
 int GetDirectImageSize(DirectImage *directimage)
 {
     return N_BYTES_PER_INTEGER + /*Bytes used by nmberOfPixels(an Integer)*/
-	N_BYTES_PER_INTEGER*directimage->numberOfPixels; /*Bytes used by pixels*/
+        N_BYTES_PER_INTEGER*directimage->numberOfPixels; /*Bytes used by pixels*/
 }
 
 int WriteIndexedImage(LinkSocket *linkSocket, IndexedImage *indexedimage)
@@ -79,7 +79,7 @@ int WriteIndexedImage(LinkSocket *linkSocket, IndexedImage *indexedimage)
 
     /*Write image*/
     check = check || WriteChars(linkSocket, indexedimage->image,
-				indexedimage->numberOfPixels);
+                                indexedimage->numberOfPixels);
 
     /*Write color table size*/
     check = check || WriteInteger(linkSocket, indexedimage->colorTableSize);
@@ -90,7 +90,7 @@ int WriteIndexedImage(LinkSocket *linkSocket, IndexedImage *indexedimage)
 
     for(i=0;i<indexedimage->colorTableSize;i++)
     {
-	check = check || WriteInteger(linkSocket, indexedimage->colorTable[i]);
+        check = check || WriteInteger(linkSocket, indexedimage->colorTable[i]);
     }
     return check;
 }
@@ -102,13 +102,13 @@ int BufferedWriteIndexedImage(char *toBuffer, IndexedImage *indexedimage)
 
     /* Write number of pixels*/
     byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
-					 indexedimage->numberOfPixels);
+                                         indexedimage->numberOfPixels);
     /*Write image*/
     byteswritten += BufferedWriteChars(&toBuffer[byteswritten],
-				       indexedimage->image, indexedimage->numberOfPixels);
+                                       indexedimage->image, indexedimage->numberOfPixels);
     /*Write color table size*/
     byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
-					 indexedimage->colorTableSize);
+                                         indexedimage->colorTableSize);
     /*Write Color table*/
     /*The optimized version*/
     /*byteswritten += BufferedWriteChars(&toBuffer[byteswritten],
@@ -117,8 +117,8 @@ int BufferedWriteIndexedImage(char *toBuffer, IndexedImage *indexedimage)
 
     for(i=0;i<indexedimage->colorTableSize;i++)
     {
-	byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
-					     indexedimage->colorTable[i]);
+        byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
+                                             indexedimage->colorTable[i]);
     }
     return byteswritten;
 }
@@ -126,10 +126,10 @@ int BufferedWriteIndexedImage(char *toBuffer, IndexedImage *indexedimage)
 int GetIndexedImageSize(IndexedImage *indexedimage)
 {
     return N_BYTES_PER_INTEGER + /*Bytes used by numberOfPixels(an Integer)*/
-	indexedimage->numberOfPixels + /*each pixel is 1 byte */
-	N_BYTES_PER_INTEGER + /* Bytes used by colorTableSize */
-	N_BYTES_PER_INTEGER*indexedimage->colorTableSize + 
-	N_BYTES_PER_INTEGER; /*Bytes used by transparency(an integer)*/
+        indexedimage->numberOfPixels + /*each pixel is 1 byte */
+        N_BYTES_PER_INTEGER + /* Bytes used by colorTableSize */
+        N_BYTES_PER_INTEGER*indexedimage->colorTableSize + 
+        N_BYTES_PER_INTEGER; /*Bytes used by transparency(an integer)*/
 }
 
 

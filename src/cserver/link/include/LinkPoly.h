@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/LinkPoly.h,v $
  * $RCSfile: LinkPoly.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -42,9 +42,9 @@
  */
 
 int WriteLinkPolyLatLon(LinkSocket *link, int ltype, 
-			int numberOflatlon, double latlon[],
-			int unit, int nsegs, 
-			LinkArgs *linkArgs);
+                        int numberOflatlon, double latlon[],
+                        int unit, int nsegs, 
+                        LinkArgs *linkArgs);
 
 /**
  * Writes a polygon to the link socket.  This function allows you to specify
@@ -63,10 +63,10 @@ int WriteLinkPolyLatLon(LinkSocket *link, int ltype,
  */
 
 int WriteLinkPolyLatLon2F(LinkSocket *link, int ltype, 
-			  int numberOflatlon, /*size of lat or lon array*/
-			  float lat[], float lon[], /*These 2 arrays are of equal size*/
-			  int unit, int nsegs, 
-			  LinkArgs *linkArgs);
+                          int numberOflatlon, /*size of lat or lon array*/
+                          float lat[], float lon[], /*These 2 arrays are of equal size*/
+                          int unit, int nsegs, 
+                          LinkArgs *linkArgs);
 
 
 /**
@@ -86,10 +86,10 @@ int WriteLinkPolyLatLon2F(LinkSocket *link, int ltype,
  */
 
 int WriteLinkPolyLatLon2D(LinkSocket *link, int ltype, 
-			  int numberOflatlon, /*size of lat or lon array*/
-			  double lat[], double lon[], /*These 2 arrays are of equal size*/
-			  int unit, int nsegs, 
-			  LinkArgs *linkArgs);
+                          int numberOflatlon, /*size of lat or lon array*/
+                          double lat[], double lon[], /*These 2 arrays are of equal size*/
+                          int unit, int nsegs, 
+                          LinkArgs *linkArgs);
 
 /**
  * Writes a polygon in XY space to the link socket.
@@ -102,8 +102,8 @@ int WriteLinkPolyLatLon2D(LinkSocket *link, int ltype,
  */
 
 int WriteLinkPolyXY(LinkSocket *link,  
-		    int numberOfXY, int XY[],		        
-		    LinkArgs *linkArgs);
+                    int numberOfXY, int XY[],                   
+                    LinkArgs *linkArgs);
 
 /**
  * Writes a polygon in XY space to the link socket, allowing the X and Y
@@ -118,9 +118,9 @@ int WriteLinkPolyXY(LinkSocket *link,
  */
 
 int WriteLinkPolyXY2(LinkSocket *link,  
-		     int numberOfXY, /*count of elements in X or Y array*/
-		     int X[], int Y[], /* These 2 arrays are of equal size*/
-		     LinkArgs *linkArgs);
+                     int numberOfXY, /*count of elements in X or Y array*/
+                     int X[], int Y[], /* These 2 arrays are of equal size*/
+                     LinkArgs *linkArgs);
 
 /**
  * Writes a polygon with an offset to the link socket.
@@ -135,9 +135,9 @@ int WriteLinkPolyXY2(LinkSocket *link,
  */
 
 int WriteLinkPolyOffset(LinkSocket *link,
-			double lat, double lon,
-			int numberOfXY, int XY[], int CoordMode,		        
-			LinkArgs *linkArgs);
+                        double lat, double lon,
+                        int numberOfXY, int XY[], int CoordMode,                        
+                        LinkArgs *linkArgs);
 
 /**
  * Writes a polygon with an offset to the link socket, using two arrays for the
@@ -153,11 +153,11 @@ int WriteLinkPolyOffset(LinkSocket *link,
  */
 
 int WriteLinkPolyOffset2(LinkSocket *link,
-			 double lat, double lon,
-			 int numberOfXY, /*count of elements in X or Y array*/
-			 int X[], int Y[],
-			 int CoordMode,		        
-			 LinkArgs *linkArgs);
+                         double lat, double lon,
+                         int numberOfXY, /*count of elements in X or Y array*/
+                         int X[], int Y[],
+                         int CoordMode,                 
+                         LinkArgs *linkArgs);
 /**
  * Writes a buffered polygon to the link socket. <b>DEPRECATED</b>
  *
@@ -173,9 +173,9 @@ int WriteLinkPolyOffset2(LinkSocket *link,
 
 
 int BufferedWriteLinkPolyLatLon(LinkSocket *link, int ltype, 
-				int numberOflatlon, double latlon[],
-				int unit, int nsegs, 
-				LinkArgs *linkArgs);
+                                int numberOflatlon, double latlon[],
+                                int unit, int nsegs, 
+                                LinkArgs *linkArgs);
 
 /**
  * Writes a buffered polygon to the link socket.  This function allows you to 
@@ -196,10 +196,10 @@ int BufferedWriteLinkPolyLatLon(LinkSocket *link, int ltype,
  */
 
 int BufferedWriteLinkPolyLatLon2(LinkSocket *link, int ltype, 
-				 int numberOflatlon, /*size of lat or lon array*/
-				 double lat[], double lon[], /*These 2 arrays are of equal size*/
-				 int unit, int nsegs, 
-				 LinkArgs *linkArgs);
+                                 int numberOflatlon, /*size of lat or lon array*/
+                                 double lat[], double lon[], /*These 2 arrays are of equal size*/
+                                 int unit, int nsegs, 
+                                 LinkArgs *linkArgs);
 
 /**
  * Writes a buffered polygon in XY space to the link socket. <b>DEPRECATED</b>
@@ -215,8 +215,8 @@ int BufferedWriteLinkPolyLatLon2(LinkSocket *link, int ltype,
 
 
 int BufferedWriteLinkPolyXY(LinkSocket *link,  
-			    int numberOfXY, int XY[],		        
-			    LinkArgs *linkArgs);
+                            int numberOfXY, int XY[],                   
+                            LinkArgs *linkArgs);
 
 /**
  * Writes a buffered polygon in XY space to the link socket, allowing the X 
@@ -234,9 +234,9 @@ int BufferedWriteLinkPolyXY(LinkSocket *link,
 
 
 int BufferedWriteLinkPolyXY2(LinkSocket *link,  
-			     int numberOfXY, /*count of elements in X or Y array*/
-			     int X[], int Y[], /* These 2 arrays are of equal size*/
-			     LinkArgs *linkArgs);
+                             int numberOfXY, /*count of elements in X or Y array*/
+                             int X[], int Y[], /* These 2 arrays are of equal size*/
+                             LinkArgs *linkArgs);
 /**
  * Writes a buffered polygon with an offset to the link socket. <b>DEPRECATED</b>
  *
@@ -252,9 +252,9 @@ int BufferedWriteLinkPolyXY2(LinkSocket *link,
  */
 
 int BufferedWriteLinkPolyOffset(LinkSocket *link,
-				double lat, double lon,
-				int numberOfXY, int XY[], int CoordMode,		        
-				LinkArgs *linkArgs);
+                                double lat, double lon,
+                                int numberOfXY, int XY[], int CoordMode,                        
+                                LinkArgs *linkArgs);
 
 /**
  * Writes a buffered polygon with an offset to the link socket, using two 
@@ -272,10 +272,10 @@ int BufferedWriteLinkPolyOffset(LinkSocket *link,
  */
 
 int BufferedWriteLinkPolyOffset2(LinkSocket *linkSocket,
-				 double lat, double lon,
-				 int numberOfXY, /*count of elements in X or Y array*/
-				 int X[], int Y[],
-				 int CoordMode,		        
-				 LinkArgs *linkArgs);
+                                 double lat, double lon,
+                                 int numberOfXY, /*count of elements in X or Y array*/
+                                 int X[], int Y[],
+                                 int CoordMode,                 
+                                 LinkArgs *linkArgs);
 
 #endif 

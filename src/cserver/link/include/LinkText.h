@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/LinkText.h,v $
  * $RCSfile: LinkText.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -50,10 +50,10 @@
  */
 
 int WriteLinkTextLatLon(LinkSocket *link,
-			double lat, double lon,
-			char *String, char *fontAsString,
-			int justification, LinkArgs *linkArgs, int is_unicode,
-			int num_unicode_chars);
+                        double lat, double lon,
+                        char *String, char *fontAsString,
+                        int justification, LinkArgs *linkArgs, int is_unicode,
+                        int num_unicode_chars);
 
 /**
  * Writes text in X-Y space to the link socket.
@@ -71,9 +71,9 @@ int WriteLinkTextLatLon(LinkSocket *link,
  */
 
 int WriteLinkTextXY(LinkSocket *link, int x, int y, 
-		    char *String, char *fontAsString,
-		    int justification, LinkArgs *linkArgs, int is_unicode,
-		    int num_unicode_chars);
+                    char *String, char *fontAsString,
+                    int justification, LinkArgs *linkArgs, int is_unicode,
+                    int num_unicode_chars);
 
 /**
  * Writes text with an offset to the link socket.
@@ -93,10 +93,10 @@ int WriteLinkTextXY(LinkSocket *link, int x, int y,
  */
 
 int WriteLinkTextOffset(LinkSocket *link,
-			double lat, double lon, int x, int y,
-			char *String, char *fontAsString,
-			int justification, LinkArgs *linkArgs, int is_unicode,
-			int num_unicode_chars);
+                        double lat, double lon, int x, int y,
+                        char *String, char *fontAsString,
+                        int justification, LinkArgs *linkArgs, int is_unicode,
+                        int num_unicode_chars);
 
 /**
  * Writes buffered text to the link socket. <b>DEPRECATED</b>
@@ -117,10 +117,10 @@ int WriteLinkTextOffset(LinkSocket *link,
  */
 
 int BufferedWriteLinkTextLatLon(LinkSocket *link,
-				double lat, double lon,
-				char *String, char *fontAsString,
-				int justification, LinkArgs *linkArgs,
-				int is_unicode, int num_unicode_chars);
+                                double lat, double lon,
+                                char *String, char *fontAsString,
+                                int justification, LinkArgs *linkArgs,
+                                int is_unicode, int num_unicode_chars);
 
 
 /**
@@ -141,9 +141,9 @@ int BufferedWriteLinkTextLatLon(LinkSocket *link,
  */
 
 int BufferedWriteLinkTextXY(LinkSocket *link, int x, int y, 
-			    char *String, char *fontAsString,
-			    int justification, LinkArgs *linkArgs, 
-			    int is_unicode, int num_unicode_chars);
+                            char *String, char *fontAsString,
+                            int justification, LinkArgs *linkArgs, 
+                            int is_unicode, int num_unicode_chars);
 
 
 /**
@@ -166,9 +166,9 @@ int BufferedWriteLinkTextXY(LinkSocket *link, int x, int y,
  */
 
 int BufferedWriteLinkTextOffset(LinkSocket *link,
-				double lat, double lon, int x, int y,
-				char *String, char *fontAsString,
-				int justification, LinkArgs *linkArgs,
-				int is_unicode, int num_unicode_chars);
+                                double lat, double lon, int x, int y,
+                                char *String, char *fontAsString,
+                                int justification, LinkArgs *linkArgs,
+                                int is_unicode, int num_unicode_chars);
 
 #endif

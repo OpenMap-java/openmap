@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/toolLib/include/auto_output.h,v $
  * $RCSfile: auto_output.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -29,12 +29,12 @@
 
 typedef int (*AutoOutputBufCBProc)(
 #if NeedFunctionPrototypes
- char *,			/* clientData */
- int,				/* bytesAlreadySent */
- char *,			/* data */
- int				/* Success */
+ char *,                        /* clientData */
+ int,                           /* bytesAlreadySent */
+ char *,                        /* data */
+ int                            /* Success */
 #endif
-);		/* pointer to a procedure */
+);              /* pointer to a procedure */
 
 BEGIN_extern_C
 
@@ -45,18 +45,18 @@ extern int InitAutoOutputBufs(
  
 extern int CancelAutoOutput(
 #if NeedFunctionPrototypes
- int				/* fd */
+ int                            /* fd */
 #endif
 );
  
 extern int StartAutoOutput(
 #if NeedFunctionPrototypes
- int,				/* fd */
- char *,			/* data */
- int,				/* bytesToSend */
- char *,			/* clientData */
- AutoOutputBufCBProc,		/* callback */
- const char *			/* callbackName */
+ int,                           /* fd */
+ char *,                        /* data */
+ int,                           /* bytesToSend */
+ char *,                        /* clientData */
+ AutoOutputBufCBProc,           /* callback */
+ const char *                   /* callbackName */
 #endif
 );
 

@@ -14,65 +14,65 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/toolLib/include/free_mgr.h,v $
  * $RCSfile: free_mgr.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
  */
 
 /* 
- *	General Purpose free list management functions. This module 
- *	takes care of pre-allocating a block of memory and then handing
- *	it out in the size chunks specified. This allows more efficient use
- *	of malloc and prevents memory fragmentation. The drawback is that
- *	the memory involved is never freed again. When items are handed
- *	back to the free list, they are made available to be used again.
+ *      General Purpose free list management functions. This module 
+ *      takes care of pre-allocating a block of memory and then handing
+ *      it out in the size chunks specified. This allows more efficient use
+ *      of malloc and prevents memory fragmentation. The drawback is that
+ *      the memory involved is never freed again. When items are handed
+ *      back to the free list, they are made available to be used again.
  *
  *
  * Functions consist of 
  *
- * 	FreeList *ManageFreeList(offsetToNext, reallocSize, itemSize, name)
- * 	unsigned long offsetToNext;
- * 	int reallocSize;
- * 	int itemSize;
- *	char *name;
+ *      FreeList *ManageFreeList(offsetToNext, reallocSize, itemSize, name)
+ *      unsigned long offsetToNext;
+ *      int reallocSize;
+ *      int itemSize;
+ *      char *name;
  *
- *	Tells the free list manager to manage a pool of memory to be
- *	parcelled out in 'itemSize' chunks. The pool will contain
- *	'reallocSize' elements and when the pool runs out, that many
- *	more elements will be allocated. The 'offsetToNext' argument
- *	is used if you have linked lists of structures and want to return
- *	a list rather than single elements using ReturnListToFreeList()
- *	
+ *      Tells the free list manager to manage a pool of memory to be
+ *      parcelled out in 'itemSize' chunks. The pool will contain
+ *      'reallocSize' elements and when the pool runs out, that many
+ *      more elements will be allocated. The 'offsetToNext' argument
+ *      is used if you have linked lists of structures and want to return
+ *      a list rather than single elements using ReturnListToFreeList()
+ *      
  *
- * 	char *GetFromFreeList(freeList)
- * 	FreeList *freeList;
+ *      char *GetFromFreeList(freeList)
+ *      FreeList *freeList;
  *
- *	Returns a pointer to a properly sized element. The element is not
- *	zeroed before you get it.
- *
- *
- * 	int ReturnToFreeList(listElement, freeList)
- * 	char *listElement;
- * 	FreeList *freeList;
- *
- *	Hand a single element back to the free list pool.
+ *      Returns a pointer to a properly sized element. The element is not
+ *      zeroed before you get it.
  *
  *
- * 	int ReturnListToFreeList(list, freeList)
- * 	char *list;
- * 	FreeList *freeList;
+ *      int ReturnToFreeList(listElement, freeList)
+ *      char *listElement;
+ *      FreeList *freeList;
  *
- *	Hand a list of elements back to the free list pool. This only
- *	works if you specified a valid 'offsetToNext' in the
- *	ManageFreeList() call. The last pointer must be NULL!
+ *      Hand a single element back to the free list pool.
+ *
+ *
+ *      int ReturnListToFreeList(list, freeList)
+ *      char *list;
+ *      FreeList *freeList;
+ *
+ *      Hand a list of elements back to the free list pool. This only
+ *      works if you specified a valid 'offsetToNext' in the
+ *      ManageFreeList() call. The last pointer must be NULL!
  *
  * Macros consist of
  *
- *	OffsetInStruct(cast, element)
- *	cast is any 'typedef' or structure tag
- *	element is a member of the structure.
+ *      OffsetInStruct(cast, element)
+ *      cast is any 'typedef' or structure tag
+ *      element is a member of the structure.
  *
  * ------------------------------------------------------------------------ */
 
@@ -89,86 +89,86 @@ BEGIN_extern_C
 #endif
 
 #define CorruptedFreeList(listp) ((listp)->magic1 != freeListMagicNumber1 \
-				  ||(listp)->magic2 != freeListMagicNumber2)
+                                  ||(listp)->magic2 != freeListMagicNumber2)
 
 typedef struct freeListStruct
 {
-    char 		*magic1;
-    char 		*name;
-    char 		*list;
-    unsigned long 	offsetToNext;
-    int			reallocSize;
-    int		 	itemSize;
-    int			freeItems;
-    int			inUseItems;
+    char                *magic1;
+    char                *name;
+    char                *list;
+    unsigned long       offsetToNext;
+    int                 reallocSize;
+    int                 itemSize;
+    int                 freeItems;
+    int                 inUseItems;
     struct freeListStruct *next;
-    char 		*magic2;
+    char                *magic2;
 } FreeList;
 #define NoFreeList ((FreeList *) 0)
 
 extern FreeList *DebugManageFreeList(
 #if NeedFunctionPrototypes
- unsigned long,			/* offsetToNext */
- int,				/* reallocSize */
- int,				/* itemSize */
- const char *,			/* name */
- const char *,			/* file */
- int				/* line */
+ unsigned long,                 /* offsetToNext */
+ int,                           /* reallocSize */
+ int,                           /* itemSize */
+ const char *,                  /* name */
+ const char *,                  /* file */
+ int                            /* line */
 #endif
 );
  
 extern FreeList *ManageFreeList(
 #if NeedFunctionPrototypes
- unsigned long,			/* offsetToNext */
- int,				/* reallocSize */
- int,				/* itemSize */
- const char *			/* name */
+ unsigned long,                 /* offsetToNext */
+ int,                           /* reallocSize */
+ int,                           /* itemSize */
+ const char *                   /* name */
 #endif
 );
  
 extern char *DebugGetFromFreeList(
 #if NeedFunctionPrototypes
- FreeList *,			/* freeList */
- const char *,			/* file */
- int				/* line */
+ FreeList *,                    /* freeList */
+ const char *,                  /* file */
+ int                            /* line */
 #endif
 );
 
 extern char *GetFromFreeList(
 #if NeedFunctionPrototypes
- FreeList *			/* freeList */
+ FreeList *                     /* freeList */
 #endif
 );
 
 extern int DebugReturnListToFreeList(
 #if NeedFunctionPrototypes
- char *,			/* list */
- FreeList *,			/* freeList */
- const char *,			/* file */
- int				/* line */
+ char *,                        /* list */
+ FreeList *,                    /* freeList */
+ const char *,                  /* file */
+ int                            /* line */
 #endif
 );
 
 extern int ReturnListToFreeList(
 #if NeedFunctionPrototypes
- char *,			/* list */
- FreeList *			/* freeList */
+ char *,                        /* list */
+ FreeList *                     /* freeList */
 #endif
 );
 
 extern int DebugReturnToFreeList(
 #if NeedFunctionPrototypes
- char *,			/* listElement */
- FreeList *,			/* freeList */
- const char *,			/* file */
- int				/* line */
+ char *,                        /* listElement */
+ FreeList *,                    /* freeList */
+ const char *,                  /* file */
+ int                            /* line */
 #endif
 );
 
 extern int ReturnToFreeList(
 #if NeedFunctionPrototypes
- char *,			/* listElement */
- FreeList *			/* freeList */
+ char *,                        /* listElement */
+ FreeList *                     /* freeList */
 #endif
 );
 
@@ -185,7 +185,7 @@ extern int CheckIfAlreadyFree(
  * Always name free lists by prepending the type name to _FreeList
  * for these macros to work. E.g.
  *
- * FreeList *Foo_FreeList;	for free lists with Foo type elements.
+ * FreeList *Foo_FreeList;      for free lists with Foo type elements.
  */
 
 
@@ -193,24 +193,24 @@ extern int CheckIfAlreadyFree(
 #ifdef DebugFreeListPrintout
 #define NewListPool(type, n, next) \
     DebugManageFreeList(OffsetInStruct(type, next), (n), sizeof(type), \
-			"type", __FILE__, __LINE__);
+                        "type", __FILE__, __LINE__);
 #define NewPool(type, n) \
     DebugManageFreeList(0L, (n), sizeof(type), "type", __FILE__, __LINE__);
 #define New(type) \
     (type *) DebugGetFromFreeList(STRCAT(type,_FreeList), __FILE__, __LINE__);
 #define Delete(elt, type) \
     DebugReturnToFreeList((char *) elt,  STRCAT(type,_FreeList), \
-			  __FILE__, __LINE__);
+                          __FILE__, __LINE__);
 #define DeleteList(elt, type) \
     DebugReturnListToFreeList((char *) elt, STRCAT(type,_FreeList), \
-			      __FILE__, __LINE__);
+                              __FILE__, __LINE__);
 #else
 
 #define NewListPool(type, n, next) \
     ManageFreeList(OffsetInStruct(type, next), (n), sizeof(type), "type");
 #define NewPool(type, n) ManageFreeList(0L, (n), sizeof(type), "type");
     
-#define New(type)	\
+#define New(type)       \
     (type *) GetFromFreeList(STRCAT(type,_FreeList))
 #define Delete(elt, type) \
          ReturnToFreeList((char *) elt, STRCAT(type,_FreeList))

@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/LinkRectangle.h,v $
  * $RCSfile: LinkRectangle.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -46,10 +46,10 @@
  */
 
 int WriteLinkRectangleLatLon(LinkSocket *link, int ltype,
-			     double NWlat, double NWlon, /*NW = North West*/
-			     double SElat, double SElon, /*SE = South East*/
-			     int nsegs,
-			     LinkArgs *linkArgs);
+                             double NWlat, double NWlon, /*NW = North West*/
+                             double SElat, double SElon, /*SE = South East*/
+                             int nsegs,
+                             LinkArgs *linkArgs);
 
 /**
  * Writes a rectangle object in X-Y space to the link socket.  X-Y values are
@@ -65,9 +65,9 @@ int WriteLinkRectangleLatLon(LinkSocket *link, int ltype,
  */
 
 int WriteLinkRectangleXY(LinkSocket *link,  
-			 int ulx, int uly, /*ul = upper left */
-			 int lrx, int lry,		       
-			 LinkArgs *linkArgs);
+                         int ulx, int uly, /*ul = upper left */
+                         int lrx, int lry,                     
+                         LinkArgs *linkArgs);
 
 /**
  * Writes a rectangle object with an offset to the link socket.  X-Y values
@@ -85,10 +85,10 @@ int WriteLinkRectangleXY(LinkSocket *link,
  */
 
 int WriteLinkRectangleOffset(LinkSocket *link,
-			     double lat, double lon,
-			     int ulx, int uly,
-			     int lrx, int lry,			   
-			     LinkArgs *linkArgs);
+                             double lat, double lon,
+                             int ulx, int uly,
+                             int lrx, int lry,                     
+                             LinkArgs *linkArgs);
 
 /**
  * Writes a buffered rectangle object in lat-long space to the link socket.
@@ -108,10 +108,10 @@ int WriteLinkRectangleOffset(LinkSocket *link,
  */
 
 int BufferedWriteLinkRectangleLatLon(LinkSocket *link, int ltype,
-				     double NWlat, double NWlon, /*NW = North West*/
-				     double SElat, double SElon, /*SE = South East*/
-				     int nsegs,
-				     LinkArgs *linkArgs);
+                                     double NWlat, double NWlon, /*NW = North West*/
+                                     double SElat, double SElon, /*SE = South East*/
+                                     int nsegs,
+                                     LinkArgs *linkArgs);
 
 /**
  * Writes a buffered rectangle object in X-Y space to the link socket.  X-Y 
@@ -129,9 +129,9 @@ int BufferedWriteLinkRectangleLatLon(LinkSocket *link, int ltype,
  */
 
 int BufferedWriteLinkRectangleXY(LinkSocket *link,  
-				 int ulx, int uly, /*ul = upper left */
-				 int lrx, int lry,		       
-				 LinkArgs *linkArgs);
+                                 int ulx, int uly, /*ul = upper left */
+                                 int lrx, int lry,                     
+                                 LinkArgs *linkArgs);
 
 /**
  * Writes a buffered rectangle object with an offset to the link socket.  X-Y 
@@ -151,9 +151,9 @@ int BufferedWriteLinkRectangleXY(LinkSocket *link,
  */
 
 int BufferedWriteLinkRectangleOffset(LinkSocket *link,
-				     double lat, double lon,
-				     int ulx, int uly,
-				     int lrx, int lry,			   
-				     LinkArgs *linkArgs);
+                                     double lat, double lon,
+                                     int ulx, int uly,
+                                     int lrx, int lry,                     
+                                     LinkArgs *linkArgs);
 
 #endif

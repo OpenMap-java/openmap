@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/toolLib/include/mapped_files.h,v $
  * $RCSfile: mapped_files.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -50,15 +50,15 @@ extern Bool FileExists(
 
 int SeekMappedFile(
 #if NeedFunctionPrototypes
-		   FileEntry*, long offset, int ptrname
+                   FileEntry*, long offset, int ptrname
 #endif
-		   );
+                   );
 
 extern char* OpenMappedFile(
 #if NeedFunctionPrototypes
-			    char *name
+                            char *name
 #endif
-			    );
+                            );
 
 extern FileEntry* FEOpenMappedFile(
 #if NeedFunctionPrototypes

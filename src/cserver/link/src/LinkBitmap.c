@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/LinkBitmap.c,v $
  * $RCSfile: LinkBitmap.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -41,10 +41,10 @@ int BufferedWriteLinkBitmapHeader(char *toBuffer)
 {
     int byteswritten = 0;
     byteswritten += BufferedWriteChars(&toBuffer[byteswritten],
-				       BITMAP_HEADER,
-				       lBITMAP_HEADER);
+                                       BITMAP_HEADER,
+                                       lBITMAP_HEADER);
     byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
-					 GRAPHICTYPE_BITMAP);
+                                         GRAPHICTYPE_BITMAP);
     return byteswritten;
 }
 
@@ -52,23 +52,23 @@ int BufferedWriteLinkBitmapHeader(char *toBuffer)
   @param LinkSocket: the socket connection on which data is written
 */ 
 int BufferedWriteLinkBitmapLatLon(LinkSocket *linkSocket, 
-				  double lat, double lon, 
-				  int width, int height,
-				  int numberOfbytes, char *bitmap,
-				  LinkArgs *linkArgs)
+                                  double lat, double lon, 
+                                  int width, int height,
+                                  int numberOfbytes, char *bitmap,
+                                  LinkArgs *linkArgs)
 {
     int buffercount;
     char *buffer;
     int retval;
     
     buffercount = lBITMAP_HEADER + /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +  /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	2*N_BYTES_PER_FLOAT +  /*Bytes used by lat and lon*/
-	2*N_BYTES_PER_INTEGER +  /*Bytes used by width and height*/
-	N_BYTES_PER_INTEGER +  /*Bytes used by numberOfbytes*/
-	numberOfbytes +        /*Bytes used by bitmap*/   
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +  /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        2*N_BYTES_PER_FLOAT +  /*Bytes used by lat and lon*/
+        2*N_BYTES_PER_INTEGER +  /*Bytes used by width and height*/
+        N_BYTES_PER_INTEGER +  /*Bytes used by numberOfbytes*/
+        numberOfbytes +        /*Bytes used by bitmap*/   
+        LinkSizeOfLinkArgs(linkArgs);
     
     buffer = (char *)malloc(buffercount);
     if (buffer == NULL)
@@ -92,10 +92,10 @@ int BufferedWriteLinkBitmapLatLon(LinkSocket *linkSocket,
 }
 
 int WriteLinkBitmapLatLon(LinkSocket *linkSocket, 
-			  double lat, double lon, 
-			  int width, int height,
-			  int numberOfbytes, char *bitmap,
-			  LinkArgs *linkArgs)
+                          double lat, double lon, 
+                          int width, int height,
+                          int numberOfbytes, char *bitmap,
+                          LinkArgs *linkArgs)
 {
     int check = OK;
     check = check || WriteLinkBitmapHeader(linkSocket);
@@ -112,10 +112,10 @@ int WriteLinkBitmapLatLon(LinkSocket *linkSocket,
 }
 
 int BufferedWriteLinkBitmapXY(LinkSocket *linkSocket,
-			      int x, int y,
-			      int width, int height,
-			      int numberOfbytes, char *bitmap,
-			      LinkArgs *linkArgs)
+                              int x, int y,
+                              int width, int height,
+                              int numberOfbytes, char *bitmap,
+                              LinkArgs *linkArgs)
 {
     int buffercount;
     char *buffer;
@@ -124,12 +124,12 @@ int BufferedWriteLinkBitmapXY(LinkSocket *linkSocket,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lBITMAP_HEADER +  /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	4*N_BYTES_PER_INTEGER +   /*Bytes used by x,y,width and height*/
-	N_BYTES_PER_INTEGER +  /*Bytes used by numberOfbytes*/
-	numberOfbytes +        /*Bytes used by bitmap*/   
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        4*N_BYTES_PER_INTEGER +   /*Bytes used by x,y,width and height*/
+        N_BYTES_PER_INTEGER +  /*Bytes used by numberOfbytes*/
+        numberOfbytes +        /*Bytes used by bitmap*/   
+        LinkSizeOfLinkArgs(linkArgs);
     
     
     buffer = (char *)malloc(sizeof(buffercount));
@@ -155,10 +155,10 @@ int BufferedWriteLinkBitmapXY(LinkSocket *linkSocket,
 
 
 int WriteLinkBitmapXY(LinkSocket *linkSocket,
-		      int x, int y,
-		      int width, int height,
-		      int numberOfbytes, char *bitmap,
-		      LinkArgs *linkArgs)
+                      int x, int y,
+                      int width, int height,
+                      int numberOfbytes, char *bitmap,
+                      LinkArgs *linkArgs)
 {
     int check = OK;
     
@@ -176,11 +176,11 @@ int WriteLinkBitmapXY(LinkSocket *linkSocket,
 }
 
 int BufferedWriteLinkBitmapOffset(LinkSocket *linkSocket,
-				  double lat, double lon,
-				  int x, int y,			   
-				  int width, int height,
-				  int numberOfbytes, char *bitmap,
-				  LinkArgs *linkArgs)
+                                  double lat, double lon,
+                                  int x, int y,                    
+                                  int width, int height,
+                                  int numberOfbytes, char *bitmap,
+                                  LinkArgs *linkArgs)
 {
     int buffercount;
     char *buffer;
@@ -190,13 +190,13 @@ int BufferedWriteLinkBitmapOffset(LinkSocket *linkSocket,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lBITMAP_HEADER +  /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	2*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
-	4*N_BYTES_PER_INTEGER +   /*Bytes used by x,y,width and height*/
-	N_BYTES_PER_INTEGER +  /*Bytes used by numberOfbytes*/
-	numberOfbytes +        /*Bytes used by bitmap*/   
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        2*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
+        4*N_BYTES_PER_INTEGER +   /*Bytes used by x,y,width and height*/
+        N_BYTES_PER_INTEGER +  /*Bytes used by numberOfbytes*/
+        numberOfbytes +        /*Bytes used by bitmap*/   
+        LinkSizeOfLinkArgs(linkArgs);
     
     
     buffer = (char *)malloc(sizeof(buffercount));
@@ -223,11 +223,11 @@ int BufferedWriteLinkBitmapOffset(LinkSocket *linkSocket,
 }
 
 int WriteLinkBitmapOffset(LinkSocket *linkSocket,
-			  double lat, double lon,
-			  int x, int y,			   
-			  int width, int height,
-			  int numberOfbytes, char *bitmap,
-			  LinkArgs *linkArgs)
+                          double lat, double lon,
+                          int x, int y,                    
+                          int width, int height,
+                          int numberOfbytes, char *bitmap,
+                          LinkArgs *linkArgs)
 {
     int check = OK;
     check = check || WriteLinkBitmapHeader(linkSocket);

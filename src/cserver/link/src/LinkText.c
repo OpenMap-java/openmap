@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/LinkText.c,v $
  * $RCSfile: LinkText.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -40,11 +40,11 @@ int WriteTextHeader(LinkSocket *linkSocket)
 
 
 int WriteLinkTextLatLon(LinkSocket *linkSocket, 
-			double lat, double lon,
-			char *String, char *fontAsString,
-			int justification,
-			LinkArgs *linkArgs, int is_unicode, 
-			int num_unicode_chars)
+                        double lat, double lon,
+                        char *String, char *fontAsString,
+                        int justification,
+                        LinkArgs *linkArgs, int is_unicode, 
+                        int num_unicode_chars)
 {
     int check = OK;
 
@@ -68,10 +68,10 @@ int WriteLinkTextLatLon(LinkSocket *linkSocket,
 
 
 int WriteLinkTextXY(LinkSocket *linkSocket,
-		    int x, int y, 
-		    char *String, char *fontAsString,
-		    int justification,
-		    LinkArgs *linkArgs, int is_unicode, int num_unicode_chars)
+                    int x, int y, 
+                    char *String, char *fontAsString,
+                    int justification,
+                    LinkArgs *linkArgs, int is_unicode, int num_unicode_chars)
 {
     int check = OK;  
 
@@ -96,12 +96,12 @@ int WriteLinkTextXY(LinkSocket *linkSocket,
 
 
 int WriteLinkTextOffset(LinkSocket *linkSocket,
-			double lat, double lon,
-			int x, int y,
-			char *String, char *fontAsString,
-			int justification,		   
-			LinkArgs *linkArgs, int is_unicode, 
-			int num_unicode_chars)
+                        double lat, double lon,
+                        int x, int y,
+                        char *String, char *fontAsString,
+                        int justification,                 
+                        LinkArgs *linkArgs, int is_unicode, 
+                        int num_unicode_chars)
 {
     int check = OK;
 
@@ -130,18 +130,18 @@ int BufferedWriteTextHeader(char *toBuffer)
     int byteswritten = 0;
     
     byteswritten += BufferedWriteChars(&toBuffer[byteswritten],
-				       TEXT_HEADER, lTEXT_HEADER);
+                                       TEXT_HEADER, lTEXT_HEADER);
     byteswritten += BufferedWriteInteger(&toBuffer[byteswritten], GRAPHICTYPE_TEXT);
     return byteswritten;
 }
 
 
 int BufferedWriteLinkTextLatLon(LinkSocket *linkSocket, 
-				double lat, double lon,
-				char *String, char *fontAsString,
-				int justification,
-				LinkArgs *linkArgs, int is_unicode,
-				int num_unicode_chars)
+                                double lat, double lon,
+                                char *String, char *fontAsString,
+                                int justification,
+                                LinkArgs *linkArgs, int is_unicode,
+                                int num_unicode_chars)
 {
     int buffercount;
     char *buffer;
@@ -149,7 +149,7 @@ int BufferedWriteLinkTextLatLon(LinkSocket *linkSocket,
 
     /** Add font and string to properties. */
     retval = SetKeyValuePairInLinkArgs(linkArgs, LPC_LINKTEXTSTRING, String, 
-				       is_unicode, num_unicode_chars);
+                                       is_unicode, num_unicode_chars);
     if (retval == -1)
       return -1; /* Memory allocation error */
     retval = SetKeyValuePairInLinkArgs(linkArgs, LPC_LINKTEXTFONT, fontAsString, 0, 0);
@@ -160,11 +160,11 @@ int BufferedWriteLinkTextLatLon(LinkSocket *linkSocket,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lTEXT_HEADER +  /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	2*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
-	N_BYTES_PER_INTEGER +   /*Bytes used by justification*/
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        2*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
+        N_BYTES_PER_INTEGER +   /*Bytes used by justification*/
+        LinkSizeOfLinkArgs(linkArgs);
     
     buffer = (char *)malloc(buffercount);
     if (buffer == NULL)
@@ -186,9 +186,9 @@ int BufferedWriteLinkTextLatLon(LinkSocket *linkSocket,
 
 
 int BufferedWriteLinkTextXY(LinkSocket *linkSocket, int x, int y, 
-			    char *String, char *fontAsString,
-			    int justification, LinkArgs *linkArgs, 
-			    int is_unicode, int num_unicode_chars)
+                            char *String, char *fontAsString,
+                            int justification, LinkArgs *linkArgs, 
+                            int is_unicode, int num_unicode_chars)
 {
     int buffercount;
     char *buffer;
@@ -196,7 +196,7 @@ int BufferedWriteLinkTextXY(LinkSocket *linkSocket, int x, int y,
 
     /** Add font and string to properties. */
     retval = SetKeyValuePairInLinkArgs(linkArgs, LPC_LINKTEXTSTRING, String, 
-				       is_unicode, num_unicode_chars);
+                                       is_unicode, num_unicode_chars);
     if (retval == -1)
       return -1; /* Memory allocation error */
     retval = SetKeyValuePairInLinkArgs(linkArgs, LPC_LINKTEXTFONT, fontAsString, 0, 0);
@@ -207,10 +207,10 @@ int BufferedWriteLinkTextXY(LinkSocket *linkSocket, int x, int y,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lTEXT_HEADER +  /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	3*N_BYTES_PER_INTEGER +   /*Bytes used by x,y,justification*/
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        3*N_BYTES_PER_INTEGER +   /*Bytes used by x,y,justification*/
+        LinkSizeOfLinkArgs(linkArgs);
     
     buffer = (char *)malloc(buffercount);
     if (buffer == NULL)
@@ -232,10 +232,10 @@ int BufferedWriteLinkTextXY(LinkSocket *linkSocket, int x, int y,
 
 
 int BufferedWriteLinkTextOffset(LinkSocket *linkSocket,
-				double lat, double lon, int x, int y,
-				char *String, char *fontAsString,
-				int justification, LinkArgs *linkArgs,
-				int is_unicode, int num_unicode_chars)
+                                double lat, double lon, int x, int y,
+                                char *String, char *fontAsString,
+                                int justification, LinkArgs *linkArgs,
+                                int is_unicode, int num_unicode_chars)
 {
     int buffercount;
     char *buffer;
@@ -254,11 +254,11 @@ int BufferedWriteLinkTextOffset(LinkSocket *linkSocket,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lTEXT_HEADER +  /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	2*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
-	3*N_BYTES_PER_INTEGER +   /*Bytes used by x,y,justification*/
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        2*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
+        3*N_BYTES_PER_INTEGER +   /*Bytes used by x,y,justification*/
+        LinkSizeOfLinkArgs(linkArgs);
     
     buffer = (char *)malloc(buffercount);
     if (buffer == NULL)

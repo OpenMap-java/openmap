@@ -96,11 +96,11 @@ struct Descriptor
     unsigned :20;  /*unused bits*/
 /**@#+*/
     unsigned SERVER_NOTIFICATION  :1; /*Server should be notified even
-					if the client acts on some
-					property in a graphic during
-					gesture handling. */
+                                        if the client acts on some
+                                        property in a graphic during
+                                        gesture handling. */
     unsigned CLIENT_NOTIFICATION  :1; /*server is interested only in 
-					messages whose bit value is set*/
+                                        messages whose bit value is set*/
     unsigned IS_GRAPHIC_INVOLVED  :1; 
     unsigned KEY_RELEASED         :1; /*ON KEYBOARD*/
     unsigned KEY_PRESSED          :1; /*ON KEYBOARD*/
@@ -134,9 +134,9 @@ struct Modifier
     unsigned KEY_SHIFT_PRESSED          :1; 
     unsigned KEY_CONTROL_PRESSED        :1;
     unsigned META_CHANGE                :1; /*Meta key pressed OR Mouse's 3rd button 
-					      changed its state*/
+                                              changed its state*/
     unsigned ALT_CHANGE                 :1; /*Alt key down OR Mosue's 2nd button 
-					      changed its state*/
+                                              changed its state*/
     unsigned KEY_ALT_GRAPH_PRESSED      :1; /*State changed of alt graph key*/
 };
 typedef struct Modifier Modifier;

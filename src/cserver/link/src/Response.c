@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/Response.c,v $
  * $RCSfile: Response.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -36,28 +36,28 @@ DebugVariable(LINK, "LINK", 0x01); /* setenv LINKSERVER "LINK"*/
 
 int WriteMapResponseHeader(LinkSocket *link, LinkArgs *linkArgs){
     if (Debug(LINK))
-	printf("WriteMapResponseHeader: writing MAP Response header %s\n",
-	       GRAPHICS_RESPONSE_HEADER);
+        printf("WriteMapResponseHeader: writing MAP Response header %s\n",
+               GRAPHICS_RESPONSE_HEADER);
     WriteChars(link, GRAPHICS_RESPONSE_HEADER, lGRAPHICS_RESPONSE_HEADER); 
 
     if (Debug(LINK))
-	printf("WriteMapResponseHeader: writing version %f\n", VERSION);
+        printf("WriteMapResponseHeader: writing version %f\n", VERSION);
     WriteFloat(link, VERSION); /*writing version 0.2*/
     if (WriteLinkArgs(link, linkArgs) == -1)
       return -1; /* Memory allocation error */
     if (Debug(LINK))
-	printf("WriteMapResponseHeader: All done writing header...\n");
+        printf("WriteMapResponseHeader: All done writing header...\n");
     return OK;
 }
 
 int WriteActionResponseHeader(LinkSocket *link, LinkArgs *linkArgs){
     if (Debug(LINK))
-	printf("WriteActionResponseHeader: writing ACTION Response header %s\n",
-	       GESTURE_RESPONSE_HEADER);
+        printf("WriteActionResponseHeader: writing ACTION Response header %s\n",
+               GESTURE_RESPONSE_HEADER);
     WriteChars(link, GESTURE_RESPONSE_HEADER, lGESTURE_RESPONSE_HEADER); 
 
     if (Debug(LINK))
-	printf("WriteActionResponseHeader: writing version %f\n", VERSION);
+        printf("WriteActionResponseHeader: writing version %f\n", VERSION);
     WriteFloat(link, VERSION); /*writing version 0.2*/
     if (WriteLinkArgs(link, linkArgs) == -1)
       return -1; /* Memory allocation error */
@@ -69,7 +69,7 @@ void EndSection(LinkSocket *link){
     Socketflush(link);
 
     if (Debug(LINK))
-	printf("EndSection: Wrote section end symbol and flushed socket...\n");
+        printf("EndSection: Wrote section end symbol and flushed socket...\n");
 }
 
 void EndTotal(LinkSocket *link){
@@ -77,6 +77,6 @@ void EndTotal(LinkSocket *link){
     Socketflush(link);
 
     if (Debug(LINK))
-	printf("EndSection: Wrote total end symbol and flushed socket...\n");
+        printf("EndSection: Wrote total end symbol and flushed socket...\n");
 }
 

@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/LinkArgs.c,v $
  * $RCSfile: LinkArgs.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -90,7 +90,7 @@ int SetKeyDoublePairInLinkArgs(LinkArgs *linkArgs, char *key, double value){
 }
 
 int SetKeyValuePairInLinkArgs(LinkArgs *linkArgs, char *key, char *value, 
-			      int is_unicode, int num_unicode_chars){
+                              int is_unicode, int num_unicode_chars){
     int count, numberOfArgs;
     LinkString *oldStrings;
     int keyExists = 0;
@@ -119,31 +119,31 @@ int SetKeyValuePairInLinkArgs(LinkArgs *linkArgs, char *key, char *value,
        * We use unicodecmp() here to compare two Unicode strings.
        * See the comments in LinkSocket.c for more information.
        */
-	if (!unicodecmp(temp_key, ls->text, strlen(key) * 2)) {
-	  keyExists = 1;
-	  (++ls)->numberOfChars = strlen(value) * 2;
-	  free(ls->text); /* Dump the old text */
-	  ls->text = (char*)malloc(ls->numberOfChars + 1);
-	  if (ls->text == NULL) 
-	    return -1; /* Memory allocation error */
-	  
-	  /*
-	   * This was originally handled with a strcpy(ls->text, temp_value),
-	   * and would have failed for any Unicode strings as values.
-	   * Note that if Unicode chars are passed as values in the first
-	   * place, we need to pass through the number of characters they
-	   * take up; strlen() on that value would fail miserably.
-	   */
+        if (!unicodecmp(temp_key, ls->text, strlen(key) * 2)) {
+          keyExists = 1;
+          (++ls)->numberOfChars = strlen(value) * 2;
+          free(ls->text); /* Dump the old text */
+          ls->text = (char*)malloc(ls->numberOfChars + 1);
+          if (ls->text == NULL) 
+            return -1; /* Memory allocation error */
+          
+          /*
+           * This was originally handled with a strcpy(ls->text, temp_value),
+           * and would have failed for any Unicode strings as values.
+           * Note that if Unicode chars are passed as values in the first
+           * place, we need to pass through the number of characters they
+           * take up; strlen() on that value would fail miserably.
+           */
 
-	  for (i = 0; 
-	       i < (is_unicode ? num_unicode_chars : strlen(value) * 2);
-	       i++) {
-	    ls->text[0] = temp_value[i];
-	  }
-	} 
-	else {
-	  ls+=2;
-	}
+          for (i = 0; 
+               i < (is_unicode ? num_unicode_chars : strlen(value) * 2);
+               i++) {
+            ls->text[0] = temp_value[i];
+          }
+        } 
+        else {
+          ls+=2;
+        }
     }
 
     free(temp_key); /* Free up the memory used to translate into Unicode */
@@ -167,8 +167,8 @@ int SetKeyValuePairInLinkArgs(LinkArgs *linkArgs, char *key, char *value,
       linkArgs->args = (LinkString *)malloc(sizeof(LinkString) * (numberOfArgs + 2));
 
       if (NULL == linkArgs->args) 
-	return -1; /* Memory allocation error. */
-	
+        return -1; /* Memory allocation error. */
+        
       /** Copy the old strings to the new memory.*/
       memcpy(linkArgs->args, oldStrings, sizeof(LinkString)*numberOfArgs);
 
@@ -180,7 +180,7 @@ int SetKeyValuePairInLinkArgs(LinkArgs *linkArgs, char *key, char *value,
       linkArgs->args[numberOfArgs].text = (char *)malloc(count + 1);
 
       if (linkArgs->args[numberOfArgs].text == NULL)
-	return -1; /* Memory allocation error */
+        return -1; /* Memory allocation error */
 
       /*
        * Ideally, we should be able to use strcpy() to copy the contents of 
@@ -190,7 +190,7 @@ int SetKeyValuePairInLinkArgs(LinkArgs *linkArgs, char *key, char *value,
        */
 
       for (i = 0; i < count; i++)
-	linkArgs->args[numberOfArgs].text[i] = temp_key[i];
+        linkArgs->args[numberOfArgs].text[i] = temp_key[i];
 
       /** And now the value. */
       numberOfArgs++;
@@ -202,10 +202,10 @@ int SetKeyValuePairInLinkArgs(LinkArgs *linkArgs, char *key, char *value,
       linkArgs->args[numberOfArgs].text = (char *)malloc(count + 1);
 
       if (NULL == linkArgs->args[numberOfArgs].text) 
-	return -1; /* Memory allocation error */
+        return -1; /* Memory allocation error */
 
       for (i = 0; i < count; i++)
-	linkArgs->args[numberOfArgs].text[i] = temp_value[i];
+        linkArgs->args[numberOfArgs].text[i] = temp_value[i];
 
       /** Modify the count to include the new key and value. */
       linkArgs->numberOfArgs+=2;
@@ -234,11 +234,11 @@ int RemoveKeyFromLinkArgs(LinkArgs *linkArgs, char *key){
 
     while (ls - (linkArgs->args) < numberOfArgs){
       if (!unicodecmp(temp_key, ls->text, strlen(key) * 2)) {
-	keyExists = 1;
-	break;
+        keyExists = 1;
+        break;
       } 
       else {
-	ls+=2;
+        ls+=2;
       }
     }
 
@@ -253,36 +253,36 @@ int RemoveKeyFromLinkArgs(LinkArgs *linkArgs, char *key){
       linkArgs->args = (LinkString *)malloc(sizeof(LinkString) * (numberOfArgs - 2));
       
       if(NULL == linkArgs->args) 
-	  return -1; /* Memory allocation error */
+          return -1; /* Memory allocation error */
 
       j = 0;
       for (i = 0; i < numberOfArgs; i++){
-	if (!unicodecmp(oldStrings[i].text, temp_key, strlen(key) *2)) {
-	  free(oldStrings[i++].text);
-	  free(oldStrings[i++].text);
-	} 
-	else {
-	  /* Copy the good pair.... */
-	  linkArgs->args[j].numberOfChars = oldStrings[i].numberOfChars;
-	  for (k = 0; k < oldStrings[i].numberOfChars; k++) {
-	    linkArgs->args[j].text[k] = oldStrings[i].text[k];
-	  }
-	  i++;
-	  j++;
+        if (!unicodecmp(oldStrings[i].text, temp_key, strlen(key) *2)) {
+          free(oldStrings[i++].text);
+          free(oldStrings[i++].text);
+        } 
+        else {
+          /* Copy the good pair.... */
+          linkArgs->args[j].numberOfChars = oldStrings[i].numberOfChars;
+          for (k = 0; k < oldStrings[i].numberOfChars; k++) {
+            linkArgs->args[j].text[k] = oldStrings[i].text[k];
+          }
+          i++;
+          j++;
 
-	  linkArgs->args[j].numberOfChars = oldStrings[i].numberOfChars;
-	  for (k = 0; k < oldStrings[i].numberOfChars; k++) {
-	    linkArgs->args[j].text[k] = oldStrings[i].text[k];
-	  }
-	  i++;
-	  j++;
-	}
+          linkArgs->args[j].numberOfChars = oldStrings[i].numberOfChars;
+          for (k = 0; k < oldStrings[i].numberOfChars; k++) {
+            linkArgs->args[j].text[k] = oldStrings[i].text[k];
+          }
+          i++;
+          j++;
+        }
       }
-	
-	/** Modify the count to remove the specified key and value. */
-	linkArgs->numberOfArgs-=2;
-	/** Free up the structure holding the old pointers.*/
-	free(oldStrings);
+        
+        /** Modify the count to remove the specified key and value. */
+        linkArgs->numberOfArgs-=2;
+        /** Free up the structure holding the old pointers.*/
+        free(oldStrings);
     }
     free(temp_key);
     return OK;
@@ -294,7 +294,7 @@ int WriteLinkArgString(LinkSocket *linkSocket, LinkString *str)
     /*Write number of characters in string*/
     
 /*     if (Debug(LINKARGS)){ */
-/* 	printf("WriteLinkArgString: %d characters: %s\n", str->numberOfChars, str->text); */
+/*      printf("WriteLinkArgString: %d characters: %s\n", str->numberOfChars, str->text); */
 /*     } */
 
     check = check || WriteInteger(linkSocket, str->numberOfChars / 2 );
@@ -316,8 +316,8 @@ int ReadLinkString(LinkSocket *linkSocket, LinkString *args)
     /*Read them from socket. */
     if(args->numberOfChars > 0)
     {
-	check = check || ReadChars(linkSocket, args->text, args->numberOfChars);
-	args->text[args->numberOfChars] = NULL;
+        check = check || ReadChars(linkSocket, args->text, args->numberOfChars);
+        args->text[args->numberOfChars] = NULL;
     }
 
     return check;
@@ -336,9 +336,9 @@ int BufferedWriteLinkString(char *toBuffer, LinkString *str)
 {
     int byteswritten = 0;
     byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
-					 str->numberOfChars);
+                                         str->numberOfChars);
     byteswritten += BufferedWriteChars(&toBuffer[byteswritten],
-				       str->text, str->numberOfChars);
+                                       str->text, str->numberOfChars);
     return byteswritten;
 }
 
@@ -361,11 +361,11 @@ int ReadLinkArgs(LinkSocket *linkSocket, LinkArgs *linkargs)
     check = check || ReadInteger(linkSocket, &(linkargs->numberOfArgs)); 
 
     if (Debug(LINKARGS)) printf ("ReadLinkArgs: reading %d args: \n",
-				 linkargs->numberOfArgs);
+                                 linkargs->numberOfArgs);
 
     /*Allocate memory*/
     linkargs->args = (LinkString *)malloc(sizeof(LinkString) *
-					  linkargs->numberOfArgs);
+                                          linkargs->numberOfArgs);
     if(NULL == linkargs->args)
       return -1; /* Memory allocation error */
 
@@ -373,26 +373,26 @@ int ReadLinkArgs(LinkSocket *linkSocket, LinkArgs *linkargs)
     for(i=0; i < linkargs->numberOfArgs; i++ )
     {
 
-	/*
-	  though args is a string object, we do not use readlinkstring as below,
-	  because readlinkstring reads only chars, where as we need unicode chars
+        /*
+          though args is a string object, we do not use readlinkstring as below,
+          because readlinkstring reads only chars, where as we need unicode chars
        
-	  check = check & ReadLinkString(linkSocket, &linkargs->args[i]);
-	*/     
-	check = check || ReadInteger(linkSocket, &(linkargs->args[i].numberOfChars));	
-	linkargs->args[i].text = (char *)malloc(linkargs->args[i].numberOfChars + 1);	
-	if(NULL == linkargs->args[i].text)
-	  return -1; /* Memory allocation error */
+          check = check & ReadLinkString(linkSocket, &linkargs->args[i]);
+        */     
+        check = check || ReadInteger(linkSocket, &(linkargs->args[i].numberOfChars));   
+        linkargs->args[i].text = (char *)malloc(linkargs->args[i].numberOfChars + 1);   
+        if(NULL == linkargs->args[i].text)
+          return -1; /* Memory allocation error */
 
-	/*Read them from socket. */
-	check = check || ReadUnicodeChars(linkSocket, linkargs->args[i].text, 
-					  linkargs->args[i].numberOfChars);
-	if (check == -1)
-	  return -1; /* Memory allocation error */
+        /*Read them from socket. */
+        check = check || ReadUnicodeChars(linkSocket, linkargs->args[i].text, 
+                                          linkargs->args[i].numberOfChars);
+        if (check == -1)
+          return -1; /* Memory allocation error */
 
-	linkargs->args[i].text[linkargs->args[i].numberOfChars] = '\0';	
-	if (Debug(LINKARGS)) printf ("ReadLinkArgs: reading arg %d|%s\n", i, 
-				     linkargs->args[i].text);
+        linkargs->args[i].text[linkargs->args[i].numberOfChars] = '\0'; 
+        if (Debug(LINKARGS)) printf ("ReadLinkArgs: reading arg %d|%s\n", i, 
+                                     linkargs->args[i].text);
     }
     
     return check;
@@ -411,10 +411,10 @@ int WriteLinkArgs(LinkSocket *linkSocket, LinkArgs *linkArgs)
     check = check || WriteInteger(linkSocket, linkArgs->numberOfArgs); 
 
     for (i = 0; i < linkArgs->numberOfArgs; i++){
-	ls = (linkArgs->args) + i;
-	check = check || WriteLinkArgString(linkSocket, ls);
-	if (check == -1)
-	  return -1; /* Memory allocation error */
+        ls = (linkArgs->args) + i;
+        check = check || WriteLinkArgString(linkSocket, ls);
+        if (check == -1)
+          return -1; /* Memory allocation error */
     }
     return check;
 }
@@ -424,13 +424,13 @@ int BufferedWriteLinkArgs(char *toBuffer, LinkArgs *linkArgs)
     int i;
     int byteswritten = 0;
     byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
-					 linkArgs->numberOfArgs);
+                                         linkArgs->numberOfArgs);
     for (i = 0; i < linkArgs->numberOfArgs; i++){
-	byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
-					     linkArgs->args[i].numberOfChars);
-	byteswritten += BufferedWriteUnicodeChars(&toBuffer[byteswritten],
-						  linkArgs->args[i].text,
-						  linkArgs->args[i].numberOfChars);
+        byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
+                                             linkArgs->args[i].numberOfChars);
+        byteswritten += BufferedWriteUnicodeChars(&toBuffer[byteswritten],
+                                                  linkArgs->args[i].text,
+                                                  linkArgs->args[i].numberOfChars);
     }
     return byteswritten;
 }
@@ -447,16 +447,16 @@ int LinkSizeOfLinkArgs(LinkArgs *linkArgs)
     size += N_BYTES_PER_INTEGER;
     for (i = 0; i < linkArgs->numberOfArgs; i++)
     {
-	size += N_BYTES_PER_INTEGER;
+        size += N_BYTES_PER_INTEGER;
 
-	/*
-	 * ### bmackiew: Now that this data is stored in Unicode, we need
-	 *               only count the number of characters stored.
-	 */
+        /*
+         * ### bmackiew: Now that this data is stored in Unicode, we need
+         *               only count the number of characters stored.
+         */
 #if 0
-	size += N_CHARS_PER_UNICODE_CHAR*linkArgs->args[i].numberOfChars;
+        size += N_CHARS_PER_UNICODE_CHAR*linkArgs->args[i].numberOfChars;
 #else
-	size += linkArgs->args[i].numberOfChars;
+        size += linkArgs->args[i].numberOfChars;
 #endif
     }
     return size;
@@ -466,7 +466,7 @@ void FreeLinkArgs(LinkArgs *linkargs)
 {
     int i;
     for(i=0; i < linkargs->numberOfArgs; i++){
-	FreeLinkString(&linkargs->args[i]);
+        FreeLinkString(&linkargs->args[i]);
     }
     free(linkargs->args);
 }

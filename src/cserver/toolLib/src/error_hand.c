@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/toolLib/src/error_hand.c,v $
  * $RCSfile: error_hand.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -35,27 +35,27 @@
 #include "error_hand.h"
 #include "stringutil.h"
 
-char 		msgBuf[4096];
-static char	errorString[4096];
+char            msgBuf[4096];
+static char     errorString[4096];
 
-static int	messageSaveLevel = 	DefaultMessageLevel;
-static const int *userInteger   =	(int *) 0;
-static const char *userString   =	(char *) 0;
-static const char *statusFile   =	(char *) 0;
+static int      messageSaveLevel =      DefaultMessageLevel;
+static const int *userInteger   =       (int *) 0;
+static const char *userString   =       (char *) 0;
+static const char *statusFile   =       (char *) 0;
 
 /*+------------------------------------------------------------------------
- *	CustomizeErrorHandler()
+ *      CustomizeErrorHandler()
  *
- *	Allows the user to set options for the error handler
+ *      Allows the user to set options for the error handler
  *
- *	RETURNS:
- *		Old save level
+ *      RETURNS:
+ *              Old save level
  *________________________________________________________________________*/
 
 int CustomizeErrorHandler(const char *string,
-			   const int *integerPointer,
-			   const char *fileName,
-			   int saveLevel)
+                           const int *integerPointer,
+                           const char *fileName,
+                           int saveLevel)
 {
     int temp = messageSaveLevel;
     
@@ -68,35 +68,35 @@ int CustomizeErrorHandler(const char *string,
 }
 
 /*+------------------------------------------------------------------------
- *	ErrorMessage()
+ *      ErrorMessage()
  *
- *	Builds a standard message of the form:
+ *      Builds a standard message of the form:
  *
- * 	'xxx %d %s at Sat Mar  4 20:41:53 1989 - file:line %s\n'
- *	
- *		Where %s's are filled in with the strings given,
- *		and xxx is the string given with a call to set_error_ident(),
- *		and %d is the value in the int pointer given to 
- *		set_error_int_ptr().
+ *      'xxx %d %s at Sat Mar  4 20:41:53 1989 - file:line %s\n'
+ *      
+ *              Where %s's are filled in with the strings given,
+ *              and xxx is the string given with a call to set_error_ident(),
+ *              and %d is the value in the int pointer given to 
+ *              set_error_int_ptr().
  *
- *	RETURNS:
- *		Nothing
+ *      RETURNS:
+ *              Nothing
  *________________________________________________________________________*/
 
 static StringList messageLevels[] =
 {
- { SaveInfoMessages, 		"INFO"},
- { SaveDebugMessages,		"DEBUG"},
- { SaveWarningMessages,		"WARNING"},
- { SaveFatalMessages,		"FATAL"},
- { SaveStatusMessages,		"STATUS"}, 
+ { SaveInfoMessages,            "INFO"},
+ { SaveDebugMessages,           "DEBUG"},
+ { SaveWarningMessages,         "WARNING"},
+ { SaveFatalMessages,           "FATAL"},
+ { SaveStatusMessages,          "STATUS"}, 
 };
  
 void HandleErrorMessage(int level,
-			const char *string, 
-			const char *file, 
-			int line,
-			int error)
+                        const char *string, 
+                        const char *file, 
+                        int line,
+                        int error)
 {
     FILE *fp;
     char *levelString;
@@ -105,7 +105,7 @@ void HandleErrorMessage(int level,
 /* #define MAC_OS_X */
 
 #ifdef MAC_OS_X
-    extern __const int sys_nerr;		/* perror(3) external variables */
+    extern __const int sys_nerr;                /* perror(3) external variables */
     extern __const char *__const sys_errlist[];
 #else
     extern char *sys_errlist[];
@@ -131,11 +131,11 @@ void HandleErrorMessage(int level,
 
     if(error > 0 && error < sys_nerr)
     {
-	sprintf(errorString, ": %s (%d)", sys_errlist[error], error);
+        sprintf(errorString, ": %s (%d)", sys_errlist[error], error);
     }
     else
     {
-	errorString[0] = '\0';
+        errorString[0] = '\0';
     }
 
     /*
@@ -147,56 +147,56 @@ void HandleErrorMessage(int level,
 #ifdef USE_TIME
     /*
      * Construct a nice, ascii time. The ctime function returns a string
-     *	containing a newline. It has to be stripped out.
+     *  containing a newline. It has to be stripped out.
      */
 
     now = time(NULL);
     strcpy(timeString, ctime(&now));
     tempChar = strrchr(timeString, '\n');
     if(tempChar)
-	*tempChar = '\0';
+        *tempChar = '\0';
 #else
     which++;
 #endif
 
     if(!(messageSaveLevel & NoStderrOutput))
     {
-	/*
-	 * Print the message to the console/stderr
-	 */
-	
-	if(userString != NULL)
-	{
-	    fprintf(stderr, "%s ", userString);
-	}
-	
-	if(userInteger != NULL)
-	{
-	    fprintf(stderr, "%d ", *userInteger);
-	}
-	
+        /*
+         * Print the message to the console/stderr
+         */
+        
+        if(userString != NULL)
+        {
+            fprintf(stderr, "%s ", userString);
+        }
+        
+        if(userInteger != NULL)
+        {
+            fprintf(stderr, "%d ", *userInteger);
+        }
+        
 #ifdef USE_TIME
-	fprintf(stderr,
-		"%-*s at %s - %14s:%04d %s %s\n",
-		DefaultStatusStringLength,
-		levelString,
-		timeString,
-		fileName,
-		line,
-		string,
-	        errorString);
+        fprintf(stderr,
+                "%-*s at %s - %14s:%04d %s %s\n",
+                DefaultStatusStringLength,
+                levelString,
+                timeString,
+                fileName,
+                line,
+                string,
+                errorString);
 #else
-	fprintf(stderr,
-		"%-*s %04d %14s:%04d %s %s\n",
-		DefaultStatusStringLength,
-		levelString,
-		which,
-		fileName,
-		line,
-		string,
-		errorString);
+        fprintf(stderr,
+                "%-*s %04d %14s:%04d %s %s\n",
+                DefaultStatusStringLength,
+                levelString,
+                which,
+                fileName,
+                line,
+                string,
+                errorString);
 #endif
-	
+        
     }
 
     /*
@@ -204,7 +204,7 @@ void HandleErrorMessage(int level,
      */
     
     if(statusFile == NULL)
-	return;
+        return;
     
     /*
      * Check the level to see if it's
@@ -213,7 +213,7 @@ void HandleErrorMessage(int level,
      */
     
     if((level & messageSaveLevel) == 0)
-	return;
+        return;
     
     /*
      * Open the report file for appending.
@@ -221,38 +221,38 @@ void HandleErrorMessage(int level,
 
     fp = fopen(statusFile, "a+");
     if(fp == NULL)
-	return;
+        return;
 
     if(userString != NULL)
     {
-	fprintf(fp, "%s ", userString);
+        fprintf(fp, "%s ", userString);
     }
 
     if(userInteger != NULL)
     {
-	fprintf(fp, "%d ", *userInteger);
+        fprintf(fp, "%d ", *userInteger);
     }
     
 #ifdef USE_TIME
     fprintf(fp,
-	    "%-*s at %s - %14s:%d %s %s\n",
-	    DefaultStatusStringLength,
-	    levelString,
-	    timeString,
-	    fileName,
-	    line,
-	    string,
-	    errorString);
+            "%-*s at %s - %14s:%d %s %s\n",
+            DefaultStatusStringLength,
+            levelString,
+            timeString,
+            fileName,
+            line,
+            string,
+            errorString);
 #else
     fprintf(fp,
-	    "%-*s %04d %14s:%d %s %s\n",
-	    DefaultStatusStringLength,
-	    levelString,
-	    which,
-	    fileName,
-	    line,
-	    string,
-	    errorString);
+            "%-*s %04d %14s:%d %s %s\n",
+            DefaultStatusStringLength,
+            levelString,
+            which,
+            fileName,
+            line,
+            string,
+            errorString);
 #endif
 
     /*
@@ -261,7 +261,7 @@ void HandleErrorMessage(int level,
      */
 
     if(messageSaveLevel & SyncAfterWritingError)
-	fsync(fileno(fp));
+        fsync(fileno(fp));
     
     fclose(fp);
 }

@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/LinkRectangle.c,v $
  * $RCSfile: LinkRectangle.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -33,16 +33,16 @@ int WriteRectangleHeader(LinkSocket *linkSocket)
 {
     int check = OK;
     check = check || WriteChars(linkSocket, RECTANGLE_HEADER,
-				lRECTANGLE_HEADER);
+                                lRECTANGLE_HEADER);
     check = check || WriteInteger(linkSocket, GRAPHICTYPE_RECTANGLE);
     return check;
 }
 
 int WriteLinkRectangleLatLon(LinkSocket *linkSocket, int ltype,
-			     double NWlat, double NWlon, /*NW = North West*/
-			     double SElat, double SElon, /*SE = South East*/
-			     int nsegs,
-			     LinkArgs *linkArgs)
+                             double NWlat, double NWlon, /*NW = North West*/
+                             double SElat, double SElon, /*SE = South East*/
+                             int nsegs,
+                             LinkArgs *linkArgs)
 {
     int check = OK;
     check = check || WriteRectangleHeader(linkSocket);
@@ -61,9 +61,9 @@ int WriteLinkRectangleLatLon(LinkSocket *linkSocket, int ltype,
 
 
 int WriteLinkRectangleXY(LinkSocket *linkSocket,
-			 int ulx, int uly, 
-			 int lrx, int lry,
-			 LinkArgs *linkArgs)
+                         int ulx, int uly, 
+                         int lrx, int lry,
+                         LinkArgs *linkArgs)
 {
     int check = OK;
     check = check || WriteRectangleHeader(linkSocket);
@@ -80,10 +80,10 @@ int WriteLinkRectangleXY(LinkSocket *linkSocket,
 
 
 int WriteLinkRectangleOffset(LinkSocket *linkSocket,
-			     double lat, double lon,
-			     int ulx, int uly,
-			     int lrx, int lry,			   
-			     LinkArgs *linkArgs)
+                             double lat, double lon,
+                             int ulx, int uly,
+                             int lrx, int lry,                     
+                             LinkArgs *linkArgs)
 {
     int check = OK;
     check = check || WriteRectangleHeader(linkSocket);
@@ -104,19 +104,19 @@ int BufferedWriteRectangleHeader(char *toBuffer)
 {
     int byteswritten = 0;
     byteswritten += BufferedWriteChars(&toBuffer[byteswritten],
-				       RECTANGLE_HEADER,
-				       lRECTANGLE_HEADER);
+                                       RECTANGLE_HEADER,
+                                       lRECTANGLE_HEADER);
     byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
-					 GRAPHICTYPE_RECTANGLE);
+                                         GRAPHICTYPE_RECTANGLE);
     return byteswritten;
 }
 
 
 int BufferedWriteLinkRectangleLatLon(LinkSocket *linkSocket, int ltype,
-				     double NWlat, double NWlon, /*NW = North West*/
-				     double SElat, double SElon, /*SE = South East*/
-				     int nsegs,
-				     LinkArgs *linkArgs)
+                                     double NWlat, double NWlon, /*NW = North West*/
+                                     double SElat, double SElon, /*SE = South East*/
+                                     int nsegs,
+                                     LinkArgs *linkArgs)
 {
     int buffercount;
     char *buffer;
@@ -125,11 +125,11 @@ int BufferedWriteLinkRectangleLatLon(LinkSocket *linkSocket, int ltype,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lRECTANGLE_HEADER +  /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	4*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
-	2*N_BYTES_PER_INTEGER +   /*Bytes used by ltype and nsegs*/
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        4*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
+        2*N_BYTES_PER_INTEGER +   /*Bytes used by ltype and nsegs*/
+        LinkSizeOfLinkArgs(linkArgs);
     
     buffer = (char *)malloc(buffercount);
     if (buffer == NULL)
@@ -154,9 +154,9 @@ int BufferedWriteLinkRectangleLatLon(LinkSocket *linkSocket, int ltype,
 
 
 int BufferedWriteLinkRectangleXY(LinkSocket *linkSocket,
-				 int ulx, int uly, 
-				 int lrx, int lry,
-				 LinkArgs *linkArgs)
+                                 int ulx, int uly, 
+                                 int lrx, int lry,
+                                 LinkArgs *linkArgs)
 {
 
     int buffercount;
@@ -166,10 +166,10 @@ int BufferedWriteLinkRectangleXY(LinkSocket *linkSocket,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lRECTANGLE_HEADER +  /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	4*N_BYTES_PER_INTEGER +   /*Bytes used by bounding co-ordinates of rectangle*/
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        4*N_BYTES_PER_INTEGER +   /*Bytes used by bounding co-ordinates of rectangle*/
+        LinkSizeOfLinkArgs(linkArgs);
     
     buffer = (char *)malloc(buffercount);
     if (buffer == NULL)
@@ -192,10 +192,10 @@ int BufferedWriteLinkRectangleXY(LinkSocket *linkSocket,
 
 
 int BufferedWriteLinkRectangleOffset(LinkSocket *linkSocket,
-				     double lat, double lon,
-				     int ulx, int uly,
-				     int lrx, int lry,			   
-				     LinkArgs *linkArgs)
+                                     double lat, double lon,
+                                     int ulx, int uly,
+                                     int lrx, int lry,                     
+                                     LinkArgs *linkArgs)
 {
 
     int buffercount;
@@ -205,11 +205,11 @@ int BufferedWriteLinkRectangleOffset(LinkSocket *linkSocket,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lRECTANGLE_HEADER +  /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	2*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
-	4*N_BYTES_PER_INTEGER +   /*Bytes used by bounding co-ordinates of rectangle*/
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        2*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
+        4*N_BYTES_PER_INTEGER +   /*Bytes used by bounding co-ordinates of rectangle*/
+        LinkSizeOfLinkArgs(linkArgs);
                
 
     buffer = (char *)malloc(buffercount);

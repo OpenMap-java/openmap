@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/LinkRaster.h,v $
  * $RCSfile: LinkRaster.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -45,10 +45,10 @@
  */
 
 int WriteLinkRasterDirectLatLon(LinkSocket *linkSocket,
-				double lat, double lon, 
-				int width, int height,
-				DirectImage *directimage,
-				LinkArgs *linkArgs);
+                                double lat, double lon, 
+                                int width, int height,
+                                DirectImage *directimage,
+                                LinkArgs *linkArgs);
 
 /**
  * Writes a buffered direct model image to the link socket. <b>DEPRECATED</b>
@@ -66,10 +66,10 @@ int WriteLinkRasterDirectLatLon(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkRasterDirectLatLon(LinkSocket *linkSocket,
-					double lat, double lon, 
-					int width, int height,
-					DirectImage *directimage,
-					LinkArgs *linkArgs);
+                                        double lat, double lon, 
+                                        int width, int height,
+                                        DirectImage *directimage,
+                                        LinkArgs *linkArgs);
 
 
 /**
@@ -86,10 +86,10 @@ int BufferedWriteLinkRasterDirectLatLon(LinkSocket *linkSocket,
  */
 
 int WriteLinkRasterDirectXY(LinkSocket *linkSocket,
-			    int x, int y, 
-			    int width, int height,
-			    DirectImage *directimage,
-			    LinkArgs *linkArgs);
+                            int x, int y, 
+                            int width, int height,
+                            DirectImage *directimage,
+                            LinkArgs *linkArgs);
 
 /**
  * Writes a buffered direct model image in X-Y space to the link socket.
@@ -108,10 +108,10 @@ int WriteLinkRasterDirectXY(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkRasterDirectXY(LinkSocket *linkSocket,
-				    int x, int y, 
-				    int width, int height,
-				    DirectImage *directimage,
-				    LinkArgs *linkArgs);
+                                    int x, int y, 
+                                    int width, int height,
+                                    DirectImage *directimage,
+                                    LinkArgs *linkArgs);
 
 /** 
  * Writes a direct model image with an offset to the link socket.
@@ -129,11 +129,11 @@ int BufferedWriteLinkRasterDirectXY(LinkSocket *linkSocket,
  */
 
 int WriteLinkRasterDirectOffset(LinkSocket *linkSocket,
-				double lat, double lon, 
-				int x, int y, 
-				int width, int height,
-				DirectImage *directimage,
-				LinkArgs *linkArgs);
+                                double lat, double lon, 
+                                int x, int y, 
+                                int width, int height,
+                                DirectImage *directimage,
+                                LinkArgs *linkArgs);
 
 /**
  * Writes a buffered direct model image with an offset to the link socket.
@@ -154,11 +154,11 @@ int WriteLinkRasterDirectOffset(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkRasterDirectOffset(LinkSocket *linkSocket,
-					double lat, double lon, 
-					int x, int y, 
-					int width, int height,
-					DirectImage *directimage,
-					LinkArgs *linkArgs);
+                                        double lat, double lon, 
+                                        int x, int y, 
+                                        int width, int height,
+                                        DirectImage *directimage,
+                                        LinkArgs *linkArgs);
 
 /*-----------------------------------------------------------*/
 /*Prototypes for writing Indexed model images */
@@ -178,11 +178,11 @@ int BufferedWriteLinkRasterDirectOffset(LinkSocket *linkSocket,
  */
 
 int WriteLinkRasterIndexedLatLon(LinkSocket *linkSocket,
-				 double lat, double lon, 
-				 int width, int height,
-				 int transparency,
-				 IndexedImage *indeximage,		 
-				 LinkArgs *linkArgs);
+                                 double lat, double lon, 
+                                 int width, int height,
+                                 int transparency,
+                                 IndexedImage *indeximage,               
+                                 LinkArgs *linkArgs);
 
 /**
  * Writes a buffered indexed model image to the link socket. <b>DEPRECATED</b>
@@ -201,11 +201,11 @@ int WriteLinkRasterIndexedLatLon(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkRasterIndexedLatLon(LinkSocket *linkSocket,
-					 double lat, double lon, 
-					 int width, int height, 
-					 int transparency,
-					 IndexedImage *indeximage,		 
-					 LinkArgs *linkArgs);
+                                         double lat, double lon, 
+                                         int width, int height, 
+                                         int transparency,
+                                         IndexedImage *indeximage,               
+                                         LinkArgs *linkArgs);
 
 
 /**
@@ -224,11 +224,11 @@ int BufferedWriteLinkRasterIndexedLatLon(LinkSocket *linkSocket,
 
 
 int WriteLinkRasterIndexedXY(LinkSocket *linkSocket,
-			     int x, int y, 
-			     int width, int height, 
-			     int transparency,
-			     IndexedImage *indeximage,
-			     LinkArgs *linkArgs);
+                             int x, int y, 
+                             int width, int height, 
+                             int transparency,
+                             IndexedImage *indeximage,
+                             LinkArgs *linkArgs);
 
 /**
  * Writes a buffered indexed model image in X-Y space to the link socket.
@@ -248,11 +248,11 @@ int WriteLinkRasterIndexedXY(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkRasterIndexedXY(LinkSocket *linkSocket,
-				     int x, int y,
-				     int width, int height, 
-				     int transparency,
-				     IndexedImage *indeximage,
-				     LinkArgs *linkArgs);
+                                     int x, int y,
+                                     int width, int height, 
+                                     int transparency,
+                                     IndexedImage *indeximage,
+                                     LinkArgs *linkArgs);
 
 /**
  * Writes an indexed model image with an offset to the link socket.
@@ -270,12 +270,12 @@ int BufferedWriteLinkRasterIndexedXY(LinkSocket *linkSocket,
  */
 
 int WriteLinkRasterIndexedOffset(LinkSocket *linkSocket,
-				 double lat, double lon, 
-				 int x, int y,
-				 int width, int height, 
-				 int transparency,
-				 IndexedImage *indeximage, 
-				 LinkArgs *linkArgs);
+                                 double lat, double lon, 
+                                 int x, int y,
+                                 int width, int height, 
+                                 int transparency,
+                                 IndexedImage *indeximage, 
+                                 LinkArgs *linkArgs);
 
 /**
  * Writes a buffered indexed model image with an offset to the link socket.
@@ -296,12 +296,12 @@ int WriteLinkRasterIndexedOffset(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkRasterIndexedOffset(LinkSocket *linkSocket,
-					 double lat, double lon, 
-					 int x, int y,
-					 int width, int height, 
-					 int transparency,
-					 IndexedImage *indeximage, 
-					 LinkArgs *linkArgs);
+                                         double lat, double lon, 
+                                         int x, int y,
+                                         int width, int height, 
+                                         int transparency,
+                                         IndexedImage *indeximage, 
+                                         LinkArgs *linkArgs);
 
 /*--------------------------------------------------------*/
 
@@ -320,9 +320,9 @@ int BufferedWriteLinkRasterIndexedOffset(LinkSocket *linkSocket,
 
 
 int WriteLinkRasterImageURLLatLon(LinkSocket *linkSocket,
-				  double lat, double lon,
-				  char *url,
-				  LinkArgs *linkArgs);
+                                  double lat, double lon,
+                                  char *url,
+                                  LinkArgs *linkArgs);
 
 /**
  * Writes a buffered image that is referred as a URL to the link socket.
@@ -339,9 +339,9 @@ int WriteLinkRasterImageURLLatLon(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkRasterImageURLLatLon(LinkSocket *linkSocket,
-					  double lat, double lon,
-					  char *url,
-					  LinkArgs *linkArgs);
+                                          double lat, double lon,
+                                          char *url,
+                                          LinkArgs *linkArgs);
 
 /**
  * Writes an image in X-Y space that is referred as a URL, to the link socket.
@@ -355,9 +355,9 @@ int BufferedWriteLinkRasterImageURLLatLon(LinkSocket *linkSocket,
  */
 
 int WriteLinkRasterImageURLXY(LinkSocket *linkSocket,
-			      int x, int y,
-			      char *url,
-			      LinkArgs *linkArgs);
+                              int x, int y,
+                              char *url,
+                              LinkArgs *linkArgs);
 
 /**
  * Writes a buffered image in X-Y space that is referred as a URL, to the 
@@ -374,9 +374,9 @@ int WriteLinkRasterImageURLXY(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkRasterImageURLXY(LinkSocket *linkSocket,
-				      int x, int y,
-				      char *url,
-				      LinkArgs *linkArgs);
+                                      int x, int y,
+                                      char *url,
+                                      LinkArgs *linkArgs);
 /**
  * Writes an image with an offset that is referred as a URL, to
  * the link socket.
@@ -392,10 +392,10 @@ int BufferedWriteLinkRasterImageURLXY(LinkSocket *linkSocket,
  */
 
 int WriteLinkRasterImageURLOffset(LinkSocket *linkSocket,
-				  double lat, double lon, 
-				  int x, int y,
-				  char *url,
-				  LinkArgs *linkArgs);
+                                  double lat, double lon, 
+                                  int x, int y,
+                                  char *url,
+                                  LinkArgs *linkArgs);
 
 /**
  * Writes an image with an offset that is referred as a URL, to
@@ -414,9 +414,9 @@ int WriteLinkRasterImageURLOffset(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkRasterImageURLOffset(LinkSocket *linkSocket,
-					  double lat, double lon, 
-					  int x, int y,
-					  char *url,
-					  LinkArgs *linkArgs);
+                                          double lat, double lon, 
+                                          int x, int y,
+                                          char *url,
+                                          LinkArgs *linkArgs);
 
 #endif

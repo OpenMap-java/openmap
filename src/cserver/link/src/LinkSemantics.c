@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/LinkSemantics.c,v $
  * $RCSfile: LinkSemantics.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -67,8 +67,8 @@ int WriteLinkSemantics(LinkSocket *linkSocket, LinkSemantics *semantics)
     
   if (Debug(LINKGRAPHICS)) printf("LinkSemantics: Writing:\nline color = %lx\n\
 hightlight color = %lx\nfillcolor = %lx\nlinewidth = %d\n",
-				  semantics->linecolor, semantics->highlightcolor,
-				  semantics->fillcolor, semantics->linewidth);
+                                  semantics->linecolor, semantics->highlightcolor,
+                                  semantics->fillcolor, semantics->linewidth);
     return check;
 }
 

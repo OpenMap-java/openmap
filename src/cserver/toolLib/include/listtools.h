@@ -14,59 +14,59 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/toolLib/include/listtools.h,v $
  * $RCSfile: listtools.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
  */
 
 /*
- *	Macros to manage a singly linked list.
+ *      Macros to manage a singly linked list.
  *
- *	First off define a structure that contains a "next" pointer. It
- *	need not be called 'next'. The structure type is always the 1st
- *	argument of the macro.
+ *      First off define a structure that contains a "next" pointer. It
+ *      need not be called 'next'. The structure type is always the 1st
+ *      argument of the macro.
  *
- *	Then you can make any number of lists. You hand in the name as the
- *	second argument of each macro.
+ *      Then you can make any number of lists. You hand in the name as the
+ *      second argument of each macro.
  *
- *	These examples use the following structure and the single instance
- *	of it.
+ *      These examples use the following structure and the single instance
+ *      of it.
  *
- *	typedef struct _foobar
- *	{
- *	    int x;
- *	    struct _foobar *nextPtr;
- *	} FooBar;
+ *      typedef struct _foobar
+ *      {
+ *          int x;
+ *          struct _foobar *nextPtr;
+ *      } FooBar;
  *
- *	FooBar myFooBar;
+ *      FooBar myFooBar;
  *
  *====> To Declare a list:
  *
- *	ListOf(FooBar, fooBarList, nextPtr);
+ *      ListOf(FooBar, fooBarList, nextPtr);
  *
- *		This will set up a list called fooBarList, which will
- *		keep track of its elements using the "nextPtr" element of
- *		the FooBar typedef.
+ *              This will set up a list called fooBarList, which will
+ *              keep track of its elements using the "nextPtr" element of
+ *              the FooBar typedef.
  *
  *
  *====> To add an element to the head of the list:
  *
- *	AddToHead(FooBar, fooBarList, &myFooBar);
+ *      AddToHead(FooBar, fooBarList, &myFooBar);
  *
  *====> To remove an element:
  *
- *	RemoveFromList(FooBar, fooBarList, &myFooBar);
+ *      RemoveFromList(FooBar, fooBarList, &myFooBar);
  *
  *====> To get the # of elements on the list (assuming no one else has
- *	mucked with it without using these macros:
+ *      mucked with it without using these macros:
  *
- *	GetListCount(FooBar, fooBarList)
+ *      GetListCount(FooBar, fooBarList)
  *
  *====> To make sure the count is right, in case someone did muck with it:
  *
- *	ConfirmListCount(FooBar, fooBarList)
+ *      ConfirmListCount(FooBar, fooBarList)
  *
  * ------------------------------------------------------------------------ */
 
@@ -99,47 +99,47 @@ BEGIN_extern_C
     t **prev = &name; \
     while(*prev) \
     { \
-	if(NextPtr(t, name, (*prev)) == c) \
-	{ \
-	    NextPtr(t, name, (p)) = NextPtr(t, name, ((*prev))); \
-	    *prev = p; \
-	    break; \
-	} \
+        if(NextPtr(t, name, (*prev)) == c) \
+        { \
+            NextPtr(t, name, (p)) = NextPtr(t, name, ((*prev))); \
+            *prev = p; \
+            break; \
+        } \
     } \
 }
 
-#define RemoveFromList(t, name, p)					      \
-{		                     					      \
-    t *temp = name;  							      \
-    if(name == p)						              \
-    {									      \
-	name = NextPtr(t, name, p);				              \
-	STRCAT(count,name)--;						      \
-    }									      \
-    else								      \
-    {									      \
-	while(temp)							      \
-	{								      \
-	    if(NextPtr(t, name, temp) == p)				      \
-	    {								      \
-		NextPtr(t, name, temp) = NextPtr(t, name, p);	              \
-	        STRCAT(count,name)--;					      \
-		break;							      \
-            }	    							      \
-	}								      \
-    }									      \
+#define RemoveFromList(t, name, p)                                            \
+{                                                                             \
+    t *temp = name;                                                           \
+    if(name == p)                                                             \
+    {                                                                         \
+        name = NextPtr(t, name, p);                                           \
+        STRCAT(count,name)--;                                                 \
+    }                                                                         \
+    else                                                                      \
+    {                                                                         \
+        while(temp)                                                           \
+        {                                                                     \
+            if(NextPtr(t, name, temp) == p)                                   \
+            {                                                                 \
+                NextPtr(t, name, temp) = NextPtr(t, name, p);                 \
+                STRCAT(count,name)--;                                         \
+                break;                                                        \
+            }                                                                 \
+        }                                                                     \
+    }                                                                         \
 }    
 
 #define GetListCount(t, name) (STRCAT(count,name))
-#define ConfirmListCount(t, name)					      \
-{									      \
-    t *temp = name;							      \
-    STRCAT(count,name) = 0;						      \
-    while(temp)								      \
-    {									      \
-        STRCAT(count,name)++;						      \
-        temp = NextPtr(t, name, temp);					      \
-    }									      \
+#define ConfirmListCount(t, name)                                             \
+{                                                                             \
+    t *temp = name;                                                           \
+    STRCAT(count,name) = 0;                                                   \
+    while(temp)                                                               \
+    {                                                                         \
+        STRCAT(count,name)++;                                                 \
+        temp = NextPtr(t, name, temp);                                        \
+    }                                                                         \
 }    
 
 END_extern_C

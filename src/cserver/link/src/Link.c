@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/Link.c,v $
  * $RCSfile: Link.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -42,27 +42,27 @@ static char ReadHeader(Link *link, char* header)
     
     ReadChars(link->socket, header, 1);
     if (NOK == CheckSocket(link->socket)){
-	return HEADERERROR;
+        return HEADERERROR;
     }
-	
+        
     if(*header == END_TOTAL){
-	return END_TOTAL;
+        return END_TOTAL;
     }
     if(*header == END_SECTION){
-	return END_SECTION;
+        return END_SECTION;
     }
     if(*header != '<'){
-	return HEADERERROR; /*Error*/
+        return HEADERERROR; /*Error*/
     }
-	
-	
+        
+        
     while(*header++ != '>' && count < MAX_HEADER_LENGTH){
-	    
-	ReadChars(link->socket, header,1);
-	if (NOK == CheckSocket(link->socket)){
-	    return HEADERERROR;
-	}
-	count++;
+            
+        ReadChars(link->socket, header,1);
+        if (NOK == CheckSocket(link->socket)){
+            return HEADERERROR;
+        }
+        count++;
     }
     
     *header = '\0';
@@ -91,7 +91,7 @@ int CreateLink(Link *link)
 void printString(char *str)
 {
     while(*str!=NULL)
-	printf("%c",*str++);
+        printf("%c",*str++);
 }
 
 /*
@@ -105,49 +105,49 @@ char ReadAndParseLink(Link *link)
     /** Clear out the old map request...*/
     if (link->mapRequest != NULL)
     {
-	FreeMapRequest(link->mapRequest);  /* FreeMapRequest-- free memory used
-					      that was allocated while reading
-					      a map request*/
-	link->mapRequest = NULL;
+        FreeMapRequest(link->mapRequest);  /* FreeMapRequest-- free memory used
+                                              that was allocated while reading
+                                              a map request*/
+        link->mapRequest = NULL;
     }
 
     if(link->actionRequest != NULL) 
     {
-	FreeActionRequest(link->actionRequest);
-	link->actionRequest = NULL;
+        FreeActionRequest(link->actionRequest);
+        link->actionRequest = NULL;
     }
 
     while (check != END_TOTAL )
     {      
-	check = ReadHeader(link, header);
-	if (HEADERSUCCESS == check)
-	{
-	    if(0 == strcmp(header, MAP_REQUEST_HEADER))
-	    {
-	      if (ReadMapRequest(link) == -1)
-		return MEMORYERROR; /* Memory allocation error */
-	      /*
-		if all is well..continue, checksocket would exit otherwise
-	      */
-	      if (NOK == CheckSocket(link->socket)) {
-		return HEADERERROR;
-	      }
-	    }
-	    if(0 == strcmp(header, ACTION_REQUEST_HEADER))
-	    {
-		ReadActionRequest(link);
-		/*
-		  if all is well..continue, checksocket would exit otherwise
-		*/
-		CheckSocket(link->socket);	  
-	    }
-	 
-	}
-	else
-	{
-	    return HEADERERROR;
-	}
-	check = ReadHeader(link, header);
+        check = ReadHeader(link, header);
+        if (HEADERSUCCESS == check)
+        {
+            if(0 == strcmp(header, MAP_REQUEST_HEADER))
+            {
+              if (ReadMapRequest(link) == -1)
+                return MEMORYERROR; /* Memory allocation error */
+              /*
+                if all is well..continue, checksocket would exit otherwise
+              */
+              if (NOK == CheckSocket(link->socket)) {
+                return HEADERERROR;
+              }
+            }
+            if(0 == strcmp(header, ACTION_REQUEST_HEADER))
+            {
+                ReadActionRequest(link);
+                /*
+                  if all is well..continue, checksocket would exit otherwise
+                */
+                CheckSocket(link->socket);        
+            }
+         
+        }
+        else
+        {
+            return HEADERERROR;
+        }
+        check = ReadHeader(link, header);
     }
     return HEADERSUCCESS;
 }
@@ -159,17 +159,17 @@ void FreeLink(Link *link)
 {
     if(link->socket != NULL)
     {
-	FreeSocket(link->socket); /*To free memory allocated from heap*/
-	free(link->socket); /*to free memory allocated on stack*/
+        FreeSocket(link->socket); /*To free memory allocated from heap*/
+        free(link->socket); /*to free memory allocated on stack*/
     }
     if(link->mapRequest != NULL)
     {
-	FreeMapRequest(link->mapRequest);
-	free(link->mapRequest);
+        FreeMapRequest(link->mapRequest);
+        free(link->mapRequest);
     }
     if(link->actionRequest != NULL)
     {
-	FreeActionRequest(link->actionRequest);      
+        FreeActionRequest(link->actionRequest);      
     }
 }
 

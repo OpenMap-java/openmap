@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/MapRequest.c,v $
  * $RCSfile: MapRequest.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -50,16 +50,16 @@ int ReadMapRequest(Link* link)
     check = check || ReadInteger(link->socket, &(link->mapRequest->width));
 
     if (Debug(LINK)){
-	printf(" version read %f\n", link->mapRequest->version);
-	printf(" center latitude %f\n", link->mapRequest->centerlatitude);
-	printf(" center longitude %f\n", link->mapRequest->centerlongitude);
-	printf(" scale %f \n", link->mapRequest->scale);
-	printf(" height %d\n", link->mapRequest->height);
-	printf(" width %d\n", link->mapRequest->width);
+        printf(" version read %f\n", link->mapRequest->version);
+        printf(" center latitude %f\n", link->mapRequest->centerlatitude);
+        printf(" center longitude %f\n", link->mapRequest->centerlongitude);
+        printf(" scale %f \n", link->mapRequest->scale);
+        printf(" height %d\n", link->mapRequest->height);
+        printf(" width %d\n", link->mapRequest->width);
     }
     
     check = check || ReadBoundingPolygons(link->socket,
-					  &(link->mapRequest->boundingPolygon));
+                                          &(link->mapRequest->boundingPolygon));
     if (check == -1)
       return -1; /* Memory allocation error */
     

@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/LinkCircle.h,v $
  * $RCSfile: LinkCircle.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -49,10 +49,10 @@
  */
 
 int WriteLinkCircleLatLon(LinkSocket *link, 
-			  double lat, double lon, 
-			  double radius, int unit,
-			  int nvertices,
-			  LinkArgs *linkArgs);
+                          double lat, double lon, 
+                          double radius, int unit,
+                          int nvertices,
+                          LinkArgs *linkArgs);
 
 /**
  * Writes a circle to the link socket in X-Y space.  The X and Y coordinates
@@ -68,9 +68,9 @@ int WriteLinkCircleLatLon(LinkSocket *link,
  */
 
 int WriteLinkCircleXY(LinkSocket *link,  
-		      int x, int y,
-		      int width, int height,		       
-		      LinkArgs *linkArgs);
+                      int x, int y,
+                      int width, int height,                   
+                      LinkArgs *linkArgs);
 
 /**
  * Writes a circle with an offset to the link socket.  The X and Y points are
@@ -89,10 +89,10 @@ int WriteLinkCircleXY(LinkSocket *link,
 
 
 int WriteLinkCircleOffset(LinkSocket *link,
-			  double lat, double lon,
-			  int x, int y,			   
-			  int width, int height,			   
-			  LinkArgs *linkArgs);
+                          double lat, double lon,
+                          int x, int y,                    
+                          int width, int height,                           
+                          LinkArgs *linkArgs);
 
 /**
  * Writes a buffered circle to the link socket. <b>DEPRECATED</b>
@@ -110,10 +110,10 @@ int WriteLinkCircleOffset(LinkSocket *link,
  */
 
 int BufferedWriteLinkCircleLatLon(LinkSocket *link, 
-				  double lat, double lon, 
-				  double radius, int unit,
-				  int nvertices,
-				  LinkArgs *linkArgs);
+                                  double lat, double lon, 
+                                  double radius, int unit,
+                                  int nvertices,
+                                  LinkArgs *linkArgs);
 
 /**
  * Writes a buffered circle to the link socket in X-Y space.  The X and Y 
@@ -132,9 +132,9 @@ int BufferedWriteLinkCircleLatLon(LinkSocket *link,
  */
 
 int BufferedWriteLinkCircleXY(LinkSocket *link,
-			      int x, int y,
-			      int width, int height,		       
-			      LinkArgs *linkArgs);
+                              int x, int y,
+                              int width, int height,                   
+                              LinkArgs *linkArgs);
 
 /**
  * Writes a buffered circle with an offset to the link socket.  The X and Y 
@@ -155,10 +155,10 @@ int BufferedWriteLinkCircleXY(LinkSocket *link,
 
 
 int BufferedWriteLinkCircleOffset(LinkSocket *link,
-				  double lat, double lon,
-				  int x, int y,			   
-				  int width, int height,			   
-				  LinkArgs *linkArgs);
+                                  double lat, double lon,
+                                  int x, int y,                    
+                                  int width, int height,                           
+                                  LinkArgs *linkArgs);
 
 #endif
 

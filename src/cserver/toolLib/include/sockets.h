@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/toolLib/include/sockets.h,v $
  * $RCSfile: sockets.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -23,22 +23,22 @@
 
 /*
  * sockets.c - general-purpose routines for opening and using sockets
- *		as server or client.
+ *              as server or client.
  *
  * Functions are:
  *
- *	open_socket()			Open a socket connection
- *	open_socket_port()			Open a socket connection
- *	close_socket()			Close a socket connection
- *	accept_socket()			Accept a connection on a socket
+ *      open_socket()                   Open a socket connection
+ *      open_socket_port()                      Open a socket connection
+ *      close_socket()                  Close a socket connection
+ *      accept_socket()                 Accept a connection on a socket
  *
  * Usage:
- *	Servers call open_socket() as servers and then call accept_socket()
- *	to get connections from clients.
+ *      Servers call open_socket() as servers and then call accept_socket()
+ *      to get connections from clients.
  *
- *	Clients call open_socket() and use that socket id to talk to servers.
+ *      Clients call open_socket() and use that socket id to talk to servers.
  *
- *	Both servers and clients call close_socket() to terminate.
+ *      Both servers and clients call close_socket() to terminate.
  *
  * ------------------------------------------------------------------------ */
 
@@ -56,17 +56,17 @@ BEGIN_extern_C
 #define SERVER 1
 #define CLIENT 2
 
-#define UnixSocketPath 	"/tmp"
+#define UnixSocketPath  "/tmp"
 
 #ifndef __C2MAN__
 
 extern int LookForServer(
 #if NeedFunctionPrototypes
- const char *,			/* service */
- const char *,			/* hostname */
- int,				/* unixPort */
- int,				/* inetPort */
- int *				/* socketp */
+ const char *,                  /* service */
+ const char *,                  /* hostname */
+ int,                           /* unixPort */
+ int,                           /* inetPort */
+ int *                          /* socketp */
 #endif
 );
 
@@ -82,56 +82,56 @@ extern int ConnectToServer(
 
 extern int SetupSockets(
 #if NeedFunctionPrototypes
- const char *,			/* serviceName */
- int,				/* tcpPort */
- int,				/* unixPort */
- int *,				/* tcpSocketp */
- int *				/* unixSocketp */
+ const char *,                  /* serviceName */
+ int,                           /* tcpPort */
+ int,                           /* unixPort */
+ int *,                         /* tcpSocketp */
+ int *                          /* unixSocketp */
 #endif
 ); 
 
 
 extern void set_hunt_mode(
 #if NeedFunctionPrototypes
- int				/* flag */
+ int                            /* flag */
 #endif
 ); 
 
 extern int set_socket_domain(
 #if NeedFunctionPrototypes
- int				/* new */
+ int                            /* new */
 #endif
 ); 
 
 extern int open_socket(
 #if NeedFunctionPrototypes
- int *,				/* sock */
- const char *,			/* service_name */
- const char *,			/* host_name */
- int				/* mode */
+ int *,                         /* sock */
+ const char *,                  /* service_name */
+ const char *,                  /* host_name */
+ int                            /* mode */
 #endif
 );
 
 extern int open_socket_port(
 #if NeedFunctionPrototypes
- int *,				/* sock */
- int,				/* port */
- const char *,			/* host_name */
- int				/* mode */
+ int *,                         /* sock */
+ int,                           /* port */
+ const char *,                  /* host_name */
+ int                            /* mode */
 #endif
 );
 
 extern int open_unix_port(
 #if NeedFunctionPrototypes
- int *,				/* sock */
- const char *,			/* sockname */
- int				/* mode */
+ int *,                         /* sock */
+ const char *,                  /* sockname */
+ int                            /* mode */
 #endif
 );
 
 extern int close_socket(
 #if NeedFunctionPrototypes
- int				/* sock */
+ int                            /* sock */
 #endif
 );
 
@@ -142,69 +142,69 @@ extern char *LastHostAccepted(
 
 extern int accept_socket(
 #if NeedFunctionPrototypes
- int,				/* sock */
- int *				/* new_socket */
+ int,                           /* sock */
+ int *                          /* new_socket */
 #endif
 );
 
 extern int socket_receive(
 #if NeedFunctionPrototypes
- int,				/* fd */
- void *,			/* buf */
- int				/* nbytes */
+ int,                           /* fd */
+ void *,                        /* buf */
+ int                            /* nbytes */
 #endif
 );
 
 extern int socket_nb_receive(
 #if NeedFunctionPrototypes
- int,				/* fd */
- void *,			/* buf */
- int,				/* nbytes */
- int *				/* bytes_received */
+ int,                           /* fd */
+ void *,                        /* buf */
+ int,                           /* nbytes */
+ int *                          /* bytes_received */
 #endif
 );
 
 extern int socket_peek(
 #if NeedFunctionPrototypes
- int,				/* fd */
- void *,			/* buf */
- int				/* nbytes */
+ int,                           /* fd */
+ void *,                        /* buf */
+ int                            /* nbytes */
 #endif
 );
 
 extern int socket_test(
 #if NeedFunctionPrototypes
- int				/* fd */
+ int                            /* fd */
 #endif
 );
 
 extern int socket_count(
 #if NeedFunctionPrototypes
- int				/* fd */
+ int                            /* fd */
 #endif
 );
 
 extern int socket_send(
 #if NeedFunctionPrototypes
- int,				/* fd */
- void *,			/* buf */
- int				/* nbytes */
+ int,                           /* fd */
+ void *,                        /* buf */
+ int                            /* nbytes */
 #endif
 );
 
 extern int socket_nb_send(
 #if NeedFunctionPrototypes
- int,				/* fd */
- void *,			/* buf */
- int				/* nbytes */
+ int,                           /* fd */
+ void *,                        /* buf */
+ int                            /* nbytes */
 #endif
 );
 
 extern int socket_control(
 #if NeedFunctionPrototypes
- int,				/* fd */
- int,				/* whichFlag */
- int				/* what */
+ int,                           /* fd */
+ int,                           /* whichFlag */
+ int                            /* what */
 #endif
 );
 

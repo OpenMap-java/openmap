@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/toolLib/src/buffers.c,v $
  * $RCSfile: buffers.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -36,12 +36,12 @@
 #include "style.h"
 #include "error_hand.h"
 #include "Magic.h"
-#define DEBUG_ME 	"DEBUG_TOOLLIB"
+#define DEBUG_ME        "DEBUG_TOOLLIB"
 #include "debugging.h"
 
 #ifdef SVR4
 #include <memory.h>
-#define bzero(addr, n)	memset(addr, 0, n)
+#define bzero(addr, n)  memset(addr, 0, n)
 #define bcopy(from, to, n) memcpy(to, from, n)
 #endif
 
@@ -63,12 +63,12 @@ static int initialized = 0;
 
 typedef struct _BufHeader
 {
-    Magic		magic1;
-    int 		size;
-    struct _BufHeader 	*next;
-    char 		*data;
-    Magic 		*magic3;
-    Magic 		magic2;
+    Magic               magic1;
+    int                 size;
+    struct _BufHeader   *next;
+    char                *data;
+    Magic               *magic3;
+    Magic               magic2;
 } BufHeader;
 
 static int seq = 0;
@@ -77,8 +77,8 @@ static Magic bufMagic1;
 static Magic bufMagic2;
 static Magic bufMagic3;
 
-#define BufHeaderOk(b) 	((b)->magic1 == bufMagic1 && (b)->magic2 == bufMagic2 \
-			 && *((b)->magic3) == bufMagic3)
+#define BufHeaderOk(b)  ((b)->magic1 == bufMagic1 && (b)->magic2 == bufMagic2 \
+                         && *((b)->magic3) == bufMagic3)
 
 #define NoBufHeader ((BufHeader *) 0)
 
@@ -99,19 +99,19 @@ char bufferMsg[1024];
 void DumpBuffers()
 {
     printf("Buffers: count %d/%d, size %d/%d\n",
-	   inUseBufs, (freeBufs + inUseBufs),
-	   inUseBytes,(freeBytes + inUseBytes));
+           inUseBufs, (freeBufs + inUseBufs),
+           inUseBytes,(freeBytes + inUseBytes));
 }
 
 /* ------------------------------------------------------------------------
  * 
  * PutBufOnFreeList()
  *
- *	Given a BufHeader pointer, insert the buffer into the
- *	free list. Right now the free list is ordered in terms
- *	of increasing size but there is nothing saying that there
- *	should not be separate free lists for each buffer size or
- *	some other scheme which could be more efficient.
+ *      Given a BufHeader pointer, insert the buffer into the
+ *      free list. Right now the free list is ordered in terms
+ *      of increasing size but there is nothing saying that there
+ *      should not be separate free lists for each buffer size or
+ *      some other scheme which could be more efficient.
  * 
  * RETURNS:  Nothing.
  *           
@@ -135,24 +135,24 @@ static void PutBufOnFreeList(BufHeader *buf)
 
     if(Debug(buffers))
     {
-	seq++;
-	sprintf(msgBuf,
-	"Buffers  %06d FREE 0x%08x %06d: F %02d, U %02d, Fb %05d, Ub %05d %s",
-		seq, buf,
-		buf->size, freeBufs, inUseBufs, freeBytes, inUseBytes, bufferMsg);
-	DEBUG_MESSAGE(msgBuf);
+        seq++;
+        sprintf(msgBuf,
+        "Buffers  %06d FREE 0x%08x %06d: F %02d, U %02d, Fb %05d, Ub %05d %s",
+                seq, buf,
+                buf->size, freeBufs, inUseBufs, freeBytes, inUseBytes, bufferMsg);
+        DEBUG_MESSAGE(msgBuf);
     }
     
     while(entry)
     {
-	if(entry->size >= buf->size)
-	{
-	    *temp     = buf;
-	    buf->next = entry;
-	    return;
-	}
-	temp  = &(entry->next);
-	entry = entry->next;
+        if(entry->size >= buf->size)
+        {
+            *temp     = buf;
+            buf->next = entry;
+            return;
+        }
+        temp  = &(entry->next);
+        entry = entry->next;
     }
 
     *temp     = buf;
@@ -164,17 +164,17 @@ static void PutBufOnFreeList(BufHeader *buf)
  * 
  * FreeBuffer()
  *
- *	Given a buffer pointer, figure out if it really originated from
- *	this module and if so, put it back on the free list.
+ *      Given a buffer pointer, figure out if it really originated from
+ *      this module and if so, put it back on the free list.
  * 
  * RETURNS:  -1 on error
  *           
  * ------------------------------------------------------------------------ */
 
 int DebugFreeBuffer(
-		    char *buf,
-		    const char *file,
-		    int line)
+                    char *buf,
+                    const char *file,
+                    int line)
 {
     char *fileName;
 
@@ -184,9 +184,9 @@ int DebugFreeBuffer(
 
     fileName = strrchr(file, '/');
     if(fileName == NULL)
-	fileName = (char *) file;
+        fileName = (char *) file;
     else
-	fileName++;
+        fileName++;
 
     sprintf(bufferMsg, "%14s, %04d", fileName, line);
     return(FreeBuffer(buf));
@@ -201,11 +201,11 @@ int DebugFreeBuffer(
  * one is at the end of the storage.
  *
  * RETURN:
- *	False	definitely not a buffer, ok to use free(2) on it
- *		assuming the choices where whether this was malloc'ed storage
- *		or buffer space.
+ *      False   definitely not a buffer, ok to use free(2) on it
+ *              assuming the choices where whether this was malloc'ed storage
+ *              or buffer space.
  *
- *	True	Highly likely it's a buffer.
+ *      True    Highly likely it's a buffer.
  *------------------------------------------------------------------------*/
 
 Bool IsABuffer(char *buf)
@@ -216,7 +216,7 @@ Bool IsABuffer(char *buf)
 
     if(buf == (char *) 0)
     {
-	return(False);
+        return(False);
     }
 
     /*
@@ -230,7 +230,7 @@ Bool IsABuffer(char *buf)
     thisBuf = (BufHeader *)((unsigned long) buf - sizeof(BufHeader));
 
     if(!BufHeaderOk(thisBuf))
-	return(False);
+        return(False);
 
     return(True);
 }
@@ -245,7 +245,7 @@ int FreeBuffer(char *buf)
 
     if(buf == (char *) 0)
     {
-	return(0);
+        return(0);
     }
 
     /*
@@ -260,9 +260,9 @@ int FreeBuffer(char *buf)
 
     if(!BufHeaderOk(thisBuf))
     {
-	sprintf(msgBuf, "FreeBuf(0x%x) corrupted buffer found", buf);
-	WARNING_MESSAGE(msgBuf);
-	return(-1);
+        sprintf(msgBuf, "FreeBuf(0x%x) corrupted buffer found", buf);
+        WARNING_MESSAGE(msgBuf);
+        return(-1);
     }
     
     entry = inUseList;
@@ -270,14 +270,14 @@ int FreeBuffer(char *buf)
     
     while(entry)
     {
-	if(entry->data == buf)
-	{
-	    *temp = entry->next;
-	    PutBufOnFreeList(entry);
-	    return(entry->size);
-	}
-	temp  = &(entry->next);
-	entry = entry->next;
+        if(entry->data == buf)
+        {
+            *temp = entry->next;
+            PutBufOnFreeList(entry);
+            return(entry->size);
+        }
+        temp  = &(entry->next);
+        entry = entry->next;
     }
 
     return(0);
@@ -288,23 +288,23 @@ int FreeBuffer(char *buf)
  * 
  * IncreaseBufferSize()
  *
- *	Given a pointer to a buffer, and a new size request, decide
- *	whether the buffer really was big enough all along (in which case
- *	just hand it back to the caller) or whether a new one has to
- *	be found (in which case the old contents are copied into the 
- *	new one) and handed back.
+ *      Given a pointer to a buffer, and a new size request, decide
+ *      whether the buffer really was big enough all along (in which case
+ *      just hand it back to the caller) or whether a new one has to
+ *      be found (in which case the old contents are copied into the 
+ *      new one) and handed back.
  * 
  * RETURNS:  The pointer to the new buffer and also the actual size if
- *	     the actualSizePtr is non-null.
+ *           the actualSizePtr is non-null.
  *           
  * ------------------------------------------------------------------------ */
 
 char *DebugIncreaseBufferSize(
-			      char *buf,
-			      int size,
-			      int *asp,
-			      const char *file,
-			      int line)
+                              char *buf,
+                              int size,
+                              int *asp,
+                              const char *file,
+                              int line)
 {
     char *fileName;
     
@@ -314,18 +314,18 @@ char *DebugIncreaseBufferSize(
 
     fileName = strrchr(file, '/');
     if(fileName == NULL)
-	fileName = (char *) file;
+        fileName = (char *) file;
     else
-	fileName++;
+        fileName++;
 
     sprintf(bufferMsg, "%14s, %04d", fileName, line);
     return(IncreaseBufferSize(buf, size, asp));
 }
 
 char *IncreaseBufferSize(
-			 char *buffer,
-			 int size,
-			 int *actualSizePtr)
+                         char *buffer,
+                         int size,
+                         int *actualSizePtr)
 {
     BufHeader *thisBuf;
     char *newBuffer;
@@ -338,25 +338,25 @@ char *IncreaseBufferSize(
 
     if(buffer)
     {
-	thisBuf = (BufHeader *)((unsigned long) buffer - sizeof(BufHeader));
+        thisBuf = (BufHeader *)((unsigned long) buffer - sizeof(BufHeader));
 
-	if(!BufHeaderOk(thisBuf))
-	{
-	    sprintf(msgBuf,
-		    "IncreaseBufferSize(0x%x) corrupted buffer found", buffer);
-	    WARNING_MESSAGE(msgBuf);
-	    return((char *) 0);
-	}
+        if(!BufHeaderOk(thisBuf))
+        {
+            sprintf(msgBuf,
+                    "IncreaseBufferSize(0x%x) corrupted buffer found", buffer);
+            WARNING_MESSAGE(msgBuf);
+            return((char *) 0);
+        }
 
-	/*
-	 * It turns out that this one is big enough.
-	 */
-	if(thisBuf->size >= size)
-	{
-	    if(actualSizePtr)
-		*actualSizePtr = thisBuf->size;
-	    return(buffer);
-	}
+        /*
+         * It turns out that this one is big enough.
+         */
+        if(thisBuf->size >= size)
+        {
+            if(actualSizePtr)
+                *actualSizePtr = thisBuf->size;
+            return(buffer);
+        }
     }
     
     /*
@@ -376,8 +376,8 @@ char *IncreaseBufferSize(
 
     if(newBuffer && buffer)
     {
-	bcopy(buffer, newBuffer, thisBuf->size);
-	FreeBuffer(buffer);
+        bcopy(buffer, newBuffer, thisBuf->size);
+        FreeBuffer(buffer);
     }
 
     /*
@@ -393,23 +393,23 @@ char *IncreaseBufferSize(
  * 
  * GetNewBufferAndSize()
  *
- *	Note the companion macro in buffers.h called
- *	GetNewBuffer() which is the usual one to call.
+ *      Note the companion macro in buffers.h called
+ *      GetNewBuffer() which is the usual one to call.
  * 
- * 	Looks for the first buffer that is at least big enough
- * 	to handle the size needed and returns the data portion
- * 	of that buffer.
+ *      Looks for the first buffer that is at least big enough
+ *      to handle the size needed and returns the data portion
+ *      of that buffer.
  * 
  * RETURNS:  pointer to new buffer and size of buffer if actualSizePtr
- *	     is non-null.
+ *           is non-null.
  *           
  * ------------------------------------------------------------------------ */
 
 char *DebugGetNewBufferAndSize(
-			       int size,
-			       int *asp,
-			       const char *file,
-			       int line)
+                               int size,
+                               int *asp,
+                               const char *file,
+                               int line)
 {
     char *fileName;
 
@@ -419,17 +419,17 @@ char *DebugGetNewBufferAndSize(
 
     fileName = strrchr(file, '/');
     if(fileName == NULL)
-	fileName = (char *) file;
+        fileName = (char *) file;
     else
-	fileName++;
+        fileName++;
 
     sprintf(bufferMsg, "%14s, %04d", fileName, line);
     return(GetNewBufferAndSize(size, asp));
 }
 
 char *GetNewBufferAndSize(
-			  int size,
-			  int *actualSizePtr)
+                          int size,
+                          int *actualSizePtr)
 {
     int allocSize;
     
@@ -440,54 +440,54 @@ char *GetNewBufferAndSize(
 
     entry = freeBufList;
     temp = &freeBufList;
-	
+        
     if(size > BufMaxAlloc)
     {
-	sprintf(msgBuf, "GetNewBufferAndSize(%d) exceeds max of %d",
-		size, BufMaxAlloc);
-	return((char *) 0);
+        sprintf(msgBuf, "GetNewBufferAndSize(%d) exceeds max of %d",
+                size, BufMaxAlloc);
+        return((char *) 0);
     }
     
     while(entry)
     {
-	if(entry->size >= size)
-	{
-	    /*
-	     * Let's make sure that we don't give a ridiculously
-	     * large buffer out just because it's the next one
-	     * available!
-	     */
+        if(entry->size >= size)
+        {
+            /*
+             * Let's make sure that we don't give a ridiculously
+             * large buffer out just because it's the next one
+             * available!
+             */
 
-	    if(entry->size > BufMinAlloc && entry->size > size * OversizeLimit)
-	    {
-		break;
-	    }
-	    
-	    *temp       = entry->next;
-	    entry->next = inUseList;
-	    inUseList   = entry;
-	    
-	    if(actualSizePtr)
-		*actualSizePtr = entry->size;
-	    
-	    freeBufs--;
-	    inUseBufs++;
-	    freeBytes  -= entry->size;
-	    inUseBytes += entry->size;
+            if(entry->size > BufMinAlloc && entry->size > size * OversizeLimit)
+            {
+                break;
+            }
+            
+            *temp       = entry->next;
+            entry->next = inUseList;
+            inUseList   = entry;
+            
+            if(actualSizePtr)
+                *actualSizePtr = entry->size;
+            
+            freeBufs--;
+            inUseBufs++;
+            freeBytes  -= entry->size;
+            inUseBytes += entry->size;
 
-	    if(Debug(buffers))
-	    {
-		seq++;
-		sprintf(msgBuf,
-	  "Buffers  %06d GET  0x%08x %06d: F %02d, U %02d, Fb %05d, Ub %05d %s",
-			seq, entry, entry->size, 
-			freeBufs, inUseBufs, freeBytes, inUseBytes, bufferMsg);
-		DEBUG_MESSAGE(msgBuf);
-	    }
-	    return(entry->data);
-	}
-	temp  = &(entry->next);
-	entry = entry->next;
+            if(Debug(buffers))
+            {
+                seq++;
+                sprintf(msgBuf,
+          "Buffers  %06d GET  0x%08x %06d: F %02d, U %02d, Fb %05d, Ub %05d %s",
+                        seq, entry, entry->size, 
+                        freeBufs, inUseBufs, freeBytes, inUseBytes, bufferMsg);
+                DEBUG_MESSAGE(msgBuf);
+            }
+            return(entry->data);
+        }
+        temp  = &(entry->next);
+        entry = entry->next;
     }
 
     /*
@@ -496,18 +496,18 @@ char *GetNewBufferAndSize(
      */
     for(allocSize = BufMinAlloc; allocSize <= BufMaxAlloc; allocSize <<= 1)
     {
-	if(allocSize >= size)
-	    break;
+        if(allocSize >= size)
+            break;
     }
     
     entry = (BufHeader *) malloc(sizeof(BufHeader) + sizeof(Magic) +
-				 allocSize);
+                                 allocSize);
     
     if(entry == NoBufHeader)
     {
-	NoMemory("GetNewBufferAndSize", 
-		 sizeof(BufHeader) + sizeof(Magic) + allocSize);
-	return((char *) 0);
+        NoMemory("GetNewBufferAndSize", 
+                 sizeof(BufHeader) + sizeof(Magic) + allocSize);
+        return((char *) 0);
     }
 
     entry->size   = allocSize;
@@ -525,16 +525,16 @@ char *GetNewBufferAndSize(
     inUseBytes += entry->size;
 
     if(actualSizePtr)
-	*actualSizePtr = entry->size;
+        *actualSizePtr = entry->size;
 
     if(Debug(buffers))
     {
-	seq++;
-	sprintf(msgBuf, 
-	"Buffers  %06d GET  0x%08x %06d: F %02d, U %02d, Fb %05d, Ub %05d %s",
-		seq, entry, entry->size, 
-		freeBufs, inUseBufs, freeBytes, inUseBytes, bufferMsg);
-	DEBUG_MESSAGE(msgBuf);
+        seq++;
+        sprintf(msgBuf, 
+        "Buffers  %06d GET  0x%08x %06d: F %02d, U %02d, Fb %05d, Ub %05d %s",
+                seq, entry, entry->size, 
+                freeBufs, inUseBufs, freeBytes, inUseBytes, bufferMsg);
+        DEBUG_MESSAGE(msgBuf);
     }
     
     return(entry->data);
@@ -545,7 +545,7 @@ char *GetNewBufferAndSize(
  * 
  * InitBuffers()
  *
- *	Call this first!
+ *      Call this first!
  * 
  * RETURNS:  -1 if failure for some reason.
  *           
@@ -555,7 +555,7 @@ int InitBuffers()
 {
     
     if(initialized)
-	return(0);
+        return(0);
     
     initialized = 1;
     
@@ -567,12 +567,12 @@ int InitBuffers()
     /* SUPPRESS 558 *//* CodeCenter conditional expression always false */
     if(sizeof(BufHeader) % 4)
     {
-	/* NOTREACHED *//* Since the compiler can figure this out */
-	sprintf(msgBuf, "sizeof(BufHeader) is %d, it MUST be a multiple of 4",
-		sizeof(BufHeader));
-	
-	FATAL_MESSAGE(msgBuf);
-	return(-1);
+        /* NOTREACHED *//* Since the compiler can figure this out */
+        sprintf(msgBuf, "sizeof(BufHeader) is %d, it MUST be a multiple of 4",
+                sizeof(BufHeader));
+        
+        FATAL_MESSAGE(msgBuf);
+        return(-1);
     }
     
     bufMagic1 = NewMagicNumber("Buf Magic 1");

@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/LinkLine.c,v $
  * $RCSfile: LinkLine.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -31,10 +31,10 @@
 #include "Response.h"
 
 int WriteLinkLineLatLon(LinkSocket *linkSocket,
-			double lat_1, double lon_1, 
-			double lat_2, double lon_2, 
-			int lineType, int nsegs,
-			LinkArgs *linkArgs)
+                        double lat_1, double lon_1, 
+                        double lat_2, double lon_2, 
+                        int lineType, int nsegs,
+                        LinkArgs *linkArgs)
 {
     int check = OK;
 
@@ -55,9 +55,9 @@ int WriteLinkLineLatLon(LinkSocket *linkSocket,
 
 
 int WriteLinkLineXY(LinkSocket *linkSocket,
-		    int x1, int y1, 
-		    int x2, int y2,
-		    LinkArgs *linkArgs)
+                    int x1, int y1, 
+                    int x2, int y2,
+                    LinkArgs *linkArgs)
 {
     int check = OK; 
     check = check || WriteChars(linkSocket,LINE_HEADER, lLINE_HEADER); 
@@ -74,10 +74,10 @@ int WriteLinkLineXY(LinkSocket *linkSocket,
 }
 
 int WriteLinkLineOffset(LinkSocket *linkSocket,
-			double lat_1, double lon_1, 
-			int x1, int y1, 
-			int x2, int y2, 
-			LinkArgs *linkArgs)
+                        double lat_1, double lon_1, 
+                        int x1, int y1, 
+                        int x2, int y2, 
+                        LinkArgs *linkArgs)
 {
     int check = OK;
     check = check || WriteChars(linkSocket, LINE_HEADER, lLINE_HEADER);
@@ -97,10 +97,10 @@ int WriteLinkLineOffset(LinkSocket *linkSocket,
 
 
 int BufferedWriteLinkLineLatLon(LinkSocket *linkSocket,
-				double lat_1, double lon_1, 
-				double lat_2, double lon_2, 
-				int lineType, int nsegs,
-				LinkArgs *linkArgs)
+                                double lat_1, double lon_1, 
+                                double lat_2, double lon_2, 
+                                int lineType, int nsegs,
+                                LinkArgs *linkArgs)
 {
 
     int buffercount;
@@ -110,11 +110,11 @@ int BufferedWriteLinkLineLatLon(LinkSocket *linkSocket,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lBITMAP_HEADER +  /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	4*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
-	2*N_BYTES_PER_INTEGER +   /*Bytes used by lineType and nsegs*/
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        4*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
+        2*N_BYTES_PER_INTEGER +   /*Bytes used by lineType and nsegs*/
+        LinkSizeOfLinkArgs(linkArgs);
                
     buffer = (char *)malloc(buffercount);
     if (buffer == NULL)
@@ -123,7 +123,7 @@ int BufferedWriteLinkLineLatLon(LinkSocket *linkSocket,
     buffercount=0;
     
     buffercount += BufferedWriteChars(&buffer[buffercount],
-				      LINE_HEADER, lLINE_HEADER);
+                                      LINE_HEADER, lLINE_HEADER);
     buffercount += BufferedWriteInteger(&buffer[buffercount], GRAPHICTYPE_LINE); 
     buffercount += BufferedWriteInteger(&buffer[buffercount], RENDERTYPE_LATLON); 
     buffercount += BufferedWriteInteger(&buffer[buffercount], lineType); 
@@ -141,9 +141,9 @@ int BufferedWriteLinkLineLatLon(LinkSocket *linkSocket,
 
 
 int BufferedWriteLinkLineXY(LinkSocket *linkSocket,
-			    int x1, int y1, 
-			    int x2, int y2,
-			    LinkArgs *linkArgs)
+                            int x1, int y1, 
+                            int x2, int y2,
+                            LinkArgs *linkArgs)
 {
   
     int buffercount;
@@ -155,10 +155,10 @@ int BufferedWriteLinkLineXY(LinkSocket *linkSocket,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lBITMAP_HEADER +  /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	4*N_BYTES_PER_INTEGER +   /*Bytes used by x,y*/
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        4*N_BYTES_PER_INTEGER +   /*Bytes used by x,y*/
+        LinkSizeOfLinkArgs(linkArgs);
 
     buffer = (char *)malloc(buffercount);
     if (buffer == NULL)
@@ -167,7 +167,7 @@ int BufferedWriteLinkLineXY(LinkSocket *linkSocket,
     buffercount=0; 
 
     buffercount += BufferedWriteChars(&buffer[buffercount],
-				      LINE_HEADER, lLINE_HEADER); 
+                                      LINE_HEADER, lLINE_HEADER); 
     buffercount += BufferedWriteInteger(&buffer[buffercount],GRAPHICTYPE_LINE);  
     buffercount += BufferedWriteInteger(&buffer[buffercount],RENDERTYPE_XY); 
     buffercount += BufferedWriteInteger(&buffer[buffercount], x1); 
@@ -183,10 +183,10 @@ int BufferedWriteLinkLineXY(LinkSocket *linkSocket,
 }
 
 int BufferedWriteLinkLineOffset(LinkSocket *linkSocket,
-				double lat_1, double lon_1, 
-				int x1, int y1, 
-				int x2, int y2, 
-				LinkArgs *linkArgs)
+                                double lat_1, double lon_1, 
+                                int x1, int y1, 
+                                int x2, int y2, 
+                                LinkArgs *linkArgs)
 {
 
     int buffercount;
@@ -196,11 +196,11 @@ int BufferedWriteLinkLineOffset(LinkSocket *linkSocket,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lBITMAP_HEADER +  /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	2*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
-	4*N_BYTES_PER_INTEGER +   /*Bytes used by x,y*/
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        2*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
+        4*N_BYTES_PER_INTEGER +   /*Bytes used by x,y*/
+        LinkSizeOfLinkArgs(linkArgs);
 
     buffer = (char *)malloc(buffercount);
     if (buffer == NULL)
@@ -209,7 +209,7 @@ int BufferedWriteLinkLineOffset(LinkSocket *linkSocket,
     buffercount=0;
   
     buffercount += BufferedWriteChars(&buffer[buffercount],
-				      LINE_HEADER, lLINE_HEADER);
+                                      LINE_HEADER, lLINE_HEADER);
     buffercount += BufferedWriteInteger(&buffer[buffercount], GRAPHICTYPE_LINE); 
     buffercount += BufferedWriteInteger(&buffer[buffercount], RENDERTYPE_OFFSET); 
     buffercount += BufferedWriteFloat(&buffer[buffercount], (float)lat_1);

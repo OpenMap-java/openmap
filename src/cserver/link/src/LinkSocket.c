@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/LinkSocket.c,v $
  * $RCSfile: LinkSocket.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -40,19 +40,19 @@ DebugVariable(LINKSOCKET,"LINKSOCKET",0x04);
 int Socketflush(LinkSocket *socket){
     
     if(socket->currentbuffer > 0){
-	int nbyteswritten;
-	int nbytestowrite = socket->currentbuffer;
-	if (Debug(LINKSOCKET))
-	    printf("flushing socket writing %d bytes \n", nbytestowrite);
-	
-	nbyteswritten = socket_send(socket->sd, socket->writebuffer, nbytestowrite);
-	
-	if(nbytestowrite == nbyteswritten){
-	    socket->currentbuffer = 0;
-	} else {
-	    socket->error = LINK_TRUE;
-	    return NOK;
-	}
+        int nbyteswritten;
+        int nbytestowrite = socket->currentbuffer;
+        if (Debug(LINKSOCKET))
+            printf("flushing socket writing %d bytes \n", nbytestowrite);
+        
+        nbyteswritten = socket_send(socket->sd, socket->writebuffer, nbytestowrite);
+        
+        if(nbytestowrite == nbyteswritten){
+            socket->currentbuffer = 0;
+        } else {
+            socket->error = LINK_TRUE;
+            return NOK;
+        }
     }
     socket->error = LINK_FALSE;
     return OK;
@@ -82,8 +82,8 @@ int InitSocket(LinkSocket *socket){
     socket->host = NULL; /*Keep it Null for the time being*/
     if(-1 == open_socket_port(&socket->mainsd, socket->port, NULL, SERVER))
     {
-	socket->error = LINK_TRUE;
-	return NOK;
+        socket->error = LINK_TRUE;
+        return NOK;
     }    
     socket->error = LINK_FALSE;
     socket->currentbuffer = 0;
@@ -97,18 +97,18 @@ int InitSocket(LinkSocket *socket){
 
 void FreeSocket(LinkSocket *socket){
     if(NULL != socket->host)
-	free(socket->host);
+        free(socket->host);
     socket->host = NULL;
 
     if(NULL != socket->writebuffer)
-	free(socket->writebuffer);
+        free(socket->writebuffer);
     socket->writebuffer = NULL;
 }
 
 /*Checks if the error flag is set return OK or NOK*/
 int CheckSocket(LinkSocket* socket){
     if (socket->error){
-	if (Debug(LINK)) printf("LinkSocket: problem with link socket...\n");
+        if (Debug(LINK)) printf("LinkSocket: problem with link socket...\n");
     }
     return (socket->error);
 }
@@ -122,14 +122,14 @@ int CheckSocket(LinkSocket* socket){
 /*Used internally by WriteInteger etc*/
 static int WriteToBuffer(LinkSocket *socket, int datasize){
     if(datasize > socket->maxbuffer){
-	Socketflush(socket);
-	return NOK;
+        Socketflush(socket);
+        return NOK;
     }
 
     if((datasize + socket->currentbuffer) < socket->maxbuffer){
-	return OK;
+        return OK;
     } else {
-	return Socketflush(socket);
+        return Socketflush(socket);
     }
 }
 
@@ -144,7 +144,7 @@ void BytesToInteger(int *ptrIntegerBuffer, char *fromBuffer)
 {
     *ptrIntegerBuffer = 0;
     *ptrIntegerBuffer = ((fromBuffer[0] & 0xFF) << 24) | ((fromBuffer[1] & 0xFF) << 16 ) |
-	((fromBuffer[2] & 0xFF) << 8) | ((fromBuffer[3] & 0xFF));    
+        ((fromBuffer[2] & 0xFF) << 8) | ((fromBuffer[3] & 0xFF));    
 }
 /*
   Read an integer value in to provided buffer
@@ -158,12 +158,12 @@ int ReadInteger(LinkSocket *socket, int *ptrIntegerBuffer){
     bytesRead = socket_receive(socket->sd, intbuff, N_BYTES_PER_INTEGER); 
     
     if(N_BYTES_PER_INTEGER == bytesRead)
-    {	
-	/* All right, we got it*/
-	BytesToInteger(ptrIntegerBuffer,intbuff);
+    {   
+        /* All right, we got it*/
+        BytesToInteger(ptrIntegerBuffer,intbuff);
     
-	socket->error = LINK_FALSE;  
-	return OK;
+        socket->error = LINK_FALSE;  
+        return OK;
     }
     /* Oops..some error while receiving*/
     socket->error = LINK_TRUE;
@@ -175,17 +175,17 @@ int WriteInteger(LinkSocket *socket, int iValue){
     int nbyteswritten;
     
     if(socket->isBuffered == LINK_TRUE && OK == WriteToBuffer(socket, N_BYTES_PER_INTEGER)){
-	nbyteswritten = BufferedWriteInteger(&(socket->writebuffer[socket->currentbuffer]),
-					     iValue);
-	socket->currentbuffer += nbyteswritten;
+        nbyteswritten = BufferedWriteInteger(&(socket->writebuffer[socket->currentbuffer]),
+                                             iValue);
+        socket->currentbuffer += nbyteswritten;
     } else {
-	IntegerToBytes(intbuff,iValue);
-	nbyteswritten = socket_send(socket->sd, intbuff, N_BYTES_PER_INTEGER);
+        IntegerToBytes(intbuff,iValue);
+        nbyteswritten = socket_send(socket->sd, intbuff, N_BYTES_PER_INTEGER);
     }
     
     if(N_BYTES_PER_INTEGER == nbyteswritten){
-	socket->error = LINK_FALSE;
-	return OK;
+        socket->error = LINK_FALSE;
+        return OK;
     }
 
     socket->error = LINK_TRUE;
@@ -206,22 +206,22 @@ int ReadFloat(LinkSocket *socket, double *ptrDoubleBuffer){
     bytesRead = socket_receive(socket->sd, buff, N_BYTES_PER_FLOAT); 
    
     if(N_BYTES_PER_FLOAT == bytesRead)
-    {	
-	/* All right, we got it*/
-	
-	float *f;
-	int i = 0;
-	/*do it on integer first. */
-	BytesToInteger(&i,buff);
-	
-	/*type cast just the pointer*/
-	f = (float *)&i;
-	
-	/*type cast the float value to double*/
-	*ptrDoubleBuffer = (double)*f;
-	
+    {   
+        /* All right, we got it*/
+        
+        float *f;
+        int i = 0;
+        /*do it on integer first. */
+        BytesToInteger(&i,buff);
+        
+        /*type cast just the pointer*/
+        f = (float *)&i;
+        
+        /*type cast the float value to double*/
+        *ptrDoubleBuffer = (double)*f;
+        
         socket->error = LINK_FALSE;
-	return OK;
+        return OK;
     }
     /* Oops..some error while receiving*/
     socket->error = LINK_TRUE;
@@ -237,16 +237,16 @@ int WriteFloat(LinkSocket *socket, float fvalue){
     iptr = (int *)&fvalue;
     
     if(socket->isBuffered == LINK_TRUE && OK == WriteToBuffer(socket,N_BYTES_PER_FLOAT)){
-	nbyteswritten = BufferedWriteFloat(&(socket->writebuffer[socket->currentbuffer]), fvalue);
-	socket->currentbuffer += nbyteswritten;
+        nbyteswritten = BufferedWriteFloat(&(socket->writebuffer[socket->currentbuffer]), fvalue);
+        socket->currentbuffer += nbyteswritten;
     } else {
-	IntegerToBytes(buff, *iptr);
-	nbyteswritten = socket_send(socket->sd, buff, N_BYTES_PER_FLOAT);
+        IntegerToBytes(buff, *iptr);
+        nbyteswritten = socket_send(socket->sd, buff, N_BYTES_PER_FLOAT);
     }
     
     if(N_BYTES_PER_FLOAT == nbyteswritten){
-	socket->error = LINK_FALSE;
-	return OK;
+        socket->error = LINK_FALSE;
+        return OK;
     }
     
     socket->error = LINK_TRUE;
@@ -268,9 +268,9 @@ int ReadChars(LinkSocket *socket, char buffer[], int nchartoread){
     
     if(nchartoread == nbytesread)
       {
-	buffer[nchartoread] = '\0';
-	socket->error = LINK_FALSE;
-	return OK;
+        buffer[nchartoread] = '\0';
+        socket->error = LINK_FALSE;
+        return OK;
       }
     /*system error. */
     socket->error = LINK_TRUE;
@@ -286,27 +286,27 @@ int WriteChars(LinkSocket *socket, char buffer[], int nchartowrite){
     
     if(Debug(LINKSOCKET))
     {
-	printf("LinkSocket.c WriteChars-- %s %d\n", buffer, nchartowrite);
+        printf("LinkSocket.c WriteChars-- %s %d\n", buffer, nchartowrite);
     }
 
     if (nchartowrite == 0){
-	socket->error = LINK_FALSE;
-	return OK;
+        socket->error = LINK_FALSE;
+        return OK;
     }
-	
+        
     if((LINK_TRUE == socket->isBuffered) && (OK == WriteToBuffer(socket, nchartowrite)) )
     {
-	nbyteswritten = BufferedWriteChars(&(socket->writebuffer[socket->currentbuffer]),
-					   buffer, nchartowrite);
-	socket->currentbuffer += nbyteswritten;
+        nbyteswritten = BufferedWriteChars(&(socket->writebuffer[socket->currentbuffer]),
+                                           buffer, nchartowrite);
+        socket->currentbuffer += nbyteswritten;
     }
     else
-	nbyteswritten = socket_send(socket->sd, buffer, nchartowrite); 
+        nbyteswritten = socket_send(socket->sd, buffer, nchartowrite); 
     
     if(nchartowrite == nbyteswritten)
-    {	
-	socket->error = LINK_FALSE;
-	return OK;
+    {   
+        socket->error = LINK_FALSE;
+        return OK;
     }
     /*system error */
     socket->error = LINK_TRUE;
@@ -369,7 +369,7 @@ int ReadUnicodeChars(LinkSocket *socket, char *buffer, int nchartoread){
        */
 
       for (i = 0; i < nchartoread; i++) {
-	buffer[i] = inbuffer[i];
+        buffer[i] = inbuffer[i];
       }
 
       buffer[ncharread] = '\0';
@@ -394,8 +394,8 @@ int WriteUnicodeChars(LinkSocket *socket, char buffer[], int nchartowrite){
     char *inbuffer;
  
     if (nchartowrite == 0){
-	socket->error = LINK_FALSE;
-	return OK;
+        socket->error = LINK_FALSE;
+        return OK;
     }
     
     inbuffer = (char *)malloc(nchartowrite);
@@ -405,7 +405,7 @@ int WriteUnicodeChars(LinkSocket *socket, char buffer[], int nchartowrite){
              
     if((LINK_TRUE == socket->isBuffered) && (OK == WriteToBuffer(socket, nchartowrite)) ) {
       ncharwritten = BufferedWriteUnicodeChars(&(socket->writebuffer[socket->currentbuffer]),
-					       buffer, nchartowrite);	
+                                               buffer, nchartowrite);   
       socket->currentbuffer += ncharwritten;
       nchartowrite = N_CHARS_PER_UNICODE_CHAR * nchartowrite;
     } 
@@ -414,10 +414,10 @@ int WriteUnicodeChars(LinkSocket *socket, char buffer[], int nchartowrite){
     }
 
     if(nchartowrite == ncharwritten){
-	/*error condition */		
-	socket->error = LINK_FALSE;
-	free(inbuffer);
-	return OK;
+        /*error condition */            
+        socket->error = LINK_FALSE;
+        free(inbuffer);
+        return OK;
     }
        
     socket->error = LINK_TRUE;
@@ -427,8 +427,8 @@ int WriteUnicodeChars(LinkSocket *socket, char buffer[], int nchartowrite){
 }
 
 int BufferedWriteUnicodeChars(char *toBuffer,
-			      char *fromBuffer,
-			      int nchartowrite){
+                              char *fromBuffer,
+                              int nchartowrite){
     
     return ASCIIToUnicode(fromBuffer,toBuffer, nchartowrite);
 }
@@ -446,7 +446,7 @@ char *EnglishUnicodeToASCII(char unicodechar[], int len) {
     
     cchar = (char *)malloc(length/2);
     for( i = 0; i< length/2;i++){
-	cchar[i] = unicodechar[i*2 + 1];      
+        cchar[i] = unicodechar[i*2 + 1];      
     }
     return cchar;
 }
@@ -470,12 +470,12 @@ char *ASCIIToEnglishUnicode(char cchar[]) {
       unicodechar[i*2]=0x0;
       unicodechar[i*2 + 1] = cchar[i];
       if(Debug(LINKSOCKET))
-	{
-	  printf("Unicode char %d = %c %0x\n",i*2,unicodechar[i*2],
-		 unicodechar[i*2]);
-	  printf("Unicode char %d = %c %0x\n",(i*2 + 1),unicodechar[i*2+1],
-		 unicodechar[i*2+1]);
-	}
+        {
+          printf("Unicode char %d = %c %0x\n",i*2,unicodechar[i*2],
+                 unicodechar[i*2]);
+          printf("Unicode char %d = %c %0x\n",(i*2 + 1),unicodechar[i*2+1],
+                 unicodechar[i*2+1]);
+        }
     }
   return unicodechar;
 }
@@ -528,7 +528,7 @@ int unicodecmp(const char *s1, const char *s2, int length) {
 int UnicodeToASCII(char unicodechar[], char cchar[], int length){
     int i;
     for( i = 0; i< length/2;i++){
-	cchar[i] = unicodechar[i*2 + 1];      
+        cchar[i] = unicodechar[i*2 + 1];      
     }
     return length/2;
 }
@@ -539,16 +539,16 @@ int UnicodeToASCII(char unicodechar[], char cchar[], int length){
 int ASCIIToUnicode(const char cchar[], char unicodechar[], int length ){
     int i;
     if(Debug(LINKSOCKET))
-	printf("LinkSocket.c::ASCIITOUnicode \n");
+        printf("LinkSocket.c::ASCIITOUnicode \n");
     for(i=0;i<length;i++)
     {
-	unicodechar[i*2]=0x0;
-	unicodechar[i*2 + 1] = cchar[i];
+        unicodechar[i*2]=0x0;
+        unicodechar[i*2 + 1] = cchar[i];
         if(Debug(LINKSOCKET))
-	{
-	    printf("Unicode char %d = %c %0x\n",i*2,unicodechar[i*2],unicodechar[i*2]);
-	    printf("Unicode char %d = %c %0x\n",(i*2 + 1),unicodechar[i*2+1],unicodechar[i*2+1]);
-	}
+        {
+            printf("Unicode char %d = %c %0x\n",i*2,unicodechar[i*2],unicodechar[i*2]);
+            printf("Unicode char %d = %c %0x\n",(i*2 + 1),unicodechar[i*2+1],unicodechar[i*2+1]);
+        }
     }
     return length*2;
 }

@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/src/LinkGrid.c,v $
  * $RCSfile: LinkGrid.c,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -33,7 +33,7 @@ int WriteLinkGridHeader(LinkSocket *linkSocket)
 {  
     int check = OK;
     check = check || WriteChars(linkSocket, GRID_HEADER,
-				lGRID_HEADER);
+                                lGRID_HEADER);
     check = check || WriteInteger(linkSocket, GRAPHICTYPE_GRID);
     return check;
 }
@@ -42,10 +42,10 @@ int BufferedWriteLinkGridHeader(char *toBuffer)
 {
     int byteswritten = 0;
     byteswritten += BufferedWriteChars(&toBuffer[byteswritten],
-				       GRID_HEADER,
-				       lGRID_HEADER);
+                                       GRID_HEADER,
+                                       lGRID_HEADER);
     byteswritten += BufferedWriteInteger(&toBuffer[byteswritten],
-					 GRAPHICTYPE_GRID);
+                                         GRAPHICTYPE_GRID);
     return byteswritten;
 }
 
@@ -53,11 +53,11 @@ int BufferedWriteLinkGridHeader(char *toBuffer)
   @param LinkSocket: the socket connection on which data is written
 */ 
 int BufferedWriteLinkGridLatLon(LinkSocket *linkSocket, 
-				double lat, double lon, 
-				int rows, int columns, double orientation,
-				double vResolution, double hResolution,
-				int major, int *data,
-				LinkArgs *linkArgs)
+                                double lat, double lon, 
+                                int rows, int columns, double orientation,
+                                double vResolution, double hResolution,
+                                int major, int *data,
+                                LinkArgs *linkArgs)
 {
     int buffercount;
     char *buffer;
@@ -65,15 +65,15 @@ int BufferedWriteLinkGridLatLon(LinkSocket *linkSocket,
     int numberOfBytes = rows*columns*N_BYTES_PER_INTEGER;
     
     buffercount = lGRID_HEADER + /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +  /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	2*N_BYTES_PER_FLOAT +  /*Bytes used by lat and lon*/
-	2*N_BYTES_PER_INTEGER +  /*Bytes used by rows and columns*/
-	3*N_BYTES_PER_FLOAT + /* bytes for orientation, vResolution, hResolution */
-	N_BYTES_PER_INTEGER +  /*Bytes used by major*/
-	N_BYTES_PER_INTEGER +  /*Bytes used by length of data*/
-	numberOfBytes + /*Bytes used by grid*/   
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +  /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        2*N_BYTES_PER_FLOAT +  /*Bytes used by lat and lon*/
+        2*N_BYTES_PER_INTEGER +  /*Bytes used by rows and columns*/
+        3*N_BYTES_PER_FLOAT + /* bytes for orientation, vResolution, hResolution */
+        N_BYTES_PER_INTEGER +  /*Bytes used by major*/
+        N_BYTES_PER_INTEGER +  /*Bytes used by length of data*/
+        numberOfBytes + /*Bytes used by grid*/   
+        LinkSizeOfLinkArgs(linkArgs);
     
     buffer = (char *)malloc(buffercount);
     if (buffer == NULL)
@@ -100,11 +100,11 @@ int BufferedWriteLinkGridLatLon(LinkSocket *linkSocket,
 }
 
 int WriteLinkGridLatLon(LinkSocket *linkSocket, 
-			double lat, double lon, 
-			int rows, int columns, double orientation,
-			double vResolution, double hResolution,
-			int major, int *data,
-			LinkArgs *linkArgs)
+                        double lat, double lon, 
+                        int rows, int columns, double orientation,
+                        double vResolution, double hResolution,
+                        int major, int *data,
+                        LinkArgs *linkArgs)
 {
     int i;
     int numberOfInts;
@@ -124,7 +124,7 @@ int WriteLinkGridLatLon(LinkSocket *linkSocket,
     numberOfInts = rows*columns;
     check = check || WriteInteger(linkSocket, numberOfInts);  
     for (i = 0; i < numberOfInts; i++){
-	check = check || WriteInteger(linkSocket, data[i]);
+        check = check || WriteInteger(linkSocket, data[i]);
     }
     check = check || WriteLinkArgs(linkSocket, linkArgs);
 
@@ -133,11 +133,11 @@ int WriteLinkGridLatLon(LinkSocket *linkSocket,
 }
 
 int WriteLinkGridLatLonS(LinkSocket *linkSocket, 
-			 double lat, double lon, 
-			 int rows, int columns, double orientation,
-			 double vResolution, double hResolution,
-			 int major, short *data,
-			 LinkArgs *linkArgs)
+                         double lat, double lon, 
+                         int rows, int columns, double orientation,
+                         double vResolution, double hResolution,
+                         int major, short *data,
+                         LinkArgs *linkArgs)
 {
     int i;
     int check = OK;
@@ -158,8 +158,8 @@ int WriteLinkGridLatLonS(LinkSocket *linkSocket,
     numberOfInts = rows*columns;
     check = check || WriteInteger(linkSocket, numberOfInts);
     for (i = 0; i < numberOfInts; i++){
-	sub = (int)data[i];
-	check = check || WriteInteger(linkSocket, sub);
+        sub = (int)data[i];
+        check = check || WriteInteger(linkSocket, sub);
     }
     
     check = check || WriteLinkArgs(linkSocket, linkArgs);
@@ -168,11 +168,11 @@ int WriteLinkGridLatLonS(LinkSocket *linkSocket,
 }
 
 int BufferedWriteLinkGridXY(LinkSocket *linkSocket,
-			    int x, int y,
-			    int rows, int columns, double orientation,
-			    double vResolution, double hResolution,
-			    int major, int *data,
-			    LinkArgs *linkArgs)
+                            int x, int y,
+                            int rows, int columns, double orientation,
+                            double vResolution, double hResolution,
+                            int major, int *data,
+                            LinkArgs *linkArgs)
 {
     int buffercount;
     char *buffer;
@@ -183,14 +183,14 @@ int BufferedWriteLinkGridXY(LinkSocket *linkSocket,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lGRID_HEADER + /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +  /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	4*N_BYTES_PER_INTEGER +  /*Bytes used by x, y, rows and columns*/
-	3*N_BYTES_PER_FLOAT + /* bytes for orientation, vResolution and hResolution */
-	N_BYTES_PER_INTEGER +  /*Bytes used by major*/
-	N_BYTES_PER_INTEGER +  /*Bytes used by length of data*/
-	numberOfBytes + /*Bytes used by grid*/   
-	LinkSizeOfLinkArgs(linkArgs);
+        N_BYTES_PER_INTEGER +  /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        4*N_BYTES_PER_INTEGER +  /*Bytes used by x, y, rows and columns*/
+        3*N_BYTES_PER_FLOAT + /* bytes for orientation, vResolution and hResolution */
+        N_BYTES_PER_INTEGER +  /*Bytes used by major*/
+        N_BYTES_PER_INTEGER +  /*Bytes used by length of data*/
+        numberOfBytes + /*Bytes used by grid*/   
+        LinkSizeOfLinkArgs(linkArgs);
     
     buffer = (char *)malloc(sizeof(buffercount));
     if (buffer == NULL)
@@ -219,11 +219,11 @@ int BufferedWriteLinkGridXY(LinkSocket *linkSocket,
 
 
 int WriteLinkGridXY(LinkSocket *linkSocket,
-		    int x, int y,
-		    int rows, int columns, double orientation,
-		    double vResolution, double hResolution,
-		    int major, int *data,
-		    LinkArgs *linkArgs)
+                    int x, int y,
+                    int rows, int columns, double orientation,
+                    double vResolution, double hResolution,
+                    int major, int *data,
+                    LinkArgs *linkArgs)
 {
     int i;
     int check = OK;
@@ -242,7 +242,7 @@ int WriteLinkGridXY(LinkSocket *linkSocket,
     
     check = check || WriteInteger(linkSocket, numberOfInts);  
     for (i = 0; i < numberOfInts; i++){
-	check = check || WriteInteger(linkSocket, data[i]);
+        check = check || WriteInteger(linkSocket, data[i]);
     }
 
     check = check || WriteLinkArgs(linkSocket, linkArgs);
@@ -251,12 +251,12 @@ int WriteLinkGridXY(LinkSocket *linkSocket,
 }
 
 int BufferedWriteLinkGridOffset(LinkSocket *linkSocket,
-				double lat, double lon,
-				int x, int y,			   
-				int rows, int columns, double orientation,
-				double vResolution, double hResolution,
-				int major, int *data,
-				LinkArgs *linkArgs)
+                                double lat, double lon,
+                                int x, int y,                      
+                                int rows, int columns, double orientation,
+                                double vResolution, double hResolution,
+                                int major, int *data,
+                                LinkArgs *linkArgs)
 {
     int buffercount;
     char *buffer;
@@ -266,16 +266,16 @@ int BufferedWriteLinkGridOffset(LinkSocket *linkSocket,
       buffercount corresponds to data being written in bytes below.
     */
     buffercount = lGRID_HEADER +  /* Bytes used by Header*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
-	N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
-	2*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
-	4*N_BYTES_PER_INTEGER +   /*Bytes used by x,y,rows and columns*/
-	/*these are common to all*/
-	3*N_BYTES_PER_FLOAT + /* bytes for orientation, vResolution and hResolution */
-	N_BYTES_PER_INTEGER +  /*Bytes used by major*/
-	N_BYTES_PER_INTEGER +  /*Bytes used by length of data*/
-	numberOfBytes + /*Bytes used by grid*/   
-	LinkSizeOfLinkArgs(linkArgs);    
+        N_BYTES_PER_INTEGER +     /*Bytes used by GRAPHIC_TYPE. It is an Integer*/
+        N_BYTES_PER_INTEGER +     /*Bytes used by RENDERTYPE identifier*/
+        2*N_BYTES_PER_FLOAT +     /*Bytes used by lat and lon*/
+        4*N_BYTES_PER_INTEGER +   /*Bytes used by x,y,rows and columns*/
+        /*these are common to all*/
+        3*N_BYTES_PER_FLOAT + /* bytes for orientation, vResolution and hResolution */
+        N_BYTES_PER_INTEGER +  /*Bytes used by major*/
+        N_BYTES_PER_INTEGER +  /*Bytes used by length of data*/
+        numberOfBytes + /*Bytes used by grid*/   
+        LinkSizeOfLinkArgs(linkArgs);    
     
     buffer = (char *)malloc(sizeof(buffercount));
     if (buffer == NULL)
@@ -303,12 +303,12 @@ int BufferedWriteLinkGridOffset(LinkSocket *linkSocket,
 }
 
 int WriteLinkGridOffset(LinkSocket *linkSocket,
-			double lat, double lon,
-			int x, int y,			   
-			int rows, int columns, double orientation,
-			double vResolution, double hResolution,
-			int major, int *data,
-			LinkArgs *linkArgs)
+                        double lat, double lon,
+                        int x, int y,                      
+                        int rows, int columns, double orientation,
+                        double vResolution, double hResolution,
+                        int major, int *data,
+                        LinkArgs *linkArgs)
 {
     int i;
     int numberOfInts = rows*columns;
@@ -329,7 +329,7 @@ int WriteLinkGridOffset(LinkSocket *linkSocket,
     
     check = check || WriteInteger(linkSocket, numberOfInts);  
     for (i = 0; i < numberOfInts; i++){
-	check = check || WriteInteger(linkSocket, data[i]);
+        check = check || WriteInteger(linkSocket, data[i]);
     }
     
     check = check || WriteLinkArgs(linkSocket, linkArgs);

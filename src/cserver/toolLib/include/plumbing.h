@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/toolLib/include/plumbing.h,v $
  * $RCSfile: plumbing.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:10 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -30,11 +30,11 @@ BEGIN_extern_C
 
 typedef int (*FdCBProc)(
 #if NeedFunctionPrototypes
- int,				/* fd */
- char *				/* client_data */
+ int,                           /* fd */
+ char *                         /* client_data */
 #endif
-);		/* pointer to a procedure */
-#define NoFdCBProc	((FdCBProc) 0)
+);              /* pointer to a procedure */
+#define NoFdCBProc      ((FdCBProc) 0)
 
 extern void StopLoopOnFds(
 #if NeedFunctionPrototypes
@@ -48,10 +48,10 @@ extern int LoopOnFds(
 
 extern int PrintTrace(
 #if NeedFunctionPrototypes
- int,				/* fd */
- char *,			/* buf */
- int,				/* nBytes */
- char				/* direction */
+ int,                           /* fd */
+ char *,                        /* buf */
+ int,                           /* nBytes */
+ char                           /* direction */
 #endif
 );
 
@@ -72,70 +72,70 @@ extern void WeedOutBadFds(
 
 extern int ConnectInputFd(
 #if NeedFunctionPrototypes
- int,				/* fd */
- FdCBProc,			/* callback */
- const char *,			/* callbackName */
- char *				/* clientData */
+ int,                           /* fd */
+ FdCBProc,                      /* callback */
+ const char *,                  /* callbackName */
+ char *                         /* clientData */
 #endif
 ); 
 
 extern int ConnectOutputFd(
 #if NeedFunctionPrototypes
- int,				/* fd */
- FdCBProc,			/* callback */
- const char *,			/* callbackName */
- char *				/* clientData */
+ int,                           /* fd */
+ FdCBProc,                      /* callback */
+ const char *,                  /* callbackName */
+ char *                         /* clientData */
 #endif
 ); 
 
 extern int SetTraceFd(
 #if NeedFunctionPrototypes
- int,				/* fd */
- int,				/* flag */
- int				/* direction */
+ int,                           /* fd */
+ int,                           /* flag */
+ int                            /* direction */
 #endif
 ); 
 
 extern int GetTraceFd(
 #if NeedFunctionPrototypes
- int,				/* fd */
- int				/* direction */
+ int,                           /* fd */
+ int                            /* direction */
 #endif
 ); 
 
 extern void DisconnectInputFd(
 #if NeedFunctionPrototypes
- int				/* fd */
+ int                            /* fd */
 #endif
 ); 
 
 extern void DisableInputFd(
 #if NeedFunctionPrototypes
- int				/* fd */
+ int                            /* fd */
 #endif
 ); 
 
 extern void EnableInputFd(
 #if NeedFunctionPrototypes
- int				/* fd */
+ int                            /* fd */
 #endif
 ); 
 
 extern void DisconnectOutputFd(
 #if NeedFunctionPrototypes
- int				/* fd */
+ int                            /* fd */
 #endif
 ); 
 
 extern void DisableOutputFd(
 #if NeedFunctionPrototypes
- int				/* fd */
+ int                            /* fd */
 #endif
 ); 
 
 extern void EnableOutputFd(
 #if NeedFunctionPrototypes
- int				/* fd */
+ int                            /* fd */
 #endif
 ); 
 

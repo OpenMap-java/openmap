@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/LinkGrid.h,v $
  * $RCSfile: LinkGrid.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -53,11 +53,11 @@
  */
 
 int WriteLinkGridLatLon(LinkSocket *linkSocket, 
-			double lat, double lon, 
-			int rows, int columns, double orientation,
-			double vResolution, double hResolution,
-			int major, int* data,
-			LinkArgs *linkArgs);
+                        double lat, double lon, 
+                        int rows, int columns, double orientation,
+                        double vResolution, double hResolution,
+                        int major, int* data,
+                        LinkArgs *linkArgs);
 
 /**
  * Writes a grid object in lat-long space with the data passed as a short
@@ -79,11 +79,11 @@ int WriteLinkGridLatLon(LinkSocket *linkSocket,
 
 
 int WriteLinkGridLatLonS(LinkSocket *linkSocket, 
-			 double lat, double lon, 
-			 int rows, int columns, double orientation,
-			 double vResolution, double hResolution,
-			 int major, short* data,
-			 LinkArgs *linkArgs);
+                         double lat, double lon, 
+                         int rows, int columns, double orientation,
+                         double vResolution, double hResolution,
+                         int major, short* data,
+                         LinkArgs *linkArgs);
 
 /**
  * Writes a buffered grid object in lat-long space to the link socket.
@@ -107,11 +107,11 @@ int WriteLinkGridLatLonS(LinkSocket *linkSocket,
 
 
 int BufferedWriteLinkGridLatLon(LinkSocket *linkSocket, 
-				double lat, double lon, 
-				int rows, int columns, double orientation,
-				double vResolution, double hResolution,
-				int major, int* data,
-				LinkArgs *linkArgs);
+                                double lat, double lon, 
+                                int rows, int columns, double orientation,
+                                double vResolution, double hResolution,
+                                int major, int* data,
+                                LinkArgs *linkArgs);
 
 /**
  * Writes a grid object in X-Y space to the link socket.
@@ -131,11 +131,11 @@ int BufferedWriteLinkGridLatLon(LinkSocket *linkSocket,
  */
 
 int WriteLinkGridXY(LinkSocket *linkSocket,  
-		    int x, int y,
-		    int rows, int columns, double orientation,
-		    double vResolution, double hResolution,
-		    int major, int* data,
-		    LinkArgs *linkArgs);
+                    int x, int y,
+                    int rows, int columns, double orientation,
+                    double vResolution, double hResolution,
+                    int major, int* data,
+                    LinkArgs *linkArgs);
 
 /**
  * Writes a buffered grid object in X-Y space to the link socket. <b>DEPRECATED</b>
@@ -157,11 +157,11 @@ int WriteLinkGridXY(LinkSocket *linkSocket,
  */
 
 int BufferedWriteLinkGridXY(LinkSocket *linkSocket,  
-			    int x, int y,
-			    int rows, int columns, double orientation,
-			    double vResolution, double hResolution,
-			    int major, int* data,
-			    LinkArgs *linkArgs);
+                            int x, int y,
+                            int rows, int columns, double orientation,
+                            double vResolution, double hResolution,
+                            int major, int* data,
+                            LinkArgs *linkArgs);
 
 
 /**
@@ -185,12 +185,12 @@ int BufferedWriteLinkGridXY(LinkSocket *linkSocket,
 
  
 int WriteLinkGridOffset(LinkSocket *linkSocket,
-			double lat, double lon,
-			int x, int y,			   
-			int rows, int columns, double orientation,
-			double vResolution, double hResolution,
-			int major, int* data,
-			LinkArgs *linkArgs);
+                        double lat, double lon,
+                        int x, int y,                      
+                        int rows, int columns, double orientation,
+                        double vResolution, double hResolution,
+                        int major, int* data,
+                        LinkArgs *linkArgs);
 /**
  * Writes a buffered grid object with an offset to the link socket.
  * <b>DEPRECATED</b>
@@ -215,11 +215,11 @@ int WriteLinkGridOffset(LinkSocket *linkSocket,
 
 
 int BufferedWriteLinkGridOffset(LinkSocket *linkSocket,
-				double lat, double lon,
-				int x, int y,			   
-				int rows, int columns, double orientation,
-				double vResolution, double hResolution,
-				int major, int* data,
-				LinkArgs *linkArgs);
+                                double lat, double lon,
+                                int x, int y,                      
+                                int rows, int columns, double orientation,
+                                double vResolution, double hResolution,
+                                int major, int* data,
+                                LinkArgs *linkArgs);
 
 #endif

@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/Link.h,v $
  * $RCSfile: Link.h,v $
- * $Revision: 1.1.1.1 $
- * $Date: 2003/02/14 21:35:48 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/26 19:07:09 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -75,9 +75,9 @@ enum RENDERTYPE {RENDERTYPE_UNKNOWN, RENDERTYPE_LATLON, RENDERTYPE_XY, RENDERTYP
  */
 
 enum GRAPHICTYPE {GRAPHICTYPE_GRAPHIC, GRAPHICTYPE_BITMAP, GRAPHICTYPE_TEXT, 
-		  GRAPHICTYPE_POLY, GRAPHICTYPE_LINE, GRAPHICTYPE_RECTANGLE,
-		  GRAPHICTYPE_CIRCLE, GRAPHICTYPE_RASTER,
-		  GRAPHICTYPE_GRID, GRAPHICTYPE_POINT};
+                  GRAPHICTYPE_POLY, GRAPHICTYPE_LINE, GRAPHICTYPE_RECTANGLE,
+                  GRAPHICTYPE_CIRCLE, GRAPHICTYPE_RASTER,
+                  GRAPHICTYPE_GRID, GRAPHICTYPE_POINT};
 
 /**
  * Geographic units.
