@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/Attic/AbstractDrawingEditorTool.java,v $
 // $RCSfile: AbstractDrawingEditorTool.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/24 17:03:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -203,6 +203,7 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
 
 	if (someObj instanceof MouseDelegator) {
 	    setMouseDelegator((MouseDelegator)someObj);
+	    drawingTool.findAndInit(someObj);
 	}
 
 	if (someObj instanceof OMGraphicDeleteTool) {
@@ -255,11 +256,17 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
      * disable all buttons.
      */
     public void totalReset() {
-	thingToCreate = null;
-	setWantsEvents(false);
-	drawingTool.deactivate();
-	if (unpickBtn != null) {
-	    unpickBtn.doClick();
+	// Need to check if the tool wants events before just 
+	// deactivating the drawing tool - that can mess up a edit
+	// session that is unrelated to the tool but still related to
+	// the DrawingToolLayer.
+	if (wantsEvents()) {
+	    thingToCreate = null;
+	    setWantsEvents(false);
+	    drawingTool.deactivate();
+	    if (unpickBtn != null) {
+		unpickBtn.doClick();
+	    }
 	}
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/02/21 17:47:02 $
+// $Revision: 1.5 $
+// $Date: 2003/02/24 17:03:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -170,6 +170,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 		// This is fine for OMGraphics that are not near to each 
 		// other, but not for neighbors.
 		if (dt.edit(omgr, layer, e) == null) {
+		    Debug.output("DTL.mousePressed(): DrawingTool is already active.");
 		    dt.deactivate();
 		    dt.edit(omgr, layer, e);
 		}
@@ -290,7 +291,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      */
     protected String getToolTipForOMGraphic(OMGraphic omgr) {
 	OMDrawingTool dt = getDrawingTool();
-	if (dt.canEdit(omgr.getClass())) {
+	if (dt.canEdit(omgr.getClass()) && !dt.isActivated()) {
 	    return "Click to Edit";
 	} else {
 	    return null;

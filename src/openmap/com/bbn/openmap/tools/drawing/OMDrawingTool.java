@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/02/18 00:42:32 $
+// $Revision: 1.4 $
+// $Date: 2003/02/24 17:03:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -456,6 +456,12 @@ public class OMDrawingTool
 	    if (currentEditable != null) {
 		graphicAttributes.setFrom(currentEditable.getGraphic());
 		activate();
+		if (currentEditable == null) {
+		    // In case activating caused something 
+		    // strange to happen, most likely with activating
+		    // the MouseModes.
+		    return null;
+		}
 		return currentEditable.getGraphic();
 	    }
 	}
@@ -610,7 +616,8 @@ public class OMDrawingTool
 
     /**
      * Get the current EditableOMGraphic being used by the drawing
-     * tool.  Could be null if nothing valid is happening.
+     * tool.  Could be null if nothing valid is happening, i.e. if the
+     * OMDrawingTool isn't actively editing something.
      */
     public EditableOMGraphic getCurrentEditable() {
 	return currentEditable;
@@ -744,6 +751,8 @@ public class OMDrawingTool
 		// then don't put up a window.
 		return null;
 	    }
+	} else {
+	    return null;
 	}
 
 	
@@ -789,12 +798,20 @@ public class OMDrawingTool
     protected boolean activated = false;
 
     /**
+     * Convenience function to tell if the OMDrawingTool is currently
+     * working on an OMGraphic.
+     */
+    public boolean isActivated() {
+	return activated;
+    }
+
+    /**
      * Turn the OMDrawingTool on, attaching it to the MouseDelegator
      * or the canvas component it is assigned to.  Also brings up the
      * drawing palette.  Called automatically from the create/edit
      * methods.
      */
-    public synchronized void activate() {
+    protected synchronized void activate() {
 	activated = true;
 
 	if (DEBUG) Debug.output("OMDrawingTool: activate()");
@@ -806,11 +823,23 @@ public class OMDrawingTool
 
 	if (!isMask(PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK)) {
 	    if (mouseDelegator != null) {
+		if (Debug.debugging("drawingtooldetail")) {
+		    Debug.output("OMDrawingTool.activate() mousemode connecting to MouseDelegator");
+		}
 		formerMouseMode = mouseDelegator.getActiveMouseMode();
 		mouseDelegator.setActiveMouseMode(dtmm);
+
+		if (currentEditable.getGraphic() == null) {
+		    Debug.error("OMDrawingTool.activate():  setting up mouse mode caused something else to deactivate the DrawingTool.");
+		    return;
+		}
+
 	    } else if (canvas != null) {
 		// If a MouseDelegator is not being used, go directly to
 		// the MapBean.
+		if (Debug.debugging("drawingtooldetail")) {
+		    Debug.output("OMDrawingTool.activate() mousemode connecting directly to canvas");
+		}
 		canvas.addMouseListener(dtmm);
 		canvas.addMouseMotionListener(dtmm);
 	    } else {
@@ -821,6 +850,7 @@ public class OMDrawingTool
 	// The Drawing tool is added as a projection listener so that
 	// it can properly update the current graphic if the map
 	// projection changes during graphic creation/edit.
+
 	if (canvas != null) {
 	    if (canvas instanceof MapBean) {
   		((MapBean)canvas).addPaintListener(this);
@@ -1207,7 +1237,7 @@ public class OMDrawingTool
 	    return;
 	}
 
-	if (Environment.getBoolean(Environment.UseInternalFrames)){
+	if (Environment.getBoolean(Environment.UseInternalFrames)) {
 	    final JLayeredPane desktop = 
 		Environment.getInternalFrameDesktop();
 
@@ -1433,7 +1463,7 @@ public class OMDrawingTool
 		}
 	    });
 
-	JMenuItem gui = new JMenuItem("Change Attributes...");
+	JMenuItem gui = new JMenuItem("Change Appearance...");
 	gui.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent ae) {
 		    EditableOMGraphic eomg = getCurrentEditable();
