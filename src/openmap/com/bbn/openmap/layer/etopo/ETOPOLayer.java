@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/etopo/ETOPOLayer.java,v $
 // $RCSfile: ETOPOLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/05/10 21:12:05 $
+// $Revision: 1.7 $
+// $Date: 2004/05/11 23:23:21 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -338,6 +338,7 @@ public class ETOPOLayer extends Layer implements ActionListener {
      * @param pathToETOPODir path to the directory holding the ETOPO data
      */
     public ETOPOLayer(String pathToETOPODir) {
+        setName("ETOPO");
         setDefaultValues();
         path = pathToETOPODir;
     }

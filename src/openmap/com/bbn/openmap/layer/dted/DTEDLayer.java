@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDLayer.java,v $
 // $RCSfile: DTEDLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/03/04 04:14:29 $
+// $Revision: 1.8 $
+// $Date: 2004/05/11 23:23:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -308,6 +308,7 @@ public class DTEDLayer extends Layer
      * level 2 data.  
      */
     public DTEDLayer(String[] pathsToDTEDDirs, String[] pathsToDTED2Dirs) {
+        setName("DTED");
         setDefaultValues();
         paths = pathsToDTEDDirs;
         paths2 = pathsToDTED2Dirs;

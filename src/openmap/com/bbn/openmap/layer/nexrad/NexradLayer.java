@@ -73,7 +73,9 @@ public class NexradLayer extends OMGraphicHandlerLayer {
     /**
      * Construct the DateLayer.
      */
-    public NexradLayer() {}
+    public NexradLayer() {
+        setName("Nexrad");
+    }
     
     
     /**

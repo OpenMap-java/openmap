@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/TerrainLayer.java,v $
 // $RCSfile: TerrainLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/02/05 18:15:08 $
+// $Revision: 1.7 $
+// $Date: 2004/05/11 23:23:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -113,6 +113,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer
      * are set to their default values.
      */
     public TerrainLayer() {
+        setName("Terrain");
         init();
     }
 
