@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/ListResetPCPolicy.java,v $
 // $RCSfile: ListResetPCPolicy.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/22 23:47:35 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/10/02 15:55:33 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -80,7 +80,16 @@ public class ListResetPCPolicy implements ProjectionChangePolicy {
 		    Debug.output(getLayer().getName() + ": ListResetPCPolicy projectionChanged with OLD projection, repainting.");
 		}
 		if (!layer.isWorking()) {
-// 		    layer.repaint();
+		    // This repaint may look redundant, but it handles
+		    // the situation where a layer is removed from a
+		    // map and readded when the projection doesn't
+		    // change.  Since it already had the projection,
+		    // and remove() hasn't been called yet, the proj
+		    // == null.  When the new layer is added, it
+		    // receives a projectionChanged call, and even
+		    // though it's all set, it still needs to call
+		    // repaint to have itself show up on the map.
+		    layer.repaint();
 		    layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
 		}
 	    }
