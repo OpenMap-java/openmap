@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/Location.java,v $
 // $RCSfile: Location.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/11 23:52:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,7 +31,7 @@ import java.awt.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
-import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.layer.DeclutterMatrix;
@@ -138,7 +138,7 @@ public abstract class Location extends OMGraphic {
 	}
 	
 	if (locationMarker == null) {
-	    location = new OMRect(lat, lon, -1, -1, 1, 1);
+	    location = new OMPoint(lat, lon);
 	} else {
 	    location = locationMarker;
 	}
@@ -178,7 +178,7 @@ public abstract class Location extends OMGraphic {
 	}
 
 	if (locationMarker == null) {
-	    location = new OMRect(x-1, y-1, x+1, y+1);
+	    location = new OMPoint(x, y);
 	} else {
 	    location = locationMarker;
 	}
@@ -221,8 +221,7 @@ public abstract class Location extends OMGraphic {
 	}
 
 	if (locationMarker == null) {
-	    location = new OMRect(lat, lon, xOffset - 1, yOffset -1, 
-				  xOffset + 1, yOffset + 1);
+	    location = new OMPoint(lat, lon, xOffset, yOffset);
 	} else {
 	    location = locationMarker;
 	}
