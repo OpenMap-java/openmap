@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/GestureResponsePolicy.java,v $
 // $RCSfile: GestureResponsePolicy.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/23 22:46:24 $
+// $Revision: 1.4 $
+// $Date: 2003/10/06 19:28:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,6 +59,23 @@ public interface GestureResponsePolicy {
 
     public String getInfoText(OMGraphic omg);
 
+    /**
+     * If applicable, add contents to a popup menu for a location over
+     * the map.
+     * @return the provided JPopupMenu if no modifications are to be
+     * made, null if no popup should be displayed.  You can create a
+     * different JPopupMenu if you want and return that instead.
+     * Returns null by default.
+     */
+    public JPopupMenu modifyPopupMenuForMap(JPopupMenu jpm);
+
+    /**
+     * If applicable, add contents to a popup menu for a location over
+     * an OMGraphic.  
+     * @return the provided JPopupMenu if no modifications are to be
+     * made.You can create a different JPopupMenu if you want and
+     * return that instead. Returns null by default.
+     */
     public JPopupMenu modifyPopupMenuFor(OMGraphic omg, JPopupMenu jpm);
 
 }

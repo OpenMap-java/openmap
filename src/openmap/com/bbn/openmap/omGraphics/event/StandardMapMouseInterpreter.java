@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/10/04 17:56:15 $
+// $Revision: 1.8 $
+// $Date: 2003/10/06 19:28:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,6 +54,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
     }
 
     public StandardMapMouseInterpreter(OMGraphicHandlerLayer l) {
+	this();
 	setLayer(l);
     }
 
