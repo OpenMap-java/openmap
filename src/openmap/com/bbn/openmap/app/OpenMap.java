@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/09/25 18:46:52 $
+// $Revision: 1.10 $
+// $Date: 2004/01/24 03:33:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,11 +76,23 @@ public class OpenMap {
      */
     public OpenMap(PropertyHandler propertyHandler) {
 	mapPanel = new BasicMapPanel(propertyHandler);
+        //Schedule a job for the event-dispatching thread:
+        //creating and showing this application's GUI.
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                showInFrame();
+            }
+        });
+    }
 
+    public void showInFrame() {
 	OpenMapFrame omf = new OpenMapFrame();
 	setWindowListenerOnFrame(omf);
-	mapPanel.getMapHandler().add(omf);
+	getMapHandler().add(omf);
+
+        omf.show();
 	mapPanel.getMapBean().showLayerPalettes();
+        Debug.message("basic", "OpenMap: READY");
     }
 
     /**
