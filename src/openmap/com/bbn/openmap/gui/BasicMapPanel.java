@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/02/02 22:52:25 $
+// $Revision: 1.12 $
+// $Date: 2004/05/10 20:43:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -73,13 +73,14 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     protected MenuList menuList;
 
     /**
-     * Create a MapPanel that creates its own PropertyHandler, which
-     * will then search the classpath, config directory and user home
-     * directory for the openmap.properties file to configure
-     * components for the MapPanel.
+     * Create an empty MapPanel that creates its own empty
+     * PropertyHandler.  The MapPanel will contain a MapBean, a
+     * MapHandler, and a PropertyHandler with no properties.  The
+     * constructor to use to create a blank map framework to add
+     * components to.
      */
     public BasicMapPanel() {
-        this(false);
+        this(new PropertyHandler(new Properties()), false);
     }
 
     /**

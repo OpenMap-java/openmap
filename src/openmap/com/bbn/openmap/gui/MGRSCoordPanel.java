@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MGRSCoordPanel.java,v $
 // $RCSfile: MGRSCoordPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/05/10 20:43:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,6 +34,8 @@ import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.CenterSupport;
 import com.bbn.openmap.proj.coords.MGRSPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.Environment;
 
 /**
  * MGRSCoordPanel is a simple gui with an entry box for a MGRS
@@ -42,40 +44,43 @@ import com.bbn.openmap.util.Debug;
 public class MGRSCoordPanel extends CoordPanel implements Serializable {
 
     protected transient JTextField mgrs;
-
+    
     /**
      *  Creates the panel.
      */
     public MGRSCoordPanel() {
-        super();
+	super();
     }
 
     /**
      *  Creates the panel.
      */
     public MGRSCoordPanel(CenterSupport support) {
-        super(support);
+	super(support);
     }
 
     /**
      *  Creates and adds the labels and entry fields for latitude and longitude
      */
     protected void makeWidgets() {
-        GridBagLayout gridbag = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
+     String locText;
+	GridBagLayout gridbag = new GridBagLayout();
+	GridBagConstraints c = new GridBagConstraints();
 
-        setLayout(gridbag);
-        setBorder(new TitledBorder(new EtchedBorder(), "MGRS Coordinate"));
+	setLayout(gridbag);
+        locText = i18n.get(MGRSCoordPanel.class,"border","MGRS Coordinate");
+	setBorder(new TitledBorder(new EtchedBorder(), locText));
 
-        JLabel mgrsLabel = new JLabel("MGRS: ");
-        c.gridx = 0;
-        gridbag.setConstraints(mgrsLabel, c);
-        add(mgrsLabel);
+        locText = i18n.get(MGRSCoordPanel.class,"mgrsLabel","MGRS: ");
+	JLabel mgrsLabel = new JLabel(locText);
+	c.gridx = 0;
+	gridbag.setConstraints(mgrsLabel, c);
+	add(mgrsLabel);
 
-        mgrs = new JTextField(20);
-        c.gridx = 1;
-        gridbag.setConstraints(mgrs, c);
-        add(mgrs);
+	mgrs = new JTextField(20);
+	c.gridx = 1;
+	gridbag.setConstraints(mgrs, c);
+	add(mgrs);
     }
 
     /**
@@ -83,19 +88,19 @@ public class MGRSCoordPanel extends CoordPanel implements Serializable {
      */
     public LatLonPoint getLatLon() {
 
-        String mgrsString;
+	String mgrsString;
 
-        try {
-            // Allow blank minutes and seconds fields to represent zero
-            
-            
-            return new MGRSPoint(mgrs.getText()).toLatLonPoint();
+	try {
+	    // Allow blank minutes and seconds fields to represent zero
+	    
+	    
+	    return new MGRSPoint(mgrs.getText()).toLatLonPoint();
 
-        } catch (NumberFormatException except) {
-//          System.out.println(except.toString());
-            clearTextBoxes();
-        }
-        return null;
+	} catch (NumberFormatException except) {
+//  	    System.out.println(except.toString());
+	    clearTextBoxes();
+	}
+	return null;
     }
 
     /**
@@ -104,16 +109,16 @@ public class MGRSCoordPanel extends CoordPanel implements Serializable {
      *  should go in the boxes.
      */
      public void setLatLon(LatLonPoint llpoint) {
-         if (llpoint == null) {
-             clearTextBoxes();
-             return;
-         }
+	 if (llpoint == null) {
+	     clearTextBoxes();
+	     return;
+	 }
 
-         MGRSPoint mgrsp = new MGRSPoint(llpoint);
-         mgrs.setText(mgrsp.getMGRS());
+	 MGRSPoint mgrsp = new MGRSPoint(llpoint);
+	 mgrs.setText(mgrsp.getMGRS());
      }
 
     protected void clearTextBoxes() {
-        mgrs.setText("");
+	mgrs.setText("");
     }
 }

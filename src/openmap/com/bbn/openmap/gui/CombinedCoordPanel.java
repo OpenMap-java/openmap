@@ -14,15 +14,14 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/CombinedCoordPanel.java,v $
 // $RCSfile: CombinedCoordPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/05/10 20:43:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 
 package com.bbn.openmap.gui;
-
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.CenterEvent;
 import com.bbn.openmap.event.CenterListener;
@@ -49,6 +48,8 @@ import java.io.Serializable;
  */
 public class CombinedCoordPanel extends OMComponentPanel 
     implements Serializable, ActionListener, CenterListener {
+        
+    protected I18n i18n = Environment.getI18n();
 
     protected transient JButton closebutton;
     protected transient JButton applybutton;
@@ -60,16 +61,13 @@ public class CombinedCoordPanel extends OMComponentPanel
 
     protected transient CenterSupport centerDelegate;
 
-    public final static String DEFAULT_COMMENT = 
-        "Set Center of Map to Coordinates:";
-
     public final static String CloseCmd = "Close";
 
     /** 
      *  Creates a CombinedCoordPanel with Apply button.
      */
     public CombinedCoordPanel() {
-        setup(DEFAULT_COMMENT, null);
+	this(null);
     }
 
     /** 
@@ -77,7 +75,7 @@ public class CombinedCoordPanel extends OMComponentPanel
      *  button if the closeButtonListener is not null.
      */
     public CombinedCoordPanel(ActionListener closeButtonListener) {
-        setup(DEFAULT_COMMENT, closeButtonListener);
+	setup(i18n.get(CombinedCoordPanel.class,"defaultComment","Set Center of Map to Coordinates:"), closeButtonListener);
     }
 
     /** 
@@ -85,51 +83,60 @@ public class CombinedCoordPanel extends OMComponentPanel
      * with a specified comment above the tabbed panel.
      */
     public CombinedCoordPanel(String comment, ActionListener closeButtonListener) {
-        setup(comment, closeButtonListener);
+	setup(comment, closeButtonListener);
     }
 
     /**
      * Create the panel and set up the listeners.  Called from the constructor.
      */
     protected void setup(String comment, ActionListener closeButtonListener) {
-        centerDelegate = new CenterSupport(this);
-        // We want to set all of the current tabs with the current center.
-        addCenterListener(this);
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        String locText;
+    
+	centerDelegate = new CenterSupport(this);
+	// We want to set all of the current tabs with the current center.
+	addCenterListener(this);
+	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JPanel titlePanel = new JPanel();
-        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
-        JLabel clarification = new JLabel(comment);
-        titlePanel.add(clarification);
-        add(titlePanel);
+	JPanel titlePanel = new JPanel();
+	titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
+	JLabel clarification = new JLabel(comment);
+	titlePanel.add(clarification);
+	add(titlePanel);
 
-        coordPanel = new CoordPanel(centerDelegate);
-        dmsPanel = new DMSCoordPanel(centerDelegate);
-        utmPanel = new UTMCoordPanel(centerDelegate);
-        mgrsPanel = new MGRSCoordPanel(centerDelegate);
+	coordPanel = new CoordPanel(centerDelegate);
+	dmsPanel = new DMSCoordPanel(centerDelegate);
+	utmPanel = new UTMCoordPanel(centerDelegate);
+	mgrsPanel = new MGRSCoordPanel(centerDelegate);
 
-        tabPane = new JTabbedPane();
-        tabPane.addTab("Dec Deg", coordPanel);
-        tabPane.addTab("DMS", dmsPanel);
-        tabPane.addTab("UTM", utmPanel);
-        tabPane.addTab("MGRS", mgrsPanel);
+	tabPane = new JTabbedPane();
+    
+        locText = i18n.get(CombinedCoordPanel.class,"tabPane.decdeg","Dec Deg");
+	tabPane.addTab(locText, coordPanel);
+        locText = i18n.get(CombinedCoordPanel.class,"tabPane.dms","DMS");
+	tabPane.addTab(locText, dmsPanel);
+        locText = i18n.get(CombinedCoordPanel.class,"tabPane.utm","UTM");
+	tabPane.addTab(locText, utmPanel);
+        locText = i18n.get(CombinedCoordPanel.class,"tabPane.mgrs","MGRS");
+	tabPane.addTab(locText, mgrsPanel);
 
-        add(tabPane);
+	add(tabPane);
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        applybutton = new JButton("Apply");
-        applybutton.addActionListener(this);
-        buttonPanel.add(applybutton);
+	JPanel buttonPanel = new JPanel();
+	buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        locText = i18n.get(CombinedCoordPanel.class,"applybutton","Apply");
+	applybutton = new JButton(locText);
+	applybutton.addActionListener(this);
+	buttonPanel.add(applybutton);
 
-        if (closeButtonListener != null) {
-            closebutton = new JButton("Close");
-            closebutton.setActionCommand(CloseCmd);
-            closebutton.addActionListener(closeButtonListener);
-            buttonPanel.add(closebutton);
-        }
+	if (closeButtonListener != null) {
+            locText = i18n.get(CombinedCoordPanel.class,"closebutton","Close");
+	    closebutton = new JButton(locText);
+	    closebutton.setActionCommand(CloseCmd);
+	    closebutton.addActionListener(closeButtonListener);
+	    buttonPanel.add(closebutton);
+	}
 
-        add(buttonPanel);
+	add(buttonPanel);
     }
 
     /**
@@ -137,7 +144,7 @@ public class CombinedCoordPanel extends OMComponentPanel
      *  entry boxes in the CoordPanel
      */
     public LatLonPoint getLatLon() {
-        return coordPanel.getLatLon();
+	return coordPanel.getLatLon();
     }
 
     /**
@@ -147,10 +154,10 @@ public class CombinedCoordPanel extends OMComponentPanel
      * go in the boxes.
      */
     public void setLatLon(LatLonPoint llpoint) {
-        coordPanel.setLatLon(llpoint);
-        dmsPanel.setLatLon(llpoint);
-        utmPanel.setLatLon(llpoint);
-        mgrsPanel.setLatLon(llpoint);
+	coordPanel.setLatLon(llpoint);
+	dmsPanel.setLatLon(llpoint);
+	utmPanel.setLatLon(llpoint);
+	mgrsPanel.setLatLon(llpoint);
     }
 
     /**
@@ -158,16 +165,16 @@ public class CombinedCoordPanel extends OMComponentPanel
      * firing a center event to all listeners.
      */
     public boolean setCenter() {
-        return ((CoordPanel)tabPane.getSelectedComponent()).setCenter();
+	return ((CoordPanel)tabPane.getSelectedComponent()).setCenter();
     }
 
     public void actionPerformed(java.awt.event.ActionEvent e) {
-        if (e.getSource() == applybutton) {
-            boolean allOK = setCenter();
-            if (!allOK) {
-                setLatLon(null);
-            }
-        }
+	if (e.getSource() == applybutton) {
+	    boolean allOK = setCenter();
+	    if (!allOK) {
+		setLatLon(null);
+	    }
+	}
     }
 
     /**
@@ -176,7 +183,7 @@ public class CombinedCoordPanel extends OMComponentPanel
      * @param listener  The CenterListener to be added
      */
     public void addCenterListener(CenterListener listener) {
-        centerDelegate.addCenterListener(listener);
+	centerDelegate.addCenterListener(listener);
     }
 
     /**
@@ -185,11 +192,11 @@ public class CombinedCoordPanel extends OMComponentPanel
      * @param listener  The CenterListener to be removed
      */
     public void removeCenterListener(CenterListener listener) {
-        centerDelegate.removeCenterListener(listener);
+	centerDelegate.removeCenterListener(listener);
     }
 
     public void center(CenterEvent centerEvent) {
-        setLatLon(new LatLonPoint(centerEvent.getLatitude(), centerEvent.getLongitude()));
+	setLatLon(new LatLonPoint(centerEvent.getLatitude(), centerEvent.getLongitude()));
     }
 
     /**
@@ -197,19 +204,19 @@ public class CombinedCoordPanel extends OMComponentPanel
      * CombinedCoordPanel will add it to itself as a CenterListener.
      */
     public void findAndInit(Object someObj) {
-        if (someObj instanceof CenterListener) {
-            addCenterListener((CenterListener)someObj);
-        }
+	if (someObj instanceof CenterListener) {
+	    addCenterListener((CenterListener)someObj);
+	}
     }
 
     /**
      * MapHandlerChild method.  If the object is a MapBean, the
      * CombinedCoordPanel will remove it from itself as a CenterListener.
      */ 
-   public void findAndUndo(Object someObj) {
-        if (someObj instanceof CenterListener) {
-            removeCenterListener((CenterListener)someObj);
-        }
+    public void findAndUndo(Object someObj) {
+	if (someObj instanceof CenterListener) {
+	    removeCenterListener((CenterListener)someObj);
+	}
     }
 
 }

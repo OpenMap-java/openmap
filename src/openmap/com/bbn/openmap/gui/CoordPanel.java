@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/CoordPanel.java,v $
 // $RCSfile: CoordPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/05/10 20:43:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,6 +35,8 @@ import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.CenterListener;
 import com.bbn.openmap.event.CenterSupport;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 
 /**
  *  CoordPanel is a simple gui with entry boxes and labels 
@@ -45,6 +47,8 @@ public class CoordPanel extends JPanel implements Serializable {
 
     protected transient JTextField latitude, longitude;
     protected transient CenterSupport centerDelegate;
+    
+    protected I18n i18n = Environment.getI18n();
 
     protected DecimalFormat df = new DecimalFormat("0.###");
 
@@ -52,72 +56,76 @@ public class CoordPanel extends JPanel implements Serializable {
      *  Creates the panel.
      */
     public CoordPanel() {
-        centerDelegate = new CenterSupport(this);
-        makeWidgets();
+	centerDelegate = new CenterSupport(this);
+	makeWidgets();
     }
 
     /**
      *  Creates the panel.
      */
     public CoordPanel(CenterSupport support) {
-        centerDelegate = support;
-        makeWidgets();
+	centerDelegate = support;
+	makeWidgets();
     }
 
     /**
      *  Creates and adds the labels and entry fields for latitude and longitude
      */
     protected void makeWidgets() {
-        GridBagLayout gridbag = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
+        String locText;
+	GridBagLayout gridbag = new GridBagLayout();
+	GridBagConstraints c = new GridBagConstraints();
 
-        setLayout(gridbag);
-        setBorder(new TitledBorder(new EtchedBorder(), "Decimal Degrees"));
+	setLayout(gridbag);
+        locText = i18n.get(CoordPanel.class,"border","Decimal Degrees");
+	setBorder(new TitledBorder(new EtchedBorder(), locText));
 
-        JLabel latlabel = new JLabel("Latitude: ");
-        c.gridx = 0;
-        c.gridy = 0;
-        gridbag.setConstraints(latlabel, c);
-        add(latlabel);
+        locText = i18n.get(CoordPanel.class,"latlabel","Latitude: ");
+	JLabel latlabel = new JLabel(locText);
+	c.gridx = 0;
+	c.gridy = 0;
+	gridbag.setConstraints(latlabel, c);
+	add(latlabel);
 
-        latitude = new JTextField(10);
-        c.gridx = 1;
-        c.gridy = 0;
-        gridbag.setConstraints(latitude, c);
-        add(latitude);
+	latitude = new JTextField(10);
+	c.gridx = 1;
+	c.gridy = 0;
+	gridbag.setConstraints(latitude, c);
+	add(latitude);
 
-        JLabel lonlabel = new JLabel("Longitude: ");
-        c.gridx = 0;
-        c.gridy = 1;
-        gridbag.setConstraints(lonlabel, c);
-        add(lonlabel);
+        locText = i18n.get(CoordPanel.class,"lonlabel","Longitude: ");
+	JLabel lonlabel = new JLabel(locText);
+	c.gridx = 0;
+	c.gridy = 1;
+	gridbag.setConstraints(lonlabel, c);
+	add(lonlabel);
 
-        longitude = new JTextField(10);
-        c.gridx = 1;
-        c.gridy = 1;
-        gridbag.setConstraints(longitude, c);
-        add(longitude);
+	longitude = new JTextField(10);
+	c.gridx = 1;
+	c.gridy = 1;
+	gridbag.setConstraints(longitude, c);
+	add(longitude);
     }
 
     /**
      *  @return the LatLonPoint represented by contents of the entry boxes
      */
     public LatLonPoint getLatLon() {
-        float lat, lon;
-        try {
-            lat = Float.valueOf(latitude.getText()).floatValue();
-            lon = Float.valueOf(longitude.getText()).floatValue();
-        } catch (NumberFormatException except) {
-            Debug.error("CoordPanel.getLatLon(): " + except.toString());
-            clearTextBoxes();
-            return null;
-        }
+	float lat, lon;
+	try {
+	    lat = Float.valueOf(latitude.getText()).floatValue();
+	    lon = Float.valueOf(longitude.getText()).floatValue();
+	} catch (NumberFormatException except) {
+	    Debug.error("CoordPanel.getLatLon(): " + except.toString());
+	    clearTextBoxes();
+	    return null;
+	}
 
-        if (Debug.debugging("coordpanel")) {
-            Debug.output("CoordPanel.getLatLon(): lat= " + lat + ", lon= " + lon);
-        }
+	if (Debug.debugging("coordpanel")) {
+	    Debug.output("CoordPanel.getLatLon(): lat= " + lat + ", lon= " + lon);
+	}
 
-        return (new LatLonPoint(lat,lon));
+	return (new LatLonPoint(lat,lon));
     }
 
     /**
@@ -126,12 +134,12 @@ public class CoordPanel extends JPanel implements Serializable {
      *  go in the boxes.  If null, text boxes will be cleared.
      */
     public void setLatLon(LatLonPoint llpoint) {
-        if (llpoint == null) {
-            clearTextBoxes();
-        } else {
-            latitude.setText(""+llpoint.getLatitude());
-            longitude.setText(""+llpoint.getLongitude());
-        }
+	if (llpoint == null) {
+	    clearTextBoxes();
+	} else {
+	    latitude.setText(""+llpoint.getLatitude());
+	    longitude.setText(""+llpoint.getLongitude());
+	}
     }
 
     /**
@@ -139,23 +147,23 @@ public class CoordPanel extends JPanel implements Serializable {
      *  latitude and logitude entry boxes
      */
     public boolean setCenter() {
-        
-        LatLonPoint llp = getLatLon();
-        if (llp == null) {
-            return false;// invalid number
-        }
+	
+	LatLonPoint llp = getLatLon();
+	if (llp == null) {
+	    return false;// invalid number
+	}
 
-        if (Debug.debugging("coordpanel")) {
-            Debug.output("CoordPanel.setCenter(): "+ llp);
-        }
+	if (Debug.debugging("coordpanel")) {
+	    Debug.output("CoordPanel.setCenter(): "+ llp);
+	}
 
-        centerDelegate.fireCenter(llp.getLatitude(), llp.getLongitude());
-        return true;
+	centerDelegate.fireCenter(llp.getLatitude(), llp.getLongitude());
+	return true;
     }
 
     protected void clearTextBoxes() {
-        latitude.setText("");
-        longitude.setText("");
+	latitude.setText("");
+	longitude.setText("");
     }
 
     /**
@@ -164,7 +172,7 @@ public class CoordPanel extends JPanel implements Serializable {
      * @param listener  The CenterListener to be added
      */
     public void addCenterListener(CenterListener listener) {
-        centerDelegate.addCenterListener(listener);
+	centerDelegate.addCenterListener(listener);
     }
 
     /**
@@ -173,6 +181,6 @@ public class CoordPanel extends JPanel implements Serializable {
      * @param listener  The CenterListener to be removed
      */
     public void removeCenterListener(CenterListener listener) {
-        centerDelegate.removeCenterListener(listener);
+	centerDelegate.removeCenterListener(listener);
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/CoordDialog.java,v $
 // $RCSfile: CoordDialog.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.7 $
+// $Date: 2004/05/10 20:43:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,6 +28,8 @@ import com.bbn.openmap.event.CenterEvent;
 import com.bbn.openmap.event.CenterListener;
 import com.bbn.openmap.event.CenterSupport;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 
 import javax.swing.*;
 import javax.accessibility.*;
@@ -38,6 +40,7 @@ import java.util.*;
 import java.beans.*;
 import java.io.Serializable;
 
+
 /**
  * A Dialog box wrapper for a CombinedCoordPanel.
  */
@@ -46,15 +49,15 @@ public class CoordDialog extends JDialog
 
     protected transient CombinedCoordPanel ccp;
 
-    public final static String DEFAULT_TITLE = "Go To Coordinates";
+    protected I18n i18n = Environment.getI18n();
 
     /** 
      * Creates a Dialog Box with a CombinedCoordPanel.
      */
     public CoordDialog() {
-        super();
-        setTitle(DEFAULT_TITLE);
-        setup();
+	super();
+	setTitle(i18n.get(CoordDialog.class,"defaultTitle","Go To Coordinates"));
+	setup();
     }
 
     /** 
@@ -62,9 +65,9 @@ public class CoordDialog extends JDialog
      * with a specified title and comment.
      */
     public CoordDialog(String title, String comment) {
-        super();
-        setTitle(DEFAULT_TITLE);
-        setup(comment);
+	super();
+	setTitle(title);
+	setup(comment);
     }
 
     /**
@@ -72,18 +75,19 @@ public class CoordDialog extends JDialog
      *  and Apply and Close buttons
      */
     protected void setup() {
-        setup(CombinedCoordPanel.DEFAULT_COMMENT);
+	ccp = new CombinedCoordPanel(this);
+	getContentPane().add(ccp);
     }
 
     protected void setup(String comment) {
-        ccp = new CombinedCoordPanel(comment, this);
-        getContentPane().add(ccp);
+	ccp = new CombinedCoordPanel(comment, this);
+	getContentPane().add(ccp);
     }
 
     public void actionPerformed(java.awt.event.ActionEvent e) {
-        if (e.getActionCommand() == CombinedCoordPanel.CloseCmd) {
-            setVisible(false);
-        }
+	if (e.getActionCommand() == CombinedCoordPanel.CloseCmd) {
+	    setVisible(false);
+	}
     }
 
     /**
@@ -91,7 +95,7 @@ public class CoordDialog extends JDialog
      *  entry boxes in the CoordPanel
      */
     public LatLonPoint getLatLon() {
-        return ccp.getLatLon();
+	return ccp.getLatLon();
     }
 
     /**
@@ -101,7 +105,7 @@ public class CoordDialog extends JDialog
      * go in the boxes
      */
     public void setLatLon(LatLonPoint llpoint) {
-        ccp.setLatLon(llpoint);
+	ccp.setLatLon(llpoint);
     }
 
     /**
@@ -111,7 +115,7 @@ public class CoordDialog extends JDialog
      * @param listener  The CenterListener to be added
      */
     public void addCenterListener(CenterListener listener) {
-        ccp.addCenterListener(listener);
+	ccp.addCenterListener(listener);
     }
 
     /**
@@ -120,7 +124,7 @@ public class CoordDialog extends JDialog
      * @param listener  The CenterListener to be removed
      */
     public void removeCenterListener(CenterListener listener) {
-        ccp.removeCenterListener(listener);
+	ccp.removeCenterListener(listener);
     }
 
     /**
@@ -128,7 +132,7 @@ public class CoordDialog extends JDialog
      * objects to the CombinedCoordPanel.
      */
     public void findAndInit(Object someObj) {
-        ccp.findAndInit(someObj);
+	ccp.findAndInit(someObj);
     }
 
     /**

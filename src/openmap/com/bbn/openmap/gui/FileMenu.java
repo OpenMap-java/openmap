@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/FileMenu.java,v $
 // $RCSfile: FileMenu.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/05/10 20:43:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,6 +63,7 @@ public class FileMenu extends AbstractOpenMapMenu {
             add(new LoadPropertiesMenuItem());
             add(new JSeparator());
             add(new SaveAsMenu());
+            add(new MapBeanPrinterMenuItem());
             add(new JSeparator());
             add(new QuitMenuItem());
         }

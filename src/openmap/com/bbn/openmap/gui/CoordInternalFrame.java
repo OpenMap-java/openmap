@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/Attic/CoordInternalFrame.java,v $
 // $RCSfile: CoordInternalFrame.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.7 $
+// $Date: 2004/05/10 20:43:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,6 +37,8 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.Assert;
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.CenterListener;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 
 /**
  * An Internal Frame wrapper for a CombinedCoordPanel.
@@ -52,7 +54,7 @@ public class CoordInternalFrame extends JInternalFrame
      * button to do anything.
      */
     public CoordInternalFrame() {
-        super(CoordDialog.DEFAULT_TITLE,
+        super(Environment.getI18n().get(CoordDialog.class,"defaultTitle","Go To Coordinates"),
               true,             //resizable
               false,            //closable  - weird bug, won't close the second time
               false,            //maximizable
