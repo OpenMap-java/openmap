@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+Main-Class: com.bbn.openmap.app.OpenMap
 
 Name: com/bbn/openmap/BufferedLayerMapBean.class
 Java-Bean: True

@@ -8,8 +8,7 @@
 	<target name="init" 
 	        description="Sets properties needed by the other targets.">
 		<tstamp/>
-		<!-- Replace 'classic' with 'jikes' if you want. -->
-		<property name="build.compiler" value="classic"/>
+
 		<property name="openmap.home" value="."/>
 		<property name="openmap.class_dir" value="./classes"/>
 		<property name="openmap.classes" value="./classes/openmap"/>
