@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.30 $
-# $Date: 1998/11/12 14:42:36 $
+# $Revision: 1.31 $
+# $Date: 1998/11/12 16:48:45 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -248,9 +248,9 @@ make
 #
 ## Add javadoc documentation
 #
-/bin/mkdir -p ../docs/api
-javadoc -J-ms64m -J-mx64m -version -d ../docs/api $DocPackages
-/bin/cp -r $JDK/docs/api/images ../docs/api/
+#/bin/mkdir -p ../docs/api
+#javadoc -J-ms64m -J-mx64m -version -d ../docs/api $DocPackages
+#/bin/cp -r $JDK/docs/api/images ../docs/api/
 
 #
 ## Add examples
@@ -312,12 +312,18 @@ else
   exit 1;
 fi
 
+if /bin/cp -r $BuildDir/openmap/doc $BuildDir/doc; then
+  /bin/true
+else
+  echo "Copy failed: \"$BuildDir/openmap/doc\" could not be copied to \"$BuildDir/doc\"";
+  exit 1;
+fi
 
 
 
 # Create packages in tar.Z, tar.gz, and zip format
 
-PkgFiles="$BeanName/docs $BeanName/examples $BeanName/etc $BeanName/lib $BeanName/bin $BeanName/README*"
+PkgFiles="$BeanName/doc $BeanName/examples $BeanName/etc $BeanName/lib $BeanName/bin $BeanName/README*"
 
 cd $BuildDir/..
 tar cf $BuildDir/$BeanName.tar $PkgFiles
