@@ -8,7 +8,7 @@
   <target name="init" 
           description="Sets properties needed by the other targets.">
     <tstamp/>
-    <property name="build.compiler" value="classic"/>
+    <property name="build.compiler" value="jikes"/>
 
     <property name="openmap.home" value="."/>
     <property name="openmap.class_dir" value="./classes"/>
@@ -68,7 +68,7 @@
 	############################ -->  
 
   <target name="todo" 
-          depends="presvg, prej3d, visibroker, jar" 
+          depends="debug, presvg, prej3d, jar, visibroker" 
           description="Compiles all of the OpenMap classes and builds jar files in lib directory, including the svg, j3d and corba packages."/>
 
   <target name="classes" 
@@ -84,6 +84,14 @@
           depends="classes"
 	  description="Builds jar files, placing them in the lib directory."
 	  unless="contribBuild.buildRequired, openmapBuild.buildRequired">
+
+ <!-- 	omcontrib is  no longer created by default - remove these comments if
+	you need to create that jar file, which contains the code
+	OpenMap uses that us from other packages.
+
+    <jar jarfile="${openmap.home}/lib/omcontrib.jar"
+         basedir="${openmap.home}/contrib" includes="**/*.class"/>
+ -->
 
     <jar jarfile="${openmap.home}/lib/openmap.jar" 
          basedir="${openmap.classes}"
@@ -188,7 +196,7 @@
 	  description="Delete jar files and all class files"/>
 
   <target name="distclean"
-          depends="clean_classes, visibroker.distclean"
+          depends="visibroker.distclean, clean_classes"
 	  description="Delete class files, but not the jar files."/>
 
   <target name="clean_all"
@@ -258,6 +266,11 @@
     <property name="visibroker.home" value="/usr/local/openmap/vbroker-3.4/java"/>
     <property name="visibroker.jars" value="${visibroker.home}/lib/vbjapp.jar:${visibroker.home}/lib/vbjcosnm.jar:${visibroker.home}/lib/vbjtools.jar:${visibroker.home}/lib/vbjorb.jar"/>
     <property name="visibroker.bootclasspath" value="${visibroker.jars}:${java.home}/lib/rt.jar:${openmap.classes}"/>
+     <mkdir dir="${openmap.vb_classes}" />
+  </target>
+
+  <target name="visibroker.check" unless="idlcompile.notRequired">
+	<antcall target="visibroker.idl" />
   </target>
 
   <target name="visibroker.idl" depends="visibroker.setup"
@@ -279,8 +292,6 @@
 	<arg line='-root_dir ${openmap.home} -package com.bbn.openmap.plugin.corbaImage com/bbn/openmap/plugin/corbaImage/CorbaImageServer.idl'/>
      </java>
 
-     <mkdir dir="${openmap.vb_classes}" />
-
      <javac srcdir="${openmap.home}"
             destdir="${openmap.vb_classes}"
 	    includes="**/CRpfFrameProvider/**, **/CSpecialist/**, **/corbaImageServer/**"
@@ -289,16 +300,28 @@
 
   </target>
 
-  <target name="visibroker"
-          depends="visibroker.idl"
+  <target name="visibroker" depends="visibroker.setup"
 	  description="Compiles the Corba classes with the Visibroker CORBA implementation. You must have Visibroker (http://www.borland.com/bes/visibroker) installed. (Call this to build CORBA classes) ">
-     <echo message="Compiling CORBA classes with Visibroker..."/>
 
+	<uptodate property="idlcompile.notRequired"
+            targetfile="${openmap.home}/lib/omcorba_vb.jar" >
+		<srcfiles dir= "${openmap.home}/com"
+                    excludes="${javac.excludes}, ${dependency.excludes}"
+		    includes="**/CorbaRpfFrameProvider.idl, 
+				**/Specialist.idl, 
+				**/CorbaImageServer.idl" />
+	</uptodate>
+
+     <antcall target="visibroker.check" />
+
+     <echo message="Compiling CORBA classes with Visibroker..."/>
      <javac srcdir="${openmap.home}"
             destdir="${openmap.vb_classes}"
 	    includes="**/layer/rpf/corba/**/*.java,
 	              **/layer/specialist/**/*.java,
-		      **/plugin/corbaImage/**/*.java" />
+		      **/plugin/corbaImage/**/*.java"
+	    excludes="**/unimplemented/**"
+	    classpath="${openmap.vb_classes};${openmap.classes}" />
 
      <jar jarfile="${openmap.home}/lib/omcorba_vb.jar"
           basedir="${openmap.vb_classes}"
@@ -307,9 +330,9 @@
    </target>
 
   <target name="visibroker.clean" 
-          depends="visibroker.setup"
 	  description="Delete just the Corba OpenMap class files.">
-    <delete dir="${openmap.vb_classes}"/>
+      <delete dir="${openmap.vb_classes}"/>
+      <delete file="lib/omcorba_vb.jar"/>
   </target>
 
   <target name="visibroker.distclean" 
@@ -328,7 +351,7 @@
     <javac srcdir="${openmap.home}"
            destdir="${openmap.classes}"
            includes="${j3d.excludes}"
-           classpath="${openmap.home}/lib/openmap.jar;${openmap.home}"
+           classpath="${openmap.home}/lib/openmap.jar;${openmap.home};${openmap.home}/contrib"
            excludes="${javac.excludes}"/>
   </target>
 
