@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfTocHandler.java,v $
 // $RCSfile: RpfTocHandler.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/17 14:34:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -667,6 +667,15 @@ public class RpfTocHandler {
 	    }
 
 	    String longString = buf.toString().trim();
+
+	    // Take out any commas in string, Bill Chadwick April 03
+	    int comma = longString.indexOf(',');
+	    while (comma != -1) {
+                longString = longString.substring(0, comma) + 
+		    longString.substring(comma+1,longString.length()); 
+		comma = longString.indexOf(',');
+	    }
+
 	    realValue = new Long(longString);
 	    			    
 	} catch (NumberFormatException nfe) {
