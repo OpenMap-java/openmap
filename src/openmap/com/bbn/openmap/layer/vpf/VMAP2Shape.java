@@ -14,23 +14,31 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VMAP2Shape.java,v $
 // $RCSfile: VMAP2Shape.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:09 $
+// $Revision: 1.4 $
+// $Date: 2004/11/08 15:35:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
-import com.bbn.openmap.*;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.dataAccess.shape.EsriShapeExport;
+import com.bbn.openmap.layer.shape.ShapeFile;
+import com.bbn.openmap.layer.shape.ShapeUtils;
 import com.bbn.openmap.layer.util.LayerUtils;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.SinkGraphic;
 import com.bbn.openmap.proj.DrawUtil;
-import com.bbn.openmap.layer.shape.*;
+import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -70,50 +78,53 @@ public class VMAP2Shape {
             }
 
             System.out.println(nGraphics + " candidates.");
-
-            for (int i = 0; i < nGraphics; i++) {
-                OMGraphic omg = graphics.getOMGraphicAt(i);
-                if ((omg instanceof OMPoly)
-                        && (omg.getRenderType() == OMGraphic.RENDERTYPE_LATLON)) {
-                    OMPoly poly = (OMPoly) omg;
-
-                    if (doThinning && maybeThrowAwayPoly(poly)) {
-                        continue;
-                    }
-
-                    saveGraphics.addOMGraphic(poly);
-                } else {
-                    System.out.println("Skipping candidate: "
-                            + omg.getClass().toString() + ", "
-                            + omg.getRenderType());
-                }
-            }
-            graphics = saveGraphics;
-
-            // join polylines
-            if (false) {
-                nGraphics = graphics.size();
-                System.out.println(nGraphics + " candidates.");
-                graphics = joinCommonLines(graphics);
-            }
-
-            // save graphics
-            nGraphics = graphics.size();
-            System.out.println("Dumping " + nGraphics + " graphics.");
-            for (int i = 0; i < nGraphics; i++) {
-                OMPoly poly = (OMPoly) graphics.getOMGraphicAt(i);
-                float[] radians = poly.getLatLonArray();
-                ESRIPolygonRecord epr = new ESRIPolygonRecord();
-                epr.add(radians);
-                epr.setPolygon(poly.isPolygon());//set POLYGON vs ARC
-                s.add(epr);
-                ++nDumped;
-            }
-
-            s.verify(true, true);
-            s.verify(true, true);
-            s.close();
-            System.out.println("Wrote " + nDumped + " Graphics.");
+            
+            EsriShapeExport ese = new EsriShapeExport(graphics, (Projection)null, shapeFileName);
+            ese.export();
+//            
+//            for (int i = 0; i < nGraphics; i++) {
+//                OMGraphic omg = graphics.getOMGraphicAt(i);
+//                if ((omg instanceof OMPoly)
+//                        && (omg.getRenderType() == OMGraphic.RENDERTYPE_LATLON)) {
+//                    OMPoly poly = (OMPoly) omg;
+//
+//                    if (doThinning && maybeThrowAwayPoly(poly)) {
+//                        continue;
+//                    }
+//
+//                    saveGraphics.addOMGraphic(poly);
+//                } else {
+//                    System.out.println("Skipping candidate: "
+//                            + omg.getClass().toString() + ", "
+//                            + omg.getRenderType());
+//                }
+//            }
+//            graphics = saveGraphics;
+//
+//            // join polylines
+//            if (false) {
+//                nGraphics = graphics.size();
+//                System.out.println(nGraphics + " candidates.");
+//                graphics = joinCommonLines(graphics);
+//            }
+//
+//            // save graphics
+//            nGraphics = graphics.size();
+//            System.out.println("Dumping " + nGraphics + " graphics.");
+//            for (int i = 0; i < nGraphics; i++) {
+//                OMPoly poly = (OMPoly) graphics.getOMGraphicAt(i);
+//                float[] radians = poly.getLatLonArray();
+//                ESRIPolygonRecord epr = new ESRIPolygonRecord();
+//                epr.add(radians);
+//                epr.setPolygon(poly.isPolygon());//set POLYGON vs ARC
+//                s.add(epr);
+//                ++nDumped;
+//            }
+//
+//            s.verify(true, true);
+//            s.verify(true, true);
+//            s.close();
+//            System.out.println("Wrote " + nDumped + " Graphics.");
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.15 $
-// $Date: 2004/10/14 18:06:10 $
+// $Revision: 1.16 $
+// $Date: 2004/11/08 15:35:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -292,7 +292,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
     }
 
     public Properties getProperties(Properties props) {
-        super.getProperties(props);
+        props = super.getProperties(props);
 
         String realPrefix = PropUtils.getScopedPropertyPrefix(this);
 
