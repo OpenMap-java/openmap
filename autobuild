@@ -18,9 +18,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.13 $
-# $Date: 1998/05/17 21:06:12 $
-# $Author: tmitchel $
+# $Revision: 1.14 $
+# $Date: 1998/05/22 13:31:29 $
+# $Author: aculline $
 # 
 # **********************************************************************
 #
@@ -121,7 +121,7 @@ SwingClassPath=$SWING/swing.jar
 VBJ=/usr/local/matt/VisiBroker3.2-java
 VbjClassPath=$VBJ/lib/vbjorb.jar
 
-CLASSPATH=$OpenMapClassPath:$SwingClassPath:$JdkClassPath:$VbjClassPath:$BuildDir/openmap
+CLASSPATH=$OpenMapClassPath:$SwingClassPath:$JdkClassPath:$VbjClassPath
 export CLASSPATH
 
 PATH=/usr/bin:/usr/local/gnu/bin:$JDK/bin
@@ -156,6 +156,13 @@ cd $BuildDir
 #
 cvs export -Dnow openmap
 cd openmap
+
+#
+## Now set the final CLASSPATH configuration with the full path to the sources
+## directory
+#
+CLASSPATH=$CLASSPATH:`pwd`
+export CLASSPATH
 
 #
 ## Build the software
