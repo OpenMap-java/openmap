@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.22 $
-// $Date: 2004/09/17 19:34:33 $
+// $Revision: 1.23 $
+// $Date: 2004/09/23 19:26:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -889,11 +889,18 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * thereby calling GestureResponsePolicy methods on this layer.
      */
     public synchronized void setMouseEventInterpreter(MapMouseInterpreter mmi) {
+
         if (mmi instanceof StandardMapMouseInterpreter) {
             String[] modeList = getMouseModeIDsForEvents();
             ((StandardMapMouseInterpreter)mmi).setMouseModeServiceList(modeList);
             ((StandardMapMouseInterpreter)mmi).setConsumeEvents(getConsumeEvents());
         }
+
+        if (mouseEventInterpreter != null) {
+            // Remove handle
+            mouseEventInterpreter.setGRP(null);
+        }
+
         mmi.setGRP(this);
         mouseEventInterpreter = mmi;
     }
@@ -953,6 +960,10 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      */
     public void setConsumeEvents(boolean consume) {
         consumeEvents = consume;
+
+        if (mouseEventInterpreter instanceof StandardMapMouseInterpreter) {
+            ((StandardMapMouseInterpreter)mouseEventInterpreter).setConsumeEvents(getConsumeEvents());
+        }
     }
 
     public boolean getConsumeEvents() {
@@ -988,6 +999,10 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         }
 
         mouseModeIDs = mm;
+
+        if (mouseEventInterpreter instanceof StandardMapMouseInterpreter) {
+            ((StandardMapMouseInterpreter)mouseEventInterpreter).setMouseModeServiceList(mm);
+        }
     }
 
     /**
