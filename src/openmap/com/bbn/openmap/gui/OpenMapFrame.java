@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OpenMapFrame.java,v $
 // $RCSfile: OpenMapFrame.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/08 16:27:19 $
+// $Revision: 1.4 $
+// $Date: 2003/05/14 17:24:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -79,6 +79,23 @@ public class OpenMapFrame extends JFrame
     }
 
     /**
+     * Create a OpenMap frame with a title.
+     * 
+     * @param title The Frame title.
+     */
+    public OpenMapFrame(String title) {
+	super(title);
+					
+	addWindowListener(new WindowAdapter() {
+		public void windowClosing(WindowEvent e) {
+		    // need a shutdown event to notify other gui beans and
+		    // then exit.
+		    System.exit(0);
+		}
+	    });
+    }
+
+    /**
      * For applications, checks where the Environment says the window
      * should be placed, and then uses the packed height and width to
      * make adjustments.
@@ -109,23 +126,6 @@ public class OpenMapFrame extends JFrame
 	// compose the frame, but don't show it here
 	// contentPane.setBounds(x, y, w, h);
 	setBounds(x,y,w,h);
-    }
-
-    /**
-     * Create a OpenMap frame with a title.
-     * 
-     * @param title The Frame title.
-     */
-    public OpenMapFrame(String title) {
-	super(title);
-					
-	addWindowListener(new WindowAdapter() {
-		public void windowClosing(WindowEvent e) {
-		    // need a shutdown event to notify other gui beans and
-		    // then exit.
-		    System.exit(0);
-		}
-	    });
     }
 
     /**

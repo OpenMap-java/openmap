@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/RealTimeHandler.java,v $
 // $RCSfile: RealTimeHandler.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/05/06 23:06:46 $
+// $Revision: 1.2 $
+// $Date: 2003/05/14 17:24:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -83,4 +83,28 @@ public interface RealTimeHandler {
      * Stop the timer.
      */
     public void stopClock();
+
+    /**
+     * Set whether time increases or decreases when the clock is run.
+     * If direction is zero or greater, clock runs forward.  If
+     * direction is negative, clock runs backward.
+     */
+    public void setClockDirection(int direction);
+
+    /**
+     * Get whether time increases or decreases when the clock is run.
+     * If direction is zero or greater, clock runs forward.  If
+     * direction is negative, clock runs backward.
+     */
+    public int getClockDirection();
+
+    /**
+     * Move the clock forward one clock interval.
+     */
+    public void stepForward();
+    
+    /**
+     * Move the clock back one clock interval.
+     */
+    public void stepBackward();
 }

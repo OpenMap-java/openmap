@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/08 16:27:19 $
+// $Revision: 1.2 $
+// $Date: 2003/05/14 17:24:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -86,10 +86,6 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * PropertyHandler is null, a new one will be created.
      */
     public BasicMapPanel(PropertyHandler propertyHandler) {
-	if (propertyHandler == null) {
-	    propertyHandler = new PropertyHandler();
-	}
-
 	setLayout(createLayoutManager());
 	createComponents(propertyHandler);
     }
@@ -110,7 +106,10 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * The constructor calls this method that creates the MapHandler
      * and MapBean, and then tells the PropertyHandler to create the
      * components described in its properties.  This method calls
-     * getMapHandler() and getMapBean().
+     * getMapHandler() and getMapBean().  If the PropertyHandler is
+     * not null, it will be called to created components based on its
+     * properties, and those components will be added to the
+     * MapHandler in this MapPanel.
      */
     protected void createComponents(PropertyHandler propertyHandler) {
 	MapHandler mapHandler = getMapHandler();
@@ -120,9 +119,11 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
 	try {
 	    mapHandler.add(this);
-	    mapHandler.add(propertyHandler);
 	    mapHandler.add(mapBean);
-	    propertyHandler.createComponents(mapHandler);
+	    if (propertyHandler != null) {
+		mapHandler.add(propertyHandler);
+		propertyHandler.createComponents(mapHandler);
+	    }
 	} catch (MultipleSoloMapComponentException msmce) {
 	    Debug.error("MapPanel: tried to add multiple components of the same type when only one is allowed! - " + msmce);
 	}
