@@ -18,9 +18,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.17 $
-# $Date: 1998/07/08 18:42:53 $
-# $Author: aculline $
+# $Revision: 1.18 $
+# $Date: 1998/07/23 14:13:25 $
+# $Author: dietrick $
 # 
 # **********************************************************************
 #
@@ -39,6 +39,7 @@ showUsage () {
   echo "usage: $0 <args>"
   echo "Arguments:"
   echo "-d or --directory :   The build directory"
+  echo "-t or --tag :   Build using a tagged version"
   echo "-v or --verbose :   Be vocal about things"
   echo
   echo "ENVVARS:"
@@ -66,6 +67,7 @@ setBuildDate() {
 
 BuildDir=""
 Verbose=/bin/false
+BuildVersion="-Dnow"
 
 
 #----------------------------------------------------------------------
@@ -84,6 +86,11 @@ while [ "$1" != "" ] ; do
     "-d" | "--directory" )
 
       BuildDir=$2;
+      shift;;
+
+    "-t" | "--tag" )
+
+      BuildVersion="-r $2";
       shift;;
 
     "-v" | "--verbose" )
@@ -110,7 +117,7 @@ if $Verbose; then
 fi
 
 echo ""
-echo "MapBean build started at `date`"
+echo "OpenMap build started at `date`"
 
 if $Verbose; then
   echo "building in $BuildRoot"
@@ -182,7 +189,7 @@ cd $BuildDir
 #
 ## Export the sources
 #
-cvs export -Dnow openmap
+cvs export $BuildVersion openmap
 cd openmap
 
 #
@@ -205,7 +212,7 @@ gmake all
 #
 ## Create the bean jar file
 #
-jar cvfm0 ../mapBean.jar com/bbn/openmap/Manifest.txt `find com \( -name *.class -o -name *.gif \) -print`
+jar cvfm0 ../openmap.jar com/bbn/openmap/Manifest.txt `find com \( -name *.class -o -name *.gif \) -print`
 
 
 #
@@ -220,6 +227,17 @@ javadoc -J-ms64m -J-mx64m -version -d ../docs/api $DocPackages
 #
 /bin/mkdir -p ../examples
 /bin/cp -r com/bbn/openmap/examples/crew ../examples/
+
+#
+## Add scripts
+#
+/bin/mkdir -p ../etc
+/bin/cp -r etc/scripts ../etc/
+/bin/cp etc/*.html ../etc/
+/bin/cp etc/overlays.txt ../etc/
+/bin/cp etc/README-install ../
+/bin/cp etc/README-runtime ../
+/bin/cp etc/.omprefs ../etc/ 
 
 #
 ## Add other jar files
@@ -243,7 +261,7 @@ fi
 
 # Create packages in tar.Z, tar.gz, and zip format
 
-PkgFiles="$BeanName/mapBean.jar $BeanName/cspec58.jar $BeanName/docs $BeanName/examples"
+PkgFiles="$BeanName/openmap.jar $BeanName/cspec58.jar $BeanName/docs $BeanName/examples $BeanName/etc $BeanName/README*"
 
 cd $BuildDir/..
 tar cf $BuildDir/$BeanName.tar $PkgFiles
@@ -253,5 +271,5 @@ compress -c $BeanName.tar > $BeanName.tar.Z
 gzip $BeanName.tar
 
 echo ""
-echo "MapBean build complete at `date`"
+echo "OpenMap build complete at `date`"
 exit 0
