@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/AbstractPlugIn.java,v $
 // $RCSfile: AbstractPlugIn.java,v $
-// $Revision: 1.10 $
-// $Date: 2005/02/02 13:19:30 $
+// $Revision: 1.11 $
+// $Date: 2005/02/11 22:36:37 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -48,13 +48,13 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
         MapMouseListener {
 
     /**
-     * Property 'removeable' to designate this layer as removeable
+     * Property 'removable' to designate this layer as removable
      * from the application, or able to be deleted. True by default.
      */
     public static final String RemovableProperty = "removable";
 
     /**
-     * Flag to designate the layer as removeable or not.
+     * Flag to designate the layer as removable or not.
      */
     protected boolean removable = true;
 
@@ -195,7 +195,7 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
     }
 
     /**
-     * Mark the plugin (and layer) as removeable, or one that can be
+     * Mark the plugin (and layer) as removable, or one that can be
      * deleted from the application. What that means is up to the
      * LayerHandler or other application components.
      */
@@ -324,7 +324,7 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
                 I18n.TOOLTIP,
                 "Flag to allow layer to be deleted.");
         list.put(RemovableProperty, internString);
-        internString = i18n.get(Layer.class, RemovableProperty, "Removeable");
+        internString = i18n.get(Layer.class, RemovableProperty, "Removable");
         list.put(RemovableProperty + LabelEditorProperty, internString);
         list.put(RemovableProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
