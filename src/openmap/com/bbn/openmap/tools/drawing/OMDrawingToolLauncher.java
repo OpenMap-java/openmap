@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/10/07 15:39:41 $
+// $Revision: 1.8 $
+// $Date: 2003/10/10 16:58:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -549,14 +549,21 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
     }
 
     public void addLoader(EditToolLoader etl) {
-	String[] classNames = etl.getEditableClasses();
-	for (int i = 0; i < classNames.length; i++) {
-	    loaders.put(etl.getPrettyName(classNames[i]), etl);
+	if (etl != null) {
+	    String[] classNames = etl.getEditableClasses();
+	    for (int i = 0; i < classNames.length; i++) {
+		loaders.put(etl.getPrettyName(classNames[i]), etl);
+	    }
 	}
     }
 
     public void removeLoader(EditToolLoader etl) {
-	loaders.remove(etl);
+	if (etl != null) {
+	    String[] classNames = etl.getEditableClasses();
+	    for (int i = 0; i < classNames.length; i++) {
+		loaders.remove(etl.getPrettyName(classNames[i]));
+	    }
+	}
     }
 
     /**

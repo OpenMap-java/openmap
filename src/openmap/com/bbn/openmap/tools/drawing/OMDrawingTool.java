@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.15 $
-// $Date: 2003/10/03 22:27:34 $
+// $Revision: 1.16 $
+// $Date: 2003/10/10 16:58:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -765,6 +765,17 @@ public class OMDrawingTool extends OMToolComponent
 	    }
 	    firePropertyChange(LoadersProperty, null, loaders);
 	    possibleEditableClasses = null;
+	}
+    }
+
+    /**
+     * Make sure that new property change listeners receive a current
+     * list of edit tool loaders.
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+	if (listener != null) {
+	    super.addPropertyChangeListener(listener);
+	    listener.propertyChange(new PropertyChangeEvent(this, LoadersProperty, null, loaders));
 	}
     }
 
