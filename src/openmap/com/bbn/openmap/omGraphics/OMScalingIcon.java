@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingIcon.java,v $
 // $RCSfile: OMScalingIcon.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:14 $
+// $Revision: 1.6 $
+// $Date: 2004/12/10 14:49:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -252,7 +252,9 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     }
 
     /**
-     * Set the scale that limits how big an icon will grow.
+     * Set the scale that limits how small an icon will shrink. Should
+     * be a number larger than the base scale. If the map scale gets
+     * larger than this number, the icon will stop shrinking.
      */
     public void setMaxScale(float ms) {
         maxScale = ms;
@@ -263,7 +265,9 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     }
 
     /**
-     * Set the scale that limits how small an icon will shrink.
+     * Set the scale that limits how big an icon should grow. Should
+     * be a number smaller than the base scale. If the map scale gets
+     * smaller than this number, the icon will stop growing.
      */
     public void setMinScale(float ms) {
         minScale = ms;

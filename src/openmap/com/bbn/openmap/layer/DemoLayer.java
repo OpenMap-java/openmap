@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.16 $
-// $Date: 2004/10/25 15:04:34 $
+// $Revision: 1.17 $
+// $Date: 2004/12/10 14:49:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,30 +24,57 @@ package com.bbn.openmap.layer;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Properties;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.omGraphics.EditableOMPoly;
+import com.bbn.openmap.omGraphics.FontSizer;
+import com.bbn.openmap.omGraphics.GraphicAttributes;
+import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMArc;
+import com.bbn.openmap.omGraphics.OMAreaList;
+import com.bbn.openmap.omGraphics.OMArrowHead;
+import com.bbn.openmap.omGraphics.OMBitmap;
+import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.omGraphics.OMDecoratedSpline;
+import com.bbn.openmap.omGraphics.OMEllipse;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicConstants;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.omGraphics.OMScalingIcon;
+import com.bbn.openmap.omGraphics.OMSpline;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.omGraphics.awt.CircleShapeDecoration;
+import com.bbn.openmap.omGraphics.awt.LineShapeDecoration;
+import com.bbn.openmap.omGraphics.awt.ShapeDecorator;
 import com.bbn.openmap.omGraphics.awt.TextShapeDecoration;
-import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.awt.*;
 import com.bbn.openmap.omGraphics.labeled.LabeledOMSpline;
-import com.bbn.openmap.omGraphics.meteo.*;
+import com.bbn.openmap.omGraphics.meteo.IceAreaShapeDecoration;
+import com.bbn.openmap.omGraphics.meteo.OMHotSurfaceFront;
+import com.bbn.openmap.omGraphics.meteo.OMOcclusion;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.tools.drawing.DrawingTool;
 import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
+import com.bbn.openmap.tools.symbology.milStd2525.SymbolReferenceLibrary;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 
@@ -72,6 +99,30 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         DrawingToolRequestor {
 
     protected JPanel legend;
+    /**
+     * Found in the findAndInit() method, in the MapHandler.
+     */
+    protected DrawingTool drawingTool;
+    /**
+     * Found in the findAndInit() method, in the MapHandler.
+     */
+    protected SymbolReferenceLibrary srl;
+    /**
+     * Used by the internal ActionListeners for a callback, see
+     * getGUI().
+     */
+    protected final com.bbn.openmap.tools.drawing.DrawingToolRequestor layer = this;
+    /**
+     * Used by geometries created in GUI for specify if the spatial
+     * filter is for objects inside the drawn shape.
+     */
+    protected final static String internalKey = "ik";
+    /**
+     * Used by geometries created in GUI for specify if the spatial
+     * filter is for objects outside the drawn shape.
+     */
+    protected final static String externalKey = "ek";
+    protected GraphicAttributes filterGA = null;
 
     public DemoLayer() {
         setName("Demo");
@@ -83,7 +134,6 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         // SelectMouseMode, which has a modeID of "Gestures". Other
         // IDs can be added as needed.
         setMouseModeIDsForEvents(new String[] { "Gestures" });
-        init();
     }
 
     public void paint(java.awt.Graphics g) {
@@ -96,19 +146,19 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         }
     }
 
-    public void init() {
+    public OMGraphicList init() {
 
-        // This layer has a set OMGraphicList, created when the layer
-        // is created. It uses the StandardPCPolicy for new
+        // This layer keeps a pointer to an OMGraphicList that it uses
+        // for painting. It's initially set to null, which is used as
+        // a flag in prepare() to signal that the OMGraphcs need to be
+        // created. The list returned from prepare() gets set in the
+        // layer.
+        // This layer uses the StandardPCPolicy for new
         // projections, which keeps the list intact and simply calls
         // generate() on it with the new projection, and repaint()
-        // which calls paint(). If you want a more dynamic layer,
-        // don't bother creating your list right away - Override the
-        // prepare() method, which gets called by the
-        // ProjectionChangePolicy when the projection changes. See
-        // OMGraphicHandlerLayer.
+        // which calls paint().
 
-        OMGraphicList omList = (OMGraphicList) getList();
+        OMGraphicList omList = new OMGraphicList();
 
         //      Location loc = new
         // URLRasterLocation(42.3583f,-71.06f,"Boston,Massachusetts,USA","http://javamap.bbn.com:4711/appletimages/city.gif");
@@ -309,6 +359,21 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         text.setFontSizer(new FontSizer(30000000f, 1, 5, 40));
         omList.add(text);
 
+        if (srl != null) {
+            ImageIcon ii = srl.getIcon("SFPPV-----*****",
+                    new Dimension(100, 100));
+            if (ii != null) {
+                OMScalingIcon omsi = new OMScalingIcon(20f, -50f, ii);
+                omsi.setBaseScale(1000000);
+                omsi.setMinScale(1000000);
+                omsi.setMaxScale(5000000);
+                omList.add(omsi);
+            } else {
+                Debug.output("DemoLayer: couldn't create symbol");
+            }
+        }
+
+        return omList;
     }
 
     public void setProperties(String prefix, Properties props) {
@@ -317,28 +382,25 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Overriding the OMGraphicHandlerMethod, creating a list if it's
-     * null.
+     * This is an important Layer method to override. The prepare
+     * method gets called when the layer is added to the map, or when
+     * the map projection changes. We need to make sure the
+     * OMGraphicList returned from this method is what we want painted
+     * on the map. The OMGraphics need to be generated with the
+     * current projection. We test for a null OMGraphicList in the
+     * layer to see if we need to create the OMGraphics. This layer
+     * doesn't change it's OMGraphics for different projections, if
+     * your layer does, you need to clear out the OMGraphicList and
+     * add the OMGraphics you want for the current projection.
      */
-    public OMGraphicList getList() {
-        // This isn't the default behavior of the
-        // OMGraphicHandlerLayer. Normally, if the list is null, we
-        // leave it null because a null list can be easily used as a
-        // flag that work has to be done in the prepare() method to
-        // contact the data source and create OMGraphics.
-        OMGraphicList list = super.getList();
+    public OMGraphicList prepare() {
+        OMGraphicList list = getList();
         if (list == null) {
-            list = new OMGraphicList();
-            super.setList(list);
+            list = init();
         }
+        list.generate(getProjection());
         return list;
     }
-
-    protected final com.bbn.openmap.tools.drawing.DrawingToolRequestor layer = this;
-
-    protected final static String internalKey = "ik";
-    protected final static String externalKey = "ek";
-    protected GraphicAttributes filterGA = null;
 
     protected GraphicAttributes getFilterGA() {
         if (filterGA == null) {
@@ -779,8 +841,6 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         return panel;
     }
 
-    protected DrawingTool drawingTool;
-
     public DrawingTool getDrawingTool() {
         // Usually set in the findAndInit() method.
         return drawingTool;
@@ -811,7 +871,13 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
                         + filteredList.getDescription());
             }
         } else {
-            getList().doAction(omg, action);
+            if (!doAction(omg, action)) {
+                // null OMGraphicList on failure, should only occur if
+                // OMGraphic is added to layer before it's ever been
+                // on the map.
+                setList(new OMGraphicList());
+                doAction(omg, action);
+            }
         }
 
         repaint();
@@ -830,6 +896,24 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
             Debug.message("demo", "DemoLayer: found a drawing tool");
             setDrawingTool((DrawingTool) someObj);
         }
+
+        if (someObj instanceof SymbolReferenceLibrary) {
+            setSymbolReferenceLibrary((SymbolReferenceLibrary) someObj);
+        }
+    }
+
+    /**
+     * Set the MilStd2525 SymbolReferenceLibrary object used to create
+     * symbols.
+     * 
+     * @param library
+     */
+    public void setSymbolReferenceLibrary(SymbolReferenceLibrary library) {
+        srl = library;
+    }
+
+    public SymbolReferenceLibrary getSymbolReferenceLibrary() {
+        return srl;
     }
 
     /**
