@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SListBox.java,v $
 // $RCSfile: SListBox.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,7 +31,7 @@ import java.util.*;
  * The SListBox class is a specialist palette widget, used to present
  * a scrollable list of strings, with a selectable value from the list.
  */
-public class SListBox extends _ListBoxImplBase {
+public class SListBox extends _ListBoxStub {
 
     /** Name of the list as it appears in the palette.*/
     protected String label_;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SComp.java,v $
 // $RCSfile: SComp.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,7 +33,7 @@ import java.util.*;
  * graphics object.  It can be used to send a URL to a client, or to
  * tie objects together.
  */
-public class SComp extends _CompImplBase {
+public class SComp extends _CompStub {
 
     /** where we fill ourselves */
     protected EComp self;

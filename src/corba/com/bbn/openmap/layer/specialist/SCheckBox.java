@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SCheckBox.java,v $
 // $RCSfile: SCheckBox.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,7 +31,7 @@ import java.util.*;
  * Class SCheckBox is a specialist palette widget.  It is a box of
  * buttons where none, one or all can be marked as active.
  */
-public class SCheckBox extends _CheckBoxImplBase {
+public class SCheckBox extends _CheckBoxStub {
     /** Name of the slider, as it appears on the palette.*/
     protected String label_;
     /** The name and identifier of each button.*/

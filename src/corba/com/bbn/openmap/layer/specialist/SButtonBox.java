@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SButtonBox.java,v $
 // $RCSfile: SButtonBox.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import java.util.*;
  * can be used to determine which button was pressed, and the label of
  * the box can be used to tell which box the pressed button is from.  
  */
-public class SButtonBox extends _ButtonBoxImplBase {
+public class SButtonBox extends _ButtonBoxStub {
     /**Name of the box, as it appears on the palette.*/
     protected String label_;
     /**The names on the buttons, which also identify them.*/

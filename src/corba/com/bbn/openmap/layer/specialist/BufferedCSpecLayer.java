@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/BufferedCSpecLayer.java,v $
 // $RCSfile: BufferedCSpecLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -199,12 +199,8 @@ public class BufferedCSpecLayer extends CSpecLayer {
 		e.printStackTrace();
 	    }
 
-	    specialist = null;// dontcha just love CORBA? reinit later
-	    // Don't want to do this, we're caching now
-	    //	    graphics = null;
-	    jGraphics = null;
-	    widgets = null;
-	    gui = null;
+	    // dontcha just love CORBA? reinit later
+	    setSpecialist(null);
 	    if (showDialogs) {
 		postCORBAErrorMsg("CORBA Exception while getting graphics from\n" +
 				  getName() + " specialist:\n" + e.getClass().getName());

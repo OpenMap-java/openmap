@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/CSpecLayer.java,v $
 // $RCSfile: CSpecLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/24 16:21:59 $
+// $Revision: 1.3 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,6 +30,7 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.*;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.*;
@@ -67,9 +68,12 @@ import com.bbn.openmap.Environment;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.event.*;
+import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.SwingWorker;
 
 /**
@@ -87,19 +91,19 @@ import com.bbn.openmap.util.SwingWorker;
  * cspeclayermarker.allowServerUpdates=true/false (false is default)
  * </pre>
  */
-public class CSpecLayer extends Layer
-    implements ProjectionListener, MapMouseListener {
+public class CSpecLayer extends OMGraphicHandlerLayer
+    implements MapMouseListener {
 
     private final static String[] debugTokens = {
 	"debug.cspec"
     };
 
     /** The property specifying the IOR URL. */
-    public static final String iorUrlProperty = ".ior";
-    public static final String namingProperty = ".name";
+    public static final String iorUrlProperty = "ior";
+    public static final String namingProperty = "name";
 
     /** The property specifying the static arguments. */
-    public static final String staticArgsProperty = ".staticArgs";
+    public static final String staticArgsProperty = "staticArgs";
 
     /**
      * The property to use for specifying whether the GraphicChange
@@ -111,11 +115,15 @@ public class CSpecLayer extends Layer
      * GraphicChange object to be set.  You get a BOA instantiation
      * error.
      */
-    public static final String serverUpdateProperty = ".allowServerUpdates";
-
+    public static final String serverUpdateProperty = "allowServerUpdates";
+    /** IOR URL for the server. */
     protected URL iorURL = null;
+    /** Name of the server. */
+    protected String naming = null;
+
     /** Arguments passed in from the OverlayTable/properties file. */
     protected String staticArgs = null;
+
     /** 
      * Arguments modified by the Layer, or set by the Bean, at
      * runtime.  Historical, should use Properties instead.
@@ -125,9 +133,8 @@ public class CSpecLayer extends Layer
 
     protected UWidget[] widgets = null;
     protected transient CSpecPalette gui = null;
-    protected JGraphicList jGraphics;
     protected transient Server specialist = null;
-    private transient ORB orb;
+
     protected ShortHolder selectDist = new ShortHolder();
     protected BooleanHolder wantAreaEvents = new BooleanHolder();
     protected GraphicChange notifyOnChange = null;
@@ -152,72 +159,8 @@ public class CSpecLayer extends Layer
     public final transient static int DIRTYMASK = 0xFFFFFFFF;
 
     // new slots
-    Projection projection;
-    CSpecWorker currentWorker;
-    protected boolean showDialogs = Environment.getBoolean("com.bbn.openmap.ShowLayerMessages");
-
-    /**
-     * Set when the projection has changed while a swing worker is
-     * gathering graphics, and we want him to stop early. 
-     */
-    protected boolean cancelled = false;
-
-    protected String naming = null;
-
-    /**
-     * Customized thread worker for the CSpecLayer class. This thread
-     * will do the work collecting the graphics for the CSpecLayer.
-     */
-    public class CSpecWorker extends SwingWorker {
-	public CSpecWorker() {
-	    super();
-	}
-
-	/** 
-	 * Compute the value to be returned by the <code>get</code> method. 
-	 */
-	public Object construct() {
-	    Object obj = null;
-	    if (Debug.debugging("cspec")) {
-		System.out.println(getName()+"|CSpecWorker.construct()");
-	    }
-	    try {
-		fireStatusUpdate(LayerStatusEvent.START_WORKING);
-		obj = prepare();
-	    } catch (OutOfMemoryError e) {
-		specialist = null;
-		jGraphics = null;
-		widgets = null;
-		gui = null;
-		System.err.println(getName() + "|CSpecWorker.construct(): " +e);
-		if (showDialogs) {
-		    postMemoryErrorMsg("OutOfMemory while getting graphics from\n" +
-				       getName() + " specialist.");
-		}
-	    } catch (Throwable t) {
-		specialist = null;
-		jGraphics = null;
-		widgets = null;
-		gui = null;
-		System.err.println(getName() + "|CSpecWorker.construct(): " + t);
-		t.printStackTrace();
-		if (showDialogs) {
-		    postException("Exception while getting graphics from\n" +
-				  getName() + " specialist:\n" + t.getClass().getName());
-		}
-	    }
-	    return obj;
-	}
-
-	/**
-	 * Called on the event dispatching thread (not on the worker thread)
-	 * after the <code>construct</code> method has returned.
-	 */
-	public void finished() {
-	    workerComplete(this);
-	    fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-	}
-    }
+    protected boolean showDialogs = 
+	Environment.getBoolean("com.bbn.openmap.ShowLayerMessages");
 
     /**
      * Default constructor, that sets the MapMouseListener for this
@@ -225,11 +168,7 @@ public class CSpecLayer extends Layer
      */
     public CSpecLayer() {
 	handleGraphicChangeRequests(false);
-
-	// Uncomment these to force debugging if OpenMap is wrapped by
-	// something else that is not initializing the Debug class.
-//  	Debug.init(new Properties());
-//  	Debug.put("cspec");
+	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
 
     /**
@@ -244,7 +183,9 @@ public class CSpecLayer extends Layer
      */
     public void handleGraphicChangeRequests(boolean setting) {
 	if (setting) {
-	    notifyOnChange = new JGraphicChange(this);
+	    if (notifyOnChange == null) {
+		notifyOnChange = new JGraphicChange(this);
+	    }
 	} else {
 	    notifyOnChange = null;
 	}
@@ -255,7 +196,7 @@ public class CSpecLayer extends Layer
      */
     public void finalize() {
 	if (Debug.debugging("cspec")) {
-	    System.out.println(getName()+"|CSpecLayer.finalize(): calling shutdown");
+	    Debug.output(getName()+"|CSpecLayer.finalize(): calling shutdown");
 	}
         try {
             if (specialist != null)
@@ -269,21 +210,19 @@ public class CSpecLayer extends Layer
     }
 
     /**
-     *
+     * Set the properties for the CSpecLayer.
      */
     public void setProperties(String prefix, java.util.Properties props) {
 
 	super.setProperties(prefix, props);
+	prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
 	String url = props.getProperty(prefix + iorUrlProperty);
 	if (url != null) {
 	    try {
-		setIorUrl(new URL(url));
+		setIorUrl(LayerUtils.getResourceOrFileOrURL(null, url));
 	    } catch (MalformedURLException e) {
-		throw new IllegalArgumentException("\"" + url + "\""
-
-
-						   + " is malformed.");
+		throw new IllegalArgumentException("\"" + url + "\" is malformed.");
 	    }
 	}
 
@@ -293,7 +232,7 @@ public class CSpecLayer extends Layer
 	String staticArgValue = props.getProperty(prefix + staticArgsProperty);
 	setStaticArgs(staticArgValue);
 
-	handleGraphicChangeRequests(com.bbn.openmap.layer.util.LayerUtils.booleanFromProperties(props, prefix + serverUpdateProperty, false));
+	handleGraphicChangeRequests(LayerUtils.booleanFromProperties(props, prefix + serverUpdateProperty, notifyOnChange != null));
     }
 
     /**
@@ -319,90 +258,23 @@ public class CSpecLayer extends Layer
 		argBuf.append(" ").append(argv[i]);
 	    }
 	}
-	//dbg 	System.out.println("----------------------------------------------");
-	//dbg 	System.out.println("CSpecLayer " + getName() + ":");
-	//dbg 	System.out.println("\tURL: " + url);
-	//dbg 	System.out.println("\targs: " + argBuf);
+	//dbg 	Debug.output("----------------------------------------------");
+	//dbg 	Debug.output("CSpecLayer " + getName() + ":");
+	//dbg 	Debug.output("\tURL: " + url);
+	//dbg 	Debug.output("\targs: " + argBuf);
 
 
 	try {
 	    setIorUrl(new URL(url));
+	    if (Debug.debugging("cspec")) {
+		Debug.output(getName() + "(CSpecLayer) using ior from " + url);
+	    }
 	} catch (MalformedURLException e) {
 	    throw new IllegalArgumentException("\"" + url + "\""
 					       + " is not a well formed URL");
 	}
 
 	setStaticArgs(argBuf.toString());
-    }
-
-    /**
-     * ProjectionListener method.  This method checks to see if there
-     * is a current CSpecWorker.  If there isn't, it starts one.  If
-     * there is, it sets the layer cancelled flag.
-     *
-     * @param e projection event.
-     */
-    public void projectionChanged(ProjectionEvent e) {
-	if (Debug.debugging("cspec"))
-	    System.out.println(getName()+"|CSpecLayer: projectionChanged()");
-
-	Projection newP = e.getProjection();
-	if (projection != null) {
-	    if (projection.equals(newP) && ((dirtybits&DIRTYMASK) == 0)) {
-	        repaint();
-		return;
-	    }
-	}
-	else {
-	    projection = newP.makeClone();
-	}
-
- 	jGraphics = null;
-	synchronized (this) {
-	    // clone projection if different
-	    if (!projection.equals(newP))
-		projection = (Projection)newP.makeClone();
-	    requestNewObjects();
-	}
-    }
-
-    /**
-     *
-     */
-    protected void requestNewObjects() {
-	// If there isn't a worker thread working on collecting
-	// objects from the specialist already, create a thread that
-	// will do the real work. If there is a thread working on
-	// collecting graphics from the specialist, then tell the
-	// layer that the worker should be cancelled.  The worker
-	// checks this when it is safe to stop early.
-	if (currentWorker == null) {
-	    currentWorker = new CSpecWorker();
-	    currentWorker.execute();
-	}
-	else {
-	    setCancelled(true);
-	}
-    }
-
-    /**
-     * The CSpecWorker calls this method on the layer when it is
-     * done working.  A new worker is created if the cancelled flag in
-     * the layer is set.
-     *
-     * @param worker the worker that has the graphics.
-     */
-    protected synchronized void workerComplete(CSpecWorker worker) {
-	if (!isCancelled()) {
-	    currentWorker = null;
-	    jGraphics = ((JGraphicList)worker.get());
-	    repaint();
-	} else {
-	    dirtybits |= PREMATURE_FINISH;
-	    setCancelled(false);
-	    currentWorker = new CSpecWorker();
-	    currentWorker.execute();
-	}
     }
 
     /**
@@ -422,176 +294,83 @@ public class CSpecLayer extends Layer
      */
     private void initSpecialist() {
 	String ior = null;
-	if (iorURL != null) {
-	    try {
-		URLConnection urlConnection = iorURL.openConnection();
-		// 	    urlConnection.setDefaultUseCaches(false);
-		// 	    urlConnection.setUseCaches(false);
-		// 	    urlConnection.connect();
-		
-		InputStream is = urlConnection.getInputStream();
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader reader = new BufferedReader(isr);
-		ior = reader.readLine();
-		reader.close();
-	    } catch (java.io.IOException e) {
-		System.err.println(getName() + "|CSpecLayer.initSpecialist(): " +
-				   "IOException reading IOR from \"" +
-				   iorURL + "\"");
-		return;
-	    }
-	}
+	org.omg.CORBA.Object object = null;
+
+	com.bbn.openmap.util.corba.CORBASupport cs = 
+	    new com.bbn.openmap.util.corba.CORBASupport();
 
 	try {
- 	    orb = CORBAManager.getORB();
-
-	    if (ior != null) {
-		//    // HACK seem to need this for vbj33 applet...
-		//  	    ((com.visigenic.vbroker.orb.ORB)orb).proxy(false);
-		//  	    System.out.println("ORB PROXY="+((com.visigenic.vbroker.orb.ORB)orb).proxy());
-		org.omg.CORBA.Object object = orb.string_to_object(ior); 
-		specialist = ServerHelper.narrow(object);
-	    } 
-
-	    if (specialist == null && naming != null) {
-		// Get the root context of the name service.
-		//// System.out.print( "Binding to the server objects... " );
-		org.omg.CORBA.Object obj = null;
-		try {
-		    obj = orb.resolve_initial_references( "NameService" );
-		} catch(Exception e) {
-		    System.err.println( "CSpecLayer: Error getting root naming context: " );
-		    e.printStackTrace();
-		}
-		NamingContext rootContext = NamingContextHelper.narrow( obj );
-
-		if (Debug.debugging("cspec")) {
-		    if (rootContext == null) {
-			System.out.println("null root context");
-		    }
-		}
-     
-		// Resolve the specialist
-		String temp = naming;
-		Vector components = new Vector();
-		int numcomponents = 0;
-		String temporaryTemp = null;
-
-		int tindex = temp.indexOf("/");
-		while (tindex != -1) {
-		    numcomponents++;
-		    temporaryTemp=temp.substring(0,tindex);
-		    if (Debug.debugging("cspec")) {
-			System.out.println("Adding Name component: "+
-					   temporaryTemp);
-		    }
-		    components.addElement(temporaryTemp);
-		    temp=temp.substring(tindex+1);
-		    tindex = temp.indexOf("/");
-		}
-		if (Debug.debugging("cspec")) {
-		    System.out.println("Adding final Name component: "+ temp);
-		}
-		components.addElement(temp);
-	
-		NameComponent[] specialistName = new NameComponent[components.size()];
-		for (int i=0; i<components.size(); i++) {
-		    specialistName[i] = new NameComponent((String)(components.elementAt(i)), "");
-		}
-     	
-		org.omg.CORBA.Object specialistObject = null;
-		try {
-		    if (rootContext != null) {
-			specialistObject = rootContext.resolve( specialistName );
-		    } else {
-			System.err.println("CSpecLayer: No Root Context for naming.");
-		    }
-		} catch(Exception e) {
-		    System.err.println( "CEpecLayer: Error resolving the specialist: " );
-		    e.printStackTrace();
-		}
-       
-		if (specialistObject == null) {
-		    if (Debug.debugging("cspec")) {
-			System.out.println("null specObj");
-		    }
-		}
-		else {
-		    // // 		    System.out.println("objtostring:");
-		    System.out.println(orb.object_to_string(specialistObject));
-		}
-		specialist = ServerHelper.narrow( specialistObject );
-		if (Debug.debugging("cspec")) {
-		    System.out.println("Have a specialist:" );
-		    System.out.println("*** Specialist Server: is a " + 
-				       specialist.getClass().getName() + "\n" + 
-				       specialist);
-		}
-	    } //ior/name service if/else
-   
-	} catch (org.omg.CORBA.SystemException e) {
-	    System.err.println(getName()+"|CSpecLayer.initSpecialist(): " + e);
-	    specialist = null;
-	    if (showDialogs) {
-		postCORBAErrorMsg("CORBA Exception while initializing\n" +
-				  getName() + " specialist:\n" + e.getClass().getName());
+	    object = cs.readIOR(iorURL);
+	    specialist = ServerHelper.narrow(object);
+	} catch (IOException ioe) {
+	    if (Debug.debugging("cspec")) {
+		Debug.output(getName() + "(CSpecLayer).initSpecialist() IO Exception with ior: " + iorURL);
 	    }
-	} catch (Throwable t) {
-	    System.err.println(getName()+"|CSpecLayer.initSpecialist(): " + t);
 	    specialist = null;
-	    if (showDialogs) {
-		postException("Exception while initializing\n" +
-			      getName() + " specialist:\n" + t.getClass().getName());
-	    }
+	    return;
 	}
+
+	if (specialist == null) {
+	    object = cs.resolveName(naming);
+	    
+	    if (object != null) {
+		specialist = ServerHelper.narrow(object);
+		if (Debug.debugging("cspec")) {
+		    Debug.output("Have a specialist:" );
+		    Debug.output("*** Specialist Server: is a " + 
+				 specialist.getClass().getName() + "\n" + 
+				 specialist);
+		}
+	    } 
+	}
+
 	if (specialist == null) {
 	    if (Debug.debugging("cspec")) {
-		System.err.println("CSpecLayer.initSpecialist: null specialist!\n  IOR=" + ior);
+		System.err.println("CSpecLayer.initSpecialist: null specialist!\n  IOR=" + ior + "\n  Name = " + naming);
 	    }
 	}
     }
 
     /**
+     * Set the server, if you've taken special steps to create on, or
+     * want to null out the current one to reset the connection.
      */
     public void setSpecialist(Server aSpecialist) {
 	specialist = aSpecialist;
-    }
-
-    /**
-     */
-    public void setOrb(ORB anOrb) {
-	orb = anOrb;
-    }
-
-    /**
-     * Interface Layer method to get the static args, which are
-     * usually set via the OverlayTable. 
-     */
-    public String getStaticArgs() {
-	return staticArgs;
+	if (specialist == null) {
+	    widgets = null;
+	    gui = null;
+	    setList(null);
+	}
     }
 
     /**
      * Interface Layer method to get the dynamic args.
      * @return String args
-     * @deprecated use setProperties
      */
     public String getArgs() {
         return dynamicArgs;
     }
 
     /**
-     * Interface Layer method to set the dynamic args.
+     * Method to set the dynamic args.
      * @param args String
-     * @deprecated use setProperties
      */
     public void setArgs(String args) {
 	dynamicArgs = args;
     }
 
     /**
+     * Interface Layer method to get the static args, which are
+     * usually set via the openmap.properties file, or setProperties(). 
+     */
+    public String getStaticArgs() {
+	return staticArgs;
+    }
+
+    /**
      * Interface Layer method to set the static args, which are
-     * usually set via the OverlayTable. 
+     * usually set via the openmap.properties file. 
      */
     public void setStaticArgs(String args) {
  	staticArgs = args;
@@ -605,28 +384,6 @@ public class CSpecLayer extends Layer
     }
 
     /**
-     * Used to set the cancelled flag in the layer.
-     *
-     * @param set boolean
-     */
-    public synchronized void setCancelled(boolean set) {
-	cancelled = set;
-    }
-
-    /**
-     * Check to see if the cancelled flag has been set.
-     * <p>
-     * The swing worker checks this once in a while to see if the
-     * projection has changed since it started working.  If this is
-     * set to true, the swing worker quits when it is safe.
-     *
-     * @return boolean 
-     */
-    public synchronized boolean isCancelled() {
-	return cancelled;
-    }
-
-    /**
      * Perform the getRectangle() call on the specialist.
      *
      * @param p Projection
@@ -636,11 +393,11 @@ public class CSpecLayer extends Layer
 	CProjection cproj;
 	LLPoint ll1, ll2;
 	StringHolder dynamicArgsHolder;
-	UGraphic[] graphics;
+	UGraphic[] graphics = null;
 	Server spec = getSpecialist();
 	if (Debug.debugging("cspec"))
-	    System.out.println(getName() +
-			       "|CSpecLayer.getSpecGraphics()");
+	    Debug.output(getName() +
+			 "|CSpecLayer.getSpecGraphics()");
 
 	cproj = new CProjection ((short)(p.getProjectionType()),
 				 new LLPoint(p.getCenter().getLatitude(),
@@ -660,8 +417,8 @@ public class CSpecLayer extends Layer
 	if (isCancelled()) {
 	    dirtybits |= PREMATURE_FINISH;
 	    if (Debug.debugging("cspec"))
-		System.out.println(getName() + 
-				   "|CSpecLayer.getSpecGraphics(): aborted.");
+		Debug.output(getName() + 
+			     "|CSpecLayer.getSpecGraphics(): aborted.");
 	    return null;
 	}
 	// check for null specialist
@@ -693,17 +450,21 @@ public class CSpecLayer extends Layer
 
 	    // call getRectangle();
 	    if (Debug.debugging("cspec")) {
-		System.out.println(getName() +
-				   "|CSpecLayer.getSpecGraphics():" +
-				   " calling getRectangle with projection: " + p +
-				   " ul=" + ul + " lr=" + lr +
-				   " staticArgs=\"" + staticArguments + "\"" +
-				   " dynamicArgs=\"" + dynamicArgsHolder.value + "\"" +
-				   " clientID=" + clientID); 
+		Debug.output(getName() +
+			     "|CSpecLayer.getSpecGraphics():" +
+			     " calling getRectangle with projection: " + p +
+			     " ul=" + ul + " lr=" + lr +
+			     " staticArgs=\"" + staticArguments + "\"" +
+			     " dynamicArgs=\"" + dynamicArgsHolder.value + "\"" +
+			     " notifyOnChange=\"" + notifyOnChange + "\"" +
+			     " clientID=" + clientID); 
 	    }
 	    long start = System.currentTimeMillis();
 
-//  	    System.out.println("*** Specialist Server: is a " + spec.getClass().getName() + "\n" + spec);
+	    if (Debug.debugging("cspecdetail")) {
+		Debug.output("*** Specialist Server: is a " + 
+			     spec.getClass().getName() + "\n" + spec);
+	    }
 
 	    graphics = spec.getRectangle(cproj,
 					 ll1, ll2,
@@ -716,9 +477,9 @@ public class CSpecLayer extends Layer
 	    long stop = System.currentTimeMillis();
 
 	    if (Debug.debugging("cspec")) {
-		System.out.println(getName()+"|CSpecLayer.getSpecGraphics(): got " +
-				   graphics.length + " graphics in " + ((stop-start)/1000d) +
-				   " seconds.");
+		Debug.output(getName()+"|CSpecLayer.getSpecGraphics(): got " +
+			     graphics.length + " graphics in " + ((stop-start)/1000d) +
+			     " seconds.");
 	    }
 	} catch (org.omg.CORBA.SystemException e) {
 	    dirtybits |= EXCEPTION;
@@ -734,11 +495,8 @@ public class CSpecLayer extends Layer
 		e.printStackTrace();
 	    }
 
-	    specialist = null;// dontcha just love CORBA? reinit later
-	    graphics = null;
-	    jGraphics = null;
-	    widgets = null;
-	    gui = null;
+	    // dontcha just love CORBA? reinit later
+	    setSpecialist(null);
 	    if (showDialogs)
 		postCORBAErrorMsg(
 		    "CORBA Exception while getting graphics from\n" +
@@ -751,42 +509,46 @@ public class CSpecLayer extends Layer
      * Prepares the graphics for the layer.
      * <p>
      * Occasionally it is necessary to abort a prepare call.  When
-     * this happens, the requestNewObjects() call will set the cancel
-     * bit on the SwingWorker.  The worker will get restarted after it
+     * this happens, the doPrepare() call will set the cancel bit on
+     * the SwingWorker.  The worker will get restarted after it
      * finishes doing its cleanup.
      *
      * @return a JGraphicList from the server.
      */
-    public JGraphicList prepare() {
+    public OMGraphicList prepare() {
+	JGraphicList emptyList = new JGraphicList();
 	if (isCancelled()) {
 	    dirtybits |= PREMATURE_FINISH;
 	    if (Debug.debugging("basic")) {
-		System.out.println(getName() + "|CSpecLayer.prepare(): aborted.");
+		Debug.output(getName() + "|CSpecLayer.prepare(): aborted.");
 	    }
-	    return null;
+	    return emptyList;
 	}
 
 	if (Debug.debugging("basic")) {
-	    System.out.println(getName()+"|CSpecLayer.prepare(): doing it");
+	    Debug.output(getName()+"|CSpecLayer.prepare(): doing it");
 	}
+
 	dirtybits = 0;//reset the dirty bits
 
 	// Now we're going to shut off event processing.  The only
 	// thing that turns them on again is finishing successfully.
  	setAcceptingEvents(false);
 
+	Projection projection = getProjection();
+
 	// get the graphics from the specialist
 	UGraphic[] specGraphics = getSpecGraphics(projection);
 	if (isCancelled()) {
 	    dirtybits |= PREMATURE_FINISH;
 	    if (Debug.debugging("basic"))
-		System.out.println(getName() + "|CSpecLayer.prepare(): " +
-				   "aborted during/after getRectangle().");
-	    return null;
+		Debug.output(getName() + "|CSpecLayer.prepare(): " +
+			     "aborted during/after getRectangle().");
+	    return emptyList;
 	}
 
 	if (specGraphics == null) {
-	    return null;
+	    return emptyList;
 	}
 
 	// process the graphics
@@ -794,24 +556,24 @@ public class CSpecLayer extends Layer
 	JGraphicList graphics = createGraphicsList(specGraphics, projection);
 	long stop = System.currentTimeMillis();
 	if (Debug.debugging("cspec")) {
-	    System.out.println(getName()+ "|CSpecLayer.prepare(): generated " + 
-			       specGraphics.length + " graphics in " + 
-			       ((stop-start)/1000d) + " seconds.");
+	    Debug.output(getName()+ "|CSpecLayer.prepare(): generated " + 
+			 specGraphics.length + " graphics in " + 
+			 ((stop-start)/1000d) + " seconds.");
 	}
 
 	if (isCancelled()) {
 	    dirtybits |= PREMATURE_FINISH;
 	    if (Debug.debugging("basic")) {
-		System.out.println(getName() + "|CSpecLayer.prepare(): " +
-				   "aborted while generating graphics.");
+		Debug.output(getName() + "|CSpecLayer.prepare(): " +
+			     "aborted while generating graphics.");
 	    }
-	    return null;
+	    return emptyList;
 	}
 
 	// safe quit
 	if (Debug.debugging("basic")) {
-	    System.out.println(getName()+"|CSpecLayer.prepare(): finished preparing " + 
-			       graphics.size() + " graphics");
+	    Debug.output(getName()+"|CSpecLayer.prepare(): finished preparing " + 
+			 graphics.size() + " graphics");
 	}
  	setAcceptingEvents(true);
 	return graphics;
@@ -892,47 +654,6 @@ public class CSpecLayer extends Layer
 	return graphics;
     }
 
-    /**
-     * Paints the layer, starting to paint the graphics at the
-     * beginning of the list and finishing with those at the end
-     * (opposite of thegesture search).
-     *
-     * @param g the Graphics context for painting
-     */
-    public void paint(java.awt.Graphics g) {
-	if (Debug.debugging("cspec")) {
-	    System.out.println(getName() + "|CSpecLayer.paint()");
-	}
-
-	if (projection != null) {
-	    // get data again if palette was changed
-	    if ((dirtybits&PALETTE_DIRTY) != 0) {
-		dirtybits &= (~PALETTE_DIRTY);//palette not dirty
-		synchronized (this) {
-		    if (Debug.debugging("cspec")) {
-			System.out.println(getName() +
-					   "|CSpecLayer.paint(): getting data.");
-		    }
-		    requestNewObjects();
-		}
-	    }
-	}
-
-	if (jGraphics == null) {
-	    return;
-	}
-	jGraphics.render(g);
-    }
-
-    /**
-     * Indicates whether this layer has a GUI.
-     *
-     * @return true if it has a GUI, false if it does not
-     */
-    public boolean hasGUI() {
-	return true;
-    }
-
     /** 
      * Gets the palette associated with the layer.<p>
      *
@@ -943,7 +664,7 @@ public class CSpecLayer extends Layer
 	    initSpecialist();
 	if (specialist == null) {
 	    if (Debug.debugging("cspec"))
-		System.out.println(getName()+ "|CSpecLayer.getGUI(): initSpecialist() unsuccessful!");
+		Debug.output(getName()+ "|CSpecLayer.getGUI(): initSpecialist() unsuccessful!");
 	    return null;
 	}
 
@@ -956,48 +677,48 @@ public class CSpecLayer extends Layer
 		    paletteDynamicArgs.value = "";
 		}
 
+		// Static Args can't go out null....
+		String staticArguments = getStaticArgs();
+		if (staticArguments == null) {
+		    staticArguments = "";
+		    setStaticArgs(staticArguments);
+		}
+
 		if (Debug.debugging("cspec")) {
-		    System.out.println(getName()+"|CSpecLayer.getGUI(): calling getPaletteConfig(" + getStaticArgs() + "," + paletteDynamicArgs.value + "," + clientID + ")");
+		    Debug.output(getName()+"|CSpecLayer.getGUI(): calling getPaletteConfig(" + staticArguments + "," + paletteDynamicArgs.value + "," + clientID + ")");
 		}
 
 		try {
 
 		    widgets = specialist.getPaletteConfig(null/*widgetChange*/, 
-							  getStaticArgs(),
+							  staticArguments,
 							  paletteDynamicArgs,
 							  clientID);
 
 		} catch (org.omg.CORBA.SystemException e) {
 		    System.err.println(getName() + "|CSpecLayer.getGUI(): " + e);
 		    e.printStackTrace();
-		    widgets = null;
-		    gui = null;
-		    specialist = null;
+		    setSpecialist(null);
 		    if (showDialogs) {
 			postCORBAErrorMsg("CORBA Exception while getting palette from\n" +
 					  getName() + " specialist:\n" + e.getClass().getName());
 		    }
 		}
-		if (widgets != null) {
-		    gui = new CSpecPalette(widgets, clientID, this);
-		} else {
+		if (widgets == null || widgets.length == 0) {
 		    gui = null;
+		} else {
+		    gui = new CSpecPalette(widgets, clientID, this);
 		}
 	    }
 	} catch (OutOfMemoryError e) {
-	    widgets = null;
-	    gui = null;
-	    specialist = null;
-	    jGraphics = null;
+	    setSpecialist(null);
 	    System.err.println(getName() + "|CSpecLayer.getGUI(): " + e);
 	    if (showDialogs) {
 		postMemoryErrorMsg("OutOfMemory while getting palette from\n" +
 				   getName() + " specialist.");
 	    }
 	} catch (Throwable t) {
-	    widgets = null;
-	    gui = null;
-	    specialist = null;
+	    setSpecialist(null);
 	    System.err.println(getName() + "|CSpecLayer.getGUI(): " + t);
 	    t.printStackTrace();
 	    if (showDialogs) {
@@ -1186,7 +907,7 @@ public class CSpecLayer extends Layer
 	boolean got_the_stuff = false;
 	boolean updated_graphics = false;
 	OMGraphic moused = null;
-	JGraphicList jjGraphics = jGraphics;
+	JGraphicList jjGraphics = (JGraphicList) getList();
 
 	// Do this, so when there was a one-liner about a graphic (or
 	// something) sent, and now there isn't a graphic associated
@@ -1206,7 +927,7 @@ public class CSpecLayer extends Layer
 	// reset...
 	if (evt == null) {
 	    if (Debug.debugging("cspec")) {
-		System.out.println(getName()+"|CSpecLayer.handleGesture(): null evt!");
+		Debug.output(getName()+"|CSpecLayer.handleGesture(): null evt!");
 	    }
 	    return false;//didn't consume gesture
 	}
@@ -1231,7 +952,7 @@ public class CSpecLayer extends Layer
 			: null;
 		    if (action == null) {
 			if (Debug.debugging("cspec"))
-			    System.out.println(getName()+"|CSpecLayer.handleGesture(): null action!");
+			    Debug.output(getName()+"|CSpecLayer.handleGesture(): null action!");
 			return false; //didn't consume gesture
 		    }
 		    if (action.length == 0) {
@@ -1267,9 +988,9 @@ public class CSpecLayer extends Layer
 		case MapGesture.InfoText:
 		    if (!got_info) {	// can only have one instance
 			if (Debug.debugging("cspec")) {
-			    System.out.println("CSpecLayer|"+getName()+
-					       "|handleGesture(): Requesting Info Text " + 
-					       action[i].itext());
+			    Debug.output("CSpecLayer|"+getName()+
+					 "|handleGesture(): Requesting Info Text " + 
+					 action[i].itext());
 			}
 			fireRequestInfoLine(action[i].itext());
 			sentInfoLine = true;
@@ -1279,9 +1000,9 @@ public class CSpecLayer extends Layer
 		case MapGesture.PlainText:
 		    if (!got_the_stuff) {
 			if (Debug.debugging("cspec")) {
-			    System.out.println("CSpecLayer|"+getName()+
-					       "|handleGesture(): Requesting Plain Text " + 
-					       action[i].ptext());
+			    Debug.output("CSpecLayer|"+getName()+
+					 "|handleGesture(): Requesting Plain Text " + 
+					 action[i].ptext());
 			}
 			fireRequestBrowserContent(action[i].ptext());
 			got_the_stuff = true;
@@ -1290,9 +1011,9 @@ public class CSpecLayer extends Layer
 		case MapGesture.HTMLText:
 		    if (!got_the_stuff) {
 			if (Debug.debugging("cspec")) {
-			    System.out.println("CSpecLayer|"+getName()+
-					       "|handleGesture(): Requesting HTML Text " + 
-					       action[i].htext());
+			    Debug.output("CSpecLayer|"+getName()+
+					 "|handleGesture(): Requesting HTML Text " + 
+					 action[i].htext());
 			}
 			fireRequestBrowserContent(action[i].htext());
 			got_the_stuff = true;
@@ -1301,9 +1022,9 @@ public class CSpecLayer extends Layer
 		case MapGesture.URL:
 		    if (!got_the_stuff) {
 			if (Debug.debugging("cspec")) {
-			    System.out.println("CSpecLayer|"+getName()+
-					       "|handleGesture(): Requesting URL " + 
-					       action[i].url());
+			    Debug.output("CSpecLayer|"+getName()+
+					 "|handleGesture(): Requesting URL " + 
+					 action[i].url());
 			}
 			fireRequestURL(action[i].url());
 			got_the_stuff = true;
@@ -1325,8 +1046,7 @@ public class CSpecLayer extends Layer
 	    }
 	    return false;
         } catch (OutOfMemoryError e) {
-	    specialist = null;
-	    jGraphics = null;
+	    setSpecialist(null);
 	    if (showDialogs) {
 		postMemoryErrorMsg("OutOfMemory while gesturing on\n" +
 				   getName() + " specialist.");
@@ -1341,10 +1061,6 @@ public class CSpecLayer extends Layer
 	    return false;
 	}
 
-
-
-	// TCM 5/6/98
-	// 	if (updated_graphics) fireRequestPaint();
 	if (updated_graphics) {
 	    repaint();
 	}
@@ -1358,6 +1074,9 @@ public class CSpecLayer extends Layer
      * @param updateRec com.bbn.openmap.CSpecialist.UpdateRecord[]
      */
     protected void updateGraphics(com.bbn.openmap.CSpecialist.UpdateRecord[] updateRec) {
+
+	JGraphicList jGraphics = (JGraphicList)getList();
+	Projection projection = getProjection();
 
 	com.bbn.openmap.CSpecialist.UpdateGraphic upgraphic = null;
 	// parse updateRec (an array of UpdateRecord)
@@ -1514,18 +1233,14 @@ public class CSpecLayer extends Layer
     public void removed(java.awt.Container cont) {
 
         if (Debug.debugging("cspec")) {
-	    System.out.println(getName()+
-			       "CSpecLayer.removed(): Nullifying graphics");
+	    Debug.output(getName()+
+			 "CSpecLayer.removed(): Nullifying graphics");
 	}
 
 	if (specialist != null) {
 	    specialist.signoff(clientID);
 	}
 
-	jGraphics=null;
-	widgets=null;
-	gui=null;
-	specialist=null;
-	projection=null;
+	setSpecialist(null);
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/STextBox.java,v $
 // $RCSfile: STextBox.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,7 @@ import java.util.*;
  * that has a text area and a button to confirm the text entry to the
  * specialist.
  */
-public class STextBox extends _TextBoxImplBase {
+public class STextBox extends _TextBoxStub {
 
     /** Name of the text window, as it appears on the palette. */
     protected String label_;

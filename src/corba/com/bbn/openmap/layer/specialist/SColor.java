@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SColor.java,v $
 // $RCSfile: SColor.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import java.util.*;
  * 
  * <p>RGB range from 0 - 65535;
  */
-public class SColor extends _CColorImplBase {
+public class SColor extends _CColorStub {
 
     protected EColor self;
     

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SRadioBox.java,v $
 // $RCSfile: SRadioBox.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,7 @@ import java.util.*;
  * the addPalette() function, which adds the palette widget to the
  * palette widget list.  
  */
-public class SRadioBox extends _RadioBoxImplBase {
+public class SRadioBox extends _RadioBoxStub {
 
     protected String label_;
     protected String[] buttons_;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/SSlider.java,v $
 // $RCSfile: SSlider.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,7 @@ import java.util.*;
  * with a marker that can be used to adjust the relative value of the
  * widget.
  */
-public class SSlider extends _SliderImplBase {
+public class SSlider extends _SliderStub {
 
     /** Name of the slider, as it appears on the palette.*/
     protected String label_;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JGraphicChange.java,v $
 // $RCSfile: JGraphicChange.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,11 +24,11 @@
 package com.bbn.openmap.layer.specialist;
 
 import com.bbn.openmap.CSpecialist.GraphicChange;
-import com.bbn.openmap.CSpecialist._GraphicChangeImplBase;
+import com.bbn.openmap.CSpecialist._GraphicChangeStub;
 
 /**
  */
-public class JGraphicChange extends _GraphicChangeImplBase implements GraphicChange {
+public class JGraphicChange extends _GraphicChangeStub implements GraphicChange {
     
     protected CSpecLayer layer = null;
     
@@ -45,7 +45,7 @@ public class JGraphicChange extends _GraphicChangeImplBase implements GraphicCha
      */
     public void ForgetAll(boolean forceRedraw) {
 	if (forceRedraw)
-	    layer.requestNewObjects();
+	    layer.doPrepare();
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/Specialist.java,v $
 // $RCSfile: Specialist.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,10 +25,10 @@ package com.bbn.openmap.layer.specialist;
 
 import com.bbn.openmap.CSpecialist.*;
 import com.bbn.openmap.CSpecialist.GraphicPackage.*;
+import com.bbn.openmap.util.corba.CORBASupport;
 import com.bbn.openmap.util.Debug;
 import java.io.*;
 import java.util.*;
-import org.omg.CosNaming.*;
 
 /** 
  *  The Specialist is the base class for all specialists.  It assists
@@ -62,9 +62,8 @@ import org.omg.CosNaming.*;
  *
  * @see GraphicList 
  */
-public abstract class Specialist extends _ServerImplBase {
+public abstract class Specialist extends ServerPOA {
 
-    protected org.omg.CORBA.BOA boa = null;
     protected static String iorfile = null;
     protected static String naming = null;
 
@@ -90,7 +89,7 @@ public abstract class Specialist extends _ServerImplBase {
     }
 
     public Specialist(String name, short sd, boolean wae) {
-	super(name);
+	super();
 	clientPaletteLists = new Hashtable();
 	clientGestureActionLists = new Hashtable();
 	graphicUpdates = new Vector();
@@ -124,7 +123,7 @@ public abstract class Specialist extends _ServerImplBase {
 
 	    return gl;
 	} catch (Throwable t) {
-	    System.err.println("Specialist.getRectangle(): " + t);
+	    Debug.error("Specialist.getRectangle(): " + t);
 	    t.printStackTrace();
 	    throw new RuntimeException();
 	}
@@ -369,144 +368,13 @@ public abstract class Specialist extends _ServerImplBase {
      * arguments, and the ior filename is really being looked for here.  
      */
     public void start(String[] args) {
-	// Initialize the ORB
-	org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args, System.getProperties());
+	CORBASupport cs = new CORBASupport();
 
 	if (args != null) {
 	    parseArgs(args);
 	}
-      
-	// Initialize the BOA
-	boa = orb.BOA_init();
-      
-	// Export the newly created object
-	boa.obj_is_ready(this);
-      
-	// write the IOR out
-	if (iorfile != null) {
-	    PrintWriter fs = null;
-	    try {
-		fs = new PrintWriter((OutputStream)new FileOutputStream(iorfile));
-	    } catch (IOException e) {
-		System.err.println("can't write ior to file " + iorfile);
-		System.exit(1);
-	    }
-	    fs.print(orb.object_to_string(this));
-	    fs.flush();
-	    fs.close();	
-	    if (Debug.debugging("cspec")) {
-		System.err.println(orb.object_to_string(this));
-	    }
-	}
 
-	if (naming != null) {
-	    //*** Naming server stuff
-	    org.omg.CORBA.Object obj = null;
-	    try {
-		obj = orb.resolve_initial_references("NameService");
-		if (Debug.debugging("cspec")) {
-		    System.out.println("Obj came back");
-		}
-	    } catch (org.omg.CORBA.ORBPackage.InvalidName e) {
-		System.out.println("Invalid Name exception");
-	    }
-    
-	    NamingContext rootContext = NamingContextHelper.narrow(obj);
-	    if (rootContext== null) {
-		if (Debug.debugging("cspec")) {
-		    System.out.println("Root context null!!");
-		}
-	    }
-       
-	    String temp = naming;
-	    Vector components = new Vector();
-	    int numcomponents = 0;
-	    String temporaryTemp = null;
-       
-	    int tindex = temp.indexOf("/");
-	    while (tindex != -1) {
-		numcomponents++;
-		temporaryTemp=temp.substring(0,tindex);
-		if (Debug.debugging("cspec")) {
-		    System.out.println("Adding Name component: "+temporaryTemp);
-		}
-		components.addElement(temporaryTemp);
-		temp=temp.substring(tindex+1);
-		tindex = temp.indexOf("/");
-	    }
-	    if (Debug.debugging("cspec")) {
-		System.out.println("Adding final Name component: "+temp);
-	    }
-	    components.addElement(temp);
-       
-	    //        NameComponent[] specialistName = new NameComponent[components.size()];
-	    //        for (int i=0; i<components.size(); i++)
-	    // 	   specialistName[i] = new NameComponent((String)(components.elementAt(i)), "");
-       
-       
-	    NamingContext newContext = null;
-	    NamingContext oldContext = rootContext;
-	    for (int i = 0 ; i<components.size()-1; i++) {
-		NameComponent[] newName = new NameComponent[1];
-		newName[0] = new NameComponent((String)(components.elementAt(i)), "");
-		String debugName = (String)(components.elementAt(i));
-		if (Debug.debugging("cspec")) {
-		    System.out.println("Working on: " + debugName);
-		}
-		try {
-		    newContext = 
-			NamingContextHelper.narrow( oldContext.resolve(newName));
-		} catch( org.omg.CosNaming.NamingContextPackage.NotFound nfe) {
-		    try {
-			if (Debug.debugging("cspec")) {
-			    System.out.println("Doing a bind new context");
-			}
-			newContext = oldContext.bind_new_context(newName);
-		    } catch (org.omg.CosNaming.NamingContextPackage.AlreadyBound abe) {
-			System.out.println("Already bound");
-		    } catch (org.omg.CosNaming.NamingContextPackage.CannotProceed cpe0) {
-			System.out.println("Cannot proceed 0");
-		    } catch (org.omg.CosNaming.NamingContextPackage.InvalidName ine0) {
-			System.out.println("Invalid Name 0");
-		    } catch (org.omg.CosNaming.NamingContextPackage.NotFound nfe0) {
-			System.out.println("Not found 0");
-		    }
-		} catch (org.omg.CosNaming.NamingContextPackage.InvalidName ine) {
-		    System.out.println("Invalid name");
-		} catch (org.omg.CosNaming.NamingContextPackage.CannotProceed cpe) {
-		    System.out.println("Cannot proceed");
-		}
-		oldContext=newContext;
-	    }
-       
-	    NameComponent[] finalName = new NameComponent[1];
-	    finalName[0] = new NameComponent((String)(components.elementAt(components.size()-1)), "");
-	    String debugName = (String)(components.elementAt(components.size()-1));
-	    System.out.println("Final Working on: " + debugName);
-
-	    try {
-		if (Debug.debugging("cspec")) {
-		    System.out.println("Doing a rebind");
-		    System.out.println(orb.object_to_string(oldContext));
-		}
-	      oldContext.rebind( finalName, this);
-	      if (Debug.debugging("cspec")) {
-		  System.out.println("Completed rebind for "+ finalName);
-	      }
-	    } catch (org.omg.CosNaming.NamingContextPackage.CannotProceed cpe1) {
-		System.out.println("Cannot proceed 1");
-	    } catch (org.omg.CosNaming.NamingContextPackage.InvalidName ine1) {
-		System.out.println("Invalid Name 1");
-	    } catch (org.omg.CosNaming.NamingContextPackage.NotFound nfe1) {
-		System.out.println("Not found 1");
-	    }
-	}
-       
-	// Announce ourselves to the world
-	System.out.println(this + " is ready.");
-       
-	// Wait for incoming requests
-	boa.impl_is_ready();
+	cs.start(this, args, iorfile, naming);
     }
 
     /**
@@ -529,7 +397,7 @@ public abstract class Specialist extends _ServerImplBase {
 
 	// must specify an iorfile
 	if (iorfile == null && naming == null) {
-	    System.err.println("IOR file and name service name are null!  Use `-ior' or '-name' flag!");
+	    Debug.error("IOR file and name service name are null!  Use `-ior' or '-name' flag!");
 	}
     }
 
@@ -538,7 +406,7 @@ public abstract class Specialist extends _ServerImplBase {
      * command line needs of your specialist. 
      */
     public void printHelp() {
-	System.err.println("usage: java <specialist> [-ior <file> || -name <NAME>]");
+	Debug.output("usage: java <specialist> [-ior <file> || -name <NAME>]");
 	System.exit(1);
     }
 

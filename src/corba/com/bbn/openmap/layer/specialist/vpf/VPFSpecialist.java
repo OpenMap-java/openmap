@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/vpf/VPFSpecialist.java,v $
 // $RCSfile: VPFSpecialist.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 02:00:34 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -344,10 +344,14 @@ public class VPFSpecialist extends Specialist {
 	Comp[] oldcomps =  (Comp[])comphash.remove(uniqueID);
 	if (oldcomps != null) {
 	    Debug.message("vpfspecialist", "Releasing comps");
-	    for (int i = 0; i < oldcomps.length; i++) {
-		if (boa != null)
-		    boa.deactivate_obj(oldcomps[i]);
-	    }
+
+	    // Not sure how to do this in POA, but shouldn't be 
+	    // a problem because we aren't adding the comp objects to
+	    // the graphics in the warehouse either.
+// 	    for (int i = 0; i < oldcomps.length; i++) {
+// 		if (boa != null)
+// 		    boa.deactivate_obj(oldcomps[i]);
+// 	    }
 	}
     }
 
