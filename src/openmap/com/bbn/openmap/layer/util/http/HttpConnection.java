@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/http/HttpConnection.java,v $
 // $RCSfile: HttpConnection.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:07 $
+// $Revision: 1.5 $
+// $Date: 2004/10/29 12:28:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -195,12 +195,18 @@ public class HttpConnection extends Thread {
 
         char[] c_content = new char[length];
         int nread = 0;
+        int remaining = length;
         try {
             while (nread < length) {
-                nread += in.read(c_content, nread, length);
+                //nread += in.read(c_content, nread, length);
+                int tmp = in.read(c_content, nread, remaining);
+                nread += tmp;
+                remaining -= tmp;
                 Debug.message("httpconnection", "Length of content read "
-                        + nread);
+                        + nread + " length=" + length + " remaining="
+                        + remaining);
             }
+
         } catch (java.io.IOException ioe) {
             Debug.error("HttpConnection | readContent -- Exception while reading content(key-values from POST) "
                     + ioe.getMessage());
