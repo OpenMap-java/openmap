@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriPlugIn.java,v $
 // $RCSfile: EsriPlugIn.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.9 $
+// $Date: 2004/02/03 20:42:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,7 +29,7 @@ import com.bbn.openmap.dataAccess.shape.*;
 import com.bbn.openmap.dataAccess.shape.input.*;
 import com.bbn.openmap.dataAccess.shape.output.*;
 import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.plugin.*;
 import com.bbn.openmap.proj.Projection;
@@ -319,9 +319,9 @@ public class EsriPlugIn extends AbstractPlugIn
                     dbf = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_DBF;
                 }
 
-                _model = getDbfTableModel(LayerUtils.getResourceOrFileOrURL(null, dbf));
-                _list = getGeometry(LayerUtils.getResourceOrFileOrURL(null, shp), 
-                                    LayerUtils.getResourceOrFileOrURL(null, shx));
+                _model = getDbfTableModel(PropUtils.getResourceOrFileOrURL(null, dbf));
+                _list = getGeometry(PropUtils.getResourceOrFileOrURL(null, shp), 
+                                    PropUtils.getResourceOrFileOrURL(null, shx));
 
                 if (_model != null) {
                     DrawingAttributesUtility.setDrawingAttributes(_list, _model, getDrawingAttributes());
@@ -355,7 +355,7 @@ public class EsriPlugIn extends AbstractPlugIn
         String dbfFileName = argv[0].substring(0, argv[0].lastIndexOf('.') + 1)+ "dbf";
 
         try {
-            list.setAppObject(epi.getDbfTableModel(LayerUtils.getResourceOrFileOrURL(epi, dbfFileName)));
+            list.setAppObject(epi.getDbfTableModel(PropUtils.getResourceOrFileOrURL(epi, dbfFileName)));
             Debug.output("Set list in table");
 
         } catch (Exception e) {
