@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerStatusPane.java,v $
 // $RCSfile: LayerStatusPane.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/08 18:41:27 $
+// $Revision: 1.2 $
+// $Date: 2003/04/15 16:16:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -58,16 +58,8 @@ public class LayerStatusPane extends LayerPane
     protected Color offColor;
     protected Color onColor = new Color(0xFF0066CC);
 
-    // default initializations
+    // default initializations, extended from LayerPane...
     static {
-// 	URL url1 = LayerPane.class.getResource("PaletteOff.gif");
-// 	paletteIcon = new ImageIcon(url1, "palette");
-// 	URL url2 = LayerPane.class.getResource("PaletteOn.gif");
-// 	paletteOnIcon = new ImageIcon(url2, "palette on");
-// 	URL url3 = LayerPane.class.getResource("BulbOn.gif");
-// 	layerOnIcon = new ImageIcon(url3, "layer selected");
-// 	URL url4 = LayerPane.class.getResource("BulbOff.gif");
-// 	layerOffIcon = new ImageIcon(url4, "layer not selected");
 	URL working = LayerStatusPane.class.getResource("BulbWorking.gif");
 	layerWorking = new ImageIcon(working, "layer working");
 	URL done  = LayerStatusPane.class.getResource("BulbDone.gif");
@@ -105,7 +97,10 @@ public class LayerStatusPane extends LayerPane
     }
 
     public void cleanup() {
+	Layer l = getLayer();
+	if (l != null) {
+	    l.removeLayerStatusListener(this);
+	}
 	super.cleanup();
-	getLayer().removeLayerStatusListener(this);
     }
 }
