@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.14 $
-// $Date: 2004/05/25 02:41:25 $
+// $Revision: 1.15 $
+// $Date: 2004/09/30 22:39:29 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,26 +25,20 @@ package com.bbn.openmap.layer.shape;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import javax.swing.*;
 
 import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.propertyEditor.*;
-import com.bbn.openmap.util.SwingWorker;
 
 /**
  * An OpenMap Layer that displays shape files.  Note that the
@@ -69,7 +63,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.14 $ $Date: 2004/05/25 02:41:25 $
+ * @version $Revision: 1.15 $ $Date: 2004/09/30 22:39:29 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
@@ -163,7 +157,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 
             try {
                 if (imageURLString != null && !imageURLString.equals("")) {
-                    URL imageURL = LayerUtils.getResourceOrFileOrURL(this, imageURLString);
+                    URL imageURL = PropUtils.getResourceOrFileOrURL(this, imageURLString);
                     ImageIcon imageIcon = new ImageIcon(imageURL);
                     spatialIndex.setPointIcon(imageIcon);
                 }
@@ -195,8 +189,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer
 
         drawingAttributes = new DrawingAttributes(prefix, props);
 
-        shadowX = LayerUtils.intFromProperties(props, realPrefix + shadowXProperty, 0);
-        shadowY = LayerUtils.intFromProperties(props, realPrefix + shadowYProperty, 0);
+        shadowX = PropUtils.intFromProperties(props, realPrefix + shadowXProperty, 0);
+        shadowY = PropUtils.intFromProperties(props, realPrefix + shadowYProperty, 0);
     }
 
     /**
