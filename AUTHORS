@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/AUTHORS,v $
 $RCSfile: AUTHORS,v $
-$Revision: 1.15 $
-$Date: 2003/04/21 19:31:02 $
+$Revision: 1.16 $
+$Date: 2003/11/14 19:59:36 $
 $Author: dietrick $
 
 People and organizations that have contributed to OpenMap
@@ -98,8 +98,14 @@ Thomas Paricaud
 Eric Lepicier
   Provided OMSpline classes and support for editing and decorating them.
 
+Bart Jourquin
+  Provided the MapBeanPrinter.
+
 David J. Ward
   Provided the ScaleDisplayLayer.
+
+Uwe Baier
+  Provided the com.bbn.openmap.layer.mysql package.
 
 --------------------------------------
 
