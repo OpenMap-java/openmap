@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/06/02 18:39:52 $
+// $Revision: 1.4 $
+// $Date: 2003/07/28 20:07:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,30 +53,61 @@ public class OMText extends OMGraphic implements Serializable {
     /** Align the text to the left of the location. */
     public final static transient int JUSTIFY_RIGHT = 2;
 
-    /** Parameter of Font to count toward footprint of height of Text.
-     *  This indicates that the ascent, descent and leading of the
-     *  text should count toward the footprint of the text. This is
-     *  the same as the full height of the FontMetric, and is the
-     *  default. */
+    /**
+     * Parameter of Font to count toward footprint of height of Text.
+     * This indicates that the ascent, descent and leading of the
+     * text should count toward the footprint of the text. This is
+     * the same as the full height of the FontMetric, and is the
+     * default. 
+     */
     public final static transient int HEIGHT = 0;
 
-    /** Parameter of Font to count toward footprint of height of Text.
-     *  This indicates that the ascent and the descent of the text
-     *  should count toward the footprint of the text. */
+    /**
+     * Parameter of Font to count toward footprint of height of Text.
+     * This indicates that the ascent and the descent of the text
+     * should count toward the footprint of the text. 
+     */
     public final static transient int ASCENT_DESCENT = 1;
 
-    /** Parameter of Font to count toward footprint of height of Text.
-     *  This indicates that the ascent and the leading of the text
-     *  should count toward the footprint of the text. */
+    /**
+     * Parameter of Font to count toward footprint of height of Text.
+     * This indicates that the ascent and the leading of the text
+     * should count toward the footprint of the text. 
+     */
     public final static transient int ASCENT_LEADING = 2;
 
-    /** Parameter of Font to count toward footprint of height of Text.
-     *  This indicates that just the ascent of the text should count
-     *  toward the footprint of the text. */
+    /**
+     * Parameter of Font to count toward footprint of height of Text.
+     * This indicates that just the ascent of the text should count
+     * toward the footprint of the text. 
+     */
     public final static transient int ASCENT = 3;
 
-    public static final Font DEFAULT_FONT = new Font("SansSerif", 
-						     java.awt.Font.PLAIN, 12);
+    /**
+     * Parameter that dictates where the font baseline will be set
+     * compared to the location of the OMText.  The BASELINE_BOTTOM
+     * setting, the default, means that the location will be set along
+     * the normal bottom edge of the text where the letters rest.
+     */
+    public final static transient int BASELINE_BOTTOM = 0;
+
+    /**
+     * Parameter that dictates where the font baseline will be set
+     * compared to the location of the OMText.  The BASELINE_MIDDLE
+     * setting means that the location will be set along
+     * the middle of the height of the text.
+     */
+    public final static transient int BASELINE_MIDDLE = 1;
+
+    /**
+     * Parameter that dictates where the font baseline will be set
+     * compared to the location of the OMText.  The BASELINE_TOP
+     * setting means that the location will be set along
+     * the top of the height of the text.
+     */
+    public final static transient int BASELINE_TOP = 2;
+
+    public static final Font DEFAULT_FONT = new Font("SansSerif", java.awt.Font.PLAIN, 12);
 
     //----------------------------------------------------------------------
     // Fields
@@ -111,6 +142,15 @@ public class OMText extends OMGraphic implements Serializable {
      * of the given location.
      */
     protected int justify = JUSTIFY_LEFT;
+
+    /**
+     * Location of the baseline of the text compared to the location
+     * point of the OMText object.  You can set this to be
+     * BASELINE_BOTTOM (default), BASELINE_MIDDLE or BASELINE_TOP,
+     * depending on if you want the bottom of the letters to be lined
+     * up to the location, or the middle or the top of them.
+     */
+    protected int baseline = BASELINE_BOTTOM;
 
     /**
      * The fmHeight is the FontMetric height to use for calculating
@@ -467,11 +507,34 @@ public class OMText extends OMGraphic implements Serializable {
      * and <code>polyBounds</code>.
      *
      * @param j one of JUSTIFY_LEFT, JUSTIFY_CENTER, JUSTIFY_RIGHT
-     *
      * @see #polyBounds
      */
     public void setJustify(int j) {
 	justify = j;
+
+	// now flush cached information
+	polyBounds = null;	// flush existing bounds.
+    }
+
+    /**
+     * Gets the baseline location of this OMText.
+     *
+     * @return one of BASELINE_BOTTOM, BASELINE_MIDDLE or BASELINE_TOP.
+     */
+    public int getBaseline() {
+	return baseline;
+    }
+
+    /**
+     * Sets the location of the baseline of this OMText.
+     * Flushes the cache fields <code>fm</code>, <code>widths</code>,
+     * and <code>polyBounds</code>.
+     *
+     * @param b one of BASELINE_BOTTOM, BASELINE_MIDDLE or BASELINE_TOP.
+     * @see #polyBounds
+     */
+    public void setBaseline(int b) {
+	baseline = b;
 
 	// now flush cached information
 	polyBounds = null;	// flush existing bounds.
@@ -999,11 +1062,19 @@ public class OMText extends OMGraphic implements Serializable {
 	    height = fm.getAscent();
 	}
 
+	int baselineLocation = pt.y; // baseline == BASELINE_BOTTOM, normal.
+
+	if (baseline == BASELINE_MIDDLE) {
+	    baselineLocation += fm.getDescent()/2;
+	} else if (baseline == BASELINE_TOP) {
+	    baselineLocation += fm.getDescent();
+	}
+
 	switch (justify) {
 	case JUSTIFY_LEFT:
 	    // Easy case, just draw them.
 	    for (int i=0; i<parsedData.length; i++) {
-		g.drawString(parsedData[i], pt.x, pt.y+(height*i));
+		g.drawString(parsedData[i], pt.x, baselineLocation + (height*i));
 	    }
 	    break;
 	case JUSTIFY_CENTER:
@@ -1011,7 +1082,7 @@ public class OMText extends OMGraphic implements Serializable {
 	    for (int i=0; i<parsedData.length; i++) {
 		g.drawString(parsedData[i],
 			     pt.x - (widths[i]/2),
-			     pt.y + (height*i));
+			     baselineLocation + (height*i));
 	    }
 	    break;
 	case JUSTIFY_RIGHT:
@@ -1019,7 +1090,7 @@ public class OMText extends OMGraphic implements Serializable {
 	    for (int i=0; i<parsedData.length; i++) {
 		g.drawString(parsedData[i],
 			     pt.x - widths[i],
-			     pt.y + (height*i));
+			     baselineLocation + (height*i));
 	    }
 	    break;
 	}
@@ -1064,9 +1135,22 @@ public class OMText extends OMGraphic implements Serializable {
 
 	    computeStringWidths(fm);
 
-	    /* pt.y is bottom of first line,
-	       currenty is initialized to top of first line. */
-	    int currenty = pt.y + descent - height;
+	    int baselineOffset = 0; // baseline == BASELINE_BOTTOM, normal.
+
+	    if (baseline == BASELINE_MIDDLE) {
+		baselineOffset = descent/2;
+	    } else if (baseline == BASELINE_TOP) {
+		baselineOffset = descent;
+	    }
+
+	    // or, baselineOffset = height - (baseline * height /2);
+	    // But that depends on the actual values of the BASELINE
+	    // values, which doesn't seem safe.
+
+	    /* pt.y is bottom of first line, currenty is initialized
+	       to top of first line, minus any offset introduced by
+	       baseline adjustments. */
+	    int currenty = pt.y + descent - height - baselineOffset;
 
 	    // First, all the line endpoints.
 	    for (i=0; i<nLines; i++) {
@@ -1118,7 +1202,7 @@ public class OMText extends OMGraphic implements Serializable {
 
 	} else {
 	    if (Debug.debugging("omtext")) {
-		Debug.output("OMText.computeBounds() didn't compute because polybounds = " + polyBounds + " or  pt = " + pt + " or fm = " + fm + ", (nothingonly polybounds should be null)");
+		Debug.output("OMText.computeBounds() didn't compute because polybounds = " + polyBounds + " or  pt = " + pt + " or fm = " + fm + ", (only polybounds should be null)");
 	    }
 	}
     }

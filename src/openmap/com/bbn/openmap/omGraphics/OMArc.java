@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArc.java,v $
 // $RCSfile: OMArc.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/07/15 23:59:37 $
+// $Revision: 1.2 $
+// $Date: 2003/07/28 20:07:40 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -154,7 +154,9 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param w horizontal diameter of arc, pixels
      * @param h vertical diameter of arc, pixels
      * @param s starting angle of arc, decimal degrees
-     * @param e angular extent of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees.  For XY
+     * rendertype arcs, positive extents go in the counter-clockwise
+     * direction, matching the java.awt.geom.Arc2D convention.
      */
     public OMArc(int x1, int y1,
 		 int w, int h, float s, float e) {
@@ -180,8 +182,10 @@ public class OMArc extends OMGraphic implements Serializable {
      * from latPoint.
      * @param w horizontal diameter of arc, pixels.
      * @param h vertical diameter of arc, pixels.
-     * @param s starting angle of arc, decimal degrees
-     * @param e angular extent of arc, decimal degrees
+     * @param s starting angle of arc, decimal degrees.
+     * @param e angular extent of arc, decimal degrees.  For Offset
+     * rendertype arcs, positive extents go in the counter-clockwise
+     * direction, matching the java.awt.geom.Arc2D convention.
      */
     public OMArc(float latPoint, float lonPoint,
 		 int offset_x1, int offset_y1,
@@ -206,7 +210,9 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param radius distance in decimal degrees (converted to radians
      * internally).
      * @param s starting angle of arc, decimal degrees
-     * @param e angular extent of arc, decimal degrees
+     * @param e angular extent of arc, decimal degrees.  For LATLON
+     * rendertype arcs, positive extents go in the clockwise
+     * direction, matching the OpenMap convention in coordinate space.
      */
     public OMArc(float latPoint, float lonPoint,
 		 float radius, float s, float e) {
@@ -223,8 +229,10 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param lonPoint longitude of center of arc in decimal degrees
      * @param radius distance
      * @param units com.bbn.openmap.proj.Length object.
-     * @param s starting angle of arc, decimal degrees
-     * @param e angular extent of arc, decimal degrees
+     * @param s starting angle of arc, decimal degrees.
+     * @param e angular extent of arc, decimal degrees.  For LATLON
+     * rendertype arcs, positive extents go in the clockwise
+     * direction, matching the OpenMap convention in coordinate space.
      */
     public OMArc(float latPoint, float lonPoint,
 		 float radius, Length units, float s, float e) {
@@ -241,8 +249,10 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param units com.bbn.openmap.proj.Length object specifying units.
      * @param nverts number of vertices for the poly-arc (if &lt; 3, value
      * is generated internally)
-     * @param s starting angle of arc, decimal degrees
-     * @param e angular extent of arc, decimal degrees
+     * @param s starting angle of arc, decimal degrees.
+     * @param e angular extent of arc, decimal degrees.  For LATLON
+     * rendertype arcs, positive extents go in the clockwise
+     * direction, matching the OpenMap convention in coordinate space.
      */
     public OMArc(float latPoint, float lonPoint,
 		 float radius, Length units, int nverts, float s, float e) {
@@ -259,8 +269,10 @@ public class OMArc extends OMGraphic implements Serializable {
      * units for distance.
      * @param nverts number of vertices for the poly-arc(if &lt; 3, value
      * is generated internally)
-     * @param s starting angle of arc, decimal degrees
-     * @param e angular extent of arc, decimal degrees
+     * @param s starting angle of arc, decimal degrees.
+     * @param e angular extent of arc, decimal degrees.  For LATLON
+     * rendertype arcs, positive extents go in the clockwise
+     * direction, matching the OpenMap convention in coordinate space.
      */
     public OMArc(LatLonPoint center, float radius,
 		 Length units, int nverts, float s, float e) {
@@ -369,7 +381,12 @@ public class OMArc extends OMGraphic implements Serializable {
 
     /**
      * Get the extent angle of the arc.
-     * @return the angular extent of the arc in decimal degrees.
+     * @return the angular extent of the arc in decimal degrees.  For
+     * LATLON rendertype arcs, positive extents go in the clockwise
+     * direction, matching the OpenMap convention in coordinate space.
+     * For XY and OFFSET rendertype arcs, positive extents go in the
+     * clockwise direction, matching the java.awt.geom.Arc2D
+     * convention.
      */
     public float getExtentAngle() {
         return extent;
@@ -519,7 +536,12 @@ public class OMArc extends OMGraphic implements Serializable {
     /**
      * Set the angular extent of the arc.
      *
-     * @param value the angular extent of the arc in decimal degrees.
+     * @param value the angular extent of the arc in decimal degrees.  For
+     * LATLON rendertype arcs, positive extents go in the clockwise
+     * direction, matching the OpenMap convention in coordinate space.
+     * For XY and OFFSET rendertype arcs, positive extents go in the
+     * clockwise direction, matching the java.awt.geom.Arc2D
+     * convention.
      */
     public void setExtent(float value) {
         if (extent == value) return;
@@ -759,7 +781,8 @@ public class OMArc extends OMGraphic implements Serializable {
 				      float radius, int nverts) {
 	return proj.forwardArc(center, /*radians*/true, radius, nverts, 
 			       ProjMath.degToRad(start), 
-			       ProjMath.degToRad(extent), arcType);
+			       ProjMath.degToRad(extent), 
+			       (arcType == Arc2D.OPEN && !isClear(fillPaint)?Arc2D.CHORD:arcType));
     }
 
     /**

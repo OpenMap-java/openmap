@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicConstants.java,v $
 // $RCSfile: OMGraphicConstants.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/07/28 20:07:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -89,6 +89,10 @@ public interface OMGraphicConstants {
     public final static int GRAPHICTYPE_RASTER = 7;
     /** A grid type - OMGrid. */
     public final static int GRAPHICTYPE_GRID = 8;
+    /** A point type - OMPoint */
+    public final static int GRAPHICTYPE_POINT = 9;
+    /** An arc type - OMArc. */
+    public final static int GRAPHICTYPE_ARC = 10;
 
     /** The float coordinates are in decimal degrees. Should not be
      *  used - switching over to com.bbn.openmap.proj.Length. */
