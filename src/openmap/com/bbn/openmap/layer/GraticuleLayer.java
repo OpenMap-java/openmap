@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/21 20:40:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,7 +67,7 @@ import com.bbn.openmap.layer.util.LayerUtils;
  * # the color of the equator (Hex ARGB)
  * graticule.equatorColor=FFFF0000
  * # the color of the international dateline (Hex ARGB)
- * graticule.dateLineColor=7F000099
+ * graticule.datelineColor=7F000099
  * # the color of the special lines (Hex ARGB)
  * graticule.specialLineColor=FF000000
  * # the color of the labels (Hex ARGB)
