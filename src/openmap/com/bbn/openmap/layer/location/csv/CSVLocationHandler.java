@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/csv/CSVLocationHandler.java,v $
 // $RCSfile: CSVLocationHandler.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.8 $
+// $Date: 2004/01/28 17:41:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,6 +95,12 @@ import com.bbn.openmap.layer.location.*;
  * csvlocationhandler.nameIndex=0
  * csvlocationhandler.latIndex=8
  * csvlocationhandler.lonIndex=10
+ * # Optional property, if you have a column in the file for URLs of
+ * # images to use for an icon.
+ * csvlocationhandler.iconIndex=11
+ * # Optional property, URL of image to use as marker for all entries in
+ * # csv file without a URL listed at the iconIndex.
+ * csvlocationhandler.defaultIconURL=/data/symbols/default.gif
  * # Optional property, if the eastern hemisphere longitudes are negative.  False by default.
  * csvlocationhandler.eastIsNeg=false
  * </pre>
