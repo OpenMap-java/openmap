@@ -32,7 +32,7 @@
 	* Changed the WebBrowser temporary file extension from .tmp to
 	.html.
 
-	* Added the com.bbn.openmap.plugin.graphicLoader.senario package,
+	* Added the com.bbn.openmap.plugin.graphicLoader.scenario package,
 	which is a csv-loaded chain-of-events displayed on the map.
 
 2003-04-05  Don Dietrick  <dietrick@bbn.com>
