@@ -21,7 +21,7 @@ public class DrawingToolRenderException extends Exception {
      * user that any Drawing Tool graphics not rendered in
      * LAT/LON will not be exported.
      */
-    public DrawingToolRenderException(int count) {
+    public static void notifyUserOfNonLatLonGraphics(int count) {
         String errMsg = "All Drawing Tool Graphics must be rendered as LAT/LON \nto be exported as ESRI shape files. \n\n" + count + " graphic" + (count>1?"s":"") + " not rendered in LAT/LON will not be exported.";
         String title = "Exporting Error";
         JOptionPane.showMessageDialog(null, errMsg, title, JOptionPane.ERROR_MESSAGE);

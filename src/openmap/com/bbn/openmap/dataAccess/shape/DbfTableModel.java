@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 22:31:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -596,7 +596,7 @@ public class DbfTableModel extends AbstractTableModel
 	Iterator rows = getRecords();
 	while (rows.hasNext()) {
 	    ArrayList row = (ArrayList)rows.next();
-	    row.add(new String(""));
+	    row.add("");
 	}
 
 	_columnCount++;

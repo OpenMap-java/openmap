@@ -428,7 +428,8 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         //(end)for (int i = 0; i < dtlGraphicList.size(); i++)
 
 	if (badGraphics > 0) {
-	    new DrawingToolRenderException(badGraphics);
+	    // Information popup provider, it's OK that this gets dropped.
+	    DrawingToolRenderException.notifyUserOfNonLatLonGraphics(badGraphics);
 	}
 
 	if (!writeFiles) {
