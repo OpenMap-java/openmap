@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/GreatCircle.java,v $
 // $RCSfile: GreatCircle.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/07/16 00:02:34 $
+// $Revision: 1.4 $
+// $Date: 2003/07/30 20:11:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -358,7 +358,13 @@ public class GreatCircle {
 	float sinc = (float)Math.sin(c);
 	float cosc = (float)Math.cos(c);
 	int end = n<<1;//*2
-//	float[] ret_val = new float[end];
+
+	// Only want to create a new return float array if there was a
+	// null one passed in, or if the number of desired coordinates
+	// is bigger than what ret_val is currently allocated for.
+	if (ret_val == null || end > ret_val.length) {
+	    ret_val = new float[end];
+	}
 
 	float inc = e/n;
 	Az = s;

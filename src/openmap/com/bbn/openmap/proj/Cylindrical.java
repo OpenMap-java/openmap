@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Cylindrical.java,v $
 // $RCSfile: Cylindrical.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/07/30 20:11:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -261,8 +261,9 @@ public abstract class Cylindrical extends Proj {
 	    return new ArrayList(0);
 
 	// handle complicated line in specific routines
-	if (isComplicatedLineType(ltype))
+	if (isComplicatedLineType(ltype)) {
 	    return doPolyDispatch(rawllpts, ltype, nsegs, isFilled);
+	}
 
 	// determine when to stop
 	Point temp = new Point(0,0);

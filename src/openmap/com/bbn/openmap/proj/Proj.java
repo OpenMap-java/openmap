@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Proj.java,v $
 // $RCSfile: Proj.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/07/28 20:05:08 $
+// $Revision: 1.4 $
+// $Date: 2003/07/30 20:11:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -736,7 +736,7 @@ public abstract class Proj implements Projection, Cloneable {
 	    rawllpts = new float[(nverts<<1)+2];//*2 for pairs +2 connect
 	    break;
 	default:
-	    rawllpts = new float[(nverts<<1)];//*2 for pairs, no connect
+ 	    rawllpts = new float[(nverts<<1)];//*2 for pairs, no connect
 	}
 
         GreatCircle.earth_circle(
@@ -746,7 +746,7 @@ public abstract class Proj implements Projection, Cloneable {
                 (radians) ? extent : ProjMath.degToRad(extent),
                 nverts, rawllpts);
 
-	int linetype = LineType.Straight;
+  	int linetype = LineType.Straight;
 	boolean isFilled = false;
 
 	switch (arcType) {
@@ -756,11 +756,12 @@ public abstract class Proj implements Projection, Cloneable {
 	case Arc2D.CHORD:
 	    rawllpts[rawllpts.length-2] = rawllpts[0];
 	    rawllpts[rawllpts.length-1] = rawllpts[1];
+	    // Need to do this for the sides, not the arc part.
 	    linetype = LineType.GreatCircle;
 	    isFilled = true;
 	    break;
 	default:
-	    // Don't need to do anything, defaults already set.
+	    // Don't need to do anything, defaults are already set.
 	}
 
         // forward project the arc-poly.
