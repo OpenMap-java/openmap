@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/CSVFile.java,v $
 // $RCSfile: CSVFile.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/11 23:50:48 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:22:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -146,19 +146,19 @@ public class CSVFile {
 		token = csvt.token();
 	    }
 	} catch (java.io.IOException ioe) {
-	    new com.bbn.openmap.util.HandleError(ioe);
+	    throw new com.bbn.openmap.util.HandleError(ioe);
 	} catch (ArrayIndexOutOfBoundsException aioobe) {
-	    new com.bbn.openmap.util.HandleError(aioobe);
+	    throw new com.bbn.openmap.util.HandleError(aioobe);
 	}  catch (ClassCastException cce) {
-	    new com.bbn.openmap.util.HandleError(cce);
+	    throw new com.bbn.openmap.util.HandleError(cce);
 	}  
 	
 	try {	      
-	    if(streamReader != null)
+	    if (streamReader != null) {
 		streamReader.close();
-	}
-	catch(java.io.IOException ioe) {
-	    new com.bbn.openmap.util.HandleError(ioe);
+	    }
+	} catch(java.io.IOException ioe) {
+	    throw new com.bbn.openmap.util.HandleError(ioe);
 	}
 	infoRecords = records;
 
