@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/Attic/AbstractDrawingEditorTool.java,v $
 // $RCSfile: AbstractDrawingEditorTool.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/06/02 18:35:48 $
+// $Revision: 1.6 $
+// $Date: 2003/09/04 18:21:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -217,8 +217,7 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
     public void findAndUndo(Object someObj) {
 	super.findAndUndo(someObj);
 
-	if (someObj instanceof MouseDelegator && 
-	    someObj == mouseDelegator) {
+	if (someObj == mouseDelegator) {
 	    setMouseDelegator(null);
 	}
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayerMouseMode.java,v $
 // $RCSfile: EditorLayerMouseMode.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/18 00:44:44 $
+// $Revision: 1.3 $
+// $Date: 2003/09/04 18:21:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,9 @@
 
 package com.bbn.openmap.layer.editor;
 
+import java.awt.event.MouseEvent;
+
+import com.bbn.openmap.event.CoordMouseMode;
 import com.bbn.openmap.event.SelectMouseMode;
 
 /**
@@ -34,7 +37,7 @@ import com.bbn.openmap.event.SelectMouseMode;
  *  is doing with the MouseEvents, by creating certain OMGraphics,
  *  selecting certain types of objects, etc.
  */
-public class EditorLayerMouseMode extends SelectMouseMode {
+public class EditorLayerMouseMode extends CoordMouseMode {
 
     /**
      * Mouse Mode identifier, which is "EditorLayer".  This is
@@ -63,5 +66,91 @@ public class EditorLayerMouseMode extends SelectMouseMode {
 	super(idToUse, consumeEvents);
 	modeID = idToUse;
 	setVisible(false);
-   }
+    }
+    
+    SelectMouseMode gestures = null;
+
+    public void findAndInit(Object someObj) {
+	super.findAndInit(someObj);
+	if (someObj instanceof SelectMouseMode && 
+	    ((SelectMouseMode)someObj).getID() == SelectMouseMode.modeID) {
+	    com.bbn.openmap.util.Debug.output("EditorLayerMouseMode connected to Gestures mouse mode.");
+	    gestures = (SelectMouseMode)someObj;
+	}
+    }
+
+    public void findAndUndo(Object someObj) {
+	super.findAndInit(someObj);
+	if (someObj == gestures) {
+	    gestures = null;
+	}
+    }
+
+    /**
+     * Fires the MapMouseSupport method.
+     * @param e mouse event.
+     */
+    public void mouseClicked(MouseEvent e) {
+	mouseSupport.fireMapMouseClicked(e);
+	fireMouseLocation(e);
+    }
+
+    /**
+     * Fires the MapMouseSupport method.
+     * @param e mouse event.
+     */
+    public void mousePressed(MouseEvent e) {
+	mouseSupport.fireMapMousePressed(e);
+	fireMouseLocation(e);
+    }
+
+    /**
+     * Fires the MapMouseSupport method.
+     * @param e mouse event.
+     */
+    public void mouseReleased(MouseEvent e) {
+	mouseSupport.fireMapMouseReleased(e);
+	fireMouseLocation(e);
+    }
+
+    /**
+     * Fires the MapMouseSupport method.
+     * @param e mouse event.
+     */
+    public void mouseEntered(MouseEvent e) {
+	mouseSupport.fireMapMouseEntered(e);
+    }
+
+    /**
+     * Fires the MapMouseSupport method.
+     * @param e mouse event.
+     */
+    public void mouseExited(MouseEvent e) {
+	mouseSupport.fireMapMouseExited(e);
+    }
+
+    /**
+     * Fires the MapMouseSupport method.
+     * @param e mouse event.
+     */
+    public void mouseDragged(MouseEvent e) {
+	com.bbn.openmap.util.Debug.output("ELMM.mouseDragged, passing to gestures, then on to mouse support");
+	if (gestures != null) {
+	    gestures.mouseDragged(e);
+	}
+	mouseSupport.fireMapMouseDragged(e);
+	fireMouseLocation(e);
+    }
+
+    /**
+     * Fires the MapMouseSupport method.
+     * @param e mouse event.
+     */
+    public void mouseMoved(MouseEvent e) {
+	if (gestures != null) {
+	    gestures.mouseMoved(e);
+	}
+	mouseSupport.fireMapMouseMoved(e);
+	fireMouseLocation(e);
+    }
 }

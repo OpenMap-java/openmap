@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayer.java,v $
 // $RCSfile: EditorLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/22 16:14:16 $
+// $Revision: 1.4 $
+// $Date: 2003/09/04 18:21:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 
 package com.bbn.openmap.layer.editor;
 
+import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.gui.Tool;
 import com.bbn.openmap.layer.DrawingToolLayer;
@@ -150,12 +151,22 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
 	if (editorTool != null) {
 	    editorTool.findAndInit(someObj);
 	}
+
+	if (someObj instanceof InformationDelegator || 
+	    someObj instanceof SelectMouseMode) {
+	    getMouseMode().findAndInit(someObj);
+	}
     }
 
     public void findAndUndo(Object someObj) {
 	super.findAndUndo(someObj);
 	if (editorTool != null) {
 	    editorTool.findAndUndo(someObj);
+	}
+
+	if (someObj instanceof InformationDelegator || 
+	    someObj instanceof SelectMouseMode) {
+	    getMouseMode().findAndUndo(someObj);
 	}
     }
 
@@ -254,11 +265,14 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      */
     public boolean mouseDragged(MouseEvent e) {      
 	if (editorTool != null && editorTool.wantsEvents()) {
+	    Debug.output("EditorLayer.mouseDragged, passing event to tool");
 	    editorTool.mouseDragged(e);
-	    return true;
+// 	    return true;
 	} else {
-	    return super.mouseDragged(e);
+// 	    return super.mouseDragged(e);
+	    super.mouseDragged(e);
 	}
+	return false;
     }
 
     /**
@@ -270,10 +284,12 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
     public boolean mouseMoved(MouseEvent e) {  
 	if (editorTool != null && editorTool.wantsEvents()) {
 	    editorTool.mouseMoved(e);
-	    return true;
+// 	    return true;
 	} else {
-	    return super.mouseMoved(e);
+// 	    return super.mouseMoved(e);
+	    super.mouseMoved(e);
 	}
+	return false;
     }
     
     /**
