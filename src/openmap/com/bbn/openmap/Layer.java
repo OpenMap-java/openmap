@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.19 $
-// $Date: 2004/03/04 04:14:29 $
+// $Revision: 1.20 $
+// $Date: 2004/03/17 23:08:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1085,14 +1085,31 @@ public abstract class Layer extends JComponent
         return beanContextChildSupport.getBeanContext();
     }
   
-    /** Method for BeanContextChild interface. */
+    /**
+     * Method for BeanContextChild interface. Gets an iterator from
+     * the BeanContext to call findAndInit() over.
+     */
     public void setBeanContext(BeanContext in_bc) 
+        throws PropertyVetoException {
+
+        if (in_bc != null) {
+            connectToBeanContext(in_bc);
+            findAndInit(in_bc.iterator());
+        }
+    }
+
+    /**
+     * Layer method to just connect to the BeanContext, without
+     * grabbing the interator as in setBeanContext().  Good for
+     * protected sub-layers where you want to optimize the calling of
+     * the findAndInit() method over them.
+     */
+    public void connectToBeanContext(BeanContext in_bc)   
         throws PropertyVetoException {
 
         if (in_bc != null) {
             in_bc.addBeanContextMembershipListener(this);
             beanContextChildSupport.setBeanContext(in_bc);
-            findAndInit(in_bc.iterator());
         }
     }
   
