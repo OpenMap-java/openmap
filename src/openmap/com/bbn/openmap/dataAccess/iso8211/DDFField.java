@@ -198,7 +198,6 @@ public class DDFField {
             for (Enumeration enum = subfields.keys(); enum.hasMoreElements();) {
                 Object obj = subfields.get(enum.nextElement());
 
-
                 if (obj instanceof List) {
                     for (Iterator it = ((List)obj).iterator(); it.hasNext();) {
                         DDFSubfield ddfs = (DDFSubfield)it.next();
@@ -346,10 +345,10 @@ public class DDFField {
 
     protected void addSubfield(DDFSubfield ddfs) {
         if (Debug.debugging("iso8211")) {
-            Debug.output("DDFField.addSubfield(" + ddfs + ")");
+            Debug.output("DDFField(" + getFieldDefn().getName() +").addSubfield(" + ddfs + ")");
         }
 
-        String sfName = ddfs.getDefn().getName();
+        String sfName = ddfs.getDefn().getName().trim().intern();
         Object sf = subfields.get(sfName);
         if (sf == null) {
             subfields.put(sfName, ddfs);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/ASRPDirectory.java,v $
 // $RCSfile: ASRPDirectory.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/03/04 04:14:29 $
+// $Revision: 1.2 $
+// $Date: 2004/03/05 02:25:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,19 +25,37 @@ package com.bbn.openmap.dataAccess.asrp;
 
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.dataAccess.iso8211.*;
+import com.bbn.openmap.layer.util.cacheHandler.*;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMScalingRaster;
+import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class ASRPDirectory implements ASRPConstants {
+/**
+ * An ASRP directory contains information needed to view images.  It
+ * contains multiple files, each containing complementary information
+ * about the image.  The GeneralInformationFile (GEN) contains
+ * information about the image such as coverage and location.  The
+ * QualityFile (QAL) contains accuracy and color information.  The
+ * GeoReferenceFile (GER) contains projection information, the
+ * SourceFile (SOU) contains information about the map that was used
+ * to create the images.  The RasterGeoDataFile (IMG) contains the
+ * actual pixel information. <P>
+ *
+ * This class knows how to use all of these files to create images,
+ * which are made up of subframe tiles called blocks.
+ */
+public class ASRPDirectory extends CacheHandler implements ASRPConstants {
 
     protected GeneralInformationFile gen;
     protected QualityFile qal;
@@ -47,34 +65,62 @@ public class ASRPDirectory implements ASRPConstants {
 
     /** List of tile indexes. */
     protected List tsi;
-
+    /** Number of horizontal blocks. */
     protected int numHorBlocks_N;
+    /** Number of vertical blocks. */
     protected int numVerBlocks_M;
+    /** Number of horizontal pixels per block. */
     protected int numHorPixels_Q;
+    /** Number of vertical pixels per block. */
     protected int numVerPixels_P;
+    /**
+     * When reading image bytes, the number of bits that represent
+     * the number of pixels the next color index stands for. 
+     */
     protected int pixelCountBits;
+    /**
+     * When reading image bytes, the number of bits that represent
+     * the color index.
+     */
     protected int pixelValueBits;
    
     /* Bounding coordinates for coverage. */
     protected float swo, nea, neo, swa; // west lon, north lat, east lon, south lat
     /* Upper left latitude/longitude for top left tile. */
     protected float lso, pso; // padded longitude, latitude of upper left image corner
-
-    protected int arv;  // number pixels 360 degrees e-w
-    protected int brv; // number of pixels 360 degrees n-s
-
-    protected float degPerHorBlock; // horizontal degrees per block
-    protected float degPerVerBlock; // vertical degrees per block
-
+    /** Number of pixels 360 degrees east - west. */
+    protected int arv;
+    /** Number of pixels 360 degrees north - south. */
+    protected int brv;
+    /** Calculated number of degrees per block in the horizontal direction. */
+    protected float degPerHorBlock; 
+    /** Calculated number of degrees per block in the vertical direction. */
+    protected float degPerVerBlock; 
+    /** Byte offset into the IMG file where tile data starts. */
     protected int tileDataOffset;
-
+    /** The colors from the QAL file. */
     protected Color[] colors;
+    /** The OMRect used to track coverage boundaries. */
+    protected OMRect bounds;
 
+    protected File dir;
+
+    /**
+     * Protective mechanism, doesn't display data that has images with
+     * a base scale that is more than a factor of the scaleFactor away
+     * from the scale of the map.
+     */
+    protected double scaleFactor = 4;
+
+    /**
+     * Create a new ASRP directory for the given path.  Calls
+     * initialize() which will read in the different files to find out
+     * the attribute information about the data.
+     */
     public ASRPDirectory(String path) {
 
-        File dir = new File(path);
+        dir = new File(path);
 
-        
         if (dir.exists()) {
             try {
                 initialize(dir.getPath(), dir.getName(), "01");
@@ -83,22 +129,90 @@ public class ASRPDirectory implements ASRPConstants {
                 ioe.printStackTrace();
                 return;
             }
+        } else {
+            Debug.error("ASRPDirectory (" + path + ") doesn't exist");
         }
 
     }
 
+    public String getPath() {
+        if (dir != null) {
+            return dir.getPath();
+        }
+        return null;
+    }
+
+    /**
+     * Get the OMRect used for calculating coverage area.
+     */
+    public OMRect getBounds() {
+        if (bounds == null) {
+            bounds = new OMRect(pso, lso, 
+                                pso + degPerHorBlock*numHorBlocks_N, 
+                                lso - degPerVerBlock*numVerBlocks_M, 
+                                OMGraphic.LINETYPE_GREATCIRCLE);
+        }
+
+        return bounds;
+    }
+
+    public void setScaleFactor(double scaleFactorIn) {
+        scaleFactor = scaleFactorIn;
+    }
+
+    public double getScaleFactor() {
+        return scaleFactor;
+    }
+
+    /**
+     * Return true of current bounds covers the projection area.
+     */
+    public boolean isOnMap(Projection proj) {
+        OMRect bds = getBounds();
+        bds.generate(proj);
+        Shape s = bds.getShape();
+        return s.intersects(0, 0, proj.getWidth(), proj.getHeight());
+    }
+
+    public boolean validScale(Projection proj) {
+        if (proj instanceof EqualArc) {
+            EqualArc ea = (EqualArc)proj;
+            double xPixConstant = ea.getXPixConstant();
+
+            double scale = xPixConstant/arv;
+
+            boolean result = (scale < scaleFactor) && (scale > 1/scaleFactor);
+            if (Debug.debugging("asrp")) {
+                Debug.output("Scale comparing arv = " + arv + ", " + xPixConstant + 
+                             ", result: " + result);
+            }
+            return result;
+        }
+        return false;
+    }
+
+    /**
+     * Get an OMGraphicList of files that cover the projection.
+     * Returns an empty list if the coverage isn't over the map.
+     */
     public OMGraphicList getTiledImages(Projection proj) throws IOException {
+
+        if (!isOnMap(proj) || !validScale(proj)) {
+            // off the map
+            return new OMGraphicList();
+        }
+
         float ullat = pso;
         float ullon = lso;
 
         LatLonPoint llp1 = proj.getUpperLeft();
         LatLonPoint llp2 = proj.getLowerRight();
 
-        int startX = (int) ((llp1.getLongitude() - ullon) / degPerHorBlock);
-        int startY = (int) ((ullat - llp1.getLatitude()) / degPerVerBlock);
+        int startX = (int) Math.floor((llp1.getLongitude() - ullon) / degPerHorBlock);
+        int startY = (int) Math.floor((ullat - llp1.getLatitude()) / degPerVerBlock);
         
-        int endX = (int) ((llp2.getLongitude() - ullon) / degPerHorBlock);
-        int endY = (int) ((ullat - llp2.getLatitude()) / degPerVerBlock);
+        int endX = (int) Math.ceil((llp2.getLongitude() - ullon) / degPerHorBlock);
+        int endY = (int) Math.ceil((ullat - llp2.getLatitude()) / degPerVerBlock);
 
         if (startX < 0) startX = 0;
         if (startY < 0) startY = 0;
@@ -118,7 +232,9 @@ public class ASRPDirectory implements ASRPConstants {
      */
     protected OMGraphicList getTiledImages(Rectangle rect, Projection proj) throws IOException {
 
-        Debug.output("fielding request for " + rect);
+        if (Debug.debugging("asrp")) {
+            Debug.output("ASRPDirectory: fielding request for " + rect);
+        }
 
         OMGraphicList list = new OMGraphicList();
 
@@ -129,7 +245,7 @@ public class ASRPDirectory implements ASRPConstants {
 
         for (int x = startX; x < endX; x++) {
             for (int y = startY; y < endY; y++) {
-                OMGraphic omg = getBlock(x, y);
+                OMGraphic omg = (OMGraphic)get(new String(x + "," + y).intern());
                 omg.generate(proj);
                 list.add(omg);
             }
@@ -137,7 +253,11 @@ public class ASRPDirectory implements ASRPConstants {
 
         return list;
     }
+ 
 
+    /**
+     * Fetch the subframe tile block from the IMG file.
+     */
     public OMScalingRaster getBlock(int x, int y) throws IOException {
         float ullat = pso - y*degPerVerBlock;
         float ullon = lso + x*degPerHorBlock;
@@ -148,6 +268,11 @@ public class ASRPDirectory implements ASRPConstants {
         if (tsi != null) {
 
             int index = y * numHorBlocks_N + x;
+
+            // Check for not blowing the list end...
+            if (index >= tsi.size()) {
+                return null;
+            }
 
             // Subtracting one because the values look like they start
             // with 1.
@@ -190,7 +315,9 @@ public class ASRPDirectory implements ASRPConstants {
                 for (int c = 0; c < cpc; c++) {
                     rowCount++;
                     if (colors != null && cpv > colors.length) {
-                        Debug.output("Got value that is too big for colortable");
+                        if (Debug.debugging("asrp")) {
+                            Debug.output("Got value that is too big for colortable");
+                        }
                     }
                     data[byteCount + c] = (byte) cpv;
                 }
@@ -215,7 +342,9 @@ public class ASRPDirectory implements ASRPConstants {
         return null;
     }
 
-
+    /**
+     * Get the colors from the QAL file.
+     */
     protected Color[] getColors() {
         if (colors == null) {
             DDFField col = qal.getField(QualityFile.COLOUR_CODE_ID);
@@ -229,9 +358,11 @@ public class ASRPDirectory implements ASRPConstants {
 
             for (int count = 0; count < numColors; count++) {
                 int red = ((DDFSubfield)reds.get(count)).intValue();
-                int green = ((DDFSubfield)greens.get(count)).intValue();;
+                int green = ((DDFSubfield)greens.get(count)).intValue();
                 int blue = ((DDFSubfield)blues.get(count)).intValue();
 //                 Debug.output("Created color " + count + " with " + red + ", " + green + ", " + blue);
+                // The zero color is supposed to tbe null color, and
+                // clear.  Doesn't seem to be working.
                 colors[count] = new Color(red, green, blue, (count == 0?0:255));
             }
 
@@ -239,6 +370,13 @@ public class ASRPDirectory implements ASRPConstants {
         return colors;
     }
  
+    /**
+     * Read in the attribute information about the data.
+     * @param dirPath path to the ASRP directory.
+     * @param root name of all of the files, usually the same as the
+     * ASRP directory itself.
+     * @param DD the occurance number, usually '01' of the files.
+     */
     protected void initialize(String dirPath, String root, String DD) throws IOException {
         String rootPath = dirPath + "/" + root + DD + ".";
 
@@ -322,6 +460,56 @@ public class ASRPDirectory implements ASRPConstants {
         img.close();
    }
 
+    /**
+     * A private class to store cached images.
+     */
+    private static class ASRPBlockCacheObject extends CacheObject {
+        /**
+         * @param id passed to superclass
+         * @param obj passed to superclass
+         */
+        public ASRPBlockCacheObject(String id, OMGraphic obj) {
+            super(id, obj);
+        }
+
+        /**
+         * Calls dispose() on the contained frame, to make it eligible
+         * for garbage collection.
+         */
+        public void finalize() {}
+    }
+
+    /**
+     * Load a block image into the cache, based on the relative
+     * coordintes of the block as a key.
+     *
+     * @param string of form 'x,y' identifying the relative location
+     * of the subframe image.
+     * @return Block image, hidden as a CacheObject.
+     */
+    public CacheObject load(String xAndY) {
+        if (xAndY != null) {
+
+            int commaIndex = xAndY.indexOf(',');
+            int x = Integer.parseInt(xAndY.substring(0, commaIndex));
+            int y = Integer.parseInt(xAndY.substring(commaIndex + 1));
+
+            if (Debug.debugging("asrpdetail")) {
+                Debug.output("Getting tiled image " + x + ", " + y + " (from " + xAndY + ")");
+            }
+
+            try {
+                OMGraphic block = getBlock(x, y);
+                if (block != null) {
+                    return new ASRPBlockCacheObject(xAndY.intern(), block);
+                }
+            } catch (IOException ioe) {
+                Debug.error("ASRPDirectory caught exception creating tiled image for " + xAndY);
+            }
+        }
+        return null;
+    }
+    
     public static void main(String[] argv) {
         Debug.init();
 

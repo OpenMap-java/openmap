@@ -177,7 +177,7 @@ public class GifEncoder extends ImageEncoder {
                         // there aren't more than 255 colors.  Uses
                         // Adam Doppelt's Quantize class.  DFDietrick
                         // (OpenMap)
-                        com.bbn.openmap.util.Debug.message("saveimage", "Need to quantize image");
+//                         com.bbn.openmap.util.Debug.message("saveimage", "Need to quantize image");
                         encodeDone(doppelt.Quantize.quantizeImage(rgbPixels, 255));
                         return;
 //                      throw new IOException("too many colors for a GIF");

@@ -731,9 +731,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * PropertyConsumer interface method.
      */
     public Properties getPropertyInfo(Properties list) {
-        if (list == null) {
-            list = new Properties();
-        }
+        list = super.getPropertyInfo(list);
 
         list.put(UnitProperty, "Units to use for measurements, from Length.name possibilities.");
         list.put(ShowCircleProperty, "Flag to set whether the range circle is drawn at the end of the line (true/false).");

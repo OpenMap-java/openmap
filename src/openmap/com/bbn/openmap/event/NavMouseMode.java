@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode.java,v $
 // $RCSfile: NavMouseMode.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.6 $
+// $Date: 2004/03/05 02:25:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -102,6 +102,7 @@ public class NavMouseMode extends CoordMouseMode {
             point1 = e.getPoint();
             // ensure the second point isn't set.
             point2 = null;
+            autoZoom = true;
         }
     }
 

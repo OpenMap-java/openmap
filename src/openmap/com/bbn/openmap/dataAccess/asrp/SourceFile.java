@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/SourceFile.java,v $
 // $RCSfile: SourceFile.java,v $
-// $Revision: 1.1 $
-// $Date: 2004/03/04 04:14:29 $
+// $Revision: 1.2 $
+// $Date: 2004/03/05 02:25:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,7 +49,7 @@ public class SourceFile extends GeneralASRPFile {
     public final static String MAP_PROJECTIONS_COEFFICIENTS_DATA = "MPC";
     public final static String SUPPLEMENTARY_TEXT = "SUP";
 
-    public SourceFile(String fileName) {
+    public SourceFile(String fileName) throws IOException {
         DDFModule mod = load(fileName);
 
         if (mod != null) {
@@ -81,8 +81,12 @@ public class SourceFile extends GeneralASRPFile {
             Debug.output("Usage: SourceFile filename");
         }
         
-        SourceFile thf = new SourceFile(argv[0]);
-        thf.dumpFields();
+        try {
+            SourceFile thf = new SourceFile(argv[0]);
+            thf.dumpFields();
+        } catch (IOException ioe) {
+            Debug.error(ioe.getMessage());
+        }
         System.exit(0);
     }
 }

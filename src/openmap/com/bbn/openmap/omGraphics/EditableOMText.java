@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMText.java,v $
 // $RCSfile: EditableOMText.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/06 00:03:10 $
+// $Revision: 1.5 $
+// $Date: 2004/03/05 02:25:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -361,6 +361,10 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
                 text.setX(gpc.getX());
                 text.setY(gpc.getY());
             }
+        }
+
+        if (projection != null) {
+            regenerate(projection);
         }
 
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/iso8211/DDFSubfield.java,v $
 // $RCSfile: DDFSubfield.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/03/04 04:14:29 $
+// $Revision: 1.3 $
+// $Date: 2004/03/05 02:25:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -126,6 +126,16 @@ public class DDFSubfield {
             return ((Number)obj).floatValue();
         }
         return 0f;
+    }
+
+    public String stringValue() {
+        Object obj = getValue();
+
+        if (obj != null) {
+            return obj.toString();
+        }
+
+        return "";
     }
 
     /**

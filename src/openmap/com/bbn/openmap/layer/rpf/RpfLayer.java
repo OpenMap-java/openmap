@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/02/06 19:06:20 $
+// $Revision: 1.13 $
+// $Date: 2004/03/05 02:25:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -231,22 +231,24 @@ public class RpfLayer extends OMGraphicHandlerLayer
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        paths = LayerUtils.initPathsFromProperties(properties, 
-                                                   prefix + RpfPathsProperty);
+        paths = PropUtils.initPathsFromProperties(properties, 
+                                                  prefix + RpfPathsProperty);
 
         viewAttributes.setProperties(prefix, properties);
 
-        subframeCacheSize = LayerUtils.intFromProperties(properties, prefix + CacheSizeProperty, RpfCacheHandler.SUBFRAME_CACHE_SIZE);
+        subframeCacheSize = PropUtils.intFromProperties(properties, prefix + CacheSizeProperty, 
+                                                        RpfCacheHandler.SUBFRAME_CACHE_SIZE);
 
-        auxSubframeCacheSize = LayerUtils.intFromProperties(properties, prefix + CacheSizeProperty, RpfCacheManager.SMALL_CACHE_SIZE);
+        auxSubframeCacheSize = PropUtils.intFromProperties(properties, prefix + CacheSizeProperty, 
+                                                           RpfCacheManager.SMALL_CACHE_SIZE);
 
         if (viewAttributes.chartSeries == null) 
             viewAttributes.chartSeries = RpfViewAttributes.ANY;
 
-        killCache = LayerUtils.booleanFromProperties(properties, prefix + KillCacheProperty, true);
+        killCache = PropUtils.booleanFromProperties(properties, prefix + KillCacheProperty, true);
 
-        if (LayerUtils.booleanFromProperties(properties, 
-                                             prefix + CoverageProperty, false)) {
+        if (PropUtils.booleanFromProperties(properties, 
+                                            prefix + CoverageProperty, false)) {
             setCoverage(new RpfCoverage(this));
             coverage.setProperties(prefix, properties);
         }

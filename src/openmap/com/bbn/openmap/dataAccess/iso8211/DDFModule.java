@@ -54,7 +54,6 @@ public class DDFModule implements DDFConstants {
 
     protected Vector paoFieldDefns; //DDFFieldDefinitions
     protected DDFRecord poRecord;
-    protected Vector papoClones;
 
     /**
      * The constructor.  Need to call open() if this constuctor is used.
@@ -92,13 +91,7 @@ public class DDFModule implements DDFConstants {
         close();
 
         // Cleanup the working record.
-        poRecord = null;
-
-        if (papoClones != null) {
-            papoClones.clear();
-            papoClones = null;
-        }
-    
+        poRecord = null;    
         // Cleanup the field definitions.
         paoFieldDefns = null;
     }

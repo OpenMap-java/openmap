@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/DataBounds.java,v $
 // $RCSfile: DataBounds.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.3 $
+// $Date: 2004/03/05 02:25:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,6 +57,10 @@ public class DataBounds {
             double maxy = max.getY();
             return new Point2D.Double((minx + maxx)/2, (miny + maxy)/2);
         } else return null;
+    }
+
+    public String toString() {
+        return "DataBounds| min:" + min + " max:" + max;
     }
 
     /**
