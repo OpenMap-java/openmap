@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/Wanderer.java,v $
 // $RCSfile: Wanderer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/12 14:08:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,6 +29,10 @@ import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
 /** 
+ * A Wanderer is a class that traverses a directory tree and finds
+ * files and directories.  It then makes a method call on the
+ * WandererCallback class to have something done on those directories
+ * or files.
  */
 public class Wanderer {
 
