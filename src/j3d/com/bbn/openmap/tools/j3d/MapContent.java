@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/MapContent.java,v $
 // $RCSfile: MapContent.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/11/14 20:03:18 $
+// $Revision: 1.3 $
+// $Date: 2004/01/24 03:46:06 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -36,7 +36,6 @@ import javax.vecmath.*;
 import com.bbn.openmap.*;
 import com.bbn.openmap.image.AcmeGifFormatter;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.layer.dted.DTEDFrameCache;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
