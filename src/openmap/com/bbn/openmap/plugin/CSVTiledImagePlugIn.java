@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/CSVTiledImagePlugIn.java,v $
 // $RCSfile: CSVTiledImagePlugIn.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/11/19 16:21:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -221,18 +221,21 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
 		    if (DEBUG) {
 			Debug.output("CSVTIPI: record: " + record);
 		    }
+		    	
+		    String imageURLString = null;
 		    
-		    float ullat = ((Double)record.get(ullatIndex)).floatValue();
-		    float ullon = ((Double)record.get(ullonIndex)).floatValue();
-		    float lrlat = ((Double)record.get(lrlatIndex)).floatValue();
-		    float lrlon = ((Double)record.get(lrlonIndex)).floatValue();
-		    String imageURLString = (String)record.get(urlIndex);
-
 		    try {
 
-			URL imageURL = new URL(imageURLString);
+			float ullat = ((Double)record.get(ullatIndex)).floatValue();
+			float ullon = ((Double)record.get(ullonIndex)).floatValue();
+			float lrlat = ((Double)record.get(lrlatIndex)).floatValue();
+			float lrlon = ((Double)record.get(lrlonIndex)).floatValue(); 
+			imageURLString = (String)record.get(urlIndex);
+
+			URL imageURL = PropUtils.getResourceOrFileOrURL(imageURLString);
 			ImageIcon ii = new ImageIcon(imageURL);
 			Image fileImage = ii.getImage();
+
 			try {
 			    tracker.addImage(fileImage, imageCount);
 			    tracker.waitForID(imageCount); 
@@ -245,8 +248,10 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
 			imageCount++;
 
 		    } catch (MalformedURLException innerMurle) {
-			Debug.error("CSVTiledImagePlugIn: image tile not valid: " +
-				    imageURLString + ", skipping...");
+			Debug.error("CSVTiledImagePlugIn: image tile path not valid: " + imageURLString + ", skipping...");
+		    } catch (ArrayIndexOutOfBoundsException aioobe) {
+			Debug.error("CSVTiledImagePlugIn: having trouble reading line (" +
+				    imageCount + "), skipping...\n" + aioobe.getMessage());
 		    }
 		}
 
