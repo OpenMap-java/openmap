@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/BufferedLayer.java,v $
 // $RCSfile: BufferedLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.6 $
+// $Date: 2004/05/25 02:41:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -142,13 +142,54 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
 
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
+        StringBuffer layersListProperty = new StringBuffer();
+        StringBuffer startupLayersListProperty = new StringBuffer();
+
+        Component[] comps = mapBean.getComponents();
+        for (int i = 0; i < comps.length; i++) {
+            // they have to be layers
+            Layer layer = (Layer)comps[i];
+            String lPrefix = layer.getPropertyPrefix();
+            boolean unsetPrefix = false;
+            if (lPrefix == null) {
+                lPrefix = "layer" + i;
+                // I think we need to do this, in order to get proper
+                // scoping in the properties.  We'll unset it later...
+                layer.setPropertyPrefix(lPrefix);
+                unsetPrefix = true;
+            }
+            layersListProperty.append(" " + lPrefix);
+
+            if (layer.isVisible()) {
+                startupLayersListProperty.append(" " + lPrefix);
+            }
+
+            layer.getProperties(props);
+
+            if (unsetPrefix) {
+                layer.setPropertyPrefix(null);
+            }
+        }
+
+        props.put(prefix + LayersProperty, layersListProperty.toString());
+        props.put(prefix + VisibleLayersProperty, startupLayersListProperty.toString());
+        props.put(prefix + HasActiveLayersProperty, new Boolean(hasActiveLayers).toString());
 
         return props;
     }
 
+    /**
+     * Not really implemented, because the mechanism for providing a
+     * set of properties that let you add a variable number of new
+     * objects as children to this one.
+     */
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
+
+        
+
 
         return props;
     }

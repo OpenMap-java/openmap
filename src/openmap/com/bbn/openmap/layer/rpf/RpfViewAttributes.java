@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfViewAttributes.java,v $
 // $RCSfile: RpfViewAttributes.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:11 $
+// $Revision: 1.5 $
+// $Date: 2004/05/25 02:41:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,6 +35,7 @@ import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.util.propertyEditor.Inspector;
+import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
 import com.bbn.openmap.util.PropUtils;
 
 /** 
@@ -210,7 +211,15 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
         }
         
         list.put(OpaquenessProperty, "Integer representing opaqueness level (0-255, 0 is clear)");
-        list.put(NumColorsProperty, "Number of colors to use for the maps (16, 32, 216)");
+        list.put(NumColorsProperty, "Number of colors to use for the maps");
+        list.put(NumColorsProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.ComboBoxPropertyEditor");
+        list.put(NumColorsProperty + OptionPropertyEditor.ScopedOptionsProperty, 
+                 "sixteen  thirtytwo twosixteen");
+        list.put(NumColorsProperty + ".sixteen", "16");
+        list.put(NumColorsProperty + ".thirtytwo", "32");
+        list.put(NumColorsProperty + ".twosixteen", "216");
+
         list.put(ShowMapsProperty, "Flag to display maps");
         list.put(ShowMapsProperty + ScopedEditorProperty,
                  "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/05/17 21:37:11 $
+// $Revision: 1.14 $
+// $Date: 2004/05/25 02:41:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.13 $ $Date: 2004/05/17 21:37:11 $
+ * @version $Revision: 1.14 $ $Date: 2004/05/25 02:41:25 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
@@ -451,7 +451,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer
             box.add(stuff);
 
             JPanel pal2 = new JPanel();
-            JButton redraw = new JButton("Redraw Layer");
+            JButton redraw = new JButton(i18n.get(ShapeLayer.class,"redrawLayerButton","Redraw Layer"));
             redraw.setActionCommand(RedrawCmd);
             redraw.addActionListener(this);
             pal2.add(redraw);
