@@ -1,9 +1,9 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/Attic/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.9 $
-$Date: 1999/07/29 12:53:51 $
-$Author: tmitchel $
+$Revision: 1.10 $
+$Date: 1999/09/15 12:45:03 $
+$Author: bmackiew $
 
 Frequently Asked Questions for the OpenMap system.
 -->
@@ -14,7 +14,7 @@ Frequently Asked Questions for the OpenMap system.
 
 <title>OpenMap FAQ
 <author>BBN Technologies
-<date>2 February 1999
+<date>29 July 1999
 <abstract>
 This FAQ contains questions and answers about the OpenMap system.
 </abstract>
