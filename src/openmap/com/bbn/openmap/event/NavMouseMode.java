@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/NavMouseMode.java,v $
 // $RCSfile: NavMouseMode.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/03/05 02:25:58 $
+// $Revision: 1.7 $
+// $Date: 2004/09/17 18:06:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,9 +27,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
-import java.beans.*;
-import java.beans.beancontext.*;
-import java.util.Iterator;
 
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.LatLonPoint;

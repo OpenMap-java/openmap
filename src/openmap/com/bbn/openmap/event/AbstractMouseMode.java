@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/AbstractMouseMode.java,v $
 // $RCSfile: AbstractMouseMode.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.8 $
+// $Date: 2004/09/17 18:06:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,18 +28,13 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.beans.*;
-import java.beans.beancontext.*;
 import java.io.Serializable;
 import java.text.DecimalFormat;
-import java.util.Iterator;
 import java.util.Properties;
-import java.util.Vector;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MapBean;
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.PropUtils;
