@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePosition.java,v $
 // $RCSfile: CodePosition.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/12/08 01:08:31 $
+// $Revision: 1.11 $
+// $Date: 2004/12/10 14:17:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -362,7 +362,7 @@ public class CodePosition {
         cp.id = idbuf.toString();
         cp.prettyName = "- Unspecified -";
         if (Debug.debugging("symbology")) {
-            Debug.output("creating NULL version of (" + className + ") with "
+            Debug.output("CodePosition: creating *unspecified* version of (" + className + ") with "
                     + cp.id + ", " + cp.prettyName);
         }
         return cp;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolReferenceLibrary.java,v $
 // $RCSfile: SymbolReferenceLibrary.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/12/08 01:08:32 $
+// $Revision: 1.9 $
+// $Date: 2004/12/10 14:17:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,6 +30,7 @@ import java.util.Properties;
 
 import javax.swing.ImageIcon;
 
+import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -39,7 +40,9 @@ import com.bbn.openmap.util.PropUtils;
  * a Symbol code and providing a SymbolPart for that code, and can
  * fetch ImageIcons for codes and SymbolParts.
  */
-public class SymbolReferenceLibrary {
+public class SymbolReferenceLibrary extends OMComponent {
+
+    public final static String SymbolImageMakerClassProperty = "imageMakerClass";
 
     protected SymbolPart head;
     protected CodePositionTree positionTree;
@@ -47,12 +50,11 @@ public class SymbolReferenceLibrary {
     protected CodeOptions symbolAttributes;
     protected SymbolImageMaker symbolImageMaker;
 
-    /*
-     * This constructor is included in order to provide this class
-     * with a debug mode, where the default action is to print the
-     * library hierarchy to the standard output.
+    /**
+     * A constructor used when the SymbolImageMaker will be set later,
+     * either via the setProperties method or programmatically.
      */
-    protected SymbolReferenceLibrary() {
+    public SymbolReferenceLibrary() {
         this(null);
     }
 
@@ -66,17 +68,13 @@ public class SymbolReferenceLibrary {
      * @param sim
      */
     public SymbolReferenceLibrary(SymbolImageMaker sim) {
-        Properties props = getProperties("hierarchy.properties");
+        Properties props = findAndLoadProperties("hierarchy.properties");
         if (props != null) {
             initialize(props, sim);
         }
     }
 
-    public SymbolReferenceLibrary(Properties props, SymbolImageMaker sim) {
-        initialize(props, sim);
-    }
-
-    public Properties getProperties(String propertiesResource) {
+    public Properties findAndLoadProperties(String propertiesResource) {
         try {
             URL url = PropUtils.getResourceOrFileOrURL(SymbolReferenceLibrary.class,
                     propertiesResource);
@@ -100,7 +98,7 @@ public class SymbolReferenceLibrary {
             Debug.output("SRL: loading");
         }
 
-        Properties positionProperties = getProperties("positions.properties");
+        Properties positionProperties = findAndLoadProperties("positions.properties");
         if (positionProperties != null) {
             positionTree = new CodePositionTree(positionProperties);
             head = positionTree.parseHierarchy("MIL-STD-2525B Symbology", props);
@@ -112,6 +110,34 @@ public class SymbolReferenceLibrary {
 
     }
 
+    public void setProperties(String prefix, Properties props) {
+        super.setProperties(prefix, props);
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+
+        String symbolImageMakerClassString = props.getProperty(realPrefix
+                + SymbolImageMakerClassProperty);
+        if (symbolImageMakerClassString != null) {
+            symbolImageMaker = setSymbolImageMaker(symbolImageMakerClassString);
+            if (symbolImageMaker != null) {
+                symbolImageMaker.setProperties(prefix, props);
+            }
+        }
+    }
+
+    public SymbolImageMaker setSymbolImageMaker(String classname) {
+        try {
+            setSymbolImageMaker((SymbolImageMaker) Class.forName(classname).newInstance());
+            return getSymbolImageMaker();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public CodeOptions getCodeOptions() {
         if (positionTree != null) {
             return positionTree.getCodeOptions(null);
@@ -121,7 +147,8 @@ public class SymbolReferenceLibrary {
 
     /**
      * Given a SymbolPart, return what options are available for it.
-     * This depends on what scheme the SymbolPart inherits from.
+     * This depends on what scheme the SymbolPart inherits from. Not
+     * implemented.
      * 
      * @param sp The SymbolPart in question.
      * @param co Current settings that may be in use.
@@ -146,7 +173,7 @@ public class SymbolReferenceLibrary {
 
     /**
      * Return an image for a particular SymbolPart, its options and
-     * dimensions.
+     * dimensions. Not implemented.
      */
     public ImageIcon getIcon(SymbolPart sp, CodeOptions co, Dimension di) {
         return null;
@@ -154,7 +181,7 @@ public class SymbolReferenceLibrary {
 
     /**
      * Return the 15 character character string representing a
-     * SymbolPart with CodeOptions.
+     * SymbolPart with CodeOptions. Not implemented.
      */
     public String getSymbolCode(SymbolPart sp, CodeOptions co) {
         return null;
@@ -243,4 +270,5 @@ public class SymbolReferenceLibrary {
     public void setSymbolImageMaker(SymbolImageMaker symbolImageMaker) {
         this.symbolImageMaker = symbolImageMaker;
     }
+
 }

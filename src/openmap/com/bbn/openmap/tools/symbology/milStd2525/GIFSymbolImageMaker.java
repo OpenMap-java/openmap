@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GIFSymbolImageMaker.java,v $
-//$Revision: 1.1 $
-//$Date: 2004/12/08 01:08:31 $
+//$Revision: 1.2 $
+//$Date: 2004/12/10 14:17:11 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -25,21 +25,16 @@
 package com.bbn.openmap.tools.symbology.milStd2525;
 
 import java.awt.Dimension;
-import java.awt.Paint;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
 
-public class GIFSymbolImageMaker implements SymbolImageMaker {
-
-    protected String dataPath;
+public class GIFSymbolImageMaker extends AbstractSymbolImageMaker {
 
     /**
      *  
@@ -81,38 +76,4 @@ public class GIFSymbolImageMaker implements SymbolImageMaker {
         return null;
     }
     
-    /**
-     * @param code
-     * @return
-     * @throws MalformedURLException
-     */
-    protected URL getFileURL(String code) throws MalformedURLException {
-        code = massageCode(code);
-        code = dataPath + code + ".gif";
-        if (Debug.debugging("symbology")) {
-            Debug.output("GIFSymbolImageMaker: code massaged to " + code);
-        }
-        URL ret = PropUtils.getResourceOrFileOrURL(code);
-        return ret;
-    }
-
-    /**
-     * @param code
-     * @return
-     */
-    protected String massageCode(String code) {
-        code = code.replace('*', '-').toLowerCase();
-
-        return code;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.bbn.openmap.tools.symbology.milStd2525.SymbolImageMaker#setBackground(java.awt.Paint)
-     */
-    public void setBackground(Paint p) {
-
-    }
-
 }

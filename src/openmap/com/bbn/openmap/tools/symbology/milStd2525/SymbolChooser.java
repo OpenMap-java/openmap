@@ -14,27 +14,37 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolChooser.java,v $
 // $RCSfile: SymbolChooser.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/12/08 01:08:31 $
+// $Revision: 1.7 $
+// $Date: 2004/12/10 14:17:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.tools.symbology.milStd2525;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
 import java.awt.Insets;
-import java.awt.Rectangle;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -44,13 +54,14 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -58,29 +69,40 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import com.bbn.openmap.event.ListenerSupport;
+import com.bbn.openmap.gui.DimensionQueryPanel;
+import com.bbn.openmap.image.AcmeGifFormatter;
+import com.bbn.openmap.image.BufferedImageHelper;
+import com.bbn.openmap.image.ImageFormatter;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.FileUtils;
 import com.bbn.openmap.util.PaletteHelper;
 
 /**
  * The SymbolChooser is a GUI symbol builder. It can be used in
  * stand-alone mode to create image files, or be integrated into a
  * java application to create ImageIcons.
+ * <P>
+ * To bring up this chooser, run this class as a standalone
+ * application, or call showDialog(..)
  */
 public class SymbolChooser extends JPanel implements ActionListener {
 
     public final static String CREATE_IMAGE_CMD = "CREATE_IMAGE_CMD";
     public final static String NAMEFIELD_CMD = "NAMEFIELD_CMD";
     public final static String EMPTY_FEATURE_LIST = null;
+    public final static int DEFAULT_ICON_DIMENSION = 100;
+    public final static String EMPTY_CODE = "---------------";
 
     protected static ImageIcon DEFAULT_SYMBOL_IMAGE;
     protected DrawingAttributes drawingAttributes = new DrawingAttributes();
-    protected BufferedImage symbolImage;
+    protected ImageIcon symbolImage;
     protected DefaultMutableTreeNode currentSymbol = null;
     protected SymbolTreeHolder currentSymbolTreeHolder;
     protected SymbolReferenceLibrary library;
     protected List trees;
+    protected DimensionQueryPanel dqp;
 
     protected JButton clearFeaturesButton;
     protected JButton createImageFileButton;
@@ -88,6 +110,8 @@ public class SymbolChooser extends JPanel implements ActionListener {
     protected JLabel symbolImageLabel;
     protected JScrollPane treeView;
     protected JPanel optionPanel;
+    protected Dimension iconDimension;
+    protected boolean allowCreateImage = true;
 
     public SymbolChooser(SymbolReferenceLibrary srl) {
 
@@ -96,7 +120,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
         try {
             trees = createNodes(srl);
         } catch (FormatException fe) {
-            Debug.output("Caught FormatException reading data: "
+            Debug.output("SymbolChooser(): Caught FormatException reading data: "
                     + fe.getMessage());
         }
 
@@ -115,23 +139,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
         optionPanel.add(sth.getOptionPanel());
         sth.handleNodeSelection((DefaultMutableTreeNode) sth.tree.getLastSelectedPathComponent());
 
-        paintSymbolImage();
         revalidate();
-    }
-
-    /**
-     * Call to update the paint area with the current symbol image.
-     */
-    protected void paintSymbolImage() {
-        if (symbolImage != null) {
-            Graphics2D g = (Graphics2D) symbolImage.getGraphics();
-            g.setPaint(getBackground());
-            g.fill(new Rectangle(0, 0, 100, 100));
-        }
-
-        if (currentSymbol != null) {
-
-        }
     }
 
     /**
@@ -142,10 +150,10 @@ public class SymbolChooser extends JPanel implements ActionListener {
      */
     public static ImageIcon getNotFoundImageIcon() {
         if (DEFAULT_SYMBOL_IMAGE == null) {
-            BufferedImage bi = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+            BufferedImage bi = new BufferedImage(DEFAULT_ICON_DIMENSION, DEFAULT_ICON_DIMENSION, BufferedImage.TYPE_INT_RGB);
             Graphics g = bi.getGraphics();
             g.setColor(Color.LIGHT_GRAY);
-            g.fillRect(0, 0, 100, 100);
+            g.fillRect(0, 0, DEFAULT_ICON_DIMENSION, DEFAULT_ICON_DIMENSION);
             DEFAULT_SYMBOL_IMAGE = new ImageIcon(bi);
         }
         return DEFAULT_SYMBOL_IMAGE;
@@ -200,14 +208,18 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
         // Add the symbol preview area to the right of the tree
         JPanel symbolPanel = PaletteHelper.createVerticalPanel(" Current Symbol ");
-        if (symbolImageLabel == null) {
-            symbolImageLabel = new JLabel(getNotFoundImageIcon());
-        }
+        setImageIcon(getNotFoundImageIcon());
         symbolPanel.add(symbolImageLabel);
 
         outerc.weightx = 0.0;
         outerc.gridwidth = GridBagConstraints.REMAINDER;
         outergridbag.setConstraints(symbolPanel, outerc);
+
+        dqp = new DimensionQueryPanel(getDesiredIconDimension());
+        dqp.addActionListener(this);
+        outergridbag.setConstraints(dqp, outerc);
+        symbolPanel.add(dqp);
+
         add(symbolPanel);
 
         /////////////////////
@@ -233,7 +245,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
         c2.fill = GridBagConstraints.HORIZONTAL;
         c2.weightx = 1.0;
         if (nameField == null) {
-            nameField = new JTextField();
+            nameField = new JTextField(EMPTY_CODE);
         }
         nameField.addActionListener(this);
         nameField.setActionCommand(NAMEFIELD_CMD);
@@ -243,6 +255,8 @@ public class SymbolChooser extends JPanel implements ActionListener {
         createImageFileButton = new JButton("Create Image File");
         createImageFileButton.addActionListener(this);
         createImageFileButton.setActionCommand(CREATE_IMAGE_CMD);
+        createImageFileButton.setEnabled(false);
+        createImageFileButton.setVisible(allowCreateImage);
 
         c2.weightx = 0.0;
         gridbag2.setConstraints(createImageFileButton, c2);
@@ -262,18 +276,56 @@ public class SymbolChooser extends JPanel implements ActionListener {
         String command = ae.getActionCommand();
 
         if (command == CREATE_IMAGE_CMD && library != null && nameField != null) {
-            library.getIcon(nameField.getText(), new Dimension(100, 100));
+            Dimension d = getDesiredIconDimension();
+            ImageIcon ii = library.getIcon(getCode(), d);
+
+            if (ii == null) {
+                createImageFileButton.setEnabled(false);
+                return;
+            }
+
+            try {
+                BufferedImage bi = BufferedImageHelper.getBufferedImage(ii.getImage(),
+                        0,
+                        0,
+                        (int) d.getWidth(),
+                        (int) d.getHeight(),
+                        BufferedImage.TYPE_INT_ARGB);
+                ImageFormatter formatter = new AcmeGifFormatter();
+                byte[] imageBytes = formatter.formatImage(bi);
+                String newFileName = FileUtils.getFilePathFromUser("Pick File To Save");
+
+                FileOutputStream fos = new FileOutputStream(newFileName);
+                fos.write(imageBytes);
+                fos.flush();
+                fos.close();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         if (command == NAMEFIELD_CMD) {
-            handleManualNameFieldUpdate(nameField.getText());
+            handleManualNameFieldUpdate(getCode());
+        }
+
+        if (command == DimensionQueryPanel.WIDTH_CMD
+                || command == DimensionQueryPanel.HEIGHT_CMD) {
+            setDesiredIconDimension(dqp.getDimension());
         }
     }
 
     /**
+     * Update the GUI to react to code typed into the string window.
+     * 
      * @param text
      */
     protected void handleManualNameFieldUpdate(String text) {
+        if (text == null)
+            return;
         if (text.length() > 15) {
             text = text.substring(0, 15);
         }
@@ -285,7 +337,9 @@ public class SymbolChooser extends JPanel implements ActionListener {
             if (sth != null) {
                 DefaultMutableTreeNode node = sth.getNodeForCode(text);
                 if (node != null) {
-                    Debug.output("Found node for " + text);
+                    if (Debug.debugging("symbology")) {
+                        Debug.output("SymbolChooser: Found node for " + text);
+                    }
                     sth.getTree()
                             .setSelectionPath(new TreePath(node.getPath()));
                     sth.updateOptionsForCode(text);
@@ -322,39 +376,138 @@ public class SymbolChooser extends JPanel implements ActionListener {
         return treeList;
     }
 
-    protected static void launchFrame(JComponent content, String title,
-                                      boolean exitOnClose) {
-        JFrame frame = new JFrame(title);
+    /**
+     * Get the current symbol code listed in the GUI.
+     * 
+     * @return
+     */
+    public String getCode() {
+        if (nameField != null)
+            return nameField.getText();
+        return EMPTY_CODE;
+    }
 
-        frame.getContentPane().add(content);
-        if (exitOnClose) {
-            frame.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    System.exit(0);
-                }
-            });
+    /**
+     * Set the symbol code in the GUI.
+     */
+    public void setCode(String code) {
+        if (nameField == null) {
+            // If we do this here, the default jtree presented
+            // will be able to put it's default symbol code in the
+            // text field widget. Has to be done before that
+            // default JTree is made.
+            nameField = new JTextField(code);
+        } else {
+            nameField.setText(code);
         }
+    }
 
-        frame.pack();
-        frame.setVisible(true);
+    /**
+     * Get the icon displayed in the GUI.
+     * 
+     * @return
+     */
+    public ImageIcon getImageIcon() {
+        return symbolImage;
+    }
+
+    /**
+     * Set the current icon in the display.
+     * 
+     * @param ii
+     */
+    public void setImageIcon(ImageIcon ii) {
+        symbolImage = ii;
+
+        if (symbolImageLabel == null) {
+            symbolImageLabel = new JLabel(symbolImage);
+        } else {
+            symbolImageLabel.setIcon(symbolImage);
+        }
+    }
+
+    /**
+     * Set the dimension o the icon to be created.
+     * 
+     * @param d
+     */
+    public void setDesiredIconDimension(Dimension d) {
+        iconDimension = d;
+
+        dqp.setDimension(getDesiredIconDimension());
+    }
+
+    /**
+     * @return the dimension of the icon to be created.
+     */
+    public Dimension getDesiredIconDimension() {
+        if (iconDimension == null) {
+            iconDimension = new Dimension(DEFAULT_ICON_DIMENSION, DEFAULT_ICON_DIMENSION);
+        }
+        return iconDimension;
+    }
+
+    /**
+     * @return Returns the allowCreateImage.
+     */
+    public boolean isAllowCreateImage() {
+        return allowCreateImage;
+    }
+
+    /**
+     * @param allowCreateImage The allowCreateImage to set.
+     */
+    public void setAllowCreateImage(boolean allowCreateImage) {
+        this.allowCreateImage = allowCreateImage;
+        if (createImageFileButton != null) {
+            createImageFileButton.setVisible(allowCreateImage);
+        }
+    }
+
+    public static ImageIcon showDialog(Component component, String title,
+                                       SymbolReferenceLibrary srl,
+                                       String defaultSymbolCode)
+            throws HeadlessException {
+
+        final SymbolChooser pane = new SymbolChooser(srl);
+
+        SymbolTracker ok = new SymbolTracker(pane);
+        JDialog dialog = createDialog(component, title, true, pane, ok, null);
+        dialog.addWindowListener(new SymbolChooserDialog.Closer());
+        dialog.addComponentListener(new SymbolChooserDialog.DisposeOnClose());
+        pane.setCode(defaultSymbolCode);
+        pane.handleManualNameFieldUpdate(defaultSymbolCode);
+        dialog.show(); // blocks until user brings dialog down...
+
+        return ok.getImageIcon();
+    }
+
+    /**
+     * Creates JDialog window displaying a SymbolChooser.
+     */
+    public static JDialog createDialog(Component c, String title,
+                                       boolean modal,
+                                       SymbolChooser chooserPane,
+                                       ActionListener okListener,
+                                       ActionListener cancelListener)
+            throws HeadlessException {
+
+        return new SymbolChooserDialog(c, title, modal, chooserPane, okListener, cancelListener);
     }
 
     public static void main(String[] args) {
-
-        try {
-            Debug.init();
-            SymbolImageMaker sim = (SymbolImageMaker) Class.forName("com.bbn.openmap.tools.symbology.milStd2525.GIFSymbolImageMaker")
-                    .newInstance();
-            SymbolChooser sc = new SymbolChooser(new SymbolReferenceLibrary(sim));
-            launchFrame(sc, "MIL-STD-2525B Symbology Chooser", true);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        Debug.init();
+        SymbolReferenceLibrary srl = new SymbolReferenceLibrary();
+        if (srl.setSymbolImageMaker("com.bbn.openmap.tools.symbology.milStd2525.SVGSymbolImageMaker") != null) {
+            SymbolChooser.showDialog(null,
+                    "MIL-STD-2525B Symbol Chooser",
+                    srl,
+                    "SFPPV-----*****");
+        } else {
+            Debug.output("SymbolChooser: Need to add omsvg.jar to the classpath");
         }
 
+        System.exit(0);
     }
 
     public class SymbolTreeHolder extends ListenerSupport implements
@@ -466,7 +619,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
                 if (jcb != null) {
                     int numComps = jcb.getItemCount();
                     for (int i = 0; i < numComps; i++) {
-                        if (((CodePosition)jcb.getItemAt(i)).codeMatches(text)) {
+                        if (((CodePosition) jcb.getItemAt(i)).codeMatches(text)) {
                             jcb.setSelectedIndex(i);
                             break;
                         }
@@ -485,20 +638,8 @@ public class SymbolChooser extends JPanel implements ActionListener {
 
         public void handleNodeSelection(DefaultMutableTreeNode node) {
 
-            if (nameField == null) {
-                // If we do this here, the default jtree presented
-                // will be able to put it's default symbol code in the
-                // text field widget. Has to be done before that
-                // default JTree is made.
-                nameField = new JTextField();
-            }
-
-            if (symbolImageLabel == null) {
-                symbolImageLabel = new JLabel(getNotFoundImageIcon());
-            }
-
             if (node == null) {
-                nameField.setText("");
+                setCode("");
                 return;
             }
 
@@ -506,16 +647,21 @@ public class SymbolChooser extends JPanel implements ActionListener {
             if (nodeInfo instanceof SymbolPart) {
                 SymbolPart symbolPart = (SymbolPart) nodeInfo;
                 currentSymbol = node;
-                nameField.setText(updateStringWithCurrentOptionChars(symbolPart.getSymbolCode()));
-                ImageIcon ii = library.getIcon(nameField.getText(),
-                        new Dimension(100, 100));
+                setCode(updateStringWithCurrentOptionChars(symbolPart.getSymbolCode()));
+                ImageIcon ii = library.getIcon(getCode(),
+                        new Dimension(DEFAULT_ICON_DIMENSION, DEFAULT_ICON_DIMENSION));
+                if (createImageFileButton != null) {
+                    createImageFileButton.setEnabled(ii != null);
+                }
+
                 if (ii == null) {
                     ii = getNotFoundImageIcon();
                 }
-                symbolImageLabel.setIcon(ii);
+                setImageIcon(ii);
             } else {
-                nameField.setText("");
-                symbolImageLabel.setIcon(getNotFoundImageIcon());
+                setCode("");
+                setImageIcon(getNotFoundImageIcon());
+                createImageFileButton.setEnabled(false);
             }
         }
 
@@ -578,7 +724,7 @@ public class SymbolChooser extends JPanel implements ActionListener {
                         + cp.getEndIndex());
             }
             updateOptionChars(cp);
-            nameField.setText(updateStringWithCurrentOptionChars(nameField.getText()));
+            setCode(updateStringWithCurrentOptionChars(getCode()));
         }
 
         public void updateOptionChars(CodePosition cp) {
@@ -614,3 +760,121 @@ public class SymbolChooser extends JPanel implements ActionListener {
     }
 
 }
+
+/*
+ * Class which builds a symbol chooser dialog consisting of a
+ * SymbolChooser with "Ok", "Cancel", and "Reset" buttons. This class
+ * is based on the contents of the JColorChooser components.
+ */
+
+class SymbolChooserDialog extends JDialog {
+    private String initialCode;
+    private SymbolChooser chooserPane;
+
+    public SymbolChooserDialog(Component c, String title, boolean modal,
+            SymbolChooser chooserPane, ActionListener okListener,
+            ActionListener cancelListener) throws HeadlessException {
+
+        super(JOptionPane.getFrameForComponent(c), title, modal);
+        this.chooserPane = chooserPane;
+
+        String okString = UIManager.getString("ColorChooser.okText");
+        String cancelString = UIManager.getString("ColorChooser.cancelText");
+        String resetString = UIManager.getString("ColorChooser.resetText");
+
+        Container contentPane = getContentPane();
+        contentPane.setLayout(new BorderLayout());
+        contentPane.add(chooserPane, BorderLayout.CENTER);
+
+        /*
+         * Create Lower button panel
+         */
+        JPanel buttonPane = new JPanel();
+        buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
+        JButton okButton = new JButton(okString);
+        getRootPane().setDefaultButton(okButton);
+        okButton.setActionCommand("OK");
+        if (okListener != null) {
+            okButton.addActionListener(okListener);
+        }
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                hide();
+            }
+        });
+        buttonPane.add(okButton);
+
+        JButton cancelButton = new JButton(cancelString);
+
+        cancelButton.setActionCommand("cancel");
+        if (cancelListener != null) {
+            cancelButton.addActionListener(cancelListener);
+        }
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                hide();
+            }
+        });
+        buttonPane.add(cancelButton);
+
+        JButton resetButton = new JButton(resetString);
+        resetButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                reset();
+            }
+        });
+
+        buttonPane.add(resetButton);
+        contentPane.add(buttonPane, BorderLayout.SOUTH);
+
+        applyComponentOrientation(((c == null) ? getRootPane() : c).getComponentOrientation());
+
+        pack();
+        setLocationRelativeTo(c);
+    }
+
+    public void show() {
+        initialCode = chooserPane.getCode();
+        super.show();
+    }
+
+    public void reset() {
+        chooserPane.setCode(initialCode);
+        chooserPane.handleManualNameFieldUpdate(initialCode);
+    }
+
+    static class Closer extends WindowAdapter implements Serializable {
+        public void windowClosing(WindowEvent e) {
+            Window w = e.getWindow();
+            w.hide();
+        }
+    }
+
+    static class DisposeOnClose extends ComponentAdapter implements
+            Serializable {
+        public void componentHidden(ComponentEvent e) {
+            Window w = (Window) e.getComponent();
+            w.dispose();
+        }
+    }
+
+}
+
+class SymbolTracker implements ActionListener, Serializable {
+    SymbolChooser chooser;
+    ImageIcon icon;
+
+    public SymbolTracker(SymbolChooser c) {
+        chooser = c;
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        icon = chooser.library.getIcon(chooser.getCode(),
+                chooser.getDesiredIconDimension());
+    }
+
+    public ImageIcon getImageIcon() {
+        return icon;
+    }
+}
+
