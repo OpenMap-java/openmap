@@ -1083,8 +1083,6 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/layer/nexrad/Makefile
 	com/bbn/openmap/layer/nitf/Makefile
 	com/bbn/openmap/layer/plotLayer/Makefile
-	com/bbn/openmap/layer/pluginLayer/Makefile
-	com/bbn/openmap/layer/pluginLayer/shis/Makefile
 	com/bbn/openmap/layer/rpf/Makefile
 	com/bbn/openmap/layer/rpf/corba/Makefile
 	com/bbn/openmap/layer/shape/Makefile
@@ -1102,6 +1100,9 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/omGraphics/event/Makefile
 	com/bbn/openmap/omGraphics/grid/Makefile
 	com/bbn/openmap/omGraphics/util/Makefile
+	com/bbn/openmap/plugin/Makefile
+	com/bbn/openmap/plugin/shis/Makefile
+	com/bbn/openmap/plugin/earthImage/Makefile
 	com/bbn/openmap/proj/Makefile
 	com/bbn/openmap/tools/Makefile
 	com/bbn/openmap/tools/drawing/Makefile
@@ -1224,8 +1225,6 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/layer/nexrad/Makefile
 	com/bbn/openmap/layer/nitf/Makefile
 	com/bbn/openmap/layer/plotLayer/Makefile
-	com/bbn/openmap/layer/pluginLayer/Makefile
-	com/bbn/openmap/layer/pluginLayer/shis/Makefile
 	com/bbn/openmap/layer/rpf/Makefile
 	com/bbn/openmap/layer/rpf/corba/Makefile
 	com/bbn/openmap/layer/shape/Makefile
@@ -1243,6 +1242,9 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/omGraphics/event/Makefile
 	com/bbn/openmap/omGraphics/grid/Makefile
 	com/bbn/openmap/omGraphics/util/Makefile
+	com/bbn/openmap/plugin/Makefile
+	com/bbn/openmap/plugin/shis/Makefile
+	com/bbn/openmap/plugin/earthImage/Makefile
 	com/bbn/openmap/proj/Makefile
 	com/bbn/openmap/tools/Makefile
 	com/bbn/openmap/tools/drawing/Makefile

@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.48 $  $Date: 2001/03/02 22:08:27 $
+# $Revision: 1.49 $  $Date: 2001/03/26 21:57:54 $
 # **********************************************************************
 
 
@@ -43,6 +43,9 @@ Core.pkgs =	com.bbn.openmap \
 		com.bbn.openmap.omGraphics.event \
 		com.bbn.openmap.omGraphics.grid \
 		com.bbn.openmap.omGraphics.util \
+		com.bbn.openmap.plugin \
+		com.bbn.openmap.plugin.shis \
+		com.bbn.openmap.plugin.earthImage \
 		com.bbn.openmap.proj \
 		com.bbn.openmap.tools.drawing \
 		com.bbn.openmap.util \
@@ -62,6 +65,10 @@ Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/omGraphics/event/*.class \
 		com/bbn/openmap/omGraphics/grid/*.class \
 		com/bbn/openmap/omGraphics/util/*.class \
+		com/bbn/openmap/plugin/*.class \
+		com/bbn/openmap/plugin/*.class \
+		com/bbn/openmap/plugin/shis/*.class \
+		com/bbn/openmap/plugin/earthImage/*.class \
 		com/bbn/openmap/proj/*.class \
 		com/bbn/openmap/tools/drawing/*.class \
 		com/bbn/openmap/util/*.class \
@@ -76,8 +83,6 @@ Core.jar =	${Core.classes} ${Core.extra}
 Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.dted \
 		com.bbn.openmap.layer.nitf \
-		com.bbn.openmap.layer.pluginLayer \
-		com.bbn.openmap.layer.pluginLayer.shis \
 		com.bbn.openmap.layer.plotLayer \
 		com.bbn.openmap.layer.shape \
 		com.bbn.openmap.layer.shape.areas \
@@ -99,8 +104,6 @@ Layer.pkgs =	com.bbn.openmap.layer \
 Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/dted/*.class \
 		com/bbn/openmap/layer/nitf/*.class \
-		com/bbn/openmap/layer/pluginLayer/*.class \
-		com/bbn/openmap/layer/pluginLayer/shis/*.class \
 		com/bbn/openmap/layer/plotLayer/*.class \
 		com/bbn/openmap/layer/shape/*.class \
 		com/bbn/openmap/layer/shape/areas/*.class \
