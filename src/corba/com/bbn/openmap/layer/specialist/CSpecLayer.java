@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/CSpecLayer.java,v $
 // $RCSfile: CSpecLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/03/24 16:21:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -114,8 +114,13 @@ public class CSpecLayer extends Layer
     public static final String serverUpdateProperty = ".allowServerUpdates";
 
     protected URL iorURL = null;
-    /** Arguments passed in from the OverlayTable. */
+    /** Arguments passed in from the OverlayTable/properties file. */
     protected String staticArgs = null;
+    /** 
+     * Arguments modified by the Layer, or set by the Bean, at
+     * runtime.  Historical, should use Properties instead.
+     */
+    protected String dynamicArgs = null;
     protected String clientID = Environment.generateUniqueString();
 
     protected UWidget[] widgets = null;
@@ -567,6 +572,24 @@ public class CSpecLayer extends Layer
     }
 
     /**
+     * Interface Layer method to get the dynamic args.
+     * @return String args
+     * @deprecated use setProperties
+     */
+    public String getArgs() {
+        return dynamicArgs;
+    }
+
+    /**
+     * Interface Layer method to set the dynamic args.
+     * @param args String
+     * @deprecated use setProperties
+     */
+    public void setArgs(String args) {
+	dynamicArgs = args;
+    }
+
+    /**
      * Interface Layer method to set the static args, which are
      * usually set via the OverlayTable. 
      */
@@ -662,7 +685,8 @@ public class CSpecLayer extends Layer
 	    }
 
 	    // neither can dynamic args
-	    dynamicArgsHolder = new StringHolder(getArgs());
+	    // Layer.getArgs() was deprecated and removed
+ 	    dynamicArgsHolder = new StringHolder(getArgs());
 	    if (dynamicArgsHolder.value == null) {
 		dynamicArgsHolder.value = "";
 	    }
