@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.25 
+# From configure.in OpenMap Revision: 1.26 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.12 
 # Copyright (C) 1992, 93, 94, 95, 96 Free Software Foundation, Inc.
@@ -1202,7 +1202,15 @@ test "$no_create" = yes || ${CONFIG_SHELL-/bin/sh} $CONFIG_STATUS || exit 1
 
 
 
+
+
+
+
 echo "chmod +x bin/openmap"
 echo "chmod +x com/bbn/openmap/examples/hello/hello-world"
+echo "chmod +x com/bbn/openmap/examples/simple/simple"
+echo "chmod +x com/bbn/openmap/examples/simple/simple2"
 chmod +x bin/openmap
 chmod +x com/bbn/openmap/examples/hello/hello-world
+chmod +x com/bbn/openmap/examples/simple/simple
+chmod +x com/bbn/openmap/examples/simple/simple2

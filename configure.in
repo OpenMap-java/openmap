@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION(OpenMap $Revision: 1.26 $)
+AC_REVISION(OpenMap $Revision: 1.27 $)
 AC_INIT(openmap.mk.in)
 
 #
@@ -180,3 +180,7 @@ AC_OUTPUT(openmap.mk
 AC_OUTPUT_COMMANDS([echo "chmod +x bin/openmap"],[chmod +x bin/openmap])
 
 AC_OUTPUT_COMMANDS([echo "chmod +x com/bbn/openmap/examples/hello/hello-world"],[chmod +x com/bbn/openmap/examples/hello/hello-world])
+
+AC_OUTPUT_COMMANDS([echo "chmod +x com/bbn/openmap/examples/simple/simple"],[chmod +x com/bbn/openmap/examples/simple/simple])
+
+AC_OUTPUT_COMMANDS([echo "chmod +x com/bbn/openmap/examples/simple/simple2"],[chmod +x com/bbn/openmap/examples/simple/simple2])
