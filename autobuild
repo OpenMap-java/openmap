@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.27 $
-# $Date: 1998/11/12 13:33:16 $
+# $Revision: 1.28 $
+# $Date: 1998/11/12 13:55:30 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -175,7 +175,7 @@ fi
 CLASSPATH=$OpenMapClassPath:$SwingClassPath:$GifJarFile:$JdkClassPath:$VbjClassPath
 export CLASSPATH
 
-PATH=/bin:/usr/bin:/usr/local/gnu/bin:/usr/ucb/bin:$JDK/bin
+PATH=/bin:/usr/bin:/usr/local/gnu/bin:/usr/ucb:$JDK/bin
 export PATH
 
 LayerPackages="com.bbn.openmap.layer.dted com.bbn.openmap.layer.nitf com.bbn.openmap.layer.plotLayer com.bbn.openmap.layer.pluginLayer com.bbn.openmap.layer.rpf com.bbn.openmap.layer.shape com.bbn.openmap.layer.specialist com.bbn.openmap.layer.util.cacheHandler com.bbn.openmap.layer.util.html com.bbn.openmap.layer.util.http com.bbn.openmap.layer.util.stateMachine com.bbn.openmap.layer.vpf"
