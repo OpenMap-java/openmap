@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMGraphic.java,v $
 // $RCSfile: EditableOMGraphic.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/14 23:40:08 $
+// $Revision: 1.7 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -97,6 +97,14 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * to it.
      */
     protected int actionMask = 0;
+
+    protected boolean DEBUG = false;
+    protected boolean DEBUG_DETAIL = false;
+
+    protected EditableOMGraphic() {
+	DEBUG = Debug.debugging("eomg");
+	DEBUG_DETAIL = Debug.debugging("eomgdetail");
+    }
 
     /**
      * Set the StateMachine for this EditableOMGraphic.
@@ -299,6 +307,22 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     }
 
     /**
+     * Attach to the Moving OffsetGrabPoint so if it moves, it will
+     * move this EditableOMGraphic with it.  EditableOMGraphic version
+     * doesn't do anything, each subclass has to decide which of its
+     * OffsetGrabPoints should be attached to it.
+     */
+    public void attachToMovingGrabPoint(OffsetGrabPoint gp) {}
+
+    /**
+     * Detach from a Moving OffsetGrabPoint.  The EditableOMGraphic
+     * version doesn't do anything, each subclass should remove
+     * whatever GrabPoint it would have attached to an
+     * OffsetGrabPoint.
+     */
+    public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {}
+
+    /**
      * Set the GrabPoint that is in the middle of being modified, as a
      * result of a mouseDragged event, or other selection.
      */
@@ -315,11 +339,36 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     }
 
     /**
+     * Notification that a MouseEvent was used to trigger creation or
+     * edit of this EditableOMGraphic, and this is the first
+     * MouseEvent received.  If the EditableOMGraphic can handle it,
+     * it should.  Otherwise, it should put itself in the right state
+     * to let the user know it's active.
+     */
+    public void handleInitialMouseEvent(MouseEvent e) {
+	getStateMachine().setEdit();
+	if (e != null) {
+	    GrabPoint gp = getMovingPoint(e);
+	    if (gp == null) {
+		move(e);
+	    } else {
+		getStateMachine().setSelected();
+	    }
+	} else {
+	    getStateMachine().setSelected();
+	}
+    }
+
+    /**
      * Given a MouseEvent, find a GrabPoint that it is touching, and
      * set the moving point to that GrabPoint.  Called when a
-     * MouseEvent happens, and you want to find out if a GrabPoint
-     * should be used to make modifications to the graphic or its
-     * position.
+     * MouseEvent happens like a mousePressed or mouseReleased, and
+     * you want to find out if a GrabPoint should be used to make
+     * modifications to the graphic or its position.  This method
+     * should only be called to establish a moving point.
+     * getMovingPoint() should be called to check to see if one has
+     * been established, and then redraw(MouseEvent) would be called
+     * to move that moving point.
      *
      * @param e MouseEvent
      * @return GrabPoint that is touched by the MouseEvent, null if
@@ -330,7 +379,10 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     }
 
     /**
-     * Method for grandchildren classes.
+     * Given a MouseEvent, find a GrabPoint that it is touching, and
+     * set the moving point to that GrabPoint.  A version for
+     * grandchild classes.
+     * @param e MouseEvent that the GrabPoint should attach to.
      * @see getMovingPoint(MouseEvent)
      */
     public GrabPoint _getMovingPoint(MouseEvent e) {
@@ -387,6 +439,12 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
 	redraw(e, firmPaint, true);
     }
 
+    /**
+     * A DrawingAttributes object used to hold OMGraphic settings
+     * while it is being moved.  When an OMGraphic is being moved,
+     * basic (DEFAULT) settings are put on the OMGraphic to make it as
+     * light and uncomplicated as possible.
+     */
     protected DrawingAttributes holder = new DrawingAttributes();
 
     /**
@@ -402,7 +460,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * that are moving.  
      */
     public void redraw(MouseEvent e, boolean firmPaint, boolean drawXOR) {
-	if (Debug.debugging("eomg")) {
+	if (DEBUG) {
 	    Debug.output("EditableOMGraphic.redraw(" + 
 			 (firmPaint?"firmPaint)":")"));
 	}
@@ -472,7 +530,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
 	lastMouseEvent = e;
     }
 
-    private MouseEvent lastMouseEvent;
+    protected MouseEvent lastMouseEvent;
 
     /**
      * A convenience method that gives an EditableOMGraphic a chance
@@ -559,7 +617,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     /**
      */
     public boolean mousePressed(MouseEvent e) {
-	Debug.message("eomgdetail", "EditableOMGraphic.mousePressed()");
+	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mousePressed()");
 	if (!mouseOnMap) return false;
 	return stateMachine.getState().mousePressed(e);
     }
@@ -567,7 +625,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     /**
      */
     public boolean mouseReleased(MouseEvent e) {
-	Debug.message("eomgdetail", "EditableOMGraphic.mouseReleased()");
+	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseReleased()");
 	if (!mouseOnMap) return false;
 	return stateMachine.getState().mouseReleased(e);
     }
@@ -575,7 +633,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     /**
      */
     public boolean mouseClicked(MouseEvent e) {
-	Debug.message("eomgdetail", "EditableOMGraphic.mouseClicked()");
+	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseClicked()");
 	if (!mouseOnMap) return false;
 	return stateMachine.getState().mouseClicked(e);
     }
@@ -585,7 +643,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     /**
      */
     public void mouseEntered(MouseEvent e) {
-	Debug.message("eomgdetail", "EditableOMGraphic.mouseEntered()");
+	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseEntered()");
 	mouseOnMap = true;
 	stateMachine.getState().mouseEntered(e);
     }
@@ -593,7 +651,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     /**
      */
     public void mouseExited(MouseEvent e) {
-	Debug.message("eomgdetail", "EditableOMGraphic.mouseExited()");
+	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseExited()");
 	mouseOnMap = false;
 	stateMachine.getState().mouseExited(e);
     }
@@ -604,7 +662,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     /**
      */
     public boolean mouseDragged(MouseEvent e) {
-	Debug.message("eomgdetail", "EditableOMGraphic.mouseDragged()");
+	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseDragged()");
 	if (!mouseOnMap) return false;
 	return stateMachine.getState().mouseDragged(e);
     }
@@ -612,7 +670,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     /**
      */
     public boolean mouseMoved(MouseEvent e) {
-	Debug.message("eomgdetail", "EditableOMGraphic.mouseMoved()");
+	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseMoved()");
 	if (!mouseOnMap) return false;
 	return stateMachine.getState().mouseMoved(e);
     }
@@ -620,7 +678,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
     /**
      */
     public void mouseMoved() {
-	Debug.message("eomgdetail", "EditableOMGraphic.mouseMoved()");
+	if (DEBUG_DETAIL) Debug.output(getClass().getName() + ".mouseMoved()");
 	if (!mouseOnMap) return;
 	stateMachine.getState().mouseMoved();
     }
@@ -645,12 +703,6 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
 	    return;
 	}
 	listeners.removeEOMGListener(l);
-
-	// Should we get rid of the support if there are no listeners?
-	// The support will get created when a listener is added.
-	if (listeners.getListeners().size() == 0) {
-	    listeners = null;
-	}
     }
 
     /**

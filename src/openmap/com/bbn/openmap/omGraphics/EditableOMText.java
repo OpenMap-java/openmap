@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMText.java,v $
 // $RCSfile: EditableOMText.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/10/24 15:34:14 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,6 +32,8 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Component;
@@ -144,6 +146,26 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      */
     public OMGraphic getGraphic() {
 	return text;
+    }
+
+    /**
+     * Attach to the Moving OffsetGrabPoint so if it moves, it will
+     * move this EditableOMGraphic with it.  EditableOMGraphic version
+     * doesn't do anything, each subclass has to decide which of its
+     * OffsetGrabPoints should be attached to it.
+     */
+    public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
+	gp.addGrabPoint(gpo);
+    }
+
+    /**
+     * Detach from a Moving OffsetGrabPoint.  The EditableOMGraphic
+     * version doesn't do anything, each subclass should remove
+     * whatever GrabPoint it would have attached to an
+     * OffsetGrabPoint.
+     */
+    public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {
+	gp.removeGrabPoint(gpo);
     }
 
     /**
@@ -290,7 +312,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
 	int renderType = text.getRenderType();
 	LatLonPoint llp1;
 
-	System.out.println("EditableOMText.setGrabPoints()");
+	Debug.message("eomt", "EditableOMText.setGrabPoints()");
 
 	// Do center point for lat/lon or offset points
 	if (renderType == OMGraphic.RENDERTYPE_LATLON) {
@@ -300,7 +322,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
 		llp1 = projection.inverse(gpc.getX(), gpc.getY());
 		text.setLat(llp1.getLatitude());
 		text.setLon(llp1.getLongitude());
-		text.setNeedToRegenerate(true);
+		// text.setNeedToRegenerate set
 	    }
 	}
 
@@ -406,39 +428,44 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     public void render(java.awt.Graphics graphics) {
 
 	State state = getStateMachine().getState();
-	if (text != null) {
-	    text.setVisible(true);
-	    text.render(graphics);
-	    text.setVisible(false);
-	} else {
-	    Debug.message("eomg", "EditableOMText.render: null point.");
-	}
-	
-	int renderType = text.getRenderType();
-	if (state instanceof GraphicSelectedState ||
-	    state instanceof GraphicEditState) {
 
-	    for (int i = 0; i < gPoints.length; i++) {
-		GrabPoint gp = gPoints[i];
-		if (gp != null) {
-		    if ((i == OFFSET_POINT_INDEX &&
-			 renderType == OMGraphic.RENDERTYPE_OFFSET &&
-			 movingPoint == gpo) || 
+	if (!(state instanceof GraphicUndefinedState)) {
+	    if (text != null) {
+		text.setVisible(true);
+		text.render(graphics);
+		text.setVisible(false);
+	    } else {
+		Debug.message("eomg", "EditableOMText.render: null point.");
+	    }
+	
+	    int renderType = text.getRenderType();
+
+	    if (state instanceof GraphicSelectedState ||
+		state instanceof GraphicEditState) {
+
+		for (int i = 0; i < gPoints.length; i++) {
+		    GrabPoint gp = gPoints[i];
+		    if (gp != null) {
+			if ((i == OFFSET_POINT_INDEX &&
+			     renderType == OMGraphic.RENDERTYPE_OFFSET &&
+			     movingPoint == gpo) || 
 			
-			(state instanceof GraphicSelectedState && 
-			 ((i != OFFSET_POINT_INDEX && renderType != OMGraphic.RENDERTYPE_OFFSET) || 
-			  (renderType == OMGraphic.RENDERTYPE_OFFSET)))
+			    (state instanceof GraphicSelectedState && 
+			     ((i != OFFSET_POINT_INDEX && 
+			       renderType != OMGraphic.RENDERTYPE_OFFSET) || 
+			      (renderType == OMGraphic.RENDERTYPE_OFFSET)))
 			
-			) {
-			gp.setVisible(true);
-			gp.render(graphics);
-			gp.setVisible(false);
+			    ) {
+
+			    gp.setVisible(true);
+			    gp.render(graphics);
+			    gp.setVisible(false);
+			}
 		    }
 		}
 	    }
 	}
     }
-
 
     /**
      * If this EditableOMGraphic has parameters that can be
@@ -453,15 +480,15 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * the GUI widget from to control those parameters for this EOMG.
      * @return java.awt.Component to use to control parameters for this EOMG.
      */
-    
-    GraphicAttributes lGraphicAttributes;
-    
     public java.awt.Component getGUI(GraphicAttributes graphicAttributes) {
-	if (showGUI) {
-            lGraphicAttributes = graphicAttributes;
-	    return buildGUI(graphicAttributes);
+	Debug.message("eomg", "EditableOMPoly.getGUI");
+	if (graphicAttributes != null) {
+	    Component gaGUI = graphicAttributes.getGUI();
+	    ((JComponent)gaGUI).add(getTextGUI());
+	    return gaGUI;
+	} else {
+	    return getTextGUI();
 	}
-	return null;
     }
 
     JComboBox sizesFont;
@@ -469,63 +496,51 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     
     /** Command for text string adjustments. */
     public final static String TextFieldCommand = "TextField";
-    public final static String TextColorCommand = "TextColor";
     public final static String TextFontCommand = "TextFont";
     public final static String TextRotationCommand = "TextRotation";
         
-    protected java.awt.Component buildGUI(GraphicAttributes graphicAttributes) {
-	javax.swing.Box attributeBox = javax.swing.Box.createVerticalBox();
+    protected java.awt.Component getTextGUI() {
+	javax.swing.Box attributeBox = javax.swing.Box.createHorizontalBox();
 	
-	
-//	if (graphicAttributes != null) {
-//	    attributeBox.add(graphicAttributes.getGUI());
-//	}
 	attributeBox.setAlignmentX(Component.CENTER_ALIGNMENT);
 	attributeBox.setAlignmentY(Component.CENTER_ALIGNMENT);
-	
-        JTextField textField = PaletteHelper.createTextEntry("Text",text.getData(),attributeBox);
+
+	String textString = "Text";
+	if (text != null) {
+	    textString = text.getData();
+	}
+
+        JTextField textField = new JTextField(textString, 25);
 	textField.setActionCommand(TextFieldCommand);
 	textField.addActionListener(this);
-        textField.setMaximumSize(new java.awt.Dimension(180, 25));
-        textField.setMinimumSize(new java.awt.Dimension(180, 25));
-        textField.setPreferredSize(new java.awt.Dimension(180, 25));
+	textField.setMargin(new Insets(0, 1, 0, 1));
+        textField.setMinimumSize(new java.awt.Dimension(100, 20));
+        textField.setPreferredSize(new java.awt.Dimension(100, 20));
 	attributeBox.add(textField);
         
-        JPanel palette = PaletteHelper.createHorizontalPanel("Rotation");
-        textField = new JTextField(""+(int)(text.getRotationAngle()*180/Math.PI));
+//         JPanel palette = PaletteHelper.createHorizontalPanel("Rotation");
+        javax.swing.Box palette = javax.swing.Box.createHorizontalBox();
+        textField = new JTextField(Integer.toString((int)(text.getRotationAngle()*180/Math.PI)), 5);
 	textField.setActionCommand(TextRotationCommand);
+	textField.setToolTipText("Text Rotation");
+	textField.setMargin(new Insets(0, 1, 0, 1));
 	textField.addActionListener(this);
-        textField.setMaximumSize(new java.awt.Dimension(50, 25));
-        textField.setMinimumSize(new java.awt.Dimension(50, 25));
-        textField.setPreferredSize(new java.awt.Dimension(50, 25));
+        textField.setMinimumSize(new java.awt.Dimension(30, 20));
+	textField.setPreferredSize(new java.awt.Dimension(30, 20));
 	palette.add(textField);
-	palette.add(new JLabel("  degree "));
+	palette.add(new JLabel("degree "));
 	attributeBox.add(palette);
         
-        palette = PaletteHelper.createVerticalPanel("Font");
-        JPanel palette1 = PaletteHelper.createVerticalPanel("Font color");       
-        JButton colorButton = new JButton("Color");
-	colorButton.setActionCommand(TextColorCommand);
-	colorButton.addActionListener(this);
-	colorButton.setToolTipText("Change Text Color");
-        colorButton.setBackground((Color)text.getLinePaint());
-        colorButton.setForeground(DrawingAttributes.calculateTextColor((Color)text.getLinePaint()));
-        colorButton.setMaximumSize(new java.awt.Dimension(100, 25));
-        colorButton.setMinimumSize(new java.awt.Dimension(100, 25));
-        colorButton.setPreferredSize(new java.awt.Dimension(100, 25));
-        palette1.add(colorButton);
-        
-        JPanel palette2 = PaletteHelper.createVerticalPanel("Font size");       
 	String[] sizesStrings = {"3","5","8","10","12","14","18","20","24","36","48"};
 	sizesFont = new JComboBox(sizesStrings);
+	sizesFont.setToolTipText("Font Size");
 	sizesFont.setSelectedItem("" + (text.getFont()).getSize());
 	sizesFont.setActionCommand(TextFontCommand);
 	sizesFont.addActionListener(this);
-        palette2.add(sizesFont);
         
-        JPanel palette3 = PaletteHelper.createVerticalPanel("Font style");       
 	String[] styleStrings = {"Plain","Bold","Italic","Bold Italic"};
 	styleFont = new JComboBox(styleStrings);
+	styleFont.setToolTipText("Font Style");
         if((text.getFont().isBold()) && (text.getFont().isItalic())) 
             styleFont.setSelectedIndex(3);
         else if(text.getFont().isBold())
@@ -536,36 +551,19 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             styleFont.setSelectedIndex(0);
 	styleFont.setActionCommand(TextFontCommand);
 	styleFont.addActionListener(this);
-        palette3.add(styleFont);
         
-        palette.add(palette1);
-        palette.add(palette2);
-        palette.add(palette3);
+        attributeBox.add(sizesFont);
+        attributeBox.add(styleFont);
 
-        attributeBox.add(palette);
 	return attributeBox;
-}
+    }
 
 
     public void actionPerformed(ActionEvent e) {
 	Object source = e.getSource();
 	String command = e.getActionCommand();
         
-        Paint textPaint,oldPaint;
-        if (command == TextColorCommand) {
-            textPaint = ((JButton)source).getBackground();
-            oldPaint = textPaint;
-            textPaint = OMColorChooser.showDialog((Component)source, "Choose Text Color", 
-				   (Color)textPaint);
-	    if (textPaint != null) {
-   	       text.setLinePaint(textPaint);
-               ((JButton)source).setBackground((Color)textPaint);
-               ((JButton)source).setForeground(DrawingAttributes.calculateTextColor((Color)textPaint));
-	    }
-           lGraphicAttributes.setFrom(text);
-           lGraphicAttributes.setLinePaint(textPaint);
-	    repaint();
-	} else if (command == TextFontCommand) {
+	if (command == TextFontCommand) {
             String FontString = text.fontToXFont(text.getFont());
             FontString = FontString.substring(0,FontString.indexOf("-", 3));
  	    StringBuffer ret = new StringBuffer(FontString);
@@ -595,23 +593,3 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         }
     }    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

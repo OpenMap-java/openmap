@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/03 00:53:03 $
+// $Revision: 1.7 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -124,13 +124,21 @@ public class OMText extends OMGraphic implements Serializable {
 
     /** The Font type that the string should be displayed with. */
     protected Font f;
-
-    /** The latitude location for the text, used for lat/lon or offset
-     * rendertype texts, in decimal degrees. */
+    /** 
+     * The FontSizer set in the OMText, changing the font size
+     * appropriate for a projection scale. 
+     */
+    protected FontSizer fontSizer = null;
+    /** 
+     * The latitude location for the text, used for lat/lon or offset
+     * rendertype texts, in decimal degrees. 
+     */
     protected float lat = 0.0f;
 
-    /** The longitude location for the text, used for lat/lon or offset
-     * rendertype texts, in decimal degrees. */
+    /** 
+     * The longitude location for the text, used for lat/lon or offset
+     * rendertype texts, in decimal degrees. 
+     */
     protected float lon = 0.0f;
 
     /** The string to be displayed. */
@@ -162,9 +170,6 @@ public class OMText extends OMGraphic implements Serializable {
      */
     protected int fmHeight = HEIGHT;
 
-//     /** If we display a boundary rectangle around/underneath the text */
-//     protected boolean showBounds = false;
-
     protected boolean useMaxWidthForBounds = false;
 
     /** The angle by which the text is to be rotated, in radians */
@@ -178,11 +183,11 @@ public class OMText extends OMGraphic implements Serializable {
     /** The bounding rectangle of this Text. */
     protected transient Polygon polyBounds;
 
-    /** The line color for the polyBounds. */
-    protected Paint boundsLineColor = linePaint;
+//     /** The line color for the polyBounds. */
+//     protected Paint boundsLineColor = linePaint;
 
-    /** The display color for the polyBounds. */
-    protected Paint boundsDisplayColor = boundsLineColor;
+//     /** The display color for the polyBounds. */
+//     protected Paint boundsDisplayColor = boundsLineColor;
 
     /** The Metrics of the current font. */
     protected transient FontMetrics fm;
@@ -312,18 +317,26 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the font of the text object. 
+     * Get the font of the text object, which might have been scaled
+     * by the font sizer.
      *
      * @return the font of the object.
      */
     public Font getFont() {
+	if (f == null) {
+	    f = DEFAULT_FONT;
+	}
 	return f;
     }
     
     /**
-     * Set the font.  Will take effect on the next render.
-     * Flushes the cache fields <code>fm</code>, <code>widths</code>,
-     * and <code>polyBounds</code>.
+     * Set the base font.  Will take effect on the next render.  If
+     * the font sizer is not null, this font will be set in that
+     * object as well, and the active font will come from the font
+     * sizer.  To make the set font the constant font, set the font
+     * sizer to null.  Flushes the cache fields <code>fm</code>,
+     * <code>widths</code>, and <code>polyBounds</code>.  Calls
+     * setScaledFont.
      *
      * @param aFont font to be used for the text.
      *
@@ -332,12 +345,58 @@ public class OMText extends OMGraphic implements Serializable {
      * @see #polyBounds
      */
     public void setFont(Font aFont) {
+	if (fontSizer != null) {
+	    fontSizer.setFont(aFont);
+	    setScaledFont(fontSizer.getScaledFont());
+	} else {
+	    setScaledFont(aFont);
+	}
+    }
+
+    /**
+     * Sets the scaled font, which is the one that is used for rendering.
+     */
+    protected void setScaledFont(Font aFont) {
 	f = aFont;
 
 	// now flush the cached information about the old font
 	fm = null;		// flush existing metrics.
 	widths = null;		// flush existing width table.
 	polyBounds = null;	// flush existing bounds.
+    }
+
+    /**
+     * If the font sizer is not null, sets the scaled font with the
+     * proper value for the given scale.
+     */
+    public void setFont(float scale) {
+	if (fontSizer != null) {
+	    setScaledFont(fontSizer.getFont(scale));
+	}
+    }
+
+    /**
+     * Set the FontSizer object, which provides different font sizes
+     * at different scales.  If set to null, the font size will remain
+     * constant regardless of projection scale.
+     */
+    public void setFontSizer(FontSizer fs) {
+	Font bf = getFont();
+	if (fontSizer != null) {
+	    bf = fontSizer.getFont();
+	}
+
+	fontSizer = fs;
+	setFont(bf);
+    }
+
+    /**
+     * Get the FontSizer object, which provides different font sizes
+     * at different scales.  If set to null, the font size will remain
+     * constant regardless of projection scale.
+     */
+    public FontSizer getFontSizer() {
+	return fontSizer;
     }
 
     /**
@@ -595,32 +654,32 @@ public class OMText extends OMGraphic implements Serializable {
 	return polyBounds;
     }
 
-    /**
-     * Set the fill and line color of the text bounds object.
-     * This sets both the fill and line color of the background
-     * text-bounds to <code>color</code>.
-     * @param color Color
-     */
-    public void setFillPaint(Paint color) { 
-	super.setFillPaint(color);
-	setBoundsLineColor(color);
-    }
+//     /**
+//      * Set the fill and line color of the text bounds object.
+//      * This sets both the fill and line color of the background
+//      * text-bounds to <code>color</code>.
+//      * @param color Color
+//      */
+//     public void setFillPaint(Paint color) { 
+// 	super.setFillPaint(color);
+// 	setBoundsLineColor(color);
+//     }
 
-    /**
-     * Set the fill color of the text bounds object.
-     * @param color Color
-     */
-    public void setBoundsFillColor(Paint color) { 
-	super.setFillPaint(color);
-    }
+//     /**
+//      * Set the fill color of the text bounds object.
+//      * @param color Color
+//      */
+//     public void setBoundsFillColor(Paint color) { 
+// 	super.setFillPaint(color);
+//     }
 
-    /**
-     * Get the fill color of the text bounds object.
-     * @return Color
-     */
-    public Paint getBoundsFillColor() { 
-	return super.getFillPaint();
-    }
+//     /**
+//      * Get the fill color of the text bounds object.
+//      * @return Color
+//      */
+//     public Paint getBoundsFillColor() { 
+// 	return super.getFillPaint();
+//     }
 
     /** 
      * Set the fmHeight to use for the footprint.
@@ -640,52 +699,49 @@ public class OMText extends OMGraphic implements Serializable {
 	return fmHeight;
     }
 
-    /**
-     * Set the line color of the text bounds object.
-     * @param color Color
-     */
-    public void setBoundsLineColor(Paint color) { 
-	setMattingPaint(color);
-// 	boundsLineColor = (color != null) ? color : Color.black;
-// 	if (!selected) {
-// 	    boundsDisplayColor = boundsLineColor;
-// 	}
-    }
+//     /**
+//      * Set the line color of the text bounds object.
+//      * @deprecated use setMattingPaint(Paint) instead.
+//      * @param color Color
+//      */
+//     public void setBoundsLineColor(Paint color) { 
+// 	setMattingPaint(color);
+//     }
 
-    /**
-     * Get the line color of the text bounds object.
-     * @return Color
-     */
-    public Paint getBoundsLineColor() { 
-	return getMattingPaint();
-// 	return boundsLineColor;
-    }
+//     /**
+//      * Get the line color of the text bounds object.
+//      * @deprecated use getMattingPaint()
+//      * @return Color
+//      */
+//     public Paint getBoundsLineColor() { 
+// 	return getMattingPaint();
+//     }
 
-    /**
-     * Get the display color of the text bounds object.
-     * @return Color
-     */
-    public Paint getBoundsDisplayColor() {
-       return boundsDisplayColor;
-    }
+//     /**
+//      * Get the display color of the text bounds object.
+//      * @return Color
+//      */
+//     public Paint getBoundsDisplayColor() {
+//        return boundsDisplayColor;
+//     }
 
-    /**
-     * Set the selected attribute to true, and sets the color to the
-     * select color.
-     */
-    public void select() {
-	super.select();
-	boundsDisplayColor = getSelectPaint();
-    }
+//     /**
+//      * Set the selected attribute to true, and sets the color to the
+//      * select color.
+//      */
+//     public void select() {
+// 	super.select();
+// 	boundsDisplayColor = getSelectPaint();
+//     }
 
-    /**
-     * Set the selected attribute to false, sets the color to the line
-     * color.
-     */
-    public void deselect() {
-	super.deselect();
-	boundsDisplayColor = boundsLineColor;
-    }
+//     /**
+//      * Set the selected attribute to false, sets the color to the line
+//      * color.
+//      */
+//     public void deselect() {
+// 	super.deselect();
+// 	boundsDisplayColor = boundsLineColor;
+//     }
 
     /**
      * Set the angle by which the text is to rotated.
@@ -790,9 +846,7 @@ public class OMText extends OMGraphic implements Serializable {
 	    return false;
 	}
 
-	if (f == null) {
-	    f = DEFAULT_FONT;
-	}
+	setFont(proj.getScale());
 
 	// Compliance with Shape additions to OMGeometry/OMGraphic.
 	// If font metrics are set, we can take care of this now.  If
@@ -963,7 +1017,7 @@ public class OMText extends OMGraphic implements Serializable {
      */
     public synchronized void prepareForRender(Graphics g) {
 	parseData();
-	g.setFont(f);
+	g.setFont(getFont());
 	
 	if (fm == null)	{
 	    fm = g.getFontMetrics();
@@ -971,19 +1025,19 @@ public class OMText extends OMGraphic implements Serializable {
 	computeBounds();		
     }
 
-    /**
-     * Given a java.awt.Graphics object, set the Stroke and Paint
-     * parameters of it to match the OMGraphic's bounds settings.
-     *
-     * @param g java.awt.Graphics
-     * @see #setGraphicsColor
-     */
-    public void setGraphicsForBounds(Graphics g) {
-        if (g instanceof Graphics2D) {
-            ((Graphics2D)g).setStroke(BASIC_STROKE);
-        }
-        setGraphicsColor(g, getBoundsDisplayColor());
-    }
+//     /**
+//      * Given a java.awt.Graphics object, set the Stroke and Paint
+//      * parameters of it to match the OMGraphic's bounds settings.
+//      *
+//      * @param g java.awt.Graphics
+//      * @see #setGraphicsColor
+//      */
+//     public void setGraphicsForBounds(Graphics g) {
+//         if (g instanceof Graphics2D) {
+//             ((Graphics2D)g).setStroke(BASIC_STROKE);
+//         }
+//         setGraphicsColor(g, getBoundsDisplayColor());
+//     }
 
     /**
      * Renders the text onto the given graphics.
@@ -1001,8 +1055,7 @@ public class OMText extends OMGraphic implements Serializable {
 
 	if (getNeedToRegenerate() || pt == null || !isVisible()) return;
 	
-
-	g.setFont(f);
+	g.setFont(getFont());
 	setGraphicsForEdge(g);
 
 	if (fm == null) {
@@ -1043,11 +1096,7 @@ public class OMText extends OMGraphic implements Serializable {
 	    ((Graphics2D)g).rotate(rotationAngle, rx+woffset, pt.y);
 	}
 
-	if (isMatted()) {
-	    Paint p = getMattingPaint();
-	    setGraphicsColor(g, getMattingPaint());
-	    fill(g);
-	} else if (shouldRenderFill()) {
+	if (shouldRenderFill()) {
 	    setGraphicsForFill(g);
 	    fill(g);
 	    
@@ -1057,15 +1106,13 @@ public class OMText extends OMGraphic implements Serializable {
 	    }
 	}
 
-// 	// display bounding box
-// 	if (showBounds) {
-// 	    // This paint stuff allows the border to be a different
-// 	    // color than the text
-// 	    Paint textPaint = getLinePaint();
-// 	    setLinePaint(boundsLineColor);
-// 	    super.render(g);
-// 	    setLinePaint(textPaint);
-// 	}
+	if (isSelected()) {
+	    setGraphicsColor(g, getSelectPaint());
+	    draw(g);
+	} else if (isMatted()) {
+	    setGraphicsColor(g, getMattingPaint());
+	    draw(g);
+	}
 
 	setGraphicsForEdge(g);
 
@@ -1083,9 +1130,9 @@ public class OMText extends OMGraphic implements Serializable {
 	int baselineLocation = pt.y; // baseline == BASELINE_BOTTOM, normal.
 
 	if (baseline == BASELINE_MIDDLE) {
-	    baselineLocation += fm.getDescent()/2;
+	    baselineLocation += (fm.getAscent() - fm.getDescent())/2;
 	} else if (baseline == BASELINE_TOP) {
-	    baselineLocation += fm.getDescent();
+	    baselineLocation += (fm.getAscent() - fm.getDescent());
 	}
 
 	switch (justify) {

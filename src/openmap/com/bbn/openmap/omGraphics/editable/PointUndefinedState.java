@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/PointUndefinedState.java,v $
 // $RCSfile: PointUndefinedState.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,8 +46,7 @@ public class PointUndefinedState extends GraphicUndefinedState {
 	Debug.message("eomg", "PointStateMachine|undefined state|mousePressed = " + 
 		      graphic.getGraphic().getRenderType());
 	
-	GrabPoint gb;
-	gb = graphic.getGrabPoint(EditableOMPoint.CENTER_POINT_INDEX);
+	GrabPoint gb = graphic.getGrabPoint(EditableOMPoint.CENTER_POINT_INDEX);
 	gb.set(e.getX(), e.getY());
 	graphic.setMovingPoint(gb);
 
@@ -61,4 +60,8 @@ public class PointUndefinedState extends GraphicUndefinedState {
 	return getMapMouseListenerResponse();
     }
 
+    public boolean mouseMoved(MouseEvent e) {
+	graphic.fireEvent(EOMGCursors.EDIT, "Click to define the point location.");
+	return false;
+    }
 }

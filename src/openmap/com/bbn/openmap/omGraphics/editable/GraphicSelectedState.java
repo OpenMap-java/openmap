@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/editable/GraphicSelectedState.java,v $
 // $RCSfile: GraphicSelectedState.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/03 22:18:41 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,7 +53,8 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
 	// If the graphic itself was clicked on, then just go to selected
 	// mode.
 	if (mp == null) {
-	    if (graphic.getGraphic().distance(e.getX(), e.getY()) <= 2) {
+	    float distance = graphic.getGraphic().distance(e.getX(), e.getY());
+	    if (distance <= 2) {
 		if (graphic.getCanGrabGraphic()) {
 
 		    // No point was selected, but the graphic was.  Get ready
@@ -62,9 +63,12 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
 		    graphic.getStateMachine().setEdit();
 		    graphic.fireEvent(EOMGCursors.MOVE, "");
 		    graphic.move(e);
+		} else {
+		    Debug.message("eomg", "GraphicStateMachine|selected state|mousePressed - graphic can't be held");
 		}
+		graphic.fireEvent(EOMGCursors.DEFAULT, "");
 	    } else {
-		Debug.message("eomg", "GraphicStateMachine|selected state|mousePressed - graphic can't be held");
+		Debug.message("eomg", "GraphicStateMachine|selected state|mousePressed - click off graphic, " + distance + " away");
 		graphic.fireEvent(EOMGCursors.DEFAULT, "");
 		// Preparing for deactivation, why bother repainting...
 // 		graphic.redraw(e, true);
@@ -95,10 +99,10 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
 		    graphic.fireEvent(EOMGCursors.EDIT, "", e);
 		    graphic.redraw(e, true);
 		} else {
-		    // Bring up GUI if possible
 		    graphic.fireEvent(EOMGCursors.DEFAULT, "", e);
 		}
 	    } else {
+		Debug.message("eomg", " deactivating with fired event");
 		// If the graphic isn't picked, then need to
 		// deactivate with a deactivation event.
 		graphic.fireEvent(new com.bbn.openmap.omGraphics.event.EOMGEvent());

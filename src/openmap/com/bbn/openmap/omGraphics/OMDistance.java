@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMDistance.java,v $
 // $RCSfile: OMDistance.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/26 17:40:06 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,7 +45,7 @@ public class OMDistance extends OMPoly {
     protected OMGraphicList labels = new OMGraphicList();
     protected OMGraphicList points = new OMGraphicList();
 
-    protected Length distUnits = Length.NM;
+    protected transient Length distUnits = Length.NM;
     public DecimalFormat df = new DecimalFormat("0.#");
 
     /**
@@ -247,8 +247,9 @@ public class OMDistance extends OMPoly {
 
 	if (!paintOnlyPoly) {
 	    labels.setLinePaint(getLinePaint());
-	    labels.setMattingPaint(getMattingPaint());
-	    labels.setMatted(isMatted());
+	    if (isMatted()) {
+		labels.setFillPaint(getMattingPaint());
+	    }
 
 	    points.setLinePaint(getLinePaint());
 	    points.setFillPaint(getLinePaint());
@@ -257,4 +258,17 @@ public class OMDistance extends OMPoly {
 	    points.render(g);
 	}
     }
+
+    private void writeObject(java.io.ObjectOutputStream stream) 
+	throws java.io.IOException {
+        stream.defaultWriteObject();
+        stream.writeObject(distUnits.getAbbr());
+     }
+
+    private void readObject(java.io.ObjectInputStream stream)
+        throws java.io.IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        distUnits = Length.get((String)stream.readObject());
+    }
+
 }

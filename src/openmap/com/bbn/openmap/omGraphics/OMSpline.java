@@ -21,8 +21,8 @@ import com.bbn.openmap.util.Debug;
  */
 public class OMSpline extends OMPoly {
 
-    private NatCubicSpline natCubic = new NatCubicSpline();
-    private NatCubicClosedSpline natCubicClosed = new NatCubicClosedSpline();
+    private transient NatCubicSpline natCubic = new NatCubicSpline();
+    private transient NatCubicClosedSpline natCubicClosed = new NatCubicClosedSpline();
 
     /**
      * Default constructor.

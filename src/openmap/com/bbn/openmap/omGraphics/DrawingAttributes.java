@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.10 $
-// $Date: 2003/10/23 21:13:04 $
+// $Revision: 1.11 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -99,11 +99,11 @@ public class DrawingAttributes
 
     /** The name of the property that holds the line paint of the graphics. */
     public final static String linePaintProperty = "lineColor";
-    /**
-     * The name of the property that holds the text paint for Text,
-     * in case that should be different for labels, etc. 
-     */
-    public final static String textPaintProperty = "textColor";
+//     /**
+//      * The name of the property that holds the text paint for Text,
+//      * in case that should be different for labels, etc. 
+//      */
+//     public final static String textPaintProperty = "textColor";
     /** The name of the property that holds the fill paint of the graphics. */
     public final static String fillPaintProperty = "fillColor";
     /**
@@ -172,8 +172,8 @@ public class DrawingAttributes
 
     /** The paint to outline the shapes. */
     protected Paint linePaint = Color.black;
-    /** The paint for text.  Default to black. */
-    protected Paint textPaint = linePaint;
+//     /** The paint for text.  Default to black. */
+//     protected Paint textPaint = linePaint;
     /** The select paint for the shapes. */
     protected Paint selectPaint = Color.black;
     /** The paint to fill the shapes. */
@@ -291,7 +291,7 @@ public class DrawingAttributes
      */
     public void setTo(DrawingAttributes clone) {
 	clone.linePaint = linePaint;
-	clone.textPaint = textPaint;
+// 	clone.textPaint = textPaint;
 	clone.selectPaint = selectPaint;
 	clone.fillPaint = fillPaint;
 	clone.mattingPaint = mattingPaint;
@@ -303,7 +303,7 @@ public class DrawingAttributes
 
     public boolean equals(DrawingAttributes da) {
 	return (da.linePaint == linePaint && 
-		da.textPaint == textPaint && 
+// 		da.textPaint == textPaint && 
 		da.selectPaint == selectPaint && 
 		da.fillPaint == fillPaint && 
 		da.mattingPaint == mattingPaint &&
@@ -640,16 +640,8 @@ public class DrawingAttributes
 	matted = graphic.isMatted();
 	mattingPaint = graphic.getMattingPaint();
 
-	if (graphic instanceof OMText) {
-	    // Seems like we should have a setTextPaint method for 
-	    // this, but it's not in the GUI, so it can wait for now.
-	    textPaint = graphic.getLinePaint();
-	} else {
-	    linePaint = graphic.getLinePaint();
-	}
-
+	linePaint = graphic.getLinePaint();
 	selectPaint = graphic.getSelectPaint();
-
 	fillPaint = graphic.getFillPaint();
 	fillPattern = graphic.getTextureMask();
 
@@ -714,11 +706,7 @@ public class DrawingAttributes
      * @param graphic OMGraphic
      */
     public void setOMGraphicEdgeAttributes(OMGraphic graphic) {
-	if (graphic instanceof OMText) {
-	    graphic.setLinePaint(textPaint);
-	} else {
-	    graphic.setLinePaint(linePaint);
-	}
+	graphic.setLinePaint(linePaint);
 	graphic.setSelectPaint(selectPaint);
 
 	if (stroke != null) {
@@ -757,12 +745,7 @@ public class DrawingAttributes
      */
     public void setOMGraphicEdgeAttributesForScale(OMGraphic graphic, float scale) {
 
-	if (graphic instanceof OMText) {
-	    graphic.setLinePaint(textPaint);
-	} else {
-	    graphic.setLinePaint(linePaint);
-	}
-
+	graphic.setLinePaint(linePaint);
 	graphic.setSelectPaint(selectPaint);
 	if (stroke != null) {
 	    graphic.setStroke(getStrokeForScale(scale));
@@ -1175,10 +1158,10 @@ public class DrawingAttributes
 		props, realPrefix + mattingPaintProperty,
 		mattingPaint);
 	
-	textPaint =
-	    LayerUtils.parseColorFromProperties(
-		props, realPrefix + textPaintProperty,
-		textPaint);
+// 	textPaint =
+// 	    LayerUtils.parseColorFromProperties(
+// 		props, realPrefix + textPaintProperty,
+// 		textPaint);
 
 	fillPaint =
 	    LayerUtils.parseColorFromProperties(
@@ -1334,10 +1317,10 @@ public class DrawingAttributes
 	    props.put(prefix + linePaintProperty, 
 		      Integer.toHexString(((Color)linePaint).getRGB()));
 	}
-	if (textPaint instanceof Color) {
-	    props.put(prefix + textPaintProperty, 
-		      Integer.toHexString(((Color)textPaint).getRGB()));
-	}
+// 	if (textPaint instanceof Color) {
+// 	    props.put(prefix + textPaintProperty, 
+// 		      Integer.toHexString(((Color)textPaint).getRGB()));
+// 	}
 	if (fillPaint instanceof Color) {
 	    props.put(prefix + fillPaintProperty, 
 		      Integer.toHexString(((Color)fillPaint).getRGB()));
@@ -1412,9 +1395,9 @@ public class DrawingAttributes
 	list.put(linePaintProperty + ScopedEditorProperty, 
 		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-	list.put(textPaintProperty, "Text color for graphics.");
-	list.put(textPaintProperty + ScopedEditorProperty, 
-		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+// 	list.put(textPaintProperty, "Text color for graphics.");
+// 	list.put(textPaintProperty + ScopedEditorProperty, 
+// 		 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
 	list.put(fillPaintProperty, "Fill color for graphics.");
 	list.put(fillPaintProperty + ScopedEditorProperty, 
@@ -1443,13 +1426,13 @@ public class DrawingAttributes
 	list.put(mattedProperty + ScopedEditorProperty,
 		 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
 
-	list.put(initPropertiesProperty, getInitPropertiesOrder());
+// 	list.put(initPropertiesProperty, getInitPropertiesOrder());
 
 	return list;
     }
 
     public String getInitPropertiesOrder() {
-	return " " + linePaintProperty + " " + selectPaintProperty + " " + fillPaintProperty + " " + textPaintProperty + " " + mattingPaintProperty + " " + fillPatternProperty + " " + mattedProperty + " " + lineWidthProperty + " " + dashPatternProperty + " " + dashPhaseProperty;
+	return " " + linePaintProperty + " " + selectPaintProperty + " " + fillPaintProperty + " " + /*textPaintProperty + " " +*/ mattingPaintProperty + " " + fillPatternProperty + " " + mattedProperty + " " + lineWidthProperty + " " + dashPatternProperty + " " + dashPhaseProperty;
     }
 
     /**
@@ -1483,7 +1466,7 @@ public class DrawingAttributes
 	StringBuffer sb = new StringBuffer("DrawningAttributes[");
 	sb.append("linePaint(" + linePaint + "), ");
 	sb.append("selectPaint(" + selectPaint + "), ");
-	sb.append("textPaint(" + textPaint + "), ");
+// 	sb.append("textPaint(" + textPaint + "), ");
 	sb.append("mattingPaint(" + mattingPaint + "), ");
 	sb.append("fillPaint(" + fillPaint + "), ");
 	sb.append("fillPattern(" + fillPattern + "), ");

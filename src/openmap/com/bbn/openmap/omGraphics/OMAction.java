@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMAction.java,v $
 // $RCSfile: OMAction.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/07 15:05:13 $
+// $Revision: 1.3 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ public class OMAction implements OMGraphicConstants {
      * @param mask an OMGraphicConstant mask constant.
      * @return the changed integer value.
      */
-    public int setMask(int mask){
+    public int setMask(int mask) {
 	value = OMAction.setMask(value, mask);
 	return value;
     }
@@ -79,7 +79,7 @@ public class OMAction implements OMGraphicConstants {
      * @param mask an OMGraphicConstant mask constant.
      * @return the changed integer value.
      */
-    public int unsetMask(int mask){
+    public int unsetMask(int mask) {
 	value = unsetMask(value, mask);
 	return value;
     }
@@ -89,7 +89,7 @@ public class OMAction implements OMGraphicConstants {
      * @param mask an OMGraphicConstant mask constant.
      * @return whether the value bit is set on the internal value.
      */
-    public boolean isMask(int mask){
+    public boolean isMask(int mask) {
 	return isMask(value, mask);
     }
 
@@ -99,7 +99,7 @@ public class OMAction implements OMGraphicConstants {
      * @param mask an OMGraphicConstant mask constant.
      * @return the changed integer value.
      */
-    public static int setMask(int value, int mask){
+    public static int setMask(int value, int mask) {
 	return (value | mask);
     }
 
@@ -109,7 +109,7 @@ public class OMAction implements OMGraphicConstants {
      * @param mask an OMGraphicConstant mask constant.
      * @return the changed integer value.
      */
-    public static int unsetMask(int value, int mask){
+    public static int unsetMask(int value, int mask) {
 	return (value & ~mask);
     }
 
@@ -119,8 +119,10 @@ public class OMAction implements OMGraphicConstants {
      * @param mask an OMGraphicConstant mask constant.
      * @return whether the value bit is set.
      */
-    public static boolean isMask(int value, int mask){
-	if ((value & mask) == 0){
+    public static boolean isMask(int value, int mask) {
+	// Used to be == 0, but this way it returns true if all of the
+	// mask bits are set.
+	if ((value & mask) < mask) {
 	    return false;
 	}
 	return true;

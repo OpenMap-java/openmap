@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OffsetGrabPoint.java,v $
 // $RCSfile: OffsetGrabPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/10/03 00:53:03 $
+// $Revision: 1.3 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,8 @@
 package com.bbn.openmap.omGraphics;
 
 import java.util.Hashtable;
+
+import com.bbn.openmap.util.Debug;
 
 /** 
  * An OffsetGrabPoint is one that manages other grab points.  When it
@@ -175,9 +177,9 @@ public class OffsetGrabPoint extends GrabPoint {
 	public void update() {
 	    offsetX = gp.getX() - getX();
 	    offsetY = gp.getY() - getY();
-//  	    if (gp instanceof OffsetGrabPoint) {
-//  		((OffsetGrabPoint)gp).updateOffsets();
-//  	    }
+ 	    if (gp instanceof OffsetGrabPoint) {
+ 		((OffsetGrabPoint)gp).updateOffsets();
+ 	    }
 	}
 
 	/**
@@ -195,6 +197,16 @@ public class OffsetGrabPoint extends GrabPoint {
 	    } else {
 		gp.set(newX, newY);
 	    }
+
+// 	    if (Debug.debugging("eomg")) {
+// 		Debug.output("OffsetGrabPoint.offset moving GB to " +
+// 			     newX + ", " + newY);
+// 	    }
+
+ 	    if (gp instanceof OffsetGrabPoint) {
+ 		((OffsetGrabPoint)gp).moveOffsets();
+ 	    }
+
 	}
 
     }

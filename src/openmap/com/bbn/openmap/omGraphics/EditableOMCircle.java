@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMCircle.java,v $
 // $RCSfile: EditableOMCircle.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:28:00 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -176,6 +176,26 @@ public class EditableOMCircle extends EditableOMGraphic {
      */
     public OMGraphic getGraphic() {
 	return circle;
+    }
+
+    /**
+     * Attach to the Moving OffsetGrabPoint so if it moves, it will
+     * move this EditableOMGraphic with it.  EditableOMGraphic version
+     * doesn't do anything, each subclass has to decide which of its
+     * OffsetGrabPoints should be attached to it.
+     */
+    public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
+	gp.addGrabPoint(gpo);
+    }
+
+    /**
+     * Detach from a Moving OffsetGrabPoint.  The EditableOMGraphic
+     * version doesn't do anything, each subclass should remove
+     * whatever GrabPoint it would have attached to an
+     * OffsetGrabPoint.
+     */
+    public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {
+	gp.removeGrabPoint(gpo);
     }
 
     /**

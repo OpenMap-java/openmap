@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/23 21:13:04 $
+// $Revision: 1.7 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -292,6 +292,26 @@ public class EditableOMPoly extends EditableOMGraphic {
      */
     public OMGraphic getGraphic() {
 	return poly;
+    }
+
+    /**
+     * Attach to the Moving OffsetGrabPoint so if it moves, it will
+     * move this EditableOMGraphic with it.  EditableOMGraphic version
+     * doesn't do anything, each subclass has to decide which of its
+     * OffsetGrabPoints should be attached to it.
+     */
+    public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
+	gp.addGrabPoint(gpo);
+    }
+
+    /**
+     * Detach from a Moving OffsetGrabPoint.  The EditableOMGraphic
+     * version doesn't do anything, each subclass should remove
+     * whatever GrabPoint it would have attached to an
+     * OffsetGrabPoint.
+     */
+    public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {
+	gp.removeGrabPoint(gpo);
     }
 
     /**

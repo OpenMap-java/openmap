@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/23 21:13:04 $
+// $Revision: 1.6 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -159,7 +159,6 @@ public class EditableOMPoint extends EditableOMGraphic {
 	super.setMovingPoint(gp);
     }
 
-
     /**
      * Given a MouseEvent, find a GrabPoint that it is touching, and
      * set the moving point to that GrabPoint.
@@ -187,6 +186,26 @@ public class EditableOMPoint extends EditableOMGraphic {
 	    }
 	}
 	return movingPoint;
+    }
+
+    /**
+     * Attach to the Moving OffsetGrabPoint so if it moves, it will
+     * move this EditableOMGraphic with it.  EditableOMGraphic version
+     * doesn't do anything, each subclass has to decide which of its
+     * OffsetGrabPoints should be attached to it.
+     */
+    public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
+	gp.addGrabPoint(gpo);
+    }
+
+    /**
+     * Detach from a Moving OffsetGrabPoint.  The EditableOMGraphic
+     * version doesn't do anything, each subclass should remove
+     * whatever GrabPoint it would have attached to an
+     * OffsetGrabPoint.
+     */
+    public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {
+	gp.removeGrabPoint(gpo);
     }
 
     protected int lastRenderType = -1;
@@ -446,7 +465,6 @@ public class EditableOMPoint extends EditableOMGraphic {
 			    (state instanceof GraphicSelectedState && 
 			     ((i != OFFSET_POINT_INDEX && 
 			       renderType != OMGraphic.RENDERTYPE_OFFSET) || 
-			      
 			      (renderType == OMGraphic.RENDERTYPE_OFFSET)))
 			
 			    ) {

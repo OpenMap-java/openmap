@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMLine.java,v $
 // $RCSfile: EditableOMLine.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/03 22:18:41 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 20:50:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,7 @@ package com.bbn.openmap.omGraphics;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 
@@ -162,6 +163,26 @@ public class EditableOMLine extends EditableOMGraphic {
     public void setMovingPoint(GrabPoint gp) {
 	super.setMovingPoint(gp);
 	gpm = null;
+    }
+
+    /**
+     * Attach to the Moving OffsetGrabPoint so if it moves, it will
+     * move this EditableOMGraphic with it.  EditableOMGraphic version
+     * doesn't do anything, each subclass has to decide which of its
+     * OffsetGrabPoints should be attached to it.
+     */
+    public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
+	gp.addGrabPoint(gpo);
+    }
+
+    /**
+     * Detach from a Moving OffsetGrabPoint.  The EditableOMGraphic
+     * version doesn't do anything, each subclass should remove
+     * whatever GrabPoint it would have attached to an
+     * OffsetGrabPoint.
+     */
+    public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {
+	gp.removeGrabPoint(gpo);
     }
 
     /**
@@ -320,7 +341,7 @@ public class EditableOMLine extends EditableOMGraphic {
      * just be called, and the movingPoint will make the adjustments
      * to the graphic that are needed.
      */
-    public void move(java.awt.event.MouseEvent e) {
+    public void move(MouseEvent e) {
 	// Need to check to see if the OffsetGrabPoint is currently
 	// being used.  If not, just use it, otherwise, will need to
 	// create a special one for the move.
