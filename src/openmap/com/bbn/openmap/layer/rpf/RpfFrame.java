@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfFrame.java,v $
 // $RCSfile: RpfFrame.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.4 $
+// $Date: 2004/02/23 21:10:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -196,7 +196,7 @@ public class RpfFrame {
         }
 
         else s.append(actualFilePath);
-        return s.toString();
+        return s.toString().trim();
     }
 
     /**

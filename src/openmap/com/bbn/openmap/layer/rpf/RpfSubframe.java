@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfSubframe.java,v $
 // $RCSfile: RpfSubframe.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:10 $
+// $Revision: 1.4 $
+// $Date: 2004/02/23 21:10:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -100,9 +100,10 @@ public class RpfSubframe {
                                         (byte[]) null, (Color[]) null, opaqueness);
         }
         information = new OMText(0f, 0f, 10, 20, "***", new java.awt.Font("Helvetica", java.awt.Font.PLAIN, 10), OMText.JUSTIFY_LEFT);
-        information.setLinePaint(Color.red);
+        information.setLinePaint(Color.yellow);
+        information.setFillPaint(new Color(100, 100, 100, 200));
         rectangle = new OMRect(0f, 0f, 0f, 0f, OMGraphic.LINETYPE_STRAIGHT);
-        rectangle.setLinePaint(Color.red);
+        rectangle.setLinePaint(Color.yellow);
         rectangle.setLineType(OMGraphic.LINETYPE_STRAIGHT);
     }
 
@@ -115,27 +116,13 @@ public class RpfSubframe {
     }
 
     public void setScalingTo(int width, int height) {
-        if (width == PIXEL_EDGE_SIZE && height == PIXEL_EDGE_SIZE) {
-            // Not needed due to OMScalingRaster.
-//          image.setImageFilter(null);
+        if (width >= PIXEL_EDGE_SIZE && height >= PIXEL_EDGE_SIZE) {
             information.setData(data);
         } else {
-
-            // HACK the +1 seems to cover up well for some projection
-            // inadequacies....
-
-            // Not needed due to OMScalingRaster.
-//          image.scaleTo(width+1, height+1, OMRasterObject.FAST_SCALING);
-
-            if (width > PIXEL_EDGE_SIZE && height > PIXEL_EDGE_SIZE) {
-                information.setData(data);
-            } else {
-                information.setData("");
-            }
+            information.setData("");
         }
-        rectangle.setLocation(image.getLat(), image.getLon(), 0, 0, width, height);
     }
-    
+
     /**
      * Set the lat/lon of the frame and attribute text. 
      * @param lat latitude of upper left point, in decimal degrees. 
