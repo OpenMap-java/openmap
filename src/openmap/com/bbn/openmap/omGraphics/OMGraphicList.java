@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/07/10 22:03:57 $
+// $Revision: 1.8 $
+// $Date: 2003/08/28 22:09:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -728,6 +728,34 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
     }
 
     /**
+     * Set the matting paint for all the objects on the list.
+     *
+     * @param paint java.awt.Paint
+     */
+    public void setMattingPaint(Paint paint) {
+	super.setMattingPaint(paint);
+	synchronized (this) {
+	    Iterator it = graphics.iterator();
+	    while (it.hasNext()) {
+		((OMGraphic)it.next()).setMattingPaint(paint);
+	    }
+	}
+    }
+
+    /**
+     * Set the matting flag for all the objects on the list.
+     */
+    public void setMatted(boolean value) {
+	super.setMatted(value);
+	synchronized (this) {
+	    Iterator it = graphics.iterator();
+	    while (it.hasNext()) {
+		    ((OMGraphic)it.next()).setMatted(value);
+	    }
+	}
+    }
+
+    /**
      * Projects any graphics needing projection.
      * Use this method to project any new or changed OMGeometrys before
      * painting.  to re-project the whole list, use
@@ -889,6 +917,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 	public OMGeometry omg = null;
 	public float d = Float.POSITIVE_INFINITY;
 	public int index = NONE;  // unknown
+
+	public String toString() {
+	    return "OMDist: omg=" + (omg==null?"null":omg.getClass().getName()) + ", d=" + d +
+		", index=" + index;
+	}
     }
 
     /**
@@ -904,7 +937,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @return OMDist
      */
     protected synchronized OMDist _findClosest(int x, int y, float limit, boolean resetSelect) {
-	OMDist omd = new OMDist();
+  	OMDist omd = new OMDist();
 	OMDist tomd;
 	ListIterator iterator;
 	int i;
@@ -935,6 +968,17 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 	    }
 	}
 
+	if (Debug.debugging("omgraphics")) {
+	    if (omd.omg != null && isVague()) {
+		Debug.output(this.getClass().getName() + " detecting hit and vagueness");
+		omd.omg = this;
+	    } else if (omd.omg != null && !isVague()) {
+		Debug.output(this.getClass().getName() + 
+			     " detecting hit, no vagueness, returning contained "  +
+			     omd.omg.getClass().getName());
+	    }
+	}
+
 	return omd;
     }
 
@@ -952,13 +996,14 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * contacted.  Used here to pass on in case the OMGeometry
      * provided is an OMGraphicList, and to use to decide if deselect
      * should be called on the provided graphic.
-     * @return OMDist if the graphic passed in is the current closest.
-     * If not, OMDist will be null.
+     * @return OMDist with an OMGraphic if the graphic passed in is
+     * the current closest.  OMDist.graphic could be null, OMDist.d
+     * could be Infinity.
      */
     protected synchronized OMDist findClosestTest(OMDist current, int index, OMGeometry graphic, int x, int y, float limit, boolean resetSelect) {
 
 	OMGraphicList omgl;
-	float currentDistance;
+	float currentDistance = Float.MAX_VALUE;
 
 	// cannot select a graphic which isn't visible
 	if (!graphic.isVisible()) {
@@ -968,15 +1013,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 	if (graphic instanceof OMGraphicList) {
 	    omgl = (OMGraphicList)graphic; 
 	    OMDist dist = omgl._findClosest(x, y, limit, resetSelect);
-	    if (dist.omg == null) {
-		return null;
-	    } else {
+	    if (dist.omg != null) {
 		currentDistance = dist.d;
-		if (omgl.isVague()) {
-		    graphic = omgl;
-		} else {
-		    graphic = dist.omg;
-		}
+		graphic = dist.omg;
 	    }
 	} else {
 	    if (resetSelect) graphic.deselect();
@@ -992,10 +1031,9 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 	    }
 	    current.index = index;
 	    current.d = currentDistance;
-	    return current;
 	}
 
-	return null;
+	return current;
     }
 
     /**
@@ -1152,6 +1190,15 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
         float closestDistance = Float.MAX_VALUE;
 	float currentDistance;
 
+	// Handle vagueness.
+	if (isVague()) {
+	    omd = _findClosest(x, y, limit, true);
+	    if (omd != null) {
+		selectAll();
+		return this;
+	    }
+	}
+
 	if (size() != 0) {
 	    if (traverseMode == FIRST_ADDED_ON_TOP) {
 		iterator = graphics.listIterator();
@@ -1299,6 +1346,10 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 		    }
 		}
 	    }
+	}
+
+	if (ret != null && this.isVague()) {
+	    ret = this;
 	}
 
 	return ret;

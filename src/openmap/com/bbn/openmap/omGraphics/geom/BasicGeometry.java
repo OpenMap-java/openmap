@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/07/30 20:15:03 $
+// $Revision: 1.7 $
+// $Date: 2003/08/28 22:09:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -505,7 +505,7 @@ public abstract class BasicGeometry
      * Polygon.  If false, the Shape returned is a GeneralPath object.
      * @return The Shape object for the points.  
      */
-    public static GeneralPath createShape(int xpoints[], int ypoints[], boolean isPolygon) { // used to return a Shape
+    public static GeneralPath createShape(int xpoints[], int ypoints[], boolean isPolygon) {
 	return createShape(xpoints, ypoints, 0, xpoints.length, isPolygon);
     }
 
@@ -599,8 +599,7 @@ public abstract class BasicGeometry
      */
     public static GeneralPath appendShapeEdge(GeneralPath toShape, 
 					      int xpoints[], int ypoints[]) { 
-	return appendShapeEdge(toShape, xpoints, ypoints, 
-			       0, xpoints.length);
+	return appendShapeEdge(toShape, xpoints, ypoints, 0, xpoints.length);
     }
 
     /**
@@ -617,33 +616,7 @@ public abstract class BasicGeometry
     public static GeneralPath appendShapeEdge(GeneralPath toShape, 
 					      int xpoints[], int ypoints[], 
 					      int startIndex, int length) { 
-	if (xpoints == null || ypoints == null) {
-	    return null;
-	}
-
-	if (startIndex < 0) {
-	    startIndex = 0;
-	}
-
-	if (length > xpoints.length - startIndex) {
-	    // Do as much as you can...
-	    length = xpoints.length - startIndex - 1;
-	}
-	
-	GeneralPath path;
-	if (toShape == null) {
-	    path = new GeneralPath(GeneralPath.WIND_EVEN_ODD, length);
-	} else {
-	    path = toShape;
-	}
-	
-	if (length > startIndex) {
-	    for (int j = startIndex; j < length; j++) {
-		path.lineTo(xpoints[j], ypoints[j]);
-	    }
-	}
-	
-	return path;
+	return appendShapeEdge(toShape, createShape(xpoints, ypoints, startIndex, length, false));
     }
 
     /**
@@ -653,7 +626,8 @@ public abstract class BasicGeometry
      * the path yourself if you want it to be a polygon.
      * @param toShape the GeneralPath Shape object to add the edge to.
      * @param addShape the GeneralPath Shape to add to the toShape.
-     * @return toShape, with coordinates appended.
+     * @return toShape, with coordinates appended.  Returns addShape
+     * if toShape was null.
      */
     public static GeneralPath appendShapeEdge(GeneralPath toShape, 
 					      GeneralPath addShape) {
@@ -661,9 +635,14 @@ public abstract class BasicGeometry
 	boolean DEBUG = Debug.debugging("arealist");
 	int pointCount = 0;
 	boolean firstPoint = false;
+
+	// If both null, return null.
+	if (addShape == null) {
+	    return toShape;
+	}
+
 	if (toShape == null) {
-	    toShape = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
-	    firstPoint = true;
+	    return addShape;
 	}
 
 	PathIterator pi2 = addShape.getPathIterator(null);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMAreaList.java,v $
 // $RCSfile: OMAreaList.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/07/15 23:59:37 $
+// $Revision: 1.5 $
+// $Date: 2003/08/28 22:09:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,23 +35,16 @@ import com.bbn.openmap.omGraphics.grid.*;
 import com.bbn.openmap.util.Debug;
 
 /**
- * This class encapsulates a List of OMGeometries.  It's an
- * OMGraphic, so it contains information on how to draw them.  It's
- * also a subclass to the OMGraphicList, and relies on many
- * OMGraphicList methods.
+ * This class encapsulates a list of OMGeometries that are connected to
+ * form one area.  Different types of vector OMGeometries can be
+ * combined and used to create a unique shape over the map.
+ * OMRasterObjects will contribute their shape/size, but not their
+ * images.  The OMGeometries should be added in a clockwise format.
  *
- * <p> The OMGeometryList assumes that all OMGeometries on it should
- * be rendered the same - same fill color, same edge color and stroke,
- * and will create one java.awt.Shape object from all the projected
- * OMGeometries for more efficient rendering. If your individual
- * OMGeometries have independing rendering characteristics, use the
- * OMGraphicList and OMGraphics.
- *
- * <p> Because the OMGeometryList creates a single java.awt.Shape
- * object for all of its contents, it needs to be generated() if an
- * OMGeometry is added or removed from the list.  If you don't
- * regenerate the OMGeometryList, the list will iterate through its
- * contents and render each piece separately.
+ * <P> KNOWN ISSUES: OMAreaLists that wrap around the back of the
+ * earth and showing up on both edges of the map are not handled well
+ * - you'll end up with lines going horizonally across the map.  It's
+ * on the todo list to fix this.
  */
 public class OMAreaList extends OMGeometryList 
     implements GraphicList, Serializable {
@@ -65,7 +58,8 @@ public class OMAreaList extends OMGeometryList
     };
     
     /**
-     * Construct an OMGeometryList with an initial capacity. 
+     * Construct an OMAreaList with a capacity to be combined from an
+     * initial amount of OMGeometries.
      *
      * @param initialCapacity the initial capacity of the list 
      */
@@ -75,30 +69,35 @@ public class OMAreaList extends OMGeometryList
     };
 
     /**
-     * Construct an OMGeometryList around a List of OMGeometries.  The
-     * OMGeometryList assumes that all the objects on the list are
+     * Construct an OMAreaList around a List of OMGeometries.  The
+     * OMAreaList assumes that all the objects on the list are vector
      * OMGeometries, and never does checking.  Live with the
      * consequences if you put other stuff in there.
-     * @param list List of OMGeometries.
+     * @param list List of vector OMGeometries.
      */
     public OMAreaList(java.util.List list) {
 	super(list);
 	init();
     }
 
+    /**
+     * Initialization that sets the OMAreaList, which is a modified
+     * OMGraphicList, to be vague and constructed in a first added,
+     * first used order.
+     */
     protected void init() {
 	setVague(true);
 	setTraverseMode(LAST_ADDED_ON_TOP);
     }
 
     /**
-     * Create the GeneralPath used for the internal Shape object, but
-     * with a twist.  With the OMAreaList, all of the components are
-     * combined to make a single area. So updateShape, which is called
-     * from super.generate(), calls appendShapeEdge() instead of
-     * appending each part Shape to the main Shape.  This method
-     * closes off the GeneralPath Shape, so it will be considered a
-     * polygon.
+     * Create the GeneralPath used for the internal Shape objects held
+     * by the OMGeometries added.  With the OMAreaList, all of the
+     * components are combined to make a single area. So updateShape,
+     * which is called from super.generate(), calls appendShapeEdge()
+     * instead of appending each part Shape to the main Shape.  This
+     * method closes off the GeneralPath Shape, so it will be
+     * considered a polygon.
      */
     public synchronized void generate(Projection p, boolean forceProjectAll) {
 	super.generate(p, forceProjectAll);
@@ -133,6 +132,38 @@ public class OMAreaList extends OMGeometryList
 	    // they are each contributing to the whole.
 	    geometry.setShape((GeneralPath)null);
 	}
+    }
+
+    /**
+     * Overrides the OMGeometryList and OMGraphicList methods to just
+     * call _distance() on the internal shape object.
+     *
+     * @param x x coord
+     * @param y y coord
+     * @param limit the max distance that a graphic has to be within
+     * to be returned, in pixels.
+     * @param resetSelect deselect any OMGraphic touched.
+     * @return OMDist
+     */
+    protected synchronized OMDist _findClosest(int x, int y, float limit, boolean resetSelect) {
+
+  	OMDist omd = new OMDist();
+	float currentDistance = Float.MAX_VALUE;
+
+	// cannot select a graphic which isn't visible
+	if (!isVisible()) {
+	    omd.omg = null;
+	} else {
+	    if (resetSelect) deselect();
+	    currentDistance = _distance(x, y);
+	}
+
+	if (currentDistance < limit) {
+	    omd.omg = this;
+	    omd.d = currentDistance;
+	}
+
+	return omd;
     }
 
 }

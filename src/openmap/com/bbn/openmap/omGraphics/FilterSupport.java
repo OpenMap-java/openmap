@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/FilterSupport.java,v $
 // $RCSfile: FilterSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/06/25 15:33:25 $
+// $Revision: 1.3 $
+// $Date: 2003/08/28 22:09:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -129,8 +129,7 @@ public class FilterSupport implements OMGraphicHandler {
 		OMGraphic omg = (OMGraphic)it.next();
 
 		if (DEBUG) {
-		    Debug.output("FilterSupport.filterList evaluating " + (count++) + 
-				 " OMGraphic, " + omg);
+		    Debug.output("FilterSupport.filterList evaluating " + (count++) + " OMGraphic, " + omg);
 		}
 
 		boolean outsideFilter = true;
@@ -265,7 +264,7 @@ public class FilterSupport implements OMGraphicHandler {
      * List may be null, if it hasn't been set.
      * @see OMGraphic#isVisible().  
      */
-    public OMGraphicList getList() {
+    public synchronized OMGraphicList getList() {
 	if (DEBUG) {
 	    Debug.output("FilterSupport.getList() with " + (list != null?list.size()+" graphics.":"null list."));
 	}
@@ -283,7 +282,7 @@ public class FilterSupport implements OMGraphicHandler {
      * Set the OMGraphicList within this OMGraphicHandler. Works if
      * canSetGraphicList == true.
      */
-    public void setList(OMGraphicList omgl) {
+    public synchronized void setList(OMGraphicList omgl) {
 	if (DEBUG) {
 	    Debug.output("FilterSupport.setList() with " + (omgl != null?omgl.size()+" graphics.":"null list."));
 	}

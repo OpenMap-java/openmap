@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometryList.java,v $
 // $RCSfile: OMGeometryList.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/07/10 22:03:57 $
+// $Revision: 1.6 $
+// $Date: 2003/08/28 22:09:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -280,6 +280,26 @@ public class OMGeometryList extends OMGraphicList
     }
 
     /**
+     * Set the matting paint for all the objects on the list.
+     *
+     * @param paint java.awt.Paint
+     */
+    public void setMattingPaint(Paint paint) {
+	if (paint != null) {
+	    mattingPaint = paint;
+	} else {
+	    mattingPaint = Color.black;
+	}
+    }
+
+    /**
+     * Set the matting flag for all the list.
+     */
+    public void setMatted(boolean value) {
+	matted = value;
+    }
+
+    /**
      * Renders all the objects in the list a geometries context.  This
      * is the same as <code>paint()</code> for AWT components.  The
      * geometries are rendered in the order of traverseMode.  Any
@@ -291,6 +311,15 @@ public class OMGeometryList extends OMGraphicList
     public synchronized void render(Graphics gr) {
 	Shape shp = getShape();
 	if (shp != null) { 
+
+	    if (matted) {
+		if (gr instanceof Graphics2D && 
+		    stroke instanceof BasicStroke) {
+		    ((Graphics2D)gr).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
+		    setGraphicsColor(gr, mattingPaint);
+		    draw(gr);
+		}
+	    }
 
 	    setGraphicsForFill(gr);
 	    ((Graphics2D)gr).fill(shp);
@@ -308,26 +337,37 @@ public class OMGeometryList extends OMGraphicList
 		    geometry = (OMGeometry) iterator.previous();
 			
 		    if (geometry.isVisible()) {
-			setGraphicsForFill(gr);
-			geometry.fill(gr);
-			setGraphicsForEdge(gr);
-			geometry.draw(gr);
+			renderGeometry(geometry, gr);
 		    }
+
 		}
 	    } else {
 		iterator = targets.listIterator();
 		while (iterator.hasNext()) {
 		    geometry = (OMGeometry) iterator.next();
-		    
+
 		    if (geometry.isVisible()) {
-			setGraphicsForFill(gr);
-			geometry.fill(gr);
-			setGraphicsForEdge(gr);
-			geometry.draw(gr);
+			renderGeometry(geometry, gr);
 		    }
 		}
 	    }
 	}
+    }
+
+    protected void renderGeometry(OMGeometry geometry, Graphics gr) {
+	if (matted) {
+	    if (gr instanceof Graphics2D && 
+		stroke instanceof BasicStroke) {
+		((Graphics2D)gr).setStroke(new BasicStroke(((BasicStroke)stroke).getLineWidth() + 2f));
+		setGraphicsColor(gr, mattingPaint);
+		geometry.draw(gr);
+	    }
+	}
+
+	setGraphicsForFill(gr);
+	geometry.fill(gr);
+	setGraphicsForEdge(gr);
+	geometry.draw(gr);
     }
 
     /**
@@ -387,6 +427,7 @@ public class OMGeometryList extends OMGraphicList
 			    p, forceProjectAll);
 	    }
 	}
+	setNeedToRegenerate(false);
     }
 
     /**
@@ -419,6 +460,62 @@ public class OMGeometryList extends OMGraphicList
     }
 
     /**
+     * Return the shortest distance from the graphic to an
+     * XY-point. Checks to see of the point is contained within the
+     * OMGraphic, which may, or may not be the right thing for clear
+     * OMGraphics or lines.<p>
+     *
+     * _distance was added so subclasses could make this call if their
+     * geometries/attributes require this action (when fill color
+     * doesn't matter).
+     *
+     * @param x X coordinate of the point.
+     * @param y Y coordinate of the point.
+     * @return float distance, in pixels, from graphic to the point.
+     * Returns Float.POSITIVE_INFINITY if the graphic isn't ready
+     * (ungenerated).
+     */
+    protected float _distance(int x, int y) {
+	float temp, distance = Float.POSITIVE_INFINITY;
+
+	if (isVague()) {
+
+	    if (getNeedToRegenerate() || shape == null) {
+		return distance;
+	    }
+
+	    if (shape.contains((double)x, (double)y)) {
+		// 	    if (Debug.debugging("omgraphicdetail")) {
+		// 		Debug.output(" contains " + x + ", " + y);
+		// 	    }
+		distance = 0f;
+	    } else {
+		distance = distanceToEdge(x, y);
+	    }
+	} else {
+	    distance = super._distance(x, y);
+	}
+
+	return distance;
+    }
+
+    protected synchronized OMDist _findClosest(int x, int y, float limit, boolean resetSelect) {
+
+	if (shape != null) {
+	    float currentDistance = _distance(x, y);
+	    OMDist omd = new OMDist();
+
+	    if (currentDistance < limit) {
+		omd.omg = this;
+		omd.d = currentDistance;
+	    }
+	    return omd;
+	} else {
+	    return super._findClosest(x, y, limit, resetSelect);
+	}
+    }
+
+    /**
      * Finds the object located the closest to the point, if the
      * object distance away is within the limit.  The search is always
      * conducted from the topmost geometry to the bottommost, depending
@@ -445,7 +542,7 @@ public class OMGeometryList extends OMGraphicList
      * close to the coordinates that isn't an OMGraphic.
      */
     public OMGraphic findClosest(int x, int y, float limit) {
-	return objectToOMGraphic(super.findClosest(x, y, limit));
+	return objectToOMGraphic(_findClosest(x, y, limit).omg);
     }
 
     /**
@@ -457,7 +554,7 @@ public class OMGeometryList extends OMGraphicList
      * OMGraphic or OMGeometry.
      */
     public OMGraphic selectClosest(int x, int y, float limit) {
-	return objectToOMGraphic(super.selectClosest(x, y, limit));
+	return objectToOMGraphic(_selectClosest(x, y, limit));
     }
 
     /**
@@ -527,7 +624,18 @@ public class OMGeometryList extends OMGraphicList
      * @return the geometry that contains the pixel, NONE (null) if none are found.  
      */
     public OMGeometry getContains(int x, int y) {
-	return _getContains(x, y);
+	if (shape != null && isVague() && shape.contains(x, y)) {
+	    return this;
+	} else {
+	    return _getContains(x, y);
+	}
+    }
+
+    /**
+     * Returns this list if x, y is inside the bounds of the contents of this list.
+     */
+    public OMGraphic getOMGraphicThatContains(int x, int y) {
+	return objectToOMGraphic(getContains(x, y));
     }
 
     /**
