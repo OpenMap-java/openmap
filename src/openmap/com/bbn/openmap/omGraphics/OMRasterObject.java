@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/02 14:24:02 $
+// $Revision: 1.3 $
+// $Date: 2003/05/08 16:45:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,9 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import com.bbn.openmap.proj.Projection;
@@ -914,4 +917,53 @@ public abstract class OMRasterObject extends OMGraphic
 	    return image;
 	}
     }
+
+   /**
+     * Code derived from
+     * http://www.dcs.shef.ac.uk/~tom/Java/Power/image_serialization.html
+     */
+    private void writeObject(ObjectOutputStream objectstream)
+       throws IOException {
+
+       //write non-transient, non-static data
+       objectstream.defaultWriteObject();
+       PixelGrabber grabber = new PixelGrabber(bitmap, 0, 0, -1, -1, true);
+
+       if (colorModel == COLORMODEL_IMAGEICON) {
+          try {
+            grabber.grabPixels();
+          } catch (InterruptedException e) {
+            System.out.println("error grabbing pixels");
+          }
+
+          Object pix = grabber.getPixels();
+          Dimension dim = new Dimension(bitmap.getWidth(this),
+                                        bitmap.getHeight(this));
+          objectstream.writeObject(dim);
+          objectstream.writeObject(pix);
+       }
+    }
+
+    /**
+     * Code derived from
+     * http://www.dcs.shef.ac.uk/~tom/Java/Power/image_serialization.html
+     */
+    private void readObject(ObjectInputStream objectstream)
+       throws IOException, ClassNotFoundException {
+
+       Toolkit toolkit = Toolkit.getDefaultToolkit();
+       try {
+          //read non-transient, non-static data
+          objectstream.defaultReadObject();
+          Dimension dim = (Dimension)objectstream.readObject();
+          Object img = objectstream.readObject();
+          int [] pix = (int [])img;
+          bitmap = toolkit.createImage(new MemoryImageSource(dim.width,
+                                             dim.height, pix, 0, dim.width));
+
+       } catch (ClassNotFoundException ce) {
+          System.out.println("class not found");
+       }
+    }
+
 }
