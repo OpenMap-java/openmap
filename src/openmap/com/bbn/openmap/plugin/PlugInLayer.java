@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/03/04 04:14:30 $
+// $Revision: 1.14 $
+// $Date: 2004/05/10 20:50:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -235,10 +235,21 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      *  plugin, too.
      */
     public void setPlugIn(PlugIn aPlugIn) {
+        // Need to remove from BeanContext if it was added previously.
+        if (plugin != null) {
+            removePlugInFromBeanContext(plugin);
+        }
+
+
         plugin = aPlugIn;
         if (aPlugIn != null) {
             plugin.setComponent(this);
             setMapMouseListener(plugin.getMapMouseListener());
+            // This might be called as a result of setProperties() and
+            // then this call won't do anything because the
+            // BeanContext hasn't been set yet.  We need to call it
+            // now in case the plugin is set in the layer later.
+            addPlugInToBeanContext(plugin);
         } else if (Debug.debugging("plugin")) {
             Debug.output("PlugInLayer: null PlugIn set!");
         }
@@ -375,14 +386,52 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
         throws PropertyVetoException {
         super.setBeanContext(in_bc);
 
-        if (in_bc != null && 
-            plugin != null && 
+        // Needs to be done here, because if the plugin was created
+        // from the properties, it will have already been set but the
+        // BeanContext wasn't yet available.
+        addPlugInToBeanContext(getPlugIn());
+    }
 
-            (plugin instanceof BeanContextChild || 
-             (plugin instanceof AbstractPlugIn && 
-              ((AbstractPlugIn)plugin).getAddToBeanContext()))) {
+    /**
+     * Gets the current BeanContext from itself, if it's been set and
+     * the provided PlugIn wants/can be added to the BeanContext, it
+     * will be added..
+     */
+    public void addPlugInToBeanContext(PlugIn pi) {
+        BeanContext bc = getBeanContext();
 
-            in_bc.add(plugin);
+        if (bc != null && 
+            pi != null && 
+
+            (pi instanceof BeanContextChild || 
+             (pi instanceof AbstractPlugIn && 
+              ((AbstractPlugIn)pi).getAddToBeanContext()))) {
+
+            bc.add(pi);
         }
     }
+
+    /**
+     * Gets the current BeanContext from itself, if it's been set and
+     * the provided PlugIn wants/can be added to the BeanContext, it
+     * assumes it was and removes it from the BeanContext.
+     */
+    public void removePlugInFromBeanContext(PlugIn pi) {
+        BeanContext bc = getBeanContext();
+
+        if (bc != null && 
+            pi != null && 
+
+            (pi instanceof BeanContextChild || 
+             (pi instanceof AbstractPlugIn && 
+              ((AbstractPlugIn)pi).getAddToBeanContext()))) {
+
+        // Of course, we don't need all these conditions met to order
+        // the removal, but they are the ones in place that would
+        // cause it to be added, so we don't waste the effort unless
+        // the same conditions are met.
+            bc.remove(pi);
+        }
+    }
+
 }
