@@ -10,7 +10,8 @@
     <property name="javac.excludes" value="**/*.in, **/Makefile, **/*.bat,
 					   **/ChangeLog, **/*.html, **/*.txt,
 					   **/*.*.txt, **/*.dat,
-					   **/*.pl, **/unimplemented/**" />
+					   **/*.pl, **/unimplemented/**, 
+					   **/GeneratorTester.java" />
     <property name="jar.excludes" value="${javac.excludes}, **/*.java"/>
     <property name="corba.excludes" value="**/corba/**"/>
 
