@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingRaster.java,v $
 // $RCSfile: OMScalingRaster.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/02/12 23:05:12 $
+// $Revision: 1.5 $
+// $Date: 2004/03/05 21:17:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -223,7 +223,9 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     protected boolean position(Projection proj) {
 
         if (proj == null) {
-            Debug.error("OMScalingRaster: null projection in position!");
+            if (DEBUG) {
+                Debug.error("OMScalingRaster: null projection in position!");
+            }
             return false;
         }
 
@@ -320,7 +322,9 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         if (DEBUG) Debug.output("OMScalingRaster: scaleTo()");
 
         if (sourceImage == null) {
-            Debug.output("OMScalingRaster.scaleTo() sourceImage is null");
+            if (DEBUG) {
+                Debug.output("OMScalingRaster.scaleTo() sourceImage is null");
+            }
             return;
         }
         

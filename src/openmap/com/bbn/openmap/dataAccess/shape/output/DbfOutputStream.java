@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.7 $
+// $Date: 2004/03/05 21:17:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -191,7 +191,7 @@ public class DbfOutputStream {
                 if (type == DbfTableModel.TYPE_NUMERIC) {
                     Object obj = model.getValueAt(r, c);
                     if (obj instanceof Double) {
-                        Double d = (Double)model.getValueAt(r, c);
+                        Number d = (Number)model.getValueAt(r, c);
                         value = d.toString();
                     } else {
                         value = "";
