@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.16 
+# From configure.in OpenMap Revision: 1.17 
 
 
 
@@ -1046,6 +1046,8 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/app/Makefile
 	com/bbn/openmap/event/Makefile
 	com/bbn/openmap/examples/Makefile
+	com/bbn/openmap/examples/hello/Makefile
+	com/bbn/openmap/examples/hello/hello-world
 	com/bbn/openmap/gui/Makefile
 	com/bbn/openmap/omGraphics/Makefile
 	com/bbn/openmap/proj/Makefile
@@ -1156,6 +1158,8 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/app/Makefile
 	com/bbn/openmap/event/Makefile
 	com/bbn/openmap/examples/Makefile
+	com/bbn/openmap/examples/hello/Makefile
+	com/bbn/openmap/examples/hello/hello-world
 	com/bbn/openmap/gui/Makefile
 	com/bbn/openmap/omGraphics/Makefile
 	com/bbn/openmap/proj/Makefile
@@ -1248,5 +1252,9 @@ test "$no_create" = yes || ${CONFIG_SHELL-/bin/sh} $CONFIG_STATUS || exit 1
 
 
 
+
+
 echo "chmod +x bin/openmap"
+echo "chmod +x com/bbn/openmap/examples/hello/hello-world"
 chmod +x bin/openmap
+chmod +x com/bbn/openmap/examples/hello/hello-world
