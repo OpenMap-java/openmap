@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServer.java,v $
 // $RCSfile: ImageServer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.6 $
+// $Date: 2004/02/23 21:21:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -900,7 +900,7 @@ public class ImageServer
      * it, that will get assigned depending on what image format is
      * used.  
      */
-    public final static void main(String[] argv) {
+    public static void main(String[] argv) {
 
         Debug.init();
         Debug.put("imageserver");

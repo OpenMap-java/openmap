@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGrid.java,v $
 // $RCSfile: OMGrid.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.6 $
+// $Date: 2004/02/23 21:21:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -217,7 +217,7 @@ public class OMGrid extends OMGraphic {
      * the major direction, and then set the data.
      *
      * @param x horizontal location, in pixels, of the left side of
-     * the grid from the left side of the map.  .
+     * the grid from the left side of the map.
      * @param y vertical location, in pixels, of the top of the grid
      * from the top side of the map.
      * @param vResolution the vertical resolution of the data, as
@@ -245,7 +245,7 @@ public class OMGrid extends OMGraphic {
      * @param lon longitude of the anchor point of the grid, in
      * decimal degrees.
      * @param x horizontal location, in pixels, of the left side of
-     * the grid from the longitude anchor point.  .
+     * the grid from the longitude anchor point.
      * @param y vertical location, in pixels, of the top of the grid
      * from the latitude anchor point.
      * @param vResolution the vertical resolution of the data, as
@@ -291,7 +291,7 @@ public class OMGrid extends OMGraphic {
      * the major direction, and then set the data.
      *
      * @param x horizontal location, in pixels, of the left side of
-     * the grid from the left side of the map.  .
+     * the grid from the left side of the map.
      * @param y vertical location, in pixels, of the top of the grid
      * from the top side of the map.
      * @param vResolution the vertical resolution of the data, as
@@ -318,7 +318,7 @@ public class OMGrid extends OMGraphic {
      * @param lon longitude of the anchor point of the grid, in
      * decimal degrees.
      * @param x horizontal location, in pixels, of the left side of
-     * the grid from the longitude anchor point.  .
+     * the grid from the longitude anchor point.
      * @param y vertical location, in pixels, of the top of the grid
      * from the latitude anchor point.
      * @param vResolution the vertical resolution of the data, as

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/CSVFile.java,v $
 // $RCSfile: CSVFile.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:08 $
+// $Revision: 1.5 $
+// $Date: 2004/02/23 21:21:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,7 +27,7 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.CSVTokenizer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.layer.util.LayerUtils;
+import com.bbn.openmap.util.PropUtils;
 
 import java.io.*;
 import java.util.*;
@@ -60,7 +60,7 @@ public class CSVFile {
      * Don't do anything special, since all defaults are set already 
      */
     public CSVFile(String name) throws MalformedURLException {
-        infoUrl = LayerUtils.getResourceOrFileOrURL(null, name); 
+        infoUrl = PropUtils.getResourceOrFileOrURL(name); 
     }
     
     /** 
