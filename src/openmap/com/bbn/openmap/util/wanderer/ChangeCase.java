@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/ChangeCase.java,v $
 // $RCSfile: ChangeCase.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/27 01:49:42 $
+// $Revision: 1.4 $
+// $Date: 2004/06/01 17:26:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -123,8 +123,8 @@ public class ChangeCase extends Wanderer implements WandererCallback {
         }
 
         boolean verbose = false;
-        dirs = ap.getArgValues("verbose");
-        if (dirs != null) {
+        String[] verboseTest = ap.getArgValues("verbose");
+        if (verboseTest != null) {
             verbose = true;
         }
 
