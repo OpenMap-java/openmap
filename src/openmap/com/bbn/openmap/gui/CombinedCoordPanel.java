@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/CombinedCoordPanel.java,v $
 // $RCSfile: CombinedCoordPanel.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/16 22:12:32 $
+// $Revision: 1.2 $
+// $Date: 2003/08/14 22:56:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -197,7 +197,7 @@ public class CombinedCoordPanel extends OMComponentPanel
      * CombinedCoordPanel will add it to itself as a CenterListener.
      */
     public void findAndInit(Object someObj) {
-	if (someObj instanceof MapBean) {
+	if (someObj instanceof CenterListener) {
 	    addCenterListener((CenterListener)someObj);
 	}
     }
@@ -207,7 +207,7 @@ public class CombinedCoordPanel extends OMComponentPanel
      * CombinedCoordPanel will remove it from itself as a CenterListener.
      */ 
    public void findAndUndo(Object someObj) {
-	if (someObj instanceof MapBean) {
+	if (someObj instanceof CenterListener) {
 	    removeCenterListener((CenterListener)someObj);
 	}
     }

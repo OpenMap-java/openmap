@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigatePanel.java,v $
 // $RCSfile: NavigatePanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/20 06:59:05 $
+// $Revision: 1.3 $
+// $Date: 2003/08/14 22:56:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,36 +41,36 @@ import com.bbn.openmap.util.Debug;
 public class NavigatePanel extends OMToolComponent
     implements Serializable, ActionListener {
 
-    public final static transient String panNWCmd = "panNW";
-    public final static transient String panNCmd = "panN";
-    public final static transient String panNECmd = "panNE";
-    public final static transient String panECmd = "panE";
-    public final static transient String panSECmd = "panSE";
-    public final static transient String panSCmd = "panS";
-    public final static transient String panSWCmd = "panSW";
-    public final static transient String panWCmd = "panW";
-    public final static transient String centerCmd = "center";
+    public final static String panNWCmd = "panNW";
+    public final static String panNCmd = "panN";
+    public final static String panNECmd = "panNE";
+    public final static String panECmd = "panE";
+    public final static String panSECmd = "panSE";
+    public final static String panSCmd = "panS";
+    public final static String panSWCmd = "panSW";
+    public final static String panWCmd = "panW";
+    public final static String centerCmd = "center";
 
-    protected static transient JButton nwButton = null;
-    protected static transient JButton nButton = null;
-    protected static transient JButton neButton = null;
-    protected static transient JButton eButton = null;
-    protected static transient JButton seButton = null;
-    protected static transient JButton sButton = null;
-    protected static transient JButton swButton = null;
-    protected static transient JButton wButton = null;
-    protected static transient JButton cButton = null;
+    protected transient JButton nwButton = null;
+    protected transient JButton nButton = null;
+    protected transient JButton neButton = null;
+    protected transient JButton eButton = null;
+    protected transient JButton seButton = null;
+    protected transient JButton sButton = null;
+    protected transient JButton swButton = null;
+    protected transient JButton wButton = null;
+    protected transient JButton cButton = null;
 
     // default icon names
-    protected static transient String nwName = "nw.gif";
-    protected static transient String nName = "n.gif";
-    protected static transient String neName = "ne.gif";
-    protected static transient String eName = "e.gif";
-    protected static transient String seName = "se.gif";
-    protected static transient String sName = "s.gif";
-    protected static transient String swName = "sw.gif";
-    protected static transient String wName = "w.gif";
-    protected static transient String cName = "center.gif";
+    protected static String nwName = "nw.gif";
+    protected static String nName = "n.gif";
+    protected static String neName = "ne.gif";
+    protected static String eName = "e.gif";
+    protected static String seName = "se.gif";
+    protected static String sName = "s.gif";
+    protected static String swName = "sw.gif";
+    protected static String wName = "w.gif";
+    protected static String cName = "center.gif";
 
     protected PanSupport panDelegate;
     protected CenterSupport centerDelegate;
