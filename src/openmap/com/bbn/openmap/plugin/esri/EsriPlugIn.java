@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriPlugIn.java,v $
 // $RCSfile: EsriPlugIn.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/14 20:52:24 $
+// $Revision: 1.5 $
+// $Date: 2003/11/21 22:59:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -181,6 +181,14 @@ public class EsriPlugIn extends AbstractPlugIn
     private String shx;
     private String shp;
     
+    /**
+     * A simple list mechanism that will let selected OMGraphics to be
+     * drawn on top of all the others.  Using this list instead of
+     * changing the order of the esri graphic list maintains the order
+     * of that list.  We clear out this and add to it as necessary.
+     */
+    protected OMGraphicList selectedGraphics = new OMGraphicList();
+
     /** The last projection. */
     protected Projection proj;
 
@@ -377,9 +385,20 @@ public class EsriPlugIn extends AbstractPlugIn
     public OMGraphicList getRectangle(Projection p) {
 	OMGraphicList list = getEsriGraphicList();
 	proj = p;
+
 	if (list != null) {
 	    list.generate(p);
+
+	    // Setting the list up so that if anything is "selected",
+	    // it will also be drawn on top of all the other
+	    // OMGraphics.  This maintains order while also making any
+	    // line edge changes more prominent.
+	    OMGraphicList parent = new OMGraphicList();
+	    parent.add(selectedGraphics);
+	    parent.add(list);
+	    list = parent;
 	}
+
 	return list;
     }
 
@@ -611,6 +630,8 @@ public class EsriPlugIn extends AbstractPlugIn
     public void selectGraphic(int index) {
 	EsriGraphicList list = getEsriGraphicList();
 	list.deselectAll();
+	// Clear out the selected graphics list
+	selectedGraphics.clear();
 	selectGraphic(list.getOMGraphicAt(index));
 	graphicIndex = index;
 	list.regenerate(proj);
@@ -623,6 +644,8 @@ public class EsriPlugIn extends AbstractPlugIn
 	if (graphic != null) {
 	    graphic.select();
 	    graphic.regenerate(proj);
+	    // Set the selected OMGraphic on the selected list.
+	    selectedGraphics.add(graphic);
 	}
     }
 
