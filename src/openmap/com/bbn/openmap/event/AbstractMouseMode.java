@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/AbstractMouseMode.java,v $
 // $RCSfile: AbstractMouseMode.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.10 $
+// $Date: 2005/02/02 13:05:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,12 +41,14 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * <pre>
  * 
- *  
- *  # Name that layers use to get events from this mode
- *  mousemode.id=ID
- *  # Tooltip and Menu name for mode
- *  mousemode.prettyName=Display Name
- * 
+ *    
+ *    # Name that layers use to get events from this mode
+ *    mousemode.id=ID
+ *    # Tooltip and Menu name for mode
+ *    mousemode.prettyName=Display Name
+ *   
+ *    
+ *   
  *  
  * </pre>
  * 
@@ -158,7 +160,7 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
      */
     public String getPrettyName() {
         if (prettyName == null) {
-            return ID;
+            return i18n.get(this.getClass(), PrettyNameProperty, ID);
         } else {
             return prettyName;
         }
