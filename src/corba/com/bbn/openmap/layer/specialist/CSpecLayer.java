@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/CSpecLayer.java,v $
 // $RCSfile: CSpecLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:04 $
+// $Revision: 1.6 $
+// $Date: 2004/02/06 00:12:35 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -515,7 +515,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer
      *
      * @return a JGraphicList from the server.
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         JGraphicList emptyList = new JGraphicList();
         if (isCancelled()) {
             dirtybits |= PREMATURE_FINISH;
