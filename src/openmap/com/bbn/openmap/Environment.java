@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Environment.java,v $
 // $RCSfile: Environment.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/21 20:43:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -385,10 +385,10 @@ public class Environment extends Properties {
 	    doingXWindowsWorkaround = false;
 	    Debug.message("env", "Environment: is Mac OS!");
 	} else if (osname.equalsIgnoreCase("Mac OS X")) {
-//  	    isXWindows = true;
-//  	    doingXWindowsWorkaround = true;
-	    isXWindows = false;
-	    doingXWindowsWorkaround = false;
+ 	    isXWindows = true;
+ 	    doingXWindowsWorkaround = true;
+// 	    isXWindows = false;
+// 	    doingXWindowsWorkaround = false;
 	    com.bbn.openmap.omGraphics.DrawingAttributes.alwaysSetTextToBlack = true;
 	    Debug.message("env", "Environment: Excellent! Mac OS X!");
 	} else {
