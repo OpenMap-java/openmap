@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/26 00:23:24 $
+// $Revision: 1.2 $
+// $Date: 2003/06/26 17:51:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -149,11 +149,13 @@ public class MGRSPoint extends UTMPoint {
      * translate it to lat/lon decimal degrees.
      */
     public void setMGRS(String mgrsString) {
-	mgrs = mgrsString.toUpperCase(); // Just to make sure.
 	try {
+	    mgrs = mgrsString.toUpperCase(); // Just to make sure.
 	    decode(mgrs);
 	} catch (StringIndexOutOfBoundsException sioobe) {
 	    throw new NumberFormatException("MGRSPoint has bad string: " + mgrsString);
+	} catch (NullPointerException npe) {
+	    // Blow off	    
 	}
     }
 
