@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/AUTHORS,v $
 $RCSfile: AUTHORS,v $
-$Revision: 1.14 $
-$Date: 2003/03/06 04:20:43 $
+$Revision: 1.15 $
+$Date: 2003/04/21 19:31:02 $
 $Author: dietrick $
 
 People and organizations that have contributed to OpenMap
@@ -97,6 +97,9 @@ Thomas Paricaud
 
 Eric Lepicier
   Provided OMSpline classes and support for editing and decorating them.
+
+David J. Ward
+  Provided the ScaleDisplayLayer.
 
 --------------------------------------
 
