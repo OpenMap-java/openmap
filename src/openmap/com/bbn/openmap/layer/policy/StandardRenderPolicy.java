@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardRenderPolicy.java,v $
 // $RCSfile: StandardRenderPolicy.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/10 22:03:57 $
+// $Revision: 1.2 $
+// $Date: 2003/08/28 22:25:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,7 @@ package com.bbn.openmap.layer.policy;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.util.Debug;
 import java.awt.Graphics;
 
 /**
@@ -38,11 +39,14 @@ public class StandardRenderPolicy implements RenderPolicy {
      */
     protected OMGraphicHandlerLayer layer;
 
+    protected boolean DEBUG = false;
+
     /**
      * Don't pass in a null layer.
      */
     public StandardRenderPolicy(OMGraphicHandlerLayer layer) {
 	this.layer = layer;
+	DEBUG = Debug.debugging("layer");
     }
 
     public OMGraphicHandlerLayer getLayer() {
@@ -57,6 +61,8 @@ public class StandardRenderPolicy implements RenderPolicy {
 	OMGraphicList list = layer.getList();
 	if (list != null) {
 	    list.render(g);
+	} else if (DEBUG) {
+	    Debug.output(layer.getName() + ".paint(): NULL list, skipping...");
 	}
     }
 }

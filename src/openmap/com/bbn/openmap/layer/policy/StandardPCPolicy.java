@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardPCPolicy.java,v $
 // $RCSfile: StandardPCPolicy.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/10 22:03:57 $
+// $Revision: 1.2 $
+// $Date: 2003/08/28 22:25:05 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,7 +26,9 @@ package com.bbn.openmap.layer.policy;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.event.LayerStatusEvent;
 import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * ProjectionChangePolicy that uses a Layer SwingWorker to kick off a
@@ -67,9 +69,15 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
 	    // Some criteria can decide whether
 	    // starting another thread is worth it...
 	    if (shouldSpawnThreadForPrepare()) {
+		if (Debug.debugging("layer")) {
+		    Debug.output(getLayer().getName() + ": StandardPCPolicy projectionChanged with NEW projection, spawning thread to handle it.");
+		}
 		layer.doPrepare();
 		return;
 	    } else {
+		if (Debug.debugging("layer")) {
+		    Debug.output(getLayer().getName() + ": StandardPCPolicy projectionChanged with NEW projection, handling it within current thread.");
+		}
 		layer.prepare();
 		layer.repaint();
 	    }
@@ -77,6 +85,21 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
 	    layer.repaint();
 	}
 	layer.fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+    }
+
+    /**
+     * This is a subtle call, that dictates what should happen when
+     * the LayerWorker has completed working in it's thread.  The
+     * LayerWorker.get() method returns whatever was returned in the
+     * OMGraphicHandler.prepare() method, an OMGraphicList.  In most
+     * cases, this object should be set as the Layer's list at this
+     * time.  Some Layers, working asynchronously with their data
+     * sources, might want nothing to happen.
+     */
+    public void workerComplete(OMGraphicList aList) {
+	if (layer != null) {
+	    layer.setList(aList);
+	}
     }
 
     /**
