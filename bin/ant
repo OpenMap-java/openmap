@@ -5,6 +5,8 @@ if [ -f $HOME/.antrc ] ; then
 fi
 
 # Cygwin support.  $cygwin _must_ be set to either true or false.
+# Make sure that your OPENMAP_HOME and other variables are defined in
+# terms of the cygdrive path, and not the windows path...
 case "`uname`" in
   CYGWIN*) cygwin=true ;;
   *) cygwin=false ;;
