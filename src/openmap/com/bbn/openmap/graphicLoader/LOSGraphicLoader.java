@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/LOSGraphicLoader.java,v $
 // $RCSfile: LOSGraphicLoader.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2003/08/21 20:36:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -158,7 +158,7 @@ public class LOSGraphicLoader extends MMLGraphicLoader
 	return ret;
     }
 
-    public void actionPerformed(java.awt.event.ActionEvent ae){
+    public void actionPerformed(java.awt.event.ActionEvent ae) {
 	String cmd = ae.getActionCommand();
 	if (cmd == TimerCmd) {
 	    JCheckBox check = (JCheckBox)ae.getSource();
@@ -236,7 +236,7 @@ public class LOSGraphicLoader extends MMLGraphicLoader
     }
 
     /**
-     * The delay between timer pulses, in milliseconds.
+     * The delay between timer pulses, in milliseconds.  Default is 3 seconds.
      */
     protected int updateInterval = 3000;
 
@@ -267,7 +267,7 @@ public class LOSGraphicLoader extends MMLGraphicLoader
 	panel.add(addPathButton);
 
 	// Only want to do this once...
-	if (timerButton == null) {
+	if (timerButton == null && getTimer() != null) {
 	    timerButton = new JCheckBox("Run Timer", getTimer().isRunning());
 	    timerButton.addActionListener(this);
 	    timerButton.setActionCommand(TimerCmd);

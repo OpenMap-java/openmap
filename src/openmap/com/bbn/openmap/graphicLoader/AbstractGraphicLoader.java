@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/AbstractGraphicLoader.java,v $
 // $RCSfile: AbstractGraphicLoader.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/06/25 20:38:09 $
+// $Revision: 1.2 $
+// $Date: 2003/08/21 20:36:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -128,15 +128,31 @@ public abstract class AbstractGraphicLoader extends OMComponent
 
     /**
      * If you want the layer to update itself at certain intervals,
-     * you can set the timer to do that.  Set it to null to disable it.
+     * you can set the timer to do that.  Set it to null to disable
+     * it.  If the current timer is not null, the graphic loader is
+     * removed as an ActionListener.  If the new one is not null, the
+     * graphic loader is added as an ActionListener.
      */
     public void setTimer(Timer t) {
+	if (timer != null) {
+	    timer.stop();
+	    timer.removeActionListener(this);
+	}
+
 	timer = t;
+	if (timer != null) {
+	    timer.addActionListener(this);
+	}
     }
 
+    /**
+     * Creates a timer with the current updateInterval and calls
+     * setTimer().
+     */
     public void createTimer() {
-	timer = new Timer(updateInterval, this);
-	timer.setInitialDelay(0);
+	Timer t = new Timer(updateInterval, this);
+	t.setInitialDelay(0);
+	setTimer(t);
     }
 
     /**
