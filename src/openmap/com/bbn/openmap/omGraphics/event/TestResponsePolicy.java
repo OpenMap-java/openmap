@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/TestResponsePolicy.java,v $
 // $RCSfile: TestResponsePolicy.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/23 22:46:24 $
+// $Revision: 1.4 $
+// $Date: 2003/10/10 15:47:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,7 +24,9 @@
 package com.bbn.openmap.omGraphics.event;
 
 import java.awt.event.MouseEvent;
-import javax.swing.JPopupMenu;
+import java.util.LinkedList;
+import java.util.List;
+import javax.swing.JMenuItem;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -98,14 +100,16 @@ public class TestResponsePolicy implements GestureResponsePolicy {
 	return "TextResponsePolicy ToolTipText";
     }
 
-    public JPopupMenu modifyPopupMenuForMap(JPopupMenu jpm) {
-	Debug.output("modifyPopupMenuForMap(MAP)");
-	return jpm;
+    public List getItemsForMapMenu() {
+	Debug.output("getMenuForMap(MAP)");
+	return null;
     }
 
-    public JPopupMenu modifyPopupMenuFor(OMGraphic omg, JPopupMenu jpm) {
-	Debug.output("modifyPopupMenuFor(" + omg.getClass().getName() + ")");
-	return jpm;
+    public List getItemsForOMGraphicMenu(OMGraphic omg) {
+	Debug.output("getMenuFor(" + omg.getClass().getName() + ")");
+	List list = new LinkedList();
+	list.add(new JMenuItem(omg.getClass().getName()));
+	return list;
     }
 
 }

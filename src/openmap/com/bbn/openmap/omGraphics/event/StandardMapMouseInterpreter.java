@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/10/08 21:34:08 $
+// $Revision: 1.10 $
+// $Date: 2003/10/10 15:47:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,9 @@ package com.bbn.openmap.omGraphics.event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.util.Iterator;
+import java.util.List;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -338,7 +341,9 @@ public class StandardMapMouseInterpreter
 	}
 
 	if (omg != null) {
-	    select(omg);
+	    if (isLeftMouseButton(e)) {
+		select(omg);
+	    }
 	    setClickInterest(new GeometryOfInterest(omg, e));
 	    ret = true;
 	}
@@ -610,11 +615,12 @@ public class StandardMapMouseInterpreter
      * @return false
      */
     public boolean rightClick(MouseEvent me) {
+	boolean ret = false;
 	if (DEBUG) {
 	    Debug.output("rightClick(MAP) at " + me.getX() + ", " + me.getY());
 	}
 
-	return false;
+	return displayPopup(grp.getItemsForMapMenu(), me);
     }
 
     /**
@@ -627,7 +633,28 @@ public class StandardMapMouseInterpreter
 			 me.getX() + ", " + me.getY());
 	}
 
-	return true;
+	return displayPopup(grp.getItemsForOMGraphicMenu(omg), me);
+    }
+
+    /**
+     * Create a popup menu from GRP requests, over the mouse event
+     * location.
+     * @return true if popup was presented, false if not.
+     */
+    protected boolean displayPopup(List contents, MouseEvent me) {
+	if (DEBUG) {
+	    Debug.output("displayPopup(" + contents + ") " + me);
+	}
+	if (contents != null && contents.size() > 0) {
+	    JPopupMenu jpm = new JPopupMenu();
+	    Iterator it = contents.iterator();
+	    while (it.hasNext()) {
+		jpm.add((java.awt.Component)it.next());
+	    }
+	    jpm.show((java.awt.Component)me.getSource(), me.getX(), me.getY());
+	    return true;
+	}
+	return false;
     }
 
     /**
