@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ZoomPanel.java,v $
 // $RCSfile: ZoomPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/10/23 21:01:16 $
+// $Revision: 1.4 $
+// $Date: 2003/10/24 23:36:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -157,7 +157,10 @@ public class ZoomPanel extends OMToolComponent
      */
     protected JButton getButton(String name, String info, String command) {
 	URL url = ZoomPanel.class.getResource(name + ".gif");
-	JButton b = new JButton(new ImageIcon(url, info));
+	ImageIcon icon = new ImageIcon(url, info);
+	JButton b = new JButton(icon);
+	b.setPreferredSize(new Dimension(icon.getIconWidth(), 
+					 icon.getIconHeight()));
 	b.setToolTipText(info);
 	b.setMargin(new Insets(0,0,0,0));
         b.setActionCommand(command);
