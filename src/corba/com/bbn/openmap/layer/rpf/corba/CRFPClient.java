@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CRFPClient.java,v $
 // $RCSfile: CRFPClient.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 01:53:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,16 +36,11 @@ import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.*;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.util.corba.CORBASupport;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 import com.sun.image.codec.jpeg.*;
-
-/*  CORBA  */
-import org.omg.CORBA.ORB;
-import org.omg.CORBA.BooleanHolder;
-import org.omg.CORBA.ShortHolder;
-import org.omg.CORBA.StringHolder;
-import org.omg.CosNaming.*;
 
 /** 
  * An implementation of the RpfFrameProvider interface that uses CORBA
@@ -65,35 +60,36 @@ import org.omg.CosNaming.*;
 public class CRFPClient implements RpfFrameProvider {
 
     /** The property specifying the IOR URL. */
-    public static final String iorUrlProperty = ".ior";
+    public static final String iorUrlProperty = "ior";
     /** The name of the server, using the name service.*/
-    public static final String nameProperty = ".name";
+    public static final String nameProperty = "name";
     /** The property specifying the initial JPEG quality. */
-    public static final String JPEGQualityProperty = ".jpegQuality";
+    public static final String JPEGQualityProperty = "jpegQuality";
     /** The CRFPServer. */
     protected transient Server server = null;
-    private transient ORB orb;
     /** The string used for the CORBA naming service. */
     protected String naming = null;
-    private String clientID = Environment.generateUniqueString();
     /** The URL used for the IOR, to connect to the server that way. */
     protected URL iorURL = null;
-    /** The compression quality of the images. Lower quality images
-     *  are smaller. */
+    private String clientID = Environment.generateUniqueString();
+    /**
+     * The compression quality of the images. Lower quality images
+     * are smaller. 
+     */
     public float jpegQuality = .8f;
 
     /**  
      * We'll set up the connection to the server when it's needed,
      * but not here. 
      */
-    public CRFPClient(){}
+    public CRFPClient() {}
 
     /**
      * Set the JPEG quality parameter for subframe transfer.
      * @param jq number between 0 and 1, should be between .4 and .8.
      * Anything else is a waste.  
      */
-    public void setJpegQuality(float jq){
+    public void setJpegQuality(float jq) {
 	jpegQuality = jq;
     }
 
@@ -101,21 +97,21 @@ public class CRFPClient implements RpfFrameProvider {
      * Get the quality setting for JPEG subframe retrieval.
      * @return float reflecting JPEG quality.
      */
-    public float getJpegQuality(){
+    public float getJpegQuality() {
 	return jpegQuality;
     }
 
     /**
      * Set the name used for the CORBA naming service.
      */
-    public void setNaming(String CORBAName){
+    public void setNaming(String CORBAName) {
 	naming = CORBAName;
     }
 
     /**
      * Get the name used for the CORBA naming service.
      */
-    public String getNaming(){
+    public String getNaming() {
 	return naming;
     }
 
@@ -123,14 +119,14 @@ public class CRFPClient implements RpfFrameProvider {
      * If you want to connect to the server using an ior, set the URL
      * where it is located.  
      */
-    public void setIorURL(URL iorurl){
+    public void setIorURL(URL iorurl) {
 	iorURL = iorurl;
     }
 
     /**
      * Get the URL for the ior.
      */
-    public URL getIorURL(){
+    public URL getIorURL() {
 	return iorURL;
     }
 
@@ -138,7 +134,7 @@ public class CRFPClient implements RpfFrameProvider {
      * Get the clientID string that is used by the server to keep
      * track of clients.  This string in internally generated.  
      */
-    public String getClientID(){
+    public String getClientID() {
 	return clientID;
     }
 
@@ -147,6 +143,8 @@ public class CRFPClient implements RpfFrameProvider {
      */
     public void setProperties(String prefix, java.util.Properties properties) {
 
+	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+
 	jpegQuality = LayerUtils.floatFromProperties(properties,
 						     prefix + JPEGQualityProperty,
 						     .8f);
@@ -154,7 +152,7 @@ public class CRFPClient implements RpfFrameProvider {
 	String url = properties.getProperty(prefix + iorUrlProperty);
 	if (url != null) {
 	    try {
-		iorURL = new URL(url);
+		iorURL = LayerUtils.getResourceOrFileOrURL(url);
 	    } catch (MalformedURLException e) {
 		throw new IllegalArgumentException("\"" + url + "\""
 						   + " is malformed.");
@@ -169,11 +167,11 @@ public class CRFPClient implements RpfFrameProvider {
      * server, so that it can free up it's cache for it.
      */
     protected void finalize() {
-	if (Debug.debugging("crfp")){
+	if (Debug.debugging("crfp")) {
 	    Debug.output("CRFPClient.finalize(): calling shutdown");
 	}
         try {
-            if (server != null){
+            if (server != null) {
                 server.signoff(clientID);
 	    }
             server = null;
@@ -188,7 +186,7 @@ public class CRFPClient implements RpfFrameProvider {
      * Returns true because the view attributes should be set if they
      * change at the RpfCacheHandler/RpfCacheManager.  
      */
-    public boolean needViewAttributeUpdates(){
+    public boolean needViewAttributeUpdates() {
 	return true;
     }
     
@@ -197,7 +195,7 @@ public class CRFPClient implements RpfFrameProvider {
      * alot about what you'll be asking for later.  
      * @param rva the view attributes.
      */
-    public void setViewAttributes(RpfViewAttributes rva){
+    public void setViewAttributes(RpfViewAttributes rva) {
 	Server serv = getServer();
 	if (serv == null || rva == null) {
 	    return;
@@ -210,7 +208,7 @@ public class CRFPClient implements RpfFrameProvider {
 							  rva.imageScaleFactor,
 							  rva.chartSeries), clientID);
 	    Debug.message("crfp", "CRFPClient: setting attributes.");
-	} catch (org.omg.CORBA.SystemException e){
+	} catch (org.omg.CORBA.SystemException e) {
 	    handleCORBAError(e);
 	}
     }
@@ -250,7 +248,7 @@ public class CRFPClient implements RpfFrameProvider {
 	    boxes = serv.getCoverage(ullat, ullon, lrlat, lrlon,
 				     proj, clientID);
 	    return translateCRFPCoverageBoxes(boxes);
-	} catch (org.omg.CORBA.SystemException e){
+	} catch (org.omg.CORBA.SystemException e) {
 	    handleCORBAError(e);
 	}
 	
@@ -290,7 +288,7 @@ public class CRFPClient implements RpfFrameProvider {
 	    boxes = serv.getCatalogCoverage(ullat, ullon, lrlat, lrlon,
 					    proj, chartSeriesCode, clientID);
 	    return translateCRFPCoverageBoxes(boxes);
-	} catch (org.omg.CORBA.SystemException e){
+	} catch (org.omg.CORBA.SystemException e) {
 	    handleCORBAError(e);
 	}
 
@@ -306,8 +304,8 @@ public class CRFPClient implements RpfFrameProvider {
      */
     public float getCalculatedCoverage(float ullat, float ullon,
 				       float lrlat, float lrlon,
-				       CADRG p, String chartSeries){
-	if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)){
+				       CADRG p, String chartSeries) {
+	if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)) {
 	    return 0f;
 	}
 
@@ -316,7 +314,7 @@ public class CRFPClient implements RpfFrameProvider {
 
 	int size = results.size();
 
-	if (size == 0){
+	if (size == 0) {
 	    return 0f;
 	}
 
@@ -332,18 +330,18 @@ public class CRFPClient implements RpfFrameProvider {
 	double frameLatInterval = Double.MAX_VALUE;
 	double frameLonInterval = Double.MAX_VALUE;
 	RpfCoverageBox rcb;
-	for (i = 0; i < size; i++){
+	for (i = 0; i < size; i++) {
 	    rcb = (RpfCoverageBox)results.elementAt(i);
-	    if (rcb.subframeLatInterval < frameLatInterval){
+	    if (rcb.subframeLatInterval < frameLatInterval) {
 		frameLatInterval = rcb.subframeLatInterval;
 	    }
-	    if (rcb.subframeLonInterval < frameLonInterval){
+	    if (rcb.subframeLonInterval < frameLonInterval) {
 		frameLonInterval = rcb.subframeLonInterval;
 	    }
 	}
 
 	if (frameLatInterval == Double.MAX_VALUE || 
-	    frameLonInterval == Double.MAX_VALUE){
+	    frameLonInterval == Double.MAX_VALUE) {
 	    return 0.0f;
 	}
 
@@ -351,20 +349,20 @@ public class CRFPClient implements RpfFrameProvider {
 	int numVFrames = (int) Math.ceil((ullat- lrlat)/frameLatInterval);
 
 	boolean[][] coverage = new boolean[numHFrames][numVFrames];
-	for (i = 0; i < size; i++){
+	for (i = 0; i < size; i++) {
 
 	    rcb = (RpfCoverageBox)results.elementAt(i);
-	    if (rcb.percentCoverage == 100){
+	    if (rcb.percentCoverage == 100) {
 		return 1.0f;
 	    }
 
-	    for (y = 0; y < numVFrames; y++){
-		for (x = 0; x < numHFrames; x++){
+	    for (y = 0; y < numVFrames; y++) {
+		for (x = 0; x < numHFrames; x++) {
 		    // degree location of indexs
 		    float yFrameLoc = (float)(lrlat + (y*frameLatInterval));
 		    float xFrameLoc = (float)(ullon + (x*frameLonInterval));
-		    if (coverage[x][y] == false){
-			if (rcb.within(yFrameLoc, xFrameLoc)){
+		    if (coverage[x][y] == false) {
+			if (rcb.within(yFrameLoc, xFrameLoc)) {
 			    coverage[x][y] = true;
 			}
 		    }
@@ -374,9 +372,9 @@ public class CRFPClient implements RpfFrameProvider {
 	
 	float count = 0;
 
-	for (y = 0; y < numVFrames; y++){
-	    for (x = 0; x < numHFrames; x++){
-		if (coverage[x][y] == true){
+	for (y = 0; y < numVFrames; y++) {
+	    for (x = 0; x < numHFrames; x++) {
+		if (coverage[x][y] == true) {
 // 		    System.out.print("X");
 		    count++;
 		} else {
@@ -394,10 +392,10 @@ public class CRFPClient implements RpfFrameProvider {
      * @param boxes CRFPCoverageBox[].
      * @return java.util.Vector
      */
-    protected Vector translateCRFPCoverageBoxes(CRFPCoverageBox[] boxes){
+    protected Vector translateCRFPCoverageBoxes(CRFPCoverageBox[] boxes) {
 
 	Vector vector = new Vector();
-	for (int i = 0; i < boxes.length; i++){
+	for (int i = 0; i < boxes.length; i++) {
 	    CRFPCoverageBox box = boxes[i];
 	    RpfCoverageBox rcb = new RpfCoverageBox();
 	    rcb.nw_lat = box.nw_lat;
@@ -438,7 +436,7 @@ public class CRFPClient implements RpfFrameProvider {
      * @see #getCoverage(float ullat, float ullon, float lrlat, float lrlon, CADRG p) 
      * @return integer pixel data.  
      */
-    public int[] getSubframeData(int tocNumber, int entryNumber, int x, int y){
+    public int[] getSubframeData(int tocNumber, int entryNumber, int x, int y) {
 	Server serv = getServer();
 	if (serv == null) return null;
 	byte[] jpegData;
@@ -449,7 +447,7 @@ public class CRFPClient implements RpfFrameProvider {
 					    (short) entryNumber,
 					    (short) x, (short) y, 
 					    jpegQuality, clientID);
-	    if (Debug.debugging("crfpdetail")){
+	    if (Debug.debugging("crfpdetail")) {
 		Debug.output("CRFPClient: got subframe data length " + 
 			     jpegData.length);
 	    }
@@ -466,16 +464,16 @@ public class CRFPClient implements RpfFrameProvider {
 	    int width = bi.getWidth();
 	    int[] pixels = bi.getRGB(0, 0, width, height, null, 0, width);
 	    return pixels;
-	} catch (IOException ioe){
+	} catch (IOException ioe) {
 	    Debug.error("CRFPClient: IOException decoding jpeg bytes");
-	} catch (org.omg.CORBA.SystemException e){
+	} catch (org.omg.CORBA.SystemException e) {
 	    handleCORBAError(e);
 	}
 	return null;
     }
     
     public RpfIndexedImageData getRawSubframeData(int tocNumber, int entryNumber, 
-						  int x, int y){
+						  int x, int y) {
 	Server serv = getServer();
 	if (serv == null) return null;
 	
@@ -489,7 +487,7 @@ public class CRFPClient implements RpfFrameProvider {
 	    
 	    // Need to check for the corba rendition of an allowable
 	    // null image (length 0)
-	    if (ri.imagedata.length == 0 || ri.colortable.length == 0){
+	    if (ri.imagedata.length == 0 || ri.colortable.length == 0) {
 		return null;
 	    }
 
@@ -497,12 +495,12 @@ public class CRFPClient implements RpfFrameProvider {
 	    riid.imageData = ri.imagedata;
 	    riid.colortable = new OMColor[ri.colortable.length];
 
-	    for (int i = 0; i < riid.colortable.length; i++){
+	    for (int i = 0; i < riid.colortable.length; i++) {
 		riid.colortable[i] = new OMColor(ri.colortable[i]);
 	    }
 	    return riid;
 
-	} catch (org.omg.CORBA.SystemException e){
+	} catch (org.omg.CORBA.SystemException e) {
 	    handleCORBAError(e);
 	    return null;
 	}
@@ -526,7 +524,7 @@ public class CRFPClient implements RpfFrameProvider {
      * @return string.  
      */
     public String getSubframeAttributes(int tocNumber, int entryNumber, 
-					int x, int y){
+					int x, int y) {
 
 	Server serv = getServer();
 	if (serv == null) return "";
@@ -535,7 +533,7 @@ public class CRFPClient implements RpfFrameProvider {
 	try {
 	    return serv.getSubframeAttributes((short)tocNumber,(short) entryNumber,
 					      (short) x, (short)y, clientID);
-	} catch (org.omg.CORBA.SystemException e){
+	} catch (org.omg.CORBA.SystemException e) {
 	    handleCORBAError(e);
 	}
 	return "";
@@ -556,167 +554,52 @@ public class CRFPClient implements RpfFrameProvider {
 	return server;
     }
 
-
-    protected void connect(org.omg.CORBA.ORB orb, String ior) {
-	org.omg.CORBA.Object object = orb.string_to_object(ior); 
-	server = ServerHelper.narrow(object); 
-    }
-
     /**
      * bind to the server.
      *
      */
     private void initServer() {
 	String ior = null;
+	org.omg.CORBA.Object object = null;
 
-	if (iorURL != null) {
-	    try {
-		URLConnection urlConnection = iorURL.openConnection();
-		// 	    urlConnection.setDefaultUseCaches(false);
-		// 	    urlConnection.setUseCaches(false);
-		// 	    urlConnection.connect();
-		
-		InputStream is = urlConnection.getInputStream();
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader reader = new BufferedReader(isr);
-		ior = reader.readLine();
-		reader.close();
-	    } catch (java.io.IOException e) {
-		Debug.error("CRFPClient.initServer(): IOException reading IOR from \"" + iorURL + "\"");
-	    }
-	}
-	
+	com.bbn.openmap.util.corba.CORBASupport cs = 
+	    new com.bbn.openmap.util.corba.CORBASupport();
+
 	try {
-	    orb = CORBAManager.getORB();
-	    
-	    if (ior != null){
-		
-		// HACK seem to need this for vbj33 applet...
-// 		((com.visigenic.vbroker.orb.ORB)orb).proxy(false);
-// 		Debug.output("ORB PROXY="+
-// 			     ((com.visigenic.vbroker.orb.ORB)orb).proxy());
-		connect(orb, ior);
+	    object = cs.readIOR(iorURL);
+	    server = ServerHelper.narrow(object);
+	} catch (IOException ioe) {
+	    if (Debug.debugging("crfp")) {
+		Debug.output("CRFPClient.initServer() IO Exception with ior: " + iorURL);
 	    }
-	    
-	    if (server == null && naming != null){
-		// Get the root context of the name service.
-		Debug.message("crfp", "CRFPClient: Binding to the server objects... " );
-		org.omg.CORBA.Object obj = null;
-
-		if (Debug.debugging("crfp")){
-		    String[] services = orb.list_initial_services();
-		    if (services != null){
-			Debug.output("CRFPClient: Listing services:");
-			
-			for (int k = 0; k < services.length; k++){
-			    Debug.output("  service " + k + ": " +
-					 services[k]);
-			}
-		    } else {
-			Debug.output("CRFPClient: no services available");
-		    }
-		    
-		}
-
-		try {
-		    obj = orb.resolve_initial_references( "NameService" );
-		} catch( Exception e ) {
-		    Debug.error("Error getting root naming context: \n  message - " + e.getMessage());
-		}
-		NamingContext rootContext = NamingContextHelper.narrow( obj );
-// 		if (Debug.debugging("crfp") && rootContext == null) {
-// 		    Debug.output("CRFPClient: null root context for nameservice");
-// 		}
-		
-		// Resolve the specialist
-		String temp = naming;
-		
-		if (Debug.debugging("crfp")){
-		    Debug.output("CRFPClient: Name of server: " + 
-				 naming);
-		}
-		
-		Vector components = new Vector();
-		int numcomponents = 0;
-		String temporaryTemp = null;
-		
-		int tindex = temp.indexOf("/");
-		while (tindex != -1) {
-		    numcomponents++;
-		    temporaryTemp=temp.substring(0,tindex);
-
-		    if (Debug.debugging("crfp")){
-			Debug.output("CRFPClient: Adding Name component: " + 
-				     temporaryTemp);
-		    }
-
-		    components.addElement(temporaryTemp);
-		    temp=temp.substring(tindex+1);
-		    tindex = temp.indexOf("/");
-		}
-		if (Debug.debugging("crfp")){
-		    Debug.output("CRFPClient: Adding final Name component: " + temp);
-		}
-		components.addElement(temp);
-		
-		NameComponent[] serverName = 
-		    new NameComponent[components.size()];
-		for (int i=0; i<components.size(); i++) {
-		    serverName[i] = new NameComponent((String)(components.elementAt(i)), "");
-		}
-		
-		org.omg.CORBA.Object serverObject = null;
-		try {
-// 		    if (rootContext != null){
-			serverObject = rootContext.resolve( serverName );
-// 		    } else {
-// 			Debug.error("CRFPClient: root context is null");
-// 		    }
-		    Debug.message("crfpdetail", "CRFPClient: Got past servername resolve");
-		} catch (Exception e ) {
-// 		    Debug.error("CRFPClient: Error resolving the server: \n" +
-// 				e.getMessage());
-		}
-		
-		if (serverObject == null) {
-		    Debug.error("CRFPClient: null serverObject!  Couldn't resolve server name");
-		    return;
-		} else {
-		    if (Debug.debugging("crfpdetail")) {
-			Debug.output("objtostring:" + 
-				     orb.object_to_string(serverObject));
-		    }
-		    server = ServerHelper.narrow(serverObject);
-		}
-	    }
-	    
-	} catch (NullPointerException npe){
-	} catch (org.omg.CORBA.SystemException e) {
-	    Debug.error("CRFPClient.initServer(): " + e + "\n" +
-			"CORBA Exception while initializing server:\n" + 
-			e.getClass().getName());
 	    server = null;
-	} catch (Throwable t) {
-	    Debug.error("CRFPClient.initServer(): " + t + "\n" +
-			    "Exception while initializing\n server:\n" + 
-			t.getClass().getName());
-	    server = null;
+	    return;
 	}
-	
-	
+
 	if (server == null) {
-	    Debug.error("CRFPClient.initServer: null server!");
+	    object = cs.resolveName(naming);
+	    
+	    if (object != null) {
+		server = ServerHelper.narrow(object);
+		if (Debug.debugging("crfp")) {
+		    Debug.output("Have a RPF server:" );
+		    Debug.output("*** Server: is a " + 
+				 server.getClass().getName() + "\n" + 
+				 server);
+		}
+	    } 
 	}
-	
-	if (Debug.debugging("crfp")){
-	    if (server != null){
+
+	if (Debug.debugging("crfp")) {
+	    if (server == null) {
+		Debug.error("CRFPClient.initServer: null server!\n  IOR=" + ior + "\n  Name = " + naming);
+	    } else {
 		Debug.output("CRFPClient: server is golden.");
-		
 	    }
 	}
     }
     
-    protected void handleCORBAError(org.omg.CORBA.SystemException e){
+    protected void handleCORBAError(org.omg.CORBA.SystemException e) {
 	// don't freak out if we were only interrupted...
 	if (e.toString().indexOf("InterruptedIOException") != -1) {
 	    Debug.error("CRFPClient server communication interrupted!");

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CRFPServer.java,v $
 // $RCSfile: CRFPServer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 01:53:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,8 +35,9 @@ import com.bbn.openmap.layer.rpf.*;
 import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.*;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.corba.CORBASupport;
 
-import org.omg.CosNaming.*;
+import org.omg.CORBA.ORB;
 
 /** 
  * The CRFPServer is a server implementation of the
@@ -47,9 +48,8 @@ import org.omg.CosNaming.*;
  * <P>This server requires the com.sun.image.codec.jpeg package.
  */
 
-public class CRFPServer extends _ServerImplBase implements ActionListener {
+public class CRFPServer extends ServerPOA implements ActionListener {
 
-    protected org.omg.CORBA.BOA boa = null;
     protected static String iorfile = null;
     protected static String naming = null;
     /** A cache for every client. */
@@ -92,7 +92,7 @@ public class CRFPServer extends _ServerImplBase implements ActionListener {
      * @param name the identifying name for persistance.
      */
     public CRFPServer(String name) {
-	super(name);
+	super();
 	caches = new Hashtable();
 	viewAttributeLists = new Hashtable();
 	timestamps = new Hashtable();
@@ -455,122 +455,13 @@ public class CRFPServer extends _ServerImplBase implements ActionListener {
      * @args command line arguments.
      */
     public void start(String[] args) {
-
-	// Initialize the ORB
-	org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args, System.getProperties());
+	CORBASupport cs = new CORBASupport();
 
 	if (args != null) {
 	    parseArgs(args);
 	}
 
-	// Initialize the BOA
-	boa = orb.BOA_init();
-
-	// Export the newly created object
-	boa.obj_is_ready(this);
-
-	// write the IOR out
-	if (iorfile != null) {
-	    PrintWriter fs = null;
-	    try {
-		fs = new PrintWriter((OutputStream)new FileOutputStream(iorfile));
-	    } catch (IOException e) {
-		Debug.error("CRFPServer.start(): can't write ior to file " + iorfile);
-		System.exit(1);
-	    }
-	    fs.print(orb.object_to_string(this));
-	    fs.flush();
-	    fs.close();
-	    // // 	  Debug.output(orb.object_to_string(this));
-	}
-
-	if (naming != null) {
-	    //*** Naming server stuff
-	    org.omg.CORBA.Object obj = null;
-	    try {
-		obj = orb.resolve_initial_references("NameService");
-	    } catch (org.omg.CORBA.ORBPackage.InvalidName e) {
-		Debug.error("CRFPServer.start(): Invalid Name exception");
-	    }
-    
-	    NamingContext rootContext = NamingContextHelper.narrow(obj);
-	    if (rootContext== null) {
-// 		Debug.output("CRFPServer.start(): Root context is null!");
-	    }
-       
-	    String temp = naming;
-	    Vector components = new Vector();
-	    int numcomponents = 0;
-	    String temporaryTemp = null;
-       
-	    int tindex = temp.indexOf("/");
-	    while (tindex != -1) {
-		numcomponents++;
-		temporaryTemp=temp.substring(0,tindex);
-		components.addElement(temporaryTemp);
-		temp=temp.substring(tindex+1);
-		tindex = temp.indexOf("/");
-	    }
-	    components.addElement(temp);
-       
-	    //        NameComponent[] specialistName = new NameComponent[components.size()];
-	    //        for (int i=0; i<components.size(); i++)
-	    // 	   specialistName[i] = new NameComponent((String)(components.elementAt(i)), "");
-       
-       
-	    NamingContext newContext = null;
-	    NamingContext oldContext = rootContext;
-	    for (int i = 0 ; i<components.size()-1; i++)
-		{
-		    NameComponent[] newName = new NameComponent[1];
-		    newName[0] = new NameComponent((String)(components.elementAt(i)), "");
-		    String debugName = (String)(components.elementAt(i));
-		    try {
-			newContext = 
-			    NamingContextHelper.narrow( oldContext.resolve(newName) );
-		    }
-		    catch( org.omg.CosNaming.NamingContextPackage.NotFound nfe ) {
-			try {
-			    newContext = oldContext.bind_new_context(newName);
-			} catch (org.omg.CosNaming.NamingContextPackage.AlreadyBound abe ) {
-			    Debug.error("CRFPServer.start(): Already bound");
-			} catch (org.omg.CosNaming.NamingContextPackage.CannotProceed cpe0 ) {
-			    Debug.error("CRFPServer.start(): Cannot proceed 0");
-			} catch (org.omg.CosNaming.NamingContextPackage.InvalidName ine0 ) {
-			    Debug.error("CRFPServer.start(): Invalid Name 0");
-			} catch (org.omg.CosNaming.NamingContextPackage.NotFound nfe0 ) {
-			    Debug.error("CRFPServer.start(): Not found 0");
-			}
-		    }
-		    catch (  org.omg.CosNaming.NamingContextPackage.InvalidName ine ) {
-			Debug.error("CRFPServer.start(): Invalid name");
-		    }
-		    catch (  org.omg.CosNaming.NamingContextPackage.CannotProceed cpe ) {
-			Debug.error("CRFPServer.start(): Cannot proceed");
-		    }
-		    oldContext=newContext;
-		}
-       
-	    NameComponent[] finalName = new NameComponent[1];
-	    finalName[0] = new NameComponent((String)(components.elementAt(components.size()-1)), "");
-	    String debugName = (String)(components.elementAt(components.size()-1));
-
-	    try {
-		oldContext.rebind( finalName, this );
-	    } catch (org.omg.CosNaming.NamingContextPackage.CannotProceed cpe1 ) {
-		Debug.error("CRFPServer: Cannot proceed 1");
-	    } catch (org.omg.CosNaming.NamingContextPackage.InvalidName ine1 ) {
-		Debug.error("CRFPServer: Invalid Name 1");
-	    } catch (org.omg.CosNaming.NamingContextPackage.NotFound nfe1 ) {
-		Debug.error("CRFPServer: Not found 1");
-	    }
-	}
-       
-	// Announce ourselves to the world
-	Debug.output(this + " is ready.");
-	
-	// Wait for incoming requests
-	boa.impl_is_ready();
+	cs.start(this, args, iorfile, naming);
     }
 
     /**
@@ -608,6 +499,7 @@ public class CRFPServer extends _ServerImplBase implements ActionListener {
     }
 
     /**
+     * Set how long a user's cache will be kept around.
      */
     public void setTimeWindow(String number) {
 	try {
@@ -618,6 +510,7 @@ public class CRFPServer extends _ServerImplBase implements ActionListener {
     }
 
     /**
+     * Set how long a user's cache will be kept around.
      */
     public void setTimeWindow(long number) {
 	if (timer == null) {
@@ -640,6 +533,7 @@ public class CRFPServer extends _ServerImplBase implements ActionListener {
     }
     
     /** 
+     * The the time window for how long users caches are kept around.
      */
     public long getTimeWindow() {
 	return timeWindow;

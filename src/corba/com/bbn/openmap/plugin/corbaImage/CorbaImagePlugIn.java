@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/plugin/corbaImage/CorbaImagePlugIn.java,v $
 // $RCSfile: CorbaImagePlugIn.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:47 $
+// $Revision: 1.2 $
+// $Date: 2003/04/26 01:53:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -73,7 +73,8 @@ import org.omg.CosNaming.*;
  * pluginlayer.plugin.ior=URL to ior file (needed if name is not provided)
  * pluginlayer.plugin.format=image format (JPEG, GIF from WMTConstants.java)
  * pluginlayer.plugin.transparent=true or false, depends on imageformat
- * pluginlayer.plugin.backgroundColor=RGB hex string (RRGGBB) */
+ * pluginlayer.plugin.backgroundColor=RGB hex string (RRGGBB) 
+ */
 public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConstants {
 
     protected String queryHeader = null;
@@ -91,7 +92,6 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
     public static final String namingProperty = "name";
     /** The Server. */
     protected transient Server server = null;
-    private transient ORB orb;
     /** The URL used for the IOR, to connect to the server that way. */
     protected URL iorURL = null;
     /** The string used for the CORBA naming service. */
@@ -231,7 +231,7 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
 	String url = setList.getProperty(prefix + iorUrlProperty);
 	if (url != null) {
 	    try {
-		iorURL = new URL(url);
+		iorURL = LayerUtils.getResourceOrFileOrURL(url);
 	    } catch (MalformedURLException e) {
 		throw new IllegalArgumentException("\"" + url + "\""
 						   + " is malformed.");
@@ -328,162 +328,46 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
 	return server;
     }
 
-
-    protected void connect(org.omg.CORBA.ORB orb, String ior) {
-	org.omg.CORBA.Object object = orb.string_to_object(ior); 
-	server = ServerHelper.narrow(object); 
-    }
-
     /**
      * bind to the server.
-     *
      */
     private void initServer() {
 	String ior = null;
+	org.omg.CORBA.Object object = null;
 
-	if (iorURL != null) {
-	    try {
-		URLConnection urlConnection = iorURL.openConnection();
-		// 	    urlConnection.setDefaultUseCaches(false);
-		// 	    urlConnection.setUseCaches(false);
-		// 	    urlConnection.connect();
-		
-		InputStream is = urlConnection.getInputStream();
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader reader = new BufferedReader(isr);
-		ior = reader.readLine();
-		reader.close();
-	    } catch (java.io.IOException e) {
-		Debug.error("CorbaImagePlugIn.initServer(): IOException reading IOR from \"" + iorURL + "\"");
-	    }
-	}
-	
+	com.bbn.openmap.util.corba.CORBASupport cs = 
+	    new com.bbn.openmap.util.corba.CORBASupport();
+
 	try {
-	    orb = CORBAManager.getORB();
-	    
-	    if (ior != null){
-		
-		// HACK seem to need this for vbj33 applet...
-// 		((com.visigenic.vbroker.orb.ORB)orb).proxy(false);
-// 		Debug.output("ORB PROXY="+
-// 			     ((com.visigenic.vbroker.orb.ORB)orb).proxy());
-		connect(orb, ior);
+	    object = cs.readIOR(iorURL);
+	    server = ServerHelper.narrow(object);
+	} catch (IOException ioe) {
+	    if (Debug.debugging("cis")) {
+		Debug.output(getName() + "(CIS).initServer() IO Exception with ior: " + iorURL);
 	    }
-	    
-	    if (server == null && naming != null){
-		// Get the root context of the name service.
-		Debug.message("cis", "CorbaImagePlugIn: Binding to the server objects... " );
-		org.omg.CORBA.Object obj = null;
-
-		if (Debug.debugging("cis")){
-		    String[] services = orb.list_initial_services();
-		    if (services != null){
-			Debug.output("CorbaImagePlugIn: Listing services:");
-			
-			for (int k = 0; k < services.length; k++){
-			    Debug.output("  service " + k + ": " +
-					 services[k]);
-			}
-		    } else {
-			Debug.output("CorbaImagePlugIn: no services available");
-		    }
-		    
-		}
-
-		try {
-		    obj = orb.resolve_initial_references( "NameService" );
-		} catch( Exception e ) {
-		    Debug.error("Error getting root naming context: \n  message - " + e.getMessage());
-		}
-		NamingContext rootContext = NamingContextHelper.narrow( obj );
-// 		if (Debug.debugging("cis") && rootContext == null) {
-// 		    Debug.output("CorbaImagePlugIn: null root context for nameservice");
-// 		}
-		
-		// Resolve the specialist
-		String temp = naming;
-		
-		if (Debug.debugging("cis")){
-		    Debug.output("CorbaImagePlugIn: Name of server: " + 
-				 naming);
-		}
-		
-		Vector components = new Vector();
-		int numcomponents = 0;
-		String temporaryTemp = null;
-		
-		int tindex = temp.indexOf("/");
-		while (tindex != -1) {
-		    numcomponents++;
-		    temporaryTemp=temp.substring(0,tindex);
-
-		    if (Debug.debugging("cis")){
-			Debug.output("CorbaImagePlugIn: Adding Name component: " + 
-				     temporaryTemp);
-		    }
-
-		    components.addElement(temporaryTemp);
-		    temp=temp.substring(tindex+1);
-		    tindex = temp.indexOf("/");
-		}
-		if (Debug.debugging("cis")){
-		    Debug.output("CorbaImagePlugIn: Adding final Name component: " + temp);
-		}
-		components.addElement(temp);
-		
-		NameComponent[] serverName = 
-		    new NameComponent[components.size()];
-		for (int i=0; i<components.size(); i++) {
-		    serverName[i] = new NameComponent((String)(components.elementAt(i)), "");
-		}
-		
-		org.omg.CORBA.Object serverObject = null;
-		try {
-// 		    if (rootContext != null){
-			serverObject = rootContext.resolve( serverName );
-// 		    } else {
-// 			Debug.error("CorbaImagePlugIn: root context is null");
-// 		    }
-		    Debug.message("cisdetail", "CorbaImagePlugIn: Got past servername resolve");
-		} catch (Exception e ) {
-// 		    Debug.error("CorbaImagePlugIn: Error resolving the server: \n" +
-// 				e.getMessage());
-		}
-		
-		if (serverObject == null) {
-		    Debug.error("CorbaImagePlugIn: null serverObject!  Couldn't resolve server name");
-		    return;
-		} else {
-		    if (Debug.debugging("cisdetail")) {
-			Debug.output("objtostring:" + 
-				     orb.object_to_string(serverObject));
-		    }
-		    server = ServerHelper.narrow(serverObject);
-		}
-	    }
-	    
-	} catch (NullPointerException npe){
-	} catch (org.omg.CORBA.SystemException e) {
-	    Debug.error("CorbaImagePlugIn.initServer(): " + e + "\n" +
-			"CORBA Exception while initializing server:\n" + 
-			e.getClass().getName());
 	    server = null;
-	} catch (Throwable t) {
-	    Debug.error("CorbaImagePlugIn.initServer(): " + t + "\n" +
-			"Exception while initializing server:\n" + 
-			t.getClass().getName());
-	    server = null;
+	    return;
 	}
-	
-	
+
 	if (server == null) {
-	    Debug.error("CorbaImagePlugIn.initServer: null server!");
+	    object = cs.resolveName(naming);
+	    
+	    if (object != null) {
+		server = ServerHelper.narrow(object);
+		if (Debug.debugging("cis")) {
+		    Debug.output("Have a CorbaImageServer:" );
+		    Debug.output("*** Server: is a " + 
+				 server.getClass().getName() + "\n" + 
+				 server);
+		}
+	    } 
 	}
-	
-	if (Debug.debugging("cis")){
-	    if (server != null){
-		Debug.output("CorbaImagePlugIn: server is golden.");
-		
+
+	if (Debug.debugging("cis")) {
+	    if (server == null) {
+		Debug.error("CIS.initServer: null server!\n  IOR=" + ior + "\n  Name = " + naming);
+	    } else {
+		Debug.output("CIS: server is golden.");
 	    }
 	}
     }
