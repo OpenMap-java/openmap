@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.25 $
-// $Date: 2004/02/04 22:40:13 $
+// $Revision: 1.26 $
+// $Date: 2004/09/30 22:43:18 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -43,12 +43,9 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
-import java.beans.beancontext.*;
 import java.io.Serializable;
 import java.util.*;
 
