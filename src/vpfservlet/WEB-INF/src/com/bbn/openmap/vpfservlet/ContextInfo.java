@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/ContextInfo.java,v $
-// $Revision: 1.3 $ $Date: 2004/01/26 18:18:16 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2004/02/02 06:46:41 $ $Author: wjeuerle $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -27,7 +27,7 @@ public class ContextInfo {
      * ServletContext  */
     public static final String CONTEXT_INFO = ContextInfo.class.getPackage().getName() + ".contextInfo";
     /** the prefix used to configure VPF libraries in web.xml */
-    public static final String LIBRARY_PREFIX = ContextInfo.class.getPackage().getName() + "vpf_library.";
+    public static final String LIBRARY_PREFIX = ContextInfo.class.getPackage().getName() + ".vpf_library.";
 
     /** a map from library name to (String) library path */
     private Map lib_pathmap;
@@ -67,7 +67,7 @@ public class ContextInfo {
     private Map createLibrariesMap(ServletContext context) {
         HashMap library_map = new HashMap();
         for (Enumeration en = context.getInitParameterNames();
-             en.hasMoreElements(); ) {
+	     en.hasMoreElements(); ) {
             String s = (String)en.nextElement();
             if (s.startsWith(LIBRARY_PREFIX)) {
                 library_map.put(s.substring(LIBRARY_PREFIX.length()),
