@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/GraphicLoaderPlugIn.java,v $
 // $RCSfile: GraphicLoaderPlugIn.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.7 $
+// $Date: 2004/03/15 23:47:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -169,6 +169,9 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
      */
     public void setGraphicLoader(GraphicLoader gl) {
         loader = gl;
+
+        gl.setReceiver(this);
+
         if (gl instanceof MapMouseListener) {
             setMapMouseListener((MapMouseListener)gl);
         } else {
