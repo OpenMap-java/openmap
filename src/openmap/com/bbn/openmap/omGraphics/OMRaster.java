@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRaster.java,v $
 // $RCSfile: OMRaster.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/03/17 23:12:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -553,8 +553,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
         if (bits != null) {
             pixels = null;
             computePixels();
-        }
-        else{
+        } else {
             value <<= 24;//move to alpha position
             // direct color model, touch each pixel in the image
             for (int i = 0; i < pixels.length; i++) {
@@ -562,6 +561,9 @@ public class OMRaster extends OMRasterObject implements Serializable {
                 //  Do this if we want to support images that have
                 //  transparent pixels, and we want each pixel to have
                 //  the most transparent pixel.
+                
+                // Why don't we want to do this??? DFD
+
                 //              int pixAlpha = 0xFF000000 & pixels[i];
                 //              pixAlpha = (pixAlpha < value)?pixAlpha:value;
                 //              pixels[i] = (0x00ffffff & pixels[i]) | pixAlpha;
@@ -626,33 +628,26 @@ public class OMRaster extends OMRasterObject implements Serializable {
 
                 // Turn the color table into a table using the
                 // default OMava color model.
-                for (int i=0; i<values.length; i++) {
+                for (int i=0; i < values.length; i++) {
 
                     //  The transparent field can be set for the whole
                     //  image, while the open part of the colortable entry
                     //  structure is the transparent setting for that
                     //  particular color.
                     if (transparent < 255) {
-//                      if (values[i] instanceof OMColor) {
-//                          OMColor tmp = (OMColor)values[i];
-//                          if (tmp.getAlpha() < transparent) continue;
-//                      }
-//                      // Alpha transparency (0 - 255)
-//                      colors[i] = OMColor.setTransparentValue(values[i].getRGB(),
-//                                                              transparent);
                         int argb = values[i].getRGB();
 
-                        // If the transparent value of the pixel is
-                        // lower than the transparency value, keep
-                        // that instead - don't make things more
-                        // visible then they were.
-                        if ((argb >>> 24) > transparent) {
+                        if (values[i].getAlpha() > transparent) {
+                            // If the transparent value of the pixel is
+                            // lower than the transparency value, keep
+                            // that instead - don't make things more
+                            // visible then they were.
                             colors[i] = (0x00ffffff & argb) | trans;
                         } else {
                             colors[i] = argb;
                         }
-                    }
-                    else {
+
+                    } else {
                         colors[i] = values[i].getRGB();
                     }
 
@@ -715,38 +710,51 @@ public class OMRaster extends OMRasterObject implements Serializable {
         }
 
         int nPixels = width * height;
-        //      Debug.output("Computing pixels for subframe size:" +
-        //                         width + ", " + height);
+        if (DEBUG) {
+            Debug.output("Computing pixels for image size:" + width + ", " + height);
+        }
+        // pixels are the image pixels
         pixels = new int[nPixels];
 
         // Now, using the new constructed color table, build a set of
         // pixels.
-        int alpha = transparent<<24;
+        // alpha is a ready, shifted version of the overall transparency value;
+        int alpha = (transparent << 24) & 0xff000000;
+        // numColors is the number of colors.
+        int numColors = colors.length;
 
-        for (i=0; i<nPixels; i++) {
+        for (i=0; i < nPixels; i++) {
+            byte b = bits[i];
+            int color;
 
             // make the alpha for this color the lessor of what the
             // colortable is, versus the transparent value
             //              int pixAlpha;
-            // Ahh, too much work...
 
-            if (bits[i] < 0) {
-//              Debug.output(
-//                  "resetting color: " + (256 + bits[i]));
-//              pixAlpha = 0xFF000000 & colors[MoreMath.signedToInt(bits[i])];
-//              pixAlpha = (pixAlpha < alpha)?pixAlpha:alpha;
+            if (b >= numColors) {
+                if (DEBUG) Debug.output("OMRaster:.computePixels() problem!: " + b);
+                color = clear.getRGB();
 
-                pixels[i] = alpha | (0x00FFFFFF & colors[MoreMath.signedToInt(bits[i])]);
-            } else if (bits[i] < colors.length) {
-//              pixAlpha = 0xFF000000 & colors[bits[i]];
-//              pixAlpha = (pixAlpha < alpha)?pixAlpha:alpha;
-                pixels[i] =  alpha | (0x00FFFFFF & colors[bits[i]]);
+            } else if (b < 0) {
+                color = colors[MoreMath.signedToInt(b)];
             } else {
-                if (DEBUG) Debug.output("OMRaster:.computePixels() problem!: " +
-                                        bits[i]);
-                pixels[i] = clear.getRGB();
+                color = colors[b];
             }
+
+            // OK, got an int value, argb, for the color to be put on
+            // the pixel.  Now we need to straighten out the
+            // transparency.
+            if (transparent < 255 && ((color >> 24) > transparent)) {
+                // this means that the overall transparency should be
+                // more (lower number, more transparent) than the
+                // pixel color.
+                color =  alpha | (0x00FFFFFF & color);
+            } // Otherwise, just go with the alpha value set on the color...
+
+            pixels[i] = color;
+
         }
+
         return true;
     }
 
