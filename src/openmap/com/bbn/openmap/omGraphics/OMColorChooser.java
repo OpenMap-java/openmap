@@ -13,8 +13,8 @@
 // **********************************************************************
 // 
 // $RCSfile: OMColorChooser.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/10 00:12:42 $
+// $Revision: 1.4 $
+// $Date: 2004/02/10 01:27:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,31 +55,10 @@ public class OMColorChooser {
         ColorTracker ok = new ColorTracker(jcc);
 
         jcc.getSelectionModel().addChangeListener(ok);
-//         jcc.setPreviewPanel(ok.getTransparancyAdjustment(initColor.getAlpha()));
-        jcc.setPreviewPanel(new JPanel());
-
+        jcc.setPreviewPanel(ok.getTransparancyAdjustment(initColor.getAlpha()));
         JDialog colorDialog = JColorChooser.createDialog(component, title,
                                                          true, jcc,
                                                          ok, null);
-
-        // For some reason, in jdk 1.4.2, the custom transparency
-        // adjustment panel stopped showing up in the preview panel.
-        // This seems to work around the problem.
-        JComponent preview = ok.getTransparancyAdjustment(initColor.getAlpha());
-        colorDialog.getContentPane().remove(jcc);
-
-        JPanel content = new JPanel();
-        GridBagLayout gridBag = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridwidth = GridBagConstraints.REMAINDER;
-        content.setLayout(gridBag);
-        gridBag.setConstraints(jcc, c);
-        gridBag.setConstraints(preview, c);
-        content.add(jcc);
-        content.add(preview);
-
-        colorDialog.getContentPane().add(content, BorderLayout.CENTER);
-        colorDialog.pack();
         colorDialog.show();
         return ok.getColor();
     }
@@ -190,6 +169,10 @@ class ColorTracker
         slideBox.add(opaqueSlide);
         slideBox.add(Box.createGlue());
         slidePanel.add(slideBox);
+        // You know what, it just has to be something, so the
+        // UIManager will think it's valid.  It will get resized as
+        // appropriate when the JDialog gets packed.
+        slidePanel.setSize(new Dimension(50, 50));
         return slidePanel;
     }
 }
