@@ -12,10 +12,10 @@
 # </copyright>
 # **********************************************************************
 # 
-# $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/nitf/Attic/Makefile,v $
+# $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/dnd/Attic/Makefile,v $
 # $RCSfile: Makefile,v $
-# $Revision: 1.2 $
-# $Date: 2003/03/14 17:28:22 $
+# $Revision: 1.1 $
+# $Date: 2003/03/14 17:28:23 $
 # $Author: dietrick $
 # 
 # **********************************************************************

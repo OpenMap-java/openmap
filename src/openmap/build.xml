@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="OpenMap_Base" default="all" basedir=".">
+<project name="OpenMap_Base" default="all.openmap" basedir=".">
 
   <!--  ############################
 	Set up the different builds.
@@ -42,15 +42,11 @@
 	      Main targets
 	      ############################ -->  
 
-	<target name="classes" depends="classes.openmap"/>
-	<target name="all" depends="all.openmap"/>
-
-	<!-- Targets that should be called from upper level build.xml file,
-	     because that init target needs to be called -->
-
 	<target name="all.openmap" 
 	        depends="classes.openmap, jar.openmap"
 		description="Compiles standard OpenMap classes and creates the jar files."/>
+
+	<target name="classes" depends="classes.openmap"/>
 
 	<target name="jar.openmap"
 	        depends="init.openmap"
