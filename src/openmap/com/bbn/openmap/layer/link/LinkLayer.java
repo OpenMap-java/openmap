@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/09/25 18:50:13 $
+// $Revision: 1.8 $
+// $Date: 2003/10/15 16:51:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -640,6 +640,7 @@ public class LinkLayer extends OMGraphicHandlerLayer
 		// For properties updating, or graphic replacement
 		if (LinkUtil.isMask(gu.action, UPDATE_GRAPHIC_MASK)) {
 		    Debug.message("link","LinkLayer: updating graphic");
+		    reactionGraphic.generate(proj);
 		    graphics.setOMGraphicAt(reactionGraphic, reactionGraphicIndex);
 		}
 		    
