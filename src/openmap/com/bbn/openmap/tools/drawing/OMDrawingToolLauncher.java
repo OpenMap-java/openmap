@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/06 19:30:12 $
+// $Revision: 1.7 $
+// $Date: 2003/10/07 15:39:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -80,7 +80,15 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * Set the DrawingTool for this launcher.
      */
     public void setDrawingTool(DrawingTool dt) {
+	if (drawingTool != null && drawingTool instanceof OMDrawingTool) {
+	    ((OMDrawingTool)drawingTool).removePropertyChangeListener(this);
+	}
+
 	drawingTool = dt;
+
+	if (drawingTool != null && drawingTool instanceof OMDrawingTool) {
+	    ((OMDrawingTool)drawingTool).addPropertyChangeListener(this);
+	}
     }
 
     public DrawingTool getDrawingTool() {
@@ -428,7 +436,6 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
 	if (someObj instanceof OMDrawingTool){
 	    Debug.message("omdtl","OMDrawingToolLauncher found a DrawingTool.");
 	    setDrawingTool((DrawingTool)someObj);
-	    ((OMDrawingTool)someObj).addPropertyChangeListener(this);
 	}
 	if (someObj instanceof DrawingToolRequestor) {
 	    if (Debug.debugging("omdtl")) {
