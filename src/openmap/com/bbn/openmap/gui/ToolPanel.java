@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ToolPanel.java,v $
 // $RCSfile: ToolPanel.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/10/14 18:05:49 $
+// $Revision: 1.11 $
+// $Date: 2004/12/08 00:58:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -583,9 +583,9 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     public boolean areComponentsVisible() {
-        Enumeration enum = items.elements();
-        while (enum.hasMoreElements()) {
-            Tool tool = (Tool) enum.nextElement();
+        Enumeration enumeration = items.elements();
+        while (enumeration.hasMoreElements()) {
+            Tool tool = (Tool) enumeration.nextElement();
             Container face = tool.getFace();
             if (tool != filler && face != null && face.isVisible()) {
                 return true;

@@ -211,8 +211,8 @@ public class DDFField {
         } else {
             buf.append("      Subfields:\n");
 
-            for (Enumeration enum = subfields.keys(); enum.hasMoreElements();) {
-                Object obj = subfields.get(enum.nextElement());
+            for (Enumeration enumeration = subfields.keys(); enumeration.hasMoreElements();) {
+                Object obj = subfields.get(enumeration.nextElement());
 
                 if (obj instanceof List) {
                     for (Iterator it = ((List) obj).iterator(); it.hasNext();) {
