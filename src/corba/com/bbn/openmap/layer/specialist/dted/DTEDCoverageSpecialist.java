@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/dted/DTEDCoverageSpecialist.java,v $
 // $RCSfile: DTEDCoverageSpecialist.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/22 22:24:17 $
+// $Revision: 1.3 $
+// $Date: 2004/01/24 03:48:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,8 @@ import java.util.*;
 
 /*  OpenMap  */
 import com.bbn.openmap.*;
-import com.bbn.openmap.layer.dted.*;
+import com.bbn.openmap.layer.dted.DTEDFrameColorTable;
+import com.bbn.openmap.layer.dted.DTEDCoverageManager;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.*;
@@ -147,11 +148,11 @@ public class DTEDCoverageSpecialist extends Specialist {
     /** The default constructor for the Layer.  All of the attributes
      * are set to their default values.
      * */
-    public DTEDCoverageSpecialist () {
+    public DTEDCoverageSpecialist() {
 	super("DTEDCoverageSpecialist", (short)2, false);
     }
 
-    protected void init () {
+    protected void init() {
 	System.out.println("DTEDCoverageSpecialist: Figuring out which DTED frames exist! (This is a one-time operation!)");
 	System.out.println("Scanning for frames - This could take over (2) minutes!");
 
