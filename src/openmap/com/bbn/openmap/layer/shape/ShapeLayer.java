@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/01/13 19:45:59 $
+// $Revision: 1.9 $
+// $Date: 2004/02/02 22:54:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ import com.bbn.openmap.util.SwingWorker;
  * </pre></code>
  *
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.8 $ $Date: 2004/01/13 19:45:59 $
+ * @version $Revision: 1.9 $ $Date: 2004/02/02 22:54:37 $
  * @see SpatialIndex 
  */
 public class ShapeLayer extends OMGraphicHandlerLayer
@@ -440,7 +440,9 @@ public class ShapeLayer extends OMGraphicHandlerLayer
         super.actionPerformed(e);
         String cmd = e.getActionCommand();
         if (cmd == RedrawCmd) {
-            doPrepare();
+            if (isVisible()) {
+                doPrepare();
+            }
         }
     }
 

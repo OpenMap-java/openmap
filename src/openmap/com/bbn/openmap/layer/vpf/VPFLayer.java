@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/02/01 21:21:59 $
+// $Revision: 1.11 $
+// $Date: 2004/02/02 22:54:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -461,7 +461,8 @@ public class VPFLayer extends OMGraphicHandlerLayer
                         // Set the warehouse with the properties
                         // received when the layer was created.
                         warehouse.setProperties(getPropertyPrefix(), props);
-
+                        searchByFeatures = true;  // because it is.
+                        box = null;// force GUI to rebuild
                         if (Debug.debugging("vpf")) {
                             Debug.output("VPFLayer.initLST(libraryBean)");
                         }
@@ -753,7 +754,9 @@ public class VPFLayer extends OMGraphicHandlerLayer
         String cmd = e.getActionCommand();
         if (cmd == RedrawCmd) {
             setList(null);
-            doPrepare();
+            if (isVisible()) {
+                doPrepare();
+            }
         } else if (cmd == ConfigCmd) {
             if (configWindowSupport == null) {
                 configWindowSupport = new WindowSupport(new VPFConfig(this), "Configure " + getName() + " Features");

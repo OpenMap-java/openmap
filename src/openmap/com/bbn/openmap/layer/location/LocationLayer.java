@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/LocationLayer.java,v $
 // $RCSfile: LocationLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.5 $
+// $Date: 2004/02/02 22:54:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,7 +26,9 @@ package com.bbn.openmap.layer.location;
 
 /*  Java Core  */
 import java.awt.GridLayout;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -34,13 +36,23 @@ import java.util.Vector;
 import javax.swing.*;
 
 /* Openmap */
-import com.bbn.openmap.*;
-import com.bbn.openmap.util.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.layer.*;
-import com.bbn.openmap.layer.util.*;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.event.InfoDisplayEvent;
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.MapMouseListener;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.event.SelectMouseMode;
+import com.bbn.openmap.gui.WindowSupport;
+import com.bbn.openmap.layer.DeclutterMatrix;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.SwingWorker;
 
 /**
  * The LocationLayer is a layer that displays graphics supplied by
@@ -199,11 +211,11 @@ public class LocationLayer extends Layer implements MapMouseListener {
 
         
         setLocationHandlers(realPrefix, properties);
-        declutterMatrix = (DeclutterMatrix) LayerUtils.objectFromProperties(properties, realPrefix + DeclutterMatrixClassProperty);
-        allowPartials = LayerUtils.booleanFromProperties(properties, realPrefix + AllowPartialsProperty, true);
+        declutterMatrix = (DeclutterMatrix) PropUtils.objectFromProperties(properties, realPrefix + DeclutterMatrixClassProperty);
+        allowPartials = PropUtils.booleanFromProperties(properties, realPrefix + AllowPartialsProperty, true);
 
         if (declutterMatrix != null) {
-            useDeclutterMatrix = LayerUtils.booleanFromProperties(properties, realPrefix + UseDeclutterMatrixProperty, useDeclutterMatrix);
+            useDeclutterMatrix = PropUtils.booleanFromProperties(properties, realPrefix + UseDeclutterMatrixProperty, useDeclutterMatrix);
             declutterMatrix.setAllowPartials(allowPartials);
             Debug.message("location", "LocationLayer: Found DeclutterMatrix to use");
 //          declutterMatrix.setXInterval(3);
@@ -652,12 +664,20 @@ public class LocationLayer extends Layer implements MapMouseListener {
     }
 
     /**
-     * Called when the LayerHandlers are reset, or their names are
+     * Called when the LocationHandlers are reset, or their names are
      * reset, to refresh the palette with the new information.
      */
     protected void resetPalette() {
         box = null;
         super.resetPalette();
+    }
+
+    /**
+     * Overridden from Layer because we are placing our own scroll
+     * pane around the LocationHandler GUIs.
+     */
+    protected WindowSupport createWindowSupport() {
+        return new WindowSupport(getGUI(), getName());
     }
 
     //----------------------------------------------------------------------
@@ -676,13 +696,13 @@ public class LocationLayer extends Layer implements MapMouseListener {
         if (box == null) {
             box = Box.createVerticalBox();
             int nHandlers = 0;
-            
+
             if (dataHandlers != null) {
                 nHandlers = dataHandlers.length;
             }
 
             JPanel[] panels = new JPanel[nHandlers];
-
+            Box box2 = Box.createVerticalBox();
             for (int i = 0; i < nHandlers; i++) {
 
                 String handlerName;
@@ -694,8 +714,19 @@ public class LocationLayer extends Layer implements MapMouseListener {
 
                 panels[i] = PaletteHelper.createPaletteJPanel(handlerName);
                 panels[i].add(dataHandlers[i].getGUI());
-                box.add(panels[i]);
+//                 box.add(panels[i]);
+                box2.add(panels[i]);
             }
+
+            JScrollPane scrollPane = 
+                new JScrollPane(box2, 
+                                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+            scrollPane.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+            scrollPane.setAlignmentY(java.awt.Component.TOP_ALIGNMENT);
+            
+            box.add(scrollPane);
 
             if (declutterMatrix != null) {
                 JPanel dbp = new JPanel(new GridLayout(0, 1));
@@ -704,7 +735,9 @@ public class LocationLayer extends Layer implements MapMouseListener {
                         public void actionPerformed(ActionEvent ae) {
                             JCheckBox jcb = (JCheckBox) ae.getSource();
                             useDeclutterMatrix = jcb.isSelected();
-                            doPrepare();
+                            if (isVisible()) {
+                                doPrepare();
+                            }
                         }
                     });
                 declutterButton.setToolTipText("<HTML><BODY>Move location names so they don't overlap.<br>This may take awhile if you are zoomed out.</BODY></HTML>");
@@ -912,7 +945,7 @@ public class LocationLayer extends Layer implements MapMouseListener {
         list.put(UseDeclutterMatrixProperty, "Flag for using the declutter matrix (true/false)");
         list.put(DeclutterMatrixClassProperty,"Class name of the declutter matrix to use");
         list.put(AllowPartialsProperty,"Flag to allow labels to run off the edge of the map (true/false)");
-        list.put(LocationHandlerListProperty, "Space-separated list of unique names to use to scope the LayerHandler property definitions");
+        list.put(LocationHandlerListProperty, "Space-separated list of unique names to use to scope the LocationHandler property definitions");
 
         if (dataHandlers != null) {
             for (int i = 0; i < dataHandlers.length; i++) {
