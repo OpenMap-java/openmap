@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/07/12 04:13:26 $
+// $Revision: 1.5 $
+// $Date: 2003/07/15 23:59:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -456,21 +456,40 @@ public abstract class BasicGeometry
     }
 
     /**
-     * Get the array of java.awt.Shape objects that represent the
-     * projected graphic.  The array will contain more than one Shape
-     * object of the object wraps around the earth and needs to show
-     * up in more than one place on the map.<p>
+     * Get the java.awt.Shape object that represents the projected
+     * graphic.  The array will one Shape object even if the object
+     * wraps around the earth and needs to show up in more than one
+     * place on the map.  In conditions like that, the Shape will have
+     * multiple parts.<p>
      *
      * The java.awt.Shape object gives you the ability to do a little
      * spatial analysis on the graphics.
      *
-     * @return java.awt.Shape[], or null if the graphic needs to be
-     * generated with the current map projection, or null if the
-     * OMGeometry hasn't been updated to use Shape objects for its
-     * internal representation.
+     * @return java.awt.geom.GeneralPath (a java.awt.Shape object), or
+     * null if the graphic needs to be generated with the current map
+     * projection, or null if the OMGeometry hasn't been updated to
+     * use Shape objects for its internal representation.
      */
     public GeneralPath getShape() {
 	return shape;
+    }
+
+    /**
+     * Set the java.awt.Shape object that represents the projected
+     * graphic.  This Shape object should be internally generated, but
+     * this method is provided to clear out the object to save memory,
+     * or to allow a little customization if your requirements
+     * dictate.<p>
+     *
+     * The java.awt.Shape object gives you the ability to do a little
+     * spatial analysis on the graphics.
+     *
+     * @param gp java.awt.geom.GeneralPath, or null if the graphic
+     * needs to be generated with the current map projection or to
+     * clear out the object being held by the OMGeometry.
+     */
+    public void setShape(GeneralPath gp) {
+	shape = gp;
     }
 
     /**

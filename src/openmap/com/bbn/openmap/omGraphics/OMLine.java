@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMLine.java,v $
 // $RCSfile: OMLine.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/06/02 18:39:52 $
+// $Revision: 1.3 $
+// $Date: 2003/07/15 23:59:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -515,6 +515,10 @@ public class OMLine extends OMGraphic implements Serializable {
 	    Debug.output("OMLine generating arcGraphics. " + arcGraphics);
 	    arcGraphics.generate(proj);
 	}
+
+	// Save memory.
+	ypoints = null;
+	xpoints = null;
 
 	setNeedToRegenerate(false);
 	return true;

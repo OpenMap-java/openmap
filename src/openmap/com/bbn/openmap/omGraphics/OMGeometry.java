@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometry.java,v $
 // $RCSfile: OMGeometry.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/07/15 23:59:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -266,5 +266,19 @@ public interface OMGeometry {
      * objects for its internal representation.
      */
     public GeneralPath getShape();
+
+    /**
+     * Set the java.awt.Shape object that represents the projected
+     * graphic.  Ideally, the OMGeometry will set this internally.
+     * This method is provided to clear out the object to save memory,
+     * or to allow manipulations if the situation dictates.<p>
+     *
+     * The java.awt.Shape object gives you the ability to do a little
+     * spatial analysis on the graphics.
+     *
+     * @param gp java.awt.geom.GeneralPath (Shape), or null if the
+     * graphic needs to be cleared or regenerated.
+     */
+    public void setShape(GeneralPath gp);
 
 }

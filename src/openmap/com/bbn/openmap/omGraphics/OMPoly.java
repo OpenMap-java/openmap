@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/07/15 23:59:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -694,6 +694,12 @@ public class OMPoly extends OMGraphic implements Serializable {
 	case RENDERTYPE_UNKNOWN:
 	    Debug.error("OMPoly.generate: invalid RenderType");
 	    return false;
+	}
+
+	if (shape != null) {
+	    // Save memory.
+	    xpoints = null;
+	    ypoints = null;
 	}
 
 	setNeedToRegenerate(false);
