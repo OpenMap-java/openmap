@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/05/11 23:28:40 $
+// $Revision: 1.9 $
+// $Date: 2004/09/17 19:07:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -304,7 +304,30 @@ public class PropUtils {
      */
     public static String[] initPathsFromProperties(Properties p, 
                                                    String propName) {
-        return stringArrayFromProperties(p, propName, ";");
+        return initPathsFromProperties(p, propName, null);
+    }
+
+    /**  
+     * Takes a string of `;' separated paths and returns an array of
+     * parsed strings.
+     * NOTE: this method currently doesn't support appropriate quoting
+     * of the `;' character, although it probably should...
+     * @param p properties
+     * @param propName the name of the property
+     * @param defaultPaths the value of the paths to set if the
+     * property doesn't exist, or if is doesn't contain anything.
+     * @return Array of strings representing paths.
+     */
+    public static String[] initPathsFromProperties(Properties p, 
+                                                   String propName, 
+                                                   String[] defaultPaths) {
+        String[] ret = stringArrayFromProperties(p, propName, ";");
+
+        if (ret == null) {
+            ret = defaultPaths;
+        }
+
+        return ret;
     }
 
     /** 
@@ -430,7 +453,7 @@ public class PropUtils {
         String[] ret = null;
         String raw = p.getProperty(propName);
 
-        if (raw != null) {
+        if (raw != null && raw.length() != 0) {
 
             try {
                 StringTokenizer token = new StringTokenizer(raw, tok);

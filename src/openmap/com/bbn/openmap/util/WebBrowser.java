@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/WebBrowser.java,v $
 // $RCSfile: WebBrowser.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:15 $
+// $Revision: 1.5 $
+// $Date: 2004/09/17 19:07:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,15 +29,15 @@ import java.net.URL;
 import java.net.MalformedURLException;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.event.InfoDisplayEvent;
+import com.bbn.openmap.event.InfoDisplayListener;
 import com.bbn.openmap.util.Debug;
 
 /** WebBrower - handles the WebBrowser process on behalf of OM. */
 public class WebBrowser {
 
     Process proc = null;
-    InformationDelegator info = null;
+    InfoDisplayListener info = null;
 
     boolean oldWay = false;
 
@@ -154,7 +154,7 @@ public class WebBrowser {
         }
     }
 
-    public void setInfoDelegator(InformationDelegator info) {
+    public void setInfoDelegator(InfoDisplayListener info) {
         this.info = info;
     }
 
