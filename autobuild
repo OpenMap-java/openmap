@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.34 $
-# $Date: 1998/11/12 18:53:44 $
+# $Revision: 1.35 $
+# $Date: 1998/11/12 19:03:59 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -329,8 +329,8 @@ cd $BuildDir/..
 tar cf $BuildDir/$BeanName.tar $PkgFiles
 jar cfM $BuildDir/$BeanName.zip $PkgFiles
 cd $BuildDir
-compress -cf $BeanName.tar > $BeanName.tar.Z
-gzip $BeanName.tar
+gzip -c $BeanName.tar > $BeanName.tar.gz
+compress -f $BeanName.tar
 
 echo ""
 echo "OpenMap build complete at `date`"
