@@ -1,9 +1,9 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/user-guide.sgml,v $
 $RCSfile: user-guide.sgml,v $
-$Revision: 1.8 $
-$Date: 2000/01/10 19:34:48 $
-$Author: bmackiew $
+$Revision: 1.9 $
+$Date: 2000/05/08 15:16:52 $
+$Author: wjeuerle $
 
 User's Guide for the OpenMap Viewer application.
 Launch the viewer with `java com.bbn.openmap.app.OpenMap' or by
@@ -15,7 +15,7 @@ running the `openmap' script in the bin/ directory.
 <article>
 
 <title>OpenMap Viewer Application
-<author>BBN Technologies
+<author>BBNT Solutions LLC
 <date>2 February 1999
 <abstract>
 This document is a user's guide for running the OpenMap Viewer

@@ -1,9 +1,9 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
 $RCSfile: openmap-arch.sgml,v $
-$Revision: 1.10 $
-$Date: 2000/01/10 20:08:30 $
-$Author: bmackiew $
+$Revision: 1.11 $
+$Date: 2000/05/08 15:16:52 $
+$Author: wjeuerle $
 
 OpenMap architecture document
 -->
@@ -13,7 +13,7 @@ OpenMap architecture document
 <article>
 
 <title>OpenMap Architecture
-<author>BBN Technologies
+<author>BBNT Solutions LLC
 <date>2 February 1999
 <abstract>
 This document contains information about the architecture of OpenMap,

@@ -1,9 +1,9 @@
 <!--
 $source: /net/blatz/u4/rcs/openmap/doc/sgml/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.15 $
-$Date: 2000/04/27 17:32:41 $
-$Author: bmackiew $
+$Revision: 1.16 $
+$Date: 2000/05/08 15:16:51 $
+$Author: wjeuerle $
 
 Frequently Asked Questions for the OpenMap system.
 -->
@@ -13,8 +13,8 @@ Frequently Asked Questions for the OpenMap system.
 <article>
 
 <title>OpenMap FAQ
-<author>BBN Technologies
-<date>28 February 2000
+<author>BBNT Solutions LLC (Formerly BBN Technologies)
+<date>8 May 2000
 <abstract>
 This FAQ contains questions and answers about the OpenMap system.
 </abstract>
@@ -24,19 +24,26 @@ This FAQ contains questions and answers about the OpenMap system.
 
 <sect>General questions
 
-<sect1>Why is everything copyrighted by BBN if this is GTE?
+<sect1>Who is BBNT Solutions LLC?
 <p>
-BBN was bought by GTE, but BBN is still the legal entity under which we 
-operate. You can see a history of BBN at 
-<tt><htmlurl url="http://www.bbn.com"></tt>
-(actually at <tt><htmlurl
-url="http://www.bbn.com/about/timeline/index.htm"></tt>) where
-you'll see that we helped build the ARPANET which eventually became
-the Internet.
+BBNT Solutions LLC is what was formerly known as BBN Technologies, a
+division of BBN Corporation, which was owned by GTE. For regulatory
+reasons related to the pending merger of GTE and Bell Atlantic, GTE
+was forced to divest its internet backbone and ISP services, which
+were operated by BBN Corporation.  In order to retain BBN
+Technologies while completing the divesture, BBNT Solutions LLC was
+formed.
 
-<sect1>Why is BBN Technologies releasing OpenMap as open source?
 <p>
-The OpenMap group is in the part of BBN that does contract R&amp;D
+You can see a history of BBN at <tt><htmlurl
+url="http://www.bbn.com"></tt> (actually at <tt><htmlurl
+url="http://www.bbn.com/about/timeline/index.htm"></tt>) where you'll
+see that we helped build the ARPANET which eventually became the
+Internet.
+
+<sect1>Why is BBNT releasing OpenMap as open source?
+<p>
+The OpenMap group is in the part of BBNT that does contract R&amp;D
 work. We don't consider ourselves a product development group. We felt
 that the best thing we could do with OpenMap was release the sources,
 invite other people to help make it better, and benefit some of the
