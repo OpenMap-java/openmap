@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.13 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.14 $
+// $Date: 2004/02/01 21:14:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -281,9 +281,11 @@ public class DrawingAttributes
      * Shallow clone.
      */
     public Object clone() {
-        DrawingAttributes clone = new DrawingAttributes();
-        setTo(clone);
-        return clone;
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
     }
 
     /**

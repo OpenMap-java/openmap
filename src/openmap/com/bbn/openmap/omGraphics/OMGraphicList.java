@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.13 $
+// $Date: 2004/02/01 21:14:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1645,9 +1645,6 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
             graphics = new ArrayList();
         }
 
-//      synchronized (this) {
-//          return (java.util.List) graphics.clone();
-//      }
         return graphics;
     }
 
@@ -1774,4 +1771,20 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
         }
     }
 
+    /**
+     * @return a duplicate list full of shallow copies of each of the
+     * OMGraphics contained on the list.
+     */
+    public synchronized Object clone() {
+        OMGraphicList omgl = (OMGraphicList)super.clone();
+        omgl.graphics = new ArrayList(size());
+
+        for (Iterator it = iterator(); it.hasNext();) {
+            // If the OMGraphic doesn't provide a copy (providing a
+            // SinkGraphic instead), oh well.
+            omgl.add((OMGraphic)((OMGraphic)it.next()).clone());
+        }
+
+        return omgl;
+    }
 }

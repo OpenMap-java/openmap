@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoint.java,v $
 // $RCSfile: OMPoint.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.6 $
+// $Date: 2004/02/01 21:14:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,8 +46,10 @@ public class OMPoint extends OMGraphic implements Serializable {
 
     public final static int DEFAULT_RADIUS = 2;
     public final static boolean DEFAULT_ISOVAL = false;
+    /**
+     * The number of pixels in the radius for the point representation.
+     */
     protected int radius = DEFAULT_RADIUS;
-
     /**
      * Horizontal window position of point, in pixels from left side
      * of window. 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.10 $
+// $Date: 2004/02/01 21:14:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -957,4 +957,5 @@ public class OMPoly extends OMGraphic implements Serializable {
 
         return geometryClosed;
     }
+
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.8 $
+// $Date: 2004/02/01 21:14:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,7 +78,7 @@ import java.io.Serializable;
  * @see Projection 
  */
 public abstract class OMGraphic extends BasicGeometry
-    implements OMGeometry, OMGraphicConstants {
+    implements OMGeometry, OMGraphicConstants, Cloneable {
 
     /**
      * The Java2D Stroke.  This is used for lineWidth, and dashing of
@@ -890,5 +890,17 @@ public abstract class OMGraphic extends BasicGeometry
      */
     protected boolean hasLineTypeChoice() {
         return true;
+    }
+
+    /**
+     * Generic return of SinkGraphic for subclasses that don't
+     * implement clone properly for some reason.
+     */
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            return SinkGraphic.getSharedInstance();
+        }
     }
 }
