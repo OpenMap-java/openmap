@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/Attic/AbstractDrawingEditorTool.java,v $
 // $RCSfile: AbstractDrawingEditorTool.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/09/22 23:50:45 $
+// $Revision: 1.8 $
+// $Date: 2003/09/23 22:53:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -348,6 +348,7 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
 	if (omdtmm != null) {
 	    omdtmm.mousePressed(e);
 	} else if (thingToCreate != null && drawingTool != null) {
+	    Debug.output("Activating drawing tool");
 	    omdtmm = activateDrawingTool(thingToCreate);
 	    // omdtmm is set in activateDrawingTool.
 	    if (omdtmm != null) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/09/22 23:39:45 $
+// $Revision: 1.9 $
+// $Date: 2003/09/23 22:53:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -118,6 +118,8 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      */
     public final static String MouseModesProperty = "mouseModes";
 
+    public final static String ConsumeEventsProperty ="consumeEvents";
+
     /**
      * Filter support that can be used to manage OMGraphics.
      */
@@ -143,6 +145,17 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     protected SwingWorker layerWorker;
     
     protected String[] mouseModeIDs = null;
+
+    /**
+     * A flag to tell the layer to be selfish about consuming
+     * MouseEvents it receives.  If set to true, it will consume
+     * events so that other layers will not receive the events.  If
+     * false, lower layers will also receive events, which will let
+     * them react too.  Intended to let other layers provide
+     * information about what the mouse is over when editing is
+     * occuring.
+     */
+    protected boolean consumeEvents = false;
 
     // OMGraphicHandler methods, deferred to FilterSupport...
 
@@ -601,6 +614,9 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 		setMouseModeIDsForEvents(mm);
 	    }
 	}
+
+	consumeEvents = PropUtils.booleanFromProperties(props, realPrefix + ConsumeEventsProperty, consumeEvents);
+
     }
 
     /**
@@ -639,6 +655,18 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 
 	props.put(prefix + RenderPolicyProperty, policyPrefix);
 	props.put(policyPrefix + ".class", rp.getClass().getName());
+
+	props.put(prefix + ConsumeEventsProperty, new Boolean(consumeEvents).toString());
+
+
+	String[] mm = getMouseModeIDsForEvents();
+	if (mm != null && mm.length > 0) {
+	    StringBuffer sb = new StringBuffer();
+	    for (int i = 0; i < mm.length; i++) {
+		sb.append(mm[i] + " ");
+	    }
+	    props.put(prefix + MouseModesProperty, sb.toString());
+	}
 
 	return props;
     }
@@ -690,6 +718,13 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	}
 	
 	list.put(policyPrefix + ".class", "Class name of RenderPolicy (optional)");
+
+	list.put(ConsumeEventsProperty, "Flag that tells the layer to consume MouseEvents, or let others use them as well.");
+	list.put(ConsumeEventsProperty + ScopedEditorProperty,
+		 "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+
+	list.put(MouseModesProperty, "Space-separated list of MouseMode IDs to receive events from.");
+
 	return list;
     }
 
@@ -699,6 +734,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	    StandardMapMouseInterpreter smmi = 
 		new StandardMapMouseInterpreter(this);
 	    smmi.setMouseModeServiceList(modeList);
+	    smmi.setConsumeEvents(getConsumeEvents());
 	    smmi.setGRP(this);
 	    return smmi;
 	} else {
@@ -706,11 +742,34 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	}
     }
 
+    /**
+     * A flag to tell the layer to be selfish about consuming
+     * MouseEvents it receives.  If set to true, it will consume
+     * events so that other layers will not receive the events.  If
+     * false, lower layers will also receive events, which will let
+     * them react too.  Intended to let other layers provide
+     * information about what the mouse is over when editing is
+     * occuring.
+     */
+    public void setConsumeEvents(boolean consume) {
+	consumeEvents = consume;
+    }
+
+    public boolean getConsumeEvents() {
+	return consumeEvents;
+    }
+
     public String[] getMouseModeIDsForEvents() {
 	return mouseModeIDs;
     }
 
     public void setMouseModeIDsForEvents(String[] mm) {
+	StringBuffer sb = new StringBuffer();
+	for (int i = 0; i < mm.length;i++) {
+	    sb.append(mm[i] + " ");
+	}
+	Debug.output("For layer " + getName() + ", setting mouse modes to " + sb.toString());
+
 	mouseModeIDs = mm;
     }
 
@@ -726,6 +785,12 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      */
     public boolean isSelectable(OMGraphic omg) {
 	return false;
+    }
+
+    protected OMGraphicList selectedList;
+
+    public OMGraphicList getSelected() {
+	return selectedList;
     }
 
     ////// Reactions
@@ -751,12 +816,40 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     /**
      * Designate a list of OMGraphics as selected.
      */
-    public void select(OMGraphicList list) {}
+    public void select(OMGraphicList list) {
+	if (list != null) {
+	    Iterator it = list.iterator();
+	    while (it.hasNext()) {
+		if (selectedList == null) {
+		    selectedList = new OMGraphicList();
+		}
+
+		OMGraphic omg = (OMGraphic)it.next();
+		if (omg instanceof OMGraphicList && !((OMGraphicList)omg).isVague()) {
+		    select((OMGraphicList)omg);
+		} else {
+		    selectedList.add(omg);
+		}
+	    }
+	}
+    }
 
     /**
      * Designate a list of OMGraphics as deselected.
      */
-    public void deselect(OMGraphicList list) {}
+    public void deselect(OMGraphicList list) {
+	if (list != null) {
+	    Iterator it = list.iterator();
+	    while (it.hasNext() && selectedList != null) {
+		OMGraphic omg = (OMGraphic)it.next();
+		if (omg instanceof OMGraphicList && !((OMGraphicList)omg).isVague()) {
+		    deselect((OMGraphicList)omg);
+		} else {
+		    selectedList.remove(omg);
+		}
+	    }
+	}
+    }
 
     /**
      * Remove an OMGraphic from a layer.

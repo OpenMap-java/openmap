@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayer.java,v $
 // $RCSfile: EditorLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/09/22 23:50:45 $
+// $Revision: 1.6 $
+// $Date: 2003/09/23 22:53:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -113,7 +113,7 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      */
     public EditorLayerMouseMode getMouseMode() {
 	if (elmm == null) {
-	    String ln = layer.getName();
+	    String ln = getName();
 	    if (ln == null) {
 		// Try something unique
 		ln = this.getClass().getName() + System.currentTimeMillis();
@@ -170,135 +170,50 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
 	}
     }
 
-    ////////////////////////
-    // Map Mouse Listener events and methods
-    ////////////////////////
-
-    /**
-     * Return a list of the modes that are interesting to the
-     * MapMouseListener.  You MUST override this with the modes you're
-     * interested in.
-     */
-    public String[] getMouseModeServiceList() {
+    public void setMouseModeIDsForEvents(String[] modes) {
 	if (elmm == null) {
 	    getMouseMode(); // creates the MouseMode...
 	}
-	String[] services = { SelectMouseMode.modeID, elmm.getID() };
-	return services;
+	String[] newModes = new String[modes.length + 1];
+	System.arraycopy(modes, 0, newModes, 0, modes.length);
+	newModes[modes.length] = elmm.getID();
+	super.setMouseModeIDsForEvents(newModes);
     }
-    
-    /**
-     * Invoked when a mouse button has been pressed on a component.
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mousePressed(MouseEvent e) { 
-	if (editorTool != null && editorTool.wantsEvents()) {
-	    editorTool.mousePressed(e);
-	    return consumeEvents;
+
+    public String[] getMouseModeIDsForEvents() {
+	String[] modes = super.getMouseModeIDsForEvents();
+	if (modes == null) {
+	    // Set the internal mouse mode as valid, since it hasn't been set yet.
+	    setMouseModeIDsForEvents(new String[0]);
+	    // Since it's set now, return it.
+	    return super.getMouseModeIDsForEvents();
 	} else {
-	    return super.mousePressed(e);
-	}
-    }
-    
-    /**
-     * Invoked when a mouse button has been released on a component.
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseReleased(MouseEvent e) {      
-	if (editorTool != null && editorTool.wantsEvents()) {
-	    editorTool.mouseReleased(e);
-	    return true;
-	} else {
-	    return super.mouseReleased(e);
-	}
-    }
-    
-    /**
-     * Invoked when the mouse has been clicked on a component.
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseClicked(MouseEvent e) { 
-	if (editorTool != null && editorTool.wantsEvents()) {
-	    editorTool.mouseClicked(e);
-	    return true;
-	} else {
-	    return super.mouseClicked(e);
-	}
-    }
-    
-    /**
-     * Invoked when the mouse enters a component.
-     * @param e MouseEvent
-     */
-    public void mouseEntered(MouseEvent e) {
-	if (editorTool != null && editorTool.wantsEvents()) {
-	    editorTool.mouseEntered(e);
-	} else {
-	    super.mouseEntered(e);
-	}
-    }
-    
-    /**
-     * Invoked when the mouse exits a component.
-     * @param e MouseEvent
-     */
-    public void mouseExited(MouseEvent e) {
-	if (editorTool != null && editorTool.wantsEvents()) {
-	    editorTool.mouseExited(e);
-	} else {
-	    super.mouseExited(e);
-	}
-    }
-    
-    ///////////////////////////////
-    // Mouse Motion Listener events
-    ///////////////////////////////
-    
-    /**
-     * Invoked when a mouse button is pressed on a component and then 
-     * dragged.  The listener will receive these events if it
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseDragged(MouseEvent e) {      
-	if (editorTool != null && editorTool.wantsEvents()) {
-	    editorTool.mouseDragged(e);
- 	    return consumeEvents;
-	} else {
- 	    return super.mouseDragged(e) && consumeEvents;
+	    return modes;
 	}
     }
 
     /**
-     * Invoked when the mouse button has been moved on a component
-     * (with no buttons down).
-     * @param e MouseEvent
-     * @return false
+     * Overriding the OMGraphicHandlerLayer method that sets the
+     * StandardMapMouseInterpreter, and setting a
+     * DrawingToolLayerInterpreter instead, which allows movement of
+     * edited OMGraphics on the downclick.  The mouseModes property
+     * needs to be set in the properties file if you want this layer
+     * to respond to something different than the SelectMouseMode.
      */
-    public boolean mouseMoved(MouseEvent e) {  
-	if (editorTool != null && editorTool.wantsEvents()) {
-	    editorTool.mouseMoved(e);
- 	    return consumeEvents;
+    public synchronized MapMouseListener getMapMouseListener() {
+	String[] modeList = getMouseModeIDsForEvents();
+	if (modeList != null) {
+	    EditorLayerInterpreter interpreter = 
+		new EditorLayerInterpreter(this);
+	    interpreter.setMouseModeServiceList(modeList);
+	    interpreter.setConsumeEvents(getConsumeEvents());
+	    interpreter.setGRP(this);
+	    return interpreter;
 	} else {
- 	    return super.mouseMoved(e) && consumeEvents;
+	    return null;
 	}
     }
     
-    /**
-     * Handle a mouse cursor moving without the button being pressed.
-     * Another layer has consumed the event.
-     */
-    public void mouseMoved() {
-	if (editorTool != null && editorTool.wantsEvents()) {
- 	    editorTool.mouseMoved();
-	} else {
-	    super.mouseMoved();
-	}
-    }
-
     /**
      * Part of a layer hack to notify the component listener when the
      * component is hidden.  These components don't receive the

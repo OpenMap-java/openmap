@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.17 $
-// $Date: 2003/09/22 23:39:45 $
+// $Revision: 1.18 $
+// $Date: 2003/09/23 22:53:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,38 +48,25 @@ import javax.swing.*;
  * the OMGraphicHandlerLayer superclass.
  */
 public class DrawingToolLayer extends OMGraphicHandlerLayer 
-    implements MapMouseListener, DrawingToolRequestor {
+    implements DrawingToolRequestor {
 
     /** Get a handle on the DrawingTool. */
     protected OMDrawingTool drawingTool;
-
-    /** For callbacks on editing... */
-    protected final DrawingToolRequestor layer = this;
 
     /**
      * A flag to provide a tooltip over OMGraphics to click to edit.
      */
     protected boolean showHints = true;
 
-    /**
-     * A flag to tell the layer to be selfish about consuming
-     * MouseEvents it receives.  If set to true, it will consume
-     * events so that other layers will not receive the events.  If
-     * false, lower layers will also receive events, which will let
-     * them react too.  Intended to let other layers provide
-     * information about what the mouse is over when editing is
-     * occuring.
-     */
-    protected boolean consumeEvents = false;
-
     public final static String ShowHintsProperty = "showHints";
-    public final static String ConsumeEventsProperty ="consumeEvents";
 
     protected boolean DTL_DEBUG = false;
 
     public DrawingToolLayer() {
 	setList(new OMGraphicList());
 	setAddToBeanContext(true);
+	setMouseModeIDsForEvents(new String[] {SelectMouseMode.modeID});
+
 	DTL_DEBUG = Debug.debugging("dtl");
     }
 
@@ -87,8 +74,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	super.setProperties(prefix,props);
 
 	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-	showHints = LayerUtils.booleanFromProperties(props, realPrefix + ShowHintsProperty, showHints);
-	consumeEvents = LayerUtils.booleanFromProperties(props, realPrefix + ConsumeEventsProperty, consumeEvents);
+	showHints = PropUtils.booleanFromProperties(props, realPrefix + ShowHintsProperty, showHints);
     }
     
     public OMDrawingTool getDrawingTool() {
@@ -174,96 +160,25 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
     }
 
     /**
-     * Note: A layer interested in receiving amouse events should
-     * implement this function .  Otherwise, return the default, which
-     * is null.
+     * Overriding the OMGraphicHandlerLayer method that sets the
+     * StandardMapMouseInterpreter, and setting a
+     * DrawingToolLayerInterpreter instead, which allows movement of
+     * edited OMGraphics on the downclick.  The mouseModes property
+     * needs to be set in the properties file if you want this layer
+     * to respond to something different than the SelectMouseMode.
      */
     public synchronized MapMouseListener getMapMouseListener() {
-	return this;
-    }
-
-    /**
-     * Return a list of the modes that are interesting to the
-     * MapMouseListener.  You MUST override this with the modes you're
-     * interested in.
-     */
-    public String[] getMouseModeServiceList() {
-	String[] services = {SelectMouseMode.modeID};
-	return services;
-    }
-    
-    ////////////////////////
-    // Mouse Listener events
-    ////////////////////////
-    
-    /**
-     * Invoked when a mouse button has been pressed on a component.
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mousePressed(MouseEvent e) { 
-	boolean ret = false;
-	OMGraphicList list = getList();
-
-	if (list != null) {
-
-	    OMGraphic omgr = list.findClosest(e.getX(), e.getY(), 4);
-
-	    if (omgr != null && shouldEdit(omgr)) {
-		OMDrawingTool dt = getDrawingTool();
-		if (dt != null) {
-		    if (!dt.getUseAsTool()) {
-			dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
-		    }
-
-		    MapMouseMode omdtmm = dt.getMouseMode();
-		    if (!omdtmm.isVisible()) {
-			int behaviorMask = OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK;
-			if (!dt.getUseAsTool()) {
-			    behaviorMask |= OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK; 
-			}
-			dt.setBehaviorMask(behaviorMask);
-		    }
-
-		    if (dt.edit(omgr, layer, e) != null) {
-			// OK, means we're editing - let's lock up the MouseMode
-			if (e instanceof MapMouseEvent) {
-
-			    // Check to see if the DrawingToolMouseMode wants to 
-			    // be invisible.  If it does, ask the current
-			    // active MouseMode to be the proxy for it...
-			    if (!omdtmm.isVisible()) {
-				MapMouseMode mmm = ((MapMouseEvent)e).getMapMouseMode();
-				if (mmm.actAsProxyFor(omdtmm, MapMouseSupport.PROXY_DISTRIB_MOUSE_MOVED & MapMouseSupport.PROXY_DISTRIB_MOUSE_DRAGGED)) {
-				    if (DTL_DEBUG) {
-					Debug.output("DTL: Setting " + mmm.getID() + " as proxy for drawing tool");
-				    }
-				    setProxyMouseMode(mmm);
-				} else {
-				    // WHOA, couldn't get proxy lock - bail
-				    if (DTL_DEBUG) {
-					Debug.output("DTL: couldn't get proxy lock on " + mmm.getID() + " deactivating internal drawing tool");
-				    }
-				    dt.deactivate();
-				}
-			    } else {
-				if (DTL_DEBUG) {
-				    Debug.output("DTL: OMDTMM wants to be visible");
-				}
-			    }
-			} else {
-			    if (DTL_DEBUG) {
-				Debug.output("DTL: MouseEvent not a MapMouseEvent");
-			    }
-			}
-
-			fireHideToolTip(e);
-			ret = true;
-		    }
-		}
-	    } 
+	String[] modeList = getMouseModeIDsForEvents();
+	if (modeList != null) {
+	    DrawingToolLayerInterpreter interpreter = 
+		new DrawingToolLayerInterpreter(this);
+	    interpreter.setMouseModeServiceList(modeList);
+	    interpreter.setConsumeEvents(getConsumeEvents());
+	    interpreter.setGRP(this);
+	    return interpreter;
+	} else {
+	    return null;
 	}
-	return ret && consumeEvents;
     }
     
     protected MapMouseMode proxyMMM = null;
@@ -287,105 +202,6 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
     }
 
     /**
-     * Invoked when a mouse button has been released on a component.
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseReleased(MouseEvent e) {      
-	return false;
-    }
-
-    /**
-     * Get the behavior mask used for the drawing tool when an
-     * OMGraphic is clicked on, and editing starts.  Controls how the
-     * drawing tool will behave, with respect to its GUI, etc.
-     */
-    public int getDrawingToolEditBehaviorMask() {
-	return OMDrawingTool.DEFAULT_BEHAVIOR_MASK;
-    }
-    
-    /**
-     * Invoked when the mouse has been clicked on a component.
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseClicked(MouseEvent e) { 
-	return false;
-    }
-    
-    /**
-     * Invoked when the mouse enters a component.
-     * @param e MouseEvent
-     */
-    public void mouseEntered(MouseEvent e) {
-	return;
-    }
-    
-    /**
-     * Invoked when the mouse exits a component.
-     * @param e MouseEvent
-     */
-    public void mouseExited(MouseEvent e) {
-	return;
-    }
-    
-    ///////////////////////////////
-    // Mouse Motion Listener events
-    ///////////////////////////////
-    
-    /**
-     * Invoked when a mouse button is pressed on a component and then 
-     * dragged.  The listener will receive these events if it
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseDragged(MouseEvent e) {      
-	return false;
-    }
-
-    protected OMGraphic lastSelected = null;
-    protected String lastToolTip = null;
-
-    /**
-     * Invoked when the mouse button has been moved on a component
-     * (with no buttons down).
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseMoved(MouseEvent e) {  
-	boolean ret = false;
-	OMGraphic omgr = null;
-	OMGraphicList list = getList();
-
-	if (list != null) {
-	    omgr = list.findClosest(e.getX(),e.getY(),4.0f);
-
-	    if (omgr != null) {
-		if (showHints) {
-		    if (omgr != lastSelected) {
-			lastToolTip = getToolTipForOMGraphic(omgr);
-		    }
-
-		    if (lastToolTip != null) {
-			fireRequestToolTip(e, lastToolTip);
-			ret = true;
-		    } else {
-			fireHideToolTip(e);
-		    }
-		}
-	    } else {
-		if (showHints && lastToolTip != null) {
-		    fireHideToolTip(e);
-		}
-		lastToolTip = null;
-	    }
-	}
-
-	lastSelected = omgr;
-	return ret && consumeEvents;
-    }
-    
-    /**
      * A method called from within different MapMouseListener methods
      * to check whether an OMGraphic *should* be edited if the
      * OMDrawingTool is able to edit it.  Can be used by subclasses to
@@ -393,38 +209,14 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      * those that can be moved.  This method should work together with
      * the getToolTipForOMGraphic() method so that OMGraphics that
      * shouldn't be edited don't provide tooltips that suggest that
-     * they can be.
+     * they can be.<P>
      *
-     * By default, this method always
-     * returns true because the DrawingToolLayer always thinks the
-     * OMGraphic should be edited.
+     * By default, this method always returns true because the
+     * DrawingToolLayer always thinks the OMGraphic should be edited.
      */
     public boolean shouldEdit(OMGraphic omgr) {
 	return true;
     }
-
-    /**
-     * Called by default in the MouseMoved method, in order to fire a
-     * ToolTip for a particular OMGraphic.  Return a String if you
-     * want a ToolTip displayed, null if you don't.  By default,
-     * returns 'Click to Edit' if the drawing tool can edit the
-     * object.  You can override and change, and also return different
-     * String for different OMGraphics.
-     */
-    protected String getToolTipForOMGraphic(OMGraphic omgr) {
-	OMDrawingTool dt = getDrawingTool();
-	if (shouldEdit(omgr) && dt.canEdit(omgr.getClass()) && !dt.isActivated()) {
-	    return "Click to Edit";
-	} else {
-	    return null;
-	}
-    }
-
-    /**
-     * Handle a mouse cursor moving without the button being pressed.
-     * Another layer has consumed the event.
-     */
-    public void mouseMoved() {}
 
     public Component getGUI() {
 
@@ -459,20 +251,47 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
     }
 
     /**
-     * A flag to tell the layer to be selfish about consuming
-     * MouseEvents it receives.  If set to true, it will consume
-     * events so that other layers will not receive the events.  If
-     * false, lower layers will also receive events, which will let
-     * them react too.  Intended to let other layers provide
-     * information about what the mouse is over when editing is
-     * occuring.
+     * Query that an OMGraphic can be highlighted when the mouse moves
+     * over it.  If the answer is true, then highlight with this
+     * OMGraphics will be called.
      */
-    public void setConsumeEvents(boolean consume) {
-	consumeEvents = consume;
+    public boolean isHighlightable(OMGraphic omg) {
+	return true;
     }
 
-    public boolean getConsumeEvents() {
-	return consumeEvents;
+    /**
+     * Query that an OMGraphic is selectable.
+     */
+    public boolean isSelectable(OMGraphic omg) {
+	DrawingTool dt = getDrawingTool();
+	return (shouldEdit(omg) && dt != null && dt.canEdit(omg.getClass()));
     }
+
+    /**
+     * Query for what text should be placed over the information bar
+     * when the mouse is over a particular OMGraphic.
+     */
+    public String getInfoText(OMGraphic omg) {	
+	DrawingTool dt = getDrawingTool();
+	if (dt != null && dt.canEdit(omg.getClass())) {
+	    return "Click to edit.";
+	} else {
+	    return null;
+	}
+    }
+
+    /**
+     * Query for what tooltip to display for an OMGraphic when the
+     * mouse is over it.
+     */
+    public String getToolTipTextFor(OMGraphic omgr) {
+	OMDrawingTool dt = getDrawingTool();
+	if (shouldEdit(omgr) && dt.canEdit(omgr.getClass()) && !dt.isActivated()) {
+	    return "Click to Edit";
+	} else {
+	    return null;
+	}
+    }
+
 }
 
