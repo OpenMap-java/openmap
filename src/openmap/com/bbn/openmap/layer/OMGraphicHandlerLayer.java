@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2003/09/25 18:59:14 $
+// $Revision: 1.11 $
+// $Date: 2003/10/04 04:47:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -90,7 +90,34 @@ import com.bbn.openmap.util.SwingWorker;
  * getProjection().  You should generate() the OMGraphics in prepare.
  * NOTE: You can override the projectionChanged() method to
  * create/manage OMGraphics any way you want.  The SwingWorker only
- * gets launched if doPrepare() gets called.
+ * gets launched if doPrepare() gets called.<P>
+ *
+ * MouseEvents are not handled by a MapMouseInterpreter, with the
+ * layer being the GestureResponsePolicy object dictating how events
+ * are responded to.  The interpreter does the work of fielding
+ * MapMouseEvents, figuring out if they concern an OMGraphic, and
+ * asking the policy what it should do in certain situations,
+ * including providing tooltips, information, or opportunities to edit
+ * OMGraphics.  The mouseModes property can be set to the MapMouseMode
+ * IDs that the interpreter should respond to. <P>
+ *
+ * For OMGraphicHandlerLayers, there are several properties that can
+ * be set that dictate important behavior: <pre>
+ *
+ * layer.projectionChangePolicy=pcp
+ * layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
+ *
+ * layer.renderPolicy=srp
+ * layer.srp.class=com.bbn.openmap.layer.policy.StandardRenderPolicy
+ * # or
+ * layer.renderPolicy=ta
+ * layer.ta.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
+ * layer.ta.renderingHints=KEY_TEXT_ANTIALIASING
+ * layer.ta.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
+ *
+ * layer.mouseModes=Gestures
+ * layer.consumeEvents=true
+ * </pre>
  */
 public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolicy {
 
@@ -99,6 +126,9 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * This property should be set with a scoping marker name used to
      * define a policy class and any other properties that the policy
      * should use.  "projectionChangePolicy"
+     * @see com.bbn.openmap.layer.policy.ProjectionChangePolicy
+     * @see com.bbn.openmap.layer.policy.StandardPCPolicy
+     * @see com.bbn.openmap.layer.policy.ListResetPCPolicy
      */
     public final static String ProjectionChangePolicyProperty = "projectionChangePolicy";
     /**
@@ -106,6 +136,9 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * property should be set with a marker name used to define a
      * policy class and any other properties that the policy should
      * use.  "renderPolicy"
+     * @see com.bbn.openmap.layer.policy.StandardRenderPolicy
+     * @see com.bbn.openmap.layer.policy.BufferedImageRenderPolicy
+     * @see com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
      */
     public final static String RenderPolicyProperty = "renderPolicy";
 
@@ -113,11 +146,18 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * The property that can be set to tell the layer which mouse
      * modes to listen to.  The property should be a space-separated
      * list of mouse mode IDs, which can be specified for a
-     * MapMouseMode in the properties file or, if none is specificed,
-     * the default ID hard-coded into the MapMouseMode.
+     * MapMouseMode in the properties file or, if none is specified,
+     * the default ID hard-coded into the MapMouseMode. "mouseModes"
      */
     public final static String MouseModesProperty = "mouseModes";
 
+    /**
+     * The property that can be set to tell the layer to consume mouse
+     * events.  The maim reason not to do this is in case you have
+     * OMGraphics that you are moving, and you need other layers to
+     * respond to let you know when you are over the place you think
+     * you need to be.
+     */
     public final static String ConsumeEventsProperty ="consumeEvents";
 
     /**
@@ -728,6 +768,11 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	return list;
     }
 
+    /**
+     * The MapMouseInterpreter used to catch the MapMouseEvents and
+     * direct them to layer as referencing certain OMGraphics.
+     * Mananges how the layer responds to mouse events.
+     */
     protected MapMouseInterpreter mouseEventInterpreter = null;
 
     /**
@@ -800,10 +845,23 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	return consumeEvents;
     }
 
+    /**
+     * This is the important method call that determines what
+     * MapMouseModes the interpreter for this layer responds to.  The
+     * MapMouseInterpreter calls this so it can respond to
+     * MouseDelegator queries.  You can programmatically call
+     * setMouseModeIDsForEvents with the mode IDs to set these values,
+     * or set the mouseModes property for this layer set to a
+     * space-separated list of mode IDs.
+     */
     public String[] getMouseModeIDsForEvents() {
 	return mouseModeIDs;
     }
 
+    /**
+     * Use this method to set which mouse modes this layer responds
+     * to.  The array should contain the mouse mode IDs.
+     */
     public void setMouseModeIDsForEvents(String[] mm) {
 	StringBuffer sb = new StringBuffer();
 	for (int i = 0; i < mm.length;i++) {
@@ -818,21 +876,37 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     }
 
     /**
-     * Query that an OMGraphic is editable.
+     * Query asking if OMGraphic is highlightable, which means that
+     * something in the GUI should change when the mouse is moved or
+     * dragged over the given OMGraphic.  Highlighting shows that
+     * something could happen, or provides cursory information about
+     * the OMGraphic.  Responding true to this method may cause
+     * getInfoText() and getToolTipTextFor() methods to be called
+     * (depends on the MapMouseInterpetor).
      */
     public boolean isHighlightable(OMGraphic omg) {
 	return omg instanceof OMBitmap;
     }
 
     /**
-     * Query that an OMGraphic is selectable.
+     * Query asking if an OMGraphic is selectable, or able to be
+     * moved, deleted or otherwise modified. Responding true to this
+     * method may cause select() to be called (depends on the
+     * MapMouseInterpertor) so the meaning depends on what the layer
+     * does in select.
      */
     public boolean isSelectable(OMGraphic omg) {
 	return false;
     }
 
+    /**
+     * A current list of select OMGraphics.
+     */
     protected OMGraphicList selectedList;
 
+    /**
+     * Retrieve the list of currently selected OMGraphics.
+     */
     public OMGraphicList getSelected() {
 	return selectedList;
     }
@@ -896,36 +970,56 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     }
 
     /**
-     * Remove an OMGraphic from a layer.
+     * Remove an OMGraphic from a layer. Not implemented yet.
      */
     public OMGraphicList cut(OMGraphicList omgl) {
 	return null;
     }
 
     /***
-     * Return a copy of an OMGraphic.
+     * Return a copy of an OMGraphic. Not implemented yet.
      */
     public OMGraphicList copy(OMGraphicList omgl) {
 	return null;
     }
 
     /**
-     * Add OMGraphic to Layer.
+     * Add OMGraphic to Layer. Not implemented yet.
      */
     public void paste(OMGraphicList omgl) {}
 
+    /**
+     * If applicable, should return a short, informational string
+     * about the OMGraphic to be displayed in the
+     * InformationDelegator.  Return null if nothing should be
+     * displayed.
+     */
     public String getInfoText(OMGraphic omg) {
 	return null;
     }
 
+    /**
+     * If applicable, should return a tool tip for the OMGraphic.
+     * Return null if nothing should be shown.
+     */
     public String getToolTipTextFor(OMGraphic omg) {
 	return null;
     }
 
+    /**
+     * If applicable, add contents to a popup menu for a location over
+     * the map.  Return the provided JPopupMenu if no modifications
+     * are to be made.
+     */
     public JPopupMenu modifyPopupMenuForMap(JPopupMenu jpm) {
 	return jpm;
     }
 
+    /**
+     * If applicable, add contents to a popup menu for a location over
+     * an OMGraphic.  Return the provided JPopupMenu if no modifications
+     * are to be made.
+     */
     public JPopupMenu modifyPopupMenuFor(OMGraphic omg, JPopupMenu jpm) {
 	return jpm;
     }

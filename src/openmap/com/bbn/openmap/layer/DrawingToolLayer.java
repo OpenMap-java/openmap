@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.21 $
-// $Date: 2003/10/03 22:25:20 $
+// $Revision: 1.22 $
+// $Date: 2003/10/04 04:47:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,7 +47,17 @@ import javax.swing.*;
  * also sent it's graphics to the OMDrawingTool for editing. <P>
  *
  * The projectionChanged() and paint() methods are taken care of in
- * the OMGraphicHandlerLayer superclass.
+ * the OMGraphicHandlerLayer superclass.<P>
+ * 
+ * This class responds to all the properties that the
+ * OMGraphicHandlerLayer repsonds to, including the mouseModes
+ * property.  If the mouseModes property isn't set, the
+ * SelectMouseMode.modeID mode ID is set.  When the
+ * MapMouseInterpreter calls select(OMGraphic), the OMGraphic is
+ * passed to the DrawingTool. This class also responds to the
+ * showHints property (true by default), which dictates if tooltips
+ * and information delegator text is displayed when the layer's
+ * contents are moused over.
  */
 public class DrawingToolLayer extends OMGraphicHandlerLayer 
     implements DrawingToolRequestor {
@@ -241,10 +251,11 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
     /**
      * Query that an OMGraphic can be highlighted when the mouse moves
      * over it.  If the answer is true, then highlight with this
-     * OMGraphics will be called.
+     * OMGraphics will be called, in addition to getInfoText() and
+     * getToolTipTextFor()
      */
     public boolean isHighlightable(OMGraphic omg) {
-	return true;
+	return showHints;
     }
 
     /**
