@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/util/LayerUtils.java,v $
 // $RCSfile: LayerUtils.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/04 14:27:58 $
+// $Revision: 1.3 $
+// $Date: 2003/04/26 01:05:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -312,6 +312,18 @@ public class LayerUtils {
 	    count+=2;
 	}
 	return ret;
+    }
+
+    /** 
+     * Returns a URL that names either a resource, a local file, or an
+     * internet URL.  Resources are checked for in the general classpath.
+     * @param name name of the resource, file or URL.
+     * @throws java.net.MalformedURLException
+     * @return URL
+     */
+    public static URL getResourceOrFileOrURL(String name)
+	throws java.net.MalformedURLException {
+	return getResourceOrFileOrURL(null, name);
     }
 
     /** 
