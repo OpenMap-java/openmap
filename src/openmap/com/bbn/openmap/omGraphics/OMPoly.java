@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.12 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.13 $
+// $Date: 2005/01/10 20:44:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -599,6 +599,7 @@ public class OMPoly extends OMGraphic implements Serializable {
     public boolean generate(Projection proj) {
         int i, j, npts;
         setShape(null);
+        setNeedToRegenerate(true);
 
         if (proj == null) {
             Debug.message("omgraphic", "OMPoly: null projection in generate!");
@@ -608,7 +609,7 @@ public class OMPoly extends OMGraphic implements Serializable {
         // answer the question now, saving calcuation for future
         // calculations. The set method forces the calculation for
         // the query.
-        setNeedToRegenerate(true);
+
         isGeometryClosed();
 
         switch (renderType) {
@@ -681,11 +682,15 @@ public class OMPoly extends OMGraphic implements Serializable {
                 ypoints[j] = (int[]) vector.get(i + 1);
             }
 
-            if (!doShapes && size > 1) {
-                setNeedToRegenerate(false);
-                initLabelingDuringGenerate();
-                setLabelLocation(xpoints[0], ypoints[0]);
-                return true;
+            if (!doShapes) {
+                if (size > 1) {
+                    setNeedToRegenerate(false);
+                    initLabelingDuringGenerate();
+                    setLabelLocation(xpoints[0], ypoints[0]);
+                    return true;
+                } else {
+                    return false;
+                }
             }
 
             break;
