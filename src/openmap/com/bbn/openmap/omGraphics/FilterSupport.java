@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/FilterSupport.java,v $
 // $RCSfile: FilterSupport.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.6 $
+// $Date: 2004/09/23 20:56:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -162,13 +162,17 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
                             Debug.output("  +++ OMGraphicList's contents (" + 
                                          subList.size() + ") pass filter, adding...");
                         }
+
+                        passedFilter(subList);
                         ret.add(subList);
+
                     } else {
+
                         if (DEBUG) {
                             Debug.output("  --- OMGraphicList's contents fail filter, ignoring...");
                         }
 
-                        omg.setVisible(false);
+                        failedFilter(omg);
                     }
                     continue;
                 } else {
@@ -206,12 +210,14 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
                             Debug.output("   +++ OMGraphic passes filter, adding...");
                         }
 
+                        passedFilter(omg);
                         ret.add(omg);
                     } else {
                         if (DEBUG) {
                             Debug.output("   --- OMGraphic fails filter, hiding...");
                         }
-                        omg.setVisible(false);
+
+                        failedFilter(omg);
                     }
 
                 }
@@ -296,5 +302,28 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
     public void resetFiltering() {
         OMGraphicList list = getList();
         if (list != null) list.setVisible(true);
+    }
+
+    /**
+     * Method called when FilterSupport finds an OMGraphic that fails
+     * the filter test.  The OMGraphic is not being added to a list
+     * that is being returned for passing OMGraphics in another
+     * method, this call-out is an opportunity to make settings on
+     * OMGraphics that pass the filter.  By default, the visibility of
+     * the OMGraphic is set to false.
+     */
+    protected void failedFilter(OMGraphic omg) {
+        omg.setVisible(false);
+    }
+
+    /**
+     * Method called when FilterSupport finds an OMGraphic that passes
+     * the filter test.  The OMGraphic is already being added to a
+     * list that is being returned in another method, this call-out is
+     * an opportunity to make settings on OMGraphics that pass the
+     * filter.
+     */
+    protected void passedFilter(OMGraphic omg) {
+        // NO-OP, by default
     }
 }
