@@ -86,6 +86,6 @@ if $cygwin; then
   LOCALCLASSPATH=`cygpath --path --windows "$LOCALCLASSPATH"`
 fi
 
-$JAVACMD -Xmx64m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share com.bbn.openmap.app.OpenMap
+$JAVACMD -Xmx64m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share com.bbn.openmap.app.OpenMap -properties ./openmap.properties
 
 
