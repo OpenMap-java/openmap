@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/TrueFalsePropertyEditor.java,v $
 // $RCSfile: TrueFalsePropertyEditor.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/19 20:41:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,23 +26,29 @@ package com.bbn.openmap.util.propertyEditor;
 import java.beans.*;
 import javax.swing.*;
 import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.*;
 
 /** 
- * A PropertyEditor that displays a true/false option.  The widget
- * returns true or false as a string when queried.  If you extend this
- * class and override the constructor, you can change the two choices
- * presented, like "enabled/disabled, on/off", etc.  The two responses
- * will be true and false, however.
+ * A PropertyEditor that displays an either/or option.  The widget
+ * returns true or false as a string when queried, or the button's
+ * action commands if set differently in subclasses.  If you extend
+ * this class and override the constructor, you can change the two
+ * choices presented, like "enabled/disabled, on/off", etc.  The
+ * responses will be true and false, unless the action commands for
+ * the trueButton and falseButton are set to something else and
+ * useAltCommandStrings is set to true.
  */
 public class TrueFalsePropertyEditor extends PropertyEditorSupport
     implements ActionListener, FocusListener {
     
-    ButtonGroup buttonGroup = new ButtonGroup();
-    boolean option = true;
-    JRadioButton trueButton;
-    JRadioButton falseButton;
-    
+    protected ButtonGroup buttonGroup = new ButtonGroup();
+    protected boolean option = true;
+    protected JRadioButton trueButton;
+    protected JRadioButton falseButton;
+    protected boolean useAltCommandStrings = false;
+
     public final static String TrueString = "true";
     public final static String FalseString = "false";
 
@@ -55,21 +61,36 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport
 	return true;
     }
     
+    public void setUseAltCommandStrings(boolean value) {
+	useAltCommandStrings = value;
+    }
+
+    public boolean getUseAltCommandStrings() {
+	return useAltCommandStrings;
+    }
+
     /** Returns the editor GUI, ie a JTextField. */
     public Component getCustomEditor() {
 	JPanel panel = new JPanel();
 
-	trueButton.setActionCommand(TrueString);
-	trueButton.addActionListener(this);
-	falseButton.setActionCommand(FalseString);
-	falseButton.addActionListener(this);
+	GridBagLayout gridbag = new GridBagLayout();
+	GridBagConstraints c = new GridBagConstraints();
+	panel.setLayout(gridbag);
 
+	if (!getUseAltCommandStrings()) {
+	    trueButton.setActionCommand(TrueString);
+	    falseButton.setActionCommand(FalseString);
+	}
+	trueButton.addActionListener(this);
+	falseButton.addActionListener(this);
 	
 	buttonGroup.add(trueButton);
 	buttonGroup.add(falseButton);
 
 	setSelected(option);
 
+	gridbag.setConstraints(trueButton, c);
+	gridbag.setConstraints(falseButton, c);
 	panel.add(trueButton);
 	panel.add(falseButton);
 	
@@ -78,7 +99,7 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport
     
     public void actionPerformed(ActionEvent e) {
 	String ac = e.getActionCommand();
-	setSelected(ac.equalsIgnoreCase(TrueString));
+	setSelected(ac.equalsIgnoreCase(trueButton.getActionCommand()));
 	
 	//System.out.println("value changed");
 	firePropertyChange();
@@ -99,14 +120,14 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport
 	    return;
 	}
 
-	setSelected(((String)string).equalsIgnoreCase("true"));
+	setSelected(((String)string).equalsIgnoreCase(trueButton.getActionCommand()));
     }
 
     /** Returns String from ButtonGroup. */
     public String getAsText() {
 	if (option) {
-	    return TrueString;
+	    return trueButton.getActionCommand();
 	}
-	return FalseString;
+	return falseButton.getActionCommand();
     }
 }

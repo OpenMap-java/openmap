@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/FilePropertyEditor.java,v $
 // $RCSfile: FilePropertyEditor.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/19 20:41:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,7 +33,8 @@ import java.beans.*;
  * file. A single file choice can be made, and only choices that
  * reside on the local file system.
  */
-public class FilePropertyEditor extends PropertyEditorSupport {
+public class FilePropertyEditor extends PropertyEditorSupport 
+    implements ActionListener {
     
     /** The Component returned by getCustomEditor(). */
     JButton button;
@@ -54,22 +55,22 @@ public class FilePropertyEditor extends PropertyEditorSupport {
 	return true;
     }
     
+    public void actionPerformed(ActionEvent e) {
+	JFileChooser chooser = getFileChooser();
+	int returnVal = chooser.showDialog((Component)null, "Select");
+	if (returnVal==JFileChooser.APPROVE_OPTION) {
+	    String newFilename = chooser.getSelectedFile().getAbsolutePath();
+	    button.setText(newFilename);
+	    firePropertyChange();
+	}
+    }
+
     /**
      * Returns a JButton that will bring up a JFileChooser dialog.
      * @return JButton button
      */
     public Component getCustomEditor() {
-	button.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    JFileChooser chooser = getFileChooser();
-		    int returnVal = chooser.showDialog((Component)null, "Select");
-		    if (returnVal==JFileChooser.APPROVE_OPTION) {
-			String newFilename = chooser.getSelectedFile().getAbsolutePath();
-			FilePropertyEditor.this.button.setText(newFilename);
-			firePropertyChange();
-		    }
-		}
-	    });
+	button.addActionListener(this);
 	return button;
     }
 
@@ -89,14 +90,6 @@ public class FilePropertyEditor extends PropertyEditorSupport {
 	return button.getText();
     }
     
-    //
-    //	ActionListener interface
-    //
-    
-    /** Implement ActionListener interface. */
-    public void actionPerformed(ActionEvent e) {
-    }
-
     public String getLastLocation() {
 	String currentLocation = getAsText();
 	char sepChar = '/'; // Java path separator

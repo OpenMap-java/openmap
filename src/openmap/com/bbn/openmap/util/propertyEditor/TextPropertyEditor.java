@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/TextPropertyEditor.java,v $
 // $RCSfile: TextPropertyEditor.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/19 20:41:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,8 @@ package com.bbn.openmap.util.propertyEditor;
 import java.beans.*;
 import javax.swing.*;
 import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.*;
 
 /** 
@@ -35,7 +37,7 @@ public class TextPropertyEditor extends PropertyEditorSupport
     implements ActionListener, FocusListener {
     
     /** The GUI component of this editor. */
-    JTextField textField = new JTextField(25);
+    JTextField textField = new JTextField(10);
     
     public boolean supportsCustomEditor() {
 	return true;
@@ -43,12 +45,20 @@ public class TextPropertyEditor extends PropertyEditorSupport
     
     /** Returns the editor GUI, ie a JTextField. */
     public Component getCustomEditor() {
-	JPanel panel = new JPanel();
+	JPanel jp = new JPanel();
 	textField.addActionListener(this);
 	textField.addFocusListener(this);
+
+	GridBagLayout gridbag = new GridBagLayout();
+	GridBagConstraints c = new GridBagConstraints();
+	jp.setLayout(gridbag);
+
+	c.weightx = 1f;
+	c.fill = GridBagConstraints.HORIZONTAL;
+	gridbag.setConstraints(textField, c);
+	jp.add(textField);
 	
-	panel.add(textField);
-	return panel;
+	return jp;
     }
     
     public void actionPerformed(ActionEvent e) {

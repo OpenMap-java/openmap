@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/MultiDirectoryPropertyEditor.java,v $
 // $RCSfile: MultiDirectoryPropertyEditor.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/19 20:41:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,9 @@
 
 package com.bbn.openmap.util.propertyEditor;
 
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Component;
 import java.awt.event.*;
 import javax.swing.*;
@@ -57,25 +60,37 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
 	return pathSeparator;
     }
 
+    public void actionPerformed(ActionEvent e) {
+	JFileChooser chooser = getFileChooser();
+	int returnVal = chooser.showDialog((Component)null, "Select");
+	if (returnVal==JFileChooser.APPROVE_OPTION) {
+	    String newFilename = chooser.getSelectedFile().getAbsolutePath();
+	    append(newFilename);
+	    firePropertyChange();
+	}
+    }
+
     /**
      * Returns a JButton that will bring up a JFileChooser dialog.
      * @return JButton button
      */
     public Component getCustomEditor() {
-	button.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    JFileChooser chooser = getFileChooser();
-		    int returnVal = chooser.showDialog((Component)null, "Select");
-		    if (returnVal==JFileChooser.APPROVE_OPTION) {
-			String newFilename = chooser.getSelectedFile().getAbsolutePath();
-			MultiDirectoryPropertyEditor.this.append(newFilename);
-			firePropertyChange();
-		    }
-		}
-	    });
+	button.addActionListener(this);
 
 	JPanel jp = new JPanel();
+	GridBagLayout gridbag = new GridBagLayout();
+	GridBagConstraints c = new GridBagConstraints();
+	jp.setLayout(gridbag);
+
+	c.weightx = 1f;
+	c.fill = GridBagConstraints.HORIZONTAL;
+	gridbag.setConstraints(textField, c);
 	jp.add(textField);
+
+	c.weightx = 0;
+	c.anchor = GridBagConstraints.EAST;
+	c.fill = GridBagConstraints.NONE;
+	gridbag.setConstraints(button, c);
 	jp.add(button);
 	return jp;
     }
@@ -116,5 +131,4 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
     public String getAsText() {
 	return textField.getText();
     }
-
 }

@@ -132,7 +132,7 @@ public class Inspector implements ActionListener {
 
 	frame.getContentPane().add(createPropertyGUI(propertyConsumer));
 	frame.pack();
-	
+
 	if (frame.getHeight() > 500) {
 	    frame.setSize(frame.getWidth(), 500);
 	}
@@ -236,18 +236,18 @@ public class Inspector implements ActionListener {
 
 	JButton doneButton = null, cancelButton = null;
 	
-	int i=0;
-
 	JPanel component = new JPanel();
 	component.setLayout(new BorderLayout());
 
 	JPanel propertyPanel = new JPanel();
-	propertyPanel.setLayout(new BorderLayout());
-	
-	JPanel labelPane = new JPanel();
-	labelPane.setLayout(new GridLayout(0, 1));
-	JPanel fieldPane = new JPanel();
-	fieldPane.setLayout(new GridLayout(0, 1));
+
+	GridBagLayout gridbag = new GridBagLayout();
+	GridBagConstraints c = new GridBagConstraints();
+	c.insets = new Insets(2, 20, 2, 20);
+	propertyPanel.setLayout(gridbag);
+
+	int i = 0;
+
 	while (it.hasNext()) { // iterate properties
 	    String prop = (String)it.next();
 
@@ -280,50 +280,66 @@ public class Inspector implements ActionListener {
 	    }
 	    
 	    Component editorFace = null;
-	    if (editor.supportsCustomEditor()) {
+	    if (editor != null && editor.supportsCustomEditor()) {
 		editorFace = editor.getCustomEditor();
 	    } else {
 		editorFace = new JLabel("Does not support custom editor");
 	    }
 
-	    editor.setValue(props.get(prop));
+	    if (editor != null) {
+		editor.setValue(props.get(prop));
+	    }
 	    JLabel label = new JLabel(marker + ":");
+	    label.setHorizontalAlignment(SwingConstants.RIGHT);
 
-	    labelPane.add(label);
-	    fieldPane.add(editorFace);
+	    c.gridx = 0;
+	    c.gridy = i++;
+	    c.weightx = 0;
+	    c.fill = GridBagConstraints.NONE;
+	    c.anchor = GridBagConstraints.EAST;
+
+	    gridbag.setConstraints(label, c);
+	    propertyPanel.add(label);
+
+	    c.gridx = 1;
+	    c.anchor = GridBagConstraints.WEST;
+	    c.fill = GridBagConstraints.HORIZONTAL;
+	    c.weightx = 1f;
+
+	    gridbag.setConstraints(editorFace, c);
+	    propertyPanel.add(editorFace);
 
 	    String toolTip = (String)info.get(marker);
 	    label.setToolTipText(toolTip==null ? "No further information available." : toolTip);
-	    i++;
 	}
-
-	propertyPanel.add(labelPane, BorderLayout.CENTER);
-	propertyPanel.add(fieldPane, BorderLayout.EAST);
 
 	// create the palette's scroll pane
 	JScrollPane scrollPane = new JScrollPane(
 	    propertyPanel,
 	    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-	    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+	    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+// 	scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
 	scrollPane.setAlignmentY(Component.TOP_ALIGNMENT);
 	component.add(scrollPane, BorderLayout.CENTER);
 
 	JPanel buttons = new JPanel();
 	if (print) {
 	    doneButton = new JButton("Print");
+	    cancelButton = new JButton("Quit");
 	} else {
 	    doneButton = new JButton("OK");
+	    cancelButton = new JButton("Cancel");
 	}
 	doneButton.addActionListener(this);
 	doneButton.setActionCommand(doneCommand);
-	cancelButton = new JButton("Cancel");
 	cancelButton.addActionListener(this);
 	cancelButton.setActionCommand(cancelCommand);
 	buttons.add(doneButton);
 	buttons.add(cancelButton);
 
 	component.add(buttons, BorderLayout.SOUTH);
+
+	component.validate();
 	return component;
     }
     
@@ -338,9 +354,9 @@ public class Inspector implements ActionListener {
 	
 	if (actionCommand == doneCommand) {// confirmed
 	    Properties props = collectProperties();
-	    frame.setVisible(false);
 
 	    if (!print) {
+		frame.setVisible(false);
 		propertyConsumer.setProperties(prefix, props);
 		if (actionListener != null) {
 		    actionListener.actionPerformed(e);
@@ -352,17 +368,20 @@ public class Inspector implements ActionListener {
 		    String next = (String)it.next();
 		    System.out.println(next + "=" + props.get(next));
 		}
-		System.exit(0);
 	    }
 
 	} else if (actionCommand == cancelCommand) {// canceled
-	    if (actionListener != null) {
+	    if (actionListener != null && actionListener != this) {
 		actionListener.actionPerformed(e);
 	    }
 	    propertyConsumer = null; // to be garb. coll'd
 	    frame.setVisible(false);
 	    frame.dispose();
 	    frame = null;
+
+	    if (print) {
+		System.exit(0);
+	    }
 	}
     }
     
@@ -399,7 +418,7 @@ public class Inspector implements ActionListener {
     public static void main(String[] args) {
 	String name = (args.length<1)?"com.bbn.openmap.layer.shape.ShapeLayer":args[0];
 	PropertyConsumer propertyconsumer = null;
-	try{
+	try {
 	    Class c = Class.forName(name);
 	    propertyconsumer = (PropertyConsumer)c.newInstance();
 	} catch(Exception e) {

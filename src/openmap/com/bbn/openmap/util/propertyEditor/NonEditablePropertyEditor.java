@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/NonEditablePropertyEditor.java,v $
 // $RCSfile: NonEditablePropertyEditor.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/19 20:41:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,7 +51,7 @@ public class NonEditablePropertyEditor extends PropertyEditorSupport {
     }
     
     /**
-     * Returns a JButton that will bring up a JFileChooser dialog.
+     * Returns a blank JLabel.
      * @return JButton button
      */
     public Component getCustomEditor() {

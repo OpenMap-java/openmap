@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/FDUPropertyEditor.java,v $
 // $RCSfile: FDUPropertyEditor.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/03/19 20:41:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,27 +41,14 @@ public class FDUPropertyEditor extends MultiDirectoryPropertyEditor {
 	button = new JButton("Set");
     }
 
-    /**
-     * Returns a JButton that will bring up a JFileChooser dialog.
-     * @return JButton button
-     */
-    public Component getCustomEditor() {
-	button.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    JFileChooser chooser = getFileChooser();
-		    int returnVal = chooser.showDialog((Component)null, "Select");
-		    if (returnVal==JFileChooser.APPROVE_OPTION) {
-			String newFilename = chooser.getSelectedFile().getAbsolutePath();
-			FDUPropertyEditor.this.setValue(newFilename);
-			firePropertyChange();
-		    }
-		}
-	    });
-
-	JPanel jp = new JPanel();
-	jp.add(textField);
-	jp.add(button);
-	return jp;
+    public void actionPerformed(ActionEvent e) {
+	JFileChooser chooser = getFileChooser();
+	int returnVal = chooser.showDialog((Component)null, "Select");
+	if (returnVal==JFileChooser.APPROVE_OPTION) {
+	    String newFilename = chooser.getSelectedFile().getAbsolutePath();
+	    setValue(newFilename);
+	    firePropertyChange();
+	}
     }
 
     /**

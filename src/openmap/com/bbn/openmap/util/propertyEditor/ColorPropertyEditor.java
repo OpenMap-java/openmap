@@ -2,6 +2,8 @@ package com.bbn.openmap.util.propertyEditor;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.*;
 import javax.swing.*;
 import java.beans.*;
@@ -58,7 +60,15 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
 		    ColorPropertyEditor.this.setValue(color);
 		}
 	    });
-	return button;
+
+	JPanel panel = new JPanel();
+	GridBagLayout gridbag = new GridBagLayout();
+	GridBagConstraints c = new GridBagConstraints();
+	panel.setLayout(gridbag);
+	gridbag.setConstraints(button, c);
+	panel.add(button);
+
+	return panel;
     }
 
     /** Implement PropertyEditor interface. */
