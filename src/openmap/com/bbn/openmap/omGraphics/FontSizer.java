@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/FontSizer.java,v $
 // $RCSfile: FontSizer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/02/13 13:36:25 $
+// $Revision: 1.4 $
+// $Date: 2004/09/03 22:30:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,51 +23,46 @@
 
 package com.bbn.openmap.omGraphics;
 
+import com.bbn.openmap.util.Debug;
 import java.awt.Font;
 
 /**
  * Helper class to OMText object that resizes font when scale changes.
+ * Font gets bigger as you zoom in.
  */
 public class FontSizer {
 
     protected Font font = OMText.DEFAULT_FONT;
-
+    protected Font lastFont = OMText.DEFAULT_FONT;
     protected float baseScale = -1;
-
+    protected float lastScale = -1;
     protected float curScale = -1;
-
     protected int minPointSize = font.getSize();
-
     protected int maxPointSize = font.getSize();
-
-    protected int pointSizeRatio = 1;
+    protected int multiplier = 1;
 
     /**
      * @param font the font to use as the base font.
      * @param baseScale the scale where the base font is shown at its natural size.
-     * @param pointSizeRatio the ratio of how much the scale should change
-     * for every point of font size, should be provided as (scale
-     * number / 1 point size), or a whole number.
+     * @param multiplier to use against the ratio of base scale:current scale.
      * @param minPointSize the minimum point size to use for the scaled font.
      * @param maxPointSize the maximum point size to use for the scaled font.
      */
-    public FontSizer(Font font, float baseScale, int pointSizeRatio, int minPointSize, int maxPointSize) {
-        this(baseScale, pointSizeRatio, minPointSize, maxPointSize);
+    public FontSizer(Font font, float baseScale, int multiplier, int minPointSize, int maxPointSize) {
+        this(baseScale, multiplier, minPointSize, maxPointSize);
         this.font = font;
     }
 
     /**
      * Contructor that uses the OMText DEFAULT_FONT as the base font.
      * @param baseScale the scale where the base font is shown at its natural size.
-     * @param pointSizeRatio the ratio of how much the scale should change
-     * for every point of font size, should be provided as (scale
-     * number / 1 point size), or a whole number.
+     * @param multiplier to use against the ratio of base scale:current scale.
      * @param minPointSize the minimum point size to use for the scaled font.
      * @param maxPointSize the maximum point size to use for the scaled font.
     */
-    public FontSizer(float baseScale, int pointSizeRatio, int minPointSize, int maxPointSize) {
+    public FontSizer(float baseScale, int multiplier, int minPointSize, int maxPointSize) {
         this.baseScale = baseScale;
-        this.pointSizeRatio = pointSizeRatio;
+        this.multiplier = multiplier;
         this.minPointSize = minPointSize;
         this.maxPointSize = maxPointSize;
     }
@@ -80,19 +75,34 @@ public class FontSizer {
     }
 
     /**
-     * Get a font sized for the scale, given the restrictions.
+     * Get a font sized for the scale, given the size restrictions.
      */
     public Font getFont(float scale) {
         curScale = scale;
         return getScaledFont();
     }
 
-    public Font getScaledFont() {
-        if (baseScale < 0 || curScale < 0) {
-            return font;
-        } else {
-            return font;
+    protected Font getScaledFont() {
+        if (lastScale != curScale) {
+            lastScale = curScale;
+
+            if (baseScale < 0 || curScale < 0) {
+                lastFont = font;
+            } else {
+
+                int newFontSize = multiplier * (int)((baseScale/curScale) * (float)font.getSize());
+
+                if (newFontSize > maxPointSize) {
+                    newFontSize = maxPointSize;
+                } else if (newFontSize < minPointSize) {
+                    newFontSize = minPointSize;
+                }
+
+                lastFont = new Font(font.getName(), font.getStyle(), newFontSize);
+            }
         }
+
+        return lastFont;
     }
 
     /**

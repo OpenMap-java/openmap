@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/02/10 18:08:17 $
+// $Revision: 1.9 $
+// $Date: 2004/09/03 22:30:40 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -295,7 +295,16 @@ public abstract class OMRasterObject extends OMGraphic
      * direction, and half the image in the vertical direction.
      */
     protected void rotate(Graphics2D g) {
-        ((Graphics2D)g).rotate(rotationAngle, point1.x+width/2, point1.y+height/2);
+        int w = width;
+        int h = height;
+
+        if (shape != null) {
+            java.awt.Rectangle rect = shape.getBounds();
+            w = (int)rect.getWidth();
+            h = (int)rect.getHeight();
+        }
+
+        ((Graphics2D)g).rotate(rotationAngle, point1.x+w/2, point1.y+h/2);
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/05/10 20:46:57 $
+// $Revision: 1.10 $
+// $Date: 2004/09/03 22:30:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,9 +95,9 @@ public abstract class BasicGeometry
 
     /**
      * The Java 2D containing the Shape of the Graphic.  There may be
-     * an array of them, in case the graphic wraps around the earth,
-     * and we need to show the other edge of the graphic on the other
-     * side of the earth.  
+     * several paths appended to each other, in case the graphic wraps
+     * around the earth, and we need to show the other edge of the
+     * graphic on the other side of the earth.
      */
     protected transient GeneralPath shape = null;
 
