@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriPlugIn.java,v $
 // $RCSfile: EsriPlugIn.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/21 22:44:16 $
+// $Revision: 1.3 $
+// $Date: 2003/08/14 22:51:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -355,7 +355,7 @@ public class EsriPlugIn extends AbstractPlugIn
 	    System.exit(0);
 	}
 	
-	EsriShapeExport ese = new EsriShapeExport(list, null, "/Users/dietrick/Desktop/ese");
+	EsriShapeExport ese = new EsriShapeExport(list, null, "./ese");
 	Debug.output("Exporting...");
 	ese.export();
 	Debug.output("Done.");
@@ -548,15 +548,11 @@ public class EsriPlugIn extends AbstractPlugIn
 
     /**
      * Sets the drawing attributes to those of a particular OMGraphic.
-     * Note: This is supposed to be able to be done with the
-     * DrawingAttributes .setFrom(OMGraphic) method but problems with
-     * that caused the creation of this 
      */
     private void setDrawingAttributes(OMGraphic omg) {
-	drawingAttributes.setLinePaint(omg.getLinePaint());
-	drawingAttributes.setFillPaint(omg.getFillPaint());
-	drawingAttributes.setSelectPaint(omg.getSelectPaint());
-	drawingAttributes.setStroke((BasicStroke)(omg.getStroke()));
+	if (drawingAttributes != null && omg != null) {
+	    drawingAttributes.setFrom(omg);
+	}
     }
 
     /**
