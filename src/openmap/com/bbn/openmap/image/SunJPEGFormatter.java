@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/SunJPEGFormatter.java,v $
 // $RCSfile: SunJPEGFormatter.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 03:09:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,17 +33,14 @@ public class SunJPEGFormatter extends AbstractImageFormatter {
 
     public static final String QualityProperty = "imagequality";
 
-    protected float imageQuality;
+    protected float imageQuality = .8f;
 
     public SunJPEGFormatter(){}
 
     public void setProperties(String prefix, Properties props) {
-	imageQuality = LayerUtils.floatFromProperties(props,
-						      (prefix == null?"":prefix) + QualityProperty,
-						      .8f);
+	imageQuality = LayerUtils.floatFromProperties(props, (prefix == null?"":prefix) + QualityProperty, imageQuality);
 	if (Debug.debugging("image")) {
-	    Debug.output("SunJPEGFormatter setting image quality to: " +
-			 imageQuality);
+	    Debug.output("SunJPEGFormatter setting image quality to: " + imageQuality);
 	}
     }
 
