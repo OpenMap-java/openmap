@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.25 $
-# $Date: 1998/11/10 18:51:16 $
+# $Revision: 1.26 $
+# $Date: 1998/11/11 21:34:05 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -241,7 +241,8 @@ make
 #
 ## Create the bean jar file
 #
-jar cvfm0 ../openmap.jar com/bbn/openmap/Manifest.txt `find com \( -name *.class -o -name *.gif \) -print`
+## Created by the makefile as of 11-Nov-1998.  -tom
+#jar cvfm0 ../openmap.jar com/bbn/openmap/Manifest.txt `find com \( -name *.class -o -name *.gif \) -print`
 
 
 #
@@ -265,7 +266,7 @@ javadoc -J-ms64m -J-mx64m -version -d ../docs/api $DocPackages
 /bin/mkdir -p ../etc
 /bin/mkdir -p ../bin
 /bin/mkdir -p ../lib
-/bin/cp etc/scripts/OpenMap ../bin
+/bin/cp bin/openmap ../bin
 /bin/cp etc/scripts/OpenMap.bat ../bin
 /bin/cp etc/*.html ../etc/
 /bin/cp etc/overlays.txt ../etc/
@@ -290,10 +291,17 @@ else
   exit 1;
 fi
 
-if /bin/mv $BuildDir/openmap.jar $BuildDir/lib; then
+if /bin/mv $BuildDir/lib/openmap.jar $BuildDir/lib; then
   echo "++Copied openmap.jar";
 else
   echo "++Copy failed: openmap.jar";
+  exit 1;
+fi
+
+if /bin/mv $BuildDir/lib/om_core.jar $BuildDir/lib; then
+  echo "++Copied om_core.jar";
+else
+  echo "++Copy failed: om_core.jar";
   exit 1;
 fi
 
