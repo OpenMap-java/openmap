@@ -72,7 +72,8 @@
     <ant antfile="${corba.src}/build.xml" target="all.corba" inheritAll="false"/>
   </target>
 
-  <target name="docs" description="Creates OpenMap API documentation.">
+  <target name="docs" depends="init" 
+	  description="Creates OpenMap API documentation.">
     <ant antfile="${openmap.src}/build.xml" target="docs.openmap"/>
   </target>
 
