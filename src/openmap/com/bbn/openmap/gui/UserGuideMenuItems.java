@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/UserGuideMenuItems.java,v $
 // $RCSfile: UserGuideMenuItems.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 02:36:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,18 +38,17 @@ import com.bbn.openmap.*;
  * InformationDelegator as a service.  
  */
 public class UserGuideMenuItems 
-  implements HelpMenuItems, ActionListener, BeanContextServicesListener, BeanContextChild
+  implements HelpMenuItems, ActionListener, BeanContextMembershipListener, BeanContextChild
 {  
     private InformationDelegator informationDelegator;
     private Vector menuItems = new Vector();
   
-    private BeanContextServicesSupport beanContextServicesSupport = new BeanContextServicesSupport();
-
     public UserGuideMenuItems() {
 	JMenuItem mi = new JMenuItem("OpenMap");
 	mi.addActionListener(this);
 	getMenuItems().add(mi);
     }
+
     /**
      * Initializes the object with given InformationDelegator.
      *
@@ -88,13 +87,6 @@ public class UserGuideMenuItems
     }
   
     /**
-   
-       public void setMenuItems(Iterator iterator) {
-       //menuItems = in_menuItems;
-       }
-    */
-  
-    /**
      * Called when our menu item is clicked by user.
     */
     public void actionPerformed(ActionEvent ae) {
@@ -107,104 +99,143 @@ public class UserGuideMenuItems
 	}
     }
 
-    //-----------------------------------------------------------
-    // BeanContextChild interface methods
-    //-----------------------------------------------------------
+    ///////////////////////////////////////////////////////////////////////////
+    ////   MapHandlerChild methods to make the tool work with 
+    ////   the MapHandler to find any SelectionProviders.
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void findAndInit(Object obj) {
+	if (obj instanceof InformationDelegator) {
+	    setInformationDelegator((InformationDelegator)obj);
+	}
+    }
+
+    public void findAndUndo(Object obj) {
+	if (obj instanceof InformationDelegator) {
+	    setInformationDelegator(null);
+	}
+    }
+
+    /**
+     * BeanContextChildSupport object provides helper functions for
+     * BeanContextChild interface.
+     */
+    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
+
+    /**
+     * This is the method that your object can use to find other
+     * objects within the MapHandler (BeanContext).  This method gets
+     * called when the object gets added to the MapHandler, or when
+     * another object gets added to the MapHandler after the object is
+     * a member.  
+     *
+     * @param it Iterator to use to go through a list of objects.
+     * Find the ones you need, and hook yourself up.
+     */
+    public void findAndInit(Iterator it) {
+	while (it.hasNext()) {
+	    findAndInit(it.next());
+	}
+    }
+
+    /**
+     * BeanContextMembershipListener method.  Called when a new object
+     * is added to the BeanContext of this object.  
+     */
+    public void childrenAdded(BeanContextMembershipEvent bcme) {
+	findAndInit(bcme.iterator());      
+    }
+    
+    /**
+     * BeanContextMembershipListener method.  Called when a new object
+     * is removed from the BeanContext of this object.  For the Layer,
+     * this method doesn't do anything.  If your layer does something
+     * with the childrenAdded method, or findAndInit, you should take
+     * steps in this method to unhook the layer from the object used
+     * in those methods.
+     */
+    public void childrenRemoved(BeanContextMembershipEvent bcme) {
+	Iterator it = bcme.iterator();
+	while (it.hasNext()) {
+	    findAndUndo(it.next());
+	}
+    }
 
     /** Method for BeanContextChild interface. */
     public BeanContext getBeanContext() {
-	return beanContextServicesSupport.getBeanContext();
+	return beanContextChildSupport.getBeanContext();
     }
-    
-    /** Method for BeanContextChild interface. */
-    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
-	if (!(in_bc instanceof BeanContextServices)) {
-	    System.err.println("UserGuideMenuItem | setBeanContext -- Expecting BeanContextServices Object..might not work correctly in ContextEnvironment");
-	    return;
-	}
-	BeanContextServices bcs  = (BeanContextServices)in_bc;
-	if (bcs == null) {
-	    beanContextServicesSupport.setBeanContext(bcs);
-	    return;
-	}
-	beanContextServicesSupport.setBeanContext(bcs);
-	bcs.addBeanContextServicesListener(this);
+  
+    /**
+     * Method for BeanContextChild interface. Adds this object as a
+     * BeanContextMembership listener, set the BeanContext in this
+     * objects BeanContextSupport, and receives the initial list of
+     * objects currently contained in the BeanContext.  
+     */
+    public void setBeanContext(BeanContext in_bc) 
+	throws PropertyVetoException {
 
-	if (bcs.hasService(com.bbn.openmap.InformationDelegator.class) ) {
-	    InformationDelegator info=null;
-	    try {
-		info = (InformationDelegator)bcs.getService(this, this, com.bbn.openmap.InformationDelegator.class, null, this);
-	    } catch(TooManyListenersException tmle) {
-		System.out.println("UserGuideMenuItems.setBeanContext: caught TooManyListenersException");
-	    }
-	    if (info!= null) {
-		setInformationDelegator(info);
-	    }
+	if (in_bc != null) {
+	    in_bc.addBeanContextMembershipListener(this);
+	    beanContextChildSupport.setBeanContext(in_bc);
+	    findAndInit(in_bc.iterator());
 	}
     }
-    
+  
+    /**
+     * Method for BeanContextChild interface.  Uses the
+     * BeanContextChildSupport to add a listener to this object's
+     * property.  This listener wants to have the right to veto a
+     * property change.
+     */
+    public void addVetoableChangeListener(String propertyName,
+					  VetoableChangeListener in_vcl) {
+	beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
+    }
+  
+    /**
+     * Method for BeanContextChild interface.  Uses the
+     * BeanContextChildSupport to remove a listener to this object's
+     * property.  The listener has the power to veto property changes.
+     */
+    public void removeVetoableChangeListener(String propertyName, 
+					     VetoableChangeListener in_vcl) {
+	beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
+    }
+
+    /**
+     * Report a vetoable property update to any registered listeners. 
+     * If anyone vetos the change, then fire a new event 
+     * reverting everyone to the old value and then rethrow 
+     * the PropertyVetoException. <P> 
+     *
+     * No event is fired if old and new are equal and non-null.
+     * <P>
+     * @param name The programmatic name of the property that is about to
+     * change
+     * 
+     * @param oldValue The old value of the property
+     * @param newValue - The new value of the property
+     * 
+     * @throws PropertyVetoException if the recipient wishes the property
+     * change to be rolled back.
+     */
+    public void fireVetoableChange(String name, 
+				   Object oldValue, 
+				   Object newValue) 
+	throws PropertyVetoException {
+	beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
+    }
+
     /** Method for BeanContextChild interface. */
     public void addPropertyChangeListener(String propertyName,
 					  PropertyChangeListener in_pcl) {
-	beanContextServicesSupport.addPropertyChangeListener(propertyName, in_pcl);
+	beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
     }
 
     /** Method for BeanContextChild interface. */
     public void removePropertyChangeListener(String propertyName, 
 					     PropertyChangeListener in_pcl) {
-	beanContextServicesSupport.removePropertyChangeListener(propertyName, in_pcl);
-    }
-    
-    /** Method for BeanContextChild interface. */
-    public void addVetoableChangeListener(String propertyName, 
-					  VetoableChangeListener in_vcl) {
-	beanContextServicesSupport.addVetoableChangeListener(propertyName, in_vcl);
-    }
-  
-    /** Method for BeanContextChild interface. */
-    public void removeVetoableChangeListener(String propertyName, 
-					     VetoableChangeListener in_vcl) {
-	beanContextServicesSupport.removeVetoableChangeListener(propertyName, in_vcl);
-    }
-  
-    /**
-     * Called by BeanContextServices Object, if this object is a part
-     * of it and registered to listen for services that might be
-     * available from the context.
-     *
-     * It looks for InformationDelegator Service.  
-     */
-    public void serviceAvailable(BeanContextServiceAvailableEvent bcsae) {
-	if (bcsae.getServiceClass() ==  com.bbn.openmap.InformationDelegator.class) {
-	    BeanContextServices bcs = bcsae.getSourceAsBeanContextServices();
-	    InformationDelegator info=null;
-	    try {
-		info = (InformationDelegator)bcs.getService(this,this,com.bbn.openmap.InformationDelegator.class, null, this);
-	    } catch(TooManyListenersException tmle) {
-		System.out.println("Caught exception Too many listenes in UserGuideMenuItems|serviceAvailable");
-	    }
-	    if (info != null) {
-		setInformationDelegator(info);
-	    }
-	}
-    }
-  
-    /**
-     * Called by BeanContextService object if an service is not available any more.  
-     */
-    public void serviceRevoked(BeanContextServiceRevokedEvent bcsre) {
-	if (bcsre.getServiceClass() ==  com.bbn.openmap.InformationDelegator.class) {
-	    if (bcsre.isCurrentServiceInvalidNow()){
-		setInformationDelegator(null);
-	    }
-	}
-    }
-
-    /** Method for BeanContextMembership interface. */
-    public void childrenAdded(BeanContextMembershipEvent bcme) {
-    }
-
-    /** Method for BeanContextMembership interface. */
-    public void childrenRemoved(BeanContextMembershipEvent bcme) {
+	beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MenuBar.java,v $
 // $RCSfile: MenuBar.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 02:36:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,7 +46,7 @@ public class MenuBar extends JMenuBar
     /**
      * Default Constructor is required to create instances at runtime 
      */
-    public MenuBar(){}
+    public MenuBar() {}
     
     /**
      * Called when the MenuBar is a part of a BeanContext, and it is
@@ -58,38 +58,46 @@ public class MenuBar extends JMenuBar
     protected void findAndInit(Iterator it) {
 	Object someObj;
 	while (it.hasNext()) {
-	    someObj = it.next();      
-	    int menuCount = getMenuCount();
+	    findAndInit(it.next());
+	}
+    }
 
-	    // Check for HelpMenu first.
-	    if (someObj instanceof HelpMenu) {
-		//setHelpMenu((JMenu)someObj);
-		// We will use it when its implementation is available.
-		// get the last menu and see if it is helpmenu
-		if (menuCount > 0 && (getMenu(menuCount - 1) instanceof HelpMenu)) {
-		    System.err.println("HelpMenu already exists in MenuBar..overriding it");
-		}
-		// make the help menu as the last menu
-		Debug.message("menubar","Adding help menu at " + getMenuCount());
-		add((JMenu)someObj,getMenuCount());
+    public void findAndInit(Object someObj) {
+	int menuCount = getMenuCount();
 
-	    } else if (someObj instanceof MenuBarMenu) {
-
-		JMenu lastMenu = getLastMenu();
-		if (lastMenu instanceof HelpMenu) {
-		    remove(lastMenu);
-		    add((JMenu)someObj, menuCount -1);
-		    add(lastMenu, menuCount);
-		    Debug.message("menubar","last menu is HelpMenu\n moving helpMenu to " + menuCount);
-		} else {
-		    Debug.message("menubar","Adding Menu " + 
-				  ((JMenu)someObj) + 
-				  "to index " + menuCount);
-		    add((JMenu)someObj, menuCount);
-		}
+	// Check for HelpMenu first.
+	if (someObj instanceof HelpMenu) {
+	    //setHelpMenu((JMenu)someObj);
+	    // We will use it when its implementation is available.
+	    // get the last menu and see if it is helpmenu
+	    if (menuCount > 0 && (getMenu(menuCount - 1) instanceof HelpMenu)) {
+		System.err.println("HelpMenu already exists in MenuBar..overriding it");
 	    }
-	}//END WHILE
-	Debug.message("menubar","MenuBar done findAndInit()");
+	    // make the help menu as the last menu
+	    if (Debug.debugging("menubar")) {
+		Debug.output("MenuBar: Adding help menu at " + getMenuCount());
+	    }
+	    add((JMenu)someObj,getMenuCount());
+
+	} else if (someObj instanceof MenuBarMenu) {
+		
+	    if (Debug.debugging("menubar")) {
+		Debug.output("MenuBar: Adding Menu " + ((JMenu)someObj) + 
+			     "to index " + menuCount);
+	    }
+
+	    JMenu lastMenu = getLastMenu();
+	    if (lastMenu instanceof HelpMenu) {
+		remove(lastMenu);
+		add((JMenu)someObj, menuCount -1);
+		add(lastMenu, menuCount);
+		if (Debug.debugging("menubar")) {
+		    Debug.output("MenuBar: last menu is HelpMenu\n moving helpMenu to " + menuCount);
+		}
+	    } else {
+		add((JMenu)someObj, menuCount);
+	    }
+	}
     }
 
     /**
@@ -109,7 +117,6 @@ public class MenuBar extends JMenuBar
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {    
 	beanContextChildSupport.setBeanContext(in_bc);
 	if (in_bc!=null) {
-	    Debug.message("menubar","MenuBar|setBeanContext calling findAndInit()");
 	    in_bc.addBeanContextMembershipListener(this);
 	    findAndInit(in_bc.iterator());
 	}
@@ -146,7 +153,6 @@ public class MenuBar extends JMenuBar
   
     /** Method for BeanContextMembership interface */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
-	Debug.message("menubar","MenuBar|childrenAdded calling findAndInit()");
 	Iterator it = bcme.iterator();
 	findAndInit(it);
     }
@@ -154,15 +160,17 @@ public class MenuBar extends JMenuBar
     /** Method for BeanContextMembership interface */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
 	Iterator it = bcme.iterator();
-	Object someObj;
 	while (it.hasNext()) {
-	    someObj = it.next();
-	    // Check for HelpMenu first.
-	    if (someObj instanceof HelpMenu) {
-		setHelpMenu(null);
-	    } else if (someObj instanceof MenuBarMenu) {
-		remove((Component)someObj);
-	    }	
+	    findAndUndo(it.next());
 	}
+    }
+
+    public void findAndUndo(Object someObj) {
+	// Check for HelpMenu first.
+	if (someObj instanceof HelpMenu) {
+	    setHelpMenu(null);
+	} else if (someObj instanceof MenuBarMenu) {
+	    remove((Component)someObj);
+	}	
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigateMenu.java,v $
 // $RCSfile: NavigateMenu.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 02:36:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -204,24 +204,23 @@ public class NavigateMenu extends AbstractOpenMapMenu
 	zoomSupport.removeZoomListener(l);
     }
 
-
     /**
      *
      */
     public void fireZoom(int zoomType, float amount) {
 	zoomSupport.fireZoom(zoomType, amount);
     }
-
    
-    public void findAndInit(Iterator it) {
-	Object someObj;
-	while(it.hasNext()) {
-	    someObj = it.next();
-	    if(someObj instanceof MapBean) {
-		setupListeners((MapBean)someObj);
-	    }
+    public void findAndInit(Object someObj) {
+	if(someObj instanceof MapBean) {
+	    setupListeners((MapBean)someObj);
 	}
     }
-  
-    public void findAndUnInit(Iterator it) {}
+
+    public void findAndUndo(Object someObj) {
+	if(someObj instanceof MapBean) {
+	    undoListeners((MapBean)someObj);
+	}
+    }
+
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersMenu.java,v $
 // $RCSfile: LayersMenu.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 02:36:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,7 +59,7 @@ import com.bbn.openmap.util.PaletteHelper;
  * one per type is added, the last one added to be BeanContext will be
  * the one hooked up to this LayersMenu.  
  */
-public class LayersMenu extends JMenu 
+public class LayersMenu extends AbstractOpenMapMenu 
     implements Serializable, LayerListener, MenuBarMenu,
 	BeanContextChild, BeanContextMembershipListener 
 {
@@ -98,13 +98,6 @@ public class LayersMenu extends JMenu
 	/** The default add button title. */
     protected transient String addLayersButtonTitle = "Add Layers...";
     
-
-    /**
-     * BeanContextChildSupport object provides helper functions for
-     * BeanContextChild interface.
-     */
-    private BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
-
     /**
      * Construct LayersMenu.
      * @param inLayers the Layers
@@ -128,17 +121,17 @@ public class LayersMenu extends JMenu
      * @param menuType either LAYERS_ON_OFF, or PALETTES_ON_OFF
      */
     public LayersMenu(LayerHandler lHandler, String menuName, int menuType) {
-	super(menuName);
+	super();
 	this.menuType = menuType;
+	setText(menuName);
 	setMnemonic('L');//HMMMM
-	
+
 	layerHandler = lHandler;
 
 	// Layers will be turned on by something else initially.
 	if (layerHandler != null) {
 	    setLayers(layerHandler.getLayers());
 	}
-
     }
 
     /** 
@@ -463,7 +456,7 @@ public class LayersMenu extends JMenu
     }
 
     /**
-     * Called when the BeanContext membership changes.  interator from
+     * Called when the BeanContext membership changes with object from
      * the BeanContext.  This lets this object hook up with what it
      * needs.  It expects to find only one LayerHandler and
      * LayersPanel in the BeanContext.  If another
@@ -471,43 +464,22 @@ public class LayersMenu extends JMenu
      * however, it will drop the connection to the component it is set
      * up to listen to, and rewire itself to reflect the status of the
      * last version of the LayerHandler/LayersPanel found.
-     * @param it Iterator received in the BeanContext or
+     * @param someObj Object received in the BeanContext or
      * BeanContextMembershioEvent.  
      */
-    protected void findAndInit(Iterator it) {
-	Object someObj;
-	while (it.hasNext()) {
-	    someObj = it.next();
-	    if (someObj instanceof LayerHandler) {
-		// do the initializing that need to be done here
-		Debug.message("bc","LayersMenu found a LayerHandler");
-		setLayerHandler((LayerHandler)someObj);
-//  	    } else if (someObj instanceof PropertyHandler) {
-//  	    	propertyHandler = (PropertyHandler)someObj;
-	    } else if (someObj instanceof LayersPanel) {
-		setupEditLayersButton((LayersPanel)someObj);
-	    } else if (someObj instanceof LayerAddPanel) {
-		// if a LayerAddPanel is present, do the necessary things
-	    	setupLayerAddButton((LayerAddPanel)someObj);
-	    }
+    public void findAndInit(Object someObj) {
+	if (someObj instanceof LayerHandler) {
+	    // do the initializing that need to be done here
+	    Debug.message("bc","LayersMenu found a LayerHandler");
+	    setLayerHandler((LayerHandler)someObj);
+	} else if (someObj instanceof LayersPanel) {
+	    setupEditLayersButton((LayersPanel)someObj);
+	} else if (someObj instanceof LayerAddPanel) {
+	    // if a LayerAddPanel is present, do the necessary things
+	    setupLayerAddButton((LayerAddPanel)someObj);
 	}
     }
 
-//      private PropertyHandler propertyHandler = null;
-
-    /**
-     * BeanContextMembershipListener method, called when new objects
-     * are added to the BeanContext.  This calls findAndInit in order
-     * to this object to hook up with other objects it is interested
-     * in.
-     *
-     * @param bcme BeanContextMembershipEvent, which also contains an
-     * Iterator to use to go through the new objects.  
-     */
-    public void childrenAdded(BeanContextMembershipEvent bcme) {
-	findAndInit(bcme.iterator());      
-    }
-    
     /**
      * Called when objects are removed from the BeanContext.  Should
      * be used to check for relevant objects that need to be
@@ -518,76 +490,42 @@ public class LayersMenu extends JMenu
      * @param bcme BeanContextMembershipEvent, which also contains an
      * Iterator to use to go through the removed objects.  
      */
-    public void childrenRemoved(BeanContextMembershipEvent bcme) {
-	Iterator it = bcme.iterator();
-	Object someObj;
-	while (it.hasNext()) {
-	    someObj = it.next();
-	    if (someObj instanceof LayerHandler) {
+    public void findAndUndo(Object someObj) {
+	if (someObj instanceof LayerHandler) {
 
-		LayerHandler lh = (LayerHandler)someObj;
-		// Need to check to see if this layerhandler is the
-		// same as the one we have !!!!
-		if (lh != getLayerHandler()) {
-		    Debug.message("bc", "LayersMenu asked to remove LayerHandler that is not the same as what is currently held - ignoring request.");
-		    return;
-		}
+	    LayerHandler lh = (LayerHandler)someObj;
+	    // Need to check to see if this layerhandler is the
+	    // same as the one we have !!!!
+	    if (lh != getLayerHandler()) {
+		Debug.message("bc", "LayersMenu asked to remove LayerHandler that is not the same as what is currently held - ignoring request.");
+		return;
+	    }
 		
-		// do the initializing that need to be done here
-		Debug.message("bc","LayersMenu.childrenRemoved: removing LayerHandler");
-		setLayerHandler(null);
-		setEdit(null);
-	    }
-	    if (someObj instanceof LayersPanel) {
-		LayersPanel lp = (LayersPanel) someObj;
-		// There's a problem here.  We can't tell if the
-		// LayersPanel being removed is the owner of the
-		// action listener used by the edit button.  If two
-		// LayersPanels have been added to the BeanContext,
-		// and we're now listening to the second one, then if
-		// the first one is removed, we are forced here to
-		// disconnect from the second and valid one.  Looks
-		// like we need to maintain a handle on the
-		// LayersPanel being triggered.
-		if (lp != getLayersPanel()) {
-		    Debug.message("bc", "LayersMenu asked to remove LayersPanel that is not the same as what is currently held - ignoring request.");
-		    return;
-		}
-		// do the initializing that need to be done here
-		Debug.message("bc","LayersMenu.childrenRemoved: removing LayersPanel");
-		setLayersPanel(null);
-		setEdit(null);
-	    }
+	    // do the initializing that need to be done here
+	    Debug.message("bc","LayersMenu.childrenRemoved: removing LayerHandler");
+	    setLayerHandler(null);
+	    setEdit(null);
 	}
-    }
-
-    /**
-     * Get the BeanContext that this object is a member of.
-     */
-    public BeanContext getBeanContext() {
-	return beanContextChildSupport.getBeanContext();
-    }
-  
-    /** 
-     * Called when this object joins the BeanContext. 
-     * @param in_bc the BeanContext that is being joined.
-     */
-    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
-	if(in_bc != null) {
-	    in_bc.addBeanContextMembershipListener(this);
-	    beanContextChildSupport.setBeanContext(in_bc);
-	    findAndInit(in_bc.iterator());
+	if (someObj instanceof LayersPanel) {
+	    LayersPanel lp = (LayersPanel) someObj;
+	    // There's a problem here.  We can't tell if the
+	    // LayersPanel being removed is the owner of the
+	    // action listener used by the edit button.  If two
+	    // LayersPanels have been added to the BeanContext,
+	    // and we're now listening to the second one, then if
+	    // the first one is removed, we are forced here to
+	    // disconnect from the second and valid one.  Looks
+	    // like we need to maintain a handle on the
+	    // LayersPanel being triggered.
+	    if (lp != getLayersPanel()) {
+		Debug.message("bc", "LayersMenu asked to remove LayersPanel that is not the same as what is currently held - ignoring request.");
+		return;
+	    }
+	    // do the initializing that need to be done here
+	    Debug.message("bc","LayersMenu.childrenRemoved: removing LayersPanel");
+	    setLayersPanel(null);
+	    setEdit(null);
 	}
-    }
-  
-    public void addVetoableChangeListener(String propertyName,
-					  VetoableChangeListener in_vcl) {
-	beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
-    }
-  
-    public void removeVetoableChangeListener(String propertyName, 
-					     VetoableChangeListener in_vcl) {
-	beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
     }
 
     /**
@@ -614,5 +552,4 @@ public class LayersMenu extends JMenu
 	super.fireVetoableChange(name, oldValue, newValue);
 	beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
     }
-
 }

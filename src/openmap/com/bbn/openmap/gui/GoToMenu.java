@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/06 02:36:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,27 +76,19 @@ public class GoToMenu extends AbstractOpenMapMenu
 	setMnemonic(defaultMnemonic);
     }
   
-    public void findAndUnInit(Iterator it) {
-	Object someObj;
-	while (it.hasNext()) {
-	    someObj = it.next();
-	    if (someObj instanceof MapBean) {
-		// do the initializing that need to be done here
-		if (getMap() == (MapBean)someObj) {
-		    setMap(null);
-		}
-	    }	  
+    public void findAndUndo(Object someObj) {
+	if (someObj instanceof MapBean) {
+	    // do the initializing that need to be done here
+	    if (getMap() == (MapBean)someObj) {
+		setMap(null);
+	    }
 	}
     }
 
-    public void findAndInit(Iterator it) {
-	Object someObj;
-	while (it.hasNext()) {
-	    someObj = it.next();
-	    if (someObj instanceof MapBean) {
-		// do the initializing that need to be done here
-		setMap((MapBean)someObj);
-	    }
+    public void findAndInit(Object someObj) {
+	if (someObj instanceof MapBean) {
+	    // do the initializing that need to be done here
+	    setMap((MapBean)someObj);
 	}
     }
 
