@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/java.mk,v $
 # $RCSfile: java.mk,v $
-# $Revision: 1.6 $
-# $Date: 1998/09/24 13:29:15 $
+# $Revision: 1.7 $
+# $Date: 1998/10/14 15:51:42 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -44,3 +44,10 @@ JFLAGS = $(JFLAGS_DEV)
 # *.java to *.class make rule
 .java.class:
 	$(JC) $(JFLAGS) $<
+
+
+# GNU install
+INSTALL.dir =		install --directory
+INSTALL.class =		install --mode=444
+INSTALL.image =		install --mode=444
+INSTALL.props =		install --mode=444
