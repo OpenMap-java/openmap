@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/DataBoundsViewMenuItem.java,v $
 // $RCSfile: DataBoundsViewMenuItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/21 22:41:32 $
+// $Revision: 1.2 $
+// $Date: 2003/04/11 23:48:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -70,7 +70,8 @@ public class DataBoundsViewMenuItem extends MapHandlerMenuItem
 		    LatLonPoint llp2 = new LatLonPoint(bounds.getMin().getY(),
 						       bounds.getMax().getX());
 
-		    proj.setScale(ProjMath.getScale(llp1, llp2, proj));
+		    // 1.1 buffers the edges for viewing a little, a little zommed out.
+		    proj.setScale(ProjMath.getScale(llp1, llp2, proj) * 1.1f);
 		    map.setProjection(proj);
 		}
 	    } else {
