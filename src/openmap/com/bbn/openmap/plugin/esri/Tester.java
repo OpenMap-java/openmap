@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/Tester.java,v $
 // $RCSfile: Tester.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/05/09 16:02:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -220,7 +220,7 @@ public class Tester extends JFrame implements ShapeConstants {
      * Creates an EsriPolyline object with two parts
      */
     public void addPolylineRecord1(EsriLayer layer) {
-	OMGraphicList shapeData = new OMGraphicList();
+	OMGraphicList shapeData = new EsriPolylineList();
 	float[] part0 = new float[]{35.0f, -120.0f, -25.0f, -95.0f, 56.0f, -30.0f};
 	float[] part1 = new float[]{-15.0f, -110.0f, 13.0f, -80.0f, -25.0f, 10.0f};
 	EsriPolyline poly0 = new EsriPolyline(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
@@ -239,7 +239,7 @@ public class Tester extends JFrame implements ShapeConstants {
      * Creates an EsriPolyline object with one part
      */
     public void addPolylineRecord2(EsriLayer layer) {
-	OMGraphicList shapeData = new OMGraphicList();
+	OMGraphicList shapeData = new EsriPolylineList();
 	float[] part0 = new float[]{12.0f, -175.0f, -30.0f, 85.0f, 25.0f, 15.0f};
 	EsriPolyline poly0 = new EsriPolyline(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
 	shapeData.add(poly0);  //part 1
@@ -256,7 +256,7 @@ public class Tester extends JFrame implements ShapeConstants {
      */
     public void addPolylineRecord3(EsriLayer layer) {
 	//Create geometry data
-	OMGraphicList shapeData = new OMGraphicList();
+	OMGraphicList shapeData = new EsriPolylineList();
 	float[] part0 = new float[]{-25.0f, -140.0f, -50.0f, -95.0f, 65.0f, 51.0f};
 	float[] part1 = new float[]{-10.0f, -130.0f, -47.0f, -101.0f, 71.0f, 59.0f};
 	float[] part2 = new float[]{-15.0f, -151.0f, -49.0f, -100.0f, 76.0f, 41.0f};
@@ -284,7 +284,7 @@ public class Tester extends JFrame implements ShapeConstants {
      * Creates and EsriPolygon object with one part
      */
     public void addPolygonRecord1(EsriLayer layer) {
-	OMGraphicList shapeData = new OMGraphicList();
+	OMGraphicList shapeData = new EsriPolygonList();
 	//float[] part0 = new float[]{45.0f, -120.0f, -45.0f, -95.0f, 10.0f, 30.0f, 45.0f, -120.0f};
 	float[] part0 = new float[]{45.0f, -70.0f, 30.0f, -30.0f, 10.0f, -80.0f, 30.0f, -120.0f, 45.0f, -70.0f};
 	//    float[] part1 = new float[]{35.0f, -70.0f, 30.0f, -110.0f, 15.0f, -80.0f, 30.0f, -40.0f, 35.0f, 70.0f};
