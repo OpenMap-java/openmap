@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.24 $
-# $Date: 1998/09/27 13:29:39 $
+# $Revision: 1.25 $
+# $Date: 1998/11/10 18:51:16 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -165,13 +165,26 @@ if [ -z "${VbjClassPath}" ] ; then
 	VbjClassPath=$VBJ/lib/vbjorb.jar
 fi
 
-CLASSPATH=$OpenMapClassPath:$SwingClassPath:$JdkClassPath:$VbjClassPath
+# set up gif.jar
+if [ -z "${GifJarFile}" ] ; then
+	OpenmapLibDir=/usr/local/matt/openmap/common/lib
+	GifJarFile=$OpenmapLibDir/gif.jar
+fi
+
+
+CLASSPATH=$OpenMapClassPath:$SwingClassPath:$GifJarFile:$JdkClassPath:$VbjClassPath
 export CLASSPATH
 
 PATH=/bin:/usr/bin:/usr/local/gnu/bin:$JDK/bin
 export PATH
 
-DocPackages="com.bbn.openmap com.bbn.openmap.dcwSpecialist com.bbn.openmap.event com.bbn.openmap.gui com.bbn.openmap.html com.bbn.openmap.http com.bbn.openmap.omGraphics com.bbn.openmap.overlay com.bbn.openmap.proj com.bbn.openmap.specialist com.bbn.openmap.rpf com.bbn.openmap.dted com.bbn.openmap.nitf com.bbn.openmap.pluginLayer com.bbn.openmap.util com.bbn.openmap.shape"
+LayerPackages="com.bbn.openmap.layer.dted com.bbn.openmap.layer.nitf com.bbn.openmap.layer.plotLayer com.bbn.openmap.layer.pluginLayer com.bbn.openmap.layer.rpf com.bbn.openmap.layer.shape com.bbn.openmap.layer.specialist com.bbn.openmap.layer.util.cacheHandler com.bbn.openmap.layer.util.html com.bbn.openmap.layer.util.http com.bbn.openmap.layer.util.stateMachine com.bbn.openmap.layer.vpf"
+
+CorePackages="com.bbn.openmap com.bbn.openmap.event com.bbn.openmap.examples com.bbn.openmap.gui com.bbn.openmap.omGraphics com.bbn.openmap.proj com.bbn.openmap.util"
+
+AppPackages="com.bbn.openmap.app"
+
+DocPackages="$CorePackages $LayerPackages $AppPackages"
 export DocPackages
 
 #echo $CLASSPATH
@@ -215,9 +228,15 @@ export CLASSPATH
 setBuildDate com/bbn/openmap/Environment.java
 
 #
+## Configure the software
+#
+./configure
+
+#
 ## Build the software
 #
-gmake all
+#gmake all
+make
 
 #
 ## Create the bean jar file
@@ -275,6 +294,13 @@ if /bin/mv $BuildDir/openmap.jar $BuildDir/lib; then
   echo "++Copied openmap.jar";
 else
   echo "++Copy failed: openmap.jar";
+  exit 1;
+fi
+
+if /bin/cp $GifJarFile $BuildDir/lib; then
+  /bin/true
+else
+  echo "Copy failed: \"$GifJarFile\" could not be copied to \"$BuildDir/lib\"";
   exit 1;
 fi
 
