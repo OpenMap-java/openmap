@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.11 $
-# $Date: 1998/11/12 16:42:16 $
+# $Revision: 1.12 $
+# $Date: 1998/11/13 16:01:05 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -99,17 +99,17 @@ App.jar = 	${App.classes}
 default:	all
 
 # java compile OpenMap code
-core: om_core
-om_core:
+core: omcore
+
+omcore:
 	cd com && $(MAKE) all
-	chmod +x bin/openmap
 
 jar::
 	$(RM) lib/omcore.jar lib/openmap.jar
 
-jar:: 	om_core lib/omcore.jar lib/openmap.jar
+jar:: 	omcore lib/omcore.jar lib/openmap.jar
 
-all:	om_core jar
+all:	omcore jar
 
 clean distclean::
 	cd com && $(MAKE) $@
@@ -121,11 +121,11 @@ distclean::
 lib:
 	${INSTALL.dir} $@
 
-lib/openmap.jar: lib
-	jar cf $@ ${Core.jar} ${Layer.jar} ${App.jar}
+lib/openmap.jar:: omcore lib
+	${JAR} cf $@ ${Core.jar} ${Layer.jar} ${App.jar}
 
-lib/omcore.jar: lib
-	jar cf $@ ${Core.jar}
+lib/omcore.jar:: omcore lib
+	${JAR} cf $@ ${Core.jar}
 
 GNUmakefile:
 	perl rename.pl gmakefile GNUmakefile
@@ -148,37 +148,54 @@ ${JAVADOC.dir}:
 	${INSTALL.dir} $@
 
 javadocs:	${JAVADOC.dir}
-	javadoc -J-ms64m -J-mx64m -version -d ${JAVADOC.dir} \
+	${JAVADOC} -J-ms64m -J-mx128m -version -d ${JAVADOC.dir} \
 		${Core.pkgs} ${App.pkgs} ${Layer.pkgs}
 
 ################
 # installation #
 ################
 
-${bindir}:
+docdir = ${prefix}/doc
+
+# target to create any of the needed install directories
+
+${prefix} ${bindir} ${libdir} ${datadir}:
 	${INSTALL.dir} $@
 
-${libdir}:
-	${INSTALL.dir} $@
+# build the software before we try to do any installing
+install::	all
 
-${datadir}:
-	${INSTALL.dir} $@
+# install in main dir
+install::	${prefix}
+	${RM} ${prefix}/README
+	${INSTALL.doc} README ${prefix}
 
+# install in bin
 install::	${bindir} bin/openmap
+	${RM} ${bindir}/openmap
 	${INSTALL.bin} bin/openmap ${bindir}/openmap
 
+# install in lib
 install::	${libdir} lib/omcore.jar lib/openmap.jar
+	${RM} ${libdir}/omcore.jar ${libdir}/openmap.jar
 	${INSTALL.jar} lib/omcore.jar ${libdir}/omcore.jar
 	${INSTALL.jar} lib/openmap.jar ${libdir}/openmap.jar
 
-DATA_FILES =	openmap.properties \
-		dcwpo-browse.shp \
-		dcwpo-browse.ssx
+DATA_FILES =	share/openmap.properties \
+		share/dcwpo-browse.shp \
+		share/dcwpo-browse.ssx
 
-SHARE_DATA = ${DATA_FILES:%=share/%}
-
+# install in share
 install::	${datadir}
-	${INSTALL.data} ${SHARE_DATA} ${datadir}
+	${INSTALL.data} ${DATA_FILES} ${datadir}
 
-install-docs:
-	echo "Not Yet Implemented."
+# install in doc
+install-docs::
+	@if [ -d ${docdir}.old ]; then ${RM} -r ${docdir}.old ; fi
+	@if [ -d ${docdir} ]; then \
+		echo "moving existing ${docdir} to ${docdir}.old" ; \
+		mv ${docdir} ${docdir}.old ; \
+	fi
+
+install-docs::
+	cp -R doc ${prefix}

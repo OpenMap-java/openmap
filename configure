@@ -1,14 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.10 
-ac_extraJavaPath=/usr/local/java/bin:/usr/local/jdk/bin
-
-
-
-
-
-
-
+# From configure.in OpenMap Revision: 1.12 
 
 
 
@@ -29,10 +21,9 @@ ac_extraJavaPath=/usr/local/java/bin:/usr/local/jdk/bin
 ac_help=
 ac_default_prefix=/usr/local
 # Any additions from configure.in:
+ac_default_prefix=/usr/local/openmap
 ac_help="$ac_help
-  --with-java=JAVA        Java runtime executable"
-ac_help="$ac_help
-  --with-javac=JAVAC      Java compiler"
+  --with-jdk=JDK_HOME     Home directory of JDK"
 ac_help="$ac_help
   --with-swing=JARFILE    Swing jar file"
 ac_help="$ac_help
@@ -545,6 +536,50 @@ fi
 
 
 
+#
+## Override default of /usr/local
+#
+
+
+
+#
+## Determine what paths to check to find the JDK.
+## There are three possible cases:
+## 1. The user used the --without-jdk command line flag.
+##
+##   In this case, error.  We can't build without a JDK.
+##
+## 2. The user either didn't use a command line flag or she
+##    specified --with-jdk, but didn't specify a directory
+##
+##   In this case, use $PATH and add some possible directories on to
+##   the end.
+##
+## 3. The user specified a directory using --with-jdk=/some/directory
+##
+##   In this case, try the specified directory and then the specified
+##   directory with '/bin' appended.
+##
+#
+JDK_PATH=""
+case $with_jdk in
+  no)
+    # user specified --without-jdk
+    { echo "configure: error: Can't compile OpenMap without a JDK" 1>&2; exit 1; }
+    ;;
+  "" | yes)
+    # user specified --with-jdk, but didn't specify where to find it
+    JDK_PATH=$PATH:/usr/local/java/bin:/usr/local/jdk/bin:/usr/local/java/jdk/bin
+    ;;
+  *)
+    # user specified a path, either relative or not
+    JDK_PATH=$with_jdk:$with_jdk/bin
+    ;;
+esac
+
+
+
+
 
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
@@ -576,7 +611,7 @@ ac_configure=$ac_aux_dir/configure # This should be Cygnus configure.
 # SVR4 /usr/ucb/install, which tries to use the nonexistent group "staff"
 # ./install, which can be erroneously created by make from ./install.sh.
 echo $ac_n "checking for a BSD compatible install""... $ac_c" 1>&6
-echo "configure:580: checking for a BSD compatible install" >&5
+echo "configure:615: checking for a BSD compatible install" >&5
 if test -z "$INSTALL"; then
 if eval "test \"`echo '$''{'ac_cv_path_install'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -625,17 +660,11 @@ test -z "$INSTALL_PROGRAM" && INSTALL_PROGRAM='${INSTALL}'
 
 test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 
-if test "x$with_java" = "xno"; then
-  # user specified no java...
-  { echo "configure: error: cannot configure without java" 1>&2; exit 1; }
-elif test "x$with_java" = "xyes" || test "x$with_java" = "x" ; then
-  # user specified to use java, but didn't help to locate it
-  #   OR
-  # user didn't identify a potential path for 'java'
-  # Extract the first word of "java", so it can be a program name with args.
+
+# Extract the first word of "java", so it can be a program name with args.
 set dummy java; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:639: checking for $ac_word" >&5
+echo "configure:668: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVA'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -645,7 +674,7 @@ else
   ;;
   *)
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
-  for ac_dir in $PATH:$ac_extraJavaPath$ac_dummy; do
+  for ac_dir in $JDK_PATH$ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
       ac_cv_path_JAVA="$ac_dir/$ac_word"
@@ -663,40 +692,19 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-  if test -z "$JAVA"; then
-    { echo "configure: error: no acceptable java found in $PATH" 1>&2; exit 1; }
-  fi
-else
-  # with_java is not no, or yes, or empty.  Assume it is a path.
-  echo $ac_n "checking for java""... $ac_c" 1>&6
-echo "configure:673: checking for java" >&5
-  JAVA=$with_java
-  if test -f $JAVA && test -x $JAVA; then
-    
-    echo "$ac_t""$JAVA" 1>&6
+if test -z "$JAVA"; then
+  if test -z "$JDK_PATH"; then
+    { echo "configure: error: Can't build openmap without java" 1>&2; exit 1; }
   else
-    { echo "configure: error: $JAVA does not exist or is not an executable file." 1>&2; exit 1; }
+    { echo "configure: error: Can't locate java in $JDK_PATH" 1>&2; exit 1; }
   fi
 fi
-# FIXME Check version number to be sure it is acceptable.
-echo $ac_n "checking java version""... $ac_c" 1>&6
-echo "configure:684: checking java version" >&5
-JAVA_VERSION=`$JAVA -version 2>&1 | head -1 | sed 's/^.*"\(.*\)".*/\1/'`
-
-echo "$ac_t""$JAVA_VERSION" 1>&6
 
 
-if test "x$with_javac" = "xno"; then
-  # user specified no javac...
-  { echo "configure: error: cannot configure without javac" 1>&2; exit 1; }
-elif test "x$with_javac" = "xyes" || test "x$with_javac" = "x" ; then
-  # user specified to use javac, but didn't help to locate it
-  #   OR
-  # user didn't identify a potential path for 'javac'
-  # Extract the first word of "javac", so it can be a program name with args.
+# Extract the first word of "javac", so it can be a program name with args.
 set dummy javac; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:700: checking for $ac_word" >&5
+echo "configure:708: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_JAVAC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -706,7 +714,7 @@ else
   ;;
   *)
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
-  for ac_dir in $PATH:$ac_extraJavaPath$ac_dummy; do
+  for ac_dir in $JDK_PATH$ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
       ac_cv_path_JAVAC="$ac_dir/$ac_word"
@@ -724,40 +732,98 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-  if test -z "$JAVAC"; then
-    { echo "configure: error: no acceptable javac found in \$PATH" 1>&2; exit 1; }
-  fi
-else
-  # with_java is not no, or yes, or empty.  Assume it is a path.
-  echo $ac_n "checking for javac""... $ac_c" 1>&6
-echo "configure:734: checking for javac" >&5
-  JAVAC=$with_javac
-  if test -f $JAVAC && test -x $JAVAC; then
-    
-    echo "$ac_t""$JAVAC" 1>&6
+if test -z "$JAVAC"; then
+  if test -z "$JDK_PATH"; then
+    { echo "configure: error: Can't build openmap without javac" 1>&2; exit 1; }
   else
-    { echo "configure: error: $JAVAC does not exist or is not an executable file." 1>&2; exit 1; }
+    { echo "configure: error: Can't locate javac in $JDK_PATH" 1>&2; exit 1; }
   fi
 fi
-# FIXME Check that it actually works by compiling and running a test program
-echo $ac_n "checking the java compiler""... $ac_c" 1>&6
-echo "configure:745: checking the java compiler" >&5
-	cat >test.java <<EOF
-	public class test { public static void main(String[] args) { 
-		System.out.println("present");
-	} }
-EOF
-	$JAVAC test.java
-	case `CLASSPATH=. $JAVA test` in
-		*present*) echo "$ac_t""it seems to work" 1>&6 ;;
-		*)	{ echo "configure: error: $JAVAC failed to compile a simple test program" 1>&2; exit 1; } ;;
-	esac
-	rm -f test.java test.class
+
+
+# Extract the first word of "jar", so it can be a program name with args.
+set dummy jar; ac_word=$2
+echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+echo "configure:748: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_path_JAR'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  case "$JAR" in
+  /*)
+  ac_cv_path_JAR="$JAR" # Let the user override the test with a path.
+  ;;
+  *)
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
+  for ac_dir in $JDK_PATH$ac_dummy; do
+    test -z "$ac_dir" && ac_dir=.
+    if test -f $ac_dir/$ac_word; then
+      ac_cv_path_JAR="$ac_dir/$ac_word"
+      break
+    fi
+  done
+  IFS="$ac_save_ifs"
+  ;;
+esac
+fi
+JAR="$ac_cv_path_JAR"
+if test -n "$JAR"; then
+  echo "$ac_t""$JAR" 1>&6
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+if test -z "$JAR"; then
+  if test -z "$JDK_PATH"; then
+    { echo "configure: error: Can't build openmap without jar" 1>&2; exit 1; }
+  else
+    { echo "configure: error: Can't locate jar in $JDK_PATH" 1>&2; exit 1; }
+  fi
+fi
+
+
+# Extract the first word of "javadoc", so it can be a program name with args.
+set dummy javadoc; ac_word=$2
+echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+echo "configure:788: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_path_JAVADOC'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  case "$JAVADOC" in
+  /*)
+  ac_cv_path_JAVADOC="$JAVADOC" # Let the user override the test with a path.
+  ;;
+  *)
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
+  for ac_dir in $JDK_PATH$ac_dummy; do
+    test -z "$ac_dir" && ac_dir=.
+    if test -f $ac_dir/$ac_word; then
+      ac_cv_path_JAVADOC="$ac_dir/$ac_word"
+      break
+    fi
+  done
+  IFS="$ac_save_ifs"
+  ;;
+esac
+fi
+JAVADOC="$ac_cv_path_JAVADOC"
+if test -n "$JAVADOC"; then
+  echo "$ac_t""$JAVADOC" 1>&6
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+if test -z "$JAVADOC"; then
+  if test -z "$JDK_PATH"; then
+    { echo "configure: error: Can't build openmap without javadoc" 1>&2; exit 1; }
+  else
+    { echo "configure: error: Can't locate javadoc in $JDK_PATH" 1>&2; exit 1; }
+  fi
+fi
 
 
 # locate swing in the classpath
 echo $ac_n "checking for swing""... $ac_c" 1>&6
-echo "configure:761: checking for swing" >&5
+echo "configure:827: checking for swing" >&5
 ac_swing_path=$CLASSPATH
 ac_swing_jar=""
 case $with_swing in
@@ -808,15 +874,10 @@ fi
 
 
 
-# Check whether --with-java or --without-java was given.
-if test "${with_java+set}" = set; then
-  withval="$with_java"
-  :
-fi
 
-# Check whether --with-javac or --without-javac was given.
-if test "${with_javac+set}" = set; then
-  withval="$with_javac"
+# Check whether --with-jdk or --without-jdk was given.
+if test "${with_jdk+set}" = set; then
+  withval="$with_jdk"
   :
 fi
 
@@ -1018,8 +1079,9 @@ s%@mandir@%$mandir%g
 s%@INSTALL_PROGRAM@%$INSTALL_PROGRAM%g
 s%@INSTALL_DATA@%$INSTALL_DATA%g
 s%@JAVA@%$JAVA%g
-s%@JAVA_VERSION@%$JAVA_VERSION%g
 s%@JAVAC@%$JAVAC%g
+s%@JAR@%$JAR%g
+s%@JAVADOC@%$JAVADOC%g
 s%@SWING_JAR@%$SWING_JAR%g
 s%@layer_build_targets@%$layer_build_targets%g
 s%@layer_clean_targets@%$layer_clean_targets%g
@@ -1164,3 +1226,7 @@ chmod +x $CONFIG_STATUS
 rm -fr confdefs* $ac_clean_files
 test "$no_create" = yes || ${CONFIG_SHELL-/bin/sh} $CONFIG_STATUS || exit 1
 
+
+
+echo "chmod +x bin/openmap"
+chmod +x bin/openmap

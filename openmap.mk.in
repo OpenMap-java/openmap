@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
 # $RCSfile: openmap.mk.in,v $
-# $Revision: 1.8 $
-# $Date: 1998/11/12 14:23:05 $
+# $Revision: 1.9 $
+# $Date: 1998/11/13 16:01:10 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -62,6 +62,8 @@ localstatedir = @localstatedir@
 
 JAVA = @JAVA@
 JAVAC = @JAVAC@
+JAR = @JAR@
+JAVADOC = CLASSPATH=$(CLASSPATH) @JAVADOC@
 SWING_JAR = @SWING_JAR@
 
 # Java compiler flags for optimizing
@@ -86,6 +88,7 @@ INSTALL.class =		${INSTALL_DATA}
 INSTALL.image =		${INSTALL_DATA}
 INSTALL.props =		${INSTALL_DATA}
 INSTALL.data =		${INSTALL_DATA}
+INSTALL.doc =		${INSTALL_DATA}
 
 # ------------------------------------------------------------
 # End of User settings
