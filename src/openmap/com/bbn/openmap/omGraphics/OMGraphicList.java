@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.14 $
-// $Date: 2004/09/17 19:17:48 $
+// $Revision: 1.15 $
+// $Date: 2004/10/04 21:11:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -972,23 +972,21 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
                 i = 0;
                 iterator = graphics.listIterator();
                 while (iterator.hasNext()) {
-                    tomd = findClosestTest(omd, i, (OMGeometry) iterator.next(), 
+                    tomd = findClosestTest(omd, i++, (OMGeometry) iterator.next(), 
                                            x, y, limit, resetSelect);
                     if (tomd == null) continue;
                     omd = tomd;  // for style
                     if (omd.d == 0) break;
-                    i++;
                 }
             } else {
                 i = graphics.size();
                 iterator = graphics.listIterator(i);
                 while (iterator.hasPrevious()) {
-                    tomd = findClosestTest(omd, i, (OMGeometry) iterator.previous(), 
+                    tomd = findClosestTest(omd, i--, (OMGeometry) iterator.previous(), 
                                            x, y, limit, resetSelect);
                     if (tomd == null) continue;
                     omd = tomd;  // for style
                     if (omd.d == 0) break;
-                    i--;
                 }
             }
         }
@@ -1133,12 +1131,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 //                 i = graphics.size();
 //                 iterator = graphics.listIterator(i);
 //                 while (iterator.hasPrevious()) {
-//                     tomd = findClosestTest(omd, i, (OMGeometry) iterator.previous(), 
+//                     tomd = findClosestTest(omd, i--, (OMGeometry) iterator.previous(), 
 //                                            x, y, limit, resetSelect);
 //                     if (tomd == null) continue;
 //                     omd = tomd;  // for style
 //                     if (omd.d == 0) break;
-//                     i--;
 //                 }
 //             }
 //         }
