@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/21 18:56:55 $
+// $Revision: 1.3 $
+// $Date: 2003/03/01 00:26:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -88,6 +88,18 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * The default is FIRST_ADDED_ON_TOP.
      */
     protected int traverseMode = FIRST_ADDED_ON_TOP;
+
+    /**
+     * Flag to adjust behavior of OMGraphicList for certain queries.
+     * If OMGraphicList should act as OMGraphic, the entire list will
+     * be treated as one object.  Otherwise, the list will act as a
+     * pass-through container, and internal OMGraphics will be
+     * returned.  This applies to distance(), selectClosest(),
+     * findClosest(), getOMGraphicThatContains(), etc.  This flag
+     * becomes really helpful for embedded OMGraphicLists, not so much
+     * for top-level OMGraphicLists.
+     */
+    protected boolean vague = false;
 
     /**
      * The list of graphics. Once an OMGraphicList is constructed,
@@ -179,6 +191,22 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 	    }
 	}
 	return sb.toString();
+    }
+
+    /**
+     * Set whether the list returns the specific OMGraphic in response
+     * to a query, or itself.
+     */
+    public void setVague(boolean value) {
+	vague = value;
+    }
+
+    /**
+     * Get whether the list returns the specific OMGraphic in response
+     * to a query, or itself.
+     */
+    public boolean isVague() {
+	return vague;
     }
     
     /**
@@ -336,7 +364,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 
     /**
      * Get the graphic with the appObject. Traverse mode doesn't
-     * matter.  Tests object identity first, then tries equality.
+     * matter.  Tests object identity first, then tries equality.<p>
+     *
+     * If this list contains OMGraphicLists that are not vague, and
+     * the those lists' appObject doesn't match, the object will be
+     * passed to those lists as well for a check, with their OMGraphic
+     * being passed back with a successful search.
      *
      * @param appObj appObject of the wanted graphic.  
      * @return OMGraphic or null if not found
@@ -350,11 +383,27 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 	    while (it.hasNext()) {
 		OMGeometry graphic = (OMGeometry) it.next();
 		Object tObj = graphic.getAppObject();
+
 		if ((appObj == tObj) || (appObj.equals(tObj))) {
 		    return (OMGeometry)graphic;
 		}
+
+		// For this object, if it is an OMGraphicList and is 
+		// not vague, check its OMGraphics for their app
+		// objects, too.
+		if (graphic instanceof OMGraphicList && 
+		    !((OMGraphicList)graphic).isVague()) {
+
+		    OMGraphicList omgl = (OMGraphicList)graphic;
+		    OMGeometry tGeom = omgl.getOMGraphicWithAppObject(appObj);
+	    
+		    if (tGeom != null) {
+			return tGeom;
+		    }
+		}
 	    }
 	}
+
 	return null;
     }
 
@@ -380,15 +429,30 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
     }
 
     /**
-     * Remove the graphic.
+     * Remove the graphic.  If this list is not vague, it will also
+     * ask sub-OMGraphicLists to remove it if the geometry isn't found
+     * on this OMGraphicList.
      *
      * @param geometry the OMGeometry object to remove.
      * @return true if geometry was on the list, false if otherwise.
      */
     protected boolean _remove(OMGeometry geometry) {
+	boolean found = false;
 	synchronized (graphics) {
-	    return graphics.remove(geometry);
+	    found = graphics.remove(geometry);
+
+	    if (!found && !isVague()) {
+		Iterator it = iterator();
+		while (it.hasNext()) {
+		    OMGraphic graphic = (OMGraphic)it.next();
+		    if (graphic instanceof OMGraphicList) {
+			found = ((OMGraphicList)graphic)._remove(geometry);
+		    }
+		}
+	    }
 	}
+
+	return found;
     }
 
     /**
@@ -821,7 +885,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see #findClosest(int, int, float)
      */
     public float distance(int x, int y) {
-	return _findClosest(x, y, Float.MAX_VALUE).d;
+	return _findClosest(x, y, Float.MAX_VALUE, false).d;
     }
 
     /**
@@ -842,20 +906,14 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @param y y coord
      * @param limit the max distance that a graphic has to be within
      * to be returned, in pixels.
+     * @param resetSelect deselect any OMGraphic touched.
      * @return OMDist
      */
-    protected OMDist _findClosest(int x, int y, float limit) {
+    protected OMDist _findClosest(int x, int y, float limit, boolean resetSelect) {
 	OMDist omd = new OMDist();
-
+	OMDist tomd;
 	java.util.List targets = getTargets();
 	ListIterator iterator;
-
-        OMGeometry graphic, ret = null;
-        float closestDistance = Float.MAX_VALUE;
-	float currentDistance;
-
-
-	int index = NONE;
 	int i;
 
 	if (size() != 0) {
@@ -864,53 +922,86 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 		    i = 0;
 		    iterator = targets.listIterator();
 		    while (iterator.hasNext()) {
-			graphic = (OMGraphic) iterator.next();
-
-			// cannot select a graphic which isn't visible
-			if (!graphic.isVisible())
-			    continue;
-			currentDistance = graphic.distance(x, y);
-			if (currentDistance < limit && 
-			    currentDistance < closestDistance) {
-			    ret = graphic;
-			    closestDistance = currentDistance;
-			    index = i;
-
-			    if (currentDistance == 0) {
-				break;
-			    }
-			}
+			tomd = findClosestTest(omd, i, (OMGeometry) iterator.next(), 
+					       x, y, limit, resetSelect);
+			if (tomd == null) continue;
+			omd = tomd;  // for style
+			if (omd.d == 0) break;
 			i++;
 		    }
 		} else {
 		    i = targets.size();
 		    iterator = targets.listIterator(i);
 		    while (iterator.hasPrevious()) {
-			graphic = (OMGraphic) iterator.previous();
-		
-			// cannot select a graphic which isn't visible
-			if (!graphic.isVisible())
-			    continue;
-			currentDistance = graphic.distance(x, y);
-			if (currentDistance < limit && 
-			    currentDistance < closestDistance) {
-			    ret = graphic;
-			    closestDistance = currentDistance;
-			    index = i;
-
-			    if (currentDistance == 0) {
-				break;
-			    }
-			}
+			tomd = findClosestTest(omd, i, (OMGeometry) iterator.previous(), 
+					       x, y, limit, resetSelect);
+			if (tomd == null) continue;
+			omd = tomd;  // for style
+			if (omd.d == 0) break;
 			i--;
 		    }
 		}
 	    }
 	}
-	omd.omg = ret;
-	omd.d = closestDistance;
-	omd.index = index;
+
 	return omd;
+    }
+
+    /**
+     * Test the omgraphic distance away from the x, y point, and
+     * compare it to the current OMDist passed in.  If the graphic is
+     * the new closest, return the same OMDist object filled in with
+     * the new value.  Otherwise, return null.
+     * @param current the OMDist that contains the current best result of a search.
+     * @param index the index in the graphic list of the provied OMGeometry
+     * @param graphic the OMGeometry to test
+     * @param x the window horiontal pixel value.
+     * @param y the window vertical pixel value.
+     * @param resetSelect flag to call deselect on any OMGeometry
+     * contacted.  Used here to pass on in case the OMGeometry
+     * provided is an OMGraphicList, and to use to decide if deselect
+     * should be called on the provided graphic.
+     * @return OMDist if the graphic passed in is the current closest.
+     * If not, OMDist will be null.
+     */
+    protected OMDist findClosestTest(OMDist current, int index, OMGeometry graphic, 
+				     int x, int y, float limit, boolean resetSelect) {
+
+	OMGraphicList omgl;
+	float currentDistance;
+
+	// cannot select a graphic which isn't visible
+	if (!graphic.isVisible()) {
+	    return null;
+	}
+
+	if (graphic instanceof OMGraphicList) {
+	    omgl = (OMGraphicList)graphic; 
+	    OMDist dist = omgl._findClosest(x, y, limit, resetSelect);
+	    if (dist.omg == null) {
+		return null;
+	    } else {
+		currentDistance = dist.d;
+		if (omgl.isVague()) {
+		    graphic = omgl;
+		} else {
+		    graphic = dist.omg;
+		}
+	    }
+	} else {
+	    if (resetSelect) graphic.deselect();
+	    currentDistance = graphic.distance(x, y);
+	}
+
+	if (currentDistance < limit && 
+	    currentDistance < current.d) {
+	    current.omg = graphic;
+	    current.d = currentDistance;
+	    current.index = index;
+	    return current;
+	}
+
+	return null;
     }
 
     /**
@@ -930,7 +1021,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * null if not found.
      */
     public OMGraphic findClosest(int x, int y, float limit) {
-	return (OMGraphic) _findClosest(x, y, limit).omg;
+	return (OMGraphic) _findClosest(x, y, limit, false).omg;
     }
 
     /**
@@ -968,7 +1059,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * OMGeometryList.NONE if not found.
      */
     public int findIndexOfClosest(int x, int y, float limit) {
-	return _findClosest(x, y, limit).index;
+	return _findClosest(x, y, limit, false).index;
     }
 
     /**
@@ -987,7 +1078,14 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @see #findIndexOfClosest(int, int, float)
      */
     public int findIndexOfClosest(int x, int y) {
-        return _findClosest(x, y, Float.MAX_VALUE).index;
+        return _findClosest(x, y, Float.MAX_VALUE, false).index;
+    }
+
+    /**
+     * Calls _findClosest(x, y, limit, false);
+     */
+    protected OMDist _findClosest(int x, int y, float limit) {
+	return _findClosest(x, y, limit, false);
     }
 
     /**
@@ -1043,11 +1141,14 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * none found.  
      */
     protected OMGeometry _selectClosest(int x, int y, float limit) {
+	OMDist omd = new OMDist();
+	OMDist tomd;
 
 	java.util.List targets = getTargets();
 	ListIterator iterator;
         OMGeometry ret = null;
 	OMGeometry graphic, current;
+	OMGraphicList omgl;
         float closestDistance = Float.MAX_VALUE;
 	float currentDistance;
 
@@ -1056,46 +1157,51 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 		if (traverseMode == FIRST_ADDED_ON_TOP) {
 		    iterator = targets.listIterator();
 		    while (iterator.hasNext()) {
-			graphic = (OMGraphic) iterator.next();
-
-			if (!graphic.isVisible()) continue;
-
-			current = graphic;
-			currentDistance = current.distance(x, y);
-			if (currentDistance < limit && 
-			    currentDistance < closestDistance) {
-			    if (ret != null) ret.deselect();
-			    ret = current;
-			    ret.select();
-			    closestDistance = currentDistance;
-			} else {
-			    // in case this graphic was the last closest
-			    current.deselect();
-			}
+			tomd = selectClosestTest(omd, 0, (OMGeometry) iterator.next(), 
+						 x, y, limit);
+			if (tomd == null) continue;
+			omd = tomd;  // for style
+			if (omd.d == 0) break;
 		    }
 		} else {
 		    iterator = targets.listIterator(targets.size());
 		    while (iterator.hasPrevious()) {
-			graphic = (OMGraphic) iterator.previous();
-
-			if (!graphic.isVisible()) continue;
-
-			current = graphic;
-			currentDistance = current.distance(x, y);
-			if (currentDistance < limit && 
-			    currentDistance < closestDistance) {
-			    if (ret != null) ret.deselect();
-			    ret = current;
-			    ret.select();
-			    closestDistance = currentDistance;
-			} else {
-			    // in case this graphic was the last closest
-			    current.deselect();
-			}
+			tomd = selectClosestTest(omd, 0, (OMGeometry) iterator.previous(), 
+						 x, y, limit);
+			if (tomd == null) continue;
+			omd = tomd;  // for style
+			if (omd.d == 0) break;
 		    }
 		}
 	    }
 	}
+
+	return omd.omg;
+    }
+
+    /**
+     * A variation on findClosestTest, manages select() and deselect().
+     * @param current the OMDist that contains the current best result of a search.
+     * @param index the index in the graphic list of the provied OMGeometry
+     * @param graphic the OMGeometry to test
+     * @param x the window horiontal pixel value.
+     * @param y the window vertical pixel value.
+     * @return OMDist if the graphic passed in is the current closest.
+     * OMGeometry will be set in OMDist and selected().  OMGeometry
+     * will be deselected if not the closest, and the OMDist will be null.
+     */
+    protected OMDist selectClosestTest(OMDist current, int index, OMGeometry graphic,
+				       int x, int y, float limit) {
+	OMGeometry oldGraphic = current.omg;
+	OMDist ret = findClosestTest(current, index, graphic, x, y, limit, true);
+
+	if (ret != null) {
+	    if (oldGraphic != null) {
+		oldGraphic.deselect();
+	    }
+	    ret.omg.select();
+	}
+
 	return ret;
     }
 
@@ -1123,7 +1229,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
     }
 
     /**
-     * Finds the first OMGeometry (the one on top) that is under this pixel.
+     * Finds the first OMGeometry (the one on top) that is under this
+     * pixel.  If an OMGeometry is an OMGraphicList, its contents will
+     * be checked.  If that check is successful and OMGraphicList is
+     * not vague, its OMGeometry will be returned - otherwise the list
+     * will be returned.
      * 
      * @param x the horizontal pixel position of the window, from the
      * left of the window.
@@ -1136,6 +1246,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 	java.util.List targets = getTargets();
 	ListIterator iterator;
         OMGeometry graphic, ret = null;
+	OMGraphicList tomgl = null;
 
 	if (size() != 0) {
 	    synchronized (graphics) {
@@ -1147,7 +1258,17 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 			// cannot select a graphic which isn't visible
 			if (!graphic.isVisible())
 			    continue;
-			if (graphic.contains(x, y)) {
+
+			if (graphic instanceof OMGraphicList) {
+			    tomgl = (OMGraphicList)graphic;
+			    ret = tomgl._getContains(x, y);
+			    if (ret != null) {
+				if (tomgl.isVague()) {
+				    ret = graphic;
+				}
+				break;
+			    }
+			} else if (graphic.contains(x, y)) {
 			    ret = graphic;
 			    break;
 			}
@@ -1160,7 +1281,17 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 			// cannot select a graphic which isn't visible
 			if (!graphic.isVisible())
 			    continue;
-			if (graphic.contains(x, y)) {
+
+			if (graphic instanceof OMGraphicList) {
+			    tomgl = (OMGraphicList)graphic;
+			    ret = tomgl._getContains(x, y);
+			    if (ret != null) {
+				if (tomgl.isVague()) {
+				    ret = graphic;
+				}
+				break;
+			    }
+			} else if (graphic.contains(x, y)) {
 			    ret = graphic;
 			    break;
 			}
