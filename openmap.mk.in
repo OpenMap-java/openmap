@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/openmap.mk.in,v $
 # $RCSfile: openmap.mk.in,v $
-# $Revision: 1.5 $
-# $Date: 1998/11/12 02:37:22 $
+# $Revision: 1.6 $
+# $Date: 1998/11/12 13:33:17 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -77,13 +77,13 @@ JFLAGS = $(JFLAGS_DEV)
 # Install settings
 #
 # These use GNU install
-INSTALL.dir =		install --directory
-INSTALL.jar =		install --mode=444
-INSTALL.bin =		install --mode=555
-INSTALL.class =		install --mode=444
-INSTALL.image =		install --mode=444
-INSTALL.props =		install --mode=444
-INSTALL.data =		install --mode=444
+INSTALL.dir =		install -d
+INSTALL.jar =		install -m 444
+INSTALL.bin =		install -m 555
+INSTALL.class =		install -m 444
+INSTALL.image =		install -m 444
+INSTALL.props =		install -m 444
+INSTALL.data =		install -m 444
 
 # ------------------------------------------------------------
 # End of User settings
