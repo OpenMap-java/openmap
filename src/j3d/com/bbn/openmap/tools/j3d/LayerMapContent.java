@@ -14,14 +14,15 @@
  *
  *  $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/LayerMapContent.java,v $
  *  $RCSfile: LayerMapContent.java,v $
- *  $Revision: 1.1.1.1 $
- *  $Date: 2003/02/14 21:35:48 $
+ *  $Revision: 1.2 $
+ *  $Date: 2003/11/14 20:03:18 $
  *  $Author: dietrick $
  *
  *  **********************************************************************
  */
 package com.bbn.openmap.tools.j3d;
 
+import java.awt.Color;
 import java.util.Iterator;
 import javax.media.j3d.*;
 import javax.vecmath.*;
@@ -30,6 +31,7 @@ import com.bbn.openmap.*;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicHandler;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -130,9 +132,9 @@ public class LayerMapContent extends OrderedGroup {
         MapBean map = (MapBean)mh.get("com.bbn.openmap.MapBean");
         if (map != null) {
             Debug.message("3d", "LayerMapContent: putting down sea.");
-            java.awt.Color seaColor = map.getBackgroundColor();
+	    Color seaColor = map.getBackground();
 
-            com.bbn.openmap.proj.Projection proj = map.getProjection();
+            Projection proj = map.getProjection();
 
             // Make the background strech a screen around the current
             // map, all directions.

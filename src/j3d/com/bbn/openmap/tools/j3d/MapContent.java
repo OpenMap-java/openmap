@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/MapContent.java,v $
 // $RCSfile: MapContent.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:03:18 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -25,6 +25,8 @@ package com.bbn.openmap.tools.j3d;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.HashSet;
@@ -261,7 +263,13 @@ public class MapContent extends BranchGroup implements OM3DConstants {
 	AcmeGifFormatter formatter = new AcmeGifFormatter();
 	Graphics graphics = formatter.getGraphics(pwidth, pheight);
 
-	proj.drawBackground(graphics);
+	Paint background;
+	if (map == null) {
+	    background = MapBean.DEFAULT_BACKGROUND_COLOR;
+	} else {
+	    background = map.getBckgrnd();
+	}
+	proj.drawBackground((Graphics2D)graphics, background);
 
 	layerHandler = (LayerHandler) mapHandler.get("com.bbn.openmap.LayerHandler");
  	if (layerHandler != null) {
