@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.12 $
-// $Date: 2004/02/01 21:17:05 $
+// $Revision: 1.13 $
+// $Date: 2004/02/02 22:52:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -189,16 +189,24 @@ public class WindowSupport extends ListenerSupport
     }
 
     /**
+     * Subclass method to allow modifications to content, wrappers,
+     * etc.  This version just returns comp.
+     */
+    public Component modifyContent(Component comp) {
+        return comp;
+    }
+
+    /**
      * Sets the content in the JInternalFrame/JDialog.
      */
     public void setContent(Component comp) {
         content = comp;
         if (iFrame != null) {
-            iFrame.getContentPane().add(content);
+            iFrame.getContentPane().add(modifyContent(content));
             iFrame.pack();
         } else if (dialog != null) {
             dialog.getContentPane().removeAll();
-            dialog.getContentPane().add(content);
+            dialog.getContentPane().add(modifyContent(content));
             dialog.pack();
         }
     }

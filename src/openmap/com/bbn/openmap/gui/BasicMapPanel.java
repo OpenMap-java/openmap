@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.10 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.11 $
+// $Date: 2004/02/02 22:52:25 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
+import java.awt.Toolkit;
 import java.net.URL;
 import java.util.Properties;
 import java.util.Collection;
@@ -372,6 +373,17 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
                                               MapBean.DEFAULT_WIDTH);
         int envHeight = Environment.getInteger(Environment.Height,
                                                MapBean.DEFAULT_HEIGHT);
+
+        if (envWidth <= 0 || envHeight <= 0) {
+            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+            if (envWidth <= 0) {
+                envWidth = (int)d.getWidth();
+            }
+            if (envHeight <= 0) {
+                envHeight = (int)d.getHeight();
+            }
+        }
+
         // Initialize the map projection, scale, center
         // with user prefs or defaults
         Projection proj = ProjectionFactory.makeProjection(
