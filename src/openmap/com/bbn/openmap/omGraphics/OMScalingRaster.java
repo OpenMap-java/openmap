@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingRaster.java,v $
 // $RCSfile: OMScalingRaster.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/12/16 22:54:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -284,6 +284,18 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
 	setNeedToRegenerate(false);
 	return true;
+    }
+
+    /**
+     * Since the OMScalingRaster changes height and width depending on
+     * scale, we need to rotate the image over that point and factor
+     * in the scaled height and width of the image.  Called from
+     * within OMRasterObject.render().
+     */
+    protected void rotate(Graphics2D g) {
+	int rotOffsetX = point1.x + (point2.x - point1.x)/2;
+	int rotOffsetY = point1.y + (point2.y - point1.y)/2;
+	((Graphics2D)g).rotate(rotationAngle, rotOffsetX, rotOffsetY);
     }
 
     /**

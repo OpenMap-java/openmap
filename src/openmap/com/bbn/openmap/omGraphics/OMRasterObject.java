@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/07 15:40:57 $
+// $Revision: 1.6 $
+// $Date: 2003/12/16 22:54:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -287,6 +287,18 @@ public abstract class OMRasterObject extends OMGraphic
     protected abstract boolean computePixels();
 
     /**
+     * Called from within render().  This method should call rotate()
+     * on the provided Graphics2D object, setting the rotation angle
+     * and the rotation point.  By default, the rotation angle is
+     * whatever is set in the OMRasterObject, and the rotation point
+     * is the offset point plus half the image width in the horizonal
+     * direction, and half the image in the vertical direction.
+     */
+    protected void rotate(Graphics2D g) {
+	((Graphics2D)g).rotate(rotationAngle, point1.x+width/2, point1.y+height/2);
+    }
+
+    /**
      * Render the raster on the java.awt.Graphics
      *
      * @param g java.awt.Graphics to draw the image on.
@@ -310,7 +322,7 @@ public abstract class OMRasterObject extends OMGraphic
 
 	if (g instanceof Graphics2D && rotationAngle != DEFAULT_ROTATIONANGLE) {
 	    //rotate about our image center point
-	    ((Graphics2D)g).rotate(rotationAngle, point1.x+width/2, point1.y+height/2);
+	    rotate((Graphics2D)g);
 	}
 
 	if (bitmap != null) {
