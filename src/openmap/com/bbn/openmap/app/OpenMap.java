@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/19 20:32:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,11 +50,7 @@ public class OpenMap {
     public OpenMap(PropertyHandler propertyHandler) { 
       	MapBean mapBean;
 
-	if (Debug.debugging("blmb")) {
-	    mapBean = new BufferedLayerMapBean();
-	} else {
-	    mapBean = new BufferedMapBean();
-	}
+	mapBean = new BufferedLayerMapBean();
 
 	mapBean.setBorder(new BevelBorder(BevelBorder.LOWERED));
 	int envWidth = Environment.getInteger(Environment.Width, MapBean.DEFAULT_WIDTH);
