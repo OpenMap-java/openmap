@@ -1060,6 +1060,10 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/Makefile
 	com/bbn/openmap/Makefile
 	com/bbn/openmap/app/Makefile
+	com/bbn/openmap/dataAccess/Makefile
+	com/bbn/openmap/dataAccess/shape/Makefile
+	com/bbn/openmap/dataAccess/shape/input/Makefile
+	com/bbn/openmap/dataAccess/shape/output/Makefile
 	com/bbn/openmap/event/Makefile
 	com/bbn/openmap/examples/Makefile
 	com/bbn/openmap/examples/crew/Makefile
@@ -1223,6 +1227,10 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/Makefile
 	com/bbn/openmap/Makefile
 	com/bbn/openmap/app/Makefile
+	com/bbn/openmap/dataAccess/Makefile
+	com/bbn/openmap/dataAccess/shape/Makefile
+	com/bbn/openmap/dataAccess/shape/input/Makefile
+	com/bbn/openmap/dataAccess/shape/output/Makefile
 	com/bbn/openmap/event/Makefile
 	com/bbn/openmap/examples/Makefile
 	com/bbn/openmap/examples/crew/Makefile
