@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/02/24 17:03:41 $
+// $Revision: 1.6 $
+// $Date: 2003/02/24 23:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -62,8 +62,11 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 
     public final static String ShowHintsProperty = "showHints";
 
+    protected boolean DTL_DEBUG = false;
+
     public DrawingToolLayer() {
 	setAddToBeanContext(true);
+	DTL_DEBUG = Debug.debugging("dtl");
     }
 
     public void setProperties(String prefix, Properties props) {
@@ -97,10 +100,27 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      * DrawingToolRequestor method.
      */
     public void drawingComplete(OMGraphic omg, OMAction action) {
+	// First thing, release the proxy MapMouseMode, if there is one.
+	MapMouseMode pmmm = getProxyMouseMode();
+	if (pmmm != null) {
+	    if (pmmm.isProxyFor(getDrawingTool().getMouseMode())) {
+		if (DTL_DEBUG) {
+		    Debug.output("DTL: releasing proxy on " + pmmm.getID());
+		}
+
+		pmmm.releaseProxy();
+		setProxyMouseMode(null);
+		fireRequestInfoLine(""); // hidden drawing tool put up coordinates, clean up.
+	    }
+	}
+
 	getList(); // create a list if there isn't one.
 	doAction(omg, action);
 	repaint();
-	Debug.message("dtl", "DrawingToolLayer: DrawingTool complete");
+
+	if (DTL_DEBUG) {
+	    Debug.output("DrawingToolLayer: DrawingTool complete");
+	}
     }
 
     /**
@@ -162,6 +182,13 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	    OMDrawingTool dt = getDrawingTool();
 	    if (dt != null) {
 		dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
+
+		MapMouseMode omdtmm = dt.getMouseMode();
+		if (!omdtmm.isVisible()) {
+		    dt.setBehaviorMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK |
+				       OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
+		}
+
 		// The first check is to find out if the tool is already busy
 		// on another graphic.  If it is (null), then
 		// deactivate and try again.  If it fails again, then
@@ -169,17 +196,67 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 
 		// This is fine for OMGraphics that are not near to each 
 		// other, but not for neighbors.
-		if (dt.edit(omgr, layer, e) == null) {
-		    Debug.output("DTL.mousePressed(): DrawingTool is already active.");
-		    dt.deactivate();
-		    dt.edit(omgr, layer, e);
+		if (dt.edit(omgr, layer, e) != null) {
+		    // OK, means we're editing - let's lock up the MouseMode
+		    if (e instanceof MapMouseEvent) {
+
+			// Check to see if the DrawingToolMouseMode wants to 
+			// be invisible.  If it does, ask the current
+			// active MouseMode to be the proxy for it...
+			if (!omdtmm.isVisible()) {
+			    MapMouseMode mmm = ((MapMouseEvent)e).getMapMouseMode();
+			    if (mmm.actAsProxyFor(omdtmm)) {
+				if (DTL_DEBUG) {
+				    Debug.output("DTL: Setting " + mmm.getID() + " as proxy for drawing tool");
+				}
+				setProxyMouseMode(mmm);
+			    } else {
+				// WHOA, couldn't get proxy lock - bail
+				if (DTL_DEBUG) {
+				    Debug.output("DTL: couldn't get proxy lock on " + mmm.getID() + " deactivating internal drawing tool");
+				}
+				dt.deactivate();
+			    }
+			} else {
+			    if (DTL_DEBUG) {
+				Debug.output("DTL: OMDTMM wants to be visible");
+			    }
+			}
+		    } else {
+			if (DTL_DEBUG) {
+			    Debug.output("DTL: MouseEvent not a MapMouseEvent");
+			}
+		    }
+
+		    fireHideToolTip(e);
 		}
+
 	    }
 	    ret = true;
 	}
 	return false;
     }
     
+    protected MapMouseMode proxyMMM = null;
+
+    /**
+     * Set the ProxyMouseMode for the internal drawing tool, if there
+     * is one.  Can be null.  Used to reset the mouse mode when
+     * drawing's complete.
+     */
+    protected synchronized void setProxyMouseMode(MapMouseMode mmm) {
+	proxyMMM = mmm;
+    }
+
+    /**
+     * Get the ProxyMouseMode for the internal drawing tool, if there
+     * is one.  May be null.  Used to reset the mouse mode when
+     * drawing's complete.
+     */
+    protected synchronized MapMouseMode getProxyMouseMode() {
+	return proxyMMM;
+    }
+
     /**
      * Invoked when a mouse button has been released on a component.
      * @param e MouseEvent
@@ -206,18 +283,18 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
     public boolean mouseClicked(MouseEvent e) { 
 	boolean ret = false;
 
-	OMGraphic omgr = ((OMGraphicList)getList()).findClosest(e.getX(), e.getY(), 4);
-	if (omgr != null) {
-	    OMDrawingTool dt = getDrawingTool();
-	    if (dt != null) {
-		dt.setBehaviorMask(getDrawingToolEditBehaviorMask());
-		// We don't seem to need to check to find out if another
-		// graphic is using the drawing tool, the check in
-		// mousePressed takes care of that.
-		dt.edit(omgr, layer);
-	    }
-	    ret = true;
-	}
+// 	OMGraphic omgr = ((OMGraphicList)getList()).findClosest(e.getX(), e.getY(), 4);
+// 	if (omgr != null) {
+// 	    OMDrawingTool dt = getDrawingTool();
+// 	    if (dt != null) {
+// 		dt.setBehaviorMask(getDrawingToolEditBehaviorMask());
+// 		// We don't seem to need to check to find out if another
+// 		// graphic is using the drawing tool, the check in
+// 		// mousePressed takes care of that.
+// 		dt.edit(omgr, layer);
+// 	    }
+// 	    ret = true;
+// 	}
 	
 	return ret;
     }
@@ -262,7 +339,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	OMGraphic omgr = ((OMGraphicList)getList()).findClosest(e.getX(),e.getY(),4.0f);
 
 	if (omgr != null) {
-// 	    fireRequestInfoLine("Click to edit graphic.");
+//  	    fireRequestInfoLine("Click to edit graphic");
 	    if (showHints) {
 		String tt = getToolTipForOMGraphic(omgr);
 		if (tt != null) {

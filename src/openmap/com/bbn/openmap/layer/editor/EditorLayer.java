@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/EditorLayer.java,v $
 // $RCSfile: EditorLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/02/24 23:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -176,6 +176,15 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
 	return services;
     }
     
+    protected String activeMouseModeID = null;
+
+    protected void setUsingELMM(MouseEvent e) {
+	activeMouseModeID = null;
+	if (e instanceof MapMouseEvent) {
+	    activeMouseModeID = ((MapMouseEvent)e).getMapMouseMode().getID();
+	}
+    }
+
     /**
      * Invoked when a mouse button has been pressed on a component.
      * @param e MouseEvent

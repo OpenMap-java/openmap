@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/Attic/AbstractDrawingEditorTool.java,v $
 // $RCSfile: AbstractDrawingEditorTool.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/24 17:03:41 $
+// $Revision: 1.3 $
+// $Date: 2003/02/24 23:05:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -203,7 +203,11 @@ public abstract class AbstractDrawingEditorTool extends AbstractEditorTool
 
 	if (someObj instanceof MouseDelegator) {
 	    setMouseDelegator((MouseDelegator)someObj);
-	    drawingTool.findAndInit(someObj);
+	    // I think we want to handle this differently.  The
+	    // EditorToolLayer should get the Gestures MouseMode to
+	    // act as a proxy for the drawing tool mouse mode when a
+	    // tool is not being used.
+ 	    drawingTool.findAndInit(someObj);
 	}
 
 	if (someObj instanceof OMGraphicDeleteTool) {
