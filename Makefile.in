@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.14 $
-# $Date: 1998/11/21 01:46:30 $
+# $Revision: 1.15 $
+# $Date: 1998/11/30 23:31:42 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
@@ -73,7 +73,6 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/nitf/*.class \
 		com/bbn/openmap/layer/pluginLayer/*.class \
 		com/bbn/openmap/layer/plotLayer/*.class \
-		com/bbn/openmap/layer/rpf/*.class \
 		com/bbn/openmap/layer/shape/*.class \
 		com/bbn/openmap/layer/util/cacheHandler/*.class \
 		com/bbn/openmap/layer/util/html/*.class \
