@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/04/23 17:08:00 $
+// $Revision: 1.7 $
+// $Date: 2003/05/14 17:11:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,7 +35,6 @@ import com.bbn.openmap.event.ProgressEvent;
 import com.bbn.openmap.event.ProgressListener;
 import com.bbn.openmap.event.ProgressSupport;
 import com.bbn.openmap.gui.ProgressListenerGauge;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -176,7 +175,7 @@ public class PropertyHandler implements SoloMapComponent {
      */
     public PropertyHandler(String urlString) 
 	throws MalformedURLException, IOException {
-	this(com.bbn.openmap.layer.util.LayerUtils.getResourceOrFileOrURL("com.bbn.openmap.PropertyHandler", urlString));
+	this(PropUtils.getResourceOrFileOrURL("com.bbn.openmap.PropertyHandler", urlString));
     }
 
     /**
@@ -441,7 +440,7 @@ public class PropertyHandler implements SoloMapComponent {
 		try {
 		    tmpProps.clear();
 		    // Open URL to read in properties
-		    URL tmpInclude = LayerUtils.getResourceOrFileOrURL(null, include);
+		    URL tmpInclude = PropUtils.getResourceOrFileOrURL(null, include);
 
 		    if (tmpInclude == null) {
 			continue;
@@ -952,11 +951,11 @@ public class PropertyHandler implements SoloMapComponent {
 	    int projType = com.bbn.openmap.proj.ProjectionFactory.getProjType(projName);
 	    mapBean.setProjectionType(projType);
 
-	    mapBean.setScale(LayerUtils.floatFromProperties(
+	    mapBean.setScale(PropUtils.floatFromProperties(
 		props, Environment.Scale, Float.POSITIVE_INFINITY));
-	    float lat = LayerUtils.floatFromProperties(
+	    float lat = PropUtils.floatFromProperties(
 		props, Environment.Latitude, 0f);
-	    float lon = LayerUtils.floatFromProperties(
+	    float lon = PropUtils.floatFromProperties(
 		props, Environment.Longitude, 0f);
 
 	    mapBean.setCenter(new LatLonPoint(lat, lon));
