@@ -1,8 +1,8 @@
 -*- Mode: text-mode -*-
 $Source: /cvs/distapps/openmap/INSTALL,v $
 $RCSfile: INSTALL,v $
-$Revision: 1.15 $
-$Date: 2002/07/19 19:18:02 $
+$Revision: 1.16 $
+$Date: 2003/07/18 19:28:24 $
 $Author: bmackiew $
 
 Prerequisites
@@ -30,7 +30,7 @@ Installation
    If you would like to build OpenMap, you only need to set your 
    OPENMAP_HOME and JAVA_HOME environment variables to point to your
    OpenMap directory and location of your Java installation, and run 
-   "make".  This will work through the different OpenMap directories, 
+   "ant".  This will work through the different OpenMap directories, 
    compile OpenMap classes with Ant, and store the resulting jar file 
    in the lib/ directory of your OpenMap directory.
 
@@ -41,7 +41,7 @@ Installation
 
    The above directions cover use of OpenMap on Unix-based systems, such
    as Linux, Solaris, and Mac OS X.  For Windows-based systems, you'll
-   want to read the README.win32 file, found in the same directory as
+   want to read the INSTALL.win32 file, found in the same directory as
    this INSTALL file.
 
 Documentation
@@ -49,5 +49,5 @@ Documentation
    
    OpenMap is shipped with the API documentation pre-built.  If you'd like
    to rebuild it, you can do it from the top-level OpenMap directory with
-   "make docs".
+   "ant docs".
 
