@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGrid.java,v $
 // $RCSfile: LinkGrid.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:27 $
-// $Author: wjeuerle $
+// $Revision: 1.4 $
+// $Date: 2004/01/17 00:26:41 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -24,6 +24,7 @@
 package com.bbn.openmap.layer.link;
 
 import com.bbn.openmap.omGraphics.OMGrid;
+import com.bbn.openmap.omGraphics.grid.GridData;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
@@ -190,7 +191,14 @@ public class LinkGrid implements LinkGraphicConstants {
 	int rows = grid.getRows();
 	int columns = grid.getColumns();
 
-	int [][] d = grid.getData();
+	GridData gd = grid.getData();
+
+	if (!(gd instanceof GridData.Int)) {
+	    Debug.output("LinkGrid requires OMGrid containing integer data.");
+	    return;
+	}
+
+	int [][] d = ((GridData.Int)gd).getData();
 	int[] data = new int[rows*columns];
 	for (int i = 0; i < d.length; i++) {
 	    for (int j = 0; j < d[0].length; j++) {
