@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriLayer.java,v $
 // $RCSfile: EsriLayer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/09/04 18:24:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -214,6 +214,14 @@ public class EsriLayer extends Layer implements ShapeConstants {
 	return model;
     }
     
+    public synchronized void renderDataForProjection(Projection proj,
+						     java.awt.Graphics g) {
+	if (_list != null && proj != null && !proj.equals(getProjection())) {
+	    _list.project(proj, true);
+	}
+	paint(g);
+    }
+
     /**
      * Returns the EsriGraphicList for this layer
      * @return The EsriGraphicList for this layer
