@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/08/28 22:09:16 $
+// $Revision: 1.9 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1002,6 +1002,10 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      */
     protected synchronized OMDist findClosestTest(OMDist current, int index, OMGeometry graphic, int x, int y, float limit, boolean resetSelect) {
 
+	if (current == null) {
+	    current = new OMDist();
+	}
+
 	OMGraphicList omgl;
 	float currentDistance = Float.MAX_VALUE;
 
@@ -1180,15 +1184,12 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * list is set to be vague.
      */
     protected synchronized OMGeometry _selectClosest(int x, int y, float limit) {
-	OMDist omd = new OMDist();
+	OMDist omd = null;
 	OMDist tomd;
-
 	ListIterator iterator;
         OMGeometry ret = null;
-	OMGeometry graphic, current;
+	OMGeometry current;
 	OMGraphicList omgl;
-        float closestDistance = Float.MAX_VALUE;
-	float currentDistance;
 
 	// Handle vagueness.
 	if (isVague()) {
@@ -1221,7 +1222,11 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 	    }
 	}
 
-	return omd.omg;
+	if (omd != null) {
+	    ret = omd.omg;
+	}
+
+	return ret;
     }
 
     /**
@@ -1239,6 +1244,10 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      */
     protected OMDist selectClosestTest(OMDist current, int index, OMGeometry graphic, 
 				       int x, int y, float limit) {
+	if (current == null) {
+	    current = new OMDist();
+	}
+
 	OMGeometry oldGraphic = current.omg;
 	OMDist ret = findClosestTest(current, index, graphic, x, y, limit, true);
 
@@ -1635,7 +1644,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
 	    }
 	    
 	} catch (ArrayIndexOutOfBoundsException aioobe) {
- 	    new com.bbn.openmap.util.HandleError(aioobe);
+ 	    throw new com.bbn.openmap.util.HandleError(aioobe);
  	} catch (ClassCastException cce) {
  	    cce.printStackTrace();
  	}

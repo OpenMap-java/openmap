@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRangeRings.java,v $
 // $RCSfile: OMRangeRings.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,8 +52,8 @@ public class OMRangeRings extends OMCircle implements Serializable {
     /** The labels for the circles. */
     protected transient OMText[] labels = null;
 
-    /** By default, there are 3 inner rings. */
-    public final static int DEFAULT_INTERVAL = 3;
+    /** By default, there are 3 inner rings, 4 total. */
+    public final static int DEFAULT_INTERVAL = 4;
     /** The number of rings, or the unit interval, depending on
      *  whether intervalUnits is null or not. */
     protected int interval = DEFAULT_INTERVAL;
@@ -147,6 +147,7 @@ public class OMRangeRings extends OMCircle implements Serializable {
      */
     public void setInterval(int interval) {
 	this.interval = interval;
+	setNeedToRegenerate(true);
     }
 
     /** Convenience method to set both at one time. */
@@ -170,6 +171,7 @@ public class OMRangeRings extends OMCircle implements Serializable {
      */
     public void setIntervalUnits(Length units) {
 	intervalUnits = units;
+	setNeedToRegenerate(true);
     }
 
     /**
@@ -247,13 +249,14 @@ public class OMRangeRings extends OMCircle implements Serializable {
 	float rad;
 	String value;	
 	if (intervalUnits == null) {
-	    circles = new OMCircle[interval];
-	    t = new OMText[interval];
+	    int noUnitInterval = interval - 1;
+	    circles = new OMCircle[noUnitInterval];
+	    t = new OMText[noUnitInterval];
 
-	    for (i = 0; i < interval; i++) {
-		rad = (float)((i + 1) * radius/(interval + 1));
+	    for (i = 0; i < noUnitInterval; i++) {
+		rad = (float)((i + 1) * radius/(noUnitInterval + 1));
 		circles[i] = new OMCircle(center, rad, Length.RADIAN, -1);
-		value = ((i+1) + "/"+ (interval+1));
+		value = ((i+1) + "/"+ (noUnitInterval+1));
 		t[i] = new OMText(center.getLatitude() + Length.DECIMAL_DEGREE.fromRadians(rad), center.getLongitude(), value, OMText.JUSTIFY_CENTER);
 	   } 
 	} else {
@@ -329,6 +332,7 @@ public class OMRangeRings extends OMCircle implements Serializable {
 	    }
 	    // do the one for the outer ring if there are units.
 	    if (labels.length > subCircles.length && drawLabels) {
+		drawingAttributes.setTo(labels[subCircles.length]);
 		labels[subCircles.length].setLinePaint(drawingAttributes.getLinePaint());
 		labels[subCircles.length].render(g);
 	    }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMCircle.java,v $
 // $RCSfile: EditableOMCircle.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/19 23:19:28 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -651,6 +651,29 @@ public class EditableOMCircle extends EditableOMGraphic {
 	    }
 	}
     }
+
+    /**
+     * If this EditableOMGraphic has parameters that can be
+     * manipulated that are independent of other EditableOMGraphic
+     * types, then you can provide the widgets to control those
+     * parameters here.  By default, returns the GraphicAttributes GUI
+     * widgets.  If you don't want a GUI to appear when a widget is
+     * being created/edited, then don't call this method from the
+     * EditableOMGraphic implementation, and return a null Component
+     * from getGUI.
+     * @param graphicAttributes the GraphicAttributes to use to get
+     * the GUI widget from to control those parameters for this EOMG.
+     * @return java.awt.Component to use to control parameters for this EOMG.
+     */
+    public java.awt.Component getGUI(GraphicAttributes graphicAttributes) {
+	Debug.message("eomg", "EditableOMCircle.getGUI");
+	if (graphicAttributes != null) {
+	    return graphicAttributes.getColorAndLineGUI();
+	} else {
+	    return null;
+	}
+    }
+
 }
 
 

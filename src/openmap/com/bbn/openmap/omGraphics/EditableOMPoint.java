@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,15 +30,17 @@ import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.*;
-import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
 /**
- *
+ * An EditableOMGraphic that encapsulates an OMPoint.
  */
-public class EditableOMPoint extends EditableOMGraphic 
-    implements ActionListener {
+public class EditableOMPoint extends EditableOMGraphic {
 
     protected GrabPoint gpc;
     protected OffsetGrabPoint gpo; // offset
@@ -454,48 +456,37 @@ public class EditableOMPoint extends EditableOMGraphic
 	}
     }
 
-
     /**
-     * If this EditableOMGraphic has parameters that can be
-     * manipulated that are independent of other EditableOMGraphic
-     * types, then you can provide the widgets to control those
-     * parameters here.  By default, returns the GraphicAttributes GUI
-     * widgets.  If you don't want a GUI to appear when a widget is
-     * being created/edited, then don't call this method from the
-     * EditableOMGraphic implementation, and return a null Component
-     * from getGUI.
+     * Modifies the gui to not include line type adjustments, and adds
+     * widgets to control point settings.
      * @param graphicAttributes the GraphicAttributes to use to get
      * the GUI widget from to control those parameters for this EOMG.
      * @return java.awt.Component to use to control parameters for this EOMG.
      */
-//      public java.awt.Component getGUI(GraphicAttributes graphicAttributes) {
-//  	java.awt.Component gui = super.getGUI(graphicAttributes);
-//  	if (gui != null) {
-//  	    offsetReset = new JButton("Center Pointangle on Offset");
-//  	    offsetReset.addActionListener(this);
-//  	    offsetReset.setActionCommand(OffsetResetCmd);
-//  	    if (point == null || 
-//  		point.getRenderType() != OMGraphic.RENDERTYPE_OFFSET) {
-//  		offsetReset.setEnabled(false);
-//  	    }
-//  	    if (gui instanceof java.awt.Container) {
-//  		((java.awt.Container)gui).add(offsetReset);
-//  	    }
-//  	    return gui;
-//  	} else {
-//  	    return null;
-//  	}
-//      }
-
-    JButton offsetReset = null;
-
-    public void actionPerformed(ActionEvent e) {
-	if (e.getActionCommand() == OffsetResetCmd && 
-	    point != null ||
-	    point.getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
-	    // Not sure how to do this yet.
+    public Component getGUI(GraphicAttributes graphicAttributes) {
+	Debug.message("eomg", "EditableOMPoint.getGUI");
+	if (graphicAttributes != null) {
+	    JPanel panel = graphicAttributes.getColorAndLineGUI();
+ 	    panel.add(getPointGUI());
+	    return panel;
+	} else {
+ 	    return getPointGUI();
 	}
     }
+
+    protected JToolBar pToolBar = null;
+
+    protected JToolBar getPointGUI() {
+	if (pToolBar == null) {
+	    pToolBar = new JToolBar();
+	    pToolBar.setFloatable(false);
+	    pToolBar.setMargin(new Insets(0, 0, 0, 0));
+	} 
+
+	// Add buttons to toggle oval/rect, radius of point.
+
+	return pToolBar;
+    }    
 }
 
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 01:10:46 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,6 +31,7 @@ import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.util.Debug;
 
 import java.awt.Component;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.event.ActionListener;
@@ -1177,24 +1178,20 @@ public class EditableOMPoly extends EditableOMGraphic {
 
 
     /**
-     * If this EditableOMGraphic has parameters that can be
-     * manipulated that are independent of other EditableOMGraphic
-     * types, then you can provide the widgets to control those
-     * parameters here.  By default, returns the GraphicAttributes GUI
-     * widgets.  If you don't want a GUI to appear when a widget is
-     * being created/edited, then don't call this method from the
-     * EditableOMGraphic implementation, and return a null Component
-     * from getGUI.
+     * Adds widgets to modify polygon.
      * @param graphicAttributes the GraphicAttributes to use to get
      * the GUI widget from to control those parameters for this EOMG.
      * @return Component to use to control parameters for this EOMG.
      */
     public Component getGUI(GraphicAttributes graphicAttributes) {
 	Debug.message("eomg", "EditableOMPoly.getGUI");
-	if (showGUI) {
-	    return buildGUI(graphicAttributes);
+	if (graphicAttributes != null) {
+	    Component gaGUI = graphicAttributes.getGUI();
+	    ((JComponent)gaGUI).add(getPolyGUI());
+	    return gaGUI;
+	} else {
+	    return getPolyGUI();
 	}
-	return null;
     }
 
     JToggleButton polygonButton = null;
@@ -1216,9 +1213,11 @@ public class EditableOMPoly extends EditableOMGraphic {
 	}
     }
 
-    public Component getToolBarGUI() {
+    public JToolBar getPolyGUI() {
 	JToolBar buttonBox = new JToolBar();
 	buttonBox.setFloatable(false);
+	buttonBox.setMargin(new Insets(0, 1, 0, 1));
+
 	URL url;
 	ImageIcon imageIcon;
 	if (polygonButton == null) {
@@ -1269,23 +1268,8 @@ public class EditableOMPoly extends EditableOMGraphic {
 	    });
 	deleteButton.setEnabled(false);
 	buttonBox.add(deleteButton);
+
 	return buttonBox;
-    }
-
-    protected Component buildGUI(GraphicAttributes graphicAttributes) {
-
-	JPanel palette = new JPanel();
-	palette.setLayout(new BoxLayout(palette, BoxLayout.Y_AXIS));
-	palette.setAlignmentX(Component.CENTER_ALIGNMENT); // LEFT
-	palette.setAlignmentY(Component.CENTER_ALIGNMENT); // BOTTOM
-
-	if (graphicAttributes != null) {
-	    palette.add(graphicAttributes.getGUI());
-	}
-
-	palette.add(getToolBarGUI());
-	
-	return palette;
     }
 
     public java.net.URL getImageURL(String imageName) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMDistance.java,v $
 // $RCSfile: OMDistance.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -174,6 +174,7 @@ public class OMDistance extends OMPoly {
 	    float lat = (float)(g1.getLatitude() + g2.getLatitude()) / 2f;
 	    float lon = (float)(g1.getLongitude() + g2.getLongitude()) / 2f;
 	    mid = new Geo(lat, lon);
+	    break;
 	case LINETYPE_RHUMB:
 	    System.err.println("Rhumb distance calculation not implemented.");
 	case LINETYPE_GREATCIRCLE:
@@ -239,6 +240,9 @@ public class OMDistance extends OMPoly {
 	super.render(g);
 
 	labels.setLinePaint(getLinePaint());
+	labels.setMattingPaint(getMattingPaint());
+	labels.setMatted(isMatted());
+
 	points.setLinePaint(getLinePaint());
 	points.setFillPaint(getLinePaint());
 

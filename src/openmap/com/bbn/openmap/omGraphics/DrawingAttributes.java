@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/06/26 01:05:59 $
+// $Revision: 1.5 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,6 +44,10 @@ import javax.swing.event.*;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.tools.icon.BasicIconPart;
+import com.bbn.openmap.tools.icon.IconPart;
+import com.bbn.openmap.tools.icon.IconPartList;
+import com.bbn.openmap.tools.icon.OMIconFactory;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
@@ -206,8 +210,6 @@ public class DrawingAttributes
      */
     protected PropertyChangeSupport propertyChangeSupport = null;
 
-    /** The organizer for the palette. */
-    protected JPanel palette = null;
     /** Command for line color string adjustments. */
     public final static String LineColorCommand = "LineColor";
     /** Command for fill color string adjustments. */
@@ -223,7 +225,7 @@ public class DrawingAttributes
     private JButton fillColorButton;
     private JButton selectColorButton;
     private JButton mattingColorButton;
-    private JCheckBox mattedCheckBox;
+    private JToggleButton mattedCheckBox;
     private JComboBox lineCombo;
     private JComboBox dashCombo;
 
@@ -428,9 +430,12 @@ public class DrawingAttributes
 	Paint oldPaint = linePaint;
 	linePaint = lPaint;
 
-	if (lPaint instanceof Color && lineColorButton != null) {
- 	    lineColorButton.setBackground((Color)linePaint);
-	    lineColorButton.setForeground(calculateTextColor((Color)linePaint));
+	if (lineColorButton != null) {
+	    lineColorButton.setIcon(getIconForPaint(linePaint, false));
+	}
+
+	if (mattedCheckBox != null) {
+	    mattedCheckBox.setIcon(getMattedIcon());
 	}
 
 	propertyChangeSupport.firePropertyChange("linePaint", 
@@ -456,9 +461,8 @@ public class DrawingAttributes
 	Paint oldPaint = selectPaint;
 	selectPaint = sPaint;
 	
-	if (sPaint instanceof Color && selectColorButton != null) {
- 	    selectColorButton.setBackground((Color)selectPaint);
-	    selectColorButton.setForeground(calculateTextColor((Color)selectPaint));
+	if (selectColorButton != null) {
+ 	    selectColorButton.setIcon(getIconForPaint(selectPaint, false));
 	}
 
 	propertyChangeSupport.firePropertyChange("selectPaint", 
@@ -484,9 +488,8 @@ public class DrawingAttributes
 	Paint oldPaint = fillPaint;
 	fillPaint = fPaint;
 	
-	if (fillPaint instanceof Color && fillColorButton != null) {
- 	    fillColorButton.setBackground((Color)fillPaint);
-	    fillColorButton.setForeground(calculateTextColor((Color)fillPaint));
+	if (fillColorButton != null) {
+ 	    fillColorButton.setIcon(getIconForPaint(fillPaint, true));
 	}
 
 	propertyChangeSupport.firePropertyChange("fillPaint", 
@@ -517,9 +520,12 @@ public class DrawingAttributes
 	Paint oldPaint = mattingPaint;
 	mattingPaint = mPaint;
 	
-	if (mattingPaint instanceof Color && mattingColorButton != null) {
- 	    mattingColorButton.setBackground((Color)mattingPaint);
-	    mattingColorButton.setForeground(calculateTextColor((Color)mattingPaint));
+	if (mattingColorButton != null) {
+ 	    mattingColorButton.setIcon(getIconForPaint(mattingPaint, false));
+	}
+
+	if (mattedCheckBox != null) {
+	    mattedCheckBox.setIcon(getMattedIcon());
 	}
 
 	propertyChangeSupport.firePropertyChange("mattingPaint", 
@@ -811,12 +817,12 @@ public class DrawingAttributes
 	} else if (command == MattingColorCommand && 
 		   mattingPaint instanceof Color) {
 	    tmpPaint = getNewPaint((Component)source, "Choose Matting Color", 
-				   (Color)selectPaint);
+				   (Color)mattingPaint);
 	    if (tmpPaint != null) {
  		setMattingPaint(tmpPaint);
 	    }
 	} else if (command == MattedCommand) {
-	    JCheckBox check = (JCheckBox)e.getSource();
+	    JToggleButton check = (JToggleButton)e.getSource();
 	    setMatted(check.isSelected());
 	} else {
 	    if (Debug.debugging("drawingattributes")) {
@@ -848,83 +854,111 @@ public class DrawingAttributes
 	return newPaint;
     }
 
+    protected JPanel palette = null;
+
     /**
-     * Get the GUI components that control the DrawingAttributes. 
+     * Get the GUI components that control the DrawingAttributes. This
+     * method gets the color and line toolbar and embeds it into a
+     * JPanel.
      */
     public Component getGUI() {
 	if (Debug.debugging("drawingattributes")) {
  	    Debug.output("DrawingAttributes: creating palette.");
 	}
 
+	return getColorAndLineGUI();
+    }
+
+    /**
+     * Gets the JToolBar that contains controls for changing the
+     * colors and line stroke.  You get the toolbar, so any additions
+     * to this tend to be a little permanent.  You might want to wrap
+     * this in a JPanel if you just want to enhance the GUI, and add
+     * stuff to the panel instead.
+     */
+    protected JPanel getColorAndLineGUI() {
+
 	if (palette == null) {
 	    palette = new JPanel();
-	    palette.setLayout(new BoxLayout(palette, BoxLayout.Y_AXIS));
-	    palette.setAlignmentX(Component.CENTER_ALIGNMENT); // LEFT
-	    palette.setAlignmentY(Component.CENTER_ALIGNMENT); // BOTTOM
-	    
-	    JPanel colorPanel = new JPanel();
-	    JPanel linePanel = new JPanel();
+ 	    palette.setBorder(BorderFactory.createEmptyBorder());
 
-	    lineColorButton = new JButton("Edge");
+	    lineColorButton = new JButton(getIconForPaint(getLinePaint(), false));
 	    lineColorButton.setActionCommand(LineColorCommand);
 	    lineColorButton.addActionListener(this);
-	    lineColorButton.setToolTipText("Change Edge Color");
+	    lineColorButton.setToolTipText("Change Edge Color (true/opaque)");
 
-	    fillColorButton = new JButton("Fill");
+	    fillColorButton = new JButton(getIconForPaint(getFillPaint(), true));
 	    fillColorButton.setActionCommand(FillColorCommand);
 	    fillColorButton.addActionListener(this);
-	    fillColorButton.setToolTipText("Change Fill Color");	    
+	    fillColorButton.setToolTipText("Change Fill Color (true/opaque)");	    
 	    
-	    selectColorButton = new JButton("Select");
+	    selectColorButton = new JButton(getIconForPaint(getSelectPaint(), false));
 	    selectColorButton.setActionCommand(SelectColorCommand);
 	    selectColorButton.addActionListener(this);
-	    selectColorButton.setToolTipText("Change Selected Edge Color");
+	    selectColorButton.setToolTipText("Change Selected Edge Color (true/opaque)");
+	    
+	    mattingColorButton = new JButton(getIconForPaint(getMattingPaint(), false));
+	    mattingColorButton.setActionCommand(MattingColorCommand);
+	    mattingColorButton.addActionListener(this);
+	    mattingColorButton.setToolTipText("Change Matted Edge Color (true/opaque)");
 
-	    JPanel colorBox = new JPanel();
-	    colorBox.setLayout(new GridLayout(0, 1));
-	    colorBox.add(lineColorButton);
-	    colorBox.add(fillColorButton);
-	    colorBox.add(selectColorButton);
-	    if (stroke instanceof BasicStroke) {
-		BasicStrokeEditor tmpbse = getBasicStrokeEditor();
-		if (tmpbse != null) {
-		    colorBox.add(tmpbse.getLaunchButton());
-		}
-	    }
-
-	    mattedCheckBox = new JCheckBox("Matted", isMatted());
+	    mattedCheckBox = new JToggleButton(getMattedIcon(), isMatted());
 	    mattedCheckBox.setActionCommand(MattedCommand);
 	    mattedCheckBox.addActionListener(this);
-	    mattedCheckBox.setToolTipText("Add Black Edge");
-	    colorBox.add(mattedCheckBox);
-
-	    colorPanel.add(colorBox);
-
-	    palette.add(colorPanel);
+	    mattedCheckBox.setToolTipText("Enable/Disable Matting on Edge");
+	
+	} else {
+	    resetGUI();
 	}
 
-	resetGUI();
+	palette.removeAll();
+	palette.removeAll();
 
-//  	lineCombo.setSelectedIndex(LineChoiceComboBox.getLineWidthSelection(stroke));
-//  	dashCombo.setSelectedIndex(DashedLineChoiceComboBox.tryToDetermineStroke(stroke));
+	JToolBar colorTB = new JToolBar();
+	colorTB.setFloatable(false);
+	colorTB.setMargin(new Insets(0, 0, 0, 0));
+	colorTB.add(lineColorButton);
+	colorTB.add(fillColorButton);
+	colorTB.add(mattingColorButton);
+
+	JToolBar mattedTB = new JToolBar();
+	mattedTB.setFloatable(false);
+	mattedTB.setMargin(new Insets(0, 0, 0, 0));
+	mattedTB.add(mattedCheckBox);
+
+	palette.add(colorTB);
+	palette.add(mattedTB);
+
+	if (stroke instanceof BasicStroke) {
+	    BasicStrokeEditor tmpbse = getBasicStrokeEditor();
+	    if (tmpbse != null) {
+		palette.add(tmpbse.getLaunchButton());
+	    }
+	}
+	   
 	return palette;
     }
 
+    /**
+     * Updates the color and line stroke control buttons to match the
+     * current settings.
+     */
     public void resetGUI() {
-	if (linePaint instanceof Color && lineColorButton != null) {
- 	    lineColorButton.setBackground((Color)linePaint);
-	    lineColorButton.setForeground(calculateTextColor((Color)linePaint));
+	if (lineColorButton != null) {
+ 	    lineColorButton.setIcon(getIconForPaint(getLinePaint(), false));
 	}
-	if (fillPaint instanceof Color && fillColorButton != null) {
-	    fillColorButton.setBackground((Color)fillPaint);
-	    fillColorButton.setForeground(calculateTextColor((Color)fillPaint));
+	if (fillColorButton != null) {
+  	    fillColorButton.setIcon(getIconForPaint(getFillPaint(), true));
 	}
-	if (selectPaint instanceof Color && selectColorButton != null) {
-	    selectColorButton.setBackground((Color)selectPaint);
-	    selectColorButton.setForeground(calculateTextColor((Color)selectPaint));
+	if (selectColorButton != null) {
+ 	    selectColorButton.setIcon(getIconForPaint(getSelectPaint(), false));
+	}
+	if (mattingColorButton != null) {
+ 	    mattingColorButton.setIcon(getIconForPaint(getMattingPaint(), false));
 	}
 
 	if (mattedCheckBox != null) {
+	    mattedCheckBox.setIcon(getMattedIcon());
 	    mattedCheckBox.setSelected(matted);
 	}
 
@@ -1454,4 +1488,99 @@ public class DrawingAttributes
 	}
 	return paint;
     }
+
+    public ImageIcon getIconForPaint(Paint paint, boolean fill) {
+
+	if (paint == null) paint = Color.black;
+
+	DrawingAttributes da = new DrawingAttributes();
+ 	da.setLinePaint(paint);
+	da.setStroke(new BasicStroke(2));
+
+	DrawingAttributes opaqueDA = new DrawingAttributes();
+	Paint opaqueColor = paint;
+
+	Shape opaqueShape = null;
+	Shape trueShape = null;
+
+	if (paint instanceof Color) {
+	    Color color = (Color)paint;
+	    opaqueColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255);
+
+	    int[] opaqueXPoints = new int[] {20, 90, 90, 20};
+	    int[] opaqueYPoints = new int[] {90, 90, 20, 90};
+	    opaqueShape = new Polygon(opaqueXPoints, opaqueYPoints, opaqueXPoints.length);
+
+	    int[] trueXPoints = new int[] {10, 10, 80, 10};
+	    int[] trueYPoints = new int[] {10, 80, 10, 10};
+	    trueShape = new Polygon(trueXPoints, trueYPoints, trueXPoints.length);
+	} else {
+	     int[] trueXPoints = new int[] {10, 10, 90, 10};
+	     int[] trueYPoints = new int[] {10, 90, 10, 10};
+	     trueShape = new Polygon(trueXPoints, trueYPoints, trueXPoints.length);
+	}
+
+	opaqueDA.setLinePaint(opaqueColor);
+	opaqueDA.setStroke(new BasicStroke(2));
+
+	if (fill) {
+	    da.setFillPaint(paint);
+	    opaqueDA.setFillPaint(opaqueColor);
+	}
+
+	BasicIconPart truePart = new BasicIconPart(trueShape);
+	truePart.setRenderingAttributes(da);
+	IconPartList parts = new IconPartList();
+	parts.add(truePart);
+
+	if (opaqueShape != null) {
+	    BasicIconPart opaquePart = new BasicIconPart(opaqueShape);
+	    opaquePart.setRenderingAttributes(opaqueDA);
+	    parts.add(opaquePart);
+	}
+
+	return OMIconFactory.getIcon(icon_width, icon_height, parts);
+    }
+
+    public ImageIcon getMattedIcon() {
+
+	Paint paint = getMattingPaint();
+
+	DrawingAttributes da = new DrawingAttributes();
+ 	da.setLinePaint(paint);
+	da.setStroke(new BasicStroke(2));
+
+	DrawingAttributes fillda = new DrawingAttributes();
+	Paint lp = getLinePaint();
+ 	fillda.setLinePaint(lp);
+ 	fillda.setFillPaint(lp);
+	da.setStroke(new BasicStroke(2));
+
+	int[] outerXPoints = new int[] {10, 10, 90, 90, 10};
+	int[] outerYPoints = new int[] {10, 90, 90, 10, 10};
+	Shape outerShape = new Polygon(outerXPoints, outerYPoints, outerXPoints.length);
+
+	int[] innerXPoints = new int[] {30, 30, 70, 70, 30};
+	int[] innerYPoints = new int[] {30, 70, 70, 30, 30};
+	Shape innerShape = new Polygon(innerXPoints, innerYPoints, innerXPoints.length);
+
+	int[] fillXPoints = new int[] {10, 10, 50, 50, 30, 30, 70, 70, 50, 50, 90, 90, 10};
+	int[] fillYPoints = new int[] {10, 90, 90, 70, 70, 30, 30, 70, 70, 90, 90, 10, 10};
+	Shape fillShape = new Polygon(fillXPoints, fillYPoints, fillXPoints.length);
+
+	BasicIconPart fillPart = new BasicIconPart(fillShape);
+	fillPart.setRenderingAttributes(fillda);
+	BasicIconPart outerPart = new BasicIconPart(outerShape);
+	outerPart.setRenderingAttributes(da);
+	BasicIconPart innerPart = new BasicIconPart(innerShape);
+	innerPart.setRenderingAttributes(da);
+
+	IconPartList parts = new IconPartList();
+	parts.add(fillPart);
+	parts.add(outerPart);
+	parts.add(innerPart);
+
+	return OMIconFactory.getIcon(icon_width, icon_height, parts);
+    }
+
 }

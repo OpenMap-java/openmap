@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMDistance.java,v $
 // $RCSfile: EditableOMDistance.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -119,6 +119,29 @@ public class EditableOMDistance extends EditableOMPoly {
 	g = new OMDistance(new float[0], OMGraphic.RADIANS, lineType, Length.NM);
 	((OMDistance)g).setDoShapes(true);
 	return g;
+    }
+
+    /**
+     * Since OMDistance objects only calculate the distance along
+     * great circle lines, modify the gui so it doesn't provide the
+     * option to change line type and adds the widgets to modify the
+     * poly.  If graphicAttributes is null, returns widgets to modify
+     * poly.
+     *
+     * @param graphicAttributes the GraphicAttributes to use to get
+     * the GUI widget from to control those parameters for this EOMG.
+     * @return java.awt.Component to use to control parameters for this EOMG.
+     */
+    public Component getGUI(GraphicAttributes graphicAttributes) {
+	Debug.message("eomg", "EditableOMDistance.getGUI");
+	if (graphicAttributes != null) {
+	    JPanel panel = new JPanel();
+	    panel.add(graphicAttributes.getColorAndLineGUI());
+	    panel.add(getPolyGUI());
+	    return panel;
+	} else {
+	    return getPolyGUI();
+	}
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/BasicStrokeEditor.java,v $
 // $RCSfile: BasicStrokeEditor.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/02 14:24:02 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -225,7 +225,7 @@ public class BasicStrokeEditor extends JDialog
     }
 
     public static float[] stringToDashArray(String das) {
-	if (das == NONE || das == null || das.equals("")) {
+	if (das == null || das.equals(NONE) || das.equals("")) {
 	    return null;
 	}
 
@@ -270,7 +270,8 @@ public class BasicStrokeEditor extends JDialog
     public void setBasicStroke(BasicStroke bs) {
 	basicStroke = bs;
 	if (launchButton != null) {
-	    float buttonHeight = (bs == null?11:bs.getLineWidth() + 10f);
+// 	    float buttonHeight = (bs == null?11:bs.getLineWidth() + 10f);
+	    float buttonHeight = 20;
 	    launchButton.setIcon(createIcon(getBasicStroke(), 40, 
 					    (int)buttonHeight, true));
 	}
@@ -285,7 +286,8 @@ public class BasicStrokeEditor extends JDialog
     public JButton getLaunchButton() {
 	if (launchButton == null) {
 	    BasicStroke bs = getBasicStroke();
-	    float buttonHeight = (bs == null?11:bs.getLineWidth() + 10f);
+// 	    float buttonHeight = (bs == null?11:bs.getLineWidth() + 10f);
+	    float buttonHeight = 20;
 	    ImageIcon icon = createIcon(getBasicStroke(), 40, 
 					(int)buttonHeight, true);
 	    launchButton = new JButton(icon);

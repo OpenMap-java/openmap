@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/GraphicAttributes.java,v $
 // $RCSfile: GraphicAttributes.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 23:02:48 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,7 +77,7 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * fill paint and pattern, sold black edge line of width 1.  
      */
     public GraphicAttributes() {
-	setProperties(null, null);
+	super();
     }
 
     /**
@@ -86,7 +86,7 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * @param props the Properties to look in.  
      */
     public GraphicAttributes(Properties props) {
-	setProperties(null, props);
+	super(props);
     }
 
     /**
@@ -97,7 +97,7 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
      * @param props the Properties to look in.  
      */
     public GraphicAttributes(String prefix, Properties props) {
-	setProperties(prefix, props);
+	super(prefix, props);
     }
 
     /**
@@ -225,11 +225,6 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
 	graphic.setRenderType(renderType);
     }
 
-    JComboBox lineTypeList = null;
-    public final static String StraightLineType = "Straight Lines";
-    public final static String GCLineType = "Great Circle Lines";
-    public final static String RhumbLineType = "Rhumb Lines";
-
     /**
      * Get the GUI components that control the
      * GraphicAttributes. Currently doesn't do anything but pass on
@@ -240,45 +235,8 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
 	    Debug.output("GraphicAttributes: creating palette.");
 	}
 
-	boolean needToBuild = false;
-
-	if (super.palette == null) {
-	    needToBuild = true;
-	}
-
-	Component dagui = super.getGUI();
-
-	if (needToBuild) {
-	    
-	    palette = new JPanel();
-	    palette.setLayout(new BoxLayout(palette, BoxLayout.Y_AXIS));
-	    palette.setAlignmentX(Component.CENTER_ALIGNMENT); // LEFT
-	    palette.setAlignmentY(Component.CENTER_ALIGNMENT); // BOTTOM
-	    
-	    String[] lineTypes = new String[3];
-	    
-	    lineTypes[LineType.Straight - 1] = StraightLineType;
-	    lineTypes[LineType.GreatCircle - 1] = GCLineType;
-	    lineTypes[LineType.Rhumb - 1] = RhumbLineType;
-	    
-	    lineTypeList = new JComboBox(lineTypes);
-	    lineTypeList.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-			JComboBox jcb = (JComboBox) e.getSource();
-			String currentChoice = (String)jcb.getSelectedItem();
-			if (currentChoice == GCLineType) {
-			    setLineType(LineType.GreatCircle);
-			} else if (currentChoice == RhumbLineType) {
-			    setLineType(LineType.Rhumb);
-			} else {
-			    setLineType(LineType.Straight);
-			}		    
-		    }
-		});
-	    
-	    palette.add(lineTypeList);
-	    palette.add(dagui);
-	}
+	Component gui = super.getGUI();
+ 	((JComponent)gui).add(getLineTypeList());
 
 	int rt = getRenderType();
 
@@ -294,7 +252,40 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
 	    lineTypeList.setSelectedIndex(currentLineType - 1); // reset to String[]
 	}
 
-	return palette;
+	return gui;
+    }
+
+    protected JComboBox lineTypeList = null;
+    public final static String StraightLineType = "Straight Lines";
+    public final static String GCLineType = "Great Circle Lines";
+    public final static String RhumbLineType = "Rhumb Lines";
+
+    protected JComboBox getLineTypeList() {
+	if (lineTypeList == null) {
+	    String[] lineTypes = new String[3];
+	    
+	    lineTypes[LineType.Straight - 1] = StraightLineType;
+	    lineTypes[LineType.GreatCircle - 1] = GCLineType;
+	    lineTypes[LineType.Rhumb - 1] = RhumbLineType;
+	    
+	    lineTypeList = new JComboBox(lineTypes);
+	    lineTypeList.setBorder(new javax.swing.border.EmptyBorder(0, 1, 0, 1));
+	    lineTypeList.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+			JComboBox jcb = (JComboBox) e.getSource();
+			String currentChoice = (String)jcb.getSelectedItem();
+			if (currentChoice == GCLineType) {
+			    setLineType(LineType.GreatCircle);
+			} else if (currentChoice == RhumbLineType) {
+			    setLineType(LineType.Rhumb);
+			} else {
+			    setLineType(LineType.Straight);
+			}		    
+		    }
+		});
+	}
+	    
+	return lineTypeList;
     }
 
     /**

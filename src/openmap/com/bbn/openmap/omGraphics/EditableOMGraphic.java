@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMGraphic.java,v $
 // $RCSfile: EditableOMGraphic.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/26 01:10:46 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,7 @@ package com.bbn.openmap.omGraphics;
 
 import java.awt.event.MouseEvent;
 import java.awt.*;
+import javax.swing.JToolBar;
 
 import com.bbn.openmap.event.MapMouseAdapter;
 import com.bbn.openmap.layer.util.stateMachine.*;
@@ -396,6 +397,13 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
 			 (firmPaint?"firmPaint)":")"));
 	}
 
+	if (e == null) {
+	    if (lastMouseEvent == null) {
+		return;
+	    }
+	    e = lastMouseEvent;
+	}
+
 	Object obj = e.getSource();
 	if (!(obj instanceof com.bbn.openmap.MapBean)) {
 	    return;
@@ -673,7 +681,8 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * parameters here.  By default, this method returns null, which
      * indicates that you can extend this method to return a Component
      * that controls parameters for the EditableOMGraphic other than
-     * the GraphicAttribute parameters.
+     * the GraphicAttribute parameters.  Should return something like
+     * a toolbar, small.
      * @return Component to control EOMG parameters, without
      * the GraphicAttribute GUI.
      */
@@ -695,21 +704,9 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
      * @return Component to use to control parameters for this EOMG.
      */
     public Component getGUI(GraphicAttributes graphicAttributes) {
-	if (showGUI && graphicAttributes != null) {
-	    javax.swing.Box attributeBox = 
-		javax.swing.Box.createHorizontalBox();
-	    attributeBox.add(graphicAttributes.getGUI());
-	    return attributeBox;
+	if (graphicAttributes != null) {
+	    return graphicAttributes.getGUI();
 	}
-	return null;
-    }
-
-    /**
-     * Return a small GUI, fit for a toolbar, for modifying the
-     * type-specific attributes of an OMGraphic.  Can return a button
-     * to bring up a larger interface in it's own window.
-     */
-    public Component getToolBarGUI() {
 	return null;
     }
 }

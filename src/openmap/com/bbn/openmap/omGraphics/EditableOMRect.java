@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRect.java,v $
 // $RCSfile: EditableOMRect.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,8 +45,7 @@ import javax.swing.JButton;
  * offset point.  Moving the offset point moves the rect, keeping
  * the distance to the center point constant.  
  */
-public class EditableOMRect extends EditableOMGraphic 
-    implements ActionListener {
+public class EditableOMRect extends EditableOMGraphic {
 
     protected GrabPoint gpnw;
     protected GrabPoint gpne;
@@ -589,49 +588,6 @@ public class EditableOMRect extends EditableOMGraphic
 		    }
 		}
 	    }
-	}
-    }
-
-
-    /**
-     * If this EditableOMGraphic has parameters that can be
-     * manipulated that are independent of other EditableOMGraphic
-     * types, then you can provide the widgets to control those
-     * parameters here.  By default, returns the GraphicAttributes GUI
-     * widgets.  If you don't want a GUI to appear when a widget is
-     * being created/edited, then don't call this method from the
-     * EditableOMGraphic implementation, and return a null Component
-     * from getGUI.
-     * @param graphicAttributes the GraphicAttributes to use to get
-     * the GUI widget from to control those parameters for this EOMG.
-     * @return java.awt.Component to use to control parameters for this EOMG.
-     */
-//      public java.awt.Component getGUI(GraphicAttributes graphicAttributes) {
-//  	java.awt.Component gui = super.getGUI(graphicAttributes);
-//  	if (gui != null) {
-//  	    offsetReset = new JButton("Center Rectangle on Offset");
-//  	    offsetReset.addActionListener(this);
-//  	    offsetReset.setActionCommand(OffsetResetCmd);
-//  	    if (rect == null || 
-//  		rect.getRenderType() != OMGraphic.RENDERTYPE_OFFSET) {
-//  		offsetReset.setEnabled(false);
-//  	    }
-//  	    if (gui instanceof java.awt.Container) {
-//  		((java.awt.Container)gui).add(offsetReset);
-//  	    }
-//  	    return gui;
-//  	} else {
-//  	    return null;
-//  	}
-//      }
-
-    JButton offsetReset = null;
-
-    public void actionPerformed(ActionEvent e) {
-	if (e.getActionCommand() == OffsetResetCmd && 
-	    rect != null ||
-	    rect.getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
-	    // Not sure how to do this yet.
 	}
     }
 }

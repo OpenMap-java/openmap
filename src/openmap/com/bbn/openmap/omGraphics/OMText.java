@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/07/28 20:07:40 $
+// $Revision: 1.5 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -162,8 +162,8 @@ public class OMText extends OMGraphic implements Serializable {
      */
     protected int fmHeight = HEIGHT;
 
-    /** If we display a boundary rectangle around/underneath the text */
-    protected boolean showBounds = false;
+//     /** If we display a boundary rectangle around/underneath the text */
+//     protected boolean showBounds = false;
 
     protected boolean useMaxWidthForBounds = false;
 
@@ -543,23 +543,25 @@ public class OMText extends OMGraphic implements Serializable {
     /**
      * Gets the show bounds field.
      *
+     * @deprecated use isMatted() instead.
      * @return true if bounds are shown, false if hidden.
      */
     public boolean getShowBounds() {
-	return showBounds;
+	return isMatted();
     }
 
     /**
      * Sets the show bounds field.  When <code>true</code>, the
      * bounding box of this text is displayed.
      *
+     * @deprecated use setMatted(boolean) instead.
      * @param show true to show, false to hide.
      * @see #setBoundsLineColor
      * @see #setBoundsFillColor
      * @see #setFillColor
      */
     public void setShowBounds(boolean show) {
-	showBounds = show;
+	setMatted(show);
     }
 
     /**
@@ -643,10 +645,11 @@ public class OMText extends OMGraphic implements Serializable {
      * @param color Color
      */
     public void setBoundsLineColor(Paint color) { 
-	boundsLineColor = (color != null) ? color : Color.black;
-	if (!selected) {
-	    boundsDisplayColor = boundsLineColor;
-	}
+	setMattingPaint(color);
+// 	boundsLineColor = (color != null) ? color : Color.black;
+// 	if (!selected) {
+// 	    boundsDisplayColor = boundsLineColor;
+// 	}
     }
 
     /**
@@ -654,7 +657,8 @@ public class OMText extends OMGraphic implements Serializable {
      * @return Color
      */
     public Paint getBoundsLineColor() { 
-	return boundsLineColor;
+	return getMattingPaint();
+// 	return boundsLineColor;
     }
 
     /**
@@ -1039,15 +1043,29 @@ public class OMText extends OMGraphic implements Serializable {
 	    ((Graphics2D)g).rotate(rotationAngle, rx+woffset, pt.y);
 	}
 
-	// display bounding box
-	if (showBounds) {
-	    // This paint stuff allows the border to be a different
-	    // color than the text
-	    Paint textPaint = getLinePaint();
-	    setLinePaint(boundsLineColor);
-	    super.render(g);
-	    setLinePaint(textPaint);
+	if (isMatted()) {
+	    Paint p = getMattingPaint();
+	    setGraphicsColor(g, getMattingPaint());
+	    fill(g);
+	} else if (shouldRenderFill()) {
+	    setGraphicsForFill(g);
+	    fill(g);
+	    
+	    if (textureMask != null && textureMask != fillPaint) {
+		setGraphicsColor(g, textureMask);
+		fill(g);
+	    }
 	}
+
+// 	// display bounding box
+// 	if (showBounds) {
+// 	    // This paint stuff allows the border to be a different
+// 	    // color than the text
+// 	    Paint textPaint = getLinePaint();
+// 	    setLinePaint(boundsLineColor);
+// 	    super.render(g);
+// 	    setLinePaint(textPaint);
+// 	}
 
 	setGraphicsForEdge(g);
 

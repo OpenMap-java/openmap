@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:28:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,6 +30,8 @@ import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 
+import java.awt.Component;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.*;
@@ -91,24 +93,21 @@ public class EditableOMRangeRings extends EditableOMCircle {
     }
 
     /**
-     * If this EditableOMGraphic has parameters that can be
-     * manipulated that are independent of other EditableOMGraphic
-     * types, then you can provide the widgets to control those
-     * parameters here.  By default, returns the GraphicAttributes GUI
-     * widgets.  If you don't want a GUI to appear when a widget is
-     * being created/edited, then don't call this method from the
-     * EditableOMGraphic implementation, and return a null Component
-     * from getGUI.
+     * Modifies the gui to not include line type adjustments, and adds
+     * widgets to control range ring settings.
      * @param graphicAttributes the GraphicAttributes to use to get
      * the GUI widget from to control those parameters for this EOMG.
      * @return java.awt.Component to use to control parameters for this EOMG.
      */
-    public java.awt.Component getGUI(GraphicAttributes graphicAttributes) {
+    public Component getGUI(GraphicAttributes graphicAttributes) {
 	Debug.message("eomg", "EditableOMRangeRings.getGUI");
-	if (showGUI) {
-	    return buildGUI(graphicAttributes);
+	if (graphicAttributes != null) {
+	    JPanel panel = graphicAttributes.getColorAndLineGUI();
+	    panel.add(getRangeRingGUI());
+	    return panel;
+	} else {
+	    return getRangeRingGUI();
 	}
-	return null;
     }
 
     public void updateInterval(int val) {
@@ -116,123 +115,125 @@ public class EditableOMRangeRings extends EditableOMCircle {
 	if (intervalField != null) {
 	    intervalField.setText(Integer.toString(val));
 	}
+	redraw(null, true);
+    }
+
+    public void updateInterval(String intervalStr) {
+	int oldValue = ((OMRangeRings)circle).getInterval();
+	int value = oldValue;
+
+	try {
+	    if (intervalStr.toLowerCase().endsWith("m")) {
+		intervalStr = intervalStr.substring(0, intervalStr.length()-1);
+		value = (int)df.parse(intervalStr).intValue() * 1000000;
+	    }
+	    else if (intervalStr.toLowerCase().endsWith("k")) {
+		intervalStr = intervalStr.substring(0, intervalStr.length()-1);
+		value = df.parse(intervalStr).intValue() * 1000;
+	    }
+	    else if (intervalStr.trim().equals("")) {
+		value = oldValue;
+	    }
+	    else {
+		value = df.parse(intervalStr).intValue();
+	    }
+	} catch (java.text.ParseException e) {
+	    Debug.error("RangeRing interval value not valid: " +
+			intervalStr);
+	} catch (NumberFormatException e) {
+	    Debug.error("RangeRing interval value not valid: " +
+			intervalStr);
+	}
+
+	if (value <= 0) {
+	    value = oldValue;
+	}
+
+	updateInterval(value);
+
     }
 
     protected JTextField intervalField = null;
+    protected JToolBar rrToolBar = null;
     protected transient java.text.DecimalFormat df = new java.text.DecimalFormat();
 
-    protected java.awt.Component buildGUI(GraphicAttributes graphicAttributes) {
-	javax.swing.Box attributeBox = 
-	    javax.swing.Box.createVerticalBox();
-	
-	if (graphicAttributes != null) {
-	    attributeBox.add(graphicAttributes.getGUI());
-	}
-	
-	JPanel intervalPanel = PaletteHelper.createPaletteJPanel("Interval");
-	intervalField = new JTextField(Integer.toString(((OMRangeRings)circle).getInterval()));
-	intervalField.setToolTipText("Value for interval between rings.");
-	intervalField.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    String intervalStr = ((JTextField)(ae.getSource())).getText();
-
-		    int oldValue = ((OMRangeRings)circle).getInterval();
-		    int value = oldValue;
-
-		    try {
-			if (intervalStr.toLowerCase().endsWith("m")) {
-			    intervalStr = intervalStr.substring(0, intervalStr.length()-1);
-			    value = (int)df.parse(intervalStr).intValue() * 1000000;
-			}
-			else if (intervalStr.toLowerCase().endsWith("k")) {
-			    intervalStr = intervalStr.substring(0, intervalStr.length()-1);
-			    value = df.parse(intervalStr).intValue() * 1000;
-			}
-			else if (intervalStr.trim().equals("")) {
-			    value = oldValue;
-			}
-			else {
-			    value = df.parse(intervalStr).intValue();
-			}
-		    } catch (java.text.ParseException e) {
-			System.err.println("OMToolSet.setValue(): invalid value: " +
-					   intervalStr);
-		    } catch (NumberFormatException e) {
-			System.err.println("OMToolSet.setValue(): invalid value: " +
-					   intervalStr);
+    protected JToolBar getRangeRingGUI() {
+	if (rrToolBar == null) {
+	    rrToolBar = new JToolBar();
+	    rrToolBar.setFloatable(false);
+	    rrToolBar.setMargin(new Insets(0, 1, 0, 1));
+		
+	    // 	JPanel intervalPanel = PaletteHelper.createPaletteJPanel("Interval");
+	    intervalField = new JTextField(Integer.toString(((OMRangeRings)circle).getInterval()), 5);
+	    intervalField.setMargin(new Insets(0, 1, 0, 1));
+	    intervalField.setHorizontalAlignment(JTextField.RIGHT);
+	    intervalField.setToolTipText("Value for interval between rings.");
+	    intervalField.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent ae) {
+			updateInterval(((JTextField)(ae.getSource())).getText());
 		    }
+		});
 
-		    if (value <= 0) {
-			value = oldValue;
-		    }
+	    rrToolBar.add(intervalField);
+	
+	    // 	JSlider intervalSlide = new JSlider(
+	    // 	    JSlider.HORIZONTAL, 1/*min*/, 200/*max*/, 
+	    // 	    ((OMRangeRings)circle).getInterval()/*inital*/);
+	    // 	java.util.Hashtable dict = new java.util.Hashtable();
+	    // 	dict.put(new Integer(1), new JLabel("1"));
+	    // 	dict.put(new Integer(50), new JLabel("50"));
+	    // 	dict.put(new Integer(100), new JLabel("100"));
+	    // 	dict.put(new Integer(150), new JLabel("150"));
+	    // 	dict.put(new Integer(200), new JLabel("200"));
+	    // 	intervalSlide.setLabelTable(dict);
+	    // 	intervalSlide.setPaintLabels(true);
+	    // 	intervalSlide.setMajorTickSpacing(10);
+	    // 	intervalSlide.setPaintTicks(true);
+	    // 	intervalSlide.setSnapToTicks(false);
+	    // 	intervalSlide.addChangeListener(new ChangeListener() {
+	    // 		public void stateChanged(ChangeEvent ce) {
+	    // 		    JSlider slider = (JSlider) ce.getSource();
+	    // 		    if (slider.getValueIsAdjusting()) {
+	    // 			((OMRangeRings)circle).setInterval(slider.getValue());
+	    // 		    }
+	    // 		}
+	    // 	    });
 
-		    updateInterval(value);
+	
+	    Length[] available = Length.getAvailable();
+	    String[] unitStrings = new String[available.length + 1];
+	
+	    String current = null;
+	    Length l = ((OMRangeRings)circle).getIntervalUnits();
+	    if (l != null) {
+		current = l.toString();
+	    }	       
+	
+	    int currentIndex = unitStrings.length - 1;
+	
+	    for (int i = 0; i < available.length; i++) {
+		unitStrings[i] = available[i].toString();
+		if (current != null && unitStrings[i].equals(current)) {
+		    currentIndex = i;
 		}
-	    });
-	intervalPanel.add(intervalField);
-	
-// 	JSlider intervalSlide = new JSlider(
-// 	    JSlider.HORIZONTAL, 1/*min*/, 200/*max*/, 
-// 	    ((OMRangeRings)circle).getInterval()/*inital*/);
-// 	java.util.Hashtable dict = new java.util.Hashtable();
-// 	dict.put(new Integer(1), new JLabel("1"));
-// 	dict.put(new Integer(50), new JLabel("50"));
-// 	dict.put(new Integer(100), new JLabel("100"));
-// 	dict.put(new Integer(150), new JLabel("150"));
-// 	dict.put(new Integer(200), new JLabel("200"));
-// 	intervalSlide.setLabelTable(dict);
-// 	intervalSlide.setPaintLabels(true);
-// 	intervalSlide.setMajorTickSpacing(10);
-// 	intervalSlide.setPaintTicks(true);
-// 	intervalSlide.setSnapToTicks(false);
-// 	intervalSlide.addChangeListener(new ChangeListener() {
-// 		public void stateChanged(ChangeEvent ce) {
-// 		    JSlider slider = (JSlider) ce.getSource();
-// 		    if (slider.getValueIsAdjusting()) {
-// 			((OMRangeRings)circle).setInterval(slider.getValue());
-// 		    }
-// 		}
-// 	    });
-// 	intervalPanel.add(intervalSlide);
-
-
-	attributeBox.add(intervalPanel);
-	
-	JPanel unitPanel = PaletteHelper.createPaletteJPanel("Unit Type");
-	
-	Length[] available = Length.getAvailable();
-	
-	String[] unitStrings = new String[available.length + 1];
-	
-	String current = null;
-	Length l = ((OMRangeRings)circle).getIntervalUnits();
-	if (l != null) {
-	    current = l.toString();
-	}	       
-	
-	int currentIndex = unitStrings.length - 1;
-	
-	for (int i = 0; i < available.length; i++) {
-	    unitStrings[i] = available[i].toString();
-	    if (current != null && unitStrings[i].equals(current)) {
-		currentIndex = i;
 	    }
+	    unitStrings[unitStrings.length - 1] = "concentric";
+	
+	    JComboBox unitList = new JComboBox(unitStrings);
+	    unitList.setBorder(new javax.swing.border.EmptyBorder(0, 1, 0, 1));
+
+	    unitList.setSelectedIndex(currentIndex);
+	    unitList.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+			JComboBox jcb = (JComboBox) e.getSource();
+			((OMRangeRings)circle).setIntervalUnits(Length.get((String)jcb.getSelectedItem()));
+			updateInterval(intervalField.getText());
+		    }
+		});
+
+	    rrToolBar.add(unitList);
 	}
-	unitStrings[unitStrings.length - 1] = "None";
-	
-	JComboBox unitList = new JComboBox(unitStrings);
-	unitList.setSelectedIndex(currentIndex);
-	unitList.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    JComboBox jcb = (JComboBox) e.getSource();
-		    ((OMRangeRings)circle).setIntervalUnits(Length.get((String)jcb.getSelectedItem()));
-		    
-		}
-	    });
-	unitPanel.add(unitList);
-	attributeBox.add(unitPanel);
-	
-	return attributeBox;
+	return rrToolBar;
     }
 }
 
