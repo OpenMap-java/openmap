@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingIcon.java,v $
 // $RCSfile: OMScalingIcon.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/02/06 19:01:20 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,6 +95,19 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     }
 
     /**
+     * Create an OMRaster, Lat/Lon placement with an ImageIcon.
+     * Doesn't scale, because baseScale, minScale and maxScale are all
+     * set to the same number (4000000).
+     *
+     * @param centerLat latitude of the top of the image.
+     * @param centerLon longitude of the left side of the image.
+     * @param ii ImageIcon used for the image.
+     */
+    public OMScalingIcon(float centerLat, float centerLon, ImageIcon ii) {
+        this(centerLat, centerLon, ii.getImage());
+    }
+
+    /**
      * Create an OMRaster, Lat/Lon placement with an Image.
      *
      * @param centerLat latitude of the top of the image.
@@ -119,6 +132,21 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
         this.baseScale = baseScale;
     }
   
+    /**
+     * Create an OMRaster, Lat/Lon placement with an ImageIcon.
+     * Doesn't scale, because baseScale, minScale and maxScale are all
+     * set to the same number (4000000).
+     *
+     * @param centerLat latitude of the top of the image.
+     * @param centerLon longitude of the left side of the image.
+     * @param ii ImageIcon used for the image.
+     */
+    public OMScalingIcon(float centerLat, float centerLon, Image image) {
+        this(centerLat, centerLon, 0, 0, image, 4000000);
+        setMaxScale(4000000);
+        setMinScale(4000000);
+    }
+
     ////////////////////////////////////// BYTE PIXELS with COLORTABLE
 
     /**

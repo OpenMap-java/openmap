@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArc.java,v $
 // $RCSfile: OMArc.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.5 $
+// $Date: 2004/02/06 19:01:20 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -461,11 +461,28 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param lon longitude in decimal degrees
      */
     public void setLatLon(float lat, float lon) {
-        LatLonPoint p = new LatLonPoint(lat, lon);
+        setCenter(new LatLonPoint(lat, lon));
+    }
+
+    /**
+     * Set the latitude and longitude of the center point.
+     * This is meaningful only if the rendertype is RENDERTYPE_LATLON
+     * or RENDERTYPE_OFFSET.
+     *
+     * @param p LatLonPoint of center.
+     */
+    public void setCenter(LatLonPoint p) {
         if (p.equals(center))
             return;
         center = p;
         setNeedToRegenerate(true);
+    }
+
+    /**
+     * Get the center LatLonPoint.
+     */
+    public LatLonPoint getCenter() {
+        return center;
     }
 
     /**
