@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Azimuth.java,v $
 // $RCSfile: Azimuth.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.4 $
+// $Date: 2004/02/04 16:05:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1072,20 +1072,39 @@ public abstract class Azimuth extends Proj {
      * @param paint java.awt.Paint to use for the background
      */
     public void drawBackground(Graphics2D g, java.awt.Paint paint) {
+        g.setPaint(paint);
+        drawBackground(g);
+    }
+
+    /**
+     * Assume that the Graphics has been set with the Paint/Color
+     * needed, just render the shape of the background.
+     */
+    public void drawBackground(Graphics g) {
         // if we're zoomed in, just draw background
         if (scale <= 20000000f) {
-            g.setPaint(paint);
             g.fillRect(0, 0, getWidth(), getHeight());
             return;
         }
 
+        Paint oldPaint = null;
+        if (g instanceof Graphics2D) {
+            oldPaint = ((Graphics2D)g).getPaint();
+        } else {
+            oldPaint = g.getColor();
+        }
+
         // space... the final frontier
-        g.setPaint(spaceColor);
+        g.setColor(spaceColor);
         g.fillRect(0, 0, getWidth(), getHeight());
 
         // draw the background color as a circle
         int s = world.x;
-        g.setPaint(paint);
+        if (g instanceof Graphics2D) {
+            ((Graphics2D)g).setPaint(oldPaint);
+        } else {
+            g.setColor((Color)oldPaint);
+        }
 
         g.fillArc(
                 width/2 -s/2, height/2 -s/2,

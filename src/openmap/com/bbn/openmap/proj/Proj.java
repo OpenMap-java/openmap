@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Proj.java,v $
 // $RCSfile: Proj.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/01/26 18:18:14 $
+// $Revision: 1.8 $
+// $Date: 2004/02/04 16:05:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1288,6 +1288,12 @@ public abstract class Proj implements Projection, Cloneable {
      * @param p Paint to use for the background
      */
     abstract public void drawBackground(Graphics2D g, Paint p);
+
+    /**
+     * Assume that the Graphics has been set with the Paint/Color
+     * needed, just render the shape of the background.
+     */
+    abstract public void drawBackground(Graphics g);
 
     /**
      * Get the name string of the projection.
