@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/GraphicAttributes.java,v $
 // $RCSfile: GraphicAttributes.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/03 22:18:41 $
-// $Author: dietrick $
+// $Revision: 1.6 $
+// $Date: 2003/12/29 17:20:04 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -233,9 +233,10 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
     }
 
     /**
-     * Method should be called on this GraphicAttributes object of the
-     * OMGraphic type doesn't support line types, like circles, range
-     * rings, points, etc. to disable the choice from the line menu.
+     * Method should be called on this GraphicAttributes object if the
+     * OMGraphic type doesn't support line types to disable the choice
+     * from the line menu. Circles, range rings, points, etc. are all
+     * examples of shapes that disable linetype choice.
      */
     public void setEnableLineTypeChoice(boolean value) {
 	enableLineTypeChoice = value;

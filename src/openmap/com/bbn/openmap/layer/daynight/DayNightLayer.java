@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/DayNightLayer.java,v $
 // $RCSfile: DayNightLayer.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/07/28 20:10:57 $
-// $Author: dietrick $
+// $Revision: 1.4 $
+// $Date: 2003/12/29 17:20:03 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -121,7 +121,7 @@ public class DayNightLayer extends OMGraphicHandlerLayer
     protected String defaultNighttimeColorString = "7F000000";
     /**
      * Percentage of the distance from the horizon to the brightest
-     * point to start fading to darkness. (0 - .5) 
+     * point to start fading to darkness. Expected to be between 0.0 and 0.5.
      */
     protected float termFade = DEFAULT_TERM_FADE;
     /**

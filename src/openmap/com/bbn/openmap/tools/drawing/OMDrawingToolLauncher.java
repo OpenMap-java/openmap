@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
-// $Revision: 1.11 $ $Date: 2003/12/23 22:55:28 $ $Author: wjeuerle $
+// $Revision: 1.12 $ $Date: 2003/12/29 17:20:06 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -424,8 +424,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements ActionList
      * another object gets added to the MapHandler after the object is
      * a member.  
      *
-     * @param it Iterator to use to go through a list of objects.
-     * Find the ones you need, and hook yourself up.
+     * @param someObj the object being added to the BeanContext
      */
     public void findAndInit(Object someObj) {
 	if (someObj instanceof OMDrawingTool){

@@ -67,7 +67,7 @@ public class WKTNode {
 
     /**
      * Sets the geoWKT.
-     * @param geoWKT The geoWKT to set
+     * @param c The geoWKT to set
      */
     public void adToGeoWKT(char[] c) {
 	this.geoWKT = geoWKT.concat(new String(c));

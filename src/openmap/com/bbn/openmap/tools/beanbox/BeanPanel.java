@@ -280,8 +280,7 @@ public class BeanPanel extends OMToolComponent implements Serializable {
      * namely, the LayerHandler.  If a LayerHandler has already been
      * added, the new LayerHandler will replace it.
      *
-     * @param it Iterator to use to go through the objects added to
-     * the BeanContext.  
+     * @param someObj the object being added to the BeanContext.  
      */
     public void findAndInit(Object someObj) {
 	if(someObj instanceof LayerHandler) {

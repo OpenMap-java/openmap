@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/12/23 20:47:46 $
+// $Revision: 1.8 $
+// $Date: 2003/12/29 17:20:02 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -898,8 +898,7 @@ public class LayersPanel extends OMToolComponent
      * namely, the LayerHandler.  If a LayerHandler has already been
      * added, the new LayerHandler will replace it.
      *
-     * @param it Iterator to use to go through the objects added to
-     * the BeanContext.  
+     * @param someObj the object being added to the BeanContext
      */
     public void findAndInit(Object someObj) {
 	if (someObj instanceof LayerHandler) {
@@ -928,8 +927,7 @@ public class LayersPanel extends OMToolComponent
      * LayerHandler is removed, and it's the current one being
      * listened to, then the layers in the panel will be wiped clean.
      *
-     * @param bcme event that provides an iterator to use for the
-     * removed objects.  
+     * @param someObj the object being removed from the BeanContext
      */
     public void findAndUndo(Object someObj) {
 	if (someObj instanceof LayerHandler) {

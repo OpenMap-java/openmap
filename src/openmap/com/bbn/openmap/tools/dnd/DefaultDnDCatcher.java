@@ -443,18 +443,9 @@ public class DefaultDnDCatcher
     public void removeVetoableChangeListener(String name, java.beans.VetoableChangeListener vcl) {
     }
     /**
-     * <p>
-     * Objects that implement this interface, 
-     * shall fire a java.beans.PropertyChangeEvent, with parameters:
-     *
-     * @param propertyName	"beanContext"
-     * @param oldValue		the previous nesting BeanContext instance, or null
-     * @param newValue		the current nesting BeanContext instance, or null
-     * </p>
-     * <p>
      * A change in the value of the nesting BeanContext property of this
      * BeanContextChild may be vetoed by throwing the appropriate exception.
-     * </p>
+     * @param in_bc the new BeanContext for this object
      */
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
         if (in_bc != null) {

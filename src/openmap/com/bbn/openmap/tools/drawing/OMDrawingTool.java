@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.21 $
-// $Date: 2003/12/23 20:47:49 $
+// $Revision: 1.22 $
+// $Date: 2003/12/29 17:20:06 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -763,9 +763,8 @@ public class OMDrawingTool extends OMToolComponent
     /**
      * Given an OMGraphic, check the EditToolLoaders and wrap it in an
      * EditableOMGraphic.
-     * @param classname the classname of an OMGraphic to create.
-     * @param ga GraphicAttributes needed to initialize the OMGraphic.
-     * @return EdtiableOMGraphic, or null if none of the loaders can
+     * @param g the OMGraphic being wrapped
+     * @return EditableOMGraphic, or null if none of the loaders can
      * figure out what to make.
      */
     public EditableOMGraphic getEditableGraphic(OMGraphic g) {

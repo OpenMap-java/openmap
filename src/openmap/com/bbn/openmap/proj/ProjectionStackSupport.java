@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionStackSupport.java,v $
 // $RCSfile: ProjectionStackSupport.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/29 17:20:05 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -87,7 +87,11 @@ public class ProjectionStackSupport implements java.io.Serializable {
 
     /**
      * Send a status to all registered triggers.
-     * @param proj Projection
+     * @param enableBackProjections there is at least one past
+     * projection in the back cache.  
+     * @param enableForwardProjections there is at least one future
+     * projection in the forward cache.  Used when a past projection
+     * is being used. 
      */
     public void fireStackStatus(boolean enableBackProjections,
 				boolean enableForwardProjections) {

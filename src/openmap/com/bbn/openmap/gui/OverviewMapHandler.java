@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.9 $
-// $Date: 2003/12/23 20:47:46 $
+// $Revision: 1.10 $
+// $Date: 2003/12/29 17:20:02 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -845,7 +845,7 @@ public class OverviewMapHandler extends OMToolComponent
      * be used as the source MapBean.  Every time a PropertyHandler is
      * found, the OverviewMapHandler will reinitialize itself.
      *
-     * @param it Iterator to use to go through the objects.
+     * @param someObj the object being added to the BeanContext
      */
     public void findAndInit(Object someObj) {
 	if (someObj instanceof com.bbn.openmap.MapBean) {	      

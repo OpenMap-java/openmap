@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfConstants.java,v $
 // $RCSfile: RpfConstants.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2003/12/29 17:20:04 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -51,14 +51,17 @@ public interface RpfConstants {
     public static final String CoverageProperty = "coverage";
     /** Tell the RpfLayer which colormodel to use (INDEXED or DIRECT (default)). "colormodel" */
     public static final String ColormodelProperty = "colormodel";
-    /** Tell the RpfLayer how big to make the subframe cache.. "subframeCacheSize" */
+    /** Tell the RpfLayer how big to make the subframe
+     *  cache.. "subframeCacheSize" */
     public static final String CacheSizeProperty = "subframeCacheSize";
     /** Tell the RpfLayer how big to make the subframe
      *  cache.. "auxSubframeCacheSize" */
     public static final String AuxCacheSizeProperty = "auxSubframeCacheSize";
-    /** Tell the RpfLayer to get the detailed subframe attributes for each subframe. */
+    /** Tell the RpfLayer to get the detailed subframe attributes for
+     *  each subframe. */
     public static final String AutoFetchAttributeProperty = "autofetchAttributes";
-    /** The amount of scaling to allow on images, i.e. 2x, 4x.  Default is 4x, which also means 1/4th */
+    /** The amount of scaling to allow on images.  Default is 4x,
+     *  which also means 1/4th */
     public static final String ImageScaleFactorProperty = "imageScaleFactor";
 
     // GUI button commands

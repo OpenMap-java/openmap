@@ -3,7 +3,7 @@ package com.bbn.openmap.proj.coords;
 import com.bbn.openmap.LatLonPoint;
 
 /**
- * Class UPSPoint 
+ * Class UPSPoint.
  *<p> This class encapsulates a UPS point. 
  *<p> UPS is known as (Universal Polar Stereographic).
  *<p> UPS is a coordinate system of Earth's polar regions north of 

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryFile.java,v $
 // $RCSfile: BinaryFile.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/22 16:33:01 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/29 17:20:02 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -196,9 +196,10 @@ public class BinaryFile {
 
     /**
      * Takes a name of a file, and checks to see if it reflects an
-     * entry in a jar file (looks like "jarfile!jarfileentry"). If it
-     * is, it separates the path, and set the inputReader to a
-     * JarInputReader and returns true.  If not, it returns false.  
+     * entry in a jar file. (Check the filename and see if it looks
+     * like "jarfile!jarfileentry".) If it is, it separates the path,
+     * and set the inputReader to a JarInputReader and returns true.
+     * If not, it returns false.
      */
     protected boolean setJarInputReader(String name) throws IOException {
 	

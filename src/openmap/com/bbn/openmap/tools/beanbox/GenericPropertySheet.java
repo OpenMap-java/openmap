@@ -103,9 +103,8 @@ extends JDialog implements PropertyChangeListener {
 
   /** Constructs a property sheet dialog.
    * @param isModal whether to display the propertysheet as a modal dialog.
-   * @param targetBean the bean property that this class handles.
-   * @param x the top left x position to place this sheet at.
-   * @param x the top left y position to place this sheet at.
+   * @param target the bean property that this class handles.
+   * @param bounds the boundaries to use
    * @param pe the parent PropertyEditor of this sheet. An instance of 
    * GenericPropertySheet is invoked from the getCustomEditor method of
    * pe. The parent editor can be null, in which case this class

@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.URL;
 
 /**
+ * A parser for an E00 file.
  * Description of the Class parses an E00 file and provides as result
  * an OMGraphicList containing up to 3 OMGraphicLists:
  * <pre>

@@ -44,7 +44,6 @@ import java.awt.image.*;
  * <A HREF="/resources/classes/Acme/JPM/Encoders/GifEncoder.java">Fetch the software.</A><BR>
  * <A HREF="/resources/classes/Acme.tar.gz">Fetch the entire Acme package.</A>
  * <P>
- * @see ToGif
  */
 public class GifEncoder extends ImageEncoder {
 

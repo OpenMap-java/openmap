@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCacheHandler.java,v $
 // $RCSfile: RpfCacheHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/23 21:16:24 $
+// $Revision: 1.5 $
+// $Date: 2003/12/29 17:20:04 $
 // $Author: wjeuerle $
 //
 // **********************************************************************
@@ -226,8 +226,11 @@ public class RpfCacheHandler {
      * the next request. The subframe entry from the TOC is known and
      * tracked, and if it changes, the frame cache gets tossed and
      * recreated via setScreenSubframes.
-     *
-     * @param rcb the coverage retrieved from the frame provider.
+     * @param ullat NW latitude.
+     * @param ullon NW longitude.
+     * @param lrlat SE latitude.
+     * @param lrlon SE longitude
+     * @param proj CADRG projection to use for zone decisions.
      */
     public void setCache(float ullat, float ullon,
 			 float lrlat, float lrlon,

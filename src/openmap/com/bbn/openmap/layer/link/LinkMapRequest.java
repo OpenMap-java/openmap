@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkMapRequest.java,v $
 // $RCSfile: LinkMapRequest.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/08/14 22:28:46 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2003/12/29 17:20:03 $
+// $Author: wjeuerle $
 // 
 // **********************************************************************
 
@@ -40,7 +40,7 @@ public class LinkMapRequest {
     
     /** The latitude/longitude of the center of the map. */
     protected LatLonPoint center;
-    /** The scale of the map. i.e. 1:<scale> */
+    /** The scale of the map. The value is interpreted as 1:<scale> */
     protected float scale;
     /** A series of LinkBoundingPoly objects making up polygons of
      * interest.  NOTE: These polygons do not cover the poles, or

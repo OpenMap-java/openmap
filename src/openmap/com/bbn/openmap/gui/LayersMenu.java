@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersMenu.java,v $
 // $RCSfile: LayersMenu.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/12/23 20:47:46 $
+// $Revision: 1.6 $
+// $Date: 2003/12/29 17:20:01 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -458,7 +458,7 @@ public class LayersMenu extends AbstractOpenMapMenu
      * up to listen to, and rewire itself to reflect the status of the
      * last version of the LayerHandler/LayersPanel found.
      * @param someObj Object received in the BeanContext or
-     * BeanContextMembershioEvent.  
+     * BeanContextMembershipEvent.  
      */
     public void findAndInit(Object someObj) {
 	if (someObj instanceof LayerHandler) {
@@ -480,8 +480,7 @@ public class LayersMenu extends AbstractOpenMapMenu
      * if a LayerHandler or LayersPanel is being removed, that it is
      * the same object currently being used by this LayersMenu.
      *
-     * @param bcme BeanContextMembershipEvent, which also contains an
-     * Iterator to use to go through the removed objects.  
+     * @param someObj the object being removed from the BeanContext
      */
     public void findAndUndo(Object someObj) {
 	if (someObj instanceof LayerHandler) {

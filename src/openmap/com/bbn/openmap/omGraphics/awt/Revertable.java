@@ -12,3 +12,4 @@ public interface Revertable {
      */
     public void revert();
 }
+
