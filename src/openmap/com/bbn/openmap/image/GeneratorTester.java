@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/GeneratorTester.java,v $
 // $RCSfile: GeneratorTester.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:47:47 $
-// $Author: wjeuerle $
+// $Revision: 1.3 $
+// $Date: 2004/01/24 03:36:22 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -37,7 +37,6 @@ import com.bbn.openmap.event.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.layer.shape.ShapeLayer;
 import com.bbn.openmap.layer.GraticuleLayer;
-import com.bbn.openmap.layer.dted.DTEDLayer;
 
 /**
  * A test class to play around with the image server. 

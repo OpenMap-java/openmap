@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/MapRequestHandler.java,v $
 // $RCSfile: MapRequestHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/11/14 20:23:32 $
+// $Revision: 1.5 $
+// $Date: 2004/01/24 03:36:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -409,7 +409,6 @@ public class MapRequestHandler extends ImageServer
         Proj projection = ImageServerUtils.createOMProjection(requestProperties, defaultProjection);
     
         String contentType = HttpConnection.CONTENT_PLAIN;
-        ;
         String response;
         float panAzmth;
     
