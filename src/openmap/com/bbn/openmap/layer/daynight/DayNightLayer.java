@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/DayNightLayer.java,v $
 // $RCSfile: DayNightLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/20 02:43:50 $
+// $Revision: 1.3 $
+// $Date: 2003/07/28 20:10:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -280,13 +280,22 @@ public class DayNightLayer extends OMGraphicHandlerLayer
     protected OMGraphic createImage(Projection projection) {
 
 	if (currentTime) overlayTime = System.currentTimeMillis();
+
+	if (Debug.debugging("daynight")) {
+	    Debug.output("DayNightLayer: Calculating sun position at time " +
+			 Long.toString(overlayTime));
+	}
+
 	LatLonPoint brightPoint = SunPosition.sunPosition(overlayTime);
+
+        Debug.message("daynight", "DayNightLayer: Calculated sun position");
 
 	// Do a fast and relatively inexpensive calculation of the
 	// terminator.  NOTE: for non-cylindrical projections we don't
 	// create a full-hemisphere circle so that we don't get
 	// flip-rendering problem...
 	if (doPolyTerminator) {
+            Debug.message("daynight", "DayNightLayer:  Creating polygon terminator");
 	    LatLonPoint darkPoint = GreatCircle.spherical_between(
 		    brightPoint.radlat_,
 		    brightPoint.radlon_,
@@ -300,6 +309,7 @@ public class DayNightLayer extends OMGraphicHandlerLayer
 	    circle.setFillPaint(nighttimeColor);
 	    circle.setLinePaint(nighttimeColor);
 	    circle.generate(projection);
+            Debug.message("daynight", "DayNightLayer: Done creating polygon terminator");
 	    return circle;
 	}
 
@@ -409,6 +419,7 @@ public class DayNightLayer extends OMGraphicHandlerLayer
     public void setOverlayTime(long ot) {
 	overlayTime = ot;
 	currentTime = false;
+        doPrepare();
     }
 
     /**
