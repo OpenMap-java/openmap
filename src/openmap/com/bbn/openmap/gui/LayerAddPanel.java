@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerAddPanel.java,v $
 // $RCSfile: LayerAddPanel.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/10/03 00:46:13 $
+// $Revision: 1.6 $
+// $Date: 2003/11/14 20:21:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -91,6 +91,9 @@ public class LayerAddPanel extends OMComponentPanel
      */
     public LayerAddPanel() {
 	super();
+	if (Debug.debugging("addable")) {
+	    Debug.output("LayerAddPanel()");
+	}
 	inspector = new Inspector();
 	inspector.addActionListener((ActionListener)this);
 	setWindowSupport(new WindowSupport(this, "Add Layer"));
@@ -107,15 +110,10 @@ public class LayerAddPanel extends OMComponentPanel
     }
     
     public void createLayerClasses(Layer[] layers) {
-	if (layerClasses != null) {
-	    layerClasses.clear();
-	} else {
-	    layerClasses = new Hashtable();
-	}
+	getLayerClasses().clear();
 
 	for (int i = 0; i < layers.length; i++) {
-	    layerClasses.put(layers[i].getName(), 
-			     layers[i].getClass().getName());
+	    addLayer(layers[i].getName(), layers[i].getClass().getName());
 	}
     }
 
@@ -144,11 +142,7 @@ public class LayerAddPanel extends OMComponentPanel
 
 	prefixTextField = new JTextField(DefaultLayerName, 12);
 
-	if (layerClasses == null) {
-	    layerClasses = getLayerTypes();
-	}
-
-	Object[] layerTypes = layerClasses.keySet().toArray();
+	Object[] layerTypes = getLayerClasses().keySet().toArray();
 
 	if (layerTypes.length == 0) {
 	    add(new JLabel("No Layers available for creation."));
@@ -160,6 +154,48 @@ public class LayerAddPanel extends OMComponentPanel
 	}
 	invalidate();
     }
+
+    public Hashtable getLayerClasses() {
+	if (layerClasses == null) {
+	    layerClasses = new Hashtable();
+	}
+	return layerClasses;
+    }
+
+    public void addLayer(String prettyName, String className) {
+	getLayerClasses().put(prettyName, className);
+    }
+
+    public void setProperties(String prefix, Properties props) {
+	super.setProperties(prefix, props);
+	if (Debug.debugging("addable")) {
+	    Debug.output("LayerAddPanel.setProperties()");
+	}
+	getLayerTypes(props);
+    }
+
+    public Properties getProperties(Properties props) {
+	props = super.getProperties(props);
+
+	int layerNumber = 1;
+	if (layerClasses != null) {
+	    StringBuffer layerList = new StringBuffer();
+
+	    Enumeration keys = layerClasses.keys();
+	    while (keys.hasMoreElements()) {
+		String prettyName = (String)keys.nextElement();
+		String className = (String)layerClasses.get(prettyName);
+
+		String markerName = "l" + (layerNumber++);
+		layerList.append(markerName + " ");
+		props.put(markerName + ".prettyName", prettyName);
+		props.put(markerName + ".class", className);
+	    }
+	    props.put(Environment.OpenMapPrefix+"."+layerTypes, layerList.toString());
+	}
+
+	return props;
+    }
     
     /** 
      * Gets Layer information from PropertyHandler.  These layers are
@@ -170,34 +206,58 @@ public class LayerAddPanel extends OMComponentPanel
      * values. Empty Hashtable if no layers are available.
      */
     protected Hashtable getLayerTypes() {
-	Hashtable layerHash = new Hashtable();
+	return getLayerTypes(null);
+    }
 
-	if (propertyHandler == null) {
-	    return layerHash;
+    /** 
+     * Gets Layer information from the given properties.  These layers
+     * are defined in the application properties under the
+     * openmap.layerTypes property.  If the given properties are null,
+     * then the property handler, if found, will be consulted
+     * directly.
+     *
+     * @return Hashtable of prettyName String keys with classname
+     * values. Empty Hashtable if no layers are available.
+     */
+    protected Hashtable getLayerTypes(Properties props) {
+	Hashtable layerHash = getLayerClasses();
+	layerHash.clear();
+
+	if (props == null) {
+	    if (propertyHandler != null) {
+		props = propertyHandler.getProperties();
+	    } else {
+		return layerHash;
+	    }
 	}
 
-	Properties props = propertyHandler.getProperties();
 	String prefix = Environment.OpenMapPrefix;
+	String addableList = props.getProperty(prefix+"."+layerTypes);
 
-	Vector typeList = PropUtils.parseSpacedMarkers(props.getProperty(prefix+"."+layerTypes));
+	if (Debug.debugging("addable")) {
+	    Debug.output("LayerAddPanel: " + addableList);
+	}
+
+	Vector typeList = PropUtils.parseSpacedMarkers(addableList);
 
 	if (typeList == null) {
 	    return layerHash;
 	}
 
-	// System.out.println("layerTypes:"+typeList+"."); 
 	// debug info: available layers
 	int unNamedCount = 1;
 	for (int i=0; i<typeList.size(); ++i) {
 	    String className = props.getProperty(typeList.get(i)+".class");
-	    //System.out.println("looking for "+className+".");
-	    //  		Object obj = Class.forName(className);
 	    String prettyName = props.getProperty(typeList.get(i)+".prettyName");
+
 	    if (prettyName == null) {
 		prettyName = "Layer " + (unNamedCount++);
 	    }
-	    
+ 
 	    if (className != null) {
+		if (Debug.debugging("addable")) {
+		    Debug.output("  adding "+ className + ", " + className);
+		}
 		layerHash.put(prettyName, className);
 	    }
 	}
@@ -318,12 +378,12 @@ public class LayerAddPanel extends OMComponentPanel
 	if (someObj instanceof PropertyHandler &&
 	    propertyHandler == someObj) {
 	    // do the initializing that need to be done here
-	    Debug.message("layerspanel","LayerAddPanel removing PropertyHandler");
+	    Debug.message("addable","LayerAddPanel removing PropertyHandler");
 	    propertyHandler = null;
 	}
 	if (someObj instanceof LayerHandler && 
 	    someObj == layerHandler) {
-	    Debug.message("layerspanel","LayerAddPanel removing LayerHandler");
+	    Debug.message("addable","LayerAddPanel removing LayerHandler");
 	    layerHandler = null;
 	}
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/10/23 21:01:16 $
+// $Revision: 1.9 $
+// $Date: 2003/11/14 20:21:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -173,6 +173,54 @@ public class WindowSupport extends ListenerSupport
     }
 
     /**
+     * Sets the title of the JInternalFrame/JDialog.
+     */
+    public void setTitle(String tle) {
+	title = tle;
+ 	if (iFrame != null) {
+	    iFrame.setTitle(tle);
+	} else if (dialog != null) {
+	    dialog.setTitle(tle);
+	}
+    }
+
+    public String getTitle() {
+	return title;
+    }
+
+    /**
+     * Sets the content in the JInternalFrame/JDialog.
+     */
+    public void setContent(Component comp) {
+	content = comp;
+ 	if (iFrame != null) {
+	    iFrame.getContentPane().add(content);
+	    iFrame.pack();
+	} else if (dialog != null) {
+	    dialog.getContentPane().removeAll();
+	    dialog.getContentPane().add(content);
+	    dialog.pack();
+	}
+    }
+
+    public Component getContent() {
+	return content;
+    }
+    
+    protected int maxHeight = -1;
+    protected int maxWidth = -1;
+
+    /**
+     * Sets the maximum pixel size of the window.  If you don't care
+     * about a particular dimension, set it to be less than zero and
+     * the natural size of the content will be displayed.
+     */
+    public void setMaxSize(int width, int height) {
+	maxHeight = height;
+	maxWidth = width;
+    }
+
+    /**
      * Display the window, and find out what the natural or revised
      * size and location are for the window.
      */
@@ -249,9 +297,7 @@ public class WindowSupport extends ListenerSupport
 		    /*closable*/ true,
 		    /*maximizable*/ false,
 		    /*iconifiable*/ true);
-		iFrame.getContentPane().add(content);
 		iFrame.setOpaque(true);
-		iFrame.pack();
 		iFrame.addComponentListener(this);
 		
 		JLayeredPane desktop = 
@@ -260,42 +306,58 @@ public class WindowSupport extends ListenerSupport
 		if (desktop != null) {
 		    desktop.remove(iFrame);
 		    desktop.add(iFrame, JLayeredPane.PALETTE_LAYER);
-		    iFrame.show();
 		}
 		
 	    } else { // Working as an application...
-
 		dialog = new JDialog(owner, title);
 		dialog.addComponentListener(this);
-		dialog.getContentPane().removeAll();
-		dialog.getContentPane().add(content);
-		dialog.pack();
-
 	    }
 	}
+
+	setContent(content);
 
 	if (content instanceof ComponentListener) {
 	    addComponentListener((ComponentListener)content);
 	}
 
 	if (iFrame != null) {
-	    if (height <= 0 || width <= 0) {
-		iFrame.setLocation(x, y);
-	    } else {
-		iFrame.setBounds(x, y, width, height);
-	    }
-
 	    iFrame.pack();
+	    checkBounds(iFrame, x, y, width, height);
 	    iFrame.show();
 	    iFrame.toFront();
 	} else if (dialog != null) {
 	    dialog.pack();
-	    if (height <= 0 || width <= 0) {
-		dialog.setLocation(x, y);
-	    } else {
-		dialog.setBounds(x, y, width, height);
-	    } 
+	    checkBounds(dialog, x, y, width, height);
 	    dialog.show();
+	}
+    }
+
+    /**
+     * Checks the component's dimensions against the requested values
+     * and against any maximum limits that may have been set in the
+     * WindowSupport.  Calls setBounds() on the Component.
+     */
+    protected void checkBounds(Component comp, int x, int y, 
+			       int width, int height) {
+	if (comp != null) {
+
+	    if (width <= 0) {
+		width = comp.getWidth();
+	    }
+
+	    if (maxWidth > 0 && width > maxWidth) {
+		width = maxWidth;
+	    }
+
+	    if (height <= 0) {
+		height = comp.getHeight();
+	    }
+
+	    if (maxHeight > 0 && height > maxHeight) {
+		height = maxHeight;
+	    }
+
+	    comp.setBounds(x, y, width, height);
 	}
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/10/10 15:42:52 $
+// $Revision: 1.8 $
+// $Date: 2003/11/14 20:21:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,7 +26,6 @@ package com.bbn.openmap.gui;
 import com.bbn.openmap.*;
 import com.bbn.openmap.event.*;
 import com.bbn.openmap.layer.OverviewMapAreaLayer;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.*;
 import com.bbn.openmap.util.*;
@@ -287,11 +286,11 @@ public class OverviewMapHandler extends OMToolComponent
 	    Debug.message("overview", "OverviewMapHandler:  created without layers!");
 	}
 
-	scaleFactor = LayerUtils.floatFromProperties(props, prefix + ScaleFactorProperty, defaultScaleFactor);
-	minScale = LayerUtils.floatFromProperties(props, prefix + MinScaleProperty, defaultMinScale);
-	backgroundSlave = LayerUtils.booleanFromProperties(props, prefix + BackgroundSlaveProperty, backgroundSlave);
+	scaleFactor = PropUtils.floatFromProperties(props, prefix + ScaleFactorProperty, defaultScaleFactor);
+	minScale = PropUtils.floatFromProperties(props, prefix + MinScaleProperty, defaultMinScale);
+	backgroundSlave = PropUtils.booleanFromProperties(props, prefix + BackgroundSlaveProperty, backgroundSlave);
 
-	setControlSourceMap(LayerUtils.booleanFromProperties(props, prefix + ControlSourceMapProperty, controlSourceMap));
+	setControlSourceMap(PropUtils.booleanFromProperties(props, prefix + ControlSourceMapProperty, controlSourceMap));
 	
 	String statusLayerName = props.getProperty(prefix + StatusLayerProperty + ".class");
 	if (statusLayerName != null) {
@@ -349,7 +348,7 @@ public class OverviewMapHandler extends OMToolComponent
 	    props = new Properties();
 	}
 
-	String prefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
+	String prefix = PropUtils.getScopedPropertyPrefix(this);
 
 	// Build marker list
 	StringBuffer layerList = new StringBuffer();
@@ -371,14 +370,6 @@ public class OverviewMapHandler extends OMToolComponent
 
 	if (statusLayer != null) {
 	    props.put(prefix + StatusLayerProperty, statusLayer.getClass().getName());
-	    Properties slp = statusLayer.getProperties(null);
-	    slp.remove("class");  // don't need the class property;
-	    Enumeration slpe = slp.keys();
-	    while (slpe.hasMoreElements()) {
-		String key =  (String)slpe.nextElement();
-		props.put(key, slp.getProperty(key));
-	    }
-
 	    statusLayer.getProperties(props);
 	}
 	
@@ -923,7 +914,6 @@ public class OverviewMapHandler extends OMToolComponent
     public void propertyChange(PropertyChangeEvent pce) {
 	if (pce.getPropertyName() == MapBean.BackgroundProperty && 
 	    backgroundSlave) {
-
 	    map.setBckgrnd((Paint)pce.getNewValue());
 	}
     }

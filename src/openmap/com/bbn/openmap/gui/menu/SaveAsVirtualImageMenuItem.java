@@ -203,7 +203,8 @@ public class SaveAsVirtualImageMenuItem extends SaveAsImageMenuItem {
 								 mb.getScale()*(float)scaleMod,
 								 width,height);
 		    
-		    tp.drawBackground(bi.createGraphics());
+		    tp.drawBackground((Graphics2D)bi.createGraphics(), 
+				      mb.getBackground());
 		    
 		    for (int i=visibleLayers.length-1;i > -1;i--) {
 			visibleLayers[i].renderDataForProjection(tp,bi.createGraphics());

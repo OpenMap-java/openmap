@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/BackgroundColorMenuItem.java,v $
 // $RCSfile: BackgroundColorMenuItem.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/03/06 02:31:29 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:21:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -58,12 +58,12 @@ public class BackgroundColorMenuItem extends JMenuItem
     public void actionPerformed(ActionEvent ae) {
 	if (map != null) {
 	    Paint newPaint = OMColorChooser.showDialog(this, getText(),
-						       map.getBackgroundColor());
+						       map.getBackground());
 	    if (newPaint != null) {
 
 		String colorString = Integer.toString(((java.awt.Color)newPaint).getRGB());
 		Environment.set(Environment.BackgroundColor, colorString);
-		((com.bbn.openmap.proj.Proj)map.getProjection()).setBackgroundColor((java.awt.Color)newPaint);
+		map.setBackground((java.awt.Color)newPaint);
 		map.setBckgrnd(newPaint);
 	    }
 	}

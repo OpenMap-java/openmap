@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/AbstractOpenMapMenu.java,v $
 // $RCSfile: AbstractOpenMapMenu.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 02:36:21 $
+// $Revision: 1.3 $
+// $Date: 2003/11/14 20:21:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -105,6 +105,9 @@ abstract public class AbstractOpenMapMenu extends JMenu
     public final static String SeparatorProperty = "sep";
     public final static String PrettyNameProperty = Layer.PrettyNameProperty;
     public final static String MnemonicProperty = "mnemonic";
+
+    protected String itemsPropertyContents = null;
+    protected Hashtable itemsProperties = null;
 
     public AbstractOpenMapMenu() {
 	super();        
@@ -245,7 +248,9 @@ abstract public class AbstractOpenMapMenu extends JMenu
 	    setMnemonic((int) mnemonicString.charAt(0));
 	}
 
-	Vector menuItems = PropUtils.parseSpacedMarkers(props.getProperty(realPrefix + ItemsProperty));
+	itemsPropertyContents = props.getProperty(realPrefix + ItemsProperty);
+	Vector menuItems = PropUtils.parseSpacedMarkers(itemsPropertyContents);
+
 	if (!menuItems.isEmpty()) {
 
 	    int nMenuItems = menuItems.size();
@@ -268,6 +273,12 @@ abstract public class AbstractOpenMapMenu extends JMenu
 		    Debug.error("Menu " + getText() + ".setProperties(): Failed to locate property \"" + classProperty + "\"\n  Skipping menu item \"" + itemPrefix + "\"");
 		    continue;
 		}
+
+		if (itemsProperties == null) {
+		    itemsProperties = new Properties();
+		}
+
+		itemsProperties.put(classProperty, className);
 
 		Object obj = ComponentFactory.create(className, itemPrefix, props);
 		if (obj instanceof Component) {
@@ -304,7 +315,18 @@ abstract public class AbstractOpenMapMenu extends JMenu
 	    props = new Properties();
 	}
 
-//  	String prefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
+  	String prefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
+
+	props.put(prefix + PrettyNameProperty, getText());
+	props.put(prefix + MnemonicProperty, "" + ((char)getMnemonic()));
+
+	if (itemsPropertyContents != null) {
+	    props.put(prefix + ItemsProperty, itemsPropertyContents);
+	}
+
+	if (itemsProperties != null) {
+	    props.putAll(itemsProperties);
+	}
 
 	return props;
     }

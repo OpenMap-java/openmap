@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/09/22 23:20:42 $
+// $Revision: 1.9 $
+// $Date: 2003/11/14 20:21:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -162,9 +162,11 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 	PropertyHandler ph = getPropertyHandler();
 	// Make sure the MapBean is created and added to the
 	// MapHandler.
-	getMapBean();
+	MapBean mb = getMapBean();
 	getMapHandler().add(this);
 	ph.createComponents(getMapHandler());
+
+	mb.setBckgrnd(Environment.getCustomBackgroundColor());
     }
 
     /**
@@ -391,7 +393,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * and border to the values given.
      */
     public static MapBean createMapBean(Projection proj, Border border) {
-	MapBean mapBeano = new BufferedLayerMapBean();
+ 	MapBean mapBeano = new BufferedLayerMapBean();
 	mapBeano.setBorder(border);
 	mapBeano.setProjection(proj);
 	mapBeano.setPreferredSize(new Dimension(proj.getWidth(), proj.getHeight()));

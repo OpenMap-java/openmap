@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMControlPanel.java,v $
 // $RCSfile: OMControlPanel.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/04 14:34:26 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 20:21:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,12 +63,17 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
 	overviewMap.setUseAsTool(false);
 	overviewMap.setPreferredSize(new Dimension(100, 100));
 	overviewMap.setBorder(BorderFactory.createRaisedBevelBorder());
+	overviewMap.setPropertyPrefix("OverviewMapHandler");
 	children.add(overviewMap);
 
 	NavigatePanel navPanel = new NavigatePanel();
+	navPanel.setPropertyPrefix("NavigatePanel");
 	ZoomPanel zoomPanel = new ZoomPanel();
+	zoomPanel.setPropertyPrefix("ZoomPanel");
 	ProjectionStackTool projStack = new ProjectionStackTool();
+	projStack.setPropertyPrefix("ProjectionStackTool");
 	ScaleTextPanel scalePanel = new ScaleTextPanel();
+	scalePanel.setPropertyPrefix("ScaleTextPanel");
 	scalePanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
 	JPanel navBoxRN = new JPanel();
@@ -96,6 +101,7 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
 	add(navBox);
 
 	LayersPanel layersPanel = new LayersPanel();
+	layersPanel.setPropertyPrefix("LayersPanel");
 	layersPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
 	children.add(layersPanel);
 	add(layersPanel);
@@ -105,7 +111,8 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
     public void setProperties(String prefix, Properties props) {
 	super.setProperties(prefix, props);
 
-	String pl = props.getProperty(PropUtils.getScopedPropertyPrefix(prefix) + PreferredLocationProperty);
+	prefix = PropUtils.getScopedPropertyPrefix(prefix);
+	String pl = props.getProperty(prefix + PreferredLocationProperty);
 	if (pl != null) {
 	    setPreferredLocation(pl);
 	}
@@ -114,7 +121,11 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
 	while (it.hasNext()) {
 	    Object obj = it.next();
 	    if (obj instanceof PropertyConsumer) {
-		((PropertyConsumer)obj).setProperties(prefix, props);
+		// Each property prefix will be set with the marker
+		// name for the OMControlPanel plus the class name
+		// already set as property prefix in the constructor.
+		String newPrefix = prefix + ((PropertyConsumer)obj).getPropertyPrefix();
+		((PropertyConsumer)obj).setProperties(newPrefix, props);
 	    }
 	}
     }
@@ -134,7 +145,6 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
 	}
 	return props;
     }
-
 
     public Properties getPropertyInfo(Properties props) {
 	props = super.getPropertyInfo(props);
