@@ -1,0 +1,321 @@
+<!--
+
+Frequently Asked Questions for the OpenMap system.
+-->
+
+<!doctype linuxdoc system>
+
+<article>
+
+<title>OpenMap FAQ
+<author>BBN Technologies
+<date>8 February 2000
+<abstract>
+This FAQ contains questions and answers about the OpenMap system.
+</abstract>
+
+
+<toc>
+
+<sect>General questions
+
+<sect1>Why is everything copyrighted by BBN if this is GTE?
+<p>
+BBN was bought by GTE, but BBN is still the legal entity under which we 
+operate. You can see a history of BBN at 
+<tt><htmlurl url="http://www.bbn.com"></tt>
+(actually at <tt><htmlurl
+url="http://www.bbn.com/roles/researcher/timeline/"></tt>) where
+you'll see that we helped build the ARPANET which eventually became
+the Internet.
+
+<sect1>Why is BBN Technologies releasing OpenMap as open source?
+<p>
+The OpenMap group is in the part of BBN that does contract R&amp;D
+work. We don't consider ourselves a product development group. We felt
+that the best thing we could do with OpenMap was release the sources,
+invite other people to help make it better, and benefit some of the
+Open GIS Consortium testbed efforts at the same time.  We are, of
+course, also available to provide you with OpenMap help or any other
+distributed systems software R&amp;D. If you want to learn more,
+contact us at <tt><htmlurl url="mailto:openmap@bbn.com"
+name="openmap@bbn.com"></tt> or browse our web site.
+
+<sect1>What's that funny-shaped thing in the Logo?
+<p>
+That's Antarctica. The "open" continent. Home of the penguin, and we
+do a lot of our work on Linux systems. Not to mention that
+Antarctica's kind of a cool place.
+
+
+
+
+
+<sect>OpenMap Description
+<p>
+High-level functionality-type questions.
+
+<sect1>How can I put my data on a map?
+<sect1>How can I select, modify, or query graphics?
+<sect1>What are palettes?
+<sect1>Flexibility of the layer interface
+
+<sect>Hardware and Development Environment Requirements
+What do you need to run and develop with OpenMap?
+
+<sect1>What systems have you tested OpenMap on?
+<sect1>What JDK issues are there?
+<sect1>What GUI builders have you worked with?
+<sect1>What potential problems are there with...
+
+<sect>About the OpenMap Package
+<sect1> What does the OpenMap package contain?
+<sect1> Where should I start if I'm a novice user?
+<sect1> Where should I start if I'm a toolkit developer?
+<sect1> What does OpenMap's architecture look like?
+
+<sect>Using/Building OpenMap
+<sect1> How can I compile and run on Windows?
+<sect1> How can I compile and run on Unix?
+<sect1> What flavors of Unix do you work with?
+<sect1> How can I compile and run on a Macintosh?
+<sect1> How can I generate the Javadoc documentation?
+<sect1>Do you have any suggestions for debugging my layer/application
+with OpenMap?
+<p>
+As of writing this, most of us haven't yet come across a good Java
+debugger.  But <htmlurl url="http://www.cygnus.com/" name="Cygnus"> is
+working on a Java front end to gdb, the GNU debugger.
+<p>
+Most of our debugging is done with the Java equivalent of printfs,
+(System.out.printlns), at crucial places in the code.  And we
+sometimes use the classes <tt><htmlurl
+url="./api/com/bbn/openmap/util/Debug.html"
+name="com.bbn.openmap.util.Debug"></tt> and <tt><htmlurl
+url="./api/com/bbn/openmap/util/Assert.html"
+name="com.bbn.openmap.util.Assert"></tt> to leave permanent (but not
+necessary visible) checks throughout the code.
+<p>
+To use the Debug class, you must first initialize it with one of the
+<tt/Debug.init()/ methods.  (Note: the OpenMap Viewer application does
+this already, so if you're debugging your own layer within this
+application, you don't need to take this step).  Your layer code
+should have statements like this:
+<verb>
+	if (Debug.debugging("debugMyLayer")) {
+	    System.out.println("about to do something daring...");
+	}
+</verb>
+<p>
+Once you're ready to run and debug your layer, you should launch the
+Java VM with the flag `-Ddebug.debugMyLayer'.  Assuming your CLASSPATH
+is set up properly to point to your layer code, this becomes:
+<verb>
+	/usr/local/openmap/bin/openmap -Ddebug.debugMyLayer -x $CLASSPATH
+</verb>
+
+<sect>Components
+<sect1> What is the MapBean?
+<sect1> What projections are available?
+<sect1> What does the InformationDelegator do?
+<sect1> What do Listeners do?
+<sect1> What are MouseModes?
+
+<sect>Layers
+<sect1> How can I put my data on a map?
+<sect1> Cover the concept of data isolation with a layer
+<sect1> How can I manage omGraphics?
+<sect1> Cover projectionChanged tricks
+<sect1> Cover SwingWorkers
+<sect1>I've written my own layer and I want to see it using the
+OpenMap Viewer Application.
+<p>
+First you need to add the appropriate properties references to the
+<tt/openmap.properties/ file in your home directory or in the
+<tt>share/</tt> subdirectory of the OpenMap installation.  Change the
+`openmap.layers' property to something like:
+<verb>
+	# layers to load and show on the map
+	openmap.layers=quake myLayer political graticule
+	# layers that are part of the map on startup
+	openmap.startUpLayers=graticule political myLayer
+</verb>
+Here you've specified that the `myLayer' be part of the list of
+layers, in the second position from the top of the map, right
+underneath the `quake' identifier.  For the `myLayer' identifier, you
+will need to specify at least two other properties:
+<verb>
+	myLayer.class=com.myCompany.projects.MyLayer
+	myLayer.prettyName=My Cool Layer
+</verb>
+The `myLayer.class' property is the full class-name for your layer.
+The `myLayer.prettyName' property is the human-readable name that you
+want to appear in the list of layers.  These properties are passed to
+and processed by the base <tt><htmlurl
+url="./api/com/bbn/openmap/Layer.html" name="Layer"></tt> class via
+<tt/Layer.setProperties()/.  You can provide additional configuration
+strings to the <tt><htmlurl url="../share/openmap.properties"
+name="openmap.properties"></tt> file and override
+<tt/Layer.setProperties()/ in your own layer to process them:
+<verb>
+    // prefix should be `myLayer' for this layer
+    public void setProperties (String prefix, java.util.Properties props) {
+        // Let the Layer process the basic layer properties
+        super.setProperties(prefix, props);
+
+        // now do my stuff
+	String foo = props.getProperty(prefix + ".fooProperty", "defaultFoo");
+	// ...
+    }
+</verb>
+<p>
+After adding your layer to the properties file, you need to launch the
+OpenMap viewer application with the appropriate augmented CLASSPATH
+pointing to your layer code.  Assuming you configured, built, and
+installed the OpenMap package, launch the viewer like this:
+<verb>
+	/usr/local/openmap/bin/openmap -x &lt;classpath_to_your_layer&gt;
+</verb>
+
+<sect1>I've written a layer that is part of the map but sometimes it
+doesn't show its data.
+<p>
+Assuming you're using the LatLon OMGraphics objects to represent your
+graphical data, this situation occurs when you try to render the
+OMGraphics before generating them.  The basic rule of thumb is that
+each time you get a new projection object, (from
+<tt/projectionChanged()/), you need to invoke
+<tt/OMGraphic.generate()/, and then force a <tt/repaint()/ of the map.
+If your layer has worker threads, then you can hold on to the current
+projection to use at any time.  The generation process is critical for
+LatLon OMGraphics because the graphics are projected into XY in order
+to be rendered.
+<p>
+For performance reasons, you may want to design your layer/application
+to work strictly in XY space.  You can do this if you don't intend to
+switch projection types, and if all the LatLon data you want to
+display is static.  For this case you could project all data at
+layer/application initialization and then just rerender the data as
+the user pans and zooms on the map.  The OpenMap toolkit is well
+suited for both dynamic and static data models.
+
+<sect1>Where's the CORBA part of OpenMap?
+<p>
+We'll release that in a future release. Right now we're concentrating
+on getting a version out that's easy to build and easy to work with.
+
+<sect>Data
+Questions about supported data types and problems managing specific types of 
+data.
+
+<sect1>What types of data does OpenMap support?
+<p>
+OpenMap comes with built-in support for <htmlurl
+url="http://www.nima.mil/" name="NIMA"> DCW, VPF, VMAP and
+CADRG, CIB, RPF; OpenMap also has support for <htmlurl
+url="http://www.esri.com/" name="ESRI"> Shapefiles.  OpenMap can
+display both vector and raster geospatial data.  You can use OpenMap
+to develop map layers which can display your own private formats.
+
+<sect1>Can OpenMap display CADRG, CIB, RPF?
+<p>
+Yes, we have code that can display this data.  RPF support is new as
+of OpenMap 3.2.
+
+
+<sect1>What is CADRG, CIB, and RPF?
+<p>
+The first two are data types, the latter is a format. These come from
+the US National Imagery and Mapping Agency <tt><htmlurl
+url="http://www.nima.mil/"></tt> CADRG is Compressed ADRG, a form of
+raster map.  CIB is Controlled Image Base, an imagery product.  RPF is
+Raster Product Format, i.e. the underlying format of CADRG and CIB.
+<tt><htmlurl
+url="http://164.214.2.59:80/publications/specs/index.html"></tt>
+
+
+<sect1> You didn't list this specific data type.  When will you support it?
+<sect1>When adding ESRI shape files to OpenMap I don't see (some/all) of the data.  What's wrong?
+<p>
+The Openmap <htmlurl
+url="api/com/bbn/openmap/layer/shape/ShapeLayer.html"
+name="ShapeLayer"> uses a customized indexing scheme to efficiently
+draw the shape file data.  You'll need to create a spatial index from
+your shape file.  A spatial index is different from a shape index
+(.shx) file.
+<p>
+To generate a spatial index from a "country.shp" file do the following:
+<verb>
+java com.bbn.openmap.layer.shape.SpatialIndex -c country.ssx country.shp
+</verb>
+This creates the Spatial Index file (country.ssx) from the country.shp
+file.  Then you need to change the attribute in the openmap.properties
+file:
+<verb>
+country.spatialIndex=country.ssx
+</verb>
+Be sure to substitute the correct name of your shape file and layer
+for the word 'country' in the examples above.
+
+<sect>Image Server Functionality
+<sect1> How to make your own server.
+<sect1> What image formats are available?
+<sect1> What about the GIF format?  
+
+
+<sect>OpenMap as an Applet
+<p>
+Questions concerning using OpenMap as an Applet.
+
+
+<sect1>Can I run OpenMap as an applet?
+<p>
+Yes.
+
+<sect1>How?
+<p>
+Move the files share/omapplet.html and lib/openmap.jar to a directory
+where they can be served up by an HTTP (web) server.  Then point your
+browser at the omapplet.html file.  You will be prompted to download
+the Java Plug-in if you don't already have it installed.  Once the
+Plug-in is installed, you should see OpenMap load and display.
+
+<sect1>How do I get the Java Plug-in?
+<p>
+It's automatically loaded when the applet is accessed.  If you want to
+get it directly you can get it at 
+<tt><htmlurl url="http://java.sun.com/products/plugin/"></tt>.
+
+<sect1>How do I create my own Java Plug-in applet html files?
+<p>
+Create an html file with code for an applet as documented in almost
+any Java book.  Java in a Nutshell by David Flanagan (O'Reilly) has a
+good section for instance.  Then use Sun's HTML Converter to convert
+that file to an applet file that will automatically load the Java
+Plug-in.  You can find a pointer to the converter at
+<tt><htmlurl url="http://java.sun.com/products/plugin/"></tt>.
+
+<sect1>Why don't shape files work in an Applet?
+<p>
+The customer who paid for the Shape file work had specific
+requirements and constraints.  Those were met by using a
+RandomAccessFile implementation of a Shape file reader.  That customer
+was only interested in an OpenMap based application, not an applet.
+Unfortunately, applets do not have access to the file system, and
+RandomAccessFile only works if it has access to a file system.
+<p>
+In order for Shape files to work in an applet there will have to be an
+alternate implementation that can read the shape file via an input
+stream instead.  This would enable OpenMap to instantiate an input
+stream from a file or a URL.  There are no technical roadblocks to
+this sort of implementation.  We do not have a customer who wants to
+pay for that work.  If you're looking for a way to contribute to
+OpenMap this would be a great project.
+
+</article>
+
+
+
+
+
+
