@@ -1,14 +1,33 @@
 $Source: /cvs/distapps/openmap/README,v $
 $RCSfile: README,v $
-$Revision: 1.1 $
-$Date: 1998/11/12 16:12:55 $
-$Author: aculline $
+$Revision: 1.2 $
+$Date: 1998/11/12 17:10:26 $
+$Author: adoyle $
 
 
-OpenMap
+OpenMap(tm)
 
 What is it?
 -----------
+OpenMap is a Java Beans based toolkit for building applications and
+applets needing geographic information.  Using OpenMap components, you
+can access data from legacy applications, in-place, in a distributed
+setting. At its core, OpenMap is a set of Swing components that
+understand geographic coordinates. These components help you show map
+data, and help you handle user input events to manipulate that data.
+
+What are the license terms for using OpenMap?
+---------------------------------------------
+Take a look at the file called LICENSE in the distribution. We want
+you to be able to do pretty much anything with it as long as we get
+credit for our work and as long as you offer your changes to us so we
+can possibly add them to the standard version we distribute.
+
+OpenMap is a trademark
+----------------------
+OpenMap is a trademark of BBN Corporation. Just so you're not
+confused, BBN Corporation is the legal entity, but we're actually part
+of GTE Internetworking.
 
 Downloads and home page
 -----------------------
