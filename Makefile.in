@@ -17,9 +17,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.10 $
-# $Date: 1998/11/12 14:13:34 $
-# $Author: aculline $
+# $Revision: 1.11 $
+# $Date: 1998/11/12 16:42:16 $
+# $Author: tmitchel $
 # 
 # **********************************************************************
 
@@ -35,31 +35,61 @@ include ${TOP}/openmap.mk
 #####################
 # variable settings #
 #####################
+Core.pkgs =	com.bbn.openmap \
+		com.bbn.openmap.event \
+		com.bbn.openmap.gui \
+		com.bbn.openmap.omGraphics \
+		com.bbn.openmap.proj \
+		com.bbn.openmap.util
 
-Core.jar =	com/bbn/openmap/*.class \
-		com/bbn/openmap/*.gif \
+Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/event/*.class \
 		com/bbn/openmap/gui/*.class \
-		com/bbn/openmap/gui/*.gif \
 		com/bbn/openmap/omGraphics/*.class \
 		com/bbn/openmap/proj/*.class \
 		com/bbn/openmap/util/*.class
 
-Layer.jar =	com/bbn/openmap/layer/*.class \
+Core.extra =	com/bbn/openmap/*.gif \
+		com/bbn/openmap/gui/*.gif
+
+Core.jar =	${Core.classes} ${Core.extra}
+
+Layer.pkgs =	com.bbn.openmap.layer \
+		com.bbn.openmap.layer.dted \
+		com.bbn.openmap.layer.nitf \
+		com.bbn.openmap.layer.pluginLayer \
+		com.bbn.openmap.layer.plotLayer \
+		com.bbn.openmap.layer.rpf \
+		com.bbn.openmap.layer.shape \
+		com.bbn.openmap.layer.util.cacheHandler \
+		com.bbn.openmap.layer.util.html \
+		com.bbn.openmap.layer.util.http \
+		com.bbn.openmap.layer.util.stateMachine \
+		com.bbn.openmap.layer.vpf \
+#		com.bbn.openmap.layer.terrain \
+
+
+Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/dted/*.class \
 		com/bbn/openmap/layer/nitf/*.class \
 		com/bbn/openmap/layer/pluginLayer/*.class \
 		com/bbn/openmap/layer/plotLayer/*.class \
 		com/bbn/openmap/layer/rpf/*.class \
 		com/bbn/openmap/layer/shape/*.class \
-#		com/bbn/openmap/layer/terrain/*.class \
 		com/bbn/openmap/layer/util/cacheHandler/*.class \
 		com/bbn/openmap/layer/util/html/*.class \
 		com/bbn/openmap/layer/util/http/*.class \
 		com/bbn/openmap/layer/util/stateMachine/*.class \
-		com/bbn/openmap/layer/vpf/*.class
+		com/bbn/openmap/layer/vpf/*.class \
+#		com/bbn/openmap/layer/terrain/*.class \
 
-App.jar = 	com/bbn/openmap/app/*.class
+Layer.jar =	${Layer.classes}
+
+App.pkgs = 	com.bbn.openmap.app
+
+App.classes = 	com/bbn/openmap/app/*.class
+
+App.jar = 	${App.classes}
 
 
 #########
@@ -103,6 +133,24 @@ GNUmakefile:
 gmakefile:
 	perl rename.pl GNUmakefile gmakefile
 
+#################
+# documentation #
+#################
+
+JAVADOC.dir = doc/api
+
+docs distclean::
+	${RM} ${JAVADOC.dir}/*.html
+
+docs:: javadocs
+
+${JAVADOC.dir}:
+	${INSTALL.dir} $@
+
+javadocs:	${JAVADOC.dir}
+	javadoc -J-ms64m -J-mx64m -version -d ${JAVADOC.dir} \
+		${Core.pkgs} ${App.pkgs} ${Layer.pkgs}
+
 ################
 # installation #
 ################
@@ -131,3 +179,6 @@ SHARE_DATA = ${DATA_FILES:%=share/%}
 
 install::	${datadir}
 	${INSTALL.data} ${SHARE_DATA} ${datadir}
+
+install-docs:
+	echo "Not Yet Implemented."
