@@ -18,9 +18,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.14 $
-# $Date: 1998/05/22 13:31:29 $
-# $Author: aculline $
+# $Revision: 1.15 $
+# $Date: 1998/06/01 23:30:14 $
+# $Author: tmitchel $
 # 
 # **********************************************************************
 #
@@ -179,7 +179,7 @@ jar cvfm0 ../mapBean.jar com/bbn/openmap/Manifest.txt `find com \( -name *.class
 ## Add javadoc documentation
 #
 mkdir -p ../docs/api
-java -ms40m -mx80m sun.tools.javadoc.Main -version -d ../docs/api $DocPackages
+javadoc -J-ms64m -J-mx64m -version -d ../docs/api $DocPackages
 cp -r $JDK/docs/api/images ../docs/api/
 
 #
