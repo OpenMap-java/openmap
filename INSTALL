@@ -1,8 +1,8 @@
 -*- Mode: text-mode -*-
 $Source: /cvs/distapps/openmap/INSTALL,v $
 $RCSfile: INSTALL,v $
-$Revision: 1.8 $
-$Date: 1998/12/16 19:10:45 $
+$Revision: 1.9 $
+$Date: 1999/01/20 16:38:31 $
 $Author: aculline $
 
 Prerequisites
@@ -10,11 +10,12 @@ Prerequisites
 
    You need to have a Java compiler and VM to build and run the
    OpenMap software.  You also need the Java Foundation Classes (JFC)
-   installed.  The JFC is available from Sun at
+   installed.  The JFC "Swing Set" is available from Sun at
    http://java.sun.com/products/jfc/ for free download.
-
-   If you downloaded a binary release of OpenMap, go to the `Test
-   Drive' section.
+   
+   NOTE: OpenMap will build and run out-of-the-box with Java 2.
+   Additional arguments to configure are required to build with
+   JDK1.1/Swing1.1  See below for details.
 
 Basic Installation
 ==================
@@ -56,10 +57,13 @@ The simplest way to compile this package is:
   3. Type `make install' to install the programs and any data files
      and documentation.
 
-  4. If you want documentation, type `make docs', and
-     `make install-docs'.
+  4. If you want documentation, type `make docs'.  NOTE: javadoc
+     documentation is now pre-built.  This step is unnecessary unless
+     you want to rebuild the javadoc documentation.
 
-  5. You can remove the program binaries and object files from the
+  5. To install documentation type `make install-docs'.
+
+  6. You can remove the program binaries and object files from the
      source code directory by typing `make clean'.  To also remove the
      files that `configure' created (so you can compile the package
      for a different kind of computer), type `make distclean'.
@@ -67,9 +71,29 @@ The simplest way to compile this package is:
 Test Drive
 ==========
 
-   You can test OpenMap by running the default `openmap' viewer
-   script provided in the bin/ subdirectory of the installation.
-   `cd' to the bin/ directory and type `./openmap'.
+   You can test OpenMap by running the various launch scripts provided
+   in the bin/ and the com/bbn/openmap/examples directories.
+
+  SimpleMap Examples
+  ------------------
+
+    Run the SimpleMap examples by running the `simple' and `simple2'
+    launch scripts.
+
+  HelloWorld Example
+  ------------------
+
+    Run the HelloWorld example by running the `hello-world' launch
+    script.
+
+  OpenMap Viewer
+  --------------
+
+    This is the main OpenMap example application.  You can run it by
+    running the `openmap' launch script.  You can change the startup
+    behavior of this application by editing its properties file.  Copy
+    the openmap.properties file from the share/ directory to your home
+    directory, and change the settings to your liking.
 
 Detailed Configuration
 ======================
@@ -101,6 +125,17 @@ Detailed Configuration
     script will verify that the necessary JDK executables are
     available from /opt/jdev or /opt/jdev/bin.
 
+  Specifying a CLASSPATH
+  ----------------------
+
+    Summary:
+
+      ./configure --with-classpath=$CLASSPATH
+
+    Use this option to specify a CLASSPATH with which to build and run
+    OpenMap.  You need to use this option if you plan to build OpenMap
+    with JDK1.1/Swing1.1
+
   Overriding Particular Executables
   ---------------------------------
 
@@ -131,21 +166,25 @@ Detailed Configuration
 
       JAVAC=/bin/jc JAVA=/bin/jav JAVADOC=/bin/jd JAR=/bin/can ./configure
 
-  Java Foundation Classes
-  -----------------------
+  Java 2 and JFC "Swing" Issues
+  -----------------------------
 
-    Summary:
+    OpenMap builds and runs without any special arguments if you're
+    using the Java 2 platform.  This is because the JFC classes are
+    included as part of the core platform.
+    
+    You can build OpenMap with JDK 1.1.X and Swing 1.1, but you need
+    to explicitly point the configure script at the Swing JAR file
+    (either swing.jar or swingall.jar will do).  For example:
 
-      ./configure --with-swing=/usr/local/java/swing/swing.jar
+    	./configure --with-classpath=/usr/local/swing-1.1/swingall.jar
 
-    The configure script looks for a swing jar file in your
-    CLASSPATH.  If it finds an entry with the string 'swing', ending
-    in '.jar' it assumes that is the swing jar file, and uses it.  If
-    you need to override this searching method to tell configure where
-    to find the swing jar file you can use the '--with-swing' option.
-    If you have installed swing as /usr/local/java/swing you could
-    enter "./configure --with-swing=/usr/local/java/swing/swing.jar".
+    See above for more information about the `--with-classpath'
+    option.
 
-    OpenMap is known to run with swing 1.0.3 or later.  You can
-    use swing.jar or swingall.jar.  OpenMap only uses classes included
-    in swing.jar.
+    You can also build OpenMap with JDK 1.1.X and Swing 1.0.3, but you
+    will need to rename all the swing import statements in the OpenMap
+    code from `javax.swing' to the old `com.sun.java.swing' package.
+    You can hack up a sed script on your own or try out the Sun
+    package renamer utility:
+    http://java.sun.com/products/jfc/PackageRenamer/
