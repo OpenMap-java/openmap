@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayerPane.java,v $
 // $RCSfile: LayerPane.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/19 20:36:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -106,9 +106,13 @@ public class LayerPane extends JPanel
     public LayerPane(Layer layer, LayerHandler layerHandler, ButtonGroup bg) {
 	super();
 
-	setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-	setAlignmentX(LEFT_ALIGNMENT);
-	setAlignmentY(TOP_ALIGNMENT);
+	GridBagLayout gridbag = new GridBagLayout();
+	GridBagConstraints c = new GridBagConstraints();
+	setLayout(gridbag);
+
+// 	setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+// 	setAlignmentX(LEFT_ALIGNMENT);
+// 	setAlignmentY(TOP_ALIGNMENT);
 	//setBorder(new LineBorder(Color.black));
 
 	this.layer = layer;
@@ -116,7 +120,6 @@ public class LayerPane extends JPanel
 
 	setLayerHandler(layerHandler);
 	onoffButton = new JCheckBox(layerOffIcon);
-	onoffButton.setMargin(new Insets(0,0,0,0));
 	onoffButton.setSelectedIcon(layerOnIcon);
 	onoffButton.setActionCommand(toggleLayerCmd);
 	onoffButton.addActionListener(this);
@@ -134,40 +137,87 @@ public class LayerPane extends JPanel
 
 	paletteButton = new JButton(paletteIcon);
 	paletteButton.setBorderPainted(false);
-	paletteButton.setToolTipText("Display tools for " 
-				     + layer.getName() + " layer");
+	if (layer.getGUI() == null) {
+	    paletteButton.setEnabled(false);
+	    paletteButton.setToolTipText("No tools available for " 
+					 + layer.getName() + " layer");
+	} else {
+	    paletteButton.setToolTipText("Display tools for " 
+					 + layer.getName() + " layer");
+	}
 
-	paletteButton.setMargin(new Insets(0,0,0,0));
 	paletteButton.setActionCommand(showPaletteCmd);
 	paletteButton.addActionListener(this);
 
 	layerName = new JToggleButton(layer.getName());
 	layerName.setBorderPainted(false);
+	layerName.addActionListener(this);
 	offColor = layerName.getBackground();
 	layerName.setToolTipText("Click to select layer");
+	layerName.setHorizontalAlignment(SwingConstants.LEFT);
   	bg.add(layerName);
 
+	c.gridy = 0;
+	c.gridx = GridBagConstraints.RELATIVE;
+	c.anchor = GridBagConstraints.WEST;
+	gridbag.setConstraints(onoffButton, c);
 	add(onoffButton);
+	gridbag.setConstraints(paletteButton, c);
 	add(paletteButton);
-	if (layer.getGUI() == null) {
-	    paletteButton.setEnabled(false);
-	}
 
 	if (Debug.debugging("bllp")) {
 	    backgroundButton = new JCheckBox();
 	    backgroundButton.setToolTipText("Set As Background Layer");
 	    backgroundButton.setSelected(layer.getAddAsBackground());
 	    backgroundButton.addActionListener(this);
+
+	    gridbag.setConstraints(backgroundButton, c);
 	    add(backgroundButton);
 	}
 
+	c.weightx = 1;
+	c.fill = GridBagConstraints.HORIZONTAL;
+	c.insets = new Insets(1, 2, 1, 15);
+	gridbag.setConstraints(layerName, c);
 	add(layerName);
+    }
+
+    protected LayerPane(String title) {
+	super();
+	// prevent null pointers somewhere...
+	this.layer = com.bbn.openmap.layer.SinkLayer.getSharedInstance();
+	GridBagLayout gridbag = new GridBagLayout();
+	GridBagConstraints c = new GridBagConstraints();
+	setLayout(gridbag);
+
+	JSeparator sep = new JSeparator();
+	sep.setToolTipText(title);
+
+	c.anchor = GridBagConstraints.WEST;
+	c.weightx = 1;
+	c.fill = GridBagConstraints.HORIZONTAL;
+	gridbag.setConstraints(sep, c);
+	add(sep);
     }
   
     public void setLayerHandler(LayerHandler in_layerHandler) {
 	layerHandler = in_layerHandler;
     }
 
+    /**
+     * Same as cleanup, except the layer name toggle button gets
+     * removed from the given button group.
+     */
+    public void cleanup(ButtonGroup bg) {
+	if (bg != null) {
+	    bg.remove(layerName);
+	}
+	cleanup();
+    }
+
+    /**
+     * LayerPane disconnects from listeners, nulls out components.
+     */
     public void cleanup() {
 	if (layer != null) {
 	    this.layer.removeComponentListener(this);
@@ -224,11 +274,21 @@ public class LayerPane extends JPanel
     public boolean isSelected() { 
 	return layerName.isSelected(); 
     }
+
     /**
      *  Highlights/unhighlights the layerName toggle button
      */
     public void setSelected(boolean select) {
 	layerName.setSelected(select);
+
+	String command = select?LayersPanel.LayerSelectedCmd:LayersPanel.LayerDeselectedCmd;
+
+	if (Debug.debugging("layercontrol")) {
+	    Debug.output("LayerPane for " + getLayer().getName() +
+			 " " + command + ", firing event");
+	}
+
+	firePropertyChange(command, null, getLayer());
     }
     
     /**
@@ -261,7 +321,6 @@ public class LayerPane extends JPanel
 	layer.hidePalette();
     }
     
-
     /**
      * ActionListener interface.
      * @param e ActionEvent
@@ -269,14 +328,14 @@ public class LayerPane extends JPanel
     public void actionPerformed(java.awt.event.ActionEvent e) {
 
 	if (e.getSource().equals(paletteButton)){
-	    layerName.setSelected(true);
+	    setSelected(true);
 
 	    // This for a JButton control
 	    paletteButton.setIcon(paletteOnIcon);
 	    showPalette();
 
 	} else if (e.getSource().equals(onoffButton)) {
-	    layerName.setSelected(true);
+	    setSelected(true);
 	    // layer is selected, add it to or remove it from map
 	    if (layerHandler != null) {
 		Debug.message("layerspanel","LayerPane|actionPerformed calling layerHandler.turnLayerOn()");
@@ -295,6 +354,8 @@ public class LayerPane extends JPanel
 		Debug.output("LayerPane: Layer " + layer.getName() + 
 			     (layer.getAddAsBackground()?" is background.":" is NOT background"));
 	    }
+	} else if (e.getSource().equals(layerName)) {
+	    setSelected(true);
 	}
     }
 
@@ -363,5 +424,14 @@ public class LayerPane extends JPanel
 	    // Comment next line out for toggle button
 	    paletteButton.setIcon(paletteIcon);
 	}
+    }
+
+    protected static LayerPane backgroundLayerSeparator;
+
+    public static LayerPane getBackgroundLayerSeparator(String title) {
+	if (backgroundLayerSeparator == null) {
+	    backgroundLayerSeparator = new LayerPane(title);
+	}
+	return backgroundLayerSeparator;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMComponentPanel.java,v $
 // $RCSfile: OMComponentPanel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/19 20:36:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,7 +47,7 @@ import com.bbn.openmap.util.Debug;
  * because the java.awt.Component provides them.
  */
 public abstract class OMComponentPanel extends JPanel
-    implements PropertyConsumer, BeanContextChild, BeanContextMembershipListener {
+    implements PropertyConsumer, BeanContextChild, BeanContextMembershipListener, LightMapHandlerChild {
 
     protected OMComponentPanel() {
 	super();
