@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.60 $  $Date: 2001/10/30 16:14:21 $
+# $Revision: 1.61 $  $Date: 2001/11/02 17:33:45 $
 # **********************************************************************
 
 
@@ -230,7 +230,7 @@ ${JAVADOC.dir}:
 	${INSTALL.dir} $@
 
 javadocs:	${JAVADOC.dir}
-	${JAVADOC} @JAVA2_DOC_ARGS@ -J-mx48m -version -d ${JAVADOC.dir} \
+	${JAVADOC} @JAVA2_DOC_ARGS@ -J-mx64m -version -d ${JAVADOC.dir} \
 	-windowtitle "OpenMap API" ${Core.pkgs} ${App.pkgs} ${Layer.pkgs} ${PlugIn.pkgs}
 
 ################
