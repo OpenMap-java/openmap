@@ -13,7 +13,7 @@
 					   **/*.pl, **/unimplemented/**, 
 					   **/GeneratorTester.java" />
     <property name="jar.excludes" value="${javac.excludes}, **/*.java"/>
-    <property name="corba.excludes" value="**/corba/**"/>
+    <property name="corba.excludes" value="**/corba/**, **/corbaImage/**"/>
 
     <!-- These are packages that depend on other, non-standard java
 	installations. You can remove these packages from this list if you
