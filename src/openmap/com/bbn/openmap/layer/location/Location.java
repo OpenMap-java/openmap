@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/Location.java,v $
 // $RCSfile: Location.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/01/26 18:18:09 $
+// $Revision: 1.7 $
+// $Date: 2004/05/10 21:13:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -591,7 +591,7 @@ public abstract class Location extends OMGraphic {
             forceGlobal = handler.isForceGlobal();
         }
 
-        if (location != null &&
+        if (label != null &&
             ((forceGlobal && globalShowNames) ||
              (!forceGlobal && showName))) {
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/policy/StandardPCPolicy.java,v $
 // $RCSfile: StandardPCPolicy.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/02/06 19:46:09 $
+// $Revision: 1.6 $
+// $Date: 2004/05/10 21:13:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,6 +50,11 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
     protected int graphicCutoff = 50;
 
     /**
+     * A flag to tell the policy to always spawn a thread.
+     */
+    protected boolean alwaysSpawnThread = false;
+
+    /**
      * You must set a layer at some point before using this class.
      */
     public StandardPCPolicy() {}
@@ -58,7 +63,20 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
      * Don't pass in a null layer.
      */
     public StandardPCPolicy(OMGraphicHandlerLayer layer) {
-        this.layer = layer;
+        this(layer, true);
+    }
+
+    /**
+     * Don't pass in a null layer.
+     * @param layer layer to work for
+     * @param alwaysSpawnThreadForPrepare should be true if the
+     * layer's prepare method takes a while.  Normally, the policy
+     * looks at the number of OMGraphics on the list to determine if a
+     * thread should be spawned.  True by default.
+     */
+    public StandardPCPolicy(OMGraphicHandlerLayer layer, boolean alwaysSpawnThreadForPrepare) {
+        setLayer(layer);
+        setAlwaysSpawnThread(alwaysSpawnThreadForPrepare);
     }
 
     public void setLayer(OMGraphicHandlerLayer l) {
@@ -67,6 +85,18 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
 
     public OMGraphicHandlerLayer getLayer() {
         return layer;
+    }
+
+    /**
+     * Tell the policy whether to spawn a thread when
+     * projectionChanged() is called with a new projection.
+     */
+    public void setAlwaysSpawnThread(boolean val) {
+        alwaysSpawnThread = val;
+    }
+
+    public boolean getAlwaysSpawnThread() {
+        return alwaysSpawnThread;
     }
 
     /**
@@ -129,7 +159,7 @@ public class StandardPCPolicy implements ProjectionChangePolicy {
      * method so that different criteria may be considered.
      */
     protected boolean shouldSpawnThreadForPrepare() {
-        if (layer != null) {
+        if (layer != null && !alwaysSpawnThread) {
             com.bbn.openmap.omGraphics.OMGraphicList list = layer.getList();
             if (list != null) {
                 return layer.getList().size() > graphicCutoff;
