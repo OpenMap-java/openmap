@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.16 $
-# $Date: 1998/12/01 20:26:09 $
+# $Revision: 1.17 $
+# $Date: 1998/12/07 20:13:33 $
 # $Author: aculline $
 # 
 # **********************************************************************
@@ -91,6 +91,9 @@ App.classes = 	com/bbn/openmap/app/*.class
 
 App.jar = 	${App.classes} ${App.props}
 
+Example.jar =	com/bbn/openmap/examples/hello/*.class \
+		com/bbn/openmap/examples/hello/*.properties
+
 
 #########
 # rules #
@@ -122,7 +125,7 @@ lib:
 	${INSTALL.dir} $@
 
 lib/openmap.jar:: omcore lib
-	${JAR} cf $@ ${Core.jar} ${Layer.jar} ${App.jar}
+	${JAR} cf $@ ${Core.jar} ${Layer.jar} ${App.jar} ${Example.jar}
 
 lib/omcore.jar:: omcore lib
 	${JAR} cf $@ ${Core.jar}
@@ -176,6 +179,7 @@ install::	${prefix}
 install::	${bindir} bin/openmap
 	${RM} ${bindir}/openmap
 	${INSTALL.bin} bin/openmap ${bindir}/openmap
+	${INSTALL.bin} com/bbn/openmap/examples/hello/hello-world ${bindir}/hello-world
 
 # install in lib
 install::	${libdir} lib/omcore.jar lib/openmap.jar
