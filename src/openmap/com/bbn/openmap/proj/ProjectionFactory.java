@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionFactory.java,v $
 // $RCSfile: ProjectionFactory.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/05/26 14:20:52 $
+// $Revision: 1.7 $
+// $Date: 2004/09/30 22:41:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,9 +24,10 @@
 
 package com.bbn.openmap.proj;
 
+import com.bbn.openmap.Environment;
 import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.MapBean;
 import com.bbn.openmap.OMComponent;
-import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 
 import java.beans.PropertyChangeEvent;
@@ -307,6 +308,70 @@ public class ProjectionFactory extends OMComponent {
 
         return factory.makeProjection(loader, centerLat, centerLon, scale, width, height);
     }
+    
+    /**
+     * Looks at the Environment settings for the default projection
+     * and returns a Projection suited for those settings. If
+     * there is a problem creating the projection, the default
+     * projection of the MapBean will be returned.  The
+     * ProjectionFactory needs to be loaded with the Projection
+     * class described in the properties before this will return
+     * an expected projection.
+     * 
+     * @return Projection from Environment settings.
+     */
+    public static Projection getDefaultProjectionFromEnvironment() {
+        return getDefaultProjectionFromEnvironment(0, 0);
+    }
+    
+    /**
+     * Looks at the Environment settings for the default projection
+     * and returns a Projection suited for those settings. If there is
+     * a problem creating the projection, the default projection of
+     * the MapBean will be returned. The ProjectionFactory needs to be
+     * loaded with the Projection class described in the properties
+     * before this will return an expected projection.
+     * 
+     * @param width pixel height of projection. If 0 or less, the
+     *        Environment.Width value will be used.
+     * @param height pixel height of projection. If 0 or less, the
+     *        Environment.Height value will be used.
+     * @return
+     */
+    public static Projection getDefaultProjectionFromEnvironment(int width,
+                                                                 int height) {
+        // Initialize the map projection, scale, center
+        // with user prefs or defaults
+        Projection proj = null;
+
+        int w = (width <= 0) ? 
+                Environment.getInteger(Environment.Width, MapBean.DEFAULT_WIDTH)
+                : width;
+        int h = (height <= 0) ? 
+                Environment.getInteger(Environment.Height, MapBean.DEFAULT_HEIGHT)
+                : height;
+
+        try {
+            proj = ProjectionFactory.makeProjection(Environment.get(Environment.Projection),
+                                    Environment.getFloat(Environment.Latitude, 0f),
+                                    Environment.getFloat(Environment.Longitude, 0f), 
+                                    Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY),
+                                    w, h);
+
+        } catch (com.bbn.openmap.proj.ProjectionException pe) {
+            Debug.output("ProjectionFactory.getDefaultProjectionFromEnvironment(): Can't use ("
+                         + Environment.Projection
+                         + " = "
+                         + Environment.get(Environment.Projection)
+                         + ") property as a projection class, need a class name instead.  Using default of com.bbn.openmap.proj.Mercator.");
+            proj = ProjectionFactory.makeProjection(Mercator.class, Environment.getFloat(Environment.Latitude, 0f), 
+                                    Environment.getFloat(Environment.Longitude, 0f), 
+                                    Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY), 
+                                    w, h);
+        }
+
+        return proj;
+    }
 
     /**
      * Call the provided ProjectionLoader to create the projection
@@ -373,8 +438,7 @@ public class ProjectionFactory extends OMComponent {
         
 	if (proj == null) {
 	    Debug.error("ProjectionFactory.makeProjection() tried to create a Projection from a " + 
-                        loader.getPrettyName() + ", " + loader.getProjectionClass().getName() + 
-                        ", failed.");
+	                loader.getPrettyName() + ", " + loader.getProjectionClass().getName() + ", failed.");
 	}
 
 	return proj;

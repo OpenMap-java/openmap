@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/09/22 14:53:10 $
+// $Revision: 1.8 $
+// $Date: 2004/09/30 22:41:32 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -325,6 +325,7 @@ public class MGRSPoint extends UTMPoint {
 
     /**
      * Set the UTM parameters from a MGRS string.
+     * @param mgrsString an UPPERCASE coordinate string is expected.
      */
     protected void decode(String mgrsString)
         throws NumberFormatException {
@@ -592,6 +593,9 @@ public class MGRSPoint extends UTMPoint {
      * UTM zone number.
      */
     protected float getNorthingFromChar(char n, int set) {
+        
+        if (n > 'V') throw new NumberFormatException("MGRSPoint given invalid Northing " + n);
+        
         int baseRow[] = getOriginRowLetters();
         // rowOrigin is the letter at the origin of the set for the column
         int curRow = baseRow[set-1];
