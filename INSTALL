@@ -1,9 +1,9 @@
 -*- Mode: text-mode -*-
 $Source: /cvs/distapps/openmap/INSTALL,v $
 $RCSfile: INSTALL,v $
-$Revision: 1.12 $
-$Date: 1999/04/07 19:56:46 $
-$Author: aculline $
+$Revision: 1.13 $
+$Date: 2001/02/18 17:52:08 $
+$Author: bmackiew $
 
 Prerequisites
 =============
@@ -12,10 +12,11 @@ Prerequisites
    OpenMap software.  You also need the Java Foundation Classes (JFC)
    installed.  The JFC "Swing Set" is available from Sun at
    http://java.sun.com/products/jfc/ for free download.
-
-   NOTE: OpenMap requires minimal configuration to build and run with
-   Java 2.  Additional arguments to configure are required to build
-   with JDK1.1.  See below for details.
+ 
+   NOTE: From OpenMap 4.0 onwards, OpenMap requires Java 2 to build and run.
+   If you need to use JDK 1.1, download OpenMap 3.7, the last 
+   JDK 1.1-compatible release.  This release is available at the OpenMap
+   web site, http://www.openmap.org
 
    NOTE: We have decided to supply pre-compiled OpenMap JAR files.  If
    you decide to use them, you may still need to run `./configure', or
@@ -138,11 +139,7 @@ Detailed Configuration
       ./configure --with-classpath=$CLASSPATH
 
     Use this option to specify a CLASSPATH with which to build and run
-    OpenMap.  You need to use this option if you plan to build OpenMap
-    with JDK1.1.  In particular you need to specify the location of
-    the swing.jar file.  For example:
-
-    	./configure --with-classpath=/usr/local/swing-1.1/swingall.jar
+    OpenMap.  
 
   Overriding Particular Executables
   ---------------------------------
@@ -180,15 +177,3 @@ Detailed Configuration
     OpenMap builds and runs without any special arguments if you're
     using the Java 2 platform.  This is because the JFC classes are
     included as part of the core platform.
-
-    You can build OpenMap with JDK 1.1.X and Swing 1.1, but you need
-    to explicitly point the configure script at the Swing JAR file
-    (either swing.jar or swingall.jar will do) by using the
-    `--with-classpath' option (see above).
-
-    You can also build OpenMap with JDK 1.1.X and Swing 1.0.3, but you
-    will need to rename all the swing import statements in the OpenMap
-    code from `javax.swing' to the old `com.sun.java.swing' package.
-    You can hack up a sed script on your own or try out the Sun
-    package renamer utility:
-    http://java.sun.com/products/jfc/PackageRenamer/
