@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/wanderer/Wanderer.java,v $
 // $RCSfile: Wanderer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/12 14:08:24 $
+// $Revision: 1.3 $
+// $Date: 2003/03/13 01:19:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,9 +38,12 @@ public class Wanderer {
 
     WandererCallback callback = null;
 
-    public Wanderer() {}
+    public Wanderer() {
+	
+    }
 
     public Wanderer(WandererCallback callback) {
+	this();
 	this.callback = callback;
     }
 
@@ -53,18 +56,42 @@ public class Wanderer {
     }
 
     /** 
-     * Given a file, change it's name, and everthing below it (if it's
-     * a directory) to the case specified by toUpper.
+     * Given a file representing a top-level directory, start
+     * wandering the tree and call handleDirectory or handleFile on
+     * the WandererCallback.
      *
-     * @param file file to start at.
-     * @param toUpper file will change to upper case if true, lower
-     * case if false.  
+     * @param file File (directory) to start at.
      */
     public void handleEntry(File file) {
 	try {
 	    String[] filenames = file.list();
+	    boolean dirTest = false;
+	    boolean not14 = false;
 
-	    if (filenames != null) {
+	    try {
+		java.lang.reflect.Method method = 
+		    file.getClass().getDeclaredMethod("isDirectory", null);
+		Object obj = method.invoke(file, null);
+		if (obj instanceof Boolean) {
+		    dirTest = ((Boolean)obj).booleanValue();
+		}
+	    } catch (NoSuchMethodException nsme) {
+		not14 = true;
+	    } catch (SecurityException se) {
+		not14 = true;
+	    } catch (IllegalAccessException iae) {
+		not14 = true;
+	    } catch (IllegalArgumentException iae2) {
+		not14 = true;
+	    } catch (java.lang.reflect.InvocationTargetException ite) {
+		not14 = true;
+	    }
+
+	    if (not14) {
+		dirTest = (filenames != null);
+	    }
+
+	    if (dirTest) {
 		// It's a directory...
 		handleDirectory(file, filenames);
 		callback.handleDirectory(file);
