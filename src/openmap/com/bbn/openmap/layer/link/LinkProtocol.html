@@ -5,7 +5,7 @@
   </head>
 
   <body>
-    <h1>Link Protocol for Client-Server Communication, v0.3</h1> 
+    <h1>Link Protocol for Client-Server Communication, v0.4</h1> 
     <h3>Basic Description</h3>
 
       This document will describe the Link Protocol for Link
@@ -52,6 +52,11 @@
       be sent at any time.  The receiver can then decide if it can
       act on it, and disregard a section it is not prepared to
       handle.  With any transmission, some response is expected.
+      <LI> v0.4 added the LinkArc and the MapUpdate Action. The
+      MapUpdate Action is used for a server to control a client's
+      display. There were also additional defined properties added to
+      enhance the rendering options passed through the properties,
+      include different line style and fill pattern definitions.
     </UL>
 
   <P>
@@ -122,6 +127,7 @@
     </UL>
 
     <UL> <B>Graphics Definitions</B>
+      <LI><a href="#Arc">Arc</a>
       <LI><a href="#Bitmap">Bitmap</a>
       <LI><a href="#Circle">Circle</a>
       <LI><a href="#Grid">Grid</a>
@@ -135,6 +141,7 @@
 
    <UL> <B>Action Definitions</B>
       <LI><a href="#graphicAction">Graphic Action</a>
+      <LI><a href="#updateMapAction">Map Update</a>
     </UL>
 
 
@@ -212,6 +219,9 @@
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Arc</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:ARC&gt;</TD></TR>
+	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Bitmap</TD>
 	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:BITMAP&gt;</TD></TR>
 	    <TR>
@@ -254,7 +264,11 @@
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Update GUI (Undefined)</TD>
 	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:UPDATE_GUI&gt;</TD>	
-	      </TR></TABLE></TR></TABLE>
+	      </TR>
+	    <TR>
+	      <TD WIDTH="30%" VALIGN="TOP"><P>Update Map (Server directed)</TD>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:UPDATE_MAP&gt;</TD></TR>
+        </TABLE></TR></TABLE>
 <a name="tails"></a>
     <P>
       <TABLE BORDER=1 CELLSPACING="1" WIDTH="60%" BGCOLOR="#99CCFF">
@@ -399,7 +413,7 @@
 		  <a href="#args">Arg List</a></TD>
 	      <TD WIDTH="50%" VALIGN="TOP">
 		A list of key-value pairs for attribute passing. See
-		<a href="#LinkProperties">Defined Properties</A>.</TD>
+                <a href="#LinkProperties">Defined Properties</A>.</TD>
 	    </TR>
 	    <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
@@ -1079,8 +1093,291 @@
     COLOR="#FF9999">red fields</FONT> represent the fields in the
     raster protocol that change depending on the image format of the
     raster.
-    
-    <P>
+     
+<P>
+<HR>
+<a name="Arc"></a>
+
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Arc at Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ARC&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Arcs, the value is 10.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For Lat/Lon
+              rendering, the value is 1.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the arc's center, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the arc's center, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Radius of the arc, in units defined in the next field.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Units of the radius measurement. Values can be:<BR>
+              Decimal Degrees = -1<BR>
+              Kilometers = 0<BR>
+              Miles = 1<BR>
+              Nautical Miles = 2</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Number of verticies to use to approximate the arc.
+              If this value is -1, the projection algorithm of the
+              client should decide the best value.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Starting angle of the arc, in decimal degrees.  0 is North,
+              clockwise is positive. </TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Ending angle of the arc, in decimal degrees.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Arc at X/Y Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ARC&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Arcs, the value is 10.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For X/Y
+              rendering, the value is 2.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the left side of the map, of the
+              arc's center, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the top of the map, of the
+              arc's center, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the arc, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the arc, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Starting angle of the arc, in decimal degrees.  0 is North,
+              clockwise is positive. </TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Ending angle of the arc, in decimal degrees.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+<P>
+    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+      <!-- Head Line -->
+      <TR><B>Link Arc at X/Y Offset from Lat/Lon Location</B>
+      </TR>
+      <TR>
+	<TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	  <TR>
+	    <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	    </TD>
+	    <TD WIDTH="20%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	    </TD>
+	    <TD WIDTH="50%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	    </TD>
+	  </TR>
+	  <!-- First Line -->
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ARC&gt;</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a graphic type identifier.  For
+              Arcs, the value is 10.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              This space is for a Rendertype identifier.  For offset
+              rendering, the value is 3.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Latitude of the arc's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Longitude of the arc's anchor point, in decimal degrees.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Horizontal distance, from the longitude map anchor
+              point location, of the arc's center, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Vertical distance, from the latitude map anchor point
+              location, of the arc's center, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Width of the arc, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Height of the arc, in pixels.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Starting angle of the arc, in decimal degrees.  0 is North,
+              clockwise is positive. </TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">float</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Ending angle of the arc, in decimal degrees.</TD>
+	  </TR>
+	  <TR>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">
+		<a href="#args">Arg List</a></TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+	      A list of key-value pairs for attribute passing. See <a
+	      href="#LinkProperties">Defined Properties</A>.</TD>
+	  </TR>
+	</TABLE></TR></TABLE>
+   <P>
     <HR>
     <a name="Bitmap"></a>
     <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
@@ -4119,7 +4416,93 @@ representation of an opaque red should be passed as FFFF0000.
 		Property describing the font description string for
 		LinkText objects.</TD>
 	    </TR>
-	    <TR>
+
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">rotation</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+		Property describing the amount of rotation for
+                LinkGraphics that support rotation, like LinkText and
+                LinkRaster objects.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">textBaseline</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the location of the baseline for
+                LinkText objects (BASELINE_BOTTOM, BASELINE_MIDDLE or
+                BASELINE_TOP.  BOTTOM is the default).</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">rasterImageURL</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the URL of an image that a
+                LinkRaster would use if configured to do that.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">SOLID</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the solid line style.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">LONG_DASH</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the long dash line style.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DASH</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the dash line style.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DOT</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the dot line style.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DASH_DOT</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the dash-dot line style.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DASH_DOT_DOT</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the dash-dot-dot line style.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">SOLID</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the solid fill pattern.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">VERTICAL</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the vertical stripe fill pattern.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">HORIZONTAL</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the horizontal stripe fill pattern.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">CROSS</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the cross-hatch fill pattern.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DIAG_CROSS</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the diagonal cross-hatch fill pattern.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">FORWARD_DIAG</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the forward diagonal cross fill pattern.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">BACKWARD_DIAG</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the backward diagonal cross fill pattern.</TD>
+	    </TR>
+            <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">graphicID</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
 		Property describing graphic identifier for a Link
@@ -4148,9 +4531,72 @@ representation of an opaque red should be passed as FFFF0000.
 		Property describing test for a pop-up window or other
 		messaging tool for be used for a list or object.</TD>
 	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">time</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing a time entry.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">latitude</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the decimal degree latitude for a
+                projection definition (Server directed).</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">longitude</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the decimal degree longitude for a
+                projection definition (Server directed).</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">scale</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the scale for a projection
+                definition (Server directed).</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">width</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the pixel width of a
+                projection definition (Server directed).</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">height</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the pixel height of a
+                projection definition (Server directed).</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">projection</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the projection type of a
+	        projection definition (Server directed).</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">latmin</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the lower latitude in decimal
+                degrees of a projection definition (Server directed).</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">lonmin</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the westward longitude in decimal
+                degrees of a projection definition (Server directed).</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">latmax</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the upper latitude in decimal
+                degrees of a projection definition (Server directed).</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">lonmax</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property describing the eastward longitude in decimal
+                degrees of a projection definition (Server directed).</TD>
+	    </TR>
 	  </TABLE></TR></TABLE>
-
-
 <P>
 <HR>
 <HR>
@@ -4158,7 +4604,8 @@ representation of an opaque red should be passed as FFFF0000.
 <h3>Action Definitions</h3>
 
 <b>Actions</b> are tasks that the server gives to the client in order
-to manipulate graphics as a result of user gestures.
+to manipulate graphics as a result of user gestures or to display updated data.
+
 <P>
 <HR>
 
@@ -4287,7 +4734,56 @@ graphics object are adding a graphic, and updating a graphic.
               description.</TD>
 	  </TR>
 	</TABLE></TR></TABLE>
+
 <P>
+<HR>
+
+<a name="updateMapAction"></A>
+A <b>Map Update</b> action is the server requesting that the client
+update the location (projection) of a map.
+
+    <P>
+      <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
+	<!-- Head Line -->
+	<TR><B>Map Update</B>
+	</TR>
+	<TR>
+	  <TABLE BORDER=1 CELLSPACING="3" WIDTH="80%" BGCOLOR="#99CCFF">
+	    <TR>
+	      <TD WIDTH="10%" BGCOLOR="#3399FF">
+	      <P ALIGN="CENTER"><B><FONT COLOR="white"># Bytes</FONT></B>
+	      </TD>
+	      <TD WIDTH="20%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Type</FONT></B>
+	      </TD>
+	      <TD WIDTH="50%" BGCOLOR="#3399FF">
+		<P ALIGN="CENTER"><B><FONT COLOR="white">Description</FONT></B>
+	      </TD>
+	    </TR>
+	    <!-- First Line -->
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">24</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:UPDATE_MAP&gt;</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+		Action identifier.  For graphic actions, the value is 2.</TD>
+	    </TR>
+	    <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">Var</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER"> 
+                <a href="#args">Arg List</a></TD>
+	      <TD WIDTH="50%" VALIGN="TOP">
+                The <a href="#args">Arg List</a> set of properties which describe the new
+                map projection parameters, including center latitude and
+                longitude, scale, projection type and pixel size. See
+                the <a href="#LinkProperties">Defined Properties</A>.</TD>
+	    </TR></TABLE></TR></TABLE>
+
+            <P>
 <HR>
 <a name="args"></a>
 <b>Args</b> are an array of strings which represent key-value
@@ -4340,7 +4836,7 @@ pairs.<P>
     <address><a href="mailto:openmap@bbn.com">OpenMap</a></address>
 <!-- Created: Fri Apr 23 14:11:57 EDT 1999 -->
 <!-- hhmts start -->
-Last modified: Mon Jul 26 11:16:15 EDT 1999
+Last modified: Mon Feb  9 15:29:07 EST 2004
 <!-- hhmts end -->
   </body>
 </html>

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoint.java,v $
 // $RCSfile: OMPoint.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/02/01 21:14:12 $
+// $Revision: 1.7 $
+// $Date: 2004/02/10 00:12:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -206,7 +206,7 @@ public class OMPoint extends OMGraphic implements Serializable {
     }
 
     /**
-     * Get the radius for the point,
+     * Get the radius for the point.
      */
     public int getRadius() {
         return radius;

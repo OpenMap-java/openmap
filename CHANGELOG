@@ -1,11 +1,321 @@
-2003-12-30  Bill Euerle  <wjeuerle@bbn.com>
+2004-02-09  Don Dietrick  <dietrick@jade.local>
 
-	* Cleaned up numerous javadoc warnings
+	* Added properties in DrawingAttributes that set the pixel radius
+	and oval settings of OMPoints when setTo(OMPoint) is called.
+
+	* Modified the MapHandler to contain a mechanism for handing the
+	addition of new components while the membership list is being
+	iterated over by another component.  If a component using the
+	membership iterator adds something to the MapHandler as a result
+	of finding something in it, the new addition will be saved by
+	the MapHandler and added later, preventing a
+	ConcurrentModificationException from being thrown.
+
+	* Modified the MapBeans to set the clipping area (if null), and
+	drawing buffers, to the size of the projection, instead of the
+	MapBean.  Usually these are the same, but just in case someone
+	wants to try to do something with the projection definitions, it
+	should work better.  Since JComponents (Layer superclass) will set
+	clipping areas to the size of the component if they are set to be
+	larger, you may have to set the FullProjectionRenderPolicy in the
+	layers in order to get them to draw fully into the projection
+	area if it's bigger than the MapBean.
+
+	* The I18n interface was added, replacing an I18n class that
+	wasn't used.  This interface describes a object that provides
+	localized strings based on the requesting class, component
+	descriptor with optional modifier, and a default string.  The
+	BasicI18n class, which implements the I18n interface, was added
+	as the base implementation of localization in OpenMap.  The
+	Environment class was modified to provide the current I18n
+	application instance to components at runtime.  Several
+	properties files for different packages were added to the
+	distribution, as well as some Polish localized properties files.
+	Many thanks to Piotr Kaminski and Mirek Pawlowski for helping us
+	work out the Internationalization mechanism and providing
+	modified classes and Polish property files.  
+
+	* Modified the com.bbn.openmap.SoloMapComponent interface so it
+	has a canAdd() method, to be asked if a component can be added.
+	This makes it easier to change the behavior of SoloMapComponent
+	objects by overriding one method.
+
+	* Upgraded the PropertyHandler so it writes out properties that
+	are more accurate.  The original properties are used, and then
+	overwritten by the current components.  If a component doesn't
+	provide its current properties, its original properties are
+	written.  Before, no properties would have been written for that
+	component.
+
+	* Added the mac source directory, which has the capability to
+	create a clickable Mac application.  Use the 'mac' target in the
+	ant build file.  
+
+	* Added the com.bbn.openmap.MapBeanRepaintPolicy interface, which
+	handles the layer's requests for repaints as well as modifying
+	the java.awt.Graphics object for painting.  The
+	StandardMapBeanRepaintPolicy was added to implement the default
+	behavior.  The HintsMapBeanRepaintPolicy was added to the package
+	to allow RenderingHints to be set on the MapBean.
+
+	* Added the com.bbn.openmap.proj.EqualArc interface to designate
+	those projections that are Equal Arc (constant degree changes in
+	both directions).  Modified those layers that required the CADRG
+	projection to be use any EqualArc projection, including LLXY.
+
+	* Modified the ToolPanel so it can be told (in its properties)
+	which Tools to include in its interface.  It also has the
+	capability to be told which tools to ignore and not include.
+	This lets you place more than one Tool in the MapHandler, and it
+	will show up in the right place.  The ToolPanel will also make
+	itself invisible if all of its components are made invisible, and
+	reappear if any of them are made visible.
+
+	* The OpenMapFrame has been modified to set its root pane as the
+	root pane of the Environment if the Environment has been told to
+	use internal windows and the root pane hasn't been set in the
+	Environment yet.
+
+	* Modified the OpenMap application to have a method which assigns
+	a WindowListener to the application frame.  The default action is
+	to exit the application, but this method can be overridden to
+	change this behavior.  The OpenMap application also schedules the
+	Frame to be shown in the event-dispatching thread, which makes
+	the frame appear much more consistently.
+
+	* Modified the WindowSupport object to use JDialogs to keep the
+	windows floating on top of the map.  The WindowSupport also now
+	has code that tries to make the window appear centered on the
+	owner window (thanks to Laura Paterson).
+
+	* Added the com.bbn.openmap.gui.ScrollPaneWindowSupport, which is
+	an extended WindowSupport that wraps content in a JScrollPane.
+
+	* Added the com.bbn.openmap.gui.GridBagToolBar, which is a
+	JToolBar with a GridBagLayout to have a more compressed look.
+	
+	* Added the com.bbn.openmap.gui.dock package, which supports the
+	new com.bbn.openmap.gui.BasicDockPanel.  This is a new MapPanel
+	that allows components to stack up against each other, in
+	addition to layering themselves within the panel.  
+
+	* Added the VPFConfig class to the com.bbn.openmap.layer.vpf
+	package, a utility that helps configure VPFLayers.  When run in
+	standalone mode it displays the coverages and features available
+	in the designated VPF library and allows the user to designate
+	the DrawingAttributes desired for each feature chosen.  There is
+	an option for printing those properties so they can easily be
+	added to an openmap.properties file.  The VPFConfig can be
+	launched from a running VPFLayer palette to change the features
+	the layer is displaying.  It can also be run from within the
+	application to create a new layer and provide that layer to the
+	LayerHandler, although this functionality hasn't been introduced
+	yet.
+
+	* The EsriGraphicList and DbfTableModel classes in the
+	com.bbn.openmap.dataAccess.shape package have static methods
+	included that create an instance of themselves from URLs.  
+
+	* Layers now have a removeable flag that can be set in them, that
+	lets GUI widgets know that they shouldn't be removed, and the
+	LayerHandler pays attention to that flag to prevent unremoveable
+	layers from being deleted from the application.  Fixed bug in
+	palette component status events so that palette hide events get
+	dispersed properly.
+
+	* Added modifications to the RPF package by Kimberly Hamilton
+	(NGC) which added the capability to use frames from other zones
+	when zoomed out, to prevent that confusing lack of coverage
+	effect at zone boundaries.
+	
+	* The com.bbn.openmap.dataAccess.dted package was greatly enhanced
+	with a central DTEDFrameCache that can be shared across layers and
+	tools.  The DTEDFrame in that package provides OMGrid objects
+	which can use OMGridGenerators to create representations of the
+	data.  This updated frame cache can be used by the
+	com.bbn.openmap.layer.dted.DTEDFrameCacheLayer, and the different
+	GeneratorLoaders used to display the data can be configured and
+	modified in the properties file.  The DTEDDirectoryHandler was
+	added to load the DTEDFrameCache with a DTED directory, and it
+	also handles the configuration of a DTEDNameTranslator, which
+	translates how frame files are named in relation to their file
+	structure.  This used to be hard-coded, now new classes can be
+	written and included in the properties.
+
+	* The com.bbn.openmap.dataAccess.dted.DTEDAdmin class can move
+	DTED files from one directory to another, filtering the move based
+	on file location and dted level.
+	
+	* The Link package (com.bbn.openmap.layer.link) was modifed to run
+	in asynchronous mode, allowing servers to push OMGraphics to the
+	client layer on their schedule.  Properties were added for stroke
+	patterns, fill patterns, and projection changes so the server can
+	control the application's projection.  The LinkArc was added to
+	the package as well.
+
+	* A TimerLocationLayer was added to the
+	com.bbn.openmap.layer.location package, which includes a timer to
+	have the LocationHandlers reload their source data at specified
+	intervals.
+
+	* Simon Bowen provided updates to the MIF package
+	(com.bbn.openmap.layer.mif), including support for text and point
+	objects.
+
+	* Uwe Baier provided the MySQL layer package,
+	com.bbn.openmap.layer.mysql.
+
+	* The RenderingHintsRenderPolicy was added, which lets layers
+	independently set java.awt.RenderingHints on the
+	java.awt.Graphics that its OMGraphics are painted into.  The lets
+	the layer set anti-aliasing, etc.
+
+	* The FullProjectionRenderPolicy was added to allow the clipping
+	area of the java.awt.Graphics a layer is painting into be the same
+	as the current Projection.  The JComponent code limited this to
+	the visible size of the Layer, this allows the layer to paint
+	into a bigger image buffer.
+
+	* The VPFFeatureCacheGraphicWarehouse was created to provide a
+	feature-based tile cache.  This cache is shareable across
+	different layers, accessed through the LibraryBean.  Each layer
+	gets their own copy of the feature OMGraphics so they can be
+	rendered independently from other layers.
+
+	* Added the VPF servlet to the package, at openmap/src/vpfservlet.
+	This servlet is for programmers looking to gain an understanding
+	of VPF data, as it provides an in-depth view into the structure
+	and organization of VPF databases, as well as a direct look into
+	the data files.  It's a servlet intended to be run within Tomcat.
+	There's a README included in the package that describes what
+	files to modify to configure it for your VPF data and Tomcat
+	installation.
+
+	* The DrawingAttributes GUI was completely overhauled to have
+	dynamic color icon generated to reflect the current colors.  The
+	BasicStrokeEditorMenu was created to compress Stroke parameter
+	selection, and the EditableOMGraphics now have a standard
+	interface to add options to the GUI, so different parameters
+	specific to the OMGraphic type can be modified.
+
+	* The com.bbn.openmap.omGraphics.event package was enhanced with
+	the addition of the MapMouseInterpreter interface and the
+	GestureResponsePolicy.  The MapMouseInterpreter is an object that
+	knows how to interpret MouseEvents over OMGraphics, and calls a
+	GestureResponsePolicy for information on how to respond.  This
+	elevates MouseEvent interpretation to a different level, where
+	the programmer only has to receive queries about what to display
+	for certain OMGraphics, notifications of OMGraphic selection.
+	This capability has been integrated into the
+	OMGraphicHandlerLayer.  
+
+	* The FontSizer object was added to the package, which is used by
+	the OMText object to resize the font based on scale.  
+
+	* The OMAreaList was added, which takes different types of
+	OMGraphics and links them together to make one shape.
+
+	* The OMArc was added, a superclass to the OMCircle.  It can be
+	rendered as an open arc, a chorded arc, or a pie arc.
+
+	* The OMEllipse was added, which creates a ellipse in lat/lon
+	space with distance axis.  The EditableOMCircle can be used to
+	move the OMEllipse, but the axis cannot be modified yet.
+
+	* The EditableOMText object was added, a contribution from Piotr
+	Kaminski.
+
+	* OMGrids now use GridData objects to represent their values,
+	which is a type wrapper.  GeneratorLoaders were added to the
+	package as well.  GeneratorLoaders are factories that create and
+	manipulate OMGridGenerators, using properties for configuration
+	as well as providing a GUI for runtime manipulation.  Added new
+	SlopeGeneration capabilities to the
+	com.bbn.openmap.omGraphic.grid package.  Colored and Greyscale
+	colors can be used by the SlopeGenerator.
+
+	* The InformationDelegator was modified to handle the dispersion
+	of messages to several information lines, with two now
+	incorporated into the InformationDelegator.  The CoordMouseModes
+	use one (on the left) and layers generally use the one on the
+	right.  The right one gets used when the caller doesn't specify a
+	location.  Other locations can be added to the
+	InformationDelegator list of available lines, and the caller can
+	specify when line its information should appear on.
+	
+	* Added the com.bbn.openmap.event.ListenerSupport class, which
+	provides superclass support for other event notification
+	classes.
+
+	* Added the MapBeanKeyListener and ProjMapBeanKeyListener classes
+	to the com.bbn.openmap.event package, which distribute key event
+	that occur when the MapBean has focus.
+	
+	* MapMouseModes can now have prettyNames, which are the names that
+	appear in the GUI as opposed to using the modeID, which was the
+	previous case.  The GUI components have been updated to use the
+	pretty name in the right cases, and to continue to use the modeID
+	for programmatic purposes.
+
+	* The proxy action of the AbstractMouseMode was modified so that a
+	mask can be provided to allow certain types of events to pass to
+	its targets even if it is acting as a proxy for another
+	MouseMode.  This lets the Gestures mouse mode update the
+	coordinate display on the InformationDelegator while it acts as a
+	proxy for the OMDrawingToolMouseMode, for instance, but letting
+	only the mouseMoved MouseEvents pass on in a regular fashion.
+	Also, if you hold the shift key down while generating
+	MouseEvents, the proxy action is bypassed entirely.
+
+	* Added a method to the DistanceMouseMode that makes it easy to
+	subclass it and change the format of the string displayed in the
+	InformationDelegator.  Thanks to Piotr Kamiski.
+
+	* The MapBeanPrinter object was added by Bart Jourquin, allowing
+	the MapBean to be printed and scaled directly to the Java printer
+	interface.
+	
+	* Modified the propertyEditors that deal with file and directory
+	selection to check to see of a File Chooser has included "\\" in
+	the path, replacing them with "/" to make the work correctly if
+	they are written out to a properties file.
+
+	* Modified the OMDrawingToolLauncher so there are properties that
+	define whether to use buttons for different OMGraphic selection or
+	a pop-up, and if buttons are chosen the number of buttons to
+	display in a single row can be specified.  The order of the
+	OMGraphic choices are now the same as they are added to the
+	MapHandler (in the openmap.components property or
+	programmatically).  
+
+	* The OMDrawingTool was modified to be able to handle movement of
+	multiple OMGraphics.  It uses the DrawingToolRequestorList to
+	notify the owners of all the OMGraphics when movement is completed.
+
+	* Added the IconFactory package (com.bbn.openmap.tools.icon),
+	which creates ImageIcons from vector data and DrawingAttributes
+	information.  You provide the factory an IconPart (or IconPartList)
+	which contain DrawingAttributes per part, and the size you want
+	the icon to be, and the factory creates the image for you.  The
+	DrawingAttributes GUI icons are created using the OMIconFactory.
+
+	* Added the beginnings of a MIL-STD-2525 Symbology factory.  It
+	doesn't work yet.  Soon.  The
+	com.bbn.openmap.tools.symbology.SymbolChooser does show the symbol
+	hierarchy, though, and the symbol organization is in place.  The
+	last bit, actually building the symbols from cgm files, needs to
+	be completed.  The com.bbn.openmap.dataAccess.cgm package was
+	added to OpenMap for this purpose.  The CGM package was acquired
+	from BBN's Cougaar code base.
+
+2003-12-30 Bill Euerle <wjeuerle@bbn.com>
+
+	* Cleaned up numerous javadoc warnings.
 
 	* Updated the VPF layer to more fully use the Java2 Collections
-	API. Removed one (formerly deprecated) method from DcwRecordFile.
+	API.  Removed one (formerly deprecated) method from DcwRecordFile.
 
-2003-06-26  Don Dietrick  <dietrick@bbn.com>
+2003-06-26 Don Dietrick <dietrick@bbn.com>
 
 	* Added the com.bbn.openmap.gui.time package, which has standard
 	GUI controls for controlling time on the map, and
@@ -16,7 +326,7 @@
 	time, over the map.  The ScenarioGraphicLoader uses a time slider
 	and several time control buttons.
 
-	* Misc changes and bug fixes:  Added getters/setters for
+	* Misc changes and bug fixes: Added getters/setters for
 	AreaHandler in AreaShapeLayer.  Fixed recursion bug in
 	com.bbn.openmap.omGraphics.FilterSupport.
 
@@ -38,7 +348,7 @@
 	use PlugIns and GraphicLoaders.  But the new package contains
 	just GraphicLoader stuff, and several implementations and superclasses.
 
-2003-04-25  Don Dietrick  <dietrick@bbn.com>
+2003-04-25 Don Dietrick <dietrick@bbn.com>
 
 	* Heavy modifications to the CORBA classes.  The build.xml file
 	was modified to use the jdk 1.4.1 corba tools and classes instead of
@@ -57,7 +367,7 @@
 	com.bbn.openmap.proj.coords, added UPSPoint, NEDFrame and
 	EnuFrame there too as a contribution from Robert Hayes.
 
-2003-04-23  Don Dietrick  <dietrick@bbn.com>
+2003-04-23 Don Dietrick <dietrick@bbn.com>
 
 	* Modified the OpenMapApplet to look for a PROPERTIES parameter
 	in case the properties file to use to configure the applet should
@@ -65,7 +375,7 @@
 	properties file can be specified as a resource, file or URL, but
 	the applet rules apply.
 
-	* Added the ScaleDisplayLayer, contributed by David Ward. Modified
+	* Added the ScaleDisplayLayer, contributed by David Ward.  Modified
 	it to extend OMGraphicHandlerLayer.
 
 	* Misc bug fixes - the add/delete node states for the
@@ -78,7 +388,7 @@
 	the next charater in a String field.  RpfTocHandler ignores
 	commas while checking scale fields.
 
-2003-04-16  Don Dietrick  <dietrick@bbn.com>
+2003-04-16 Don Dietrick <dietrick@bbn.com>
 
 	* Created the CombinedCoordPanel made from the contents of the
 	improved CoordDialog, and modified the CoordDialog and
@@ -91,7 +401,7 @@
 	that moved to the CombinedCoordPanel and setup is now supported
 	by the menu item.
 
-2003-04-14  Don Dietrick  <dietrick@bbn.com>
+2003-04-14 Don Dietrick <dietrick@bbn.com>
 
 	* Added the com.bbn.openmap.gui.menu.MenuList component, which
 	can create a set of menus from properties, and can provide a
@@ -128,7 +438,7 @@
 	* Added the com.bbn.openmap.plugin.graphicLoader.scenario package,
 	which is a csv-loaded chain-of-events displayed on the map.
 
-2003-04-05  Don Dietrick  <dietrick@bbn.com>
+2003-04-05 Don Dietrick <dietrick@bbn.com>
 
 	* Created the MapPanel component, which is now the central
 	OpenMap application/applet component.  It takes a
@@ -177,7 +487,7 @@
 	them think they are always filled so they respond to any query
 	within their limits.
 
-2003-03-25  Don Dietrick  <dietrick@bbn.com>
+2003-03-25 Don Dietrick <dietrick@bbn.com>
 
 	* Added the com.bbn.openmap.util.DataBounds and
 	com.bbn.openmap.util.DataBoundsProvider interface, and modified
@@ -195,7 +505,7 @@
 	the layer order.  These buttons used to be integrated into the
 	LayersPanel, and have been moved into their own panel that is
 	configurable via properties (horizontal, vertical, top, bottom,
-	right, left, and include/omit add/remove layer buttons). This
+	right, left, and include/omit add/remove layer buttons).  This
 	panel can be added to the LayersPanel in several different ways,
 	all configurations available via the properties, but if you don't
 	specifiy anything the LayersPanel will appear as before.  The
@@ -206,51 +516,51 @@
 	layer order changes also pass from the LayerControlButtonPanel to
 	the LayersPanel via PropertyChangeEvents.
 
-2003-03-13  Don Dietrick  <dietrick@bbn.com>
+2003-03-13 Don Dietrick <dietrick@bbn.com>
 
 	* The directory structure of the OpenMap package has been changed
 	in order to make it easier to add external code packages that
 	OpenMap classes rely on.  The new structure of the package is:
 
-ANT_ENV.bat  	  - environment configuration for Ant for Windows machines.
-AUTHORS 	  - People who have contributed to OpenMap.
-CHANGELOG 	  - List of changes between versions.
-INSTALL 	  - Installation instructions for compiling.
-LICENSE 	  - OpenMap License.
-Makefile	  - Makefile for compiling code, forwards targets to Ant.
-README 		  - Start here, information about using OpenMap.
-README.win32 	  - additional information for Windows users.
-bin 		  - scripts for building, starting the OpenMap application.
-build.xml 	  - Ant build file for compiling code.
-classes 	  - created when code is compiled, not present by default.
-doc 		  - Java API and architecture documentation.
-ext 		  - Externally available packages that OpenMap packages rely on.
-iis		   - .NET webpages
-lib 		  - jar files used by OpenMap, including jars created from OpenMap
-		    code.
+ANT_ENV.bat 	 - environment configuration for Ant for Windows machines.
+AUTHORS 	 - People who have contributed to OpenMap.
+CHANGELOG 	 - List of changes between versions.
+INSTALL 	 - Installation instructions for compiling.
+LICENSE 	 - OpenMap License.
+Makefile	 - Makefile for compiling code, forwards targets to Ant.
+README 		 - Start here, information about using OpenMap.
+README.win32 	 - additional information for Windows users.
+bin 		 - scripts for building, starting the OpenMap application.
+build.xml 	 - Ant build file for compiling code.
+classes 	 - created when code is compiled, not present by default.
+doc 		 - Java API and architecture documentation.
+ext 		 - Externally available packages that OpenMap packages rely on.
+iis		  - .NET webpages
+lib 		 - jar files used by OpenMap, including jars created from OpenMap
+		  code.
 openmap.properties - default configuration file for the OpenMap application.
-share 		   - misc information, applet pages, map data.
-src 		   - the OpenMap code packages.
+share 		  - misc information, applet pages, map data.
+src 		  - the OpenMap code packages.
 
-src/openmap	   - the OpenMap code base, compiles with Java 2.
-src/ext 	   - external code integrated into OpenMap package, compiled into
-		     openmap.jar file.
-src/svg		   - OpenMap code that relies on Apache Batik SVG
-		     package.
-src/j3d		   - OpenMap code that relies on Java 3D package.
-src/corba	   - OpenMap CORBA client-server code that relies on
-		     Inprise Visibroker package.
+src/openmap	  - the OpenMap code base, compiles with Java 2.
+src/ext 	  - external code integrated into OpenMap package, compiled into
+		   openmap.jar file.
+src/svg		  - OpenMap code that relies on Apache Batik SVG
+		   package.
+src/j3d		  - OpenMap code that relies on Java 3D package.
+src/corba	  - OpenMap CORBA client-server code that relies on
+		   Inprise Visibroker package.
 
 
 	* OpenMap GUI components have been overhauled.  Previously, most
 	of them created the Swing components they needed to provide their
-	GUIs. Now they have been written to extend the Swing classes they
+	GUIs.  Now they have been written to extend the Swing classes they
 	used to use.  Components that created many Swing objects and
 	managed their configuration have been broken into several new
 	components that can each use the MapHandler to configure
-	themselves. 
+	themselves.  
 	
-        	- The OMComponentPanel is a new OpenMap base class that
+    	- The OMComponentPanel is a new OpenMap base class that
 		extends JPanel.  This class implements the methods of the
 		MapHandlerChild (it knows how to work with the MapHandler)
 		and has methods that let it act as a PropertyConsumer.
@@ -259,7 +569,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 		can provide a GUI face to let it act like an OpenMap Tool.
 		The OpenMap Tool behavior can be controlled through
 		properties that can be set on the component.
-        
+    
 		- The InformationDelegator is now an OMComponentPanel, now
 		uses the StatusLightPanel instead of creating and managing
 		the status icons itself.
@@ -280,7 +590,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	to other components (LightMapHandlerChild objects).  These
 	JMenuItems are stored in the new gui/menu package, and all of the
 	old Menus - FileMenu, ControlMenu, NavigateMenu - have been
-	updated to use them. The com.bbn.openmap.gui.menu.OMBasicMenu is a
+	updated to use them.  The com.bbn.openmap.gui.menu.OMBasicMenu is a
 	menu that can be configured through the properties.
 
 	* The MapHandler has new methods that let you ask for components
@@ -288,7 +598,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	a Collection of objects as a result of queries if more than one
 	object meets the query.
 
-	  The methods for the components that use the MapHandler have been
+	 The methods for the components that use the MapHandler have been
 	standardized to the familiar ones defined in the MapHandlerChild
 	class.  Most OpenMap components now inherit most of the
 	MapHandlerChild methods from a superclass, and override the
@@ -308,7 +618,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	variable to try to track Layer threads, has been removed.  The
 	Layer.repaint() method now calls MapBean.repaint(layer) if its
 	parent is a MapBean.  This is to allow the MapBeanRepaintPolicy to
-	take effect. 
+	take effect.  
 
 	* A MGRSPoint has been implemented, allowing conversions between
 	decimal degree lat/lon, UTM and MGRS coordinates.  The UTM and
@@ -317,7 +627,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	coordinates, also converts the coordinates to the other
 	representations in the different panels of the dialog.
 
-	  The com.bbn.openmap.plugin.UTMGridPlugIn has been added, which
+	 The com.bbn.openmap.plugin.UTMGridPlugIn has been added, which
 	draws the UTM zones on the map, labeled below certain scales.  It
 	also has the capability of drawing distance grid squares around
 	the center point of the projection.  These grids are labeled with
@@ -333,13 +643,13 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	MapMouseMode, it sends all its events to the hidden MapMouseMode.
 	This functionality has been built into the AbstractMapMouseMode.
 		
-	  MouseEvents are now wrapped within a MapMouseEvent by the
+	 MouseEvents are now wrapped within a MapMouseEvent by the
 	AbstractMapMouseMode.  The MapMouseEvent provides information
 	about what MapMouseMode sent the event, provides a handle to the
 	MapBean and has a method to provide the latitude/longitude of the
 	MouseEvent location.
 
-	  The CoordMouseMode now calls a method for setting up the text
+	 The CoordMouseMode now calls a method for setting up the text
 	that gets presented in the GUI for the coordinates of the mouse.
 	This lets you easily extend the CoordMouseMode to specify the
 	units and format of the string.
@@ -351,9 +661,9 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	OMGraphicHandlerLayer, and a SwingWorker added to it.  Almost all
 	of the other OpenMap layers are now based on the OMGraphicHandler
 	layer, with their SwingWorkers deleted and using the one from the
-	super class. 
+	super class.  
 
-	  The OMGraphicHandlerLayer now uses two different policy objects,
+	 The OMGraphicHandlerLayer now uses two different policy objects,
 	one that determines the behavior of the layer when the projection
 	changes (should the layer clear out the current OMGraphicList with
 	each projection change because it needs to repopulate it based on
@@ -362,12 +672,12 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	OMGraphics.  The prepare() method for an OMGraphicHandlerLayer
 	returns the OMGraphicList to be used for a projection, and can be
 	called in any thread.  The doPrepare() method launches a
-	SwingWorker to call the prepare() method. Different OpenMap
+	SwingWorker to call the prepare() method.  Different OpenMap
 	layers set different ProjectionChangePolicy and RenderPolicy
 	objects depending on the behavior desired and how they gather
 	their OMGraphics.
 
-	  The StandardRenderPolicy forwards paint() requests to the render
+	 The StandardRenderPolicy forwards paint() requests to the render
 	method of the OMGraphicList.  The BufferedImageRenderPolicy keeps
 	track of how long it takes to paint the OMGraphicList, and if it
 	exceeds a threshold it will create a BufferedImage to paint the
@@ -379,7 +689,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 		- OMGraphicList has a 'vague' variable added that controls
 		certain behaviors.  If an OMGraphicList is vague, it acts
 		as a whole OMGraphic, with any child OMGraphics
-		contributing to the whole group. The group gets treated as
+		contributing to the whole group.  The group gets treated as
 		the OMGraphic for find/select requests.  If an
 		OMGraphicList is not vague, which is the default, the
 		OMGraphicList acts as a pass-through, an organizational
@@ -474,7 +784,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	has been improved, and the GraphicLoaderConnector problem caused
 	by adding GraphicLoaderPlugIn/PlugInLayers to the MapHandler when
 	the GraphicLoader was given a handle to the LayerHandler.  This
-	caused a concurrent modification exception. Now a list of new
+	caused a concurrent modification exception.  Now a list of new
 	PlugInLayers is maintained, and added to the MapHandler after the
 	iteration.
 
@@ -489,7 +799,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	* The ComponentFactory can now use reflection to create Objects
 	with arguments in their constructors.
 
-2002-12-20  Donald Dietrick  <dietrick@bbn.com>
+2002-12-20 Donald Dietrick <dietrick@bbn.com>
 
 	* Moved the CHANGELOG to the top-level directory, in order to help
 	people find it.
@@ -552,15 +862,15 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	* Modifed the build.xml file so compilations are performed with
 	debugging on.
 
-2002-11-08  Bill Mackiewicz <bmackiew@bbn.com>
+2002-11-08 Bill Mackiewicz <bmackiew@bbn.com>
 	* OpenMap 4.5.4 released.
 	
-2002-11-07  Don Dietrick  <dietrick@bbn.com>
+2002-11-07 Don Dietrick <dietrick@bbn.com>
 
 	* Modified the openmap lauch scripts so they pick up any changes
 	that may have been made to the version in the top level openmap
 	directory.  In 4.5.3, the jar had to be rebuilt to contain the
-	modified properties file for the changes to take effect. 
+	modified properties file for the changes to take effect.  
 
 	* MapBean changes.  Modified how the background color is handled
 	in a MapBean.  If the background is not explicitly set in a
@@ -614,7 +924,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	an AbstractGraphicLoader that has a pre-defined timer, etc.  A
 	GraphicLoader is a component that creates OMGraphics on it's own
 	schedule, and then notifies a receiver to paint the
-	OMGraphicList. The GraphicLoaderConnector is a component that
+	OMGraphicList.  The GraphicLoaderConnector is a component that
 	lives in the MapHandler and looks for GraphicLoaders in the
 	MapHandler that do not have a component that is receiving its
 	OMGraphics.  If it finds on, it creates a
@@ -641,7 +951,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	
 	OMGraphics were modified so that fill color matters with regard to
 	distance.  Clear shapes will be treated as lines, without
-	area. OMLines are never treated as being with area (affects great
+	area.  OMLines are never treated as being with area (affects great
 	circle lines) no matter what the fillPaint settings are.
 
 	* MouseModes can now provide an Icon.  The MouseModeButtonPanel
@@ -667,10 +977,10 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	* Misc layer improvements: Many Layers had properties renamed to
 	not have a '.' in the front of them, and their setProperties
 	methods have been modified to work with or without a property
-	prefix. GraticuleLayer has font size property. DTED file
-	components do better checking for null fields. ETOPOLayer updated
-	to read ETOPO2 data. LocationLayer has LayerHandlers access
-	exposed. The RpfProductInfo now has catalog static methods to
+	prefix.  GraticuleLayer has font size property.  DTED file
+	components do better checking for null fields.  ETOPOLayer updated
+	to read ETOPO2 data.  LocationLayer has LayerHandlers access
+	exposed.  The RpfProductInfo now has catalog static methods to
 	print out information on all of the various data types.
 
 	* Fixed bug where gestures were not accessing information on
@@ -681,28 +991,28 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	EditToolLoaders from the OMDrawingTool, instead of finding them on
 	its own.
 
-2002-07-24  Bill Mackiewicz <bmackiew@bbn.com>
+2002-07-24 Bill Mackiewicz <bmackiew@bbn.com>
 	* OpenMap 4.5.3 released.
 	
-2002-07-24  Bill Mackiewicz <bmackiew@bbn.com>
+2002-07-24 Bill Mackiewicz <bmackiew@bbn.com>
 	* OpenMap 4.5.2 released.
 	
-2002-07-23  Bill Mackiewicz <bmackiew@bbn.com>
+2002-07-23 Bill Mackiewicz <bmackiew@bbn.com>
 
 	* OpenMap 4.5.1 released.
 	
-2002-07-22  Donald Dietrick  <dietrick@bbn.com>
+2002-07-22 Donald Dietrick <dietrick@bbn.com>
 
 	* Added the com.bbn.openmap.tools.dnd package that contains a
 	global application mechanism for handling Drag and Drop events.
 
-2002-07-21  Don Dietrick  <dietrick@bbn.com>
+2002-07-21 Don Dietrick <dietrick@bbn.com>
 
 	* Added Oliver Hinds' OMColorChooser preview panel, so you can see
 	what the color looks with the transparency setting before you hit
 	OK.
 
-2002-07-20  Don Dietrick  <dietrick@bbn.com>
+2002-07-20 Don Dietrick <dietrick@bbn.com>
 
 	* Incorporated Raj Singh's updates to the WMSPlugIn, which bring
 	it into compliance with WMS specification version 1.1.0, including
@@ -720,7 +1030,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	translating DrawingAttributes from OMGraphics that were converted
 	to EsriPolygons and EsriPolylines.
 
-2002-07-18  Don Dietrick  <dietrick@bbn.com>
+2002-07-18 Don Dietrick <dietrick@bbn.com>
 
 	* Added ProgressEvent, ProgressListener and ProgressSupport
 	classes to the com.bbn.openmap.event package.  These objects
@@ -746,7 +1056,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	GraphicLoader that lets things wander on the map, while keeping
 	track of what objects are in LOS of each other.
 
-2002-07-17  Don Dietrick  <dietrick@bbn.com>
+2002-07-17 Don Dietrick <dietrick@bbn.com>
 
 	* Made modifications to OMGraphics.  Made the OMLine handle arrow
 	heads properly.  Made arrow heads bigger.  Made OMGrid more
@@ -780,7 +1090,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	original Makefiles have been removed, and replaced with Makefiles
 	that call ant.
 
-2002-06-21  Don Dietrick  <dietrick@bbn.com>
+2002-06-21 Don Dietrick <dietrick@bbn.com>
 
 	* Modifed the build.xml file to handle the corba classes better.
 
@@ -788,12 +1098,12 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	com.bbn.openmap.layer.rpf.MakeToc class now throws that exception
 	instead of calling System.exit(), in case it is embedded into a GUI.
 
-2002-06-18  Don Dietrick  <dietrick@bbn.com>
+2002-06-18 Don Dietrick <dietrick@bbn.com>
 
 	* Misc bug fixes in several classes, fixing null pointer
 	exceptions, security access exceptions, etc.
 
-2002-06-13  Don Dietrick  <dietrick@bbn.com>
+2002-06-13 Don Dietrick <dietrick@bbn.com>
 
 	* Modified the EsriShapeExport class so that a GUI is not brought
 	up to save the files if a file path is provided.
@@ -801,10 +1111,10 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	* Fixed a bug in OMPoly that prevented internal Shape objects from
 	being created if soShapes == false.
 
-2002-06-03  Bill Mackiewicz <bmackiew@bbn.com>
+2002-06-03 Bill Mackiewicz <bmackiew@bbn.com>
 	* OpenMap 4.5 released.
 	
-2002-05-29  Don Dietrick  <dietrick@bbn.com>
+2002-05-29 Don Dietrick <dietrick@bbn.com>
 
 	* Modified MIFLayer to be an OMGraphicHandlerLayer.
 
@@ -826,7 +1136,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	knowing if there is a clipping rectangle set on the MapBean, so
 	just be aware of that if you set the clip rectangle on them.
 
-2002-05-28  Don Dietrick  <dietrick@bbn.com>
+2002-05-28 Don Dietrick <dietrick@bbn.com>
 
 	* Fixed that annoying NullPointerException in the
 	com.bbn.openmap.layer.shape.ShapeLayer.renderDataForProjection()
@@ -877,19 +1187,19 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	OMGraphicHandlerPlugIn are OMGraphicHandlers that use FilterSupport.
 
 	Layers that implement the OMGraphicHandler interface -
-	GraticuleLayer, DemoLayer, DrawingToolLayer, ShapeLayer. 
+	GraticuleLayer, DemoLayer, DrawingToolLayer, ShapeLayer.  
 	
 	Other layer improvements that take advantage of the OMGeometry
 	changes:
 	- ShapeLayer2.java - A shape layer that uses the new OMGeometry
-	objects. BufferedShapeLayer uses the new OMGeometryList. The
+	objects.  BufferedShapeLayer uses the new OMGeometryList.  The
 	com.bbn.openmap.layer.shape.EsriRecord components handle
 	OMGeometryLists and OMGeometry graphics.
 	- The com.bbn.openmap.layer.shape.areas.AreaHandler groups all
 	like areas together in a OMGeometryList.
 	
 	As a side note, OMRaster and OMBitmap create rectangles outlining
-	their shape. OMGrid hasn't been modified to do anything in
+	their shape.  OMGrid hasn't been modified to do anything in
 	particular with it's Shape object pointer.
 
 	* Created a com.bbn.openmap.dataAccess package, which is intended
@@ -902,7 +1212,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	com.bbn.openmap.plugin.esri package still exist.
 
 	* Incorporated a submission by Karl Stuempfle and Lonnie Goad
-	working for OptiMetrics, Inc. that provides a way to take an
+	working for OptiMetrics, Inc.  that provides a way to take an
 	OMGraphicList and export it to a (or up to three) Shape files.
 	The class that does this is
 	com.bbn.openmap.dataAccess.shape.EsriShapeExport.  If a dbf file
@@ -912,7 +1222,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	com.bbn.openmap.plugin.esri.EsriPlugIn reads the dbf file and
 	looks for these attributes in it.  If they are there, they are
 	used, otherwise the default settings are used to render the shape
-	graphics. 
+	graphics.  
 
 	The DbfTableModel was modified, and augmented with the
 	MetaDbfTableModel, to allow direct editing and modification of the
@@ -959,14 +1269,14 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	There are two directories in the OpenMap.net project:
 	ImageWebService and OpenMapWeb.
 	
-	ImageWebService contains the .NET XML Web Services. There are
+	ImageWebService contains the .NET XML Web Services.  There are
 	three of them: ProperService.asmx, GetMapService.asmx, and
-	TimerService.asmx. 
+	TimerService.asmx.  
 	- ProperService is responsible for starting and killing Java Image
 	servers, updating user sessions, keeping information about layers
 	used.
 	- GetMapService service has three methods: GetMapImage,
-	RecenterMap, PanMap. It uses ProperService to start Java processes
+	RecenterMap, PanMap.  It uses ProperService to start Java processes
 	as needed.
 	- TimerService is a utility that will call CleanServerProcs()
 	method in ProperService every certain number of minutes to check
@@ -1068,7 +1378,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	* Added some new functionality to the com.bbn.openmap.layer.shape
 	package.  Created the MultiShapeLayer, which can display one or
 	more shape files.  The palette for this layer provides controls
-	for adding buffering and rendering behaviors. The AreaHandler in
+	for adding buffering and rendering behaviors.  The AreaHandler in
 	the com.bbn.openmap.layer.shape.areas now also uses dbf files, in
 	addition to csv files.
 
@@ -1077,7 +1387,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	from an applet as expected.
 
 	* Modified the Layer parent class, adding a Projection variable
-	for all subclasses to use. Accessor methods that take projection
+	for all subclasses to use.  Accessor methods that take projection
 	events and projections to get to the projection variable were also
 	added.  Added Layer.projectionChanged() method that sets this
 	projection variable.  Most layer subclasses will probably have
@@ -1129,9 +1439,9 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	- EarthquakeLayer default sites updated.
 	- Fixed layout of CoordPanel and DMSCoordPanel.
 	- Environment class adjusted so that for the Windows platform, the
-	XWindowsWorkaround for improved clipping performance is	enabled. 
+	XWindowsWorkaround for improved clipping performance is	enabled.  
 	- The Environment was also changed to handle internal windows
-	better. It now containes a JLayeredPane to use as a desktop.  All
+	better.  It now containes a JLayeredPane to use as a desktop.  All
 	OpenMap components that consider using internal windows have been
 	updated to use the new setup.
 	- The DMSLatLonPoint has been updated to use floats for its
@@ -1139,13 +1449,13 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	- app/RouteLayer was removed, it was redundant.
 	- Projections now use/return ArrayLists instead of Vectors.
 
-2001-12-11  William Euerle  <wjeuerle@bbn.com>
+2001-12-11 William Euerle <wjeuerle@bbn.com>
 
 	* Numerous changes to VPF layer code to make it more robust.  A
 	few minor performance improvements.  Some initial code to handle
 	"node" features - this code is not yet complete.
 
-2001-11-21  Donald Dietrick  <dietrick@bbn.com>
+2001-11-21 Donald Dietrick <dietrick@bbn.com>
 
 	* Created the openmap/share/openmap.jnlp file, which demonstrates
 	how to set up a file to be used with Java WebStart.  MacOS X users
@@ -1156,7 +1466,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 
 	* Added the com.bbn.openmap.omGraphics.labeled package, which will
 	be the future home of OMGraphics that have text labels attached to
-	them. Only the LabeledOMPoly was implemented.  The LabeledOMPoly
+	them.  Only the LabeledOMPoly was implemented.  The LabeledOMPoly
 	lets you attach a text object to a specific node, or you can tell
 	it to center the text within the poly.  The polygon parameters can
 	be modified with the OMDrawingTool, but the text attributes
@@ -1179,7 +1489,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	Cleaned up how the InformationDelegator was releasing listeners to
 	the palette triggers.  The LayerSupport and other listeners were
 	adding duplicates to their lists in some situations, which
-	hampered clean up, too. 
+	hampered clean up, too.  
 	
 	* Fixed bug in DMSLatLonPoint where the lat/lons weren't being set
 	properly.
@@ -1191,10 +1501,10 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	* OpenMap 4.4.1 was released a day after 4.4, with some
 	modifications to the com.bbn.openmap.plugin.esri package.
 
-2001-11-01  Bill Mackiewicz  <bmackiew@bbn.com>
+2001-11-01 Bill Mackiewicz <bmackiew@bbn.com>
 	* OpenMap 4.4 released.
 	
-2001-11-01  Donald Dietrick  <dietrick@bbn.com>
+2001-11-01 Donald Dietrick <dietrick@bbn.com>
 
 	* PropertyConsumer handling has been very significantly improved,
 	thanks to a code submission from Bernhard Reiter and Kai Lessmann.
@@ -1211,7 +1521,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	the contents of the PropertyConsumer's properties.
 
 	The Inspector exects that the properties returned in the
-	PropertyConsumer.getProperties() method will be scoped, i.e. that
+	PropertyConsumer.getProperties() method will be scoped, i.e.  that
 	if a property prefix is used, the properties will also have that
 	prefix in front of the properties.
 
@@ -1259,7 +1569,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	This really applies to developers that configure their layers
 	programmically.  If you define a Properties object that is only
 	used by one Layer (or other PropertyConsumer type) you don't have
-	to scope the properties. i.e.
+	to scope the properties.  i.e.
 
 	ShapeLayer shapelayer = new ShapeLayer();
 	Properties shapeprops = new Properties();
@@ -1337,13 +1647,13 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 
 	- DrawingAttributes.java (just so you know for your layers)
 	- EarthquakeLayer.java GraticuleLayer.java (also uses Inspector for
-	  runtime modifications via palette)
+	 runtime modifications via palette)
 	- com.bbn.openmap.layer.location
 	- com.bbn.openmap.layer.rpf
 	- com.bbn.openmap.layer.shape
-	   The areas package has not been updated for PropertyConsumer
-	   methods yet.  However, the AreaHandler was reworked to provide
-	   better access and control over the area definitions.
+	  The areas package has not been updated for PropertyConsumer
+	  methods yet.  However, the AreaHandler was reworked to provide
+	  better access and control over the area definitions.
 
 	* The PlugInLayer and PlugIn were updated to use the
 	PropertyConsumer interface, and they resolve between themselves
@@ -1364,7 +1674,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 
 	* The Layer class has been updated so that it contains the handle
 	to its palette, instead of having the LayerPane manage
-	it. Layer.showPalette() and Layer.hidePalette() methods have been
+	it.  Layer.showPalette() and Layer.hidePalette() methods have been
 	added, and the gui components have been modified as well.
 	ComponentListeners to the Layer will receive events about the
 	palette, too, telling them when the palette has been activated or
@@ -1422,7 +1732,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 
 	* Added a method to the MapHandler (BeanContext) called get(String
 	classname), that looks at its contents and returns an object of
-	that type.  Handy for getting the MapBean, LayerHandler, etc. or
+	that type.  Handy for getting the MapBean, LayerHandler, etc.  or
 	any SoloMapComponent from the MapHandler when it's actually
 	needed, without maintaining a constant handle to it.  Kinda handy
 	for finding the first one of objects that may have sibling types,
@@ -1437,7 +1747,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	the findAndUndo(Object) method was added for objects being removed
 	from the MapHandler.
 
-	* The OMCircle was modified to handle rotation!  The rotation
+	* The OMCircle was modified to handle rotation! The rotation
 	angle, in radians, can defined with setRotationAngle(double), with
 	zero being due West.  Positive and negative values can be used.
 
@@ -1536,10 +1846,10 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	* The TerrainLayer's LOSGenerator algorithm was improved via a
 	submission from Mark Wigmore.
 
-2001-08-23  Bill Mackiewicz <bmackiew@bbn.com
+2001-08-23 Bill Mackiewicz <bmackiew@bbn.com
 	* OpenMap 4.3 released.
 	
-2001-08-23  Donald Dietrick  <dietrick@bbn.com>
+2001-08-23 Donald Dietrick <dietrick@bbn.com>
 
 	* Changed the WebBrowser class to use the File methods for
 	creating unique and temporary files for browser display.
@@ -1580,7 +1890,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 
 	* Added support for creating and editing polygons and polylines.
 
-2001-07-27  Donald Dietrick  <dietrick@bbn.com>
+2001-07-27 Donald Dietrick <dietrick@bbn.com>
 
 	* Added a workaround for Applets trying to access data that was
 	being stored in its own jar file.  See the
@@ -1598,10 +1908,10 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	FeatureClassInfo object.  Thanks to Tom Peel for finding this and
 	reporting it.
 
-2001-07-12  Bill Mackiewicz <bmackiew@bbn.com>
+2001-07-12 Bill Mackiewicz <bmackiew@bbn.com>
 	* OpenMap 4.2.1 released.
 	
-2001-07-11  Donald Dietrick  <dietrick@bbn.com>
+2001-07-11 Donald Dietrick <dietrick@bbn.com>
 
 	* Fixed problems with 'make install' with respect to the previous
 	changes in the share directory structure.
@@ -1626,7 +1936,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 2001-06-19	Bill Mackiewicz <bmackiew@bbn.com>
 	* OpenMap 4.2 released.
 	
-2001-06-18  Donald Dietrick  <dietrick@bbn.com>
+2001-06-18 Donald Dietrick <dietrick@bbn.com>
 
 	* Added the com.bbn.openmap.io package, and moved all the I/O
 	classes from com.bbn.openmap.util into it.  BinaryFile was also
@@ -1650,7 +1960,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	use the BinaryFile, and this data can now be accessed in a variety
 	of ways.
 
-	There are some issues:  Windows users have to use forward slashes
+	There are some issues: Windows users have to use forward slashes
 	in their paths (/), even for local files.  We're still trying to
 	figure out how to get applets to use data stored in a separate jar
 	file in the codebase - but unpackaged data in the codebase works.
@@ -1714,11 +2024,11 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	algorithm for pre-clipping OMGraphics, which gets rid of the
 	zoom-in delay on vector graphics.
 
-2001-03-15  Bill Mackiewicz <bmackiew@bbn.com>
+2001-03-15 Bill Mackiewicz <bmackiew@bbn.com>
 
 	* OpenMap 4.1.1 released.
 	
-2001-03-15  Donald Dietrick  <dietrick@bbn.com>
+2001-03-15 Donald Dietrick <dietrick@bbn.com>
 
 	* Fixed memory leak within LayerHandler.  Layers were being
 	referenced by the LayerPane after they were removed from the
@@ -1746,11 +2056,11 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	* Fixed bug in quadtree Rect and Node, where the distance
 	algorithm wasn't correct.
 
-2001-02-27  Bill Mackiewicz <bmackiew@bbn.com>
+2001-02-27 Bill Mackiewicz <bmackiew@bbn.com>
 	
 	* OpenMap 4.1 released.
 	
-2001-02-26  Donald Dietrick  <dietrick@bbn.com>
+2001-02-26 Donald Dietrick <dietrick@bbn.com>
 
 	* Added a package name to the com.bbn.openmap.examples.crew
 	example.
@@ -1768,7 +2078,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	* Modified the Environment and projection objects to handle the
 	custom background color a little better.
 	
-2001-02-23  Don Dietrick  <dietrick@bbn.com>
+2001-02-23 Don Dietrick <dietrick@bbn.com>
 
 	* Added a ToolTip display ability to the InformationDelegator.
 	The Layer has convience functions to show and hide tool tips on
@@ -1804,7 +2114,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	great.  It is a cross-platform Java project build tool, and is
 	easy to install and use.  Highly recommended.
 
-2001-02-06  Donald Dietrick  <dietrick@bbn.com>
+2001-02-06 Donald Dietrick <dietrick@bbn.com>
 
 	* Fixed LocationLayer bug where search direction on the graphic
 	list was the same as rendering direction, when it should have been
@@ -1826,27 +2136,27 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	tuned for better performance and memory management.  Fixed a bug
 	with the old VPF paradigm where skip arrays in the warehouse were
 	not the same across VPF paths, and it affected rendering.
-	Resetting the warehouse skip arrays between paths fixed this. 
+	Resetting the warehouse skip arrays between paths fixed this.  
 
-2001-01-08  Don Dietrick  <dietrick@bbn.com>
+2001-01-08 Don Dietrick <dietrick@bbn.com>
 
 	* Added the ProjectionStack, which is a projection listener that
 	remembers projections to reset to the MapBean when triggered.
 	Listens to ProjectionStackTriggers (ProjectionStackTool) to tell
 	it to go back and forth through the stack as applicable.
 
-2000-12-22  Bill Mackiewicz <bmackiew@bbn.com
+2000-12-22 Bill Mackiewicz <bmackiew@bbn.com
 
 	* OpenMap 4.0 and OpenMap 3.7 released.
 	
-2000-12-19  Don Dietrick  <dietrick@bbn.com>
+2000-12-19 Don Dietrick <dietrick@bbn.com>
 
 	* Modified the ShapeLayer and ESRI graphic objects to use the
 	DrawingAttributes object for rendering parameters, and added the
 	DrawingAttributes GUI to the ShapeLayer palette.  You can alter
 	the appearance of the ShapeLayer graphics at runtime.
 
-2000-12-18  Don Dietrick  <dietrick@bbn.com>
+2000-12-18 Don Dietrick <dietrick@bbn.com>
 
 	* Added the com.bbn.openmap.layer.terrain layer, which provides a
 	LOS mask and path elevation tool.  This layer will be modified in
@@ -1949,7 +2259,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	the code that requires jdk 1.2 removed.  This package should
 	compile without modification with jdk 1.1.X.
 
-2000-10-23  Don Dietrick  <dietrick@bbn.com>
+2000-10-23 Don Dietrick <dietrick@bbn.com>
 
 	* Added the com.bbn.openmap.image.SimpleHttpImageServer, with the
 	MapRequestHandler object and a bunch of modifications to the
@@ -2000,8 +2310,8 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 2000-10-19 Prakash Manghwani <pmanghwa@bbn.com>
 	
 	* OpenMap components now use Bean Containment and Services
-	protocol, popularly know as BeanContext. The components look for 
-	services and objects that it needs. 
+	protocol, popularly know as BeanContext.  The components look for 
+	services and objects that it needs.  
 
 	* Modified OpenMap in com.bbn.openmap.app package so that it
 	demonstrates the ease of creating a reconfigurable Mapping
@@ -2012,11 +2322,11 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	providing the user with a choice of selecting only the GUI widgets
 	it needs.
 	
-2000-08-24  Bill Mackiewicz <bmackiew@bbn.com>
+2000-08-24 Bill Mackiewicz <bmackiew@bbn.com>
 
 	* OpenMap 3.6.2 released.
 	
-2000-08-23  Don Dietrick  <dietrick@bbn.com>
+2000-08-23 Don Dietrick <dietrick@bbn.com>
 
 	* Included the upgraded DistanceMouseMode as submitted by Ringo Wathelet.
 
@@ -2026,7 +2336,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 
 	* Added a redraw button to the VPFLayer.
 	
-2000-08-22  Don Dietrick  <dietrick@bbn.com>
+2000-08-22 Don Dietrick <dietrick@bbn.com>
 
 	* Added the ArgParser class to the utils directory, which is a
 	very simple attempt at parsing String[] argv arguments and assigning
@@ -2043,11 +2353,11 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	layers list.  Now check for null edit button before trying to add
 	it to the LayersMenu.
 
-2000-08-08  Bill Mackiewicz <bmackiew@bbn.com>
+2000-08-08 Bill Mackiewicz <bmackiew@bbn.com>
 
 	* OpenMap 3.6.1 released.
 	
-2000-08-03  Don Dietrick  <dietrick@bbn.com>
+2000-08-03 Don Dietrick <dietrick@bbn.com>
 
 	* Added the openmap.BackgroundColor property, which lets you set
 	the color of the "ocean" for the MapBean.  If it's not set, then
@@ -2100,10 +2410,10 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	them know if the layer has been hidden (setVisible(false)).
 
 	* Added the etopo layer package, which was submitted from Joel
-	A. Rand.  It displays the ETOPO world elevation data set, and
+	A.  Rand.  It displays the ETOPO world elevation data set, and
 	provides a really cool view of the world.
 
-2000-08-01  Bill Euerle <wjeuerle@bbn.com>
+2000-08-01 Bill Euerle <wjeuerle@bbn.com>
 
 	* Fix a bug that prevented DTEDFrame objects from getting garbage
  	collected, limited the frame cache size, and fixed an off-by-one
@@ -2111,33 +2421,33 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	memory changes were a result of a suggestion from Davis Gillespie,
 	formerly from General Dynamics.
 
-2000-07-05  Bill Euerle <wjeuerle@bbn.com>
+2000-07-05 Bill Euerle <wjeuerle@bbn.com>
 
 	* Removed deprecated OMGraphic methods setGraphicType(int) and
  	getGraphicType.  setGraphicType didn't make much sense, and (obj
  	instanceof OMBitmap) can be used in place of the second method.
-  	Deprecated the OMGraphic constructors that took a graphictype, and
- 	added new constructors that don't take a graphic type. Although
+ 	Deprecated the OMGraphic constructors that took a graphictype, and
+ 	added new constructors that don't take a graphic type.  Although
  	now unused, the GRAPHICTYPE_* constants in OMGraphic will stay
  	around for the forseeable future.
 
-2000-06-01  Don Dietrick  <dietrick@bbn.com>
+2000-06-01 Don Dietrick <dietrick@bbn.com>
 
 	* Released OpenMap 3.5
 
-2000-06-01  Bill Mackiewicz <bmackiew@bbn.com>
+2000-06-01 Bill Mackiewicz <bmackiew@bbn.com>
 
 	* Added thinned VPF area and edge data to the share/ directory as
 	an alternative to the existing DCW shape files in that directory.
 	
-2000-05-31  Don Dietrick  <dietrick@bbn.com>
+2000-05-31 Don Dietrick <dietrick@bbn.com>
 
 	* Added a palette option to the RpfLayer to limit the chart
 	selection to the one currently selected.  If you find a chart type
 	you like, you can engage the lock, and only charts of that
 	particular type will be displayed.
 
-2000-05-25  Don Dietrick  <dietrick@bbn.com>
+2000-05-25 Don Dietrick <dietrick@bbn.com>
 	
 	* Removed the csvLocation package.  It has been replaced by the
 	location/csv package.
@@ -2159,7 +2469,7 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	save the current OpenMap image as a JPEG.  You can also modify the
 	MenuPanel to use other ImageFormatters, too.
 
-2000-05-17  Don Dietrick  <dietrick@bbn.com>
+2000-05-17 Don Dietrick <dietrick@bbn.com>
 
 	* Modified the arrowhead output statements to be Debug statements,
 	instead of constant output.
@@ -2167,30 +2477,30 @@ src/corba	   - OpenMap CORBA client-server code that relies on
 	* Added border fix to OpenMap applet as suggested by Mark
 	Bucciarelli.
 	
-2000-05-16  Don Dietrick  <dietrick@bbn.com>
+2000-05-16 Don Dietrick <dietrick@bbn.com>
 
 	* Modified the RpfLayer to not burn cpu cycles on the
 	RpfCoverageTool if the tool is not in use.  Changed the coverage
 	property so that the tool is active by default, accessable via the
 	RpfLayer palette.
 
-2000-04-05  Don Dietrick  <dietrick@bbn.com>
+2000-04-05 Don Dietrick <dietrick@bbn.com>
 
 	* Added methods in the ImageServer that lets it act as the
 	ImageReceiver.  This lets you ask it for an image directly,
 	instead of using it to load an ImageReceiver.
 
-2000-04-01  Don Dietrick  <dietrick@bbn.com>
+2000-04-01 Don Dietrick <dietrick@bbn.com>
 
 	* Fixed timing bug in ImageGenerator that caused it to hang when
 	the same projection was provided twice in a row.
 
-Thu Mar 30 12:38:32 2000    <wjeuerle@HAYSTACK>
+Thu Mar 30 12:38:32 2000  <wjeuerle@HAYSTACK>
 
 	* omGraphics/OMText2D.java: added an OMGraphic that supports
  	rotated text.  [Requires the Java2D API.]
 
-2000-03-30  Don Dietrick  <dietrick@bbn.com>
+2000-03-30 Don Dietrick <dietrick@bbn.com>
 
 	* Modified the OMGraphicList select() and deselect() method
 	behaviors - they now call selectAll() and deselectAll().
@@ -2200,17 +2510,17 @@ Thu Mar 30 12:38:32 2000    <wjeuerle@HAYSTACK>
 	coordinates.
 	
 
-Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
+Fri Mar 24 12:41:58 2000  <wjeuerle@HAYSTACK>
 
 	* Deprecate OMGraphic.setGraphicType(int) and
- 	OMGraphic.getGraphicType(). instanceof returns the same type of
+ 	OMGraphic.getGraphicType().  instanceof returns the same type of
  	information as getGraphicType(), and setGraphicType() doesn't
  	really change the type (OMPoly, OMCircle, ...) of a graphic, so
  	its somewhat useless.  OMGraphic.graphicType was made private
  	(previously protected) so it can also go away when set/get go
  	away.
 
-2000-03-09  Don Dietrick  <dietrick@bbn.com>
+2000-03-09 Don Dietrick <dietrick@bbn.com>
 
 	* Modifed the RPF package.  Fixed the transparancy problem, the
 	layer now responds correctly to transparancy changes and
@@ -2230,11 +2540,11 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	be made with a bit mask representing which layers should be turned
 	on/off for the map image.
 
-2000-02-28  Don Dietrick  <dietrick@bbn.com>
+2000-02-28 Don Dietrick <dietrick@bbn.com>
 
 	* Released OpenMap 3.4
 
-2000-02-25  Donald Dietrick  <dietrick@bbn.com>
+2000-02-25 Donald Dietrick <dietrick@bbn.com>
 
 	* Added the mapIt example, a contribution that's pretty similar to
 	the ImageMaster class.
@@ -2242,7 +2552,7 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	* Added the nexrad/NextradLayer, which is a contribution that
 	draws the rainfall over an area as stored in a nexrad file.
 
-2000-02-24  Donald Dietrick  <dietrick@bbn.com>
+2000-02-24 Donald Dietrick <dietrick@bbn.com>
 
 	* OMRasterObject was modified to trim unused pixels from itself
 	before upscaling itself, instead of relying on the windowing
@@ -2281,7 +2591,7 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	coverage tool information when the coverage tool was not being
 	used.  Fixed a problem reading in CIB A.TOC files from NIMA.  The
 	directory name lengths are incorrectly listed in the file, and the
-	files where not being found. Added the indexed image capability
+	files where not being found.  Added the indexed image capability
 	to the RpfFrameProvider interface, which really helps speed in the
 	com.bbn.openmap.layer.rpf.corba implementation for LANS.
 
@@ -2321,21 +2631,21 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	define what you want on a map, the image format you want it in,
 	and where you want it written when it's done.
 
-1999-11-03  Bill Mackiewicz <bmackiew@bbn.com>
+1999-11-03 Bill Mackiewicz <bmackiew@bbn.com>
 
 	* Released OpenMap 3.3.5
 	
-1999-11-01  George Keith  <gkeith@bbn.com>
+1999-11-01 George Keith <gkeith@bbn.com>
 
 	* Added CacheLayer.java to layers directory.  CacheLayer.java will
  	read and display serialized omGraphics from a file specified in
  	the properties.
 
-1999-09-30  Bill Mackiewicz <bmackiew@bbn.com.
+1999-09-30 Bill Mackiewicz <bmackiew@bbn.com.
 
 	* Released Openmap 3.3.4
 	
-1999-09-29  Donald Dietrick  <dietrick@bbn.com>
+1999-09-29 Donald Dietrick <dietrick@bbn.com>
 
 	* Updated memory management for the RPF package.  The subframe
 	caching works better in a memory-restrictive environment.
@@ -2348,11 +2658,11 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	* Added the LayerHandler to the gui package.  Layers can be added
 	and removed on the fly.
 	
-1999-09-07  Donald Dietrick  <dietrick@bbn.com>
+1999-09-07 Donald Dietrick <dietrick@bbn.com>
 
 	* Added the corba package for a RpfFrameProvider.  Included is the
  	Corba RpfFrameProvider client, the Corba RpfFrameProvider server,
- 	and the idl that defines their interface. The Rpf Subframe data is
+ 	and the idl that defines their interface.  The Rpf Subframe data is
  	transferred betweent the client and server in JPEG format.  A
  	CorbaRpfLayer was created to add a palette widget that lets you
  	control the jpeg image quality, and thus size, during
@@ -2368,27 +2678,27 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	sort of server.  All parts of the package have changed, and are
 	incompatable with past interfaces.
 
-1999-08-25  Bill Mackiewicz <bmackiew@bbn.com>
+1999-08-25 Bill Mackiewicz <bmackiew@bbn.com>
 
 	* Released OpenMap 3.3.3
 	
-1999-08-17  Bill Euerle  <wjeuerle@bbn.com>
+1999-08-17 Bill Euerle <wjeuerle@bbn.com>
 
 	* Added additional projections to that support views (projections
 	whose parameters are recalculated when panning the map)
 
-1999-08-06  Allan Doyle  <adoyle@stout.bbn.com>
+1999-08-06 Allan Doyle <adoyle@stout.bbn.com>
 
 	* Improved CSVLocationLayer to read values from a
-	URL. (file:/foo.csv or http://foo.com/foo.csv)
+	URL.  (file:/foo.csv or http://foo.com/foo.csv)
 
-1999-08-05  Allan Doyle <adoyle@bbn.com>
+1999-08-05 Allan Doyle <adoyle@bbn.com>
 
 	* Incorporated BufferedMapBean changes to speed up refresh and
 	fixed a NullPointerException when it's used in a
-	JInternalFrame. Thanks to Joe Warzecha at LLNL.
+	JInternalFrame.  Thanks to Joe Warzecha at LLNL.
 
-1999-07-29  Thomas Mitchell  <tmitchel@stout.bbn.com>
+1999-07-29 Thomas Mitchell <tmitchel@stout.bbn.com>
 
 	* Added share/omapplet.html as a sample html file for running
 	OpenMap as an applet via the Java Plug-in.
@@ -2396,12 +2706,12 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	* Added FAQ section 4, OpenMap as an Applet discussing the hows
 	and whys of running OpenMap as an Applet.
 
-1999-07-21  Allan Doyle <adoyle@bbn.com>
+1999-07-21 Allan Doyle <adoyle@bbn.com>
 	* Added .shadowX and .shadowY properties to ShapeLayer.java.
 	This allows you to make snazzy maps with an offset shadow
 	underneath.
 	
-1999-07-20  Donald Dietrick  <dietrick@bbn.com>
+1999-07-20 Donald Dietrick <dietrick@bbn.com>
 
 	* Added the OMgrid graphic object, which, like the other
  	OMGraphics, handles Lat/Lon grids, X/Y grids, and Lat/Lon offset
@@ -2411,21 +2721,21 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
  	ARGB colors, and a couple others assume that the contents are
  	elevations.  The grid can also hold other graphic objects.
 
-1999-04-19  Donald Dietrick  <dietrick@bbn.com>
+1999-04-19 Donald Dietrick <dietrick@bbn.com>
 
 	* Fixed a bug in RpfTocHandler that caused the A.TOC file section
  	to be read incorrectly.
 
-1999-04-19    <culliney@bohemia>
+1999-04-19  <culliney@bohemia>
 
 	* Merged patches from various contributors (thanks!) to DTED
-	  and DayNight code.
+	 and DayNight code.
 
 	* Fixed some problems with ScaleFilterLayer and DateLayer.
 
 	* Added BufferedShapeLayer for nominal speed gain.
 
-1999-04-05  Donald Dietrick  <dietrick@bbn.com>
+1999-04-05 Donald Dietrick <dietrick@bbn.com>
 
 	* Added the CSVLocationLayer.  This layer lets you give it a
 	comma-separated value file, listing locations with their latitudes 
@@ -2435,7 +2745,7 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	locations display additional detailed information through a
 	browser when a locaiton is clicked upon.
 
-1999-04-05  Bill Euerle  <wjeuerle@bbn.com>
+1999-04-05 Bill Euerle <wjeuerle@bbn.com>
 
 	* Modified VPF code to move more of the rendering decisions into
 	the VPFGraphicWarehouse interface, to allow more flexibility to
@@ -2443,13 +2753,13 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 
 	* Modified VPF code to allow multiple paths to data directories.
 	
-1999-04-05    <culliney@bohemia>
+1999-04-05  <culliney@bohemia>
 
 	* Updated the openmap.properties file.  You will want to merge the
  	options in this file with the openmap.properties in your home
  	directory.
 
-1999-03-18  Donald Dietrick  <dietrick@bbn.com>
+1999-03-18 Donald Dietrick <dietrick@bbn.com>
 
 	* Added the RPF layer to the openmap tree.  RPF is the National
 	Imagery and Mapping Agency (NIMA) format for raster products, like 
@@ -2468,7 +2778,7 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	openmap.properties file.  See the GraticuleLayer documentation for 
 	more information.
 	
-1999-03-16    <culliney@bohemia>
+1999-03-16  <culliney@bohemia>
 
 	* Deprecated OMColor.  Two constructors incorrectly override the
  	Java 2 java.awt.Color.  OMColor was only useful to support
@@ -2476,7 +2786,7 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
  	use regular java.awt.Colors or use the Java version-neutral
  	com.bbn.openmap.util.ColorFactory to create colors.
 
-1999-02-22  Aaron Culliney  <aculline@blatz.bbn.com>
+1999-02-22 Aaron Culliney <aculline@blatz.bbn.com>
 
 	* Added Java 2D API OMGraphics classes to the
  	com.bbn.openmap.omGraphics package.
@@ -2485,7 +2795,7 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
  	2 platform.  If so, it sets up the appropriate variables in the
  	Makefiles.
 
-1999-02-02  Donald Dietrick  <dietrick@bbn.com>
+1999-02-02 Donald Dietrick <dietrick@bbn.com>
 
 	* Added the com.bbn.openmap.layer.util.LayerUtils class, which
 	provides a couple convenience functions for parsing properties for
@@ -2495,7 +2805,7 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	data coverage generation functions out from the layer, so that a
 	specialist could be made without duplicating a bunch of code.
 
-1999-01-27  Donald Dietrick  <dietrick@bbn.com>
+1999-01-27 Donald Dietrick <dietrick@bbn.com>
 
 	* Modified the DTED package to be able to produce indexed images
  	(images that use colormaps, as opposed to the direct colormodel).
@@ -2505,7 +2815,7 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	* Added methods to the OMRasterObject that let you add image
  	filters to manipulate the images when they are generated.
 
-1999-01-21  Donald Dietrick  <dietrick@bbn.com>
+1999-01-21 Donald Dietrick <dietrick@bbn.com>
 
 	* Added the Tool object in the gui package, reflecting a change in
  	how the ToolPanel is used.  The ToolPanel was also changed to
@@ -2513,16 +2823,16 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
  	OMToolSet, and is added to the ToolPanel in the OpenMap
  	application.
 
-	* Changed the setWidgets() function in OpenMap.java. setWidgets
+	* Changed the setWidgets() function in OpenMap.java.  setWidgets
  	was the place to add customized derivations of the
  	MapBean,ToolPanel, InformationDelegator and MenuPanel to the
- 	OpenMap application. If an object wasn't added, a default was, and
+ 	OpenMap application.  If an object wasn't added, a default was, and
  	the default widgets were connected with the assumptions they
  	should be.  Now, the interconnections should be made in
  	setWidgets().  If setWidgets is empty, a minimal functioning
  	version of OpenMap runs, without a ToolPanel or Gesturing.
 
-1999-01-20    <culliney@bohemia>
+1999-01-20  <culliney@bohemia>
 
 	* (OLD) Changed all Swing package names from the old
  	`com.sun.java.swing' to the new `javax.swing'.  This will work
@@ -2531,14 +2841,14 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	* Added SimpleMap examples which show how to use OpenMap for very
  	simple Map displays.
 
-1999-01-15    <culliney@bohemia>
+1999-01-15  <culliney@bohemia>
 
 	* Spruced up the EarthquakeLayer.  It has a GUI palette, and now
  	responds to gestures: click on an earthquake to get more
  	information.  It also fetches its graphics in a SwingWorker thread
  	so it doesn't block the AWT thread.
 
-1999-01-12  Don Dietrick  <dietrick@bbn.com>
+1999-01-12 Don Dietrick <dietrick@bbn.com>
 
 	* Added methods to OMGraphicList to let you select all graphics,
  	and temporarily render all graphics in the list in their selected
@@ -2552,36 +2862,36 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
  	JInternalFrames) if running as an application.  If running as an
  	applet, do it the old way.
 
-1999-01-06  Tom Mitchell  <tmitchel@bbn.com>
+1999-01-06 Tom Mitchell <tmitchel@bbn.com>
 
 	* Added box capability in OMText objects.  setShowBounds(boolean)
  	and getShowBounds() are the accessors for this functionality.
 
-1999-01-05  Tom Mitchell  <tmitchel@wolfjaw.bbn.com>
+1999-01-05 Tom Mitchell <tmitchel@wolfjaw.bbn.com>
 
 	* proj/Projection.java: added 'extends java.io.Serializable' per
 	patches send by slee@bbn.com.  This enables the serialization of
 	projections for storing map settings.  No testing has been done,
 	so this should go in the category of "untested and unsupported".
 
-1998-12-22  Tom Mitchell  <tmitchel@wolfjaw.bbn.com>
+1998-12-22 Tom Mitchell <tmitchel@wolfjaw.bbn.com>
 
 	* gui/ToolPanel.java: Fixed a bug reported by slee@bbn.com.
 	Apparently a cut/paste induced problem in removeZoomListener().
 
-1998-12-16  Aaron Culliney  <aculline@blatz.bbn.com>
+1998-12-16 Aaron Culliney <aculline@blatz.bbn.com>
 
 	* Changed event/MapMouseListenerAdapter.java to
  	event/MapMouseAdapter.java to conform to the AWT/Event/Bean naming
  	convention.
 
-1998-12-14  Tom Mitchell  <tmitchel@bbn.com>
+1998-12-14 Tom Mitchell <tmitchel@bbn.com>
 
 	* Converted to Swing 1.1.  OpenMap(tm) is now JDK 1.2 ready, but
 	can still be used with JDK 1.1 by using the Swing 1.1 add-on
 	package.
 
-1998-12-11    <culliney@bohemia>
+1998-12-11  <culliney@bohemia>
 
 	* Added reference to www.opensource.org in the MapBean copyright
  	message.
@@ -2595,9 +2905,9 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	* Added fixes to NavMouseMode for the mouseClicked() trickle-down,
  	and dateline problems.  In JDK1.1, mouseClicked() would get passed
  	down to components underneath the menu when making a selection.
-  	This would cause the map to recenter in navigation mode.
+ 	This would cause the map to recenter in navigation mode.
 
-1998-12-04    <culliney@bohemia>
+1998-12-04  <culliney@bohemia>
 
 	* Add a bunch of comments following this one on the work done in
  	various main classes and APIs over the past several months.
@@ -2613,7 +2923,7 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 
 	* Removed older `specialist' layer code from the OpenMap tree
  	because it requires CORBA (maybe the Visibroker variant) to build.
-  	Since we can't supply this to developers, it's not part of the
+ 	Since we can't supply this to developers, it's not part of the
  	core.
 
 	* Removed dependency on `OverlayTable'.  For the OpenMap viewer
@@ -2624,13 +2934,13 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
 	* OMGraphicList now derives from OMGraphic.  This means that you
  	can construct recursive lists and groupings of graphics.
 
-1998-10-19    <culliney@bohemia>
+1998-10-19  <culliney@bohemia>
 
 	* added "nsges" parameter to OMGraphics and proj library.  Use
  	this to specify how many segments should be drawn between vertices
  	of your vector graphic (for circles, and rhumb/greatcircle lines).
 
-1998-08-03    <culliney@bohemia>
+1998-08-03  <culliney@bohemia>
 
 	* Added constructors to OMPoly() that allow you to specify that
  	the float[] rawllpts are in reverse order.
@@ -2641,32 +2951,32 @@ Fri Mar 24 12:41:58 2000    <wjeuerle@HAYSTACK>
  	code.  If you need to access the original float[] values, then you
  	should send in a copy.  This is FAST!
 
-1998-07-24    <culliney@bohemia>
+1998-07-24  <culliney@bohemia>
 
 	* changed OMPoly.setLocation() functions to take a units value
  	since we allow both radians and decimal degrees (default) for
  	coordinate units.
 
-1998-07-22    <culliney@bohemia>
+1998-07-22  <culliney@bohemia>
 
 	* Added an isPlotable() method to Projection.java.  This is meant
  	to be used before projecting and rendering point objects like
  	bitmaps.  In some projections (Orthographic), the forward() will
  	give you a valid point, but one that isn't on the visible
  	hemisphere, thus you should first check to see if isPlotable().
-  	NOTE that you DO NOT need to do this check for non-point objects,
+ 	NOTE that you DO NOT need to do this check for non-point objects,
  	(lines, polys, etc), they get normalized/clipped correctly
  	already.
 
 	* override getInsets() in the MapBean to return Insets(0,0,0,0).
-  	This fixes a problem of drawing graphics at a +2 x/y offset
+ 	This fixes a problem of drawing graphics at a +2 x/y offset
  	because of a Border around the Bean (added by OpenMap.java).  Note
  	that the border still gets drawn with this fix in place.
 
-1998-07-16    <culliney@bohemia>
+1998-07-16  <culliney@bohemia>
 
 	* Added a drawBackground() function to the Projection classes.
-  	The BufferedMapBean now delegates background rendering to the
+ 	The BufferedMapBean now delegates background rendering to the
  	current projection.
 
 	* Removed WhoPanel.  The InformationDelegator now controls the

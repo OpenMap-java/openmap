@@ -13,8 +13,8 @@
 // **********************************************************************
 // 
 // $RCSfile: OMColorChooser.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.3 $
+// $Date: 2004/02/10 00:12:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,6 +36,7 @@ import javax.swing.event.*;
  * @author Oliver Hinds added preview panel to see color with transparency.
  */
 public class OMColorChooser {
+
     /**
      * Displays a dialog that lets you change a color.  Locks up the
      * application until a choice is made, returning the chosen color,
@@ -53,13 +54,40 @@ public class OMColorChooser {
         final JColorChooser jcc = new JColorChooser(initColor);
         ColorTracker ok = new ColorTracker(jcc);
 
-        jcc.setPreviewPanel(ok.getTransparancyAdjustment(initColor.getAlpha()));
         jcc.getSelectionModel().addChangeListener(ok);
+//         jcc.setPreviewPanel(ok.getTransparancyAdjustment(initColor.getAlpha()));
+        jcc.setPreviewPanel(new JPanel());
+
         JDialog colorDialog = JColorChooser.createDialog(component, title,
                                                          true, jcc,
                                                          ok, null);
+
+        // For some reason, in jdk 1.4.2, the custom transparency
+        // adjustment panel stopped showing up in the preview panel.
+        // This seems to work around the problem.
+        JComponent preview = ok.getTransparancyAdjustment(initColor.getAlpha());
+        colorDialog.getContentPane().remove(jcc);
+
+        JPanel content = new JPanel();
+        GridBagLayout gridBag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        content.setLayout(gridBag);
+        gridBag.setConstraints(jcc, c);
+        gridBag.setConstraints(preview, c);
+        content.add(jcc);
+        content.add(preview);
+
+        colorDialog.getContentPane().add(content, BorderLayout.CENTER);
+        colorDialog.pack();
         colorDialog.show();
         return ok.getColor();
+    }
+
+    public static void main(String[] argv) {
+        Color testColor = showDialog(null, "Test of OMColorChooser", Color.red);
+        System.out.println("OMColorChooser ending with " + testColor);
+        System.exit(0);
     }
 }
 

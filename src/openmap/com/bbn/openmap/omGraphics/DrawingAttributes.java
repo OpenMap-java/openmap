@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.16 $
-// $Date: 2004/02/03 23:54:28 $
+// $Revision: 1.17 $
+// $Date: 2004/02/10 00:12:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,7 +44,6 @@ import javax.swing.event.*;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.image.BufferedImageHelper;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.tools.icon.BasicIconPart;
@@ -94,6 +93,10 @@ import com.bbn.openmap.util.propertyEditor.*;
  * # can be scaled depending on the map scale compaired to the
  * # baseScale.
  * baseScale=XXXXXX (where 1:XXXXXX is the scale to use.  N/A for the default).
+ * # Set whether any OMPoints that are given to the DrawingAttributes object are oval or rectangle.
+ * pointOval=false
+ * # Set the pixel radius of any OMPoint given to the DrawingAttributes object.
+ * pointRadius=2
  */
 public class DrawingAttributes 
     implements ActionListener, Serializable, Cloneable, PropertyConsumer,
@@ -154,6 +157,10 @@ public class DrawingAttributes
      * OMGraphic.
      */
     public static final String mattedProperty = "matted";
+    /** Property for whether OMPoints should be oval. "pointOval" */
+    public static final String PointOvalProperty = "pointOval";
+    /** Property for the pixel radius of OMPoints. "pointRadius" */
+    public static final String PointRadiusProperty = "pointRadius";
 
     public final static int NONE = -1;
 
@@ -203,6 +210,15 @@ public class DrawingAttributes
 
     protected String propertyPrefix = null;
     protected String fPattern = null; // for writing out the properties
+
+    /**
+     * The isOval setting to set on OMPoints.
+     */
+    protected boolean pointOval = OMPoint.DEFAULT_ISOVAL;
+    /**
+     * The pixel radius to set on OMPoints.
+     */
+    protected int pointRadius = OMPoint.DEFAULT_RADIUS;
     /**
      * A good ol' generic DrawingAttributes object for all to
      * use. Black lines, clear fill paint. 
@@ -649,6 +665,34 @@ public class DrawingAttributes
     }
 
     /**
+     * Set the pixel radius given to OMPoint objects.
+     */
+    public void setPointRadius(int radius) {
+        pointRadius = radius;
+    }
+
+    /**
+     * Get the pixel radius given to OMPoint objects.
+     */
+    public int getPointRadius() {
+        return pointRadius;
+    }
+
+    /**
+     * Set the oval setting given to OMPoint objects.
+     */
+    public void setPointOval(boolean value) {
+        pointOval = value;
+    }
+    
+    /**
+     * Get the oval setting given to OMPoint objects.
+     */
+    public boolean isPointOval() {
+        return pointOval;
+    }
+
+    /**
      * Set the DrawingAttributes parameters based on the current
      * settings of an OMGraphic.  
      */
@@ -666,6 +710,11 @@ public class DrawingAttributes
         // setStroke fires off a propertyChange reaction that
         // potentially harms other parameters, like renderType.
         stroke = graphic.getStroke();
+
+        if (graphic instanceof OMPoint) {
+            pointRadius = ((OMPoint)graphic).getRadius();
+            pointOval = ((OMPoint)graphic).isOval();
+        }
 
         // Don't want to call this here, it is CPU intensive.
         // resetGUI should be called only when the GUI needs to be
@@ -711,6 +760,11 @@ public class DrawingAttributes
 
         graphic.setMatted(matted);
         graphic.setMattingPaint(mattingPaint);
+
+        if (graphic instanceof OMPoint) {
+            ((OMPoint)graphic).setRadius(pointRadius);
+            ((OMPoint)graphic).setOval(pointOval);
+        }
     }
 
     /**
@@ -1200,27 +1254,30 @@ public class DrawingAttributes
 
         //  Set up the drawing attributes.
         linePaint =
-            LayerUtils.parseColorFromProperties(props, realPrefix + linePaintProperty,
+            PropUtils.parseColorFromProperties(props, realPrefix + linePaintProperty,
                                                 linePaint);
         
         selectPaint =
-            LayerUtils.parseColorFromProperties(props, realPrefix + selectPaintProperty,
+            PropUtils.parseColorFromProperties(props, realPrefix + selectPaintProperty,
                                                 selectPaint);
 
         mattingPaint =
-            LayerUtils.parseColorFromProperties(props, realPrefix + mattingPaintProperty,
+            PropUtils.parseColorFromProperties(props, realPrefix + mattingPaintProperty,
                                                 mattingPaint);
         
 //      textPaint =
-//          LayerUtils.parseColorFromProperties(
+//          PropUtils.parseColorFromProperties(
 //              props, realPrefix + textPaintProperty,
 //              textPaint);
 
         fillPaint =
-            LayerUtils.parseColorFromProperties(props, realPrefix + fillPaintProperty,
+            PropUtils.parseColorFromProperties(props, realPrefix + fillPaintProperty,
                                                 fillPaint);
 
-        matted = LayerUtils.booleanFromProperties(props, realPrefix + mattedProperty, matted);
+        matted = PropUtils.booleanFromProperties(props, realPrefix + mattedProperty, matted);
+
+        pointRadius = PropUtils.intFromProperties(props, realPrefix + PointRadiusProperty, pointRadius);
+        pointOval = PropUtils.booleanFromProperties(props, realPrefix + PointOvalProperty, pointOval);
 
         float lineWidth;
         boolean basicStrokeDefined = false;
@@ -1230,11 +1287,11 @@ public class DrawingAttributes
         }
         
         lineWidth =
-            LayerUtils.floatFromProperties(props, realPrefix + lineWidthProperty,
+            PropUtils.floatFromProperties(props, realPrefix + lineWidthProperty,
                                            (basicStrokeDefined?((BasicStroke)stroke).getLineWidth():defaultLineWidth));
 
         baseScale =
-            LayerUtils.floatFromProperties(props, realPrefix + baseScaleProperty,
+            PropUtils.floatFromProperties(props, realPrefix + baseScaleProperty,
                                            baseScale);
         
         // Look for a dash pattern properties to come up with a stroke
@@ -1318,7 +1375,7 @@ public class DrawingAttributes
             try {
 
                 URL textureImageURL = 
-                    LayerUtils.getResourceOrFileOrURL(this, fPattern);
+                    PropUtils.getResourceOrFileOrURL(this, fPattern);
 
                 if (textureImageURL != null) {
 
@@ -1383,6 +1440,9 @@ public class DrawingAttributes
             props.put(prefix + mattingPaintProperty, 
                       Integer.toHexString(((Color)mattingPaint).getRGB()));
         }
+
+        props.put(prefix + PointRadiusProperty, Integer.toString(pointRadius));
+        props.put(prefix + PointOvalProperty, new Boolean(pointOval).toString());
 
         props.put(prefix + fillPatternProperty, 
                   (fPattern==null?"":fPattern));
@@ -1502,12 +1562,24 @@ public class DrawingAttributes
         interString = i18n.get(DrawingAttributes.class, baseScaleProperty, baseScaleProperty);
         list.put(baseScaleProperty + LabelEditorProperty, interString);
 
-        interString = i18n.get(DrawingAttributes.class,mattedProperty,I18n.TOOLTIP,"Flag to enable a thin black matting to be drawn around graphics..");    
+        interString = i18n.get(DrawingAttributes.class,mattedProperty,I18n.TOOLTIP,"Flag to enable a thin black matting to be drawn around graphics.");    
         list.put(mattedProperty, interString);
         interString = i18n.get(DrawingAttributes.class, mattedProperty, mattedProperty);
         list.put(mattedProperty + LabelEditorProperty, interString);
         list.put(mattedProperty + ScopedEditorProperty,
                  "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+
+        interString = i18n.get(DrawingAttributes.class,PointRadiusProperty,I18n.TOOLTIP,"Pixel radius of point objects.");    
+        list.put(PointRadiusProperty, interString);
+        interString = i18n.get(DrawingAttributes.class, PointRadiusProperty, "Point pixel radius");
+        list.put(PointRadiusProperty + LabelEditorProperty, interString);
+
+        interString = i18n.get(DrawingAttributes.class,PointOvalProperty,I18n.TOOLTIP,"Set points to be oval or rectangular.");    
+        list.put(PointOvalProperty, interString);
+        interString = i18n.get(DrawingAttributes.class, PointOvalProperty, "Points are oval");
+        list.put(PointOvalProperty + LabelEditorProperty, interString);
+        list.put(PointOvalProperty + ScopedEditorProperty,
+                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
 //         list.put(initPropertiesProperty, getInitPropertiesOrder());
 
@@ -1515,7 +1587,7 @@ public class DrawingAttributes
     }
 
     public String getInitPropertiesOrder() {
-        return " " + linePaintProperty + " " + selectPaintProperty + " " + fillPaintProperty + " " + /*textPaintProperty + " " +*/ mattingPaintProperty + " " + fillPatternProperty + " " + mattedProperty + " " + lineWidthProperty + " " + dashPatternProperty + " " + dashPhaseProperty;
+        return " " + linePaintProperty + " " + selectPaintProperty + " " + fillPaintProperty + " " + /*textPaintProperty + " " +*/ mattingPaintProperty + " " + fillPatternProperty + " " + mattedProperty + " " + lineWidthProperty + " " + dashPatternProperty + " " + dashPhaseProperty + " " + PointRadiusProperty + " " + PointOvalProperty;
     }
 
     /**
