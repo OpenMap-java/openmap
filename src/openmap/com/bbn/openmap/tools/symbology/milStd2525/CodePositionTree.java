@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePositionTree.java,v $
 // $RCSfile: CodePositionTree.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:06:29 $
+// $Revision: 1.7 $
+// $Date: 2004/12/08 01:08:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,20 +55,26 @@ public class CodePositionTree extends CodeScheme {
         // Read Optional Flag Positions
         CodeAffiliation ca = new CodeAffiliation();
         ca.parsePositions("affiliation", positionProperties);
+        ca.choices.add(0, ca.getNULLCodePosition());
 
         CodeWarfightingModifier cwm = new CodeWarfightingModifier();
         CodeSizeModifier csm = new CodeSizeModifier();
         CodeMOOTWModifier cmm = new CodeMOOTWModifier();
         cwm.parsePositions("modifiers", positionProperties);
+        cwm.choices.add(0, cwm.getNULLCodePosition());
         csm.parsePositions("modifiers", positionProperties);
+        csm.choices.add(0, csm.getNULLCodePosition());
         cmm.parsePositions("modifiers", positionProperties);
+        cmm.choices.add(0, cmm.getNULLCodePosition());
 
         CodeStatus cstatus = new CodeStatus();
         cstatus.parsePositions("status", positionProperties);
-
+        cstatus.choices.add(0, cstatus.getNULLCodePosition());
+        
         CodeOrderOfBattle coob = new CodeOrderOfBattle();
         coob.parsePositions("oob", positionProperties);
-
+        coob.choices.add(0, coob.getNULLCodePosition());
+        
         List basicOptions = new LinkedList();
         basicOptions.add(ca);
         basicOptions.add(cstatus);
@@ -95,6 +101,7 @@ public class CodePositionTree extends CodeScheme {
 
         List tacOptions = new LinkedList();
         tacOptions.add(ca);
+        tacOptions.add(cstatus);
         tacOptions.add(csm);
         //      tacOptions.add(cc); // CodeCountry
         ((CodeScheme) cs.getFromChoices(2)).setCodeOptions(new CodeOptions(tacOptions));

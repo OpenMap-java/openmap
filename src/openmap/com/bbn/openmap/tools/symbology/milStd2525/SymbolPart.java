@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolPart.java,v $
 // $RCSfile: SymbolPart.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:06:29 $
+// $Revision: 1.10 $
+// $Date: 2004/12/08 01:08:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -380,6 +380,27 @@ public class SymbolPart {
             cs = parent.getCodeScheme();
         }
         return null;
+    }
+
+    /**
+     * A query method that answers of the given 15 digit code applies
+     * to this symbol part.
+     * 
+     * @param queryCode
+     * @return
+     */
+    public boolean codeMatches(String queryCode) {
+        int startIndex = codePosition.startIndex;
+        int length = code.indexOf('-');
+        if (length == -1) {
+            length = code.length();
+        }
+
+        if (Debug.debugging("symbology.detail")) {
+            Debug.output("Checking " + queryCode + " against |" + code
+                    + "| starting at " + startIndex + " for " + length);
+        }
+        return queryCode.regionMatches(true, startIndex, code, 0, length);
     }
 
     public void paintIcon(Graphics2D g, CodeOptions co, Dimension di) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/CodePosition.java,v $
 // $RCSfile: CodePosition.java,v $
-// $Revision: 1.9 $
-// $Date: 2004/10/14 18:06:29 $
+// $Revision: 1.10 $
+// $Date: 2004/12/08 01:08:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -62,14 +62,14 @@ public class CodePosition {
     public final static int NO_NUMBER = -1;
 
     protected int hierarchyNumber;
-    protected char id;
+    protected String id;
     protected String prettyName;
     protected int startIndex;
     protected int endIndex;
     protected CodePosition nextPosition = null;
     protected SymbolPart symbolPart = null;
 
-    public static boolean DEBUG = false;
+    public boolean DEBUG = false;
 
     /** Property file property for pretty name 'name' */
     public final static String NameProperty = "name";
@@ -96,6 +96,23 @@ public class CodePosition {
         startIndex = start - 1;
         endIndex = end;
         prettyName = name;
+    }
+
+    /**
+     * A query method that answers of the given 15 digit code applies
+     * to this symbol part.
+     * 
+     * @param queryCode
+     * @return
+     */
+    public boolean codeMatches(String queryCode) {
+        int length = id.length();
+
+        if (Debug.debugging("symbology.detail")) {
+            Debug.output("Checking " + queryCode + " against |" + id
+                    + "| starting at " + startIndex + " for " + length);
+        }
+        return queryCode.regionMatches(true, startIndex, id, 0, length);
     }
 
     /**
@@ -163,7 +180,9 @@ public class CodePosition {
 
             // Might not mean anything for option-type positions
             cp.hierarchyNumber = index;
-            cp.id = entry.charAt(0); // ASSUMED
+            //cp.id = entry.charAt(0); // ASSUMED, but breaks
+            // multi-character codes
+            cp.id = entry;
             cp.prettyName = props.getProperty(prefix + NameProperty);
             addPositionChoice(cp);
         } else {
@@ -194,6 +213,7 @@ public class CodePosition {
         int index = 1;
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
         String entry = props.getProperty(prefix + Integer.toString(index));
+
         while (entry != null) {
             addPositionChoice(index, entry, prefix, props);
             entry = props.getProperty(prefix + Integer.toString(++index));
@@ -289,7 +309,7 @@ public class CodePosition {
      * Get the character, in the symbol code, that this position
      * represents.
      */
-    public char getID() {
+    public String getID() {
         return id;
     }
 
@@ -331,4 +351,21 @@ public class CodePosition {
         //          getStartIndex() + ", " + getEndIndex();
         return getPrettyName();
     }
+
+    protected CodePosition getNULLCodePosition() {
+        String className = this.getClass().getName();
+        CodePosition cp = (CodePosition) ComponentFactory.create(className);
+        StringBuffer idbuf = new StringBuffer();
+        for (int i = startIndex; i < endIndex; i++) {
+            idbuf.append("*");
+        }
+        cp.id = idbuf.toString();
+        cp.prettyName = "- Unspecified -";
+        if (Debug.debugging("symbology")) {
+            Debug.output("creating NULL version of (" + className + ") with "
+                    + cp.id + ", " + cp.prettyName);
+        }
+        return cp;
+    }
+
 }

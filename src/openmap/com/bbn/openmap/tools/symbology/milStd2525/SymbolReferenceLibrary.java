@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/symbology/milStd2525/SymbolReferenceLibrary.java,v $
 // $RCSfile: SymbolReferenceLibrary.java,v $
-// $Revision: 1.7 $
-// $Date: 2004/10/14 18:06:29 $
+// $Revision: 1.8 $
+// $Date: 2004/12/08 01:08:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,7 +24,10 @@ package com.bbn.openmap.tools.symbology.milStd2525;
 
 import java.awt.Dimension;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
+
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.util.Debug;
@@ -42,16 +45,35 @@ public class SymbolReferenceLibrary {
     protected CodePositionTree positionTree;
     protected static SymbolReferenceLibrary library = null;
     protected CodeOptions symbolAttributes;
+    protected SymbolImageMaker symbolImageMaker;
 
-    public SymbolReferenceLibrary() {
+    /*
+     * This constructor is included in order to provide this class
+     * with a debug mode, where the default action is to print the
+     * library hierarchy to the standard output.
+     */
+    protected SymbolReferenceLibrary() {
+        this(null);
+    }
+
+    /**
+     * Create a SymbolReferenceLibrary with a SymbolImageMaker to use
+     * to create images from a data source. It's expected that the
+     * SymbolImageMaker is ready to go, configured to create images
+     * given a code. The SRL will use the hierarchy.properties file
+     * found as a resource as the reference for the symbol hierarchy.
+     * 
+     * @param sim
+     */
+    public SymbolReferenceLibrary(SymbolImageMaker sim) {
         Properties props = getProperties("hierarchy.properties");
         if (props != null) {
-            initialize(props);
+            initialize(props, sim);
         }
     }
 
-    public SymbolReferenceLibrary(Properties props) {
-        initialize(props);
+    public SymbolReferenceLibrary(Properties props, SymbolImageMaker sim) {
+        initialize(props, sim);
     }
 
     public Properties getProperties(String propertiesResource) {
@@ -71,11 +93,8 @@ public class SymbolReferenceLibrary {
         return null;
     }
 
-    protected void initialize(Properties props) {
-        if (props == null) {
-            // Get the hierarchy.properties file as a local resource
-            // and load that.
-        }
+    protected void initialize(Properties props, SymbolImageMaker sim) {
+        symbolImageMaker = sim;
 
         if (Debug.debugging("symbology")) {
             Debug.output("SRL: loading");
@@ -115,6 +134,13 @@ public class SymbolReferenceLibrary {
      * Return an image given a SymbolCode and dimension.
      */
     public ImageIcon getIcon(String symbolCode, Dimension di) {
+        if (Debug.debugging("symbology")) {
+            Debug.output("SymbolReferenceLibrary asked to create: "
+                    + symbolCode + " at " + di);
+        }
+        if (symbolImageMaker != null) {
+            return symbolImageMaker.getIcon(symbolCode, di);
+        }
         return null;
     }
 
@@ -155,11 +181,66 @@ public class SymbolReferenceLibrary {
         return description;
     }
 
+    /**
+     * Check to see if code exists, if it's valid. If you get a
+     * SymbolPart back from this query, then you can call getIcon.
+     * 
+     * @param code
+     * @return
+     */
+    public SymbolPart getSymbolPartForCode(String code) {
+
+        if (Debug.debugging("symbology.detail")) {
+            Debug.output("SymbolReferenceLibrary checking for " + code
+                    + " in SymbolPart tree.");
+        }
+
+        if (head.codeMatches(code)) {
+            return getSymbolPartForCodeStartingAt(head, code);
+        } else {
+            return null;
+        }
+    }
+
+    protected SymbolPart getSymbolPartForCodeStartingAt(SymbolPart node,
+                                                        String code) {
+        List sublist = node.getSubs();
+        for (Iterator it = sublist.iterator(); it.hasNext();) {
+            SymbolPart ssp = (SymbolPart) it.next();
+
+            try {
+                if (code.charAt(ssp.getCodePosition().startIndex) == '-')
+                    return node;
+
+                if (ssp.codeMatches(code)) {
+                    return getSymbolPartForCodeStartingAt(ssp, code);
+                }
+            } catch (StringIndexOutOfBoundsException sioobe) {
+            } catch (NullPointerException npe) {
+            }
+        }
+
+        return node;
+    }
+
     public static void main(String[] argv) {
         Debug.init();
+        Debug.put("codeposition");
         SymbolReferenceLibrary srl = new SymbolReferenceLibrary();
-        if (Debug.debugging("symbology")) {
-            Debug.output(srl.getDescription());
-        }
+        Debug.output(srl.getDescription());
+    }
+
+    /**
+     * @return Returns the symbolImageMaker.
+     */
+    public SymbolImageMaker getSymbolImageMaker() {
+        return symbolImageMaker;
+    }
+
+    /**
+     * @param symbolImageMaker The symbolImageMaker to set.
+     */
+    public void setSymbolImageMaker(SymbolImageMaker symbolImageMaker) {
+        this.symbolImageMaker = symbolImageMaker;
     }
 }
