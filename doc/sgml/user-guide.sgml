@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/user-guide.sgml,v $
 $RCSfile: user-guide.sgml,v $
-$Revision: 1.4 $
-$Date: 1999/01/14 17:19:46 $
+$Revision: 1.5 $
+$Date: 1999/02/08 19:31:02 $
 $Author: aculline $
 
 User's Guide for the OpenMap Viewer application.
@@ -16,7 +16,7 @@ running the `openmap' script in the bin/ directory.
 
 <title>OpenMap Viewer Application
 <author>BBN Technologies
-<date>1 December 1998
+<date>2 February 1999
 <abstract>
 This document is a user's guide for running the OpenMap Viewer
 application.  It assumes that you have already built and installed the

@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/openmap-arch.sgml,v $
 $RCSfile: openmap-arch.sgml,v $
-$Revision: 1.5 $
-$Date: 1999/01/14 17:19:45 $
+$Revision: 1.6 $
+$Date: 1999/02/08 19:31:01 $
 $Author: aculline $
 
 OpenMap architecture document
@@ -14,7 +14,7 @@ OpenMap architecture document
 
 <title>OpenMap Architecture
 <author>BBN Technologies
-<date>2 December 1998
+<date>2 February 1999
 <abstract>
 This document contains information about the architecture of OpenMap,
 and how to use various components of the OpenMap Toolkit.

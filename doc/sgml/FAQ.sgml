@@ -1,8 +1,8 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/Attic/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.5 $
-$Date: 1999/02/02 14:22:46 $
+$Revision: 1.6 $
+$Date: 1999/02/08 19:31:01 $
 $Author: aculline $
 
 Frequently Asked Questions for the OpenMap system.
@@ -14,7 +14,7 @@ Frequently Asked Questions for the OpenMap system.
 
 <title>OpenMap FAQ
 <author>BBN Technologies
-<date>4 December 1998
+<date>2 February 1999
 <abstract>
 This FAQ contains questions and answers about the OpenMap system.
 </abstract>
@@ -99,8 +99,7 @@ on getting a version out that's easy to build and easy to work with.
 <p>
 Questions concerning the core OpenMap source code.
 
-<sect1>When adding ESRI shape files to OpenMap I don't see (some/all) of the 
-data.  What's wrong?
+<sect1>When adding ESRI shape files to OpenMap I don't see (some/all) of the data.  What's wrong?
 <p>
 The Openmap <htmlurl
 url="api/com.bbn.openmap.layer.shape.ShapeLayer.html"
@@ -119,15 +118,120 @@ file:
 <verb>
 country.spatialIndex=country.ssx
 </verb>
-Be sure to substitute the correct name of your shape file and layer for the
-word 'country' in the examples above.
+Be sure to substitute the correct name of your shape file and layer
+for the word 'country' in the examples above.
+
+
+<sect1>I've written a layer that is part of the map but sometimes it doesn't show its data.
+<p>
+Assuming you're using the LatLon OMGraphics objects to represent your
+graphical data, this situation occurs when you try to render the
+OMGraphics before generating them.  The basic rule of thumb is that
+each time you get a new projection object, (from
+<tt/projectionChanged()/), you need to invoke
+<tt/OMGraphic.generate()/, and then force a <tt/repaint()/ of the map.
+If your layer has worker threads, then you can hold on to the current
+projection to use at any time.  The generation process is critical for
+LatLon OMGraphics because the graphics are projected into XY in order
+to be rendered.
+<p>
+For performance reasons, you may want to design your layer/application
+to work strictly in XY space.  You can do this if you don't intend to
+switch projection types, and if all the LatLon data you want to
+display is static.  For this case you could project all data at
+layer/application initialization and then just rerender the data as
+the user pans and zooms on the map.  The OpenMap toolkit is well
+suited for both dynamic and static data models.
 
 
 
 <sect>OpenMap Viewer Application
 <p>
 Questions concerning the basic OpenMap viewer application.
-Please ask those questions!
+
+
+<sect1>I've written my own layer and I want to see it using the OpenMap Viewer Application.
+<p>
+First you need to add the appropriate properties references to the
+<tt/openmap.properties/ file in your home directory or in the
+<tt>share/</tt> subdirectory of the OpenMap installation.  Change the
+`openmap.layers' property to something like:
+<verb>
+	# layers to load and show on the map
+	openmap.layers=quake myLayer political graticule
+	# layers that are part of the map on startup
+	openmap.startUpLayers=graticule political myLayer
+</verb>
+Here you've specified that the `myLayer' be part of the list of
+layers, in the second position from the top of the map, right
+underneath the `quake' identifier.  For the `myLayer' identifier, you
+will need to specify at least two other properties:
+<verb>
+	myLayer.class=com.myCompany.projects.MyLayer
+	myLayer.prettyName=My Cool Layer
+</verb>
+The `myLayer.class' property is the full class-name for your layer.
+The `myLayer.prettyName' property is the human-readable name that you
+want to appear in the list of layers.  These properties are passed to
+and processed by the base <tt><htmlurl
+url="./api/com.bbn.openmap.Layer.html" name="Layer"></tt> class via
+<tt/Layer.setProperties()/.  You can provide additional configuration
+strings to the <tt><htmlurl url="./app/openmap.properties"
+name="openmap.properties"></tt> file and override
+<tt/Layer.setProperties()/ in your own layer to process them:
+<verb>
+    // prefix should be `myLayer' for this layer
+    public void setProperties (String prefix, java.util.Properties props) {
+        // Let the Layer process the basic layer properties
+        super.setProperties(prefix, props);
+
+        // now do my stuff
+	String foo = props.getProperty(prefix + ".fooProperty", "defaultFoo");
+	// ...
+    }
+</verb>
+<p>
+After adding your layer to the properties file, you need to launch the
+OpenMap viewer application with the appropriate augmented CLASSPATH
+pointing to your layer code.  Assuming you configured, built, and
+installed the OpenMap package, launch the viewer like this:
+<verb>
+	/usr/local/openmap/bin/openmap -x &lt;classpath_to_your_layer&gt;
+</verb>
+
+
+<sect1>Do you have any suggestions for debugging my layer/application with OpenMap?
+<p>
+As of writing this, most of us haven't yet come across a good Java
+debugger.  But <htmlurl url="http://www.cygnus.com/" name="Cygnus"> is
+working on a Java front end to gdb, the GNU debugger.
+<p>
+Most of our debugging is done with the Java equivalent of printfs,
+(System.out.printlns), at crucial places in the code.  And we
+sometimes use the classes <tt><htmlurl
+url="./api/com.bbn.openmap.util.Debug.html"
+name="com.bbn.openmap.util.Debug"></tt> and <tt><htmlurl
+url="./api/com.bbn.openmap.util.Assert.html"
+name="com.bbn.openmap.util.Assert"></tt> to leave permanent (but not
+necessary visible) checks throughout the code.
+<p>
+To use the Debug class, you must first initialize it with one of the
+<tt/Debug.init()/ methods.  (Note: the OpenMap Viewer application does
+this already, so if you're debugging your own layer within this
+application, you don't need to take this step).  Your layer code
+should have statements like this:
+<verb>
+	if (Debug.debugging("debugMyLayer")) {
+	    System.out.println("about to do something daring...");
+	}
+</verb>
+<p>
+Once you're ready to run and debug your layer, you should launch the
+Java VM with the flag `-Ddebug.debugMyLayer'.  Assuming your CLASSPATH
+is set up properly to point to your layer code, this becomes:
+<verb>
+	/usr/local/openmap/bin/openmap -Ddebug.debugMyLayer -x $CLASSPATH
+</verb>
 
 
 
