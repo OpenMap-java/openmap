@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.29 $
-# $Date: 1999/04/07 19:56:46 $
+# $Revision: 1.30 $
+# $Date: 1999/05/17 19:51:31 $
 # $Author: aculline $
 # 
 # **********************************************************************
@@ -68,6 +68,7 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.rpf \
 		com.bbn.openmap.layer.vpf \
 		com.bbn.openmap.layer.daynight \
+		com.bbn.openmap.layer.test \
 #		com.bbn.openmap.layer.terrain \
 
 
@@ -85,6 +86,7 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/rpf/*.class \
 		com/bbn/openmap/layer/vpf/*.class \
 		com/bbn/openmap/layer/daynight/*.class \
+		com/bbn/openmap/layer/test/*.class \
 #		com/bbn/openmap/layer/terrain/*.class \
 
 Layer.props =   com/bbn/openmap/layer/vpf/*.properties
