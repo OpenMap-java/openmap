@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/PolylineGeometry.java,v $
 // $RCSfile: PolylineGeometry.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/07/10 22:03:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -68,21 +68,6 @@ import com.bbn.openmap.proj.*;
  * </ul> */
 public abstract class PolylineGeometry extends PolygonGeometry 
     implements Serializable, OMGeometry {
-
-    /**
-     * Prepare the poly for rendering.
-     *
-     * @param proj Projection
-     * @return true if generate was successful
-     */
-    public abstract boolean generate(Projection proj);
-
-    /** 
-     * Since OMPoly has the option to not create a Shape, this method
-     * is here to create it if it is asked for.  The OMPoly needs to
-     * be generated.  
-     */
-    protected abstract void createShape();
 
     /**
      * Return the shortest distance from the graphic to an XY-point.

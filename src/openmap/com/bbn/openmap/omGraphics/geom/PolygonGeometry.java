@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/PolygonGeometry.java,v $
 // $RCSfile: PolygonGeometry.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/07/10 22:03:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -106,14 +106,6 @@ public abstract class PolygonGeometry extends BasicGeometry
     public boolean getIsPolygon() {
 	return isPolygon;
     }
-
-    /**
-     * Prepare the poly for rendering.
-     *
-     * @param proj Projection
-     * @return true if generate was successful
-     */
-    public abstract boolean generate(Projection proj);
 
     /** 
      * Since OMPoly has the option to not create a Shape, this method

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometryList.java,v $
 // $RCSfile: OMGeometryList.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/06/25 15:33:25 $
+// $Revision: 1.5 $
+// $Date: 2003/07/10 22:03:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,6 +56,13 @@ public class OMGeometryList extends OMGraphicList
     implements GraphicList, Serializable {
 
     /**
+     * Flag to mark that the parts should be connected, making this
+     * OMGeometryList a combination OMGraphic that sums disparate
+     * parts.  False by default.
+     */
+    protected boolean connectParts = false;
+
+    /**
      * Construct an OMGeometryList.
      */
     public OMGeometryList() {
@@ -91,7 +98,7 @@ public class OMGeometryList extends OMGraphicList
      */
     public void add(OMGeometry g) {
 	setNeedToRegenerate(true);
-	graphics.add(g);
+	_add(g);
     }
 
     /**
@@ -161,9 +168,12 @@ public class OMGeometryList extends OMGraphicList
      *
      * @param location the location of the OMGeometry to remove
      */
-    public void removeAt(int location) {
-	setNeedToRegenerate(true);
-        graphics.remove(location);
+    public Object removeAt(int location) {
+	Object obj = _remove(location);
+	if (obj != null) {
+	    setNeedToRegenerate(true);
+	}
+	return obj;
     }
 
     /**
@@ -176,7 +186,7 @@ public class OMGeometryList extends OMGraphicList
      */
     public void insertAt(OMGeometry geometry, int location) {
 	setNeedToRegenerate(true);
-        graphics.add(location, geometry);
+        _insert(geometry, location);
     }
 
     /**
@@ -278,7 +288,7 @@ public class OMGeometryList extends OMGraphicList
      *
      * @param gr the AWT Graphics context
      */
-    public void render(Graphics gr) {
+    public synchronized void render(Graphics gr) {
 	Shape shp = getShape();
 	if (shp != null) { 
 
@@ -356,23 +366,22 @@ public class OMGeometryList extends OMGraphicList
      * @see OMGeometry#generate
      * @see OMGeometry#regenerate
      */
-    public void generate(Projection p, boolean forceProjectAll) {
+    public synchronized void generate(Projection p, boolean forceProjectAll) {
 	
 	// Important!  Resets the shape.
 	shape = null;
 
 	// Create a shape object out of all of the shape objects.
-	java.util.List targets = getTargets();
 	ListIterator iterator;
 
 	if (traverseMode == FIRST_ADDED_ON_TOP) {
-	    iterator = targets.listIterator(targets.size());
+	    iterator = graphics.listIterator(graphics.size());
 	    while (iterator.hasPrevious()) {
 		updateShape((OMGeometry) iterator.previous(), 
 			    p, forceProjectAll);
 	    }
 	} else {
-	    iterator = targets.listIterator();
+	    iterator = graphics.listIterator();
 	    while (iterator.hasNext()) {
 		updateShape((OMGeometry) iterator.next(), 
 			    p, forceProjectAll);
@@ -404,7 +413,7 @@ public class OMGeometryList extends OMGraphicList
 	    if (shape == null) {
 		shape = gp;
 	    } else {
-		((GeneralPath)shape).append(gp, false);
+		((GeneralPath)shape).append(gp, connectParts);
 	    }
 	}
     }
@@ -554,4 +563,22 @@ public class OMGeometryList extends OMGraphicList
 	} catch (EOFException e) {}
     }
     
+    /**
+     * Set whether the OMGeometries on the list should be connected to
+     * make a one-part shape object (if true), or a multi-part shape
+     * object (if false).
+     */
+    public void setConnectParts(boolean value) {
+	connectParts = value;
+    }
+
+    /**
+     * Get whether the OMGeometries on the list should be connected to
+     * make a one-part shape object (if true), or a multi-part shape
+     * object (if false).
+     */
+    public boolean getConnectParts() {
+	return connectParts;
+    }
+
 }

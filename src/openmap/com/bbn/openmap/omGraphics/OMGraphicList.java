@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/07/07 22:59:42 $
+// $Revision: 1.7 $
+// $Date: 2003/07/10 22:03:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -398,8 +398,8 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      *
      * @param location the location of the OMGraphic to remove.
      */
-    public synchronized void removeOMGraphicAt(int location) {
-	graphics.remove(location);
+    public void removeOMGraphicAt(int location) {
+	_remove(location);
     }
 
     /**
@@ -410,6 +410,16 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      */
     public boolean remove(OMGraphic graphic) {
         return _remove(graphic);
+    }
+
+    /**
+     * Remove the graphic at a location in the list.
+     *
+     * @param location the OMGraphic object to remove.
+     * @return true if graphic was on the list, false if otherwise.
+     */
+    protected synchronized Object _remove(int location) {
+	return graphics.remove(location);
     }
 
     /**
@@ -469,8 +479,21 @@ public class OMGraphicList extends OMGraphic implements GraphicList, Serializabl
      * @exception IllegalArgumentException if OMGraphic is null
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
-    public synchronized void insertOMGraphicAt(OMGraphic graphic, int location) {
-	graphics.add(location, graphic);
+    public void insertOMGraphicAt(OMGraphic graphic, int location) {
+	_insert(graphic, location);
+    }
+
+    /**
+     * Insert the geometry at the location number.
+     * The OMGeometry must not be null.
+     *
+     * @param graphic the OMGeometry to insert.
+     * @param location the location of the OMGeometry to insert
+     * @exception IllegalArgumentException if OMGeometry is null
+     * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
+     */
+    protected synchronized void _insert(OMGeometry geometry, int location) {
+	graphics.add(location, geometry);
     }
 
     /** 

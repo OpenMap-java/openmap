@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/06/02 18:39:52 $
+// $Revision: 1.3 $
+// $Date: 2003/07/10 22:03:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -538,6 +538,90 @@ public abstract class BasicGeometry
 	
 	return path;
     }
+
+    /**
+     * Convenience method to add the coordinates to the given
+     * GeneralPath.  You need to close the path yourself if you want
+     * it to be a polygon.
+     * @param toShape the GeneralPath Shape object to add the coordinates to.
+     * @param xpoints horizontal pixel coordiantes.
+     * @param ypoints vertical pixel coordiantes.
+     * @return toShape, with coordinates appended.
+     */
+    public static GeneralPath appendShapeEdge(GeneralPath toShape, 
+					      int xpoints[], int ypoints[]) { 
+	return appendShapeEdge(toShape, xpoints, ypoints, 
+			       0, xpoints.length);
+    }
+
+    /**
+     * Convenience method to add the coordinates to the given
+     * GeneralPath.  You need to close the path yourself if you want
+     * it to be a polygon.
+     * @param toShape the GeneralPath Shape object to add the coordinates to.
+     * @param xpoints horizontal pixel coordiantes.
+     * @param ypoints vertical pixel coordiantes.
+     * @param startIndex the index into pixel coordinate array to start reading from.
+     * @param length the number of coordinates to add.
+     * @return toShape, with coordinates appended.
+     */
+    public static GeneralPath appendShapeEdge(GeneralPath toShape, 
+					      int xpoints[], int ypoints[], 
+					      int startIndex, int length) { 
+	if (xpoints == null || ypoints == null) {
+	    return null;
+	}
+
+	if (startIndex < 0) {
+	    startIndex = 0;
+	}
+
+	if (length > xpoints.length - startIndex) {
+	    // Do as much as you can...
+	    length = xpoints.length - startIndex - 1;
+	}
+	
+	GeneralPath path;
+	if (toShape == null) {
+	    path = new GeneralPath(GeneralPath.WIND_EVEN_ODD, length);
+	} else {
+	    path = toShape;
+	}
+	
+	if (length > startIndex) {
+	    for (int j = startIndex; j < length; j++) {
+		path.lineTo(xpoints[j], ypoints[j]);
+	    }
+	}
+	
+	return path;
+    }
+
+    /**
+     * Convenience method to append the edge of a GeneralPath Shape to
+     * another GeneralPath Shape.  A PathIterator is used to figure
+     * out the points to use to add to the toShape.  You need to close
+     * the path yourself if you want it to be a polygon.
+     * @param toShape the GeneralPath Shape object to add the edge to.
+     * @param addShape the GeneralPath Shape to add to the toShape.
+     * @return toShape, with coordinates appended.
+     */
+    public static GeneralPath appendShapeEdge(GeneralPath toShape, 
+					      GeneralPath addShape) {
+
+	PathIterator pi2 = addShape.getPathIterator(null);
+	FlatteningPathIterator pi = new FlatteningPathIterator(pi2, .25);
+	double[] coords = new double[6];
+
+	while (!pi.isDone()) {
+	    int type = pi.currentSegment(coords);
+	    toShape.lineTo((float)coords[0], (float)coords[1]);
+	    pi.next();
+	}
+
+	return toShape;
+    }
+
 
     /**
      * Create a general path from a point plus a height and width;
