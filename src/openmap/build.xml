@@ -15,6 +15,7 @@
 		<property name="openmap.class_dir" value="${openmap.home}/classes"/>
 		<property name="openmap.classes" value="${openmap.home}/classes/openmap"/>
 		<property name="openmap.src" value="${openmap.home}/src/openmap"/>
+		<property name="openmap.jar" value="${openmap.home}/lib/openmap.jar"/>
 		<property name="openmap.src_ext" value="${openmap.home}/src/ext"/>
 		<property name="openmap.docs" value="${openmap.home}/doc"/>
 
@@ -57,7 +58,7 @@
 	        depends="build.openmap"
 		description="Builds jar files, placing them in the lib directory.">
 
-	  <jar jarfile="${openmap.home}/lib/openmap.jar" 
+	  <jar jarfile="${openmap.jar}" 
 	       basedir="${openmap.classes}"
 	       manifest="${openmap.home}/share/manifest.txt" 
 	       includes="openmap.properties,
@@ -154,7 +155,7 @@
 
 	<target name="clean_jars.openmap"
 	        description="Delete only the jar files from the lib directory.">
-	     <delete file="${openmap.home}/lib/openmap.jar"/>
+	     <delete file="${openmap.jar}"/>
 	</target>
 
 	<target name="clean_docs.openmap"

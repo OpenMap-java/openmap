@@ -7,8 +7,9 @@
 
     <property name="openmap.home" value="."/>
     <property name="openmap.class_dir" value="${openmap.home}/classes"/>
-    <property name="openmap.classes" value="${openmap.home}/classes/openmap"/>
+    <property name="j3d.classes" value="${openmap.class_dir}/j3d"/>
     <property name="j3d.src" value="${openmap.home}/src/j3d"/>
+    <property name="j3d.jar" value="${openmap.home}/lib/omj3d.jar"/>
 
     <property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
 		                             **/ChangeLog, **/*.html, **/*.txt,
@@ -18,10 +19,9 @@
     <property name="javac.excludes" value="${general.excludes}, 
 					   **/*.gif, **/*.png" />
 	  
-    <condition property="javamail.complete">
+    <condition property="do.j3d">
       <and>
-	<available classname="javax.activation.DataHandler"/>
-	<available classname="javax.mail.Transport"/>
+	<available classname="javax.media.j3d.Shape3D"/>
       </and>
     </condition> 
 
@@ -43,13 +43,61 @@
           depends="init.j3d"
 	  description="Compiles the Java 3D OpenMap code and adds it to the jar.  You must have the Java 3D extension package (http://java.sun.com/products/java-media/3D/index.html) installed in your Java installation. (Call this to build J3D targets)"
 	  if="{$do.j3d}">
+    
+    <mkdir dir="${j3d.classes}"/>
     <echo message="J3D classes included in jar files."/>
     <javac srcdir="${j3d.src}"
-	   destdir="${openmap.classes}"
+	   destdir="${j3d.classes}"
 	   debug="on"
 	   classpath="${openmap.home}/lib/openmap.jar;${openmap.home}"
 	   excludes="${javac.excludes}"/>
   </target>
+
+  <target name="jar.j3d"
+	  depends="classes.j3d"
+	  description="Builds Java 3D jar files, placing them in the lib directory."
+	  if="do.j3d">
+
+    <jar jarfile="${openmap.home}/lib/omj3d.jar" 
+	 basedir="${j3d.classes}"
+	 includes="**/*.class, **/*.properties"/>
+  </target>    
  
+  <!--  ############################
+	Cleanup targets
+	############################ -->  
+	<target name="clean_all.j3d"
+	        depends="clean.j3d, clean_docs.j3d"
+		description="Delete jar files, class files, and generated documentation."/>
+
+	<target name="clean.j3d" 
+	        depends="distclean.j3d, clean_jars.j3d"
+		description="Delete jar files and all class files"/>
+
+	<target name="distclean.j3d"
+	        depends="init.j3d"
+		description="Delete class files, but not the jar files.">
+	     <delete dir="${j3d.classes}" />
+	</target>
+
+	<target name="clean_jars.j3d"
+	        description="Delete only the jar files from the lib directory.">
+	     <delete file="${j3d.jar}"/>
+	</target>
+
+	<target name="clean_docs.j3d"
+                description="Delete only the generated API documentation.">
+	     <delete dir="${openmap.docs}/com"/>
+	     <delete>
+	          <fileset dir="${openmap.docs}" includes="**/*.html" excludes="doc-index.html"/>
+	     </delete>
+	     <delete file="${openmap.docs}/stylesheet.css"/>
+	     <delete file="${openmap.docs}/package-list"/>
+	</target>
+
+  <!--  ############################
+	End of cleanup targets.
+	############################ -->  
+
 </project>
 

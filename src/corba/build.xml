@@ -9,10 +9,12 @@
 	  description="Sets properties needed by the other targets.">
     <tstamp/>
 
-    <property name="openmap.home" value="."/>
+    <property name="openmap.home" value="../.."/>
     <property name="openmap.class_dir" value="${openmap.home}/classes"/>
     <property name="openmap.classes" value="${openmap.home}/classes/openmap"/>
     <property name="corba.src" value="${openmap.home}/src/corba"/>
+    <property name="corba.jar" value="${openmap.home}/lib/omcorba_vb.jar"/>
+    <property name="corba.classes" value="${openmap.home}/classes/corba"/>
 
     <property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
 		                             **/ChangeLog, **/*.html, **/*.txt,
@@ -22,24 +24,33 @@
     <property name="javac.excludes" value="${general.excludes}, 
 					   **/*.gif, **/*.png" />
 
-    <property name="openmap.vb_classes" value="${openmap.home}/classes/corba_vb"/>
-
     <!-- sets the visibroker.home present property to the value "true"
 	 if the home directory of Visibroker is found. -->
     <property name="visibroker.home" value="/usr/local/openmap/vbroker-3.4/java"/>
     <available file="${visibroker.home}" property="do.visibroker"/> 
-    <property name="visibroker.jars" value="${visibroker.home}/lib/vbjapp.jar:${visibroker.home}/lib/vbjcosnm.jar:${visibroker.home}/lib/vbjtools.jar:${visibroker.home}/lib/vbjorb.jar"/>
-    <property name="visibroker.bootclasspath" value="${visibroker.jars}:${java.home}/lib/rt.jar:${openmap.classes}"/>
+
+    <!-- Check to see if there is a idl2java compiler available -->
+    <condition property="idl.compiler">
+      <and>
+	<available classname="com.visigenic.vbroker.tools.idl2java"/>
+      </and>
+    </condition> 
 
     <!-- check to see if the idls need to be compiled. -->
     <property name="cspecialist.home" value="${corba.src}/com/bbn/openmap/CSpecialist"/>
     <available file="${cspecialist.home}" property="idl.compiled"/> 
 
+
+    <property name="visibroker.jars" value="${visibroker.home}/lib/vbjapp.jar:${visibroker.home}/lib/vbjcosnm.jar:${visibroker.home}/lib/vbjtools.jar:${visibroker.home}/lib/vbjorb.jar"/>
+    <property name="visibroker.bootclasspath" value="${visibroker.jars}:${java.home}/lib/rt.jar:${openmap.classes}"/>
+
+
   </target>
 
   <target name="visibroker.idl" depends="init.corba"
 	  description="Create stub classes from idl files and compile stubs."
-	  unless="idl.compiled">
+	  unless="idl.compiled"
+	  if="idl.compiler">
     <echo message="Creating CORBA stub classes from idls with Visibroker..."/>
     
     <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
@@ -62,47 +73,86 @@
 	  description="Compile stub classes created from idl files.">
     <echo message="Compiling CORBA stub classes..."/>
     <javac srcdir="${corba.src}"
-           destdir="${openmap.vb_classes}"
+           destdir="${corba.classes}"
 	   debug="on"
 	   includes="**/CRpfFrameProvider/**, **/CSpecialist/**, **/corbaImageServer/**"
 	   excludes="${javac.excludes}"
 	   bootclasspath="${visibroker.bootclasspath}" />
   </target>
 
+  <!-- in case we change orbs later. Don't forget to change the name
+       of the jar file accordingly. -->
+  <target name="classes.corba" depends="init.corba" if="do.visibroker">
+    <mkdir dir="${corba.classes}"/>
+    <antcall target="classes.visibroker"/>
+  </target>
+
+  <target name="jar.corba" depends="jar.visibroker"/>
+
+  <!-- Kick off bulding corba classes with visibroker -->
   <target name="classes.visibroker" depends="visibroker.stubs"
 	  description="Compiles the Corba classes with the Visibroker CORBA implementation. You must have Visibroker (http://www.borland.com/bes/visibroker) installed. (Call this to build CORBA classes) "
 	  if="do.visibroker">
 
     <echo message="Compiling CORBA classes with Visibroker..."/>
-
     <javac srcdir="${corba.src}"
-	   destdir="${openmap.vb_classes}"
+	   destdir="${corba.classes}"
 	   debug="on"
 	   includes="**/layer/rpf/corba/**/*.java,
 		     **/layer/specialist/**/*.java,
 		     **/plugin/corbaImage/**/*.java"
 	   excludes="**/unimplemented/**"
 	   bootclasspath="${visibroker.bootclasspath}" />
+  </target>
 
-    <jar jarfile="${openmap.home}/lib/omcorba_vb.jar"
-	 basedir="${openmap.vb_classes}"
+  <target name="jar.visibroker"
+	  depends="classes.corba"
+	  description="Builds jar files, placing them in the lib directory."
+	  if="do.corba">
+
+    <jar jarfile="${corba.jar}" 
+	 basedir="${corba.classes}"
 	 includes="**/*.class"/>
+  </target>    
 
-  </target>
+  <!--  ############################
+	Cleanup targets
+	############################ -->  
+  <target name="clean_all.corba"
+	  depends="clean.corba, clean_docs.corba"
+	  description="Delete jar files, class files, and generated documentation."/>
 
-  <target name="clean.visibroker" 
-	  depends="distclean.visibroker"
-	  description="Delete the Corba OpenMap class, stub and jar files.">
-    <delete file="${openmap.home}/lib/omcorba_vb.jar"/>
-  </target>
+  <target name="clean.corba" 
+	  depends="distclean.corba, clean_jars.corba"
+	  description="Delete jar files and all class files"/>
 
-  <target name="distclean.visibroker" 
-	  description="Delete the Corba OpenMap class files and the stub classes.">
-    <delete dir="${openmap.vb_classes}"/>
+  <target name="distclean.corba"
+	  depends="init.corba"
+	  description="Delete the Corba OpenMap class files and the stub classes, but not the jar files.">
+    <delete dir="${corba.classes}"/>
     <delete dir="${corba.src}/com/bbn/openmap/layer/rpf/corba/CRpfFrameProvider"/>
     <delete dir="${corba.src}/com/bbn/openmap/CSpecialist"/>
     <delete dir="${corba.src}/com/bbn/openmap/plugin/corbaImage/corbaImageServer"/>
   </target>
+
+  <target name="clean_jars.corba"
+	  description="Delete only the jar files from the lib directory.">
+    <delete file="${corba.jar}"/>
+  </target>
+
+  <target name="clean_docs.corba"
+          description="Delete only the generated API documentation.">
+    <delete dir="${openmap.docs}/com"/>
+    <delete>
+      <fileset dir="${openmap.docs}" includes="**/*.html" excludes="doc-index.html"/>
+    </delete>
+    <delete file="${openmap.docs}/stylesheet.css"/>
+    <delete file="${openmap.docs}/package-list"/>
+  </target>
+
+  <!--  ############################
+	End of cleanup targets.
+	############################ -->  
  
 </project>
 

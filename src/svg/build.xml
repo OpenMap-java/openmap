@@ -11,8 +11,9 @@
 	  
     <property name="openmap.home" value="../.."/>
     <property name="openmap.class_dir" value="${openmap.home}/classes"/>
-    <property name="openmap.classes" value="${openmap.home}/classes/openmap"/>
+    <property name="svg.classes" value="${openmap.class_dir}/svg"/>
     <property name="svg.src" value="${openmap.home}/src/svg"/>
+    <property name="svg.jar" value="${openmap.home}/lib/omsvg.jar"/>
     <property name="openmap.docs" value="${openmap.home}/doc"/>
 
     <property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
@@ -27,7 +28,7 @@
 	 the batik package is found. Change the location of batik.home
 	 if you want it to be different. -->
 
-    <property name="batik.home" value="/usr/local/java/batik-1.1.2"/>
+    <property name="batik.home" value="/usr/local/java/batik-1.1.1"/>
     <available file="${batik.home}" property="do.svg"/> 
 
     <property name="svg.jars" value="${batik.home}/lib/batik-svggen.jar;${batik.home}/lib/batik-awt-util.jar;${batik.home}/lib/batik-util.jar;${batik.home}/lib/batik-dom.jar;${batik.home}/lib/batik-ext.jar;${batik.home}/lib/batik-xml.jar;${batik.home}/lib/batik-svggen.jar;${batik.home}/lib/batik-awt-util.jar;${batik.home}/lib/batik-util.jar;${batik.home}/lib/batik-dom.jar;${batik.home}/lib/batik-ext.jar;${batik.home}/lib/batik-xml.jar;${batik.home}/lib/batik-svg-dom.jar"/>
@@ -43,14 +44,61 @@
 	  description="Compiles the SVG Formatter and recreates the jars after compiling this target. You must have Batik (http://xml.apache.org/batik/index.html) installed.  (Call this to build SVG targets)"
 	  if="do.svg">
 
+    <mkdir dir="${svg.classes}"/>
     <echo message="Compiling SVG classes with ${svg.jars}"/>
     <javac srcdir="${svg.src}"
-	   destdir="${openmap.classes}"
+	   destdir="${svg.classes}"
 	   classpath="${openmap.home}/lib/openmap.jar;${openmap.classes};${svg.jars}"
 	   debug="on"
 	   excludes="${javac.excludes}"/>
 
   </target>
+
+  <target name="jar.svg"
+	  depends="classes.svg"
+	  description="Builds jar files, placing them in the lib directory."
+	  if="do.svg">
+
+    <jar jarfile="${svg.jar}" 
+	 basedir="${svg.classes}"
+	 includes="**/*.class"/>
+  </target>    
+
+  <!--  ############################
+	Cleanup targets
+	############################ -->  
+	<target name="clean_all.svg"
+	        depends="clean.svg, clean_docs.svg"
+		description="Delete jar files, class files, and generated documentation."/>
+
+	<target name="clean.svg" 
+	        depends="distclean.svg, clean_jars.svg"
+		description="Delete jar files and all class files"/>
+
+	<target name="distclean.svg"
+	        depends="init.svg"
+		description="Delete class files, but not the jar files.">
+	     <delete dir="${svg.classes}" />
+	</target>
+
+	<target name="clean_jars.svg"
+	        description="Delete only the jar files from the lib directory.">
+	     <delete file="${svg.jar}"/>
+	</target>
+
+	<target name="clean_docs.svg"
+                description="Delete only the generated API documentation.">
+	     <delete dir="${openmap.docs}/com"/>
+	     <delete>
+	          <fileset dir="${openmap.docs}" includes="**/*.html" excludes="doc-index.html"/>
+	     </delete>
+	     <delete file="${openmap.docs}/stylesheet.css"/>
+	     <delete file="${openmap.docs}/package-list"/>
+	</target>
+
+  <!--  ############################
+	End of cleanup targets.
+	############################ -->  
 
 </project>
 

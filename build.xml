@@ -23,13 +23,6 @@
     <property name="svg.src" value="${openmap.home}/src/svg"/>
     <property name="j3d.src" value="${openmap.home}/src/j3d"/>
     <property name="corba.src" value="${openmap.home}/src/corba"/>
-    
-    <condition property="javamail.complete">
-      <and>
-	<available classname="javax.activation.DataHandler"/>
-	<available classname="javax.mail.Transport"/>
-      </and>
-    </condition> 
 
   </target>
 
@@ -37,22 +30,18 @@
 	Main targets
 	############################ -->  
 
-  <target name="todo" 
-	  depends="classes, visibroker" 
-          description="Compiles all of the OpenMap classes and builds jar files in lib directory, including the svg, j3d and corba packages."/>
-
   <target name="classes" 
 	  depends="init" 
           description="Compiles standard OpenMap classes.">
     <ant antfile="${openmap.src}/build.xml" target="classes" inheritAll="false"/>
     <antcall target="svg"/>
     <antcall target="j3d"/>
-<!--    <antcall target="visibroker"/> -->
+    <antcall target="corba"/>
   </target>
 
   <target name="svg" description="Compiles SVG OpenMap classes.">
     <ant antfile="${svg.src}/build.xml" target="classes.svg" inheritAll="false">
-      <!-- Change this location if your batik home is different,
+      <!-- Change and add this location if your batik home is different,
 	   or you can make the change in the src/svg/build.xml file.
 	   <property name="batik.home" value="/usr/local/java/batik-1.1.1"/>
 	   -->
@@ -63,15 +52,16 @@
     <ant antfile="${j3d.src}/build.xml" target="classes.j3d" inheritAll="false"/>
   </target>
 
-  <target name="visibroker" 
-          description="Compiles CORBA OpenMap classes.">
-    <ant antfile="${corba.src}/build.xml" target="classes.visibroker" inheritAll="false"/>
+  <target name="corba" description="Compiles CORBA OpenMap classes.">
+    <ant antfile="${corba.src}/build.xml" target="classes.corba" inheritAll="false"/>
   </target>
 
   <target name="jars" depends="classes" 
           description="Compiles OpenMap and alternative classes.">
     <ant antfile="${openmap.src}/build.xml" target="jar.openmap" inheritAll="false"/>
-<!--    <ant antfile="${corba.src}/build.xml" target="jar.visibroker" inheritAll="false"/> -->
+    <ant antfile="${svg.src}/build.xml" target="jar.svg" inheritAll="false"/>
+    <ant antfile="${j3d.src}/build.xml" target="jar.j3d" inheritAll="false"/>
+    <ant antfile="${corba.src}/build.xml" target="jar.corba" inheritAll="false"/>
   </target>
 
   <target name="all" depends="jars"
@@ -91,16 +81,25 @@
   <target name="clean" depends="init"
 	  description="Delete jar files and all class files">
     <ant antfile="${openmap.src}/build.xml" target="clean.openmap"/>
+    <ant antfile="${svg.src}/build.xml" target="clean.svg"/>
+    <ant antfile="${j3d.src}/build.xml" target="clean.j3d"/>
+    <ant antfile="${corba.src}/build.xml" target="clean.corba"/>
   </target>
 
   <target name="distclean" depends="init"
 	  description="Delete class files, but not the jar files.">
     <ant antfile="${openmap.src}/build.xml" target="distclean.openmap"/>
+    <ant antfile="${svg.src}/build.xml" target="distclean.svg"/>
+    <ant antfile="${j3d.src}/build.xml" target="distclean.j3d"/>
+    <ant antfile="${corba.src}/build.xml" target="distclean.corba"/>
   </target>
 
   <target name="clean_jars" depends="init"
 	  description="Delete only the jar files from the lib directory.">
     <ant antfile="${openmap.src}/build.xml" target="clean_jars.openmap"/>
+    <ant antfile="${svg.src}/build.xml" target="clean_jars.svg"/>
+    <ant antfile="${j3d.src}/build.xml" target="clean_jars.j3d"/>
+    <ant antfile="${corba.src}/build.xml" target="clean_jars.corba"/>
   </target>
 
   <target name="clean_docs" depends="init"
