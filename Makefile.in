@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.47 $  $Date: 2001/02/27 18:51:42 $
+# $Revision: 1.48 $  $Date: 2001/03/02 22:08:27 $
 # **********************************************************************
 
 
@@ -77,6 +77,7 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.dted \
 		com.bbn.openmap.layer.nitf \
 		com.bbn.openmap.layer.pluginLayer \
+		com.bbn.openmap.layer.pluginLayer.shis \
 		com.bbn.openmap.layer.plotLayer \
 		com.bbn.openmap.layer.shape \
 		com.bbn.openmap.layer.shape.areas \
@@ -99,6 +100,7 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/dted/*.class \
 		com/bbn/openmap/layer/nitf/*.class \
 		com/bbn/openmap/layer/pluginLayer/*.class \
+		com/bbn/openmap/layer/pluginLayer/shis/*.class \
 		com/bbn/openmap/layer/plotLayer/*.class \
 		com/bbn/openmap/layer/shape/*.class \
 		com/bbn/openmap/layer/shape/areas/*.class \
