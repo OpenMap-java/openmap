@@ -15,7 +15,7 @@
 #  
 # **********************************************************************
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
-# $Revision: 1.42 $  $Date: 2000/08/03 19:39:18 $
+# $Revision: 1.43 $  $Date: 2000/11/21 23:55:22 $
 # **********************************************************************
 
 
@@ -34,9 +34,11 @@ Core.pkgs =	com.bbn.openmap \
 		com.bbn.openmap.event \
 		com.bbn.openmap.gui \
 		com.bbn.openmap.omGraphics \
+		com.bbn.openmap.omGraphics.editable \
 		com.bbn.openmap.omGraphics.grid \
 		com.bbn.openmap.omGraphics.util \
 		com.bbn.openmap.proj \
+		com.bbn.openmap.tools.drawing \
 		com.bbn.openmap.util \
 		com.bbn.openmap.util.quadtree \
 		com.bbn.openmap.image
@@ -45,9 +47,11 @@ Core.classes =	com/bbn/openmap/*.class \
 		com/bbn/openmap/event/*.class \
 		com/bbn/openmap/gui/*.class \
 		com/bbn/openmap/omGraphics/*.class \
+		com/bbn/openmap/omGraphics/editable/*.class \
 		com/bbn/openmap/omGraphics/grid/*.class \
 		com/bbn/openmap/omGraphics/util/*.class \
 		com/bbn/openmap/proj/*.class \
+		com/bbn/openmap/tools/drawing/*.class \
 		com/bbn/openmap/util/*.class \
 		com/bbn/openmap/util/quadtree/*.class \
 		com/bbn/openmap/image/*.class
@@ -79,8 +83,9 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.location.csv \
 		com.bbn.openmap.layer.location.db \
 		com.bbn.openmap.layer.nexrad \
+		com.bbn.openmap.layer.terrain \
 		com.bbn.openmap.layer.etopo
-#		com.bbn.openmap.layer.terrain \
+
 
 
 Layer.classes =	com/bbn/openmap/layer/*.class \
@@ -105,8 +110,9 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/location/csv/*.class \
 		com/bbn/openmap/layer/location/db/*.class \
 		com/bbn/openmap/layer/nexrad/*.class \
+		com/bbn/openmap/layer/terrain/*.class \
 		com/bbn/openmap/layer/etopo/*.class
-#		com/bbn/openmap/layer/terrain/*.class \
+
 
 Layer.props =   com/bbn/openmap/layer/vpf/*.properties
 

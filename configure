@@ -1087,6 +1087,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/layer/rpf/corba/Makefile
 	com/bbn/openmap/layer/shape/Makefile
 	com/bbn/openmap/layer/shape/areas/Makefile
+	com/bbn/openmap/layer/terrain/Makefile
 	com/bbn/openmap/layer/test/Makefile
 	com/bbn/openmap/layer/util/Makefile
 	com/bbn/openmap/layer/util/cacheHandler/Makefile
@@ -1221,6 +1222,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/layer/rpf/corba/Makefile
 	com/bbn/openmap/layer/shape/Makefile
 	com/bbn/openmap/layer/shape/areas/Makefile
+	com/bbn/openmap/layer/terrain/Makefile
 	com/bbn/openmap/layer/test/Makefile
 	com/bbn/openmap/layer/util/Makefile
 	com/bbn/openmap/layer/util/cacheHandler/Makefile
