@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMAreaList.java,v $
 // $RCSfile: OMAreaList.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/11 15:07:01 $
+// $Revision: 1.3 $
+// $Date: 2003/07/12 04:13:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -62,6 +62,7 @@ public class OMAreaList extends OMGeometryList
     public OMAreaList() {
 	super(10);
 	setVague(true);
+	setTraverseMode(LAST_ADDED_ON_TOP);
     };
     
     /**
@@ -72,6 +73,7 @@ public class OMAreaList extends OMGeometryList
     public OMAreaList(int initialCapacity) {
 	super(initialCapacity);
 	setVague(true);
+	setTraverseMode(LAST_ADDED_ON_TOP);
     };
 
     /**
@@ -84,6 +86,7 @@ public class OMAreaList extends OMGeometryList
     public OMAreaList(java.util.List list) {
 	super(list);
 	setVague(true);
+	setTraverseMode(LAST_ADDED_ON_TOP);
     }
 
     /**
@@ -123,11 +126,7 @@ public class OMAreaList extends OMGeometryList
 		return;
 	    }
 
-	    if (shape == null) {
-		shape = gp;
-	    } else {
-		appendShapeEdge(shape, gp);
-	    }
+	    shape = appendShapeEdge(shape, gp);
 	}
     }
 

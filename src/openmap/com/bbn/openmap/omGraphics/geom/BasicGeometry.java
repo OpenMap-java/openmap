@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/07/10 22:03:57 $
+// $Revision: 1.4 $
+// $Date: 2003/07/12 04:13:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -609,15 +609,31 @@ public abstract class BasicGeometry
     public static GeneralPath appendShapeEdge(GeneralPath toShape, 
 					      GeneralPath addShape) {
 
+	boolean firstPoint = false;
+	if (toShape == null) {
+	    toShape = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+	    firstPoint = true;
+	}
+
 	PathIterator pi2 = addShape.getPathIterator(null);
 	FlatteningPathIterator pi = new FlatteningPathIterator(pi2, .25);
 	double[] coords = new double[6];
 
 	while (!pi.isDone()) {
 	    int type = pi.currentSegment(coords);
-	    toShape.lineTo((float)coords[0], (float)coords[1]);
+	    if (firstPoint) {
+// 		Debug.output("Creating new shape, first point " +
+// 			     (float)coords[0] + ", " + (float)coords[1]);
+		toShape.moveTo((float)coords[0], (float)coords[1]);
+		firstPoint = false;
+	    } else {
+// 		Debug.output(" adding point " + 
+// 			     (float)coords[0] + ", " + (float)coords[1]);
+		toShape.lineTo((float)coords[0], (float)coords[1]);
+	    }
 	    pi.next();
 	}
+// 	Debug.output(" -- end point");
 
 	return toShape;
     }
