@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LayerGraphicWarehouseSupport.java,v $
-// $RCSfile: LayerGraphicWarehouseSupport.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:33 $
-// $Author: wjeuerle $
-// 
+// $Revision: 1.4 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
 // **********************************************************************
 
 

@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibrarySelectionTable.java,v $
-// $RCSfile: LibrarySelectionTable.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/12/29 20:35:09 $
-// $Author: wjeuerle $
-// 
+// $Revision: 1.7 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -165,8 +160,8 @@ public class LibrarySelectionTable {
 					   LATschemalength, false);
 
 	Debug.message("vpf", "lst.adp: looked up schema");
-	List l = new ArrayList(latrf.getColumnCount());
-	while (latrf.parseRow(l)) {
+	for (List l = new ArrayList(latrf.getColumnCount());
+	     latrf.parseRow(l); ) {
 	    String lname = ((String)l.get(latcols[0])).toLowerCase();
 	    float br[] = new float[] {
 		((Float)l.get(latcols[1])).floatValue(),
@@ -334,7 +329,7 @@ public class LibrarySelectionTable {
 			     LatLonPoint ll1, LatLonPoint ll2) {
 	
 	if (Debug.debugging("vpf")) {
-	    Debug.output("LST.drawFeatures(): Library selection table coverage: " + 
+	    Debug.output("LST.drawFeatures(): Coverage name: " + 
 			 covname);
 	    Debug.output("Library selection table - edges: " +
 			 warehouse.drawEdgeFeatures());

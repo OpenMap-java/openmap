@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/TextTable.java,v $
-// $RCSfile: TextTable.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
-// 
+// $Revision: 1.2 $ $Date: 2003/12/30 17:06:54 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -77,9 +72,8 @@ public class TextTable extends PrimitiveTable {
 	float ll2lat = ll2.getLatitude();
 	float ll2lon = ll2.getLongitude();
 
-	List text = new ArrayList();
 	try {
-	    while (parseRow(text)) {
+	    for (List text = new ArrayList(); parseRow(text); ) {
 		String textval = (String)text.get(textColumn);
 		CoordFloatString coords = (CoordFloatString)text.get(coordColumn);
 		float lat = coords.getYasFloat(0);

@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/TilingAdapter.java,v $
-// $RCSfile: TilingAdapter.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:33 $
-// $Author: wjeuerle $
-// 
+// $Revision: 1.3 $ $Date: 2003/12/30 17:06:54 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -27,7 +22,8 @@ import java.util.List;
 
 /**
  * An interface class for a set of adapter classes that hide the tiling format
- * of a VPF table.
+ * of a VPF table. None of the methods taking a List parameter may modify
+ * the passed in list.
  * @see DcwRecordFile#getTilingAdapter(String,String)
  */
 public interface TilingAdapter {

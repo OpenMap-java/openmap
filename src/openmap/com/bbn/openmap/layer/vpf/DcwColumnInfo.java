@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwColumnInfo.java,v $
-// $RCSfile: DcwColumnInfo.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:32 $
-// $Author: wjeuerle $
-// 
+// $Revision: 1.3 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -69,6 +64,10 @@ public class DcwColumnInfo {
     public static final char VPF_COLUMN_DATE = 'D';
     public static final char VPF_COLUMN_NULL = 'X';
     public static final char VPF_COLUMN_TRIPLET = 'K';
+    /** VPF Column Type Constant for a column that can be either int or short.
+     * This value will never be read from a VPF file, its a special value
+     * that is accepted by lookupSchema */
+    public static final char VPF_COLUMN_INT_OR_SHORT = 'i';
 
     /** VPF Column Key Type Constants */
     public static final char VPF_COLUMN_PRIMARY_KEY = 'P';

@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageAttributeTable.java,v $
-// $RCSfile: CoverageAttributeTable.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/29 20:35:09 $
-// $Author: wjeuerle $
-// 
+// $Revision: 1.4 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -49,9 +44,13 @@ public class CoverageAttributeTable {
      *  will have their ID number as their index. */
     private TileDirectory containedTiles[];
     /** the column names in the cat. file */
-    private final static String CATColumns[] = {Constants.CAT_COVNAME, Constants.CAT_DESC, Constants.CAT_LEVEL};
+    private final static String CATColumns[] = {Constants.CAT_COVNAME,
+						Constants.CAT_DESC,
+						Constants.CAT_LEVEL};
     /** expected schema types for the cat. file */
-    private final static char CATschematype[] = {'T', 'T', 'i'};
+    private final static char CATschematype[] = {DcwColumnInfo.VPF_COLUMN_TEXT,
+						 DcwColumnInfo.VPF_COLUMN_TEXT,
+				        DcwColumnInfo.VPF_COLUMN_INT_OR_SHORT};
     /** expected schema lengths for cat. file */
     private final static int CATschemalength[] = {-1 /*8*/, -1 /*50*/, 1};
   

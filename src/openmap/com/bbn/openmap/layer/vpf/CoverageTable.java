@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoverageTable.java,v $
-// $RCSfile: CoverageTable.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/12/29 20:35:09 $
-// $Author: wjeuerle $
-// 
+// $Revision: 1.5 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -131,10 +126,13 @@ public class CoverageTable {
     public final static String VDTColumnNames[] = {Constants.VDT_TABLE, Constants.VDT_ATTRIBUTE, Constants.VDT_VALUE, Constants.VDT_DESC};
 
     /** expected schema types for int.vdt files */
-    public final static char intVDTschematype[] = {'I', 'T', 'T', 'i', 'T'};
+    public final static char intVDTschematype[] ={DcwColumnInfo.VPF_COLUMN_INT,
+				       DcwColumnInfo.VPF_COLUMN_TEXT,
+				       DcwColumnInfo.VPF_COLUMN_TEXT,
+				       DcwColumnInfo.VPF_COLUMN_INT_OR_SHORT,
+				       DcwColumnInfo.VPF_COLUMN_TEXT};
     /** expected schema lengths for int.vdt files */
-    public final static int intVDTschemalength[] = {1, -1 /*12*/, -1 /*16*/,
-						     1, -1 /*50*/};
+    public final static int intVDTschemalength[] = {1, -1, -1, 1, -1};
     
     private void loadIntVDT() {
 	try {
@@ -145,8 +143,8 @@ public class CoverageTable {
 						 intVDTschematype,
 						 intVDTschemalength, false);
 	
-		List l = new ArrayList(intvdt.getColumnCount());
-		while (intvdt.parseRow(l)) {
+		for (List l = new ArrayList(intvdt.getColumnCount());
+		     intvdt.parseRow(l); ) {
 		    String tab = (String)l.get(cols[0]);
 		    String attr = (String)l.get(cols[1]);
 		    int val = ((Number)l.get(cols[2])).intValue();
@@ -161,10 +159,13 @@ public class CoverageTable {
     }
 
     /** expected schema types for char.vdt files */
-    public final static char charVDTschematype[] = {'I', 'T', 'T', 'T', 'T'};
+    public final static char charVDTschematype[]={DcwColumnInfo.VPF_COLUMN_INT,
+					     DcwColumnInfo.VPF_COLUMN_TEXT,
+					     DcwColumnInfo.VPF_COLUMN_TEXT,
+					     DcwColumnInfo.VPF_COLUMN_TEXT,
+					     DcwColumnInfo.VPF_COLUMN_TEXT};
     /** expected schema lengths for char.vdt files */
-    public final static int charVDTschemalength[] = {1, -1 /*12*/, -1 /*16*/,
-						      -1 /*2*/, -1 /*50*/};
+    public final static int charVDTschemalength[] = {1, -1, -1, -1, -1};
     private void loadCharVDT() {
 	try {
 	    String vdt = tablepath + Constants.charVDTTableName;
@@ -174,8 +175,8 @@ public class CoverageTable {
 						  charVDTschematype,
 						  charVDTschemalength, false);
 
-		List l = new ArrayList(charvdt.getColumnCount());
-		while (charvdt.parseRow(l)) {
+		for (List l = new ArrayList(charvdt.getColumnCount());
+		     charvdt.parseRow(l); ) {
 		    String tab = (String)l.get(cols[0]);
 		    String attr = (String)l.get(cols[1]);
 		    String val = (String)l.get(cols[2]);
@@ -244,17 +245,12 @@ public class CoverageTable {
 		appendDot = true;
 	    }
 	    DcwRecordFile fcs = new DcwRecordFile(filename);
-	    List fcsrec = new ArrayList(fcs.getColumnCount());
 	    
-	    int[] fcscols;
+	    int[] fcscols = fcs.lookupSchema(DCW ? fcsColumnsDCW : fcsColumns,
+					     true);
 
-	    if (!DCW) {
-		fcscols = fcs.lookupSchema(fcsColumns, true);
-	    } else {
-		fcscols = fcs.lookupSchema(fcsColumnsDCW, true);
-	    }
-
-	    while (fcs.parseRow(fcsrec)) {
+	    for (List fcsrec = new ArrayList(fcs.getColumnCount());
+		 fcs.parseRow(fcsrec); ) {
 		String feature_class = (String)fcsrec.get(fcscols[0]);
 		String table1 = (String)fcsrec.get(fcscols[1]);
 		String foreign_key = (String)fcsrec.get(fcscols[2]);
@@ -505,12 +501,12 @@ public class CoverageTable {
 
 	    int oldTileID = -2; //-1 is "untiled" tile_id
 //  	    int faccIndex = fci.getFaccIndex()
-	    List fcirow = new ArrayList();  // hold fci row contents
 
 	    // OK, now we are looking in the Feature class file.
 	    try {
 		int getrow = 1;
-		while (fci.getRow(fcirow, getrow++)) {
+		for (List fcirow = new ArrayList();
+		     fci.getRow(fcirow, getrow++); ) {
 		    if (Debug.debugging("vpfdetail")) {
 			Debug.output("CoverageTable new feature " + fcirow);
 		    }
@@ -771,8 +767,8 @@ public class CoverageTable {
 		    int fclass = fcadesc.whatColumn("fclass");
 		    int type = fcadesc.whatColumn("type");
 		    int descr = fcadesc.whatColumn("descr");
-		    ArrayList al = new ArrayList(fcadesc.getColumnCount());
-		    while (fcadesc.parseRow(al)) {
+		    for (ArrayList al =new ArrayList(fcadesc.getColumnCount());
+			 fcadesc.parseRow(al); ) {
 			String fname = ((String)al.get(fclass)).toLowerCase().intern();
 			char ftype = ((String)al.get(type)).charAt(0);
 			String fdesc = (String)al.get(descr);

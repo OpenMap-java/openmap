@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/EdgeTable.java,v $
-// $RCSfile: EdgeTable.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
-// 
+// $Revision: 1.2 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -189,8 +184,7 @@ public class EdgeTable extends PrimitiveTable {
 
 	try {
 	    seekToRow(1);
-	    List edge = new ArrayList();
-	    while (parseRow(edge)) {
+	    for (List edge = new ArrayList(); parseRow(edge); ) {
 		warehouse.createEdge(covtable, this, edge, ll1, ll2,
 				     dpplat, dpplon, getCoordinates(edge));
 	    }

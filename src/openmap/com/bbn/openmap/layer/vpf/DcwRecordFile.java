@@ -11,15 +11,9 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/DcwRecordFile.java,v $
-// $RCSfile: DcwRecordFile.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:32 $
-// $Author: wjeuerle $
-// 
+// $Revision: 1.3 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
@@ -284,25 +278,6 @@ public class DcwRecordFile {
 	return retval;
     }
 
-    /** make a claim as to what you expect the table to look like
-     * @param type in order that you expect the columns [from VPF spec]
-     * @param length array of lengths of the respective columns (-1 for a
-     *        variable length column)
-     * @param strictlength false means that variable length columns can be
-     *        fixedlength instead
-     * @exception FormatException the table does not match the specified schema
-     * @deprecated Use lookupSchema instead
-     */
-    public void assertSchema(char type[], int length[],
-			     boolean strictlength) throws FormatException {
-        if (type.length != columnInfo.length) {
-	    throw new FormatException("assertSchema: column count incorrect");
-	}
-	for (int i = 0; i < type.length; i++) {
-	    columnInfo[i].assertSchema(type[i], length[i], strictlength);
-	}
-    }
-    
     /**
      * Good for looking at the contents of a data file, this method dumps
      * a bunch of rows to System.out.  It parses all the lines of the file.
@@ -311,13 +286,11 @@ public class DcwRecordFile {
      */
     public void parseAllRowsAndPrintSome() throws FormatException {
         int row_id_column = whatColumn(ID_COLUMN_NAME);
-	List l = new ArrayList(getColumnCount());
 	String vectorString = null;
 	int rowcount = 0;
-	while (parseRow(l)) {
-	    rowcount++;
-	    int cnt = ((Integer)(l.get(row_id_column))).intValue();
-	    if (cnt != rowcount) {
+	for (List l = new ArrayList(getColumnCount()); parseRow(l); ) {
+	    int cnt = ((Number)(l.get(row_id_column))).intValue();
+	    if (cnt != ++rowcount) {
 		System.out.println("Non-consecutive row number.  Expected " +
 				   rowcount + " got " + cnt);
 	    }
@@ -633,6 +606,9 @@ public class DcwRecordFile {
 	close();
     }
 
+    /** An test main for parsing VPF table files. 
+     * @param args file names to be read
+     */
     public static void main(String args[]) {
 	for (int i = 0; i < args.length; i++) {
 	    System.out.println(args[i]);
@@ -641,8 +617,7 @@ public class DcwRecordFile {
 		foo.printSchema();
 		foo.close();
 		foo.reopen(1);
-		List l = new ArrayList();
-		while (foo.parseRow(l)) {
+		for (List l = new ArrayList() ; foo.parseRow(l); ) {
 		    System.out.println(VPFUtil.listToString(l));
 		}
 		foo.close();

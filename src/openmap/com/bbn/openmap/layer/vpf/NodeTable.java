@@ -11,13 +11,8 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/NodeTable.java,v $
-// $RCSfile: NodeTable.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/12/23 20:43:33 $
-// $Author: wjeuerle $
-// 
+// $Revision: 1.3 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
 // **********************************************************************
 
 
@@ -97,9 +92,8 @@ public class NodeTable extends PrimitiveTable {
 	float ll2lat = ll2.getLatitude();
 	float ll2lon = ll2.getLongitude();
 
-	List node = new ArrayList();
 	try {
-	    while (parseRow(node)) {
+	    for (List node = new ArrayList(); parseRow(node); ) {
 		CoordFloatString coords = (CoordFloatString)node.get(coordColumn);
 		float lat = coords.getYasFloat(0);
 		float lon = coords.getXasFloat(0);

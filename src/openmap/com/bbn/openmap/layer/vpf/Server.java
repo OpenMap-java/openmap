@@ -11,15 +11,9 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/Server.java,v $
-// $RCSfile: Server.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
-// 
+// $Revision: 1.2 $ $Date: 2003/12/30 17:06:54 $ $Author: wjeuerle $
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
@@ -98,8 +92,8 @@ public class Server {
 			foo.printSchema();
 			throw e;
 		    }
-		    List l = new ArrayList();
-		    while (foo.parseRow(l)) {
+		    
+		    for (List l = new ArrayList(); foo.parseRow(l);) {
 			System.out.println(l.get(cols[0]));
 		    }
 		    System.out.println();
@@ -109,8 +103,8 @@ public class Server {
 		    foo.printSchema();
 		    if (!schemaonly) {
 			if (printall) {
-			    List l = new ArrayList();
-			    while (foo.parseRow(l)) {
+			    
+			    for (List l = new ArrayList(); foo.parseRow(l); ) {
 				System.out.println(VPFUtil.listToString(l));
 			    }
 			} else if (parseall) {

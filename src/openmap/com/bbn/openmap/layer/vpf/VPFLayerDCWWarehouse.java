@@ -11,15 +11,9 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayerDCWWarehouse.java,v $
-// $RCSfile: VPFLayerDCWWarehouse.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
-// $Author: dietrick $
-// 
+// $Revision: 1.2 $ $Date: 2003/12/30 17:06:54 $ $Author: wjeuerle $
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
@@ -112,12 +106,11 @@ public class VPFLayerDCWWarehouse
      * From a string of space separated numbers, creates an int[].
      */
     protected int[] getNumbersFromPropertyList(String list) {
-	Vector realList = new Vector();
+	List realList = new ArrayList();
 
-	Vector excludes = PropUtils.parseSpacedMarkers(list);
-	Iterator it = excludes.iterator();
+	List excludes = PropUtils.parseSpacedMarkers(list);
 
-	while (it.hasNext()) {
+	for (Iterator it = excludes.iterator(); it.hasNext(); ) {
 	    String number = (String)it.next();
 	    try {
 		realList.add(Integer.valueOf(number));
@@ -130,9 +123,8 @@ public class VPFLayerDCWWarehouse
 
 	if (size > 0) {
 	    numbers = new int[size];
-	    it = realList.iterator();
 	    int count = 0;
-	    while (it.hasNext()) {
+	    for (Iterator it = realList.iterator(); it.hasNext(); ) {
 		numbers[count++] = ((Integer)it.next()).intValue();
 	    }
 	}
@@ -158,7 +150,7 @@ public class VPFLayerDCWWarehouse
      * returns an empty List
      */
     public List getFeatures() {
-	return new ArrayList();
+	return Collections.EMPTY_LIST;
     }
 
     /**

@@ -11,15 +11,9 @@
 // 
 // </copyright>
 // **********************************************************************
-// 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/AreaTable.java,v $
-// $RCSfile: AreaTable.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
-// $Author: dietrick $
-// 
+// $Revision: 1.2 $ $Date: 2003/12/30 17:06:53 $ $Author: wjeuerle $
 // **********************************************************************
-
 
 package com.bbn.openmap.layer.vpf;
 
@@ -54,7 +48,7 @@ public class AreaTable extends PrimitiveTable {
     final private int ringStartColumn;
 
     /** TilingAdapters used to retrieve edge table information */
-    TilingAdapter edgeRightFaceAdapter, edgeLeftFaceAdapter,
+    final private TilingAdapter edgeRightFaceAdapter, edgeLeftFaceAdapter,
 	edgeRightEdgeAdapter, edgeLeftEdgeAdapter;
 
     /**
@@ -199,10 +193,8 @@ public class AreaTable extends PrimitiveTable {
 			 float dpplat, float dpplon,
 			 LatLonPoint ll1, LatLonPoint ll2)
     {
-	List area = new ArrayList(getColumnCount());
-
 	try {
-	    while (parseRow(area)) {
+	    for (List area = new ArrayList(getColumnCount()); parseRow(area);){
 		warehouse.createArea(covtable, this, area, ll1, ll2,
 				     dpplat, dpplon);
 	    }
