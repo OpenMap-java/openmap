@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.13 $
-// $Date: 2005/01/10 20:44:54 $
+// $Revision: 1.14 $
+// $Date: 2005/01/14 16:47:28 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -686,7 +686,9 @@ public class OMPoly extends OMGraphic implements Serializable {
                 if (size > 1) {
                     setNeedToRegenerate(false);
                     initLabelingDuringGenerate();
-                    setLabelLocation(xpoints[0], ypoints[0]);
+                    if (checkPoints(xpoints, ypoints)) {
+                        setLabelLocation(xpoints[0], ypoints[0]);
+                    }
                     return true;
                 } else {
                     return false;
@@ -702,6 +704,20 @@ public class OMPoly extends OMGraphic implements Serializable {
 
         setNeedToRegenerate(false);
         createShape();
+        return true;
+    }
+
+    /**
+     * Return true if the xpoints and ypoints are not null and contain coordinates.
+     * @param xpoints2
+     * @param ypoints2
+     * @return
+     */
+    protected boolean checkPoints(int[][] xpoints2, int[][] ypoints2) {
+        if (xpoints == null || ypoints == null || xpoints.length == 0
+                || ypoints.length == 0) {
+            return false;
+        }
         return true;
     }
 
@@ -901,7 +917,7 @@ public class OMPoly extends OMGraphic implements Serializable {
      */
     protected void createShape() {
 
-        if (getNeedToRegenerate()) {
+        if (getNeedToRegenerate() || !checkPoints(xpoints, ypoints)) {
             return;
         }
 
