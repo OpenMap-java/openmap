@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArc.java,v $
 // $RCSfile: OMArc.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/28 20:07:40 $
+// $Revision: 1.3 $
+// $Date: 2003/07/30 20:15:03 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -640,6 +640,17 @@ public class OMArc extends OMGraphic implements Serializable {
     }
 
     /**
+     * Helper function that helps the generate method figure out if
+     * the center point should be in the generate shape - if it's not,
+     * the code knows that there is a problem with the poles, and the
+     * polar correction code needs to be run.
+     */
+    protected boolean shouldCenterBeInShape() {
+	// It won't be for CHORD or OPEN arcs
+	return arcType == Arc2D.PIE;
+    }
+
+    /**
      * Prepare the arc for rendering.
      *
      * @param proj Projection
@@ -685,7 +696,6 @@ public class OMArc extends OMGraphic implements Serializable {
 		af = new AffineTransform();
 		af.rotate(rotationAngle, transx, transy);
 	    }
-// 	    pi = a2d.getPathIterator(af);
 	    pi = arcShape.getPathIterator(af);
 	    gp = new GeneralPath();
 	    gp.append(pi, false);
@@ -695,8 +705,7 @@ public class OMArc extends OMGraphic implements Serializable {
 	    break;
 
 	case RENDERTYPE_LATLON:
-	    ArrayList coordLists = null;
-	    coordLists = getCoordLists(proj, center, radius, nverts);
+	    ArrayList coordLists = getCoordLists(proj, center, radius, nverts);
 
 	    Point p = proj.forward(center.radlat_,
 				   center.radlon_,
@@ -711,7 +720,9 @@ public class OMArc extends OMGraphic implements Serializable {
 		int[] xpoints = (int[])coordLists.get(i);
 		int[] ypoints = (int[])coordLists.get(i+1);
 
-		gp = createShape(xpoints, ypoints, false);
+		gp = createShape(xpoints, ypoints, 
+				 (arcType != Arc2D.OPEN || 
+				  (arcType == Arc2D.OPEN && !isClear(fillPaint))));
 
 		if (shape == null) {
 		    shape = gp;
@@ -719,13 +730,10 @@ public class OMArc extends OMGraphic implements Serializable {
 		    ((GeneralPath)shape).append(gp, false);
 		}
 
-		//  		if (i == 0) {
-		correctFill = (proj instanceof Cylindrical) &&
-		    (!shape.contains(x1, y1) || correctPolar);
-		//  		}
+		correctFill = proj instanceof Cylindrical &&
+		    ((shouldCenterBeInShape() && !shape.contains(x1, y1)) || correctPolar);
 
 		if (correctFill) {
-
 		    int[][] alts = doPolarFillCorrection(
 			xpoints, ypoints,
 			(center.radlat_ > 0f) ? -1 : proj.getWidth()+1);
@@ -755,7 +763,6 @@ public class OMArc extends OMGraphic implements Serializable {
 	    System.err.println("OMArc.generate(): invalid RenderType");
 	    return false;
 	}
-
 	setNeedToRegenerate(false);
 	return true;
     }
@@ -779,10 +786,10 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     protected ArrayList getCoordLists(Projection proj, LatLonPoint center,
 				      float radius, int nverts) {
+
+	int at = (arcType == Arc2D.OPEN && !isClear(fillPaint)?Arc2D.CHORD:arcType);
 	return proj.forwardArc(center, /*radians*/true, radius, nverts, 
-			       ProjMath.degToRad(start), 
-			       ProjMath.degToRad(extent), 
-			       (arcType == Arc2D.OPEN && !isClear(fillPaint)?Arc2D.CHORD:arcType));
+			       ProjMath.degToRad(start), ProjMath.degToRad(extent), at);
     }
 
     /**

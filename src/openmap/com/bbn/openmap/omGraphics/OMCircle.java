@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMCircle.java,v $
 // $RCSfile: OMCircle.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/07/15 23:59:37 $
+// $Revision: 1.3 $
+// $Date: 2003/07/30 20:15:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -163,6 +163,16 @@ public class OMCircle extends OMArc implements Serializable {
     public OMCircle(LatLonPoint center, float radius, 
 		    Length units, int nverts) {
 	super(center, radius, units, nverts, 0f, 360f);
+    }
+
+    /**
+     * Helper function that helps the generate method figure out if
+     * the center point should be in the generate shape - if it's not,
+     * the code knows that there is a problem with the poles, and the
+     * polar correction code needs to be run.
+     */
+    protected boolean shouldCenterBeInShape() {
+	return true;
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/07/15 23:59:37 $
+// $Revision: 1.6 $
+// $Date: 2003/07/30 20:15:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -559,6 +559,36 @@ public abstract class BasicGeometry
     }
 
     /**
+     * Utility method that iterates over a Shape object and prints out the points.
+     */
+    public static void describeShapeDetail(Shape shape) {
+	describeShapeDetail(shape, .25);
+    }
+
+    /**
+     * Utility method that iterates over a Shape object and prints out
+     * the points.  The flattening is used for a
+     * FlatteningPathIterator, controlling the scope of the path
+     * traversal.
+     */
+    public static void describeShapeDetail(Shape shape, double flattening) {
+	PathIterator pi2 = shape.getPathIterator(null);
+	FlatteningPathIterator pi = new FlatteningPathIterator(pi2, flattening);
+	double[] coords = new double[6];
+	int pointCount = 0;
+
+	Debug.output(" -- start describeShapeDetail with flattening[" + flattening + "]");
+	while (!pi.isDone()) {
+	    int type = pi.currentSegment(coords);
+	    Debug.output(" Shape point [" + type + "] (" + (pointCount++) + ") " +  
+			 coords[0] + ", " + coords[1]);
+	    pi.next();
+	}
+
+	Debug.output(" -- end (" + pointCount + ")");
+    }
+
+    /**
      * Convenience method to add the coordinates to the given
      * GeneralPath.  You need to close the path yourself if you want
      * it to be a polygon.
@@ -628,6 +658,8 @@ public abstract class BasicGeometry
     public static GeneralPath appendShapeEdge(GeneralPath toShape, 
 					      GeneralPath addShape) {
 
+	boolean DEBUG = Debug.debugging("arealist");
+	int pointCount = 0;
 	boolean firstPoint = false;
 	if (toShape == null) {
 	    toShape = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
@@ -641,18 +673,25 @@ public abstract class BasicGeometry
 	while (!pi.isDone()) {
 	    int type = pi.currentSegment(coords);
 	    if (firstPoint) {
-// 		Debug.output("Creating new shape, first point " +
-// 			     (float)coords[0] + ", " + (float)coords[1]);
+		if (DEBUG) {
+		    Debug.output("Creating new shape, first point " +
+				 (float)coords[0] + ", " + (float)coords[1]);
+		}
 		toShape.moveTo((float)coords[0], (float)coords[1]);
 		firstPoint = false;
 	    } else {
-// 		Debug.output(" adding point " + 
-// 			     (float)coords[0] + ", " + (float)coords[1]);
+		if (DEBUG) {
+		    Debug.output(" adding point [" + type + "] (" + (pointCount++) + ") " +  
+				 (float)coords[0] + ", " + (float)coords[1]);
+		}
 		toShape.lineTo((float)coords[0], (float)coords[1]);
 	    }
 	    pi.next();
 	}
-// 	Debug.output(" -- end point");
+
+	if (DEBUG) {
+	    Debug.output(" -- end point (" + pointCount + ")");
+	}
 
 	return toShape;
     }

@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArrowHead.java,v $
 // $RCSfile: OMArrowHead.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/06 04:22:30 $
+// $Revision: 1.3 $
+// $Date: 2003/07/30 20:15:03 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -63,6 +63,10 @@ public class OMArrowHead {
 
 	Point[] locPoints = locateArrowHeads(arrowDirectionType, location, line);
 
+	if (locPoints == null) {
+	    return null;
+	}
+
 	Stroke stroke = line.getStroke();
 	float lineWidth = 1f;
 	if (stroke instanceof BasicStroke) {
@@ -85,7 +89,9 @@ public class OMArrowHead {
 				     OMLine line) {
 
 	Shape arrowHeads = createArrowHeads(arrowDirectionType, location, line);
-	line.getShape().append(arrowHeads, false);
+	if (arrowHeads != null) {
+	    line.getShape().append(arrowHeads, false);
+	}
     }
 
     protected static GeneralPath createArrowHead(Point from, Point to,
@@ -126,6 +132,11 @@ public class OMArrowHead {
 	//needs to wrap around the screen and show up on the other
 	//side.  Might have to think about the [1] points, and adding
 	//a arrowhead there if it shows up in the future.
+
+	if (line.xpoints == null || line.xpoints.length == 0 || line.xpoints[0].length == 0) {
+	    // line doesn't know where it is...
+	    return null;
+	}
 
 	int pointIndex = line.xpoints[0].length - 1;
 	if (Debug.debugging("arrowheads")) {
