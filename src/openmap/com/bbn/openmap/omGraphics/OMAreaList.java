@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMAreaList.java,v $
 // $RCSfile: OMAreaList.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/07/10 22:03:57 $
+// $Revision: 1.2 $
+// $Date: 2003/07/11 15:07:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -97,7 +97,9 @@ public class OMAreaList extends OMGeometryList
      */
     public synchronized void generate(Projection p, boolean forceProjectAll) {
 	super.generate(p, forceProjectAll);
-	shape.closePath();
+	if (shape != null) {
+	    shape.closePath();
+	}
     }
 
     /**
