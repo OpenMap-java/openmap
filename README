@@ -1,8 +1,8 @@
 $Source: /cvs/distapps/openmap/README,v $
 $RCSfile: README,v $
-$Revision: 1.9 $
-$Date: 2000/12/28 19:17:44 $
-$Author: bmackiew $
+$Revision: 1.10 $
+$Date: 2002/08/30 14:35:18 $
+$Author: dietrick $
 
 
 OpenMap(tm)
@@ -35,11 +35,141 @@ a part of Verizon".
 Downloads and home page
 -----------------------
 The homepage is at:
-<URL:http://openmap.bbn.com/> and
-<URL:http://javamap.bbn.com:4711/>
+<URL:http://openmap.bbn.com/>
 
 Downloads of the current distribution are available from the homepage.
 
+Where to start?
+------------------------
+
+- OpenMap Viewer
+
+The com/bbn/openmap/app/OpenMap.java example is the default "face" of
+OpenMap.  While it looks like a complex example to start with, it's
+really a simple framework that uses the MapHandler to add and connect
+the OpenMap components.  See the viewer User's Guide
+(http://openmap.bbn.com/doc/user-guide.html) for more information.
+
+You can write your own components that can display your data in the
+OpenMap Viewer.  Once you've written the layer or plugin, all you need
+to do is to add a reference to it in your openmap.properties file.
+The OpenMap Viewer reads this file to get configuration information.
+The properties file has instructions for adding layers and plugins to
+the application.
+
+Likewise, you can change the look of the application by modifying the
+openmap.components property in the openmap.properties file.  There are
+instructions in the properties file for modifying this property, but
+the main point is that changing the application does not require a
+code change.  The components are defined in the openmap.properties
+file and are connected at runtime.
+
+- SimpleMap
+
+This class is a very simple example that shows how you use the MapBean and a
+layer which shows a map of the world.  This
+com/bbn/openmap/examples/simple/SimpleMap.java uses the MapBean to
+create a static political map in a window with these steps:
+
+       1. Create a JFrame window.
+       2. Create a MapBean.
+       3. Create the Political boundary Layer
+       4. Add the Layer to the MapBean.
+       5. Add the MapBean to the ContentPane of the JFrame.
+       6. Show the JFrame window.
+
+- SimpleMap2
+
+This com/bbn/openmap/examples/simple/SimpleMap2.java example is a
+little more complicated than the previous one, but is more usable.  It
+shows the same political layer along with a background graticule layer
+(com/bbn/openmap/layer/GraticuleLayer.java) and a simpleforeground
+layer (com/bbn/openmap/examples/simple/RouteLayer.java) which shows
+hypothetical transportation routes.  This RouteLayer is a good example
+of how to extend the Layer class to create your own Layer (More about
+this can be found in the architecture documentation at
+http://openmap.bbn/doc/openmap-arch.html).
+
+This example program also includes OpenMap GUI widgets for navigating
+around on the Map.  The steps involved in creating the program are:
+
+       1. Create a JFrame window.
+       2. Create a MapBean.
+       3. Set the center and scale of the MapBean.
+       4. Create the Political, Graticule, and Route layers.
+       5. Add the layers to the MapBean.
+       6. Create GUI widgets.
+       7. Add the GUI widgets to the ContentPane of the JFrame.
+       8. Add the MapBean to the ContentPane of the JFrame.
+       9. Show the JFrame window.
+
+Since the MapBean is a PanListener and ZoomListener, you can create an
+object that produces these events and hook it up to the MapBean in
+order to "drive" the map.  The ToolPanel object generates PanEvents
+and ZoomEvents which are used to control the MapBean.
+
+- HelloWorld
+
+The com/bbn/openmap/examples/hello/HelloWorld.java example extends the
+ideas developed in the SimpleMap2 example.  It again uses the MapBean
+to show a political map of the world, but this time with a blazing
+"Hello World!" painted over the map.  It also incorporates Mouse
+events to allow point-and-click navigation.
+
+The openmap.properties file
+------------------------
+
+The OpenMap application is configured at runtime by the contents of
+the openmap.properties file. The openmap.properties file is located in
+the openmap directory, and has guidance inside it on how to modify
+various properties to change a) what components are part of the
+OpenMap application, including what layers are available, b) how those
+components are configured, and c) the initial map projection used by
+the application.
+
+When the OpenMap application starts up, the PropertyHandler object
+checks the CLASSPATH to find an openmap.properties file, and then
+checks the user's home directory for one. If an openmap.properties
+file was found in the home directory, all of its properties get added
+to any properties created previously from a CLASSPATH
+openmap.properties file. If there are duplicate properties, the last
+version read (from the home directory) will be the version used.
+
+By default, there is an openmap.properties file located at the top
+level of the openmap.jar file. When the jar file is created, the
+openmap.properties file located in the top level openmap directory
+gets copied to the classes/openmap directory, and then included into
+the openmap.jar file.
+
+If you make modifications to the openmap.properties file, those
+changes will not be reflected in the application unless:
+
+1. The top level openmap directory is included in the CLASSPATH of the
+   OpenMap application. This can be done by modifying the openmap
+   startup scripts located in the bin directory.
+
+2. The openmap.properties file is copied into your home directory. For
+   unix users, this directory is usually /home/<username>. For Mac OS
+   X users, this directory is /Users/<username>. For Windows users,
+   this directory is D:\Documents and Settings\<username>, where D: is
+   the disk windows is installed on. If you are not sure where your
+   home directory is, you can compile this code into a HomeDir.java
+   file and run it:
+
+ public class HomeDir {
+ 	public static void main(String[] argv) {
+ 		System.out.println("User home directory is " +
+ 			System.getProperties().getProperty("user.home"));
+ 	}
+ }
+
+3. You put the openmap.properties file in the top level of the
+   openmap.jar file, either by a) recompiling the openmap code, or b)
+   unpacking the jar file, replacing the openmap.properties file, and
+   repacking the jar file.
+
+The second option is usually the easiest, but your needs may require
+one of the other options.
 
 Anonymous CVS repository
 ------------------------
