@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingTool.java,v $
 // $RCSfile: OMDrawingTool.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/02/24 17:03:41 $
+// $Revision: 1.5 $
+// $Date: 2003/02/24 23:04:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -167,13 +167,15 @@ public class OMDrawingTool
     /**
      * A convenience value that tells the OMDrawingTool to show the
      * GUI, and to only display the popup with the ctrl key or right
-     * mouse button.
+     * mouse button.  A combination of SHOW_GUI, GUI_VIA_POPUP and
+     * ALT_POPUP.
      */
     public final static int DEFAULT_BEHAVIOR_MASK = 11;
     /**
      * A convenience value that tells the OMDrawingTool to not show
      * the GUI, but show the popup with the alt key, and the popup has
-     * the ability to bring up the GUI.
+     * the ability to bring up the GUI. A combination of GUI_VIA_POPUP
+     * and ALT_POPUP.
      */
     public final static int QUICK_CHANGE_BEHAVIOR_MASK = 10;
 
