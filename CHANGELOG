@@ -1,3 +1,52 @@
+2003-04-05  Don Dietrick  <dietrick@bbn.com>
+
+	* Created the MapPanel component, which is now the central
+	OpenMap application/applet component.  It takes a
+	PropertyHandler, or creates one if it isn't given one, and
+	creates and MapBean and MapHandler.  It then uses the
+	PropertyHandler to get properties to create all of the components
+	for the application.  The MapPanelChild interface is for
+	top-level components that should be added directly to the
+	MapPanel, and it allows the MapPanel to ask where the component
+	should be added in its BorderLayout.  The MapPanel can be used on
+	any application as a regular Swing widget, basically embedding
+	OpenMap into an application or applet.
+
+	* Modified the OpenMapFrame so that it applies to applications
+	only, instead of having it be responsible for figuring out when
+	it was being used in an applet and have it do the layout for an
+	applet.  The OpenMapFrame now looks for the MapPanel and adds it
+	to its content pane.  It also looks for a JMenuBar to add to
+	itself.  The OpenMap class creates a MapPanel, PropertyHandler
+	and OpenMap frame to start the OpenMap application.  The
+	OpenMapApplet is now a BeanContextMembershipListener, so it can
+	use the MapHandler to find components it needs.  It also creates
+	a MapPanel and PropertyHandler, and does its own layout of
+	components.
+	
+	* Added the OMControlPanel, a little all-in-one component
+	containing a overview map, all of the projection control widgets,
+	and a layers panel.  By default, it likes to be added to the left
+	side of the MapPanel.  Also added the ControlPanelToggleMenuItem,
+	which locates the OMControlPanel in the MapHandler and can be
+	used to hide/show the panel.
+
+	* Added the com.bbn.openmap.gui.WindowSupport, which provides
+	manangement functionality over JFrame/JInternalFrame for
+	components that want to emebed themselves or other components in
+	a window.  The WindowSupport disposes windows when they are
+	dismissed or hidden to save memory and to prevent their existance
+	from keeping the jre thread active when parent components are
+	removed.  The WindowSupport keeps track of positioning and
+	resizing changes and applies them to windows that are re-created
+	later for the same component.
+
+	* Misc: Modifed the LayerUtils.getResourceOrFileOrURL method so it can
+	better locate resources for applets in the code base.  Fixed the
+	problem with the OMRasterObjects for distance triggers, making
+	them think they are always filled so they respond to any query
+	within their limits.
+
 2003-03-25  Don Dietrick  <dietrick@bbn.com>
 
 	* Added the com.bbn.openmap.util.DataBounds and
