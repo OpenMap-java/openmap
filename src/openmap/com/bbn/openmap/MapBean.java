@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/03/01 00:24:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -83,6 +83,7 @@ public class MapBean extends JComponent
     public static final String LayersProperty = "MapBean.layers";
     public static final String CursorProperty = "MapBean.cursor";
     public static final String BackgroundProperty = "MapBean.background";
+    public static final String ProjectionProperty = "MapBean.projection";
 
     /**
      * OpenMap title.
@@ -279,9 +280,9 @@ public class MapBean extends JComponent
      *----------------------------------------------------------------------*/
 
     /**
-     * ComponentListener interface method.
-     * Should not be called directly. Included in order to be a good citizen.
-     * Invoked when component has been resized.
+     * ComponentListener interface method.  Should not be called
+     * directly.  Invoked when component has been resized, and kicks
+     * off a projection change.
      * @param e ComponentEvent
      */
     public void componentResized(ComponentEvent e) {
@@ -294,27 +295,24 @@ public class MapBean extends JComponent
     }
 
     /**
-     * ComponentListener interface method.
-     * Should not be called directly. Included in order to be a good citizen.
-     * Invoked when component has been moved.
+     * ComponentListener interface method. Should not be called
+     * directly.  Invoked when component has been moved.
      * @param e ComponentEvent
      */    
     public void componentMoved(ComponentEvent e) {
     }
 
     /**
-     * ComponentListener interface method.
-     * Should not be called directly. Included in order to be a good citizen.
-     * Invoked when component has been shown.
+     * ComponentListener interface method.  Should not be called
+     * directly.  Invoked when component has been shown.
      * @param e ComponentEvent
      */
     public void componentShown(ComponentEvent e) {
     }
 
     /**
-     * ComponentListener interface method.
-     * Should not be called directly. Included in order to be a good citizen.
-     * Invoked when component has been hidden.
+     * ComponentListener interface method. Should not be called
+     * directly.  Invoked when component has been hidden.
      * @param e ComponentEvent
      */
     public void componentHidden(ComponentEvent e) {
@@ -356,7 +354,7 @@ public class MapBean extends JComponent
      */
     protected void fireProjectionChanged() {
 	projectionSupport.fireProjectionChanged(getProjection());
-
+	firePropertyChange(ProjectionProperty, null, getProjection());
 	purgeAndNotifyRemovedLayers();
     }
 
