@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/AUTHORS,v $
 $RCSfile: AUTHORS,v $
-$Revision: 1.7 $
-$Date: 2000/08/03 16:22:06 $
+$Revision: 1.8 $
+$Date: 2000/08/28 19:11:43 $
 $Author: dietrick $
 
 People and organizations that have contributed to OpenMap
@@ -61,6 +61,12 @@ Paul Tomblin
 
 Davis Gillespie (formally from General Dynamics)
   Provided fixes for a memory leak in the DTEDLayer and DTEDFrameCache.
+
+Colin Mummery
+  Ported the code from Chuck Gantz (chuck.gantz@globalstar.com) to
+create the UTMPoint class, which translates UTM coordinates to decimal
+degree lat/lons.  Also created the DMSLatLonPoint, which represents
+lat/lons in degrees, minutes, and seconds.
 
 --------------------------------------
 
