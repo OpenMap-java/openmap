@@ -6,8 +6,8 @@
  * **********************************************************************
  * 
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/SwingWorker.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/02/27 23:58:02 $
+ * $Revision: 1.3 $
+ * $Date: 2003/08/14 22:57:39 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -32,7 +32,7 @@ public abstract class SwingWorker {
      * Used to set the value for derived classes.
      * @param sv object set as a result of the construct method
      * */
-    public void setValue(Object sv){
+    public void setValue(Object sv) {
 	value = sv;
     }
 
@@ -41,7 +41,7 @@ public abstract class SwingWorker {
      * is not null, it is automatically started.
      * @param t the thread.
      * */
-    public void setThread(Thread t){
+    public void setThread(Thread t) {
 	thread = t;
 	if (thread != null) thread.start();
     }
