@@ -1,8 +1,8 @@
 $Source: /cvs/distapps/openmap/AUTHORS,v $
 $RCSfile: AUTHORS,v $
-$Revision: 1.2 $
-$Date: 1999/04/05 14:26:30 $
-$Author: aculline $
+$Revision: 1.3 $
+$Date: 1999/04/19 21:04:47 $
+$Author: dietrick $
 
 People and organizations that have contributed to OpenMap
 ---------------------------------------------------------
@@ -25,6 +25,15 @@ RPF Browse
   copyright 1993 by The MITRE Corporation. 
   "Copyright (c) 1993 The MITRE Corporation. RPF Browse is
   used with the permission of The MITRE Corporation."
+
+Erhard "ESchemainda"
+  Provided code fixing the SunPosition class to account for daylight
+  savings time correctly.
+
+Alexander Sokolov
+  Provided code fixing the DTEDFrameUtil class to correctly create the
+  DTED frame names for all latitudes and longitudes.
+
 
 --------------------------------------
 Thank you!
