@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/27 23:59:34 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:39:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -471,8 +471,8 @@ public class ScaleFilterLayer extends Layer
      * @param event The InfoDisplayEvent containing the text and
      * requestor.  
      */
-    public void requestShowToolTip(MouseEvent me, InfoDisplayEvent event) {
-	fireRequestToolTip(me, new InfoDisplayEvent(this, event.getInformation()));
+    public void requestShowToolTip(InfoDisplayEvent event) {
+	fireRequestToolTip(new InfoDisplayEvent(this, event.getInformation()));
     }
 
     /**
@@ -480,8 +480,8 @@ public class ScaleFilterLayer extends Layer
      *
      * @param me MouseEvent for where the tip was. May not be exact.
      */
-    public void requestHideToolTip(MouseEvent me) {
-	fireHideToolTip(me);
+    public void requestHideToolTip() {
+	fireHideToolTip();
     }
 
     /**

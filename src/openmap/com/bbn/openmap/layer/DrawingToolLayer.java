@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.16 $
-// $Date: 2003/08/28 22:16:41 $
+// $Revision: 1.17 $
+// $Date: 2003/09/22 23:39:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -61,7 +61,19 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      */
     protected boolean showHints = true;
 
+    /**
+     * A flag to tell the layer to be selfish about consuming
+     * MouseEvents it receives.  If set to true, it will consume
+     * events so that other layers will not receive the events.  If
+     * false, lower layers will also receive events, which will let
+     * them react too.  Intended to let other layers provide
+     * information about what the mouse is over when editing is
+     * occuring.
+     */
+    protected boolean consumeEvents = false;
+
     public final static String ShowHintsProperty = "showHints";
+    public final static String ConsumeEventsProperty ="consumeEvents";
 
     protected boolean DTL_DEBUG = false;
 
@@ -76,6 +88,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 
 	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 	showHints = LayerUtils.booleanFromProperties(props, realPrefix + ShowHintsProperty, showHints);
+	consumeEvents = LayerUtils.booleanFromProperties(props, realPrefix + ConsumeEventsProperty, consumeEvents);
     }
     
     public OMDrawingTool getDrawingTool() {
@@ -199,12 +212,17 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	    if (omgr != null && shouldEdit(omgr)) {
 		OMDrawingTool dt = getDrawingTool();
 		if (dt != null) {
-		    dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
+		    if (!dt.getUseAsTool()) {
+			dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
+		    }
 
 		    MapMouseMode omdtmm = dt.getMouseMode();
 		    if (!omdtmm.isVisible()) {
-			dt.setBehaviorMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK |
-					   OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
+			int behaviorMask = OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK;
+			if (!dt.getUseAsTool()) {
+			    behaviorMask |= OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK; 
+			}
+			dt.setBehaviorMask(behaviorMask);
 		    }
 
 		    if (dt.edit(omgr, layer, e) != null) {
@@ -245,7 +263,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 		}
 	    } 
 	}
-	return ret;
+	return ret && consumeEvents;
     }
     
     protected MapMouseMode proxyMMM = null;
@@ -364,7 +382,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	}
 
 	lastSelected = omgr;
-	return ret;
+	return ret && consumeEvents;
     }
     
     /**
@@ -438,6 +456,23 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 
     public boolean getShowHints() {
 	return showHints;
+    }
+
+    /**
+     * A flag to tell the layer to be selfish about consuming
+     * MouseEvents it receives.  If set to true, it will consume
+     * events so that other layers will not receive the events.  If
+     * false, lower layers will also receive events, which will let
+     * them react too.  Intended to let other layers provide
+     * information about what the mouse is over when editing is
+     * occuring.
+     */
+    public void setConsumeEvents(boolean consume) {
+	consumeEvents = consume;
+    }
+
+    public boolean getConsumeEvents() {
+	return consumeEvents;
     }
 }
 

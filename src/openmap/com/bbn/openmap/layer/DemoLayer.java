@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/04/08 18:55:13 $
+// $Revision: 1.8 $
+// $Date: 2003/09/22 23:39:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,31 +36,22 @@ import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.awt.TextShapeDecoration;
 import com.bbn.openmap.event.LayerStatusEvent;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.omGraphics.EditableOMPoly;
-import com.bbn.openmap.omGraphics.GraphicAttributes;
-import com.bbn.openmap.omGraphics.OMAction;
-import com.bbn.openmap.omGraphics.OMArrowHead;
-import com.bbn.openmap.omGraphics.OMBitmap;
-import com.bbn.openmap.omGraphics.OMCircle;
-import com.bbn.openmap.omGraphics.OMColor;
-import com.bbn.openmap.omGraphics.OMDecoratedSpline;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicConstants;
-import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.OMLine;
-import com.bbn.openmap.omGraphics.OMPoint;
-import com.bbn.openmap.omGraphics.OMPoly;
-import com.bbn.openmap.omGraphics.OMRect;
-import com.bbn.openmap.omGraphics.OMSpline;
+import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.event.*;
+import com.bbn.openmap.omGraphics.geom.*;
 import com.bbn.openmap.omGraphics.labeled.LabeledOMSpline;
 import com.bbn.openmap.omGraphics.meteo.OMColdSurfaceFront;
 import com.bbn.openmap.omGraphics.meteo.OMHotSurfaceFront;
 import com.bbn.openmap.omGraphics.meteo.OMOcclusion;
+import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.tools.drawing.DrawingTool;
 import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
@@ -84,7 +75,20 @@ import com.bbn.openmap.util.PaletteHelper;
  * Just added some decorated splines to test them. EL
  */
 public class DemoLayer extends OMGraphicHandlerLayer
-	implements MapMouseListener, DrawingToolRequestor {
+	implements DrawingToolRequestor {
+
+    protected JPanel legend;
+
+    public DemoLayer() {
+	setMouseModeIDsForEvents(new String[] {"Gestures"});
+    }
+
+    public void paint(java.awt.Graphics g) {
+	super.paint(g);
+	if (legend != null) {
+	    legend.paint(g);
+	}
+    }
 
     public void init() {
 
@@ -191,7 +195,7 @@ public class DemoLayer extends OMGraphicHandlerLayer
 			    TextShapeDecoration.CENTER));
 		}
 	    };
-	omList.add(spline3);
+// 	omList.add(spline3);
 
 	OMLine line =
 	    new OMLine(40f, -75f, 42f, -70f, OMGraphic.LINETYPE_STRAIGHT);
@@ -211,6 +215,136 @@ public class DemoLayer extends OMGraphicHandlerLayer
 	    pointList.add(point);
 	}
 	omList.add(pointList);
+
+	OMPoly ell = getEllipse(new LatLonPoint(60f, -110), 
+				Length.NM.toRadians(1000), 
+				Length.NM.toRadians(300), 
+				com.bbn.openmap.MoreMath.HALF_PI/2.0);
+
+	ell.setLinePaint(Color.blue);
+	//	ell.setFillPaint(Color.yellow);
+	omList.add(ell);
+
+	ell = getEllipse(new LatLonPoint(40f, -75), 
+			 Length.NM.toRadians(800), 
+			 Length.NM.toRadians(250), 
+			 Length.DECIMAL_DEGREE.toRadians(45));
+
+	ell.setLinePaint(Color.blue);
+	//	ell.setFillPaint(Color.yellow);
+	omList.add(ell);
+
+	float[] llp2 = new float[] {0.41789755f, -1.435303f, 0.41813868f, -1.3967744f};
+
+	OMPoly p2 = new OMPoly(llp2, OMGraphic.RADIANS, OMGraphic.LINETYPE_RHUMB);
+	p2.setLinePaint(Color.yellow);
+	omList.add(p2);
+
+// 	OMArc arc = new OMArc(40f, 65f, 750f, Length.MILE, 20f, 95f);
+	OMArc arc = new OMArc((float)40.0, (float)65.0, 
+			      (float)750.0, Length.MILE, (float)20.0, (float)95.0);
+	arc.setLinePaint(Color.red);
+   	arc.setFillPaint(new Color(120, 0, 0, 128));
+  	arc.setArcType(java.awt.geom.Arc2D.PIE);
+	omList.add(arc);
+
+	OMAreaList combo = new OMAreaList();
+
+	combo.addOMGraphic(new OMLine((float) 50.453333, (float) 5.223889, (float) 50.375278, (float) 4.873889, 2));
+	combo.addOMGraphic(new OMLine((float) 50.375278, (float) 4.873889, (float) 50.436944, (float) 4.860556, 2));
+// 	combo.addOMGraphic(new OMLine((float) 50.436944, (float) 4.860556, (float) 50.436667, (float) 4.860833, 2));
+// 	combo.addOMGraphic(new OMLine((float) 50.436667, (float) 4.860833, (float) 50.490833, (float) 4.847778, 2));
+// 	combo.addOMGraphic(new OMLine((float) 50.491269, (float) 4.704239, (float) 50.490833, (float) 4.847778, 3));
+	combo.addOMGraphic(new OMArc((float) 50.491269, (float) 4.704239, (float) 0.09168520552327833, 
+				     (float) (28.201865385183652 + 90.21758717585848), 
+				     (float) -90.21758717585848));
+ 	combo.addOMGraphic(new OMLine((float) 50.534167, (float) 4.831111, (float) 50.640833, (float) 4.832222, 2));
+	combo.addOMGraphic(new OMLine((float) 50.640833, (float) 4.832222, (float) 50.547778, (float) 5.223889, 2));
+	combo.addOMGraphic(new OMLine((float) 50.547778, (float) 5.223889, (float) 50.453333, (float) 5.223889, 2));
+
+// 	combo.setConnectParts(true);
+// 	combo.addOMGraphic(new OMLine(30f, -125f, 30f, -100f, OMGraphic.LINETYPE_RHUMB));
+// 	combo.addOMGraphic(new OMLine(30f, -100f, 40f, -95f, OMGraphic.LINETYPE_GREATCIRCLE));
+// 	combo.addOMGraphic(new OMLine(40f, -95f, 50f, -145f, OMGraphic.LINETYPE_GREATCIRCLE));
+// 	combo.addOMGraphic(new OMLine(50f, -145f, 30f, -125f, OMGraphic.LINETYPE_STRAIGHT));
+	combo.setLinePaint(Color.blue);
+   	combo.setFillPaint(Color.green);
+ 	omList.add(combo);
+
+	OMAreaList combo1 = new OMAreaList();
+	combo1.addOMGraphic(new OMLine(66.618519f, 141.563497f, 66.028244f, 140.193964f, OMGraphic.LINETYPE_GREATCIRCLE));
+	combo1.addOMGraphic(new OMLine(66.028244f, 140.193964f, 66.968058f, 137.611042f, OMGraphic.LINETYPE_RHUMB));
+	combo1.addOMGraphic(new OMLine(66.968058f, 137.611042f, 67.558261f, 139.033958f, OMGraphic.LINETYPE_GREATCIRCLE));
+	combo1.addOMGraphic(new OMLine(67.558261f, 139.033958f, 66.618519f, 141.563497f, OMGraphic.LINETYPE_RHUMB));
+	combo1.setLinePaint(Color.red);
+  	combo1.setFillPaint(Color.blue);
+ 	omList.add(combo1);
+
+	combo1 = new OMAreaList();
+	combo1.addOMGraphic(new OMLine(65.495278f, 55.488889f, 65.022778f, 55.749167f, OMGraphic.LINETYPE_GREATCIRCLE));
+	combo1.addOMGraphic(new OMLine(65.022778f, 55.749167f, 64.970278f, 55.208611f, OMGraphic.LINETYPE_RHUMB));
+	combo1.addOMGraphic(new OMLine(64.970278f, 55.208611f, 65.442778f, 54.948889f, OMGraphic.LINETYPE_GREATCIRCLE));
+	combo1.addOMGraphic(new OMLine(65.442778f, 54.948889f, 65.495278f, 55.488889f, OMGraphic.LINETYPE_RHUMB));
+	combo1.setLinePaint(Color.blue);
+  	combo1.setFillPaint(Color.red);
+ 	omList.add(combo1);
+
+	OMArc arc1 = new OMArc(100, 100, 200, 200, 0f, -45f); 
+	arc1.setLinePaint(Color.blue);
+	arc1.setFillPaint(Color.yellow);
+	arc1.setArcType(java.awt.geom.Arc2D.PIE);
+ 	omList.add(arc1);
+    }
+
+    public OMPoly getEllipse(LatLonPoint m_centerLatLongPoint, double m_nMajorAxisSpan, double m_nMinorAxisSpan, double rotateAngle) {
+
+	int      i;
+	int      nMax=72;
+	double   angle=-Math.PI;
+	double   angleInc=2.0*Math.PI/nMax;
+	double   []distance=new double[nMax+1];
+	double   x;
+	double   y;
+	double   a;
+	double   b;
+	float    []azimuth=new float[nMax+1];
+	float    []llPoints=new float[2*(nMax+1)];
+
+	a = m_nMajorAxisSpan/2.0;
+	b = m_nMinorAxisSpan/2.0;
+
+	for (i=0;i<nMax;i++) {
+
+	    x = Math.sqrt((a*a*b*b)/((b*b) + ((a*a)*Math.pow(Math.tan(angle), 2))));
+	    double yt = (x*x)/(a*a);
+	    if (yt > 1.0) {
+		yt = 1.0;
+	    }
+	    y = Math.sqrt((1.0 - yt)*(b*b));
+
+	    distance[i]=Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
+	    azimuth[i]=(float)angle + com.bbn.openmap.MoreMath.HALF_PI + (float)rotateAngle;
+
+	    if (Debug.debugging("ellipse")) {
+		Debug.output(" " + i +" "+ (azimuth[i]*180/Math.PI) +
+			     " ( " + distance[i] + " ) " + (Debug.debugging("ellipsedetail")?("[from x:" + x + ", y:" + y + ", a:" + a + ", b:" + b + "]"):""));
+	    }
+	    angle+=angleInc;
+	}
+
+	distance[nMax]=distance[0];
+	azimuth[nMax]=azimuth[0];
+	int nCounter=0;
+
+	for (i=0;i<nMax+1;i++) {
+
+	    LatLonPoint	llPt = GreatCircle.spherical_between(ProjMath.degToRad(m_centerLatLongPoint.getLatitude()),ProjMath.degToRad(m_centerLatLongPoint.getLongitude()),(float)distance[i],azimuth[i]);
+
+	    llPoints[nCounter++]=llPt.getLatitude();
+	    llPoints[nCounter++]=llPt.getLongitude();
+	}
+
+	return new OMPoly(llPoints,OMGraphic.DECIMAL_DEGREES,OMGraphic.LINETYPE_GREATCIRCLE);
     }
 
     public void setProperties(String prefix, Properties props) {
@@ -478,7 +612,7 @@ public class DemoLayer extends OMGraphicHandlerLayer
 			eomp.setEnclosed(true);
 			eomp.setShowGUI(false);
 
-			dt.setBehaviorMask(OMDrawingTool.DEFAULT_BEHAVIOR_MASK);
+			dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
 			OMPoly poly = (OMPoly) getDrawingTool().edit(eomp, layer);
 
 			if (poly != null) {
@@ -688,11 +822,10 @@ public class DemoLayer extends OMGraphicHandlerLayer
 	if (obj != null
 	    && (obj == internalKey || obj == externalKey)
 	    && !action.isMask(OMGraphicConstants.DELETE_GRAPHIC_MASK)) {
-	    java.awt.Shape filterShape = omg.getShape();
 
+	    java.awt.Shape filterShape = omg.getShape();
 	    filter(filterShape, (omg.getAppObject() == internalKey));
-	}
-	else {
+	} else {
 	    getList().doAction(omg, action);
 	}
 
@@ -731,148 +864,56 @@ public class DemoLayer extends OMGraphicHandlerLayer
     }
 
     /**
-     * Note: A layer interested in receiving amouse events should
-     * implement this function .  Otherwise, return the default, which
-     * is null.
+     * Query that an OMGraphic can be highlighted when the mouse moves
+     * over it.  If the answer is true, then highlight with this
+     * OMGraphics will be called.
      */
-    public synchronized MapMouseListener getMapMouseListener() {
-	return this;
-    }
-
-    /**
-     * Return a list of the modes that are interesting to the
-     * MapMouseListener.  You MUST override this with the modes you're
-     * interested in.
-     */
-    public String[] getMouseModeServiceList() {
-	String[] services = { "Gestures", "Navigation" };
-	// what are other possibilities in OpenMap
-	return services;
-    }
-
-    ////////////////////////
-    // Mouse Listener events
-    ////////////////////////
-
-    /**
-     * Invoked when a mouse button has been pressed on a component.
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mousePressed(MouseEvent e) {
-	return false;
-    }
-
-    /**
-     * Invoked when a mouse button has been released on a component.
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseReleased(MouseEvent e) {
-	return false;
-    }
-
-    /**
-     * Invoked when the mouse has been clicked on a component.
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseClicked(MouseEvent e) {
-	OMGraphic omgr =
-	    ((OMGraphicList) getList()).findClosest(e.getX(), e.getY(), 4);
-	if (omgr != null) {
-	    DrawingTool dt = getDrawingTool();
-	    if (dt != null) {
-		if (dt.edit(omgr, layer) == null) {
-		    fireRequestInfoLine("Can't figure out how to modify this object.");
-		}
-	    }
-	}
-	else {
-	    return false;
-	}
-
+    public boolean isHighlightable(OMGraphic omg) {
 	return true;
     }
 
     /**
-     * Invoked when the mouse enters a component.
-     * @param e MouseEvent
+     * Query that an OMGraphic is selectable.
      */
-    public void mouseEntered(MouseEvent e) {
-	return;
+    public boolean isSelectable(OMGraphic omg) {
+	DrawingTool dt = getDrawingTool();
+	return (dt != null && dt.canEdit(omg.getClass()));
     }
 
     /**
-     * Invoked when the mouse exits a component.
-     * @param e MouseEvent
+     * Query for what text should be placed over the information bar
+     * when the mouse is over a particular OMGraphic.
      */
-    public void mouseExited(MouseEvent e) {
-	return;
-    }
-
-    ///////////////////////////////
-    // Mouse Motion Listener events
-    ///////////////////////////////
-
-    /**
-     * Invoked when a mouse button is pressed on a component and then 
-     * dragged.  The listener will receive these events if it
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseDragged(MouseEvent e) {
-	return false;
-    }
-
-    OMGraphic lastSelected = null;
-
-    /**
-     * Invoked when the mouse button has been moved on a component
-     * (with no buttons down).
-     * @param e MouseEvent
-     * @return true if the layer reacted to a mouseMoved event.
-     */
-    public boolean mouseMoved(MouseEvent e) {
-
-	OMGraphic omgr = getList().findClosest(e.getX(), e.getY(), 4.0f);
-	boolean ret = false;
-
-	if (omgr != null) {
-	    DrawingTool dt = getDrawingTool();
-	    if (dt != null && dt.canEdit(omgr.getClass())) {
-		fireRequestInfoLine("Click to edit graphic.");
-		fireRequestToolTip(e, "Demo Layer Object");
-	    }
-	    ret = true;
+    public String getInfoText(OMGraphic omg) {	
+	DrawingTool dt = getDrawingTool();
+	if (dt != null && dt.canEdit(omg.getClass())) {
+	    return "Click to edit graphic.";
 	} else {
-	    fireRequestInfoLine("");
-	    fireHideToolTip(e);
+	    return null;
 	}
-
-	OMBitmap bm = null;
-	if (omgr instanceof OMBitmap) {
-	    bm = (OMBitmap)omgr;
-	    bm.select();
-	} else if (lastSelected instanceof OMBitmap) {
-	    bm = (OMBitmap)lastSelected;
-	    bm.deselect();
-	}
-
-	if (bm != null) {
-	    bm.generate(getProjection());
-	}
-
-	repaint();
-
-	lastSelected = omgr;
-
-	return ret;
     }
 
     /**
-     * Handle a mouse cursor moving without the button being pressed.
-     * Another layer has consumed the event.
+     * Query for what tooltip to display for an OMGraphic when the
+     * mouse is over it.
      */
-    public void mouseMoved() {}
+    public String getToolTipTextFor(OMGraphic omg) {
+	return "Demo Layer Object";
+    }
+
+    public void select(OMGraphicList list) {
+	if (list != null && list.size() > 0) {
+	    OMGraphic omg = list.getOMGraphicAt(0);
+	    DrawingTool dt = getDrawingTool();
+
+	    if (dt != null && dt.canEdit(omg.getClass())) {
+		dt.setBehaviorMask(OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
+		if (dt.edit(omg, this) == null) {
+		    // Shouldn't see this because we checked, but ...
+		    fireRequestInfoLine("Can't figure out how to modify this object.");
+		}
+	    }
+	}
+    }
+
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/09/04 18:17:46 $
+// $Revision: 1.8 $
+// $Date: 2003/09/22 23:39:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,18 +25,23 @@ package com.bbn.openmap.layer;
 
 import java.awt.Graphics;
 import java.awt.Shape;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.Vector;
+import javax.swing.JPopupMenu;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.InfoDisplayEvent;
 import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.layer.policy.ProjectionChangePolicy;
 import com.bbn.openmap.layer.policy.StandardPCPolicy;
 import com.bbn.openmap.layer.policy.RenderPolicy;
 import com.bbn.openmap.layer.policy.StandardRenderPolicy;
 import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.event.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
@@ -87,7 +92,7 @@ import com.bbn.openmap.util.SwingWorker;
  * create/manage OMGraphics any way you want.  The SwingWorker only
  * gets launched if doPrepare() gets called.
  */
-public class OMGraphicHandlerLayer extends Layer {
+public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolicy {
 
     /**
      * The property that can be set for the ProjectionChangePolicy.
@@ -103,6 +108,15 @@ public class OMGraphicHandlerLayer extends Layer {
      * use.  "renderPolicy"
      */
     public final static String RenderPolicyProperty = "renderPolicy";
+
+    /**
+     * The property that can be set to tell the layer which mouse
+     * modes to listen to.  The property should be a space-separated
+     * list of mouse mode IDs, which can be specified for a
+     * MapMouseMode in the properties file or, if none is specificed,
+     * the default ID hard-coded into the MapMouseMode.
+     */
+    public final static String MouseModesProperty = "mouseModes";
 
     /**
      * Filter support that can be used to manage OMGraphics.
@@ -128,6 +142,8 @@ public class OMGraphicHandlerLayer extends Layer {
      */
     protected SwingWorker layerWorker;
     
+    protected String[] mouseModeIDs = null;
+
     // OMGraphicHandler methods, deferred to FilterSupport...
 
     /**
@@ -381,6 +397,13 @@ public class OMGraphicHandlerLayer extends Layer {
     }
 
     /**
+     * A check to see if the SwingWorker is doing something.
+     */
+    public boolean isWorking() {
+	return layerWorker != null;
+    }
+
+    /**
      * The method that gets called by the swing worker thread to get
      * something done.  Returns an OMGraphicList that is the fruit of
      * all the labours.  This method, for the OMGraphicHandler class,
@@ -438,7 +461,6 @@ public class OMGraphicHandlerLayer extends Layer {
 	if (!isCancelled()) {
 	    layerWorker = null;
 	    getProjectionChangePolicy().workerComplete((OMGraphicList)worker.get());
-// 	    setList((OMGraphicList)worker.get());
 	    repaint();
 	}
 	else{
@@ -565,6 +587,20 @@ public class OMGraphicHandlerLayer extends Layer {
 	    Debug.output("Layer " + getName() + " using default RenderPolicy [" + 
 			 getRenderPolicy().getClass().getName() + "]");
 	}
+
+	String mmString = props.getProperty(realPrefix + MouseModesProperty);
+	if (mmString != null) {
+	    Vector mmv = PropUtils.parseSpacedMarkers(mmString);
+	    if (mmv.size() > 0) {
+		String[] mm = new String[mmv.size()];
+		Iterator it = mmv.iterator();
+		int i = 0;
+		while (it.hasNext()) {
+		    mm[i] = (String)it.next();
+		}
+		setMouseModeIDsForEvents(mm);
+	    }
+	}
     }
 
     /**
@@ -655,5 +691,105 @@ public class OMGraphicHandlerLayer extends Layer {
 	
 	list.put(policyPrefix + ".class", "Class name of RenderPolicy (optional)");
 	return list;
+    }
+
+    public synchronized MapMouseListener getMapMouseListener() {
+	String[] modeList = getMouseModeIDsForEvents();
+	if (modeList != null) {
+	    StandardMapMouseInterpreter smmi = 
+		new StandardMapMouseInterpreter(this);
+	    smmi.setMouseModeServiceList(modeList);
+	    smmi.setGRP(this);
+	    return smmi;
+	} else {
+	    return null;
+	}
+    }
+
+    public String[] getMouseModeIDsForEvents() {
+	return mouseModeIDs;
+    }
+
+    public void setMouseModeIDsForEvents(String[] mm) {
+	mouseModeIDs = mm;
+    }
+
+    /**
+     * Query that an OMGraphic is editable.
+     */
+    public boolean isHighlightable(OMGraphic omg) {
+	return omg instanceof OMBitmap;
+    }
+
+    /**
+     * Query that an OMGraphic is selectable.
+     */
+    public boolean isSelectable(OMGraphic omg) {
+	return false;
+    }
+
+    ////// Reactions
+
+    /**
+     * Fleeting change of appearance for mouse movements over an OMGraphic. 
+     */
+    public void highlight(OMGraphic omg) {
+	omg.select();
+	omg.generate(getProjection());
+	repaint();
+    }
+
+    /**
+     * Notification to set OMGraphic to normal appearance.
+     */
+    public void unhighlight(OMGraphic omg) {
+	omg.deselect();
+	omg.generate(getProjection());
+	repaint();
+    }
+
+    /**
+     * Designate a list of OMGraphics as selected.
+     */
+    public void select(OMGraphicList list) {}
+
+    /**
+     * Designate a list of OMGraphics as deselected.
+     */
+    public void deselect(OMGraphicList list) {}
+
+    /**
+     * Remove an OMGraphic from a layer.
+     */
+    public OMGraphicList cut(OMGraphicList omgl) {
+	return null;
+    }
+
+    /***
+     * Return a copy of an OMGraphic.
+     */
+    public OMGraphicList copy(OMGraphicList omgl) {
+	return null;
+    }
+
+    /**
+     * Add OMGraphic to Layer.
+     */
+    public void paste(OMGraphicList omgl) {}
+
+    public String getInfoText(OMGraphic omg) {
+	return null;
+    }
+
+    public String getToolTipTextFor(OMGraphic omg) {
+	return null;
+    }
+
+    public JPopupMenu modifyPopupMenuForMap(JPopupMenu jpm) {
+	return jpm;
+    }
+
+    public JPopupMenu modifyPopupMenuFor(OMGraphic omg, JPopupMenu jpm) {
+	return jpm;
     }
 }
