@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision: 1.8 
+# From configure.in OpenMap Revision: 1.10 
 ac_extraJavaPath=/usr/local/java/bin:/usr/local/jdk/bin
 
 
@@ -760,7 +760,7 @@ fi
 if test "x$with_specialist" = "xyes"; then
   layer_build_targets="$layer_build_targets specialist_all"
   layer_clean_targets="$layer_clean_targets specialist_clean"
-  CORBA_CLASSPATH=:/home/tmitchel/jars/vbjall.jar:/home/tmitchel/jars/cspec58.jar
+  CORBA_CLASSPATH=\$\{TOP\}/lib/vbjall.jar:\$\{TOP\}/lib/cspec58.jar
   
   CORBA_DIRS="com/bbn/openmap/layer/specialist/Makefile com/bbn/openmap/layer/specialist/vpf/Makefile"
 fi
