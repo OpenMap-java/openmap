@@ -19,6 +19,7 @@ do
 done
 
 OM_HOME=`dirname $PRG`/..
+TOP=$OM_HOME
 progname=`basename $0`
 
 export CLASSPATH=$OM_HOME:$OM_HOME/lib/openmap.jar:$OM_HOME/share:@SWING_JAR@:@CORBA_CLASSPATH@
