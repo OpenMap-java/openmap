@@ -1,8 +1,8 @@
 -*- Mode: text-mode -*-
 $Source: /cvs/distapps/openmap/INSTALL,v $
 $RCSfile: INSTALL,v $
-$Revision: 1.6 $
-$Date: 1998/12/07 13:33:14 $
+$Revision: 1.7 $
+$Date: 1998/12/07 15:18:17 $
 $Author: aculline $
 
 Prerequisites
@@ -70,9 +70,6 @@ Test Drive
    You can test OpenMap by running the default `openmap' viewer
    script provided in the bin/ subdirectory of the installation.
    `cd' to the bin/ directory and type `./openmap'.
-
-   You can try out other example applications by running the scripts
-   provided in the examples/ subdirectory of the installation.
 
 Detailed Configuration
 ======================
