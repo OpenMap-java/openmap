@@ -1,0 +1,525 @@
+%!PS-Adobe-3.0
+%%BoundingBox: (atend)
+%%Creator: VisualWorks(R)
+%%CreationDate: October 4, 1999 9:04:01 am
+%%DocumentNeededResources: (atend)
+%%DocumentSuppliedResources: procset PPS_VisualWorks_Prolog 1.0 0
+%%Pages: (atend)
+%%Requirements: numcopies(1)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset PPS-VisualWorks-Prolog 1.0 0
+/PPS 255 dict def PPS begin
+/lastFont (X) def
+/_font 0 def
+/_size 0 def
+/_sizeStr 0 def
+/_sizeStr 0 def
+/F  %  Fast font setup.
+{  /_font exch def /_size exch def
+	/_sizeStr _size 20 string cvs def
+	/lastFont _font length _sizeStr length add 1 add string def
+	lastFont 0 _font putinterval
+	lastFont _font length _sizeStr putinterval
+	lastFont _font length _sizeStr length add (X) putinterval
+	_font findfont _size scalefont setfont
+} bind def
+/L  %  Line styles.
+{  setlinejoin setlinecap setlinewidth
+} bind def
+
+% emulations of "x y width height" forms of rectfill, rectstroke, and rectclip
+
+/BuildRectPath {
+	newpath
+	4 -2 roll moveto
+	dup 0 exch rlineto exch 0 rlineto neg 0 exch rlineto closepath
+} bind def
+
+/*RF {
+	gsave BuildRectPath fill grestore
+} bind def
+
+/*RS {
+	gsave newpath BuildRectPath stroke grestore
+} bind def
+
+/*RC {
+	BuildRectPath clip newpath
+} bind def
+
+/languagelevel where
+	{pop languagelevel} {1} ifelse
+2 lt { % ifelse -- level 1 interpreter
+	/RF /*RF load def
+	/RS /*RS load def
+	/RC /*RC load def
+} { % else -- level 2 interpreter
+	/RF /rectfill load def
+	/RS /rectstroke load def
+	/RC /rectclip load def
+} ifelse
+
+/picstr 0 def
+/SM
+{	% width height x y
+	gsave
+	translate 0 0 moveto
+		% width height
+	2 copy scale true
+		% width height polarity
+	[ 3 index 0 0 5 index dup neg exch 0 exch ] 	%[width 0 0 -height 0 height]
+		% width height polarity matrix
+	3 index 8 div ceiling cvi string /picstr exch def
+	{currentfile picstr readhexstring pop}
+	imagemask
+	grestore
+} bind def
+
+/picstr 0 def
+/SI
+{	% width height depth ncomp x y
+	gsave
+	translate 0 0 moveto
+		% width height depth ncomp
+	4 copy pop pop scale
+		% width height depth ncomp
+	[ 4 index 0 0 6 index dup neg exch 0 exch ] 	%[width 0 0 -height 0 height]
+		% width height depth ncomp matrix
+	4 index 3 index mul 8 div ceiling cvi string /picstr exch def
+	exch {currentfile picstr readhexstring pop} exch
+	dup 1 eq {pop image} { false exch colorimage} ifelse
+	grestore
+} bind def
+
+/picstr 0 def
+/SIM
+{	% width height x y polarity red green blue
+	gsave
+	setrgbcolor 3 1 roll
+		% width height polarity x y
+	translate 0 0 moveto
+		% width height polarity
+	3 copy pop scale
+		% width height polarity
+	[ 3 index 0 0 5 index dup neg exch 0 exch ] 	%[width 0 0 -height 0 height]
+		% width height polarity matrix
+	3 index 8 div ceiling cvi string /picstr exch def
+	{currentfile picstr readhexstring pop}
+	imagemask
+	grestore
+} bind def
+
+/ISOcache 1023 dict def
+/of 0 def
+/nf 0 def
+/ISOshow
+{
+	/of currentfont def
+	ISOcache lastFont known
+		{/nf ISOcache lastFont get def
+		nf /Encoding get exch 248 exch put}
+		{of dup length dict /nf exch def
+		nf begin
+			{1 index /FID ne {def} {pop pop} ifelse} forall
+			/Encoding dup load 256 array copy def
+			/Encoding load exch 248 exch put
+			/FontBBox dup load [0 0 0 0] copy def
+		end
+		/TFNT nf definefont pop } ifelse
+	nf setfont
+	(\370) show
+	of setfont
+} bind def
+
+/MS { 3 1 roll moveto show } bind def
+
+/_fill 0 def /_closed 1 def /_open 2 def
+/SP
+{	% renderType mark x0 y0 x1 y1 ...
+	newpath moveto
+	counttomark 2 div 1 1 3 -1 roll
+	{pop lineto} for
+	pop
+	dup _fill eq {pop eofill} {_closed eq {closepath} if stroke} ifelse
+} bind def
+/SB { /basematrix [ 0 0 0 0 0 0 ] currentmatrix def } bind def SB
+/SCS { basematrix setmatrix } bind def
+end
+%%EndResource
+%%EndProlog
+%%BeginSetup
+/#copies 1 def
+%%EndSetup
+
+%%Page: 1 1
+%%PageBoundingBox: (atend)
+%%PageResources: (atend)
+%%PageOrientation: Landscape
+%%BeginPageSetup
+/pagesave save def
+PPS begin
+0 1440 translate
+-90 rotate 0 1440 translate
+0 0 1440 -1440 RC
+gsave SB
+%%EndPageSetup
+grestore gsave 40 -20 1360 -1400 RC SCS 
+%%IncludeResource: font Helvetica
+12.0 (Helvetica) F 
+42.0 -31.0 (openmap_image_toolkit) MS
+1355.0 -31.0 ( 10/4/99) MS
+grestore gsave 40 -50 1360 -1370 RC SCS 12.0 (Helvetica) F 
+42.0 -1411.0 (10/4/99) MS
+1.0 setgray 
+50.0 -60.0 1.0 -1.0 RF
+0.0 setgray 
+newpath 577.5 -413.5 moveto 449.5 -488.0 lineto stroke
+4.0 (Helvetica) F 
+454.889 -485.236 (#iGenerator) MS
+443.889 -485.236 (0..1) MS
+newpath 326.5 -488.0 moveto 297.5 -396.0 lineto stroke
+244.451 -404.431 (#imageReadyListener) MS
+299.451 -404.431 (0..1) MS
+newpath 361.5 -253.5 moveto 530.0 -299.0 lineto stroke
+511.017 -305.87 ( server) MS
+520.017 -296.87 (0..1) MS
+newpath 675.5 -274.5 moveto 652.5 -200.5 lineto stroke
+628.445 -208.932 (#formatter) MS
+654.445 -208.932 (0..1) MS
+newpath 430.5 -86.0 moveto 251.0 -78.0 lineto stroke
+253.0 -85.0223 (+receiver) MS
+253.0 -76.0223 (0..1) MS
+0.266634 setgray 
+newpath 733.5 -171.0 moveto 741.499 -170.91 lineto stroke
+newpath 747.499 -170.843 moveto 755.499 -170.753 lineto stroke
+newpath 761.498 -170.685 moveto 769.498 -170.596 lineto stroke
+newpath 775.497 -170.528 moveto 783.497 -170.438 lineto stroke
+newpath 789.497 -170.371 moveto 797.496 -170.281 lineto stroke
+newpath 803.496 -170.214 moveto 811.495 -170.124 lineto stroke
+newpath 817.495 -170.056 moveto 822.5 -170.0 lineto stroke
+1.0 setgray 
+_fill mark 744.0 -176.0 734.0 -171.0 744.0 -166.0 744.0 -176.0 SP
+0.266634 setgray 
+_closed mark 744.0 -176.0 734.0 -171.0 744.0 -166.0 744.0 -176.0 SP
+newpath 394.5 -364.5 moveto 402.482 -363.97 lineto stroke
+newpath 408.469 -363.572 moveto 416.452 -363.042 lineto stroke
+newpath 422.438 -362.644 moveto 430.421 -362.114 lineto stroke
+newpath 436.408 -361.717 moveto 444.39 -361.186 lineto stroke
+newpath 450.377 -360.789 moveto 458.359 -360.259 lineto stroke
+newpath 464.346 -359.861 moveto 472.329 -359.331 lineto stroke
+newpath 478.315 -358.933 moveto 486.298 -358.403 lineto stroke
+newpath 492.285 -358.005 moveto 500.267 -357.475 lineto stroke
+newpath 506.254 -357.077 moveto 514.236 -356.547 lineto stroke
+newpath 520.223 -356.15 moveto 528.206 -355.619 lineto stroke
+1.0 setgray 
+_fill mark 405.0 -369.0 395.0 -365.0 405.0 -359.0 405.0 -369.0 SP
+0.266634 setgray 
+_closed mark 405.0 -369.0 395.0 -365.0 405.0 -359.0 405.0 -369.0 SP
+newpath 202.5 -100.5 moveto 202.432 -108.5 lineto stroke
+newpath 202.38 -114.499 moveto 202.312 -122.499 lineto stroke
+newpath 202.261 -128.499 moveto 202.192 -136.499 lineto stroke
+newpath 202.141 -142.498 moveto 202.073 -150.498 lineto stroke
+newpath 202.021 -156.498 moveto 202.0 -159.0 lineto stroke
+1.0 setgray 
+_fill mark 198.0 -111.0 203.0 -101.0 208.0 -111.0 198.0 -111.0 SP
+0.266634 setgray 
+_closed mark 198.0 -111.0 203.0 -101.0 208.0 -111.0 198.0 -111.0 SP
+0.600049 setgray 
+155.0 -53.0 95 -47 RF
+0.0 setgray 
+154.0 -52.0 96 -48  RS
+157.0 -81.0 91 -1 RF
+6.0 (Helvetica) F 
+159.0 -88.0 ( ) MS
+157.0 -90.0 91 -1 RF
+
+%%IncludeResource: font Courier
+4.0 (Courier) F 
+159.0 -97.0 (+) MS
+
+%%IncludeResource: font Helvetica-Oblique
+6.0 (Helvetica-Oblique) F 
+161.4 -97.0 (receiveImageData\050byte[]\051) MS
+4.0 (Helvetica) F 
+195.0 -61.0 (\253interface\273) MS
+
+%%IncludeResource: font Helvetica-Bold
+6.0 (Helvetica-Bold) F 
+184.0 -70.0 (ImageReceiver) MS
+4.0 (Helvetica) F 
+177.0 -79.0 (\050from com.bbn.openmap.image\051) MS
+0.600049 setgray 
+555.0 -144.0 178 -56 RF
+0.0 setgray 
+554.0 -143.0 179 -57  RS
+557.0 -172.0 174 -1 RF
+6.0 (Helvetica) F 
+559.0 -179.0 ( ) MS
+557.0 -181.0 174 -1 RF
+4.0 (Courier) F 
+559.0 -188.0 (+) MS
+6.0 (Helvetica-Oblique) F 
+561.4 -188.0 (formatImage\050java.awt.image.BufferedImage\051: byte[] ) MS
+4.0 (Courier) F 
+559.0 -197.0 (+) MS
+6.0 (Helvetica-Oblique) F 
+561.4 -197.0 (setProperties\050java.util.Properties\051) MS
+4.0 (Helvetica) F 
+636.0 -152.0 (\253interface\273) MS
+6.0 (Helvetica-Bold) F 
+623.0 -161.0 (ImageFormatter) MS
+4.0 (Helvetica) F 
+618.0 -170.0 (\050from com.bbn.openmap.image\051) MS
+0.600049 setgray 
+186.0 -348.0 208 -47 RF
+0.0 setgray 
+185.0 -347.0 209 -48  RS
+188.0 -376.0 204 -1 RF
+6.0 (Helvetica) F 
+190.0 -383.0 ( ) MS
+188.0 -385.0 204 -1 RF
+4.0 (Courier) F 
+190.0 -392.0 (+) MS
+6.0 (Helvetica-Oblique) F 
+192.4 -392.0 (imageReady\050com.bbn.openmap.image.ImageGenerator, long\051) MS
+4.0 (Helvetica) F 
+275.0 -356.0 (\253interface\273) MS
+6.0 (Helvetica-Bold) F 
+256.0 -365.0 (ImageReadyListener) MS
+4.0 (Helvetica) F 
+256.0 -374.0 (\050from com.bbn.openmap.image\051) MS
+0.933341 setgray 
+43.0 -160.0 318 -101 RF
+0.0 setgray 
+42.0 -159.0 319 -102  RS
+45.0 -179.0 314 -1 RF
+4.0 (Courier) F 
+47.0 -186.0 ( ) MS
+6.0 (Helvetica) F 
+49.4 -186.0 (fileName: String) MS
+4.0 (Courier) F 
+47.0 -195.0 ( ) MS
+6.0 (Helvetica) F 
+49.4 -195.0 (propertiesURLString: String) MS
+4.0 (Courier) F 
+47.0 -204.0 ( ) MS
+6.0 (Helvetica) F 
+49.4 -204.0 (props: Properties) MS
+45.0 -206.0 314 -1 RF
+4.0 (Courier) F 
+47.0 -213.0 (+) MS
+6.0 (Helvetica) F 
+49.4 -213.0 (GeneratorTester\050com.bbn.openmap.image.String[]\051) MS
+4.0 (Courier) F 
+47.0 -222.0 (+) MS
+6.0 (Helvetica) F 
+49.4 -222.0 (loadProperties\050com.bbn.openmap.image.URL, com.bbn.openmap.image.Properties\051: boolean ) MS
+4.0 (Courier) F 
+47.0 -231.0 (+) MS
+6.0 (Helvetica) F 
+49.4 -231.0 (main\050com.bbn.openmap.image.String[]\051) MS
+newpath 49.4 -231.0 moveto 154.772 -231.0 lineto stroke
+4.0 (Courier) F 
+47.0 -240.0 (+) MS
+6.0 (Helvetica) F 
+49.4 -240.0 (parseArgs\050com.bbn.openmap.image.String[]\051) MS
+4.0 (Courier) F 
+47.0 -249.0 (+) MS
+6.0 (Helvetica) F 
+49.4 -249.0 (printHelp\050\051) MS
+4.0 (Courier) F 
+47.0 -258.0 (+) MS
+6.0 (Helvetica) F 
+49.4 -258.0 (receiveImageData\050byte[]\051) MS
+6.0 (Helvetica-Bold) F 
+180.0 -168.0 (GeneratorTester) MS
+4.0 (Helvetica) F 
+175.0 -177.0 (\050from com.bbn.openmap.image\051) MS
+0.933341 setgray 
+824.0 -128.0 179 -83 RF
+0.0 setgray 
+823.0 -127.0 180 -84  RS
+826.0 -147.0 175 -1 RF
+4.0 (Courier) F 
+828.0 -154.0 (#) MS
+6.0 (Helvetica) F 
+830.4 -154.0 (imageQuality: float) MS
+4.0 (Courier) F 
+828.0 -163.0 (+) MS
+6.0 (Helvetica) F 
+830.4 -163.0 (QualityProperty: String) MS
+newpath 830.4 -163.0 moveto 890.754 -163.0 lineto stroke
+826.0 -165.0 175 -1 RF
+4.0 (Courier) F 
+828.0 -172.0 (+) MS
+6.0 (Helvetica) F 
+830.4 -172.0 (SunJPEGFormatter\050\051) MS
+4.0 (Courier) F 
+828.0 -181.0 (+) MS
+6.0 (Helvetica) F 
+830.4 -181.0 (formatImage\050java.awt.image.BufferedImage\051: byte[] ) MS
+4.0 (Courier) F 
+828.0 -190.0 (+) MS
+6.0 (Helvetica) F 
+830.4 -190.0 (getImageQuality\050\051: float ) MS
+4.0 (Courier) F 
+828.0 -199.0 (+) MS
+6.0 (Helvetica) F 
+830.4 -199.0 (setImageQuality\050float\051) MS
+4.0 (Courier) F 
+828.0 -208.0 (+) MS
+6.0 (Helvetica) F 
+830.4 -208.0 (setProperties\050com.bbn.openmap.image.Properties\051) MS
+6.0 (Helvetica-Bold) F 
+881.0 -136.0 (SunJPEGFormatter) MS
+4.0 (Helvetica) F 
+881.0 -145.0 (\050from com.bbn.openmap.image\051) MS
+0.933341 setgray 
+531.0 -276.0 332 -137 RF
+0.0 setgray 
+530.0 -275.0 333 -138  RS
+533.0 -295.0 328 -1 RF
+4.0 (Courier) F 
+535.0 -302.0 (+) MS
+6.0 (Helvetica) F 
+537.4 -302.0 (ImageFormatterProperty: String) MS
+newpath 537.4 -302.0 moveto 621.76 -302.0 lineto stroke
+4.0 (Courier) F 
+535.0 -311.0 (+) MS
+6.0 (Helvetica) F 
+537.4 -311.0 (ImageServerLayersProperty: String) MS
+newpath 537.4 -311.0 moveto 631.432 -311.0 lineto stroke
+4.0 (Courier) F 
+535.0 -320.0 (#) MS
+6.0 (Helvetica) F 
+537.4 -320.0 (layers: Layer[]) MS
+4.0 (Courier) F 
+535.0 -329.0 (#) MS
+6.0 (Helvetica) F 
+537.4 -329.0 (requests: Vector) MS
+533.0 -331.0 328 -1 RF
+4.0 (Courier) F 
+535.0 -338.0 (+) MS
+6.0 (Helvetica) F 
+537.4 -338.0 (ImageServer\050com.bbn.openmap.image.Properties\051) MS
+4.0 (Courier) F 
+535.0 -347.0 (#) MS
+6.0 (Helvetica) F 
+537.4 -347.0 (addRequest\050com.bbn.openmap.image.ImageServer$Request\051) MS
+4.0 (Courier) F 
+535.0 -356.0 (+) MS
+6.0 (Helvetica) F 
+537.4 -356.0 (createImage\050com.bbn.openmap.image.Projection, com.bbn.openmap.image.ImageReceiver\051: long ) MS
+4.0 (Courier) F 
+535.0 -365.0 (#) MS
+6.0 (Helvetica) F 
+537.4 -365.0 (getFormatter\050com.bbn.openmap.image.Properties\051: ImageFormatter ) MS
+4.0 (Courier) F 
+535.0 -374.0 (#) MS
+6.0 (Helvetica) F 
+537.4 -374.0 (getLayers\050com.bbn.openmap.image.Properties\051: Layer[] ) MS
+4.0 (Courier) F 
+535.0 -383.0 (#) MS
+6.0 (Helvetica) F 
+537.4 -383.0 (getThingy\050com.bbn.openmap.image.String\051: Object ) MS
+4.0 (Courier) F 
+535.0 -392.0 (+) MS
+6.0 (Helvetica) F 
+537.4 -392.0 (imageReady\050com.bbn.openmap.image.ImageGenerator, long\051) MS
+4.0 (Courier) F 
+535.0 -401.0 (#) MS
+6.0 (Helvetica) F 
+537.4 -401.0 (requestComplete\050long, byte[]\051) MS
+4.0 (Courier) F 
+535.0 -410.0 (+) MS
+6.0 (Helvetica) F 
+537.4 -410.0 (setProperties\050com.bbn.openmap.image.Properties\051) MS
+6.0 (Helvetica-Bold) F 
+681.0 -284.0 (ImageServer) MS
+4.0 (Helvetica) F 
+671.0 -293.0 (\050from com.bbn.openmap.image\051) MS
+0.933341 setgray 
+111.0 -489.0 469 -119 RF
+0.0 setgray 
+110.0 -488.0 470 -120  RS
+113.0 -508.0 465 -1 RF
+4.0 (Courier) F 
+115.0 -515.0 (#) MS
+6.0 (Helvetica) F 
+117.4 -515.0 (autoPaint: boolean) MS
+4.0 (Courier) F 
+115.0 -524.0 (#) MS
+6.0 (Helvetica) F 
+117.4 -524.0 (currentRequestID: long) MS
+4.0 (Courier) F 
+115.0 -533.0 (#) MS
+6.0 (Helvetica) F 
+117.4 -533.0 (layerStatus: Hashtable) MS
+4.0 (Courier) F 
+115.0 -542.0 (#) MS
+6.0 (Helvetica) F 
+117.4 -542.0 (numLayers: int) MS
+113.0 -544.0 465 -1 RF
+4.0 (Courier) F 
+115.0 -551.0 (+) MS
+6.0 (Helvetica) F 
+117.4 -551.0 (ImageGenerator\050com.bbn.openmap.image.Projection, com.bbn.openmap.image.Layer[], long, com.bbn.openmap.image.ImageReadyListener\051) MS
+4.0 (Courier) F 
+115.0 -560.0 (+) MS
+6.0 (Helvetica) F 
+117.4 -560.0 (add\050com.bbn.openmap.image.Component\051: Component ) MS
+4.0 (Courier) F 
+115.0 -569.0 (+) MS
+6.0 (Helvetica) F 
+117.4 -569.0 (addLayers\050com.bbn.openmap.image.Layer[]\051) MS
+4.0 (Courier) F 
+115.0 -578.0 (+) MS
+6.0 (Helvetica) F 
+117.4 -578.0 (done\050\051) MS
+4.0 (Courier) F 
+115.0 -587.0 (+) MS
+6.0 (Helvetica) F 
+117.4 -587.0 (getImageReadyListener\050\051: ImageReadyListener ) MS
+4.0 (Courier) F 
+115.0 -596.0 (+) MS
+6.0 (Helvetica) F 
+117.4 -596.0 (paintLayers\050java.awt.Graphics\051) MS
+4.0 (Courier) F 
+115.0 -605.0 (+) MS
+6.0 (Helvetica) F 
+117.4 -605.0 (updateLayerStatus\050com.bbn.openmap.image.LayerStatusEvent\051) MS
+6.0 (Helvetica-Bold) F 
+324.0 -497.0 (ImageGenerator) MS
+4.0 (Helvetica) F 
+319.0 -506.0 (\050from com.bbn.openmap.image\051) MS
+0.933341 setgray 
+432.0 -65.0 95 -47 RF
+0.0 setgray 
+431.0 -64.0 96 -48  RS
+434.0 -84.0 91 -1 RF
+4.0 (Courier) F 
+436.0 -91.0 (+) MS
+6.0 (Helvetica) F 
+438.4 -91.0 (proj: Projection) MS
+4.0 (Courier) F 
+436.0 -100.0 (+) MS
+6.0 (Helvetica) F 
+438.4 -100.0 (requestID: long) MS
+434.0 -102.0 91 -1 RF
+436.0 -109.0 ( ) MS
+6.0 (Helvetica-Bold) F 
+471.0 -73.0 (Request) MS
+4.0 (Helvetica) F 
+435.0 -82.0 (\050inner class of com.bbn.openmap.image.ImageServer\051) MS
+
+grestore end pagesave restore showpage
+
+%%PageTrailer
+%%PageBoundingBox: 0 0 1440 1440
+%%PageResources: font Courier Helvetica-Bold Helvetica Helvetica-Oblique
+%%Trailer
+%%BoundingBox: 0 0 1440 1440
+%%DocumentNeededResources: font Courier Helvetica-Bold Helvetica Helvetica-Oblique
+%%Pages: 1
+%%EOF
