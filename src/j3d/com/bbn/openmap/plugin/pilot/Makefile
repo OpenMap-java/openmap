@@ -14,38 +14,38 @@
 # 
 # $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/Attic/Makefile,v $
 # $RCSfile: Makefile,v $
-# $Revision: 1.1.1.1 $
-# $Date: 2003/02/14 21:35:48 $
+# $Revision: 1.2 $
+# $Date: 2003/03/14 17:27:34 $
 # $Author: dietrick $
 # 
 # **********************************************************************
 
 
-default: j3d
+default: all
+
+all:
+	cd ${OPENMAP_HOME}/src/j3d && ${OPENMAP_HOME}/bin/ant -emacs $@.j3d
 
 classes:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+	cd ${OPENMAP_HOME}/src/j3d && ${OPENMAP_HOME}/bin/ant -emacs $@.j3d
 
 clean:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+	cd ${OPENMAP_HOME}/src/j3d && ${OPENMAP_HOME}/bin/ant -emacs $@.j3d
+
+distclean:
+	cd ${OPENMAP_HOME}/src/j3d && ${OPENMAP_HOME}/bin/ant -emacs $@.j3d
 
 docs:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+	cd ${OPENMAP_HOME}/src/j3d && ${OPENMAP_HOME}/bin/ant -emacs $@.j3d
+
+clean_docs:
+	cd ${OPENMAP_HOME}/src/j3d && ${OPENMAP_HOME}/bin/ant -emacs $@.j3d
 
 jar:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
-
-svg:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
-
-j3d:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
-
-visibroker:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
-
-todo:
-	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+	cd ${OPENMAP_HOME}/src/j3d && ${OPENMAP_HOME}/bin/ant -emacs $@.j3d
 
 help:
-	cd ${OPENMAP_HOME} && bin/ant -emacs -projecthelp
+	cd ${OPENMAP_HOME}/src/j3d && ${OPENMAP_HOME}/bin/ant -emacs -projecthelp
+
+
+

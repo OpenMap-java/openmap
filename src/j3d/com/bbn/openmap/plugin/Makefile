@@ -12,9 +12,9 @@
 # </copyright>
 # **********************************************************************
 # 
-# $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/geometry/Attic/Makefile,v $
+# $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/Attic/Makefile,v $
 # $RCSfile: Makefile,v $
-# $Revision: 1.2 $
+# $Revision: 1.1 $
 # $Date: 2003/03/14 17:27:34 $
 # $Author: dietrick $
 # 

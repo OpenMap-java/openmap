@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="OpenMap_j3d" default="classes" basedir=".">
+<project name="OpenMap_j3d" default="all.j3d" basedir=".">
 
   <target name="init.j3d" 
 	  description="Sets properties needed by the other targets.">
@@ -36,6 +36,7 @@
   <!--  ############################
 	End of cleanup targets.
 	############################ -->  
+  <target name="all.j3d" depends="classes.j3d, jar.j3d"/>
 
   <target name="classes.j3d"
           depends="init.j3d"
