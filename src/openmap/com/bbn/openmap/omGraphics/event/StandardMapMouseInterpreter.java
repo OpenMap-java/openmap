@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.12 $
+// $Date: 2004/05/10 20:48:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,6 +32,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import com.bbn.openmap.event.MapMouseEvent;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -580,6 +581,10 @@ public class StandardMapMouseInterpreter
             Debug.output("leftClick(MAP) at " + me.getX() + ", " + me.getY());
         }
 
+        if (grp != null && grp.receivesMapEvents() && me instanceof MapMouseEvent) {
+            return grp.leftClick((MapMouseEvent) me);
+        }
+
         return false;
     }
 
@@ -593,7 +598,7 @@ public class StandardMapMouseInterpreter
                          me.getX() + ", " + me.getY());
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -615,12 +620,15 @@ public class StandardMapMouseInterpreter
      * @return false
      */
     public boolean rightClick(MouseEvent me) {
-        boolean ret = false;
         if (DEBUG) {
             Debug.output("rightClick(MAP) at " + me.getX() + ", " + me.getY());
         }
 
-        return displayPopup(grp.getItemsForMapMenu(), me);
+        if (me instanceof MapMouseEvent) {
+            return displayPopup(grp.getItemsForMapMenu((MapMouseEvent)me), me);
+        }
+
+        return false;
     }
 
     /**
@@ -679,6 +687,9 @@ public class StandardMapMouseInterpreter
     public boolean mouseOver(MouseEvent me) {
         if (DEBUG) {
             Debug.output("mouseOver(MAP) at " + me.getX() + ", " + me.getY());
+        }
+        if (grp != null && grp.receivesMapEvents() && me instanceof MapMouseEvent) {
+            return grp.mouseOver((MapMouseEvent) me);
         }
 
         return false;

@@ -14,18 +14,18 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/GestureResponsePolicy.java,v $
 // $RCSfile: GestureResponsePolicy.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/12/23 22:55:26 $
-// $Author: wjeuerle $
+// $Revision: 1.8 $
+// $Date: 2004/05/10 20:48:08 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
 
 package com.bbn.openmap.omGraphics.event;
 
-import java.awt.event.MouseEvent;
 import java.util.List;
 
+import com.bbn.openmap.event.MapMouseEvent;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 
@@ -58,6 +58,18 @@ public interface GestureResponsePolicy {
      * OMGraphic by itself or in a group of other OMGraphics.
      */
     public boolean isSelectable(OMGraphic omgr);
+
+    /**
+     * A query from the MapMouseInterpreter wondering if the
+     * GestureResponsePolicy wants events pertaining to mouse
+     * movements over the map that are not over an OMGraphic.  If the
+     * GestureResponsePolicy responds true, then the mouseOver and
+     * leftClick methods will be called on the GestureResponsePolicy
+     * by the interpreter.  There is no rightClick method that is
+     * called, because a right click will always cause a
+     * getItemsForMapMenu() method to be called.
+     */
+    public boolean receivesMapEvents();
 
     /**
      * A query to get a list of all the OMGraphics that are current
@@ -133,10 +145,13 @@ public interface GestureResponsePolicy {
      * location over the map.  The popup doesn't concern any
      * OMGraphics, and should be presented for a click on the map
      * background.
+     * @param mme a MapMouseEvent describing the location over where
+     * the menu items should apply, in case different options are
+     * appropriate for different places.
      * @return a JMenu for the map.  Return null or empty List if
      * no input required.
      */
-    public List getItemsForMapMenu();
+    public List getItemsForMapMenu(MapMouseEvent mme);
 
     /**
      * Return a java.util.List containing input for a JMenu with
@@ -146,5 +161,28 @@ public interface GestureResponsePolicy {
      * Return null or empty list if there are no options.
      */
     public List getItemsForOMGraphicMenu(OMGraphic omg);
+
+    /**
+     * A notification that the mouse cursor has been moved over the
+     * map, not over any of the OMGraphics on the
+     * GestureResponsePolicy.  This only gets called if the response
+     * to receivesMapEvents is true.
+     * @param mme MapMouseEvent describing the location of the mouse.
+     * @return true of this information is to be considered consumed
+     * and should not be passed to anybody else.
+     */
+    public boolean mouseOver(MapMouseEvent mme);
+
+    /**
+     * A notification that the mouse has been clicked with the left
+     * mouse button on the map, and not on any of the OMGraphics.
+     * This only gets called if the response to receivesMapEvents is
+     * true.  Right clicks on the map are always reported to the
+     * getItemsForMapMenu method.
+     * @param mme MapMouseEvent describing the location of the mouse.
+     * @return true of this information is to be considered consumed
+     * and should not be passed to anybody else.
+     */
+    public boolean leftClick(MapMouseEvent mme);
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/TestResponsePolicy.java,v $
 // $RCSfile: TestResponsePolicy.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.6 $
+// $Date: 2004/05/10 20:48:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,11 +23,11 @@
 
 package com.bbn.openmap.omGraphics.event;
 
-import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JMenuItem;
 
+import com.bbn.openmap.event.MapMouseEvent;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.util.Debug;
@@ -47,6 +47,11 @@ public class TestResponsePolicy implements GestureResponsePolicy {
 
     public boolean isSelectable(OMGraphic omg) {
         Debug.output("isSelectable(" + omg.getClass().getName() + ")");
+        return true;
+    }
+
+    public boolean receivesMapEvents() {
+        Debug.output("receivesMapEvents");
         return true;
     }
 
@@ -100,7 +105,7 @@ public class TestResponsePolicy implements GestureResponsePolicy {
         return "TextResponsePolicy ToolTipText";
     }
 
-    public List getItemsForMapMenu() {
+    public List getItemsForMapMenu(MapMouseEvent me) {
         Debug.output("getMenuForMap(MAP)");
         return null;
     }
@@ -110,6 +115,16 @@ public class TestResponsePolicy implements GestureResponsePolicy {
         List list = new LinkedList();
         list.add(new JMenuItem(omg.getClass().getName()));
         return list;
+    }
+
+    public boolean mouseOver(MapMouseEvent mme) {
+        Debug.output("mouseOver(" + mme + ")");
+        return true;
+    }
+
+    public boolean leftClick(MapMouseEvent mme) {
+        Debug.output("leftClick(" + mme + ")");
+        return true;
     }
 
 }
