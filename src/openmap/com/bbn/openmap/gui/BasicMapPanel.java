@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/09/05 15:41:11 $
-// $Author: dietrick $
+// $Revision: 1.5 $
+// $Date: 2003/09/08 20:53:56 $
+// $Author: blubin $
 // 
 // **********************************************************************
 
@@ -29,6 +29,7 @@ import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.net.URL;
 import java.util.Properties;
+import java.util.Collection;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.border.BevelBorder;
@@ -248,6 +249,9 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 	}
     }
 
+    //Map Component Methods:
+    ////////////////////////
+
     /**
      * Adds a component to the map bean context.  This makes the
      * <code>mapComponent</code> available to the map layers and other
@@ -276,6 +280,80 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 	}
 	return true;
     }
+
+    /**
+     * Given a Class, find the object in the MapHandler.  If the class
+     * is not a SoloMapComponent and there are more than one of them
+     * in the MapHandler, you will get the first one found.
+     */
+    public Object getMapComponentByType(Class c) {
+	return getMapHandler().get(c);
+    }
+
+    /**
+     * Get all of the mapComponents that are of the given class type.
+     **/
+    public Collection getMapComponentsByType(Class c) {
+	return getMapHandler().getAll(c);
+    }
+
+    /**
+     * Find the object with the given prefix.  For now looks up
+     * in the mapHandler -- should look up in the new Librarian when
+     * we upgrade to the latest jar.
+     **/
+    public Object getMapComponent(String prefix) {
+	return getPropertyHandler().get(prefix);
+    }
+
+    /**
+     * The BasicMapPanel looks for MapPanelChild components, finds out
+     * from them where they prefer to be placed, and adds them.
+     */
+    public void findAndInit(Object someObj) {
+	if (someObj instanceof MapPanelChild && someObj instanceof Component) {
+	    if (Debug.debugging("basic")) {
+		Debug.output("MapPanel: adding " + 
+			     someObj.getClass().getName());
+	    }
+	    MapPanelChild mpc = (MapPanelChild) someObj;
+	    addMapPanelChild(mpc);
+	    invalidate();
+	}
+
+	if (someObj instanceof MenuList) {
+	    menuList = (MenuList)someObj;
+	}
+    }
+
+    /**
+     * Add a child to the MapPanel.
+     */
+    protected void addMapPanelChild(MapPanelChild mpc) {
+	add((Component)mpc, mpc.getPreferredLocation());
+    }
+
+    /**
+     * The MapPanel looks for MapPanelChild components and removes
+     * them from iteself.
+     */
+    public void findAndUndo(Object someObj) {
+	if (someObj instanceof MapPanelChild && someObj instanceof Component) {
+	    if (Debug.debugging("basic")) {
+		Debug.output("MapPanel: removing " + 
+			     someObj.getClass().getName());
+	    }
+	    remove((Component)someObj);
+	    invalidate();
+	}
+
+	if (someObj instanceof MenuList && menuList == someObj) {
+	    menuList = null;
+	}
+    }
+
+    //MapBean Methods:
+    //////////////////
 
     /**
      * A static method that creates a MapBean with it's projection set
@@ -315,44 +393,6 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 	return mapBeano;
     }
 
-    /**
-     * The BasicMapPanel looks for MapPanelChild components, finds out
-     * from them where they prefer to be placed, and adds them.
-     */
-    public void findAndInit(Object someObj) {
-	if (someObj instanceof MapPanelChild && someObj instanceof Component) {
-	    if (Debug.debugging("basic")) {
-		Debug.output("MapPanel: adding " + 
-			     someObj.getClass().getName());
-	    }
-	    MapPanelChild mpc = (MapPanelChild) someObj;
-	    add((Component)mpc, mpc.getPreferredLocation());
-	    invalidate();
-	}
-
-	if (someObj instanceof MenuList) {
-	    menuList = (MenuList)someObj;
-	}
-    }
-
-    /**
-     * The MapPanel looks for MapPanelChild components and removes
-     * them from iteself.
-     */
-    public void findAndUndo(Object someObj) {
-	if (someObj instanceof MapPanelChild && someObj instanceof Component) {
-	    if (Debug.debugging("basic")) {
-		Debug.output("MapPanel: removing " + 
-			     someObj.getClass().getName());
-	    }
-	    remove((Component)someObj);
-	    invalidate();
-	}
-
-	if (someObj instanceof MenuList && menuList == someObj) {
-	    menuList = null;
-	}
-    }
 
     //Property Functions:
     /////////////////////
@@ -399,6 +439,13 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     public void addProperties(String propFile) 
 	throws java.net.MalformedURLException {
 	getPropertyHandler().addProperties(propFile);
+    }
+
+    /**
+     * remove a marker from a space delimated set of properties.
+     */
+    public void removeMarker(String property, String marker) {
+	getPropertyHandler().removeMarker(property, marker);
     }
 
     /** 
