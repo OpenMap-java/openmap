@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ToolPanel.java,v $
 // $RCSfile: ToolPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/04 14:34:26 $
+// $Revision: 1.3 $
+// $Date: 2003/04/11 23:47:37 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,7 +95,15 @@ public class ToolPanel extends JToolBar
      * @param item The Tool to add.
      */
     public void add(Tool item) {
-	add(item.getKey().intern(), item);
+	try {
+	    add(item.getKey().intern(), item);
+	} catch (NullPointerException npe) {
+	    if (item != null) {
+		Debug.error("ToolPanel.add(): no name for " + item.getClass().getName());
+	    } else {
+		Debug.error("ToolPanel.add(): no name for null tool.");
+	    }
+	}
     }
 
     /**
