@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:05 $
+// $Revision: 1.6 $
+// $Date: 2004/10/26 20:08:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,47 +59,49 @@ import java.util.StringTokenizer;
  * 
  * <pre>
  * 
- *  layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
- *  layer.prettyName=Layer Name
- *  layer.shapeFile=/usr/local/data/shape/shapefile.shp
- *  layer.spatialIndex=/usr/local/data/shape/shapefile.ssx
- * 
- *  # Now, provide a data file that says what the shapes in the .shp
- *  # file are.  You can use the DBF file:
- *  layer.dbfFile=/usr/local/data/shape/shapefile.dbf
- *  # OR a csv file, created yourself or from the .dbf file.  There
- *  # should be the same number of entries in the .csv file that are in
- *  # the .shp file.
- *  layer.csvFile=/usr/local/data/shape/shapefile.csv
- *  # An attribute to tell the AreaHandler to skip over the first row
- *  # of the csv file if it contains descriptive column header names.
- *  layer.csvFileHasHeader=true
- * 
- *  # Default DrawingAttributes properties for everything not defined
- *  # specifically:
- *  layer.lineColor=ff000000
- *  layer.fillColor=ffff00ff
- * 
- *  # Now add any other attributes accepted by the DrawingAttributes
- *  # object, with the prefix as stated above, i.e. layer.lineColor)
- *  #
- *  # The first column index is 0, not 1.
- *  #
- *  # The key index specifies which column in the csv file contains
- *  # unique area names that are listed in the areas list here in the
- *  # properties.  In this case, it's the column that contains MA in one
- *  # of its rows.
- *  layer.keyIndex=4
- * 
- *  # The name index is the column in the csv file that contains what
- *  # should be displayed in the application when a shape is chosen - the
- *  # object's proper name.
- *  layer.nameIndex=4
- *  layer.areas=MA RI
- *  layer.areas.MA.fillColor=ffff0000
- *  layer.areas.MA.lineColor=ff00ff00
- *  layer.areas.RI.fillColor=ffff0000
- *  layer.areas.RI.lineColor=ff00ff00
+ *  
+ *   layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
+ *   layer.prettyName=Layer Name
+ *   layer.shapeFile=/usr/local/data/shape/shapefile.shp
+ *   layer.spatialIndex=/usr/local/data/shape/shapefile.ssx
+ *  
+ *   # Now, provide a data file that says what the shapes in the .shp
+ *   # file are.  You can use the DBF file:
+ *   layer.dbfFile=/usr/local/data/shape/shapefile.dbf
+ *   # OR a csv file, created yourself or from the .dbf file.  There
+ *   # should be the same number of entries in the .csv file that are in
+ *   # the .shp file.
+ *   layer.csvFile=/usr/local/data/shape/shapefile.csv
+ *   # An attribute to tell the AreaHandler to skip over the first row
+ *   # of the csv file if it contains descriptive column header names.
+ *   layer.csvFileHasHeader=true
+ *  
+ *   # Default DrawingAttributes properties for everything not defined
+ *   # specifically:
+ *   layer.lineColor=ff000000
+ *   layer.fillColor=ffff00ff
+ *  
+ *   # Now add any other attributes accepted by the DrawingAttributes
+ *   # object, with the prefix as stated above, i.e. layer.lineColor)
+ *   #
+ *   # The first column index is 0, not 1.
+ *   #
+ *   # The key index specifies which column in the csv file contains
+ *   # unique area names that are listed in the areas list here in the
+ *   # properties.  In this case, it's the column that contains MA in one
+ *   # of its rows.
+ *   layer.keyIndex=4
+ *  
+ *   # The name index is the column in the csv file that contains what
+ *   # should be displayed in the application when a shape is chosen - the
+ *   # object's proper name.
+ *   layer.nameIndex=4
+ *   layer.areas=MA RI
+ *   layer.areas.MA.fillColor=ffff0000
+ *   layer.areas.MA.lineColor=ff00ff00
+ *   layer.areas.RI.fillColor=ffff0000
+ *   layer.areas.RI.lineColor=ff00ff00
+ *   
  *  
  * </pre>
  * 
@@ -277,14 +279,16 @@ public class AreaHandler implements PropertyConsumer {
     /**
      * Go through the properties, loading the shapefile, information
      * file and attributes files, and resolve how everything should be
-     * drawn. Might take awhile if the files are large.
+     * drawn. Might take awhile if the files are large. Called from
+     * getRectangle, which is called when the AreaShapeLayer is added
+     * to the map.
      * 
      * @param prefix property file entry header name
      * @param props the properties to look through.
      */
     public void initialize(String prefix, Properties props) {
 
-        if (prefix == null || props == null) {
+        if (props == null) {
             Debug.error("AreaHandler: initialize received bad input:\n\tprefix: "
                     + prefix
                     + "\n\tproperties: "
@@ -780,7 +784,7 @@ public class AreaHandler implements PropertyConsumer {
 
         if (politicalAreas != null) {
             String key = area_key.toUpperCase().intern(); // Just to
-                                                          // be sure.
+            // be sure.
 
             return (PoliticalArea) politicalAreas.get(key);
         } else {
