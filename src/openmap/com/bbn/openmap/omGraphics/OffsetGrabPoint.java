@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OffsetGrabPoint.java,v $
 // $RCSfile: OffsetGrabPoint.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:13 $
+// $Revision: 1.5 $
+// $Date: 2004/01/28 15:04:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -121,15 +121,25 @@ public class OffsetGrabPoint extends GrabPoint {
     }
 
     /**
+     * Flag used as a lock to prevent StackOverflowErrors, in case
+     * this OffetGrabPoint is unwittingly a child of itself.
+     */
+    protected boolean overflowLock = false; 
+
+    /**
      * Go through all the Offset elements and changes their position
      * on the map.  Should be called when the OffsetGrabPoint has been
      * moved and you want to move all the GrabPoints in its list.
      */
-    public void moveOffsets() {
-        java.util.Enumeration elements = offsetPoints.elements();
-        while (elements.hasMoreElements()) {
-            Offset offset = (Offset)elements.nextElement();
-            offset.move();
+    public synchronized void moveOffsets() {
+        if (!overflowLock) {
+            overflowLock = true;
+            java.util.Enumeration elements = offsetPoints.elements();
+            while (elements.hasMoreElements()) {
+                Offset offset = (Offset)elements.nextElement();
+                offset.move();
+            }
+            overflowLock = false;
         }
     }
 
@@ -139,11 +149,15 @@ public class OffsetGrabPoint extends GrabPoint {
      * position of the OffsetGrabPoint and you want to set the offset
      * distances of all the GrabPoints in the internal list.
      */
-    public void updateOffsets() {
-        java.util.Enumeration elements = offsetPoints.elements();
-        while (elements.hasMoreElements()) {
-            Offset offset = (Offset)elements.nextElement();
-            offset.update();
+    public synchronized void updateOffsets() {
+        if (!overflowLock) {
+            overflowLock = true;
+            java.util.Enumeration elements = offsetPoints.elements();
+            while (elements.hasMoreElements()) {
+                Offset offset = (Offset)elements.nextElement();
+                offset.update();
+            }
+            overflowLock = false;
         }
     }
 
