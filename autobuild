@@ -18,8 +18,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild,v $
 # $RCSfile: autobuild,v $
-# $Revision: 1.19 $
-# $Date: 1998/07/23 15:04:46 $
+# $Revision: 1.20 $
+# $Date: 1998/08/27 18:03:18 $
 # $Author: dietrick $
 # 
 # **********************************************************************
@@ -165,7 +165,7 @@ export CLASSPATH
 PATH=/bin:/usr/bin:/usr/local/gnu/bin:$JDK/bin
 export PATH
 
-DocPackages="com.bbn.openmap com.bbn.openmap.dcwSpecialist com.bbn.openmap.event com.bbn.openmap.gui com.bbn.openmap.html com.bbn.openmap.http com.bbn.openmap.omGraphics com.bbn.openmap.overlay com.bbn.openmap.proj com.bbn.openmap.specialist"
+DocPackages="com.bbn.openmap com.bbn.openmap.dcwSpecialist com.bbn.openmap.event com.bbn.openmap.gui com.bbn.openmap.html com.bbn.openmap.http com.bbn.openmap.omGraphics com.bbn.openmap.overlay com.bbn.openmap.proj com.bbn.openmap.specialist com.bbn.openmap.rpf com.bbn.openmap.dted com.bbn.openmap.nitf"
 export DocPackages
 
 #echo $CLASSPATH
