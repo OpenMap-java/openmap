@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LibrarySelectionTable.java,v $
 // $RCSfile: LibrarySelectionTable.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/28 15:51:23 $
+// $Revision: 1.3 $
+// $Date: 2003/11/14 20:40:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -126,7 +126,9 @@ public class LibrarySelectionTable {
      * handle the file.
      */
     public void addDataPath(String vpfpath) throws FormatException {
-
+	if (Debug.debugging("vpf")) {
+	    Debug.output("LST.addDataPath(" + vpfpath + ")");
+	}
 	// Figure out how files names should be constructed...
 	boolean addSlash = true;
 

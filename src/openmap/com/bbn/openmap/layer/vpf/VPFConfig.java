@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFConfig.java,v $
 // $RCSfile: VPFConfig.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/07/15 23:54:11 $
+// $Revision: 1.6 $
+// $Date: 2003/11/14 20:40:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -108,6 +108,7 @@ public class VPFConfig extends JPanel implements ActionListener {
     protected LayerHandler layerHandler;
     protected LibraryBean libraryBean;
     protected String layerName;
+    protected VPFLayer layer;
 
     JButton addFeatureButton;
     JButton clearFeaturesButton;
@@ -171,6 +172,21 @@ public class VPFConfig extends JPanel implements ActionListener {
 	init(top);
     }
 
+    public VPFConfig(VPFLayer layer) {
+	if (layer != null && layer.lst != null) {
+	    this.layer = layer;
+	    this.layerName = layer.getName();
+	    //Create the nodes.
+	    DefaultMutableTreeNode top = new DefaultMutableTreeNode("VPF Data Libraries");
+	    try {
+		createNodes(top, layer.lst);
+	    } catch (FormatException fe) {
+		Debug.output("Caught FormatException reading data: " + fe.getMessage());
+	    }
+	    init(top);
+	}
+    }
+
     public void init(DefaultMutableTreeNode top) {
 
 	layerFeatures = new Hashtable();
@@ -218,7 +234,7 @@ public class VPFConfig extends JPanel implements ActionListener {
 	outerc.anchor = GridBagConstraints.WEST;
 	outerc.insets = new Insets(10, 10, 10, 10);
 	outerc.gridx = GridBagConstraints.REMAINDER;
-	outerc.weighty = 1.0;
+	outerc.weighty = .75;
 	outerc.weightx = 1.0;
 	outergridbag.setConstraints(treeView, outerc);
 	add(treeView);
@@ -254,7 +270,9 @@ public class VPFConfig extends JPanel implements ActionListener {
 	configPanel.add(clearFeaturesButton);
 	clearFeaturesButton.setEnabled(false);
 
-	if (layerHandler != null) {
+	if (layer != null) {
+	    createLayerButton = new JButton("Set Features on Layer");
+	} else if (layerHandler != null) {
 	    createLayerButton = new JButton("Create Layer");
 	} else {
 	    createLayerButton = new JButton("Print Properties");
@@ -285,8 +303,9 @@ public class VPFConfig extends JPanel implements ActionListener {
 	GridBagConstraints c2 = new GridBagConstraints();
 	JPanel namePanel = new JPanel();
 	namePanel.setLayout(gridbag2);
-
+	
 	c2.weightx = 0;
+	c2.weighty = 0;
 	c2.anchor = GridBagConstraints.WEST;
 	JLabel nameLabel = new JLabel("Layer Name: ");
 	gridbag2.setConstraints(nameLabel, c2);
@@ -294,16 +313,18 @@ public class VPFConfig extends JPanel implements ActionListener {
 	
 	c2.fill = GridBagConstraints.HORIZONTAL;
 	c2.weightx = 1.0;
+	c2.weighty = 1.0;
 	nameField = new JTextField(layerName);
 	gridbag2.setConstraints(nameField, c2);
 	namePanel.add(nameField);
-
+	
 	outerc.anchor = GridBagConstraints.WEST;
+	outerc.weighty = 0;
 	outergridbag.setConstraints(namePanel, outerc);
 	add(namePanel);
-
+	
 	outerc.fill = GridBagConstraints.HORIZONTAL;
-	outerc.weighty = 0;
+	outerc.weighty = .25;
 	outerc.anchor = GridBagConstraints.CENTER;
 	outergridbag.setConstraints(configPanel, outerc);
 	add(configPanel);
@@ -360,19 +381,29 @@ public class VPFConfig extends JPanel implements ActionListener {
 		name = "VPFLayer";
 	    }
 
-	    String propertyPrefix = name.replace(' ', '_').toLowerCase();
-	    propertyPrefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
+	    String propertyPrefix;
+	    if (layer != null) {
+		propertyPrefix = PropUtils.getScopedPropertyPrefix(layer);
+	    } else {
+		propertyPrefix = PropUtils.getScopedPropertyPrefix(
+		    name.replace(' ', '_').toLowerCase());
+	    }
 
-	    layerProperties = new Properties();
+	    if (layer != null) {
+		layerProperties = layer.getProperties(null);
+	    } else {
+		layerProperties = new Properties();
+	    }
+
 	    layerCoverageTypes.clear();
 	    layerFeatureTypes.clear();
 	    layerFeatures.clear();
 
 	    if (standAlone) {
 		layerProperties.put(propertyPrefix + "class", "com.bbn.openmap.layer.vpf.VPFLayer");
-		layerProperties.put(propertyPrefix + Layer.PrettyNameProperty, name);
 	    }
 
+	    layerProperties.put(propertyPrefix + Layer.PrettyNameProperty, name);
 	    layerProperties.put(propertyPrefix + VPFLayer.pathProperty, paths);
 	    layerProperties.put(propertyPrefix + VPFLayer.searchByFeatureProperty, 
 				new Boolean(searchByFeature).toString());
@@ -407,7 +438,9 @@ public class VPFConfig extends JPanel implements ActionListener {
 				    stringTogether(featureSet.iterator()));
 	    }
 
-	    if (layerHandler != null) {
+	    if (layer != null) {
+		layer.setConfigSettings(layer.getPropertyPrefix(), layerProperties);
+	    } else if (layerHandler != null) {
 		VPFLayer layer = new VPFLayer();
 		layer.setProperties(propertyPrefix, layerProperties);
 		layerHandler.addLayer(layer);

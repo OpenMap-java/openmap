@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayer.java,v $
 // $RCSfile: VPFLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/10 22:50:05 $
+// $Revision: 1.7 $
+// $Date: 2003/11/14 20:40:39 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,8 +33,8 @@ import javax.swing.*;
 import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.event.*;
+import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
@@ -159,18 +159,18 @@ public class VPFLayer extends OMGraphicHandlerLayer
     /** Property for setting VPF library name to use */
     public static final String LibraryNameProperty = "libraryName";
     /** the object that knows all the nitty-gritty vpf stuff */
-    transient LibrarySelectionTable lst;
+    protected transient LibrarySelectionTable lst;
     /** our own little graphics factory */
-    private transient LayerGraphicWarehouseSupport warehouse;
+    protected transient LayerGraphicWarehouseSupport warehouse;
     /** are we searching by feature table (true) or tile (false) */
     protected boolean searchByFeatures = false;
     /** the name of the data bean to look for in beancontext */
-    private String libraryBeanName = null;
+    protected String libraryBeanName = null;
 
     /** hang onto prefix used to initialize warehouse in setProperties() */
-    private String prefix;
+    protected String prefix;
     /** hang onto properties file used to initialize warehouse */
-    private Properties props;
+    protected Properties props;
 
     /** the path to the root VPF directory */
     protected String[] dataPaths = null;
@@ -212,16 +212,22 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * @see #coverageTypeProperty
      * @see #featureTypesProperty
      */
-    public void setProperties(String prefix, java.util.Properties props) {
+    public void setProperties(String prefix, Properties props) {
 	super.setProperties(prefix, props);
 	setAddToBeanContext(true);
 
 	String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-	String path[] = 
-	    LayerUtils.initPathsFromProperties(props, realPrefix + pathProperty);
+	cutoffScale = PropUtils.intFromProperties(props, realPrefix + cutoffScaleProperty, cutoffScale);
 
-	if (path != null) {
+	libraryBeanName = props.getProperty(realPrefix + libraryProperty, libraryBeanName);
+
+	libraryName = props.getProperty(realPrefix + LibraryNameProperty, libraryName);
+
+	String path[] = 
+	    PropUtils.initPathsFromProperties(props, realPrefix + pathProperty);
+
+	if (path != null && path.length != 0) {
 	    setPath(path);
 	}
         String defaultProperty = 
@@ -239,41 +245,42 @@ public class VPFLayer extends OMGraphicHandlerLayer
 
 	String coverage = props.getProperty(realPrefix + coverageTypeProperty);
 	if (coverage != null) {
-	  setDataTypes(coverage);
+	    setDataTypes(coverage);
 	}
 
-	cutoffScale = LayerUtils.intFromProperties(props, realPrefix + cutoffScaleProperty, cutoffScale);
+	searchByFeatures = PropUtils.booleanFromProperties(props, realPrefix + searchByFeatureProperty, searchByFeatures);
 
-	//	searchByFeatureProperty
-	searchByFeatures = LayerUtils.booleanFromProperties(props, realPrefix + searchByFeatureProperty, searchByFeatures);
+	checkWarehouse(searchByFeatures);
+	if (warehouse != null) {
+	    warehouse.setProperties(prefix, props);
+	    warehouse.setUseLibrary(libraryName);
 
-	libraryBeanName = props.getProperty(realPrefix + libraryProperty);
-
-	libraryName = props.getProperty(realPrefix + LibraryNameProperty);
+	    box = null;
+	    resetPalette();
+	}
 
 	try {
 	    //force lst and warehosue to re-init with current properties
-	    lst = null;
-	    warehouse = null;
-	    initLST();
+
+	    // LST now set when paths are set.
 	} catch (IllegalArgumentException iae){
 	    Debug.error("VPFLayer.setProperties: Illegal Argument Exception.\n\nPerhaps a file not found.  Check to make sure that the paths to the VPF data directories are the parents of \"lat\" or \"lat.\" files. \n\n" + iae);
 	}
     }
 
     /** Where we store our default properties once we've loaded them. */
-    private static java.util.Properties defaultProps;
+    private static Properties defaultProps;
 
     /**
      * Return our default properties for vpf land.
      */
-    public static java.util.Properties getDefaultProperties() {
+    public static Properties getDefaultProperties() {
         if (defaultProps == null) {
   	    try {
 	        InputStream in = VPFLayer.class.getResourceAsStream("defaultVPFlayers.properties");
 		//use a temporary so other threads won't see an
 		//empty properties file
-		java.util.Properties tmp = new java.util.Properties();
+		Properties tmp = new Properties();
 		if (in != null) {
 		    tmp.load(in);
 		    in.close();
@@ -285,7 +292,7 @@ public class VPFLayer extends OMGraphicHandlerLayer
 	    } catch (IOException io) {
 	        Debug.error("VPFLayer: can't load default properties: "
 			     + io);
-		defaultProps = new java.util.Properties();
+		defaultProps = new Properties();
 	    }
 	}
 	return defaultProps;
@@ -295,7 +302,10 @@ public class VPFLayer extends OMGraphicHandlerLayer
      * Set the data path to a single place.
      */
     public void setPath(String newPath) {
-	dataPaths = new String[]{newPath};
+	if (Debug.debugging("vpf")) {
+	    Debug.output("VPFLayer setting paths to " + newPath);
+	}
+	setPath(new String[]{newPath});
     }
 
     /**
@@ -303,6 +313,9 @@ public class VPFLayer extends OMGraphicHandlerLayer
      */
     public void setPath(String[] newPaths) {
 	dataPaths = newPaths;
+
+	lst = null;
+	initLST();
     }
 
     /**
@@ -416,7 +429,11 @@ public class VPFLayer extends OMGraphicHandlerLayer
     /**
      * initialize the library selection table.
      */
-    private void initLST() {
+    protected void initLST() {
+	if (Debug.debugging("vpf")) {
+	    Debug.output("VPFLayer.initLST()");
+	}
+
 	try {
  	    if (lst == null) {
 		if (libraryBeanName != null) {
@@ -438,6 +455,9 @@ public class VPFLayer extends OMGraphicHandlerLayer
 		    }
 		    if (libraryBean != null) {
 			lst = libraryBean.getLibrarySelectionTable();
+			if (Debug.debugging("vpf")) {
+			    Debug.output("VPFLayer.initLST(libraryBean)");
+			}
 		    } else {
 			Debug.output("VPFLayer.init: Couldn't find libraryBean " + libraryBeanName + " to read VPF data");
 		    }
@@ -445,21 +465,12 @@ public class VPFLayer extends OMGraphicHandlerLayer
 		    if (dataPaths == null) {
 			Debug.output("VPFLayer|"+getName()+ ": path not set");
 		    } else {
+			if (Debug.debugging("vpf")) {
+			    Debug.output("VPFLayer.initLST(dataPaths)");
+			}
 			lst = new LibrarySelectionTable(dataPaths);
 			lst.setCutoffScale(cutoffScale);
 		    }
-		}
-
-		if (lst != null) {
-		    if (lst.getDatabaseName().equals("DCW")) {
-			warehouse = new VPFLayerDCWWarehouse();
-		    } else if (searchByFeatures) {
-			warehouse = new VPFFeatureGraphicWarehouse();
-		    } else {
-			warehouse = new VPFLayerGraphicWarehouse();
-		    }
-		    warehouse.setProperties(prefix, props);
-		    warehouse.setUseLibrary(libraryName);
 		}
 	    }
 	} catch (com.bbn.openmap.io.FormatException f) {
@@ -469,6 +480,38 @@ public class VPFLayer extends OMGraphicHandlerLayer
 //  							 ": path name not valid");
 	}
     }      
+
+    public void setWarehouse(LayerGraphicWarehouseSupport wh) {
+	warehouse = wh;
+    }
+
+    public LayerGraphicWarehouseSupport getWarehouse() {
+	return warehouse;
+    }
+
+    /**
+     * If the warehouse gets set as a result of this method being
+     * called, the properties will beed to be reset on it.
+     */
+    public void checkWarehouse(boolean sbf) {
+	if (warehouse == null) {
+	    if (Debug.debugging("vpf")) {
+		Debug.output("VPFLayer.getWarehouse: creating warehouse");
+	    }
+	    if (lst != null && lst.getDatabaseName() != null &&
+		lst.getDatabaseName().equals("DCW")) {
+		warehouse = new VPFLayerDCWWarehouse();
+	    } else if (sbf) {
+		warehouse = new VPFFeatureGraphicWarehouse();
+	    } else {
+		warehouse = new VPFLayerGraphicWarehouse();
+	    }
+	} else if ((sbf && warehouse instanceof VPFLayerGraphicWarehouse) ||
+		   (!sbf && warehouse instanceof VPFFeatureGraphicWarehouse)) {
+	    warehouse = null;
+	    checkWarehouse(sbf);
+	}
+    }
 
     /**
      * Use doPrepare() method instead.  This was the old method call
@@ -604,10 +647,12 @@ public class VPFLayer extends OMGraphicHandlerLayer
      */
     public Component getGUI() {
 
-	try {
-	    initLST();
-	} catch (IllegalArgumentException iie) {
-	    Debug.error(iie.getMessage());
+	if (lst == null) {
+	    try {
+		initLST();
+	    } catch (IllegalArgumentException iie) {
+		Debug.error(iie.getMessage());
+	    }
 	}
 
 	if (warehouse == null) {
@@ -620,17 +665,7 @@ public class VPFLayer extends OMGraphicHandlerLayer
 	    box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
   	    box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-	    JPanel titlePanel = new JPanel();
-	    titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
-	    JLabel title = new JLabel(getName());
-	    title.setBorder(new javax.swing.border.EmptyBorder(2, 10, 2, 2));
-	    titlePanel.add(title);
-	    titlePanel.add(Box.createHorizontalGlue());
-	    box.add(titlePanel);
-
 	    JPanel stuff = new JPanel();
-//  	    stuff.setLayout(new BoxLayout(stuff, BoxLayout.X_AXIS));
-//    	    stuff.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 	    JPanel pal = null;
 	    ActionListener al = new ActionListener() {
@@ -660,7 +695,6 @@ public class VPFLayer extends OMGraphicHandlerLayer
 	    };
 
 	    pal = PaletteHelper.createCheckbox(
-// 		getName(),
 		"Show:",
 		new String[] {
 		    VPFUtil.Edges,
@@ -690,6 +724,11 @@ public class VPFLayer extends OMGraphicHandlerLayer
 	    box.add(stuff);
 
 	    JPanel pal2 = new JPanel();
+	    JButton config = new JButton("Configure Layer");
+	    config.setActionCommand(ConfigCmd);
+	    config.addActionListener(this);
+	    pal2.add(config);
+
 	    JButton redraw = new JButton("Redraw Layer");
 	    redraw.setActionCommand(RedrawCmd);
 	    redraw.addActionListener(this);
@@ -699,13 +738,39 @@ public class VPFLayer extends OMGraphicHandlerLayer
 	return box;
     }
     
+    public final static String ConfigCmd = "CONFIGURE";
+    protected WindowSupport configWindowSupport = null;
+
     public void actionPerformed(ActionEvent e) {
 	String cmd = e.getActionCommand();
 	if (cmd == RedrawCmd) {
 	    setList(null);
 	    doPrepare();
+	} else if (cmd == ConfigCmd) {
+	    if (configWindowSupport == null) {
+		configWindowSupport = new WindowSupport(new VPFConfig(this), "Configure " + getName() + " Features");
+	    } else {
+		configWindowSupport.setTitle(getName());
+	    }
+	    configWindowSupport.displayInWindow();
 	} else {
 	    super.actionPerformed(e);
 	}
     }
+
+    protected void setConfigSettings(String prefix, Properties props) {
+	lst = null;
+	setProperties(prefix, props);
+	if (isVisible()) {
+	    doPrepare();
+	}
+
+	if (configWindowSupport != null) {
+	    configWindowSupport.setTitle(getName());
+// 	    configWindowSupport.killWindow();
+// 	    configWindowSupport = null;
+	}
+    }
+
+
 }
