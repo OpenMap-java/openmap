@@ -79,7 +79,7 @@
 	      ############################ -->  
 
 	<target name="todo" 
-	        depends="debug, presvg, prej3d, jar, visibroker" 
+	        depends="classes, presvg, prej3d, jar, visibroker" 
                 description="Compiles all of the OpenMap classes and builds jar files in lib directory, including the svg, j3d and corba packages."/>
 
 	<target name="classes" 
