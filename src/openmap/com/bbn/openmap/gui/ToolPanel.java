@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ToolPanel.java,v $
 // $RCSfile: ToolPanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/10/03 00:46:13 $
+// $Revision: 1.7 $
+// $Date: 2003/10/23 21:01:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -103,11 +103,20 @@ public class ToolPanel extends JToolBar
      */
     protected List avoidList = null;
 
+    protected GridBagLayout gridbag = new GridBagLayout();
+    protected GridBagConstraints c = new GridBagConstraints();
+
+    /**
+     * Holder that expands in the GridBagLayout, keeping things pushed
+     * to the left side of the toolpanel.
+     */
+    protected JLabel filler = null;
+
     /**
      * Constructor
      */
     public ToolPanel() {
-  	setLayout(new FlowLayout(FlowLayout.LEFT));
+	setLayout(gridbag);
   	setFloatable(false);
 	setVisible(false);
     }
@@ -122,6 +131,43 @@ public class ToolPanel extends JToolBar
 	add(key, item, -1);
     }
     
+    /**
+     * A little array used to track what indexes are already used, to
+     * prevent the GridBagLayout from placing things on top of each
+     * other.
+     */
+    protected boolean[] usedIndexes;
+    public int MAX_INDEXES = 101;
+
+    /**
+     * Provides the next available component index for placement,
+     * starting at 0.
+     */
+    protected int getNextAvailableIndex() {
+	return getNextAvailableIndex(0);
+    }
+
+    /**
+     * Provides the next available component index for placement,
+     * given a starting index.
+     */
+    protected int getNextAvailableIndex(int startAt) {
+
+	if (usedIndexes == null) {
+	    usedIndexes = new boolean[MAX_INDEXES];
+	}
+
+	if (startAt < 0) startAt = 0;
+	if (startAt >= MAX_INDEXES) startAt = MAX_INDEXES - 1;
+
+	int i = startAt;
+	// Find the first unused
+	for (; i < MAX_INDEXES && usedIndexes[i] == true; i++) {}
+	usedIndexes[i] = true;
+
+	return i;
+    }
+
     /**
      * Add an item to the tool bar.
      *
@@ -144,16 +190,29 @@ public class ToolPanel extends JToolBar
 		index *= 2;
 	    }
 
-	    if (index < getComponentCount()) {
-		add(face, index);
-	    } else {
-		add(face);
+	    c.gridy = 0;
+	    c.weightx = 0;
+	    c.anchor = GridBagConstraints.WEST;
+	    c.gridx = getNextAvailableIndex(index);
+
+	    gridbag.setConstraints(face, c);
+	    add(face);
+
+	    if (filler == null) {
+		c.gridx = getNextAvailableIndex(MAX_INDEXES);
+		c.anchor = GridBagConstraints.EAST;
+		c.weightx = 1;
+		
+		filler = new JLabel("");
+		gridbag.setConstraints(filler, c);
+		add(filler);
 	    }
 
 	    if (autoSpace) {
 		addSpace();
 	    }
 	}
+
 	setVisibility();
     }
 
@@ -181,6 +240,7 @@ public class ToolPanel extends JToolBar
 	} catch (NullPointerException npe) {
 	    if (item != null) {
 		Debug.error("ToolPanel.add(): no name for " + item.getClass().getName());
+		npe.printStackTrace();
 	    } else {
 		Debug.error("ToolPanel.add(): no name for null tool.");
 	    }
@@ -323,11 +383,7 @@ public class ToolPanel extends JToolBar
 				     key + " for placement at " + index);
 		    }
 			
-		    if (index < getComponentCount()) {
-			add((Tool)someObj, index);
-		    } else {
-			add((Tool)someObj);
-		    }
+		    add((Tool)someObj, index);
 		}
 
 	    } else {
@@ -523,7 +579,7 @@ public class ToolPanel extends JToolBar
 	Enumeration enum = items.elements();
 	while (enum.hasMoreElements()) {
 	    Component comp = (Component)enum.nextElement();
-	    if (comp.isVisible()) {
+	    if (comp != filler && comp.isVisible()) {
 		return true;
 	    }
 	}

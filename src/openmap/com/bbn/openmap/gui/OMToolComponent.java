@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolComponent.java,v $
 // $RCSfile: OMToolComponent.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/22 23:20:42 $
+// $Revision: 1.4 $
+// $Date: 2003/10/23 21:01:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,6 +24,11 @@
 package com.bbn.openmap.gui;
 
 import java.awt.Container;
+import java.awt.Component;
+import java.awt.Insets;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.LayoutManager;
 import java.util.Properties;
 
 import com.bbn.openmap.util.PropUtils;
@@ -61,8 +66,49 @@ public abstract class OMToolComponent extends OMComponentPanel
      */
     protected boolean useAsTool = true;
 
+    /**
+     * Default gridbag layout.
+     */
+    protected GridBagLayout gridbag;
+    /**
+     * Default gridbag layout constraints.
+     */
+    protected GridBagConstraints c;
+
     public OMToolComponent() {
 	super();
+	setLayout(createLayout());
+    }
+
+    /**
+     * Hook to allow subclasses to use a different layout than the
+     * GridBagLayout.  Set the layout on this class in this method.
+     */
+    protected LayoutManager createLayout() {
+	gridbag = new GridBagLayout();
+	c = getGridBagConstraints();
+	return gridbag;
+    }
+
+    /**
+     * If the default setLayout() method is used with the
+     * GridBagLayout, this method will be called to get the
+     * GridBagConstraints for that layout.  This method can be
+     * overridden to make general adjustments to the constraints,
+     * like inset settings, etc.
+     */
+    protected GridBagConstraints getGridBagConstraints() {
+	GridBagConstraints constraints = new GridBagConstraints();
+	constraints.insets = new Insets(0, 2, 0, 2);
+	return constraints;
+    }
+
+    /**
+     * Overridden add method that takes care of GridBagLayout constraints.
+     */
+    public Component add(Component component) {
+	gridbag.setConstraints(component, c);
+	return super.add(component);
     }
 
     /** 

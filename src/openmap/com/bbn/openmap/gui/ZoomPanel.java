@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ZoomPanel.java,v $
 // $RCSfile: ZoomPanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/20 06:59:05 $
+// $Revision: 1.3 $
+// $Date: 2003/10/23 21:01:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -72,12 +72,27 @@ public class ZoomPanel extends OMToolComponent
 	super();
 	setKey(defaultKey);
 //  	setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+// 	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	this.setOpaque(false);
+
+	JPanel panel = new JPanel();
+	GridBagLayout internalGridbag = new GridBagLayout();
+	GridBagConstraints c2 = new GridBagConstraints();
+	panel.setLayout(internalGridbag);
+
 	zoomDelegate = new ZoomSupport(this);
-	zoomInButton = addButton("zoomIn", "Zoom In", zoomInCmd);
-	add(Box.createVerticalGlue());
-	zoomOutButton = addButton("zoomOut", "Zoom Out", zoomOutCmd);
+	zoomInButton = getButton("zoomIn", "Zoom In", zoomInCmd);
+	c2.gridx = 0;
+	c2.gridy = 0;
+	internalGridbag.setConstraints(zoomInButton, c2);
+	panel.add(zoomInButton);
+
+	zoomOutButton = getButton("zoomOut", "Zoom Out", zoomOutCmd);
+	c2.gridy = 1;
+	internalGridbag.setConstraints(zoomOutButton, c2);
+	panel.add(zoomOutButton);
+
+	add(panel);
     }
 
     /**
@@ -140,16 +155,15 @@ public class ZoomPanel extends OMToolComponent
      * @param command String command name
      *
      */
-    protected JButton addButton(String name, String info, String command) {
+    protected JButton getButton(String name, String info, String command) {
 	URL url = ZoomPanel.class.getResource(name + ".gif");
 	JButton b = new JButton(new ImageIcon(url, info));
 	b.setToolTipText(info);
-	b.setMargin(new Insets(2, 2, 2, 2));
+	b.setMargin(new Insets(0,0,0,0));
         b.setActionCommand(command);
 	b.addActionListener(this);
-	b.setBorderPainted(false);
+	b.setBorderPainted(Debug.debugging("layout"));
 	b.setOpaque(false);
-	add(b);
 	return b;
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/10/10 15:42:52 $
+// $Revision: 1.8 $
+// $Date: 2003/10/23 21:01:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -232,6 +232,11 @@ public class WindowSupport extends ListenerSupport
      */
     public void displayInWindow(Frame owner, int x, int y, 
 				int width, int height) {
+
+	if (content == null) {
+	    Debug.message("windowsupport", "WindowSupport asked to display window with null content");
+	    return;
+	}
 
  	if (iFrame == null && dialog == null) {
 	

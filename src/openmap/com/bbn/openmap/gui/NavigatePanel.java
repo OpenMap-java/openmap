@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigatePanel.java,v $
 // $RCSfile: NavigatePanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/08/14 22:56:10 $
+// $Revision: 1.4 $
+// $Date: 2003/10/23 21:01:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,8 +77,8 @@ public class NavigatePanel extends OMToolComponent
     protected boolean useTips = false;
     protected float panFactor = 1f;
 
-    protected int height = 0; // calculated
-    protected int width = 0; // calculated
+//     protected int height = 0; // calculated
+//     protected int width = 0; // calculated
 
     protected boolean useDefaultCenter = false;
     protected float defaultCenterLat = 0;
@@ -95,149 +95,89 @@ public class NavigatePanel extends OMToolComponent
 	panDelegate = new PanSupport(this);
 	centerDelegate = new CenterSupport(this);
 
-// 	GridLayout layout = new GridLayout(3,3);
-// 	layout.setHgap(20);
-// 	layout.setVgap(20);
-	setLayout(/*layout*/new GridLayout(3, 3));
-// 	setAlignmentX(LEFT_ALIGNMENT);
-// 	setAlignmentY(TOP_ALIGNMENT);
-
-	int w, h;
+	JPanel panel = new JPanel();
+	GridBagLayout internalGridbag = new GridBagLayout();
+	GridBagConstraints c2 = new GridBagConstraints();
+	panel.setLayout(internalGridbag);
 
 	// begin top row
-	ImageIcon nwIcon = addImageIcon(new ImageIcon(), nwName, "northwest");
-	w = nwIcon.getIconWidth();
-	h = nwIcon.getIconHeight();
-	nwButton = new JButton(nwIcon);
-	nwButton.setMargin(new Insets(0,0,0,0));
-        nwButton.setActionCommand(panNWCmd);
-	nwButton.addActionListener(this);
-	nwButton.setMinimumSize(new Dimension(w+2,h+2));
-	nwButton.setPreferredSize(new Dimension(w+2,h+2));
-	nwButton.setBorderPainted(false);
-	height += h+2;
-	width += w+2;
-	add(nwButton);
+	nwButton = getButton(nwName, "Pan Northwest", panNWCmd);
+	c2.gridx = 0;
+	c2.gridy = 0;
+	internalGridbag.setConstraints(nwButton, c2);
+	panel.add(nwButton);
 
-	ImageIcon nIcon = addImageIcon(new ImageIcon(), nName, "north");
-	w = nIcon.getIconWidth();
-	h = nIcon.getIconHeight();
-	nButton = new JButton(nIcon);
-	nButton.setMargin(new Insets(0,0,0,0));
-        nButton.setActionCommand(panNCmd);
-	nButton.addActionListener(this);
-	nButton.setMinimumSize(new Dimension(w+2,h+2));
-	nButton.setPreferredSize(new Dimension(w+2,h+2));
-	nButton.setBorderPainted(false);
-	width += w+2;
-	add(nButton);
+	nButton = getButton(nName, "Pan North", panNCmd);
+	c2.gridx = 1;
+	c2.gridy = 0;
+	internalGridbag.setConstraints(nButton, c2);
+	panel.add(nButton);
 
-	ImageIcon neIcon = addImageIcon(new ImageIcon(), neName, "northeast");
-	w = neIcon.getIconWidth();
-	h = neIcon.getIconHeight();
-	neButton = new JButton(neIcon);
-	neButton.setMargin(new Insets(0,0,0,0));
-        neButton.setActionCommand(panNECmd);
-	neButton.addActionListener(this);
-	neButton.setMinimumSize(new Dimension(w+2,h+2));
-	neButton.setPreferredSize(new Dimension(w+2,h+2));
-	neButton.setBorderPainted(false);
-	width += w+2;
-	add(neButton);
+	neButton = getButton(neName, "Pan Northeast", panNECmd);
+	c2.gridx = 2;
+	c2.gridy = 0;
+	internalGridbag.setConstraints(neButton, c2);
+	panel.add(neButton);
 
 	// begin middle row
-	ImageIcon wIcon = addImageIcon(new ImageIcon(), wName, "west");
-	w = wIcon.getIconWidth();
-	h = wIcon.getIconHeight();
-	wButton = new JButton(wIcon);
-	wButton.setMargin(new Insets(0,0,0,0));
-        wButton.setActionCommand(panWCmd);
-	wButton.addActionListener(this);
-	wButton.setMinimumSize(new Dimension(w+2,h+2));
-	wButton.setPreferredSize(new Dimension(w+2,h+2));
-	wButton.setBorderPainted(false);
-	height += h+2;
-	add(wButton);
+	wButton = getButton(wName, "Pan West", panWCmd);
+	c2.gridx = 0;
+	c2.gridy = 1;
+	internalGridbag.setConstraints(wButton, c2);
+	panel.add(wButton);
 
-	ImageIcon cIcon = addImageIcon(new ImageIcon(), cName, "center");
-	w = cIcon.getIconWidth();
-	h = cIcon.getIconHeight();
-	cButton = new JButton(cIcon);
-	cButton.setMargin(new Insets(0,0,0,0));
-        cButton.setActionCommand(centerCmd);
-	cButton.addActionListener(this);
-	cButton.setMinimumSize(new Dimension(w+2,h+2));
-	cButton.setPreferredSize(new Dimension(w+2,h+2));
-	cButton.setBorderPainted(false);
-	add(cButton);
+	cButton = getButton(cName, "Center Map at Starting Coords", centerCmd);
+	c2.gridx = 1;
+	c2.gridy = 1;
+	internalGridbag.setConstraints(cButton, c2);
+	panel.add(cButton);
 
-	ImageIcon eIcon = addImageIcon(new ImageIcon(), eName, "east");
-	w = eIcon.getIconWidth();
-	h = eIcon.getIconHeight();
-	eButton = new JButton(eIcon);
-	eButton.setMargin(new Insets(0,0,0,0));
-        eButton.setActionCommand(panECmd);
-	eButton.addActionListener(this);
-	eButton.setMinimumSize(new Dimension(w+2,h+2));
-	eButton.setPreferredSize(new Dimension(w+2,h+2));
-	eButton.setBorderPainted(false);
-	add(eButton);
+	eButton = getButton(eName, "Pan East", panECmd);
+	c2.gridx = 2;
+	c2.gridy = 1;
+	internalGridbag.setConstraints(eButton, c2);
+	panel.add(eButton);
 
 	// begin bottom row
-	ImageIcon swIcon = addImageIcon(new ImageIcon(), swName, "southwest");
-	w = swIcon.getIconWidth();
-	h = swIcon.getIconHeight();
-	swButton = new JButton(swIcon);
-	swButton.setMargin(new Insets(0,0,0,0));
-        swButton.setActionCommand(panSWCmd);
-	swButton.addActionListener(this);
-	swButton.setMinimumSize(new Dimension(w+2,h+2));
-	swButton.setPreferredSize(new Dimension(w+2,h+2));
-	swButton.setBorderPainted(false);
-	height += h+2;
-	add(swButton);
+	swButton = getButton(swName, "Pan Southwest", panSWCmd);
+	c2.gridx = 0;
+	c2.gridy = 2;
+	internalGridbag.setConstraints(swButton, c2);
+	panel.add(swButton);
 
-	ImageIcon sIcon = addImageIcon(new ImageIcon(), sName, "south");
-	w = sIcon.getIconWidth();
-	h = sIcon.getIconHeight();
-	sButton = new JButton(sIcon);
-	sButton.setMargin(new Insets(0,0,0,0));
-        sButton.setActionCommand(panSCmd);
-	sButton.addActionListener(this);
-	sButton.setMinimumSize(new Dimension(w+2,h+2));
-	sButton.setPreferredSize(new Dimension(w+2,h+2));
-	sButton.setBorderPainted(false);
-	add(sButton);
+	sButton = getButton(sName, "Pan South", panSCmd);
+	c2.gridx = 1;
+	c2.gridy = 2;
+	internalGridbag.setConstraints(sButton, c2);
+	panel.add(sButton);
 
-	ImageIcon seIcon = addImageIcon(new ImageIcon(), seName, "southeast");
-	w = seIcon.getIconWidth();
-	h = seIcon.getIconHeight();
-	seButton = new JButton(seIcon);
-	seButton.setMargin(new Insets(0,0,0,0));
-        seButton.setActionCommand(panSECmd);
-	seButton.addActionListener(this);
-	seButton.setMinimumSize(new Dimension(w+2,h+2));
-	seButton.setPreferredSize(new Dimension(w+2,h+2));
-	seButton.setBorderPainted(false);
-	add(seButton);
+	seButton = getButton(seName, "Pan Southeast", panSECmd);
+	c2.gridx = 2;
+	c2.gridy = 2;
+	internalGridbag.setConstraints(seButton, c2);
+	panel.add(seButton);
 
-	setMinimumSize(new Dimension(width, height));
-	setPreferredSize(new Dimension(width, height));
+	add(panel);
     }
 
     /**
-     * Create an ImageIcon.
-     * @param imageIcon ImageIcon
-     * @param imageName file name
-     * @param imageTip text help
-     * @return ImageIcon
+     * Add the named button to the panel.
+     *
+     * @param name GIF image name
+     * @param info ToolTip text
+     * @param command String command name
+     *
      */
-    protected ImageIcon addImageIcon(ImageIcon imageIcon, 
-				     String imageName, 
-				     String imageTip) {
-	URL url = this.getClass().getResource(imageName);
-	imageIcon = new ImageIcon(url, imageTip);
-	return imageIcon;
+    protected JButton getButton(String name, String info, String command) {
+	URL url = NavigatePanel.class.getResource(name);
+	JButton b = new JButton(new ImageIcon(url, info));
+	b.setToolTipText(info);
+	b.setMargin(new Insets(0,0,0,0));
+        b.setActionCommand(command);
+	b.addActionListener(this);
+	b.setBorderPainted(Debug.debugging("layout"));
+	b.setOpaque(false);
+	return b;
     }
 
     /**
@@ -286,60 +226,6 @@ public class NavigatePanel extends OMToolComponent
      */
     protected synchronized void firePanEvent(float az) {
 	panDelegate.firePan(az);
-    }
-
-    /**
-     * Get the useToolTips value.
-     * @return boolean useTips
-     */
-    public boolean getUseToolTips() {
-	return useTips;
-    }
-
-    /**
-     * Return the sum of the heights of the icons.
-     * @return height
-     */
-    public int getHeight() {
-	return height;
-    }
-
-    /**
-     * Return the sum of the widths of the icons.
-     * @return width
-     */
-    public int getWidth() {
-	return width;
-    }
-
-    /**
-     * Set the useToolTips value.
-     * @param tip useToolTips value.
-     */
-    public void setUseToolTips(boolean tip) {
-	if (tip) {
-	    useTips = true;
-	    nwButton.setToolTipText("Pan Northwest");
-	    nButton.setToolTipText("Pan North");
-	    neButton.setToolTipText("Pan Northeast");
-	    wButton.setToolTipText("Pan West");
-	    eButton.setToolTipText("Pan East");
-	    swButton.setToolTipText("Pan Southwest");
-	    sButton.setToolTipText("Pan South");
-	    seButton.setToolTipText("Pan Southeast");
-	    cButton.setToolTipText("Center Map at Starting Coords");
-	} else {
-	    useTips = false;
-	    nwButton.setToolTipText("");
-	    nButton.setToolTipText("");
-	    neButton.setToolTipText("");
-	    wButton.setToolTipText("");
-	    eButton.setToolTipText("");
-	    swButton.setToolTipText("");
-	    sButton.setToolTipText("");
-	    seButton.setToolTipText("");
-	    cButton.setToolTipText("");
-	}			
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ScaleTextPanel.java,v $
 // $RCSfile: ScaleTextPanel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/10/23 21:01:16 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,7 +60,7 @@ public class ScaleTextPanel extends OMToolComponent
      */
     protected Projection projection;
 
-    protected transient java.text.DecimalFormat df = new java.text.DecimalFormat();
+    protected transient java.text.DecimalFormat df = new java.text.DecimalFormat("###,###,###");
     
     /**
      * Create the ScaleTextPanel
@@ -68,7 +68,6 @@ public class ScaleTextPanel extends OMToolComponent
     public ScaleTextPanel() {
 	super();
 	setKey(defaultKey);
-	setLayout(new GridLayout());
 
 	zoomDelegate = new ZoomSupport(this);
 
@@ -81,6 +80,9 @@ public class ScaleTextPanel extends OMToolComponent
 	scaleField.setMargin(new Insets(0,0,0,0));
         scaleField.setActionCommand(command);
 	scaleField.addActionListener(this);
+	scaleField.setHorizontalAlignment(JTextField.RIGHT);
+
+	gridbag.setConstraints(scaleField, c);
 
 	add(scaleField);
     }
@@ -100,7 +102,7 @@ public class ScaleTextPanel extends OMToolComponent
 	String newScale = df.format(projection.getScale());
 
 	if (!oldScale.equals(newScale)) {
-	    scaleField.setText(newScale);
+	    scaleField.setText("1:" + newScale);
 	}
     }
 
@@ -136,7 +138,7 @@ public class ScaleTextPanel extends OMToolComponent
 	    addZoomListener((ZoomListener)aMap);
 	    aMap.addProjectionListener(this);
 	    // set the scaleEntry
-	    scaleField.setText(String.valueOf(aMap.getScale()));
+	    scaleField.setText("1:" + String.valueOf(aMap.getScale()));
 	}
     }
 
@@ -151,7 +153,7 @@ public class ScaleTextPanel extends OMToolComponent
  	    removeZoomListener((ZoomListener)mapBean);
 	    mapBean.removeProjectionListener(this);
 	    // set the scaleEntry to 0
-	    scaleField.setText(String.valueOf(0));
+	    scaleField.setText("----"/*String.valueOf(0)*/);
 	}
     }
 
@@ -189,6 +191,12 @@ public class ScaleTextPanel extends OMToolComponent
     //set the scale of the map.
     private void setScale(String strscale) {
 	float scale;
+
+	int colon = strscale.indexOf(':');
+
+	if (colon > -1) {
+	    strscale = strscale.substring(colon + 1);
+	}
 
 	try {
 	    if (strscale.toLowerCase().endsWith("m")) {
