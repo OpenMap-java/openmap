@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/MenuList.java,v $
 // $RCSfile: MenuList.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/08 20:31:00 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:20:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,6 +69,9 @@ public class MenuList extends OMComponent {
 
     protected LinkedList menus;
 
+    protected MenuBar menuBar;
+    protected JMenu menu;
+
     /**
      * Create an empty MenuList.
      */
@@ -85,7 +88,11 @@ public class MenuList extends OMComponent {
      * random order.
      */
     public JMenuBar getMenuBar() {
-	MenuBar menuBar = new MenuBar();
+	if (menuBar == null) {
+	    menuBar = new MenuBar();
+	}
+
+	menuBar.removeAll();
 	Iterator iterator = menus.iterator();
 	while (iterator.hasNext()) {
 	    menuBar.findAndInit(iterator.next());
@@ -101,7 +108,11 @@ public class MenuList extends OMComponent {
      * want.
      */
     public JMenu getMenu() {
-	JMenu menu = new JMenu("OpenMap");
+	if (menu == null) {
+	    menu = new JMenu("OpenMap");
+	}
+
+	menu.removeAll();
 	Iterator iterator = menus.iterator();
 	while (iterator.hasNext()) {
 	    menu.add((JMenu)iterator.next());
@@ -192,7 +203,7 @@ public class MenuList extends OMComponent {
 
 	super.setBeanContext(bc);
 	Iterator it = menus.iterator();
-	while (it.hasNext()) {
+	while (bc != null && it.hasNext()) {
 	    bc.add(it.next());
 	}
     }

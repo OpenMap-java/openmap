@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMComponentPanel.java,v $
 // $RCSfile: OMComponentPanel.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/05 05:39:01 $
+// $Revision: 1.4 $
+// $Date: 2003/09/22 23:20:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -48,6 +48,12 @@ import com.bbn.openmap.util.Debug;
  */
 public abstract class OMComponentPanel extends JPanel
     implements PropertyConsumer, BeanContextChild, BeanContextMembershipListener, LightMapHandlerChild {
+
+    /**
+     * BeanContextChildSupport object provides helper functions for
+     * BeanContextChild interface.
+     */
+    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
 
     protected OMComponentPanel() {
 	super();
@@ -172,11 +178,6 @@ public abstract class OMComponentPanel extends JPanel
 
     public void findAndUndo(Object obj) {}
 
-    /**
-     * BeanContextChildSupport object provides helper functions for
-     * BeanContextChild interface.
-     */
-    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
     /**
      * This is the method that your object can use to find other
      * objects within the MapHandler (BeanContext).  This method gets

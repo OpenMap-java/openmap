@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMToolComponent.java,v $
 // $RCSfile: OMToolComponent.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/08 22:25:44 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:20:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -125,7 +125,8 @@ public abstract class OMToolComponent extends OMComponentPanel
 	}
 
 	prefix = PropUtils.getScopedPropertyPrefix(prefix);
-	useAsTool = LayerUtils.booleanFromProperties(props, prefix + UseAsToolProperty, useAsTool);
+	setUseAsTool(PropUtils.booleanFromProperties(
+			 props, prefix + UseAsToolProperty, getUseAsTool()));
     }
 
     public Properties getProperties(Properties props) {

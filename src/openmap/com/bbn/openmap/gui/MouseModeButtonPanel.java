@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MouseModeButtonPanel.java,v $
 // $RCSfile: MouseModeButtonPanel.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/09/22 23:20:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -94,7 +94,7 @@ public class MouseModeButtonPanel extends MouseModePanel {
 	    buttonSet.put(modeStr, btn);
 
 	    bg.add(btn);
-	    btn.setToolTipText(modeStr);
+	    btn.setToolTipText(modes[i].getPrettyName());
 	    toolBar.add(btn);
 	    btn.setActionCommand(modeStr);
 	    btn.addActionListener(this);

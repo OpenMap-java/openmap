@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/16 22:12:32 $
+// $Revision: 1.4 $
+// $Date: 2003/09/22 23:20:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -68,7 +68,6 @@ public class WindowSupport implements ComponentListener, ActionListener {
 	this.content = content;
 	this.title = windowTitle;
     }
-
 
     /**
      * Set the location of the window.
@@ -229,7 +228,7 @@ public class WindowSupport implements ComponentListener, ActionListener {
 		}
 		
 	    } else { // Working as an application...
-		frame = new JFrame(title);
+ 		frame = new JFrame(title);
 		frame.getContentPane().add(content);
 		frame.pack();
 		if (controlWindowSize) {

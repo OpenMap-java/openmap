@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimeSliderSupport.java,v $
 // $RCSfile: TimeSliderSupport.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/06/03 16:18:31 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:20:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,7 +82,6 @@ public class TimeSliderSupport implements TimeConstants, ChangeListener {
      * based on the current setting on the slider.
      */
     public void stateChanged(ChangeEvent ce) {
-	Object obj = ce.getSource();
 	if (ce.getSource() == timeSlider) {
 	    rtHandler.setTime(getTime());
 	}

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/MouseModePanel.java,v $
 // $RCSfile: MouseModePanel.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/05 05:39:01 $
+// $Revision: 1.3 $
+// $Date: 2003/09/22 23:20:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -123,11 +123,12 @@ public class MouseModePanel extends OMToolComponent
 	for (int i=0; i<modes.length; i++) {
 	    JMenuItem rb = new JMenuItem(modes[i].getID());
 	    rb.setActionCommand(newMouseModeCmd);
-	    rb.setName(modes[i].getID());
+	    rb.setName(modes[i].getPrettyName());
 	    rb.setBorderPainted(false);
 	    if (Debug.debugging("mousemode")) {
 		Debug.output("MouseModePanel.setPanel(): Adding " + 
-			     rb.getName() + " button to menu.");
+			     modes[i].getID() + " mode to menu with label: " +
+			     rb.getName());
 	    }
 	    rb.addActionListener(this);
 	    if (activeMode.equals(modes[i].getID())) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OverviewMapHandler.java,v $
 // $RCSfile: OverviewMapHandler.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/04/05 05:39:01 $
+// $Revision: 1.5 $
+// $Date: 2003/09/22 23:20:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -150,19 +150,6 @@ public class OverviewMapHandler extends OMToolComponent
     protected transient ControlledMapSupport listener;
     /** The mouse mode to use for the overview map.  */
     protected MapMouseMode mmm;
-    /**
-     * A JFrame to house the overview map, if desired.  Ask for the
-     * listener, and it will get created if it's running in an
-     * application. 
-     */
-    protected transient JFrame overviewWindowFrame = null;
-    /**
-     * A JFrame to house the overview map, if desired.  Ask for the
-     * listener, and it will get created if it's running in an
-     * applet. 
-     */
-    protected transient JInternalFrame overviewWindow = null;
-    
     /**
      * The thing listening for a request to bring up a JFrame or
      * JInternalFrame.
@@ -465,16 +452,21 @@ public class OverviewMapHandler extends OMToolComponent
 
 	    // Check and see if the overview map window is up.  If it
 	    // is, we should add the overview map as a projection
-	    // listener to it.
-	    if ((overviewWindowFrame != null && overviewWindowFrame.isShowing()) ||
-		(overviewWindow != null && overviewWindow.isShowing()) ||
-		!getUseAsTool()) {
-		srcMap.addProjectionListener(this);
-	    }
+	    // listener to it.  Note: overview map windows went away
+	    // due to window support, but not sure how it affected
+	    // this statement.  Keeping commented code here for
+	    // reference in case behavior is weird.  Seems to be
+	    // working as expected, though. DFD
+// 	    if ((overviewWindowFrame != null && overviewWindowFrame.isShowing()) ||
+// 		(overviewWindow != null && overviewWindow.isShowing()) ||
+// 		!getUseAsTool()) {
+// 		srcMap.addProjectionListener(this);
+// 	    }
+
+	    srcMap.addPropertyChangeListener(this);
 	}
 
 	sourceMap = srcMap;
-	srcMap.addPropertyChangeListener(this);
     }
     
     /**

@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/BasicMapPanel.java,v $
 // $RCSfile: BasicMapPanel.java,v $
-// $Revision: 1.7 $
-// $Date: 2003/09/09 15:31:07 $
-// $Author: blubin $
+// $Revision: 1.8 $
+// $Date: 2003/09/22 23:20:42 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -157,11 +157,14 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * MapHandler in this MapPanel.
      */
     protected void createComponents() {
-	// make sure the MapBean is created and added to the
+	// Make this call first to load the properties into
+	// Environment, before the MapBean gets created.
+	PropertyHandler ph = getPropertyHandler();
+	// Make sure the MapBean is created and added to the
 	// MapHandler.
 	getMapBean();
 	getMapHandler().add(this);
-	getPropertyHandler().createComponents(getMapHandler());
+	ph.createComponents(getMapHandler());
     }
 
     /**
@@ -179,9 +182,10 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * Set the map bean used in this map panel, replace the map
-     * bean in the MapHandler if there isn't already one, or if the
-     * policy allows replacement.
+     * Set the map bean used in this map panel, replace the map bean
+     * in the MapHandler if there isn't already one, or if the policy
+     * allows replacement.  The MapHandler will be created if it
+     * doesn't exist via a getMapHandler() method call.
      * @throws MultipleSoloMapComponentException if there is already a 
      * map bean in the map handler and the policy is to reject duplicates 
      * (since the MapBean is a SoloMapComponent).
@@ -204,8 +208,10 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * Set the PropertyHandler containing the properties used to configure
-     * this panel.
+     * Set the PropertyHandler containing the properties used to
+     * configure this panel.  Adds the PropertyHandler to the
+     * MapHandler.  If the MapHandler isn't set at this point, it will
+     * be created via a getMapHandler() call.
      */
     public void setPropertyHandler(PropertyHandler handler) {
 	propertyHandler = handler;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/03/21 22:41:32 $
+// $Revision: 1.6 $
+// $Date: 2003/09/22 23:20:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -419,7 +419,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
 	public void actionPerformed(ActionEvent event) {
 	    if (event.getSource() == applybutton) {
 		String newName = nameField.getText();
-		if (newName != null || !(newName.equals(""))) {
+		if (newName != null && !(newName.equals(""))) {
 		    notifyThis.setNameAndAdd(newName);
 		}
 		this.setVisible(false);

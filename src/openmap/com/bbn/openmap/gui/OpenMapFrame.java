@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OpenMapFrame.java,v $
 // $RCSfile: OpenMapFrame.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/05/14 17:24:27 $
+// $Revision: 1.5 $
+// $Date: 2003/09/22 23:20:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -79,20 +79,13 @@ public class OpenMapFrame extends JFrame
     }
 
     /**
-     * Create a OpenMap frame with a title.
+     * Create a OpenMap frame with a title, with a WindowListner that
+     * says what to do when the OpenMapFrame is closed.
      * 
      * @param title The Frame title.
      */
     public OpenMapFrame(String title) {
 	super(title);
-					
-	addWindowListener(new WindowAdapter() {
-		public void windowClosing(WindowEvent e) {
-		    // need a shutdown event to notify other gui beans and
-		    // then exit.
-		    System.exit(0);
-		}
-	    });
     }
 
     /**

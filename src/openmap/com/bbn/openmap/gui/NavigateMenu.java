@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/NavigateMenu.java,v $
 // $RCSfile: NavigateMenu.java,v $
-// $Revision: 1.4 $
-// $Date: 2003/04/16 22:12:32 $
+// $Revision: 1.5 $
+// $Date: 2003/09/22 23:20:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,7 +52,6 @@ public class NavigateMenu extends AbstractOpenMapMenu
     public static final String defaultText = "Navigate";
     public static final int defaultMnemonic = 'N';
 
-    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
     protected ZoomSupport zoomSupport = new ZoomSupport(this);
     public final static transient String zoomIn2Cmd = "zoomIn2Cmd";
     public final static transient String zoomIn4Cmd = "zoomIn4Cmd";
