@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygonList.java,v $
 // $RCSfile: EsriPolygonList.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.5 $
+// $Date: 2004/02/06 18:58:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -134,7 +134,7 @@ public class EsriPolygonList extends EsriGraphicList {
         rectPoints[9] = (omRect.getWestLon());
 
         //using the OMRect data create an OMPoly
-        OMPoly poly = new OMPoly(rectPoints, omRect.DECIMAL_DEGREES, omRect.getLineType());
+        OMPoly poly = new OMPoly(rectPoints, OMGraphic.DECIMAL_DEGREES, omRect.getLineType());
         poly.setAppObject(omRect.getAppObject());
         DrawingAttributes da = new DrawingAttributes();
         da.setFrom(omRect);
@@ -177,7 +177,7 @@ public class EsriPolygonList extends EsriGraphicList {
         }
 
         //using the circle data create an OMPoly
-        OMPoly poly = new OMPoly(circlePoints, omCircle.DECIMAL_DEGREES, omCircle.getLineType());
+        OMPoly poly = new OMPoly(circlePoints, OMGraphic.DECIMAL_DEGREES, omCircle.getLineType());
         poly.setAppObject(omCircle.getAppObject());
         DrawingAttributes da = new DrawingAttributes();
         da.setFrom(omCircle);

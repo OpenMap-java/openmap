@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolylineList.java,v $
 // $RCSfile: EsriPolylineList.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.5 $
+// $Date: 2004/02/06 18:58:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -112,7 +112,7 @@ public class EsriPolylineList extends EsriGraphicList {
     public static OMPoly convert(OMLine omLine) {
         if (omLine.getRenderType() == OMGraphic.RENDERTYPE_LATLON) {
             OMPoly poly = new OMPoly(omLine.getLL(), 
-                                     omLine.DECIMAL_DEGREES, 
+                                     OMGraphic.DECIMAL_DEGREES, 
                                      omLine.getLineType());
             poly.setAppObject(omLine.getAppObject());
             DrawingAttributes da = new DrawingAttributes();
