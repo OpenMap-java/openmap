@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryFile.java,v $
 // $RCSfile: BinaryFile.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/08/22 16:33:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -203,12 +203,23 @@ public class BinaryFile {
     protected boolean setJarInputReader(String name) throws IOException {
 	
 	try {
-
 	    int index = name.indexOf("!");
 	    if (index != -1) {
 	    
-		String jarFileName = 
-		    name.substring(name.indexOf(":") + 1, index);
+		// Used to be this, modified by Erik Sanders to work with jdk 1.4 plugin
+// 		String jarFileName = 
+// 		    name.substring(name.indexOf(":") + 1, index);
+
+		// changed to this...
+		String jarFileName;
+
+		if (name.startsWith("file:")){
+		    // java-plugin 1.3 returns local file: strip file: from string
+		    jarFileName = name.substring(name.indexOf(":") + 1, index);
+		} else {
+		    // java-plugin 1.4 returns reference to server, so leave http:// part
+		    jarFileName = name.substring(1, index);
+		}
 	    
 		// skip !/ "
 		String jarEntryName = name.substring(index + 2);
