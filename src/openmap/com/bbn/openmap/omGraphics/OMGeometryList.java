@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometryList.java,v $
 // $RCSfile: OMGeometryList.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/03 15:29:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,13 +38,19 @@ import com.bbn.openmap.util.Debug;
  * OMGraphic, so it contains information on how to draw them.  It's
  * also a subclass to the OMGraphicList, and relies on many
  * OMGraphicList methods.
- * <p>
- * The OMGeometryList assumes that all OMGeometries on it should be
- * rendered the same - same fill color, same edge color and stroke,
+ *
+ * <p> The OMGeometryList assumes that all OMGeometries on it should
+ * be rendered the same - same fill color, same edge color and stroke,
  * and will create one java.awt.Shape object from all the projected
  * OMGeometries for more efficient rendering. If your individual
  * OMGeometries have independing rendering characteristics, use the
  * OMGraphicList and OMGraphics.
+ *
+ * <p> Because the OMGeometryList creates a single java.awt.Shape
+ * object for all of its contents, it needs to be generated() if an
+ * OMGeometry is added or removed from the list.  If you don't
+ * regenerate the OMGeometryList, the list will iterate through its
+ * contents and render each piece separately.
  */
 public class OMGeometryList extends OMGraphicList
     implements GraphicList, Serializable {
@@ -84,6 +90,7 @@ public class OMGeometryList extends OMGraphicList
      * @exception IllegalArgumentException if OMGeometry is null
      */
     public void add(OMGeometry g) {
+	setNeedToRegenerate(true);
 	graphics.add(g);
     }
 
@@ -94,6 +101,7 @@ public class OMGeometryList extends OMGraphicList
      * @return true if geometry was on the list, false if otherwise.
      */
     public boolean remove(OMGeometry geometry) {
+	setNeedToRegenerate(true);
 	return _remove(geometry);
     }
 
@@ -117,6 +125,7 @@ public class OMGeometryList extends OMGraphicList
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     public void setAt(OMGeometry geometry, int index) {
+	setNeedToRegenerate(true);
 	_setAt(geometry, index);
     }
 
@@ -153,6 +162,7 @@ public class OMGeometryList extends OMGraphicList
      * @param location the location of the OMGeometry to remove
      */
     public void removeAt(int location) {
+	setNeedToRegenerate(true);
         graphics.remove(location);
     }
 
@@ -165,6 +175,7 @@ public class OMGeometryList extends OMGraphicList
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
     public void insertAt(OMGeometry geometry, int location) {
+	setNeedToRegenerate(true);
         graphics.add(location, geometry);
     }
 
@@ -353,7 +364,6 @@ public class OMGeometryList extends OMGraphicList
 	// Create a shape object out of all of the shape objects.
 	java.util.List targets = getTargets();
 	ListIterator iterator;
-
 
 	if (traverseMode == FIRST_ADDED_ON_TOP) {
 	    iterator = targets.listIterator(targets.size());
