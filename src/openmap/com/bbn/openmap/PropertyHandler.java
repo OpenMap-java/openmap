@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.5 $
-// $Date: 2003/04/08 22:41:58 $
+// $Revision: 1.6 $
+// $Date: 2003/04/23 17:08:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -181,18 +181,21 @@ public class PropertyHandler implements SoloMapComponent {
 
     /**
      * Constructor to take path (URL) as argument, to create context
-     * for a particular map.  
+     * for a particular map.
      */
     public PropertyHandler(URL url) 
-	throws IOException {
+	throws MalformedURLException, IOException {
+	try {
+	    // Open URL to read in properties
+	    InputStream is = url.openStream();
+	    Properties tmpProperties = new Properties();
+	    tmpProperties.load(is);
 
-	// Open URL to read in properties
-	InputStream is = url.openStream();
-	Properties tmpProperties = new Properties();
-	tmpProperties.load(is);
-
-	init(tmpProperties, "URL");
-	Environment.init(getProperties());
+	    init(tmpProperties, "URL");
+	    Environment.init(getProperties());
+	} catch (NullPointerException npe) {
+	    throw new MalformedURLException("No (null) properties file provided to PropertyHandler.");
+	}
     }
 
     /**

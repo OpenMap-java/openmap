@@ -12,8 +12,8 @@
  * **********************************************************************
  *
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleDisplayLayer.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/04/21 19:28:59 $
+ * $Revision: 1.2 $
+ * $Date: 2003/04/23 17:08:00 $
  * $Author: dietrick $
  *
  * **********************************************************************
@@ -22,17 +22,17 @@
 package com.bbn.openmap.layer;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.Layer;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.layer.util.LayerUtils;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
 import java.util.Properties;
-import javax.swing.JRadioButton;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 /**
  * Layer objects are components which can be added to the MapBean to
@@ -61,12 +61,11 @@ import javax.swing.JPanel;
  * height - height of scale indidator bar in pixels<br>
  * <br>
  */
-public class ScaleDisplayLayer extends Layer  {
-    
-    OMGraphicList graphics = new OMGraphicList();
+public class ScaleDisplayLayer extends OMGraphicHandlerLayer  {
     
     public ScaleDisplayLayer() {
         super();
+	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
     
     // Color variables for different line types
@@ -140,21 +139,10 @@ public class ScaleDisplayLayer extends Layer  {
 	    defaultHeight);
     }
     
-    /**
-     * Invoked when the projection has changed or this Layer has been
-     * added to the MapBean.
-     * @param e ProjectionEvent
-     */
-    public void projectionChanged(com.bbn.openmap.event.ProjectionEvent e) {
-        if (setProjection(e) != null) {
-	    createGraphics();
-	    repaint();
-	}
-    }
-    
-    public void createGraphics() {
+    public OMGraphicList prepare() {
         int w, h, left_x=0, right_x=0, lower_y=0, upper_y=0;
 	Projection projection = getProjection();
+	OMGraphicList graphics = new OMGraphicList();
 
         w = projection.getWidth();
         h = projection.getHeight();
@@ -201,16 +189,10 @@ public class ScaleDisplayLayer extends Layer  {
         text.setLinePaint(textColor);
         graphics.add(text);
         graphics.generate(projection);
+
+	return graphics;
     }
 
-    /**
-     * Paints the layer.
-     * @param g the Graphics context for painting
-     */
-    public void paint(java.awt.Graphics g) {
-        graphics.render(g);
-    }
-    
     /** Getter for property unitOfMeasure.
      * @return Value of property unitOfMeasure.
      */
@@ -316,8 +298,7 @@ public class ScaleDisplayLayer extends Layer  {
                     if (ac.equalsIgnoreCase(UnitOfMeasureProperty)){
                         JRadioButton jrb = (JRadioButton)e.getSource();
                         setUnitOfMeasure(jrb.getText());
-                        createGraphics();
-                        repaint();
+                        doPrepare();
                     } else {
                         com.bbn.openmap.util.Debug.error("Unknown action command \"" + ac +
                         "\" in GraticuleLayer.actionPerformed().");

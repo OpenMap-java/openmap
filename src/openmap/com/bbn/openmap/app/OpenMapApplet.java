@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMapApplet.java,v $
 // $RCSfile: OpenMapApplet.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/04/08 16:28:37 $
+// $Revision: 1.4 $
+// $Date: 2003/04/23 17:08:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,6 +31,8 @@ import java.beans.beancontext.BeanContextChild;
 import java.beans.beancontext.BeanContextChildSupport;
 import java.beans.beancontext.BeanContextMembershipEvent;
 import java.beans.beancontext.BeanContextMembershipListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import javax.swing.JApplet;
 import javax.swing.JMenuBar;
 import java.util.Iterator;
@@ -46,11 +48,15 @@ import com.bbn.openmap.util.Debug;
  * OpenMap Applet.  Uses the MapHandler, via
  * BeanContextMembershipListener methods to lay out the MapPanel and
  * JMenuBar.  Creates a PropertyHandler that will look for the
- * openmap.properties file in the codebase.
+ * openmap.properties file in the codebase.  If the
+ * <pre>PROPERTIES</pre> applet parameter is specifed with a different
+ * properties file, that file will be used instead.
  */
 public class OpenMapApplet extends JApplet 
     implements BeanContextMembershipListener, BeanContextChild {
     
+    public final static String PropertiesProperty = "PROPERTIES";
+
     /**
      * BeanContextChildSupport object provides helper functions for
      * BeanContextChild interface.  
@@ -130,8 +136,28 @@ public class OpenMapApplet extends JApplet
 				 "debug.mapbean",
 				 "debug.plugin"
 		   });
-	    
-	MapPanel mapPanel = new BasicMapPanel();
+
+	String propValue = getParameter(PropertiesProperty);
+	PropertyHandler propHandler = null;
+
+	try {
+	    if (propValue != null) {
+		propHandler = new PropertyHandler(propValue);
+		if (Debug.debugging("app")) {
+		    Debug.output("OpenMapApplet: Using properties from " + propValue);
+		}
+	    }
+	} catch (MalformedURLException murle) {
+	    Debug.error("OpenMap: property file specified: " + propValue + " doesn't exist, searching for default openmap.properties file...");
+	} catch (IOException ioe) {
+	    Debug.error("OpenMap: There is a problem using the property file specified: " + propValue + ", searching for default openmap.properties file...");
+	}
+
+	if (propHandler == null) {
+	    propHandler = new PropertyHandler();
+	}
+
+	MapPanel mapPanel = new BasicMapPanel(propHandler);
 	mapPanel.getMapHandler().add(this);
 	Debug.message("app", "OpenMapApplet.init()");
     }
