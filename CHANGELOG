@@ -1,3 +1,76 @@
+2004-10-05  Donald Dietrick  <dietrick@dhcp89-077-080.bbn.com>
+
+	* Updated the SwingWorker to match the latest version from Sun.
+
+	* Added LambertConformalConic projection, along with it's loader
+	that has properties to let it describe the LCC attributes it will
+	create.  You create a loader in the properties for a specific
+	state plane or other LCC definition, and that shows up as an
+	option to the ProjectionFactory.
+
+	* Updated the decorated OMGraphic parts, adding a circle
+	decoration and some weather notations.  Added editable
+	OMScalingRaster code, submitted by Dan Bitts.  Fixed FontSizer.
+	Added callouts to FilterSupport to handle actions on OMGraphics
+	that pass and fail the filter.  Fixed transparency handling in
+	OMRaster. Updated rotation handling in OMRasterObject.  Added
+	accessors to OMScalingRaster to get display corners.  Updated
+	OMText so rotated text factored into distance() correctly.	
+
+	* Modified LayerHandler to add layers to top of stack, if their
+	position is undefined.
+
+	* Update VPF components.  Added feature type sublists to
+	warehouse support, to better control display of different feature
+	types.
+	
+	* Fixed MakeToc from the RPF package, it was writing bad A.TOC
+	files.  Updated RPF coverage tools.  Modified RpfFrame to check
+	for lower case file names if upper case isn't found, and also to
+	check for full pathnames when the frame is actually loaded,
+	instead of when the layer was created, which was really expensive.
+		
+	* Modifed BufferedImageRenderPolicy to extend
+	RenderingHintsRenderPolicy, so buffered image could be
+	anti-aliased if needed.
+
+	* Modified how the OMGraphicHandlerLayer handles/locks the
+	SwingWorker during updates, and how it cleans up if the
+	SwingWorker gets interrupted.  Removed synchronization notation
+	from some methods.  Added new GRP capability to handle events
+	over the map.
+
+	* Fixed Location bug with label rendering.
+
+	* Modified DTEDCoverageLayer to extend OMGraphicHandlerLayer.
+
+	* Updated BufferedLayer to properly handle BeanContext with its
+	sub-layers, as well as responding to getProperties().  Updated
+	ScaleFilterLayer as well.
+
+	* Added methods to LatLonPoint that call GreatCircle class to
+	calculate distance/azimuth to another LatLonPoint, or to find a
+	LatLonPont a distance and azimuth away from the current point.
+
+	* Updated the LayersPanel initialization with the
+	LayerControlButtonPanel.
+
+	* Added method to ProjectionFactory to let it provide the default
+	projection set with the Environment projection parameters.
+	Updated the BasicMapPanel and ImageServer/MapRequestHandler to
+	use that method.
+
+	* Added the com.bbn.openmap.util.FileUtils class that has a
+	static method for asking for a file from the user, using a JFileChooser.
+
+	* Added a save capability
+	com.bbn.openmap.dataAccess.shape.DbfTableModel when it's run
+	directly on a .dbf file.  The save option was also added, enabled
+	with a behavior mask setting.
+
+	* Updated the com.bbn.openmap.dataAccess.dted components to be
+	able to handle .dt2 files.
+
 2004-05-24  Donald Dietrick  <dietrick@jader.local>
 
 	* Added the OptionPropertyEditor, a base class used for

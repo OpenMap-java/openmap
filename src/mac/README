@@ -1,0 +1,31 @@
+This package contains:
+
+The OpenMap application, configured with basic layers and default components.
+
+An openmap.properties file to place in your home directory
+(/Users/<username>).  You can modify this file to change the layers
+in the application and reconfigure the application components.  There
+are instructions for modifying the openmap.properties inside that
+file.
+
+The openmap-4.6 development directory, containing the source code and
+documentation for the OpenMap package.  To compile OpenMap source
+code, set the OPENMAP_HOME environment variable to the location of
+the openmap-4.6 directory:
+
+For the bash shell:
+> export OPENMAP_HOME <path to openmap-4.6 directory>
+
+for tcsh:
+> setenv OPENMAP_HOME <path to openmap-4.6 directory>
+
+Then, type:
+
+> make mac
+
+For other compilation options, type:
+
+> make help
+
+Please see http://openmap.bbn.com for more information, and contact us at
+openmap@bbn.com with any questions and/or comments.
