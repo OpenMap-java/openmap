@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/BufferedLayerMapBean.java,v $
 // $RCSfile: BufferedLayerMapBean.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/09/04 18:12:50 $
+// $Revision: 1.3 $
+// $Date: 2003/10/14 19:59:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -111,6 +111,7 @@ public class BufferedLayerMapBean extends BufferedMapBean {
      * @param evt a LayerEvent
      */
     public void setLayers(LayerEvent evt) {
+        bufferDirty = true;
         Layer[] layers = evt.getLayers();
 	int type = evt.getType();
 
