@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/DbfInputStream.java,v $
 // $RCSfile: DbfInputStream.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:48 $
+// $Revision: 1.2 $
+// $Date: 2003/04/18 02:42:48 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -181,6 +181,7 @@ public class DbfInputStream {
 	    ArrayList record = new ArrayList();
 	    for (int c = 0; c <= _columnCount - 1; c++) {
 		int length = _lengths[c];
+		if (length == -1) length = 255;
 		int type = _types[c];
 		String cell = _leis.readString(length);
 		if (type == DbfTableModel.TYPE_NUMERIC && !cell.equals("")) {
