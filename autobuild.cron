@@ -18,11 +18,15 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/autobuild.cron,v $
 # $RCSfile: autobuild.cron,v $
-# $Revision: 1.2 $
-# $Date: 1998/04/20 22:21:10 $
+# $Revision: 1.3 $
+# $Date: 1998/04/21 13:42:04 $
 # $Author: tmitchel $
 # 
 # **********************************************************************
+
+pageme () {
+  echo ${1:-"no status"} | /usr/ucb/mail -s "MapBean autobuild" tmitchell.pager@bbn.com
+}
 
 DateString=`date +"%Y%m%d"`      # 17750419
 LogDir=/usr/local/openmap/autobuild/logs
@@ -38,6 +42,8 @@ else
 fi
 
 
+rm -rf $TmpDir
+
 if /bin/mkdir -p $TmpDir; then
   /bin/true;
 else
@@ -48,10 +54,14 @@ fi
 
 rm -rf $LogFile
 cd $TmpDir >> $LogFile 2>&1
-pwd >> $LogFile 2>&1
 
 
 /usr/local/gnu/bin/cvs -d /u4/rcs export -Dnow openmap/autobuild >> $LogFile 2>&1
-/bin/sh openmap/autobuild >> $LogFile 2>&1
+
+if /bin/sh openmap/autobuild >> $LogFile 2>&1 ; then
+  pageme "completed at `date`";
+else
+  pageme "failed at `date`";
+fi
 
 /usr/ucb/mail -s "autobuild mapBean" tmitchell < $LogFile
