@@ -17,9 +17,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.4 $
-# $Date: 1998/11/09 21:19:55 $
-# $Author: tmitchel $
+# $Revision: 1.5 $
+# $Date: 1998/11/10 19:12:46 $
+# $Author: aculline $
 # 
 # **********************************************************************
 
@@ -107,11 +107,6 @@ ${bindir}/openmap: ${bindir} bin/openmap
 	${INSTALL.bin} bin/opemmap $@
 
 install::	${bindir}/openmap
-
-${bindir}/openmap.bash: ${bindir} bin/openmap.bash
-	${INSTALL.bin} bin/opemmap.bash $@
-
-install::	${bindir}/openmap.bash
 
 ${libdir}/openmap.jar: ${libdir} lib/openmap.jar
 	${INSTALL.jar} lib/openmap.jar $@

@@ -880,7 +880,6 @@ ac_given_srcdir=$srcdir
 trap 'rm -fr `echo "openmap.mk
 	Makefile
 	bin/openmap
-	bin/openmap.bash
 	com/Makefile
 	com/bbn/Makefile
 	com/bbn/openmap/Makefile
@@ -987,7 +986,6 @@ cat >> $CONFIG_STATUS <<EOF
 CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	Makefile
 	bin/openmap
-	bin/openmap.bash
 	com/Makefile
 	com/bbn/Makefile
 	com/bbn/openmap/Makefile
