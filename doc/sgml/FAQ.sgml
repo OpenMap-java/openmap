@@ -1,8 +1,8 @@
 <!--
 $source: /net/blatz/u4/rcs/openmap/doc/sgml/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.25 $
-$Date: 2001/06/20 00:50:32 $
+$Revision: 1.26 $
+$Date: 2001/06/20 01:35:42 $
 $Author: bmackiew $
 
 Frequently Asked Questions for the OpenMap system.
@@ -62,7 +62,7 @@ into the codebase, but it won't be available until the next release of
 OpenMap.  We can place some code on our submissions page for immediate
 download.  In some cases, we'd like to get your formal permission to include
 the code into the OpenMap distribution, so we'll ask you to download, fill
-in, and return our <tt><htmlurl url="http://openmap.bbn.com/contrib.pdf"
+in, and return our <tt><htmlurl url="http://openmap.bbn.com/contribution.pdf"
 name="OpenMap Release Form"></tt>.
 
 <sect1>What's that funny-shaped thing in the Logo?
