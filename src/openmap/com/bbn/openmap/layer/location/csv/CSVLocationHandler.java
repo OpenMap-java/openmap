@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/csv/CSVLocationHandler.java,v $
 // $RCSfile: CSVLocationHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/24 23:36:04 $
+// $Revision: 1.3 $
+// $Date: 2003/04/04 14:29:06 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -303,7 +303,7 @@ public class CSVLocationHandler extends AbstractLocationHandler
 	    // even if it's not specified as file:/<name> in
 	    // the properties file.
 	    
-	    URL csvURL = LayerUtils.getResourceOrFileOrURL(this, locationFile); 
+	    URL csvURL = LayerUtils.getResourceOrFileOrURL(null, locationFile); 
 	    streamReader = new BufferedReader(new InputStreamReader(csvURL.openStream()));
 	    CSVTokenizer csvt = new CSVTokenizer(streamReader);
 
@@ -377,6 +377,10 @@ public class CSVLocationHandler extends AbstractLocationHandler
 	    new com.bbn.openmap.util.HandleError(nfe);
 	} catch (ClassCastException cce){
 	    new com.bbn.openmap.util.HandleError(cce);
+	} catch (NullPointerException npe) {
+	    new com.bbn.openmap.util.HandleError(npe);
+	} catch (java.security.AccessControlException ace) {
+	    new com.bbn.openmap.util.HandleError(ace);
 	}
 
 	Debug.message("csvlocation",
