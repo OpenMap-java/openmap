@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AcmeGifHelper.java,v $
 // $RCSfile: AcmeGifHelper.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.4 $
+// $Date: 2004/12/10 14:11:57 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -76,7 +76,7 @@ public class AcmeGifHelper {
      */
     public static byte[] encodeGif(int w, int h, int[] pixels)
             throws IOException {
-        BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         bi.setRGB(0, 0, w, h, pixels, 0, w);
         pixels = null;
         return encodeGif(bi);
