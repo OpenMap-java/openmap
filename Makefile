@@ -14,8 +14,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile,v $
 # $RCSfile: Makefile,v $
-# $Revision: 1.1 $
-# $Date: 2002/07/11 19:26:50 $
+# $Revision: 1.2 $
+# $Date: 2002/07/17 18:46:41 $
 # $Author: dietrick $
 # 
 # **********************************************************************
@@ -24,10 +24,31 @@
 default: all
 
 all:
-	cd ${OPENMAP_HOME} && ant -emacs $@
+	cd ${OPENMAP_HOME} && bin/ant -emacs $@
 
 classes:
-	cd ${OPENMAP_HOME} && ant -emacs $@
+	cd ${OPENMAP_HOME} && bin/ant -emacs $@
 
 clean:
-	cd ${OPENMAP_HOME} && ant -emacs $@
+	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+
+jar:
+	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+
+svg:
+	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+
+j3d:
+	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+
+visibroker:
+	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+
+todo:
+	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+
+help:
+	cd ${OPENMAP_HOME} && bin/ant -emacs -projecthelp
+
+
+

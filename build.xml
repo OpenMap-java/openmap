@@ -15,7 +15,7 @@
 		<property name="openmap.classes" value="./classes/openmap"/>
 
 		<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR BATIK INSTALLATION -->
-		<property name="batik.home" value="/usr/local/openmap/batik-1.1.1"/>
+		<property name="batik.home" value="/usr/local/java/batik-1.1.1"/>
 
 		<property name="openmap.contrib" value="${openmap.home}/contrib"/>
 		<property name="javac.excludes" value="**/*.in, **/Makefile, **/*.bat,
@@ -39,7 +39,7 @@
 			         **/gml/**, **/CloudImagePlugIn.java, 
 				 **/EditableOMText.java, **/OMTextLoader.java"/>
 
-		<property name="svg.jars" value="${batik.home}/lib/batik-svggen.jar;${batik.home}/lib/batik-awt-util.jar;${batik.home}/lib/batik-util.jar;${batik.home}/lib/batik-dom.jar;${batik.home}/lib/batik-ext.jar;${batik.home}/lib/batik-xml.jar;;${batik.home}/lib/batik-svggen.jar;${batik.home}/lib/batik-awt-util.jar;${batik.home}/lib/batik-util.jar;${batik.home}/lib/batik-dom.jar;${batik.home}/lib/batik-ext.jar;${batik.home}/lib/batik-xml.jar;${batik.home}/lib/batik-svg-dom.jar"/>
+		<property name="svg.jars" value="${batik.home}/lib/batik-svggen.jar;${batik.home}/lib/batik-awt-util.jar;${batik.home}/lib/batik-util.jar;${batik.home}/lib/batik-dom.jar;${batik.home}/lib/batik-ext.jar;${batik.home}/lib/batik-xml.jar;${batik.home}/lib/batik-svggen.jar;${batik.home}/lib/batik-awt-util.jar;${batik.home}/lib/batik-util.jar;${batik.home}/lib/batik-dom.jar;${batik.home}/lib/batik-ext.jar;${batik.home}/lib/batik-xml.jar;${batik.home}/lib/batik-svg-dom.jar"/>
 
 		<!-- These are packages that depend on other, non-standard java
 		     installations. You can remove these packages from this list if you
