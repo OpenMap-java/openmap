@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2003/03/03 19:35:52 $
+// $Revision: 1.9 $
+// $Date: 2003/03/03 21:04:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -320,6 +320,9 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	return false;
     }
 
+    protected OMGraphic lastSelected = null;
+    protected String lastToolTip = null;
+
     /**
      * Invoked when the mouse button has been moved on a component
      * (with no buttons down).
@@ -328,14 +331,18 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
      */
     public boolean mouseMoved(MouseEvent e) {  
 	OMGraphic omgr = ((OMGraphicList)getList()).findClosest(e.getX(),e.getY(),4.0f);
+	boolean ret = false;
 
 	if (omgr != null) {
 //  	    fireRequestInfoLine("Click to edit graphic");
 	    if (showHints) {
-		String tt = getToolTipForOMGraphic(omgr);
-		if (tt != null) {
-		    fireRequestToolTip(e, tt);
-		    return true;
+		if (omgr != lastSelected) {
+		    lastToolTip = getToolTipForOMGraphic(omgr);
+		}
+
+		if (lastToolTip != null) {
+		    fireRequestToolTip(e, lastToolTip);
+		    ret = true;
 		} else {
 		    fireHideToolTip(e);
 		}
@@ -345,8 +352,12 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer
 	    if (showHints) {
 		fireHideToolTip(e);
 	    }
+	    lastToolTip = null;
 	}
-	return false;
+
+	lastSelected = omgr;
+
+	return ret;
     }
     
     /**
