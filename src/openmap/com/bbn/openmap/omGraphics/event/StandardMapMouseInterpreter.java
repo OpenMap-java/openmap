@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/09/23 22:46:24 $
+// $Revision: 1.4 $
+// $Date: 2003/09/25 18:49:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,10 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.util.Debug;
 
-public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMouseListener {
+/**
+ * The StandardMapMouseInterpreter is a basic implementation of the MapMouseInterpreter.
+ */
+public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 
     protected boolean DEBUG = false;
     protected OMGraphicHandlerLayer layer = null;
@@ -156,8 +159,17 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
 	    list = layer.getList();
 	    if (list != null) {
 		omg = list.findClosest(me.getX(), me.getY(), 4);
+	    } else {
+		if (DEBUG) {
+		    Debug.output("SMMI: no layer to evaluate mouse event");
+		}
+	    }
+	} else {
+	    if (DEBUG) {
+		Debug.output("SMMI: no layer to evaluate mouse event");
 	    }
 	}
+
 	return omg;
     }
 
@@ -170,6 +182,10 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
      * @return false
      */
     public boolean mousePressed(MouseEvent e) { 
+	if (DEBUG) {
+	    Debug.output("SMMI: mousePressed()");
+	}
+ 	setCurrentMouseEvent(e);
 	boolean ret = false;
 
 	GeometryOfInterest goi = getClickInterest();
@@ -187,7 +203,8 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
 	    setClickInterest(null);
 	}
 
-	if (omg != null && grp != null && grp.isSelectable(omg)) {
+	if (omg != null) {
+	    select(omg);
 	    setClickInterest(new GeometryOfInterest(omg, e));
 	    ret = true;
 	}
@@ -201,6 +218,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
      * @return false
      */
     public boolean mouseReleased(MouseEvent e) {
+ 	setCurrentMouseEvent(e);
 	return false;
     }
 
@@ -210,6 +228,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
      * @return false
      */
     public boolean mouseClicked(MouseEvent e) {
+ 	setCurrentMouseEvent(e);
 	GeometryOfInterest goi = getClickInterest();
 
 	// If there is a click interest
@@ -235,13 +254,17 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
      * Invoked when the mouse enters a component.
      * @param e MouseEvent
      */
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+ 	setCurrentMouseEvent(e);
+    }
 
     /**
      * Invoked when the mouse exits a component.
      * @param e MouseEvent
      */
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+ 	setCurrentMouseEvent(e);
+    }
 
     // Mouse Motion Listener events
     ///////////////////////////////
@@ -253,6 +276,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
      * @return false
      */
     public boolean mouseDragged(MouseEvent e) {
+ 	setCurrentMouseEvent(e);
 	GeometryOfInterest goi = getClickInterest();
 	if (goi != null) {
 	    setClickInterest(null);
@@ -268,6 +292,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
      * @return false
      */
     public boolean mouseMoved(MouseEvent e) {
+ 	setCurrentMouseEvent(e);
 	boolean ret = false;
 
 	OMGraphic omg = getGeometryUnder(e);
@@ -323,12 +348,6 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
 	if (DEBUG) {
 	    Debug.output("leftClick(" + omg.getClass().getName() + ") at " + 
 			 me.getX() + ", " + me.getY());
-	}
-
-	if (grp != null && grp.isSelectable(omg)) {
-	    OMGraphicList omgl = new OMGraphicList();
-	    omgl.add(omg);
-	    grp.select(omgl);
 	}
 
 	return true;
@@ -433,6 +452,32 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter, MapMous
 	    Debug.output("keyPressed(" + omg.getClass().getName() + " , " + virtualKey + ")");
 	}
 	return true;
+    }
+
+    public void select(OMGraphic omg) {
+	if (grp != null && grp.isSelectable(omg)) {
+	    OMGraphicList omgl = new OMGraphicList();
+	    omgl.add(omg);
+	    grp.select(omgl);
+	}
+    }
+
+    public void deselect(OMGraphic omg) {
+	if (grp != null && grp.isSelectable(omg)) {
+	    OMGraphicList omgl = new OMGraphicList();
+	    omgl.add(omg);
+	    grp.deselect(omgl);
+	}
+    }
+
+    protected MouseEvent currentMouseEvent;
+
+    protected void setCurrentMouseEvent(MouseEvent me) {
+	currentMouseEvent = me;
+    }
+
+    public MouseEvent getCurrentMouseEvent() {
+	return currentMouseEvent;
     }
 
     public void setGRP(GestureResponsePolicy grp) {
