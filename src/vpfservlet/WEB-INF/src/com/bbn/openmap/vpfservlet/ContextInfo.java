@@ -9,7 +9,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/vpfservlet/WEB-INF/src/com/bbn/openmap/vpfservlet/ContextInfo.java,v $
-// $Revision: 1.5 $ $Date: 2004/02/03 05:31:04 $ $Author: wjeuerle $
+// $Revision: 1.6 $ $Date: 2004/02/03 05:38:11 $ $Author: wjeuerle $
 // **********************************************************************
 package com.bbn.openmap.vpfservlet;
 
@@ -116,11 +116,16 @@ public class ContextInfo {
     }
     
     /**
-     * Return a file object that the path resolves to.
+     * Return a file object that the path resolves to. Performs some
+     * minimal checks to try and prevent an attacker from feeding in
+     * urls that cause the servlets to climb out of their sandbox.  A
+     * better option is to use a servlet container with the ability to
+     * restrict servlet file access.  For example, Apache Software
+     * Foundation's Tomcat 5 Servlet/JSP Container running with the
+     * -security flag.
      * @param pathInfo the path to resolve (expected to be of the form
      * "/library_name_in_web_xml/path/to/file")
-     * @return a File if it could be resolved, null otherwise
-     */
+     * @return a File if it could be resolved, null otherwise */
     public String resolvePath(String pathInfo) {
         if ((pathInfo == null) || 
             (pathInfo.indexOf("..") != -1)) { //don't climb out of sandbox
