@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/labeled/LabeledOMPoly.java,v $
 // $RCSfile: LabeledOMPoly.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/04/08 18:54:26 $
+// $Revision: 1.3 $
+// $Date: 2003/04/18 02:43:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -403,14 +403,17 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
 	boolean ret = super.generate(proj);
 
 	Point p = getTextPoint(proj);
-	label.setX((int)(p.getX() + getOffset().getX()));
-	label.setY((int)(p.getY() + getOffset().getY()));
 
-	if (Debug.debugging("labeled")) {
-	    Debug.output("Setting label(" + label.getData() + ") to " + p);
+	if (p != null) {
+	    label.setX((int)(p.getX() + getOffset().getX()));
+	    label.setY((int)(p.getY() + getOffset().getY()));
+
+	    if (Debug.debugging("labeled")) {
+		Debug.output("Setting label(" + label.getData() + ") to " + p);
+	    }
+
+	    label.generate(proj);
 	}
-
-	label.generate(proj);
 	return ret;
     }
 
