@@ -13,8 +13,8 @@
     <property name="openmap.class_dir" value="${openmap.home}/classes"/>
     <property name="openmap.classes" value="${openmap.home}/classes/openmap"/>
     <property name="corba.src" value="${openmap.home}/src/corba"/>
-<!--    <property name="corba.jar" value="${openmap.home}/lib/omcorba_vb.jar"/>-->
     <property name="corba.jar" value="${openmap.home}/lib/omcorba.jar"/>
+    <property name="corba_vb.jar" value="${openmap.home}/lib/omcorba_vb.jar"/>
     <property name="corba.classes" value="${openmap.home}/classes/corba"/>
 
     <property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
@@ -25,22 +25,23 @@
     <property name="javac.excludes" value="${general.excludes}, 
 					   **/*.gif, **/*.png" />
 
+    <property name="idl2java.compiler" value="com.sun.tools.corba.se.idl.toJavaPortable.Compile" />
+
+    <!-- ### VisiBroker settings - need to set idl2java compiler property differently. ### -->
     <!-- sets the visibroker.home present property to the value "true"
 	 if the home directory of Visibroker is found. -->
     <property name="visibroker.home" value="/usr/local/openmap/vbroker-3.4/java"/>
     <available file="${visibroker.home}" property="do.visibroker"/> 
+    <!-- Visibroker compiler is:
+    <property name="idl2java.compiler" value="com.visigenic.vbroker.tools.idl2java" />
+    -->
+    <property name="visibroker.jars" value="${visibroker.home}/lib/vbjapp.jar:${visibroker.home}/lib/vbjcosnm.jar:${visibroker.home}/lib/vbjtools.jar:${visibroker.home}/lib/vbjorb.jar"/>
+    <property name="visibroker.bootclasspath" value="${visibroker.jars}:${java.home}/lib/rt.jar:${corba.classes}:${openmap.classes}"/>
 
     <!-- Check to see if there is a idl2java compiler available -->
-    <condition property="vb_idl.compiler">
-      <and>
-	<available classname="com.visigenic.vbroker.tools.idl2java"/>
-      </and>
-    </condition> 
-
-    <!-- Check to see if there is a standard idl2java compiler available -->
     <condition property="idl.compiler">
       <and>
-	<available classname="com.sun.tools.corba.se.idl.toJavaPortable.Compile"/>
+	<available classname="${idl2java.compiler}"/>
       </and>
     </condition> 
 
@@ -48,33 +49,22 @@
     <property name="cspecialist.home" value="${corba.src}/com/bbn/openmap/CSpecialist"/>
     <available file="${cspecialist.home}" property="idl.compiled"/> 
 
-
-    <property name="visibroker.jars" value="${visibroker.home}/lib/vbjapp.jar:${visibroker.home}/lib/vbjcosnm.jar:${visibroker.home}/lib/vbjtools.jar:${visibroker.home}/lib/vbjorb.jar"/>
-    <property name="visibroker.bootclasspath" value="${visibroker.jars}:${java.home}/lib/rt.jar:${corba.classes}:${openmap.classes}"/>
-
   </target>
 
   <!--  ############################
 	Standard targets, to be directed at particular CORBA installations.
 	############################ -->  
 
-  <!-- in case we change orbs later. Don't forget to change the name
-       of the jar file accordingly. -->
+  <!-- in case we change orbs later. -->
   <target name="all.corba" depends="classes.corba, jar.corba"/> 
 
-  <target name="classes.corba" depends="init.corba" >
+  <target name="classes.corba" depends="init.corba" if="idl.compiler" >
     <mkdir dir="${corba.classes}"/>
     <antcall target="classes.jdkcorba"/>
+<!--    <antcall target="classes.visibroker"/> -->
   </target>
-  <target name="jar.corba" depends="jar.jdkcorba"/> 
 
-<!--
-  <target name="classes.corba" depends="init.corba" if="do.visibroker">
-    <mkdir dir="${corba.classes}"/>
-    <antcall target="classes.visibroker"/>
-  </target>
-  <target name="jar.corba" depends="jar.visibroker"/> 
--->
+  <target name="jar.corba" depends="jar.jdkcorba"/> 
 
   <!--  ############################
 	JDK CORBA targets
@@ -82,22 +72,22 @@
 
   <target name="jdkcorba.idl" depends="init.corba"
 	  description="Create stub classes from idl files and compile stubs."
-	  unless="idl.compiled"
+	  unless="idl.compiled,do.visibroker"
 	  if="idl.compiler">
     <echo message="Creating CORBA stub classes from idls with JDK CORBA..."/>
     
     <echo message="  CORBA RPF FrameProvider package..."/>
-    <java classname="com.sun.tools.corba.se.idl.toJavaPortable.Compile" fork="yes">
+    <java classname="${idl2java.compiler}" fork="yes">
       <arg line='-td ${corba.src} -fall -pkgPrefix CRpfFrameProvider com.bbn.openmap.layer.rpf.corba com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl'/>
     </java>
 
     <echo message="  CORBA Specialist package..."/>
-    <java classname="com.sun.tools.corba.se.idl.toJavaPortable.Compile" fork="yes">
+    <java classname="${idl2java.compiler}" fork="yes">
       <arg line='-td ${corba.src} -fall -pkgPrefix CSpecialist com.bbn.openmap com/bbn/openmap/layer/specialist/Specialist.idl'/>
     </java>
 
     <echo message="  CORBA ImageServer package..."/>
-    <java classname="com.sun.tools.corba.se.idl.toJavaPortable.Compile" fork="yes">
+    <java classname="${idl2java.compiler}" fork="yes">
       <arg line='-td ${corba.src} -fall -pkgPrefix corbaImageServer com.bbn.openmap.plugin.corbaImage com/bbn/openmap/plugin/corbaImage/CorbaImageServer.idl'/>
     </java>
   </target>
@@ -120,6 +110,7 @@
     <javac srcdir="${corba.src}"
 	   destdir="${corba.classes}"
 	   debug="on"
+	   classpath="${openmap.classes}:${openmap.home}/lib/openmap.jar"
 	   includes="**/*.java"
 	   excludes="**/unimplemented/**" />
 
@@ -132,7 +123,8 @@
 
   <target name="jar.jdkcorba"
 	  depends="init.corba"
-	  description="Builds jar files, placing them in the lib directory." >
+	  description="Builds jar files, placing them in the lib directory." 
+	  if="idl.compiler">
 
     <jar jarfile="${corba.jar}" 
 	 basedir="${corba.classes}"
@@ -146,20 +138,20 @@
   <target name="visibroker.idl" depends="init.corba"
 	  description="Create stub classes from idl files and compile stubs."
 	  unless="idl.compiled"
-	  if="vb_idl.compiler">
+	  if="idl.compiler">
     <echo message="Creating CORBA stub classes from idls with Visibroker..."/>
     
-    <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
+    <java classname="${idl2java.compiler}" fork="yes">
       <jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
       <arg line='-root_dir ${corba.src} -package com.bbn.openmap.layer.rpf.corba com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl'/>
     </java>
 
-    <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
+    <java classname="${idl2java.compiler}" fork="yes">
       <jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
       <arg line='-root_dir ${corba.src} -package com.bbn.openmap com/bbn/openmap/layer/specialist/Specialist.idl'/>
     </java>
 
-    <java classname="com.visigenic.vbroker.tools.idl2java" fork="yes">
+    <java classname="${idl2java.compiler}" fork="yes">
       <jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator'/>
       <arg line='-root_dir ${corba.src} -package com.bbn.openmap.plugin.corbaImage com/bbn/openmap/plugin/corbaImage/CorbaImageServer.idl'/>
     </java>
@@ -198,12 +190,14 @@
 
   </target>
 
+  <!-- Target only needed if you want a differently named jar file for
+       openmap class files compiled with visibroker. -->
   <target name="jar.visibroker"
 	  depends="init.corba"
 	  description="Builds jar files, placing them in the lib directory."
 	  if="do.visibroker">
 
-    <jar jarfile="${corba.jar}" 
+    <jar jarfile="${corba_vb.jar}" 
 	 basedir="${corba.classes}"
 	 includes="**/*.class"/>
   </target>    

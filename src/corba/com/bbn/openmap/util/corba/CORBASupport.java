@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/util/corba/CORBASupport.java,v $
 // $RCSfile: CORBASupport.java,v $
-// $Revision: 1.1 $
-// $Date: 2003/04/26 01:25:18 $
+// $Revision: 1.2 $
+// $Date: 2003/05/06 23:03:58 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -328,8 +328,35 @@ public class CORBASupport {
      * represented by a Servant.  This is a POA method.  The args
      * should be command line arguments, and the ior file is written
      * and naming service is started from here.
+     * @param servant the Servant of the POA object to hook up to the ORB.
+     * @param args a String[] of args to pass to orb on initialization.
+     * @param iorFile the path of the ior file to write, can be null to not write a file.
+     * @param naming the name of the Servant to pass to the
+     * NamingService, can be null to not register a name.
      */
-    public void start(Servant servant, String[] args, String iorFile, String naming) {
+    public void start(Servant servant, String[] args, 
+		      String iorFile, String naming) {
+	start(servant, args, iorFile, naming, true);
+    }
+
+    /** 
+     * This is a default start method that initializes the server
+     * represented by a Servant.  This is a POA method.  The args
+     * should be command line arguments, and the ior file is written
+     * and naming service is started from here.
+     * @param servant the Servant of the POA object to hook up to the ORB.
+     * @param args a String[] of args to pass to orb on initialization.
+     * @param iorFile the path of the ior file to write, can be null to not write a file.
+     * @param naming the name of the Servant to pass to the
+     * NamingService, can be null to not register a name.
+     * @param runORB flag to call orb.run() at the end of the method.
+     * This will block the current thread!  If the servant is a
+     * server, then this should be true.  If you have a callback
+     * object that you just want to register with the orb, this should
+     * be false.
+     */
+    public void start(Servant servant, String[] args, 
+		      String iorFile, String naming, boolean runORB) {
 	// Initialize the ORB
 	ORB orb = initORB(args);
 	POA poa = null;
@@ -366,8 +393,10 @@ public class CORBASupport {
        
 	// Announce ourselves to the world
 	Debug.output(servant.toString() + " is ready.");
-       
-	orb.run();
+
+	if (runORB) {
+	    orb.run();
+	}
     }
 
     /** 
