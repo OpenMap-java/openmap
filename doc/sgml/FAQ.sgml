@@ -1,9 +1,9 @@
 <!--
 $Source: /cvs/distapps/openmap/doc/sgml/Attic/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.2 $
-$Date: 1998/12/04 16:55:08 $
-$Author: aculline $
+$Revision: 1.3 $
+$Date: 1998/12/29 19:21:42 $
+$Author: bmackiew $
 
 Frequently Asked Questions for the OpenMap system.
 -->
@@ -88,9 +88,31 @@ on getting a version out that's easy to build and easy to work with.
 <sect>OpenMap Source Code
 <p>
 Questions concerning the core OpenMap source code.
-Please ask those questions!
 
+<sect1>When adding ESRI shape files to OpenMap I don't see (some/all) of the 
+data.  What's wrong?
+<p>
 
+Openmap uses a customized indexing scheme to efficiently draw the shape file
+data.  You'll need to create a spatial index from your shape file.  A spatial
+index is different from a shape index (.shx) file.
+
+To generate a spatial index from a "country.shp" file do the following:
+
+<verb>
+java com.bbn.openmap.layer.shape.SpatialIndex -c country.ssx country.shp
+</verb>
+
+This creates the Spatial Index file (country.ssx) from the country.shp
+file.  Then you need to change the attribute in the openmap.properties
+file:
+
+<verb>
+country.spatialIndex=country.ssx
+</verb>
+
+Be sure to substitute the correct name of your shape file and layer for the
+word 'country' in the examples above.
 
 <sect>OpenMap Viewer Application
 <p>
