@@ -1,8 +1,8 @@
 <!--
 $source: /net/blatz/u4/rcs/openmap/doc/sgml/FAQ.sgml,v $
 $RCSfile: FAQ.sgml,v $
-$Revision: 1.22 $
-$Date: 2001/02/25 23:22:11 $
+$Revision: 1.23 $
+$Date: 2001/06/13 20:24:06 $
 $Author: bmackiew $
 
 Frequently Asked Questions for the OpenMap system.
@@ -14,7 +14,7 @@ Frequently Asked Questions for the OpenMap system.
 
 <title>OpenMap FAQ
 <author>BBNT Solutions LLC (Formerly BBN Technologies)
-<date>25 February 2001
+<date>13 June 2001
 <abstract>
 This FAQ contains questions and answers about the OpenMap system.
 </abstract>
@@ -37,9 +37,8 @@ GTE and Bell Atlantic.
 
 <p>
 You can see a history of BBN at <tt><htmlurl
-url="http://www.bbn.com"></tt> (actually at <tt><htmlurl
-url="http://www.bbn.com/about/timeline/index.htm"></tt>) where you'll
-see that we helped build the ARPANET which eventually became the
+url="http://www.bbn.com"></tt> where you'll see that we helped build the 
+ARPANET which eventually became the
 Internet.
 
 <sect1>Why is BBNT releasing OpenMap as open source?
@@ -122,32 +121,25 @@ What do you need to run and develop with OpenMap?
 <sect1>What systems have you tested OpenMap on?
 <p>
 We've tested on Solaris 2.5, 2.5.1, 2.6, and 2.7 with Sun's JDK 1.2.  Under
-Linux, we've tested with RedHat 5.1, 5.2, 6.0, 6.1, and 6.2 with 
-<htmlurl url="http://www.blackdown.org" name="Blackdown">'s JVM.  
+Linux, we've tested with Red Hat 5.1, 5.2, 6.0, 6.1, and 6.2 with 
+<htmlurl url="http://www.blackdown.org" name="Blackdown">'s JVM.  We're
+also successfully using Red Hat 7.0 and 7.1 with Sun's JVM.  
 Under Windows NT, we've successfully tested using CygWin32 and Sun's JDK 1.2
 We've run OpenMap under Windows 95 and 98, and have built it under the CygWin32
 tools, but have run into problems with long command lines.  
 
 <sect1>What JDK issues are there?
-<p>We've targeted the OpenMap package for compatability with JDK 1.2.X.
-OpenMap can be built against JDK 1.1.6 and higher, but modifications
-need to be made to some parts of the source code.  We've tried to use
-the JDK 1.1.X compatible methods in objects whenever we can, but there
-are some objects that require JDK 1.2.X.  The OMGraphic2D objects, for
-example, need the Java 2D API that JDK 1.2.X provides.
-<p>To run OpenMap against JDK 1.1.X, you'll need the JFC classes (Swing
-1.1), and you will need to eliminate the classes from the build that
-rely on JDK 1.2.  OpenMap functionality will be reduced, but the
-majority of the components will build correctly.
-<p>
-We've noticed that the Kaffe JVM included with some Linux distributions
-has problems with dependencies; if one class file depends on another, it's
-not automatically brought into the compilation.  We recommend using the
-Blackdown or Sun versions of the JVM. 
+<p>OpenMap 4.0 and versions after are targeted  for compatability with 
+JDK 1.2.X and higher.  If you're limited to using JDK 1.1, we recommend using
+our last JDK 1.1-compatible release, OpenMap 3.7.   To run OpenMap 3.7 with
+JDK 1.1, you'll need the JFC classes (Swing 1.1).
 
 <sect1>What GUI builders have you worked with?
 <p>
-Very few, and none seriously.
+Very few, and none seriously.  We've had some users contribute project files
+that can be used with various builders.  If you've successfully built OpenMap
+using a builder, feel free to check out our contributions & submissions pages,
+and let us know if you have a resource to share with other users.
 
 <sect1>Can I use OpenMap in Symantec Visual Cafe?  I get the "jar file
 contains no valid beans" message when I try to load in openmap.jar.
@@ -189,25 +181,25 @@ If you are completely new to Java, you should go to the Sun Java
 website (<htmlurl
 url="http://developer.java.sun.com/developer/onlineTraining/new2java/"
 name="new2java"> or <htmlurl url="http://java.sun.com" name="Sun's
-java website"> ) to learn more about running java programs.  We have
+Java website"> ) to learn more about running Java programs.  We have
 found novice users have trouble with the concept of the CLASSPATH
-environment variable.  In order for the java virtual machine to use
-class files (compiled java files), it relies on the CLASSPATH
+environment variable.  In order for the Java virtual machine to use
+class files (compiled Java files), it relies on the CLASSPATH
 environment variable to be able to locate those files.  If the class
 files are stored in a jar file, the complete path to the jar file
 needs to be in the CLASSPATH variable.  For class files in general,
 the parent directory of the package name of the class needs to be in
 the CLASSPATH.  For instance, to find the main OpenMap application
 from the top openmap directory, you would find it in the
-com/bbn/openmap/app directory.  As java requires, the package name of
-the OpenMap Application class is com.bbn.openmap.app.  The java
+com/bbn/openmap/app directory.  As Java requires, the package name of
+the OpenMap Application class is com.bbn.openmap.app.  The Java
 virtual machine can find the com.bbn.openmap.app.OpenMap class if the
 top-level openmap directory is in the CLASSPATH.
 
 <p>
-If you have java under control, the best place to start for a novice
+If you have Java under control, the best place to start for a novice
 user is to get the OpenMap application working as it is provided in
-the package.  The java classes are precompiled in the openmap.jar file
+the package.  The Java classes are precompiled in the openmap.jar file
 included in the openmap/lib directory, and can be run as downloaded.
 Look at the following sections for information on compiling and
 running OpenMap on your platform.
@@ -255,6 +247,10 @@ contributions to the map are drawn.
 
 <p>All communications between OpenMap components follows the JDK 1.1
 event model, where objects are listeners to other objects.
+
+<sect1> Are there any export restrictions for OpenMap?
+<p>
+There are no export restrictions for the OpenMap package.
 
 <sect>Starting/Building OpenMap
 <sect1> How can I compile and run on Windows?
@@ -317,8 +313,9 @@ INSTALL file in the distribution for more information.
 <sect1> What flavors of Unix do you work with?
 <p>
 We've successfully tested on Solaris 2.5, 2.5.1, 2.6, and 2.7, as well as
-RedHat Linux 5.1, 5.2, 6.0, and 6.1.  OpenMap should work on any system on
-which you have a Java compiler, VM, and the Java Foundation Classes.
+Red Hat Linux 5.1, 5.2, 6.0, 6.1, 6.2, 7.0, and 7.1.  OpenMap should work on 
+any system on which you have a Java compiler, VM, and the Java Foundation 
+Classes.
 
 <sect1> How can I compile and run on a Macintosh?
 <p>
@@ -469,6 +466,14 @@ In practice, X-windows was supposed to provide a way of getting the
 actual pPM but few vendors went through the trouble of setting the
 value properly.  In the meantime, the OpenMap's scale can be used as a
 general ratio.
+
+<sect1> What happened to the 2D classes like OMPoly2D in com/bbn/openmap/omGraphics/?
+<p>
+These were 2D classes that were kept apart from their 1D counterparts before
+OpenMap 4.0 was released, to make it easier to run with both JDK 1.1 and 1.2.
+With the move to OpenMap 4.0, we run with JDK 1.2 and later; the two classes
+were merged into a single class without the 2D suffix.  If you need to use
+JDK 1.1, we recommend you use our last JDK 1.1-compatible release, OpenMap 3.7.
 
 <sect>Layers
 <sect1> How can I put my data on a map?
