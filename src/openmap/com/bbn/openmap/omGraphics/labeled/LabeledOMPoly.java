@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/labeled/LabeledOMPoly.java,v $
 // $RCSfile: LabeledOMPoly.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/08 18:54:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -187,8 +187,11 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
 	    area += xpts[i] * ypts[j];
 	    area -= ypts[i] * xpts[j];
 	}
-	area = area / 2.0;
-	return (area < 0.0 ? -area : area);
+
+	return area / 2.0;
+
+// 	area = area / 2.0;
+// 	return (area < 0.0 ? -area : area);
     }
 
   
@@ -227,9 +230,18 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     
 	// bbenyo: take the absolute value cause I was getting negative values
 	//         for polys with all positive vertices
-	cx = Math.abs(cx * factor);
-	cy = Math.abs(cy * factor);
-    
+// 	cx = Math.abs(cx * factor);
+// 	cy = Math.abs(cy * factor);
+
+	// DFD and RS - let the area calculation return negative
+	// values, and don't do this absolute value calculation.
+	// Negative values get returned when the points are
+	// counterclockwise, indicating holes.  We may want labels
+	// offscreen however, and the abs pushes them onscreen.
+
+	cx *= factor;
+	cy *= factor;
+
 	Point center = new Point(Math.round(cx), Math.round(cy));
 	return center;
     }
