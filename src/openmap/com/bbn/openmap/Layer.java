@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/02/27 23:57:14 $
+// $Revision: 1.3 $
+// $Date: 2003/03/10 21:57:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -858,7 +858,16 @@ public abstract class Layer extends JComponent
 	    // MapBeans work better when they are embedded in other
 	    // components.  It's this call here that makes the
 	    // BufferedLayer work right.
-	    p.repaint();
+
+	    // This repaint request has been changed to call a specific
+	    // method on the MapBean, which includes the layer making
+	    // the request.  This is a hook for a policy object in the
+	    // MapBean to make a decision on whether to honor the
+	    // request, or to handle it in a different way if the
+	    // environment dictates that should happen.
+
+	    // ((MapBean)p).repaint(); to ->
+	    ((MapBean)p).repaint(this);
 	} else if (p != null) {
 	    p.repaint(tm, x, y, width, height);
 	} else {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/01 00:24:26 $
+// $Revision: 1.3 $
+// $Date: 2003/03/10 21:57:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -157,6 +157,13 @@ public class MapBean extends JComponent
      * Environment class, will be used.
      */
     protected Paint background = null;
+    /**
+     * The MapBeanRepaintPolicy to use to handler/filter/pace layer
+     * repaint() requests.  If not set, a StandardMapBeanRepaintPolicy
+     * will be used, which forwards repaint requests to Swing
+     * normally.
+     */
+    protected MapBeanRepaintPolicy repaintPolicy = null;
 
     /**
      * Return the OpenMap Copyright message.
@@ -958,6 +965,39 @@ public class MapBean extends JComponent
 	setDoContainerChange(oldChange);
 	repaint();
 	revalidate();
+    }
+
+    /**
+     * A call to try and get the MapBean to reduce flashing by
+     * controlling when repaints happen, waiting for lower layers to
+     * call for a repaint(), too.  Calls shouldForwardRepaint(Layer),
+     * which acts as a policy for whether to forward the repaint up
+     * the Swing tree.
+     */
+    public void repaint(Layer layer) {
+// 	Debug.output(layer.getName() + " - wants a repaint()");
+	getMapBeanRepaintPolicy().repaint(layer);
+    }
+
+    /**
+     * Set the MapBeanRepaintPolicy used by the MapBean.  This policy
+     * can be used to pace/filter layer repaint() requests.
+     */
+    public void setMapBeanRepaintPolicy(MapBeanRepaintPolicy mbrp) {
+	repaintPolicy = mbrp;
+    }
+    
+    /**
+     * Get the MapBeanRepaintPolicy used by the MapBean.  This policy
+     * can be used to pace/filter layer repaint() requests.  If no
+     * policy has been set, a StandardMapBeanRepaintPolicy will be
+     * created, which simply forwards all requests.
+     */
+    public MapBeanRepaintPolicy getMapBeanRepaintPolicy() {
+	if (repaintPolicy == null) {
+	    repaintPolicy = new StandardMapBeanRepaintPolicy(this);
+	}
+	return repaintPolicy;
     }
 
     /**
