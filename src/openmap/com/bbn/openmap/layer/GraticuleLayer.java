@@ -1,40 +1,56 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
-//  BBN Technologies
-//  10 Moulton Street
-//  Cambridge, MA 02138
-//  (617) 873-8000
-// 
-//  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
+// BBN Technologies, a Verizon Company
+// 10 Moulton Street
+// Cambridge, MA 02138
+// (617) 873-8000
+//
+// Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2004/10/14 18:05:52 $
+// $Revision: 1.12 $
+// $Date: 2005/02/11 22:32:27 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 // Modified 28 September 2002 by David N. Allsopp to allow font size
-// to be changed.  See sections commented with 'DNA'.
+// to be changed. See sections commented with 'DNA'.
 
 package com.bbn.openmap.layer;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Properties;
-import javax.swing.*;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
-import com.bbn.openmap.util.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.proj.Cylindrical;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * Layer that draws graticule lines. If the showRuler property is set
@@ -49,38 +65,42 @@ import com.bbn.openmap.util.*;
  * The openmap.properties file can control the layer with the
  * following settings: <code><pre>
  * 
- *  # Show lat / lon spacing labels
- *  graticule.showRuler=true
- *  graticule.show1And5Lines=true
- *  # Controls when the five degree lines and one degree lines kick in
- *  #- when there is less than the threshold of ten degree lat or lon
- *  #lines, five degree lines are drawn.  The same relationship is there
- *  #for one to five degree lines.
- *  graticule.threshold=2
- *  # the color of 10 degree spacing lines (Hex ARGB)
- *  graticule.10DegreeColor=FF000000
- *  # the color of 5 degree spacing lines (Hex ARGB)
- *  graticule.5DegreeColor=C7009900
- *  # the color of 1 degree spacing lines (Hex ARGB)
- *  graticule.1DegreeColor=C7003300
- *  # the color of the equator (Hex ARGB)
- *  graticule.equatorColor=FFFF0000
- *  # the color of the international dateline (Hex ARGB)
- *  graticule.datelineColor=7F000099
- *  # the color of the special lines (Hex ARGB)
- *  graticule.specialLineColor=FF000000
- *  # the color of the labels (Hex ARGB)
- *  graticule.textColor=FF000000
+ *  
+ *   # Show lat / lon spacing labels
+ *   graticule.showRuler=true
+ *   graticule.show1And5Lines=true
+ *   # Controls when the five degree lines and one degree lines kick in
+ *   #- when there is less than the threshold of ten degree lat or lon
+ *   #lines, five degree lines are drawn. The same relationship is there
+ *   #for one to five degree lines.
+ *   graticule.threshold=2
+ *   # the color of 10 degree spacing lines (Hex ARGB)
+ *   graticule.10DegreeColor=FF000000
+ *   # the color of 5 degree spacing lines (Hex ARGB)
+ *   graticule.5DegreeColor=C7009900
+ *   # the color of 1 degree spacing lines (Hex ARGB)
+ *   graticule.1DegreeColor=C7003300
+ *   # the color of the equator (Hex ARGB)
+ *   graticule.equatorColor=FFFF0000
+ *   # the color of the international dateline (Hex ARGB)
+ *   graticule.datelineColor=7F000099
+ *   # the color of the special lines (Hex ARGB)
+ *   graticule.specialLineColor=FF000000
+ *   # the color of the labels (Hex ARGB)
+ *   graticule.textColor=FF000000
+ *   
  *  
  * </pre></code> In addition, you can get this layer to work with the
  * OpenMap viewer by editing your openmap.properties file: <code><pre>
  * 
- *  # layers
- *  openmap.layers=graticule ...
- *  # class
- *  graticule.class=com.bbn.openmap.layer.GraticuleLayer
- *  # name
- *  graticule.prettyName=Graticule
+ *  
+ *   # layers
+ *   openmap.layers=graticule ...
+ *   # class
+ *   graticule.class=com.bbn.openmap.layer.GraticuleLayer
+ *   # name
+ *   graticule.prettyName=Graticule
+ *   
  *  
  * </pre></code>
  *  
@@ -93,13 +113,14 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     // GraticuleLayer)
     protected boolean defaultShowRuler = true;
     protected boolean defaultShowOneAndFiveLines = true;
+    protected boolean defaultShowBelowOneLines = false;
     protected int defaultThreshold = 2;
 
     /**
      * Flag for lineType - true is LINETYPE_STRAIGHT, false is
      * LINETYPE_GREATCIRCLE.
      */
-    private boolean boxy = true;
+    protected boolean boxy = true;
     /**
      * Threshold is the total number of ten lines on the screen before
      * the five lines appear, and the total number of five lines on
@@ -116,9 +137,10 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     private final static int SHOW_ONES = 2;
 
     protected boolean showOneAndFiveLines = defaultShowOneAndFiveLines;
+    protected boolean showBelowOneLines = defaultShowBelowOneLines;
     protected boolean showRuler = defaultShowRuler;
 
-    //     protected Font font = new Font("Helvetica",
+    // protected Font font = new Font("Helvetica",
     // java.awt.Font.PLAIN, 10);
     protected Font font = null;
     protected int fontSize = 10;
@@ -127,16 +149,18 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     protected Color tenDegreeColor = null;
     protected Color fiveDegreeColor = null;
     protected Color oneDegreeColor = null;
+    protected Color belowOneDegreeColor = null;
     protected Color equatorColor = null;
     protected Color dateLineColor = null;
     protected Color specialLineColor = null; // Tropic of Cancer,
-                                             // Capricorn
+    // Capricorn
     protected Color textColor = null;
 
     // Default colors to use, if not specified in the properties.
     protected String defaultTenDegreeColorString = "000000";
     protected String defaultFiveDegreeColorString = "33009900";
     protected String defaultOneDegreeColorString = "33003300";
+    protected String defaultBelowOneDegreeColorString = "9900ff00";
     protected String defaultEquatorColorString = "990000";
     protected String defaultDateLineColorString = "000099";
     protected String defaultSpecialLineColorString = "000000";
@@ -146,6 +170,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     public static final String TenDegreeColorProperty = "10DegreeColor";
     public static final String FiveDegreeColorProperty = "5DegreeColor";
     public static final String OneDegreeColorProperty = "1DegreeColor";
+    public static final String BelowOneDegreeColorProperty = "Below1DegreeColor";
     public static final String EquatorColorProperty = "equatorColor";
     public static final String DateLineColorProperty = "datelineColor";
     public static final String SpecialLineColorProperty = "specialLineColor";
@@ -153,6 +178,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     public static final String ThresholdProperty = "threshold";
     public static final String ShowRulerProperty = "showRuler";
     public static final String ShowOneAndFiveProperty = "show1And5Lines";
+    public static final String ShowBelowOneProperty = "showBelow1Lines";
     public static final String FontSizeProperty = "fontSize"; //DNA
 
     /**
@@ -185,6 +211,10 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         oneDegreeColor = PropUtils.parseColorFromProperties(properties, prefix
                 + OneDegreeColorProperty, defaultOneDegreeColorString);
 
+        belowOneDegreeColor = PropUtils.parseColorFromProperties(properties,
+                prefix + BelowOneDegreeColorProperty,
+                defaultBelowOneDegreeColorString);
+
         equatorColor = PropUtils.parseColorFromProperties(properties, prefix
                 + EquatorColorProperty, defaultEquatorColorString);
 
@@ -203,11 +233,15 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
         fontSize = PropUtils.intFromProperties(properties, prefix
                 + FontSizeProperty, fontSize);
+
         font = new Font("Helvetica", java.awt.Font.PLAIN, fontSize);
 
         setShowOneAndFiveLines(PropUtils.booleanFromProperties(properties,
                 prefix + ShowOneAndFiveProperty,
                 defaultShowOneAndFiveLines));
+
+        setShowBelowOneLines(PropUtils.booleanFromProperties(properties, prefix
+                + ShowBelowOneProperty, defaultShowBelowOneLines));
 
         setShowRuler(PropUtils.booleanFromProperties(properties, prefix
                 + ShowRulerProperty, defaultShowRuler));
@@ -219,6 +253,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
     protected JCheckBox showRulerButton = null;
     protected JCheckBox show15Button = null;
+    protected JCheckBox showBelow1Button = null;
 
     public void setShowOneAndFiveLines(boolean set) {
         showOneAndFiveLines = set;
@@ -227,8 +262,19 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         }
     }
 
+    public void setShowBelowOneLines(boolean set) {
+        showBelowOneLines = set;
+        if (showBelow1Button != null) {
+            showBelow1Button.setSelected(set);
+        }
+    }
+
     public boolean getShowOneAndFiveLines() {
         return showOneAndFiveLines;
+    }
+
+    public boolean getShowBelowOneLines() {
+        return showBelowOneLines;
     }
 
     public void setShowRuler(boolean set) {
@@ -275,6 +321,13 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         }
         properties.put(prefix + OneDegreeColorProperty, colorString);
 
+        if (belowOneDegreeColor == null) {
+            colorString = defaultBelowOneDegreeColorString;
+        } else {
+            colorString = Integer.toHexString(belowOneDegreeColor.getRGB());
+        }
+        properties.put(prefix + BelowOneDegreeColorProperty, colorString);
+
         if (equatorColor == null) {
             colorString = defaultEquatorColorString;
         } else {
@@ -309,6 +362,9 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(prefix + ShowOneAndFiveProperty,
                 new Boolean(showOneAndFiveLines).toString());
 
+        properties.put(prefix + ShowBelowOneProperty,
+                new Boolean(showBelowOneLines).toString());
+
         properties.put(prefix + ShowRulerProperty,
                 new Boolean(showRuler).toString());
 
@@ -326,9 +382,10 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         String interString;
         properties.put(initPropertiesProperty, TenDegreeColorProperty + " "
                 + FiveDegreeColorProperty + " " + OneDegreeColorProperty + " "
-                + EquatorColorProperty + " " + DateLineColorProperty + " "
-                + SpecialLineColorProperty + " " + ShowOneAndFiveProperty + " "
-                + ShowRulerProperty + " " + ThresholdProperty + " "
+                + /*BelowOneDegreeColorProperty + " " + */ EquatorColorProperty
+                + " " + DateLineColorProperty + " " + SpecialLineColorProperty
+                + " " + ShowOneAndFiveProperty /* + " " + ShowBelowOneProperty */
+                + " " + ShowRulerProperty + " " + ThresholdProperty + " "
                 + FontSizeProperty);
 
         interString = i18n.get(GraticuleLayer.class,
@@ -338,7 +395,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(TenDegreeColorProperty, interString);
         interString = i18n.get(GraticuleLayer.class,
                 TenDegreeColorProperty,
-                TenDegreeColorProperty);
+                "Ten Degree Color");
         properties.put(TenDegreeColorProperty + LabelEditorProperty,
                 interString);
         properties.put(TenDegreeColorProperty + ScopedEditorProperty,
@@ -352,11 +409,9 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         interString = i18n.get(GraticuleLayer.class,
                 FiveDegreeColorProperty,
                 "Color of the five degree graticule lines.");
-        properties.put(FiveDegreeColorProperty + ScopedEditorProperty,
-                interString);
         interString = i18n.get(GraticuleLayer.class,
                 FiveDegreeColorProperty,
-                FiveDegreeColorProperty);
+                "File Degree Color");
         properties.put(FiveDegreeColorProperty + LabelEditorProperty,
                 interString);
         properties.put(FiveDegreeColorProperty + ScopedEditorProperty,
@@ -369,10 +424,23 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(OneDegreeColorProperty, interString);
         interString = i18n.get(GraticuleLayer.class,
                 OneDegreeColorProperty,
-                OneDegreeColorProperty);
+                "1 Degree Color");
         properties.put(OneDegreeColorProperty + LabelEditorProperty,
                 interString);
         properties.put(OneDegreeColorProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+
+        interString = i18n.get(GraticuleLayer.class,
+                BelowOneDegreeColorProperty,
+                I18n.TOOLTIP,
+                "Color of the sub-one degree graticule lines.");
+        properties.put(BelowOneDegreeColorProperty, interString);
+        interString = i18n.get(GraticuleLayer.class,
+                BelowOneDegreeColorProperty,
+                "Sub-One Degree Color");
+        properties.put(BelowOneDegreeColorProperty + LabelEditorProperty,
+                interString);
+        properties.put(BelowOneDegreeColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
         interString = i18n.get(GraticuleLayer.class,
@@ -382,7 +450,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(EquatorColorProperty, interString);
         interString = i18n.get(GraticuleLayer.class,
                 EquatorColorProperty,
-                EquatorColorProperty);
+                "Equator Line Color");
         properties.put(EquatorColorProperty + LabelEditorProperty, interString);
         properties.put(EquatorColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
@@ -394,7 +462,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(DateLineColorProperty, interString);
         interString = i18n.get(GraticuleLayer.class,
                 DateLineColorProperty,
-                DateLineColorProperty);
+                "Date Line Color");
         properties.put(DateLineColorProperty + LabelEditorProperty, interString);
         properties.put(DateLineColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
@@ -406,7 +474,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(SpecialLineColorProperty, interString);
         interString = i18n.get(GraticuleLayer.class,
                 SpecialLineColorProperty,
-                SpecialLineColorProperty);
+                "Special Line Color");
         properties.put(SpecialLineColorProperty + LabelEditorProperty,
                 interString);
         properties.put(SpecialLineColorProperty + ScopedEditorProperty,
@@ -419,7 +487,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(TextColorProperty, interString);
         interString = i18n.get(GraticuleLayer.class,
                 TextColorProperty,
-                TextColorProperty);
+                "Text Color");
         properties.put(TextColorProperty + LabelEditorProperty, interString);
         properties.put(TextColorProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
@@ -431,7 +499,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(ThresholdProperty, interString);
         interString = i18n.get(GraticuleLayer.class,
                 ThresholdProperty,
-                ThresholdProperty);
+                "Line Threshold");
         properties.put(ThresholdProperty + LabelEditorProperty, interString);
 
         interString = i18n.get(GraticuleLayer.class,
@@ -441,10 +509,22 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(ShowOneAndFiveProperty, interString);
         interString = i18n.get(GraticuleLayer.class,
                 ShowOneAndFiveProperty,
-                ShowOneAndFiveProperty);
+                "Show 1 and 5 Lines");
         properties.put(ShowOneAndFiveProperty + LabelEditorProperty,
                 interString);
         properties.put(ShowOneAndFiveProperty + ScopedEditorProperty,
+                "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
+
+        interString = i18n.get(GraticuleLayer.class,
+                ShowBelowOneProperty,
+                I18n.TOOLTIP,
+                "Show the one and five degree lines.");
+        properties.put(ShowBelowOneProperty, interString);
+        interString = i18n.get(GraticuleLayer.class,
+                ShowBelowOneProperty,
+                "Show Sub-1 Lines");
+        properties.put(ShowBelowOneProperty + LabelEditorProperty, interString);
+        properties.put(ShowBelowOneProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
 
         interString = i18n.get(GraticuleLayer.class,
@@ -454,7 +534,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(ShowRulerProperty, interString);
         interString = i18n.get(GraticuleLayer.class,
                 ShowRulerProperty,
-                ShowRulerProperty);
+                "Show Labels");
         properties.put(ShowRulerProperty + LabelEditorProperty, interString);
         properties.put(ShowRulerProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
@@ -467,7 +547,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         properties.put(FontSizeProperty, interString);
         interString = i18n.get(GraticuleLayer.class,
                 FontSizeProperty,
-                FontSizeProperty);
+                "Label Font Size");
         properties.put(FontSizeProperty + LabelEditorProperty, interString);
         //DNA
         return properties;
@@ -551,6 +631,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
      */
     protected OMGraphicList constructGraticuleLines() {
         float[] llp;
+
         OMGraphicList newgraphics = new OMGraphicList(20);
         // Lets figure out which lines should be painted...
         Projection projection = getProjection();
@@ -558,8 +639,9 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         if (projection == null) {
             return newgraphics;
         }
+        tenDegreeLines = null;
 
-        if (showOneAndFiveLines || showRuler) {
+        if (showOneAndFiveLines || showRuler || showBelowOneLines) {
 
             float left = projection.getUpperLeft().getLongitude();
             float right = projection.getLowerRight().getLongitude();
@@ -596,7 +678,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                             right,
                             showWhichLines));
                 } else if (showRuler) { // Just do the labels for the
-                                        // tens lines
+                    // tens lines
                     newgraphics.add(constructTensLabels(up,
                             down,
                             left,
@@ -618,7 +700,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                             right,
                             showWhichLines);
                 } else if (showRuler) { // Just do the labels for the
-                                        // tens lines
+                    // tens lines
                     newgraphics.add(constructTensLabels(up,
                             down,
                             left,
@@ -682,7 +764,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
         // Set the flag for when labels are wanted, but not the 1 and
         // 5 lines;
-        if (!showOneAndFiveLines) {
+        if (!showOneAndFiveLines && !showBelowOneLines) {
             return ret;
         }
 
@@ -740,7 +822,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
         int south = (int) Math.floor(down);
         south -= (south % 10); // Push down to the lowest 10 degree
-                               // line.
+        // line.
         // for neg numbers, Mod raised it, lower it again. Also
         // handle straddling the equator.
         if ((south < 0 && south > -80) || south == 0)
@@ -873,7 +955,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         }
 
         if (Debug.debugging("graticule")) {
-            Debug.output("GraticuleLayer.constructGraticuleLines(): "
+            Debug.output("GraticuleLayer.constructTenDegreeLines(): "
                     + "constructed " + lines.size() + " graticule lines");
         }
         lines.generate(projection);
@@ -953,7 +1035,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
         int south = (int) Math.floor(down);
         south -= (south % 10); // Push down to the lowest 10 degree
-                               // line.
+        // line.
         // for neg numbers, Mod raised it, lower it again
         if ((south < 0 && south > -70) || south == 0) {
             south -= 10;
@@ -999,9 +1081,9 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                     }
 
                     currentText = new OMText(llpoint.getLatitude(), llpoint.getLongitude(), (int) 2, (int) -2, // Move
-                                                                                                               // them
-                                                                                                               // up a
-                                                                                                               // little
+                            // them
+                            // up a
+                            // little
                             Integer.toString((int) lat), font, OMText.JUSTIFY_LEFT);
                     currentText.setLinePaint(textColor);
                     labels.addOMGraphic(currentText);
@@ -1141,8 +1223,15 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
             show15Button.addActionListener(al);
             show15Button.setActionCommand(ShowOneAndFiveProperty);
 
+//            showBelow1Button = new JCheckBox(i18n.get(GraticuleLayer.class,
+//                    "showSub1Button",
+//                    "Show Sub-1 Degree Lines"), showBelowOneLines);
+//            showBelow1Button.addActionListener(al);
+//            showBelow1Button.setActionCommand(ShowBelowOneProperty);
+
             layerPanel.add(showRulerButton);
             layerPanel.add(show15Button);
+//            layerPanel.add(showBelow1Button);
             palette.add(layerPanel);
 
             JPanel subbox3 = new JPanel(new GridLayout(0, 1));
@@ -1166,6 +1255,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     }
 
     //----------------------------------------------------------------------
+
     // ActionListener interface implementation
     //----------------------------------------------------------------------
 
@@ -1185,3 +1275,4 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     }
 
 }
+
