@@ -1,7 +1,7 @@
 $Source: /cvs/distapps/openmap/Attic/README.win32,v $
 $RCSfile: README.win32,v $
-$Revision: 1.5 $
-$Date: 2001/11/16 03:19:21 $
+$Revision: 1.6 $
+$Date: 2002/07/19 19:18:01 $
 $Author: bmackiew $
 
 Quickstart
@@ -26,32 +26,30 @@ subdirectory to get OpenMap to run.
 Compilation
 ===========
 
-You may want to build OpenMap from the source code yourself.  We recommend
-using Ant, the Java-based build tool from Apache, available at
+You may want to build OpenMap from the source code yourself.  OpenMap includes
+Ant, the Java-based build tool from Apache, available at
 http://jakarta.apache.org/ant
 
 If you'd like to build OpenMap using Ant, you'll need to:
 
-  	1. Download the latest version of Ant from 
-	   http://jakarta.apache.org/ant and install.
-
-	2. Edit the ANT_ENV.BAT batch file in the OpenMap distribution:
-		- Set your ANT_HOME variable to point to your Ant distribution.
+	1. Edit the ANT_ENV.BAT batch file in the OpenMap distribution:
+		- Set your OPENMAP_HOME variable to point to your 
+			OpenMap directory.
 		- Set your JAVA_HOME variable to point to your Java 
 		  distribution.
 
-	3. Open an MS-DOS window and right-click on it to access the 
+	2. Open an MS-DOS window and right-click on it to access the 
 	   properties. Set Memory -> Initial Environment to a value of at 
 	   least 768 or you'll see "Out of environment space" errors when you
 	   run Ant.
 
-	4. Close and re-open the MS-DOS window to gain the benefit of the 
+	3. Close and re-open the MS-DOS window to gain the benefit of the 
 	   updated initial environment settings.
 
-	5. Run the ANT_ENV.bat file to set your path and environment variables
+	4. Run the ANT_ENV.bat file to set your path and environment variables
 	   correctly.
 	
-	6. Run "ant" from the top level of the OpenMap distribution to 
+	5. Run "ant" from the top level of the OpenMap distribution to 
 	   recompile the jar files.  Run "ant clean" to clean out the
 	   directories, analogous to "make clean".
 

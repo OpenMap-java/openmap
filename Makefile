@@ -14,9 +14,9 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile,v $
 # $RCSfile: Makefile,v $
-# $Revision: 1.2 $
-# $Date: 2002/07/17 18:46:41 $
-# $Author: dietrick $
+# $Revision: 1.3 $
+# $Date: 2002/07/19 19:18:01 $
+# $Author: bmackiew $
 # 
 # **********************************************************************
 
@@ -30,6 +30,9 @@ classes:
 	cd ${OPENMAP_HOME} && bin/ant -emacs $@
 
 clean:
+	cd ${OPENMAP_HOME} && bin/ant -emacs $@
+
+docs:
 	cd ${OPENMAP_HOME} && bin/ant -emacs $@
 
 jar:

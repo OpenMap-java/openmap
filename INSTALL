@@ -1,187 +1,53 @@
 -*- Mode: text-mode -*-
 $Source: /cvs/distapps/openmap/INSTALL,v $
 $RCSfile: INSTALL,v $
-$Revision: 1.14 $
-$Date: 2001/11/16 03:19:20 $
+$Revision: 1.15 $
+$Date: 2002/07/19 19:18:02 $
 $Author: bmackiew $
 
 Prerequisites
 =============
 
    You need to have a Java compiler and VM to build and run the
-   OpenMap software.  You also need the Java Foundation Classes (JFC)
-   installed.  The JFC "Swing Set" is available from Sun at
-   http://java.sun.com/products/jfc/ for free download.
+   OpenMap software.  You will also need the Apache Ant Java-based
+   build tool if you'd like to build OpenMap from scratch.  Ant has
+   been included in our distribution, but we have omitted the
+   documentation package for the sake of space.  If you would like
+   the complete Ant package, you may download it from:
+	
+	http://jakarta.apache.org/ant/
  
    NOTE: From OpenMap 4.0 onwards, OpenMap requires Java 2 to build and run.
    If you need to use JDK 1.1, download OpenMap 3.7, the last 
    JDK 1.1-compatible release.  This release is available at the OpenMap
    web site, http://www.openmap.org
 
-   NOTE: We have decided to supply pre-compiled OpenMap JAR files.  If
-   you decide to use them, you may still need to run `./configure', or
-   at least edit/study the launch scripts in the bin/ subdirectory to
-   launch OpenMap.
+Installation
+============
 
-Basic Installation
-==================
+   With Ant, the basic installation of OpenMap has become much easier.
+   
+   If you would like to build OpenMap, you only need to set your 
+   OPENMAP_HOME and JAVA_HOME environment variables to point to your
+   OpenMap directory and location of your Java installation, and run 
+   "make".  This will work through the different OpenMap directories, 
+   compile OpenMap classes with Ant, and store the resulting jar file 
+   in the lib/ directory of your OpenMap directory.
 
-   The `configure' shell script attempts to guess correct values for
-   various system-dependent variables used during compilation.  It
-   uses those values to create a `Makefile' in each directory of the
-   package. Finally, it creates a shell script `config.status' that
-   you can run in the future to recreate the current configuration, a
-   file `config.cache' that saves the results of its tests to speed up
-   reconfiguring, and a file `config.log' containing compiler output
-   (useful mainly for debugging `configure').
+   To run OpenMap, whether you have compiled your own jar files or used
+   the precompiled jars that came withe distribution, you need only cd
+   to the bin/ directory in your OpenMap directory and run the "openmap"
+   script.
 
-   If you need to do unusual things to compile the package, please try
-   to figure out how `configure' could check whether to do them, and
-   mail diffs or instructions to the address given in the `README' so
-   they can be considered for the next release.  If at some point
-   `config.cache' contains results you don't want to keep, you may
-   remove or edit it.
+   The above directions cover use of OpenMap on Unix-based systems, such
+   as Linux, Solaris, and Mac OS X.  For Windows-based systems, you'll
+   want to read the README.win32 file, found in the same directory as
+   this INSTALL file.
 
-   The file `configure.in' is used to create `configure' by a program
-   called `autoconf'.  You only need `configure.in' if you want to
-   change it or regenerate `configure' using a newer version of
-   `autoconf'.
+Documentation
+=============
+   
+   OpenMap is shipped with the API documentation pre-built.  If you'd like
+   to rebuild it, you can do it from the top-level OpenMap directory with
+   "make docs".
 
-The simplest way to compile this package is:
-
-  1. `cd' to the toplevel directory of this package and type
-     `./configure' to configure the package for your system.  If
-     you're using `csh' on an old version of System V, you might need
-     to type `sh ./configure' instead to prevent `csh' from trying to
-     execute `configure' itself.
-
-     Running `configure' takes awhile.  While running, it prints some
-     messages telling which features it is checking for.
-
-  2. Type `make' to compile the package.
-
-  3. Type `make install' to install the programs and any data files
-     and documentation.
-
-  4. If you want documentation, type `make docs'.  NOTE: javadoc
-     documentation is now pre-built.  This step is unnecessary unless
-     you want to rebuild the javadoc documentation.
-
-  5. To install documentation type `make install-docs'.
-
-  6. You can remove the program binaries and object files from the
-     source code directory by typing `make clean'.  To also remove the
-     files that `configure' created (so you can compile the package
-     for a different kind of computer), type `make distclean'.
-
-You may also compile the package using Ant, a Java-based build tool.  Ant may
-be found at http://jakarta.apache.org/ant  In short, you need to add the Ant
-distribution's bin directory to your path, set your JAVA_HOME environment
-variable to point to your Java distribution, and run "ant" from the top level
-of the OpenMap distribution.  Windows users should read the "README.win32"
-file for more detailed instructions.
-
-
-Test Drive
-==========
-
-   You can test OpenMap by running the various launch scripts provided
-   in the bin/ and the com/bbn/openmap/examples directories.
-
-  SimpleMap Examples
-  ------------------
-
-    Run the SimpleMap examples by running the `simple' and `simple2'
-    launch scripts.
-
-  HelloWorld Example
-  ------------------
-
-    Run the HelloWorld example by running the `hello-world' launch
-    script.
-
-  OpenMap Viewer
-  --------------
-
-    This is the main OpenMap example application.  You can run it by
-    running the `openmap' launch script.  You can change the startup
-    behavior of this application by editing its properties file.  Copy
-    the openmap.properties file from the share/ directory to your home
-    directory, and change the settings to your liking.
-
-Detailed Configuration
-======================
-
-  Summary:
-
-    ./configure --help
-
-  The configure script looks for certain libraries and executables on
-  your system and remembers their locations.  It then generates
-  Makefiles and scripts that include those locations.  While the
-  script should work on most systems, it may be necessary to help it
-  or override it on some systems.  These instructions tell you how to
-  do that.
-
-  Finding the Java Development Kit
-  --------------------------------
-
-    Summary:
-
-      ./configure --with-jdk=/opt/jdev
-
-    The script first looks in PATH for the JDK executables.  If it is
-    not found there, it looks in /usr/local/java, /usr/local/jdk, and
-    /usr/local/java/jdk.  You can override this searching by telling
-    the configure script where the JDK lives with the '--with-jdk'
-    command line option.  If your JDK was in /opt/jdev, for example,
-    you would enter "./configure --with-jdk=/opt/jdev".  The configure
-    script will verify that the necessary JDK executables are
-    available from /opt/jdev or /opt/jdev/bin.
-
-  Specifying a CLASSPATH
-  ----------------------
-
-    Summary:
-
-      ./configure --with-classpath=$CLASSPATH
-
-    Use this option to specify a CLASSPATH with which to build and run
-    OpenMap.  
-
-  Overriding Particular Executables
-  ---------------------------------
-
-    Summary:
-
-      JAVAC=/bin/jc JAVA=/bin/jav JAVADOC=/bin/jd JAR=/bin/can ./configure
-
-    You can override a particular executable on the command line.  If
-    your Java compiler is called 'latte', for example, you would enter
-    "JAVAC=/usr/bin/latte ./configure".  Here is a list of the
-    executables the configure script looks for and their default
-    names.
-
-          Variable     Description               Default
-          --------     -----------               -------
-
-          JAVAC        Java Compiler             javac
-
-          JAVA         Java Virtual Machine      java
-
-          JAVADOC      Java Documentation	 javadoc
-
-          JAR          Java Archive		 jar
-
-
-    Each of these default names can be overridden in a similar
-    fashion.  To take an extreme example:
-
-      JAVAC=/bin/jc JAVA=/bin/jav JAVADOC=/bin/jd JAR=/bin/can ./configure
-
-  Java 2 and JFC "Swing" Issues
-  -----------------------------
-
-    OpenMap builds and runs without any special arguments if you're
-    using the Java 2 platform.  This is because the JFC classes are
-    included as part of the core platform.
