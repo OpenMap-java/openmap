@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrameUtil.java,v $
 // $RCSfile: DTEDFrameUtil.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/09/17 17:59:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -104,12 +104,6 @@ public class DTEDFrameUtil {
      * @return part of the DTED directory path that longitude contributes to.
      */
     public static String latToFileString(float lat, int level) {
-        if (level > 1) {
-            //crazy dted file names - levels 1 and higher are all named
-            //.dt1 rather than .dt{level}
-            level = 1;
-        }
-
         String direction;
         if (lat >= 0) {
             direction = "n";

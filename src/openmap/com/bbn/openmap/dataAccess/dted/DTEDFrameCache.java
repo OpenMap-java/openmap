@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrameCache.java,v $
 // $RCSfile: DTEDFrameCache.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/01/26 18:18:06 $
+// $Revision: 1.3 $
+// $Date: 2004/09/17 17:59:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,12 +51,11 @@ import com.bbn.openmap.util.PropUtils;
  * can be configured with properties:<P><pre>
  *
  * frameCache.cacheSize=40
- * frameCache.directoryHandlers=dted1 dted2
- * frameCache.directoryHandlers=dted1
- * frameCache.dted1.translator=com.bbn.openmap.dataAccess.dted.StandardDTEDNameTranslator
- * frameCache.dted1.path=/data/dted
- * frameCache.dted2.translator=com.bbn.openmap.dataAccess.dted.StandardDTEDNameTranslator
- * frameCache.dted2.path=/data/dted
+ * frameCache.directoryHandlers=dteddir1 dteddir2
+ * frameCache.dteddir1.translator=com.bbn.openmap.dataAccess.dted.StandardDTEDNameTranslator
+ * frameCache.dteddir1.path=/data/dted
+ * frameCache.dteddir2.translator=com.bbn.openmap.dataAccess.dted.StandardDTEDNameTranslator
+ * frameCache.dteddir2.path=/data/dted
  * 
  * </pre> 
  *
