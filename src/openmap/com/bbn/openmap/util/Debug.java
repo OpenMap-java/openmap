@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/Debug.java,v $
 // $RCSfile: Debug.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/11/14 21:07:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -61,7 +61,7 @@ import java.util.Properties;
  *
  * @author Tom Mitchell (tmitchell@bbn.com)
  * @author $Author: dietrick $
- * @version $Revision: 1.1.1.1 $, $Date: 2003/02/14 21:35:49 $ 
+ * @version $Revision: 1.2 $, $Date: 2003/11/14 21:07:24 $ 
  */
 public abstract class Debug {
 
@@ -435,7 +435,7 @@ public abstract class Debug {
 		    // Lets make introductions into the error file,
 		    // shall we?
 		    errorLog.writeBytes("\n");
-		    errorLog.writeBytes(com.bbn.openmap.MapBean.getCopyrightMessage());
+		    errorLog.writeBytes(getMapBeanMessage());
 		    errorLog.writeBytes("\n");
 		    errorLog.writeBytes("ERROR log file - " + 
 					java.util.Calendar.getInstance().getTime());
@@ -480,6 +480,36 @@ public abstract class Debug {
 	    err.println(errorString);
 	    err.println(ERROR_TAIL);
 	}
+    }
+
+    /**
+     * A reflective method to get the copyright message from the
+     * MapBean without having to actually compile the MapBean when
+     * Debug is compiled.
+     */
+    public static String getMapBeanMessage() {
+	String message = "";
+	try {
+	    Class mbClass = Class.forName("com.bbn.openmap.MapBean");
+	    java.lang.reflect.Method crMessage = 
+		mbClass.getDeclaredMethod("getCopyrightMessage", null);
+	    message = (String)crMessage.invoke(mbClass, null);
+	} catch (java.lang.reflect.InvocationTargetException ite) {
+	    System.out.println(ite.getMessage());
+	} catch (IllegalArgumentException iae) {
+	    System.out.println(iae.getMessage());
+	} catch (IllegalAccessException iae2) {
+	    System.out.println(iae2.getMessage());
+	} catch (NoSuchMethodException nme) {
+	    System.out.println(nme.getMessage());
+	} catch (NullPointerException npe) {
+	    System.out.println(npe.getMessage());
+	} catch (SecurityException se) {
+	    System.out.println(se.getMessage());
+	} catch (ClassNotFoundException cnfe) {
+	    System.out.println(cnfe.getMessage());
+	}
+	return message;
     }
 
     /** println to output. */

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/05/06 23:33:29 $
+// $Revision: 1.4 $
+// $Date: 2003/11/14 21:07:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -131,9 +131,8 @@ public class PropUtils {
      * by any character in this String.
      * @throws PropertyStringFormatException if a key doesn't have a value.
      */
-    public static Properties parsePropertyList(String list,
-					       String propertySeparators, 
-					       String keyValueSeparators) 
+    public static Properties parsePropertyList(
+	String list, String propertySeparators, String keyValueSeparators) 
 	throws PropertyStringFormatException {
 
 	Properties props = new Properties();
@@ -159,7 +158,7 @@ public class PropUtils {
      * @param from the source Properties object.
      * @param to the destination Properties object.
      */
-    public static void copyProperties(Properties from, Properties to)	{
+    public static void copyProperties(Properties from, Properties to) {
 	Enumeration keys = from.keys();
 	
 	while (keys.hasMoreElements()) {
@@ -466,7 +465,7 @@ public class PropUtils {
 	double ret = defaultValue;
 	String doubleString = p.getProperty(propName);
     
-	if(doubleString != null) {
+	if (doubleString != null) {
 	    try {
 		ret = Double.valueOf(doubleString).doubleValue();
 	    } catch (NumberFormatException e) {
@@ -488,14 +487,13 @@ public class PropUtils {
      * cannot be interpreted as a hexidecimal integer
      * @see ColorFactory#parseColorFromProperties(Properties, String, String, boolean)
      */
-    public static Color parseColorFromProperties(Properties p, 
-						 String propName, 
-						 String dfault)
-	throws NumberFormatException
-	{
-	    return ColorFactory.parseColorFromProperties(p, propName, dfault, false);
-	}
+    public static Color parseColorFromProperties(
+	Properties p, String propName, String dfault)
+	throws NumberFormatException {
 
+	return ColorFactory.parseColorFromProperties(p, propName, dfault, false);
+    }
+    
     /** 
      * Take a string from a properties file, representing the 24bit
      * RGB or 32bit ARGB hex values for a color, and convert it to a
@@ -509,13 +507,12 @@ public class PropUtils {
      * @see ColorFactory#parseColorFromProperties(Properties, String,
      * String, boolean) 
      */
-    public static Paint parseColorFromProperties(Properties p, 
-						 String propName, 
-						 Paint dfault)
-	throws NumberFormatException
-	{
-	    return ColorFactory.parseColorFromProperties(p, propName, dfault);
-	}
+    public static Paint parseColorFromProperties(
+	Properties p, String propName, Paint dfault)
+	throws NumberFormatException {
+
+	return ColorFactory.parseColorFromProperties(p, propName, dfault);
+    }
 
     /**
      * Convert a string representing a 24/32bit hex color value into a
@@ -535,10 +532,10 @@ public class PropUtils {
      * @see ColorFactory#parseColor(String, boolean)
      */
     public static Color parseColor(String colorString)
-	throws NumberFormatException
-	{
-	    return ColorFactory.parseColor(colorString, false);
-	}
+	throws NumberFormatException {
+
+	return ColorFactory.parseColor(colorString, false);
+    }
 
     /**
      * Converts a properties object to an array of Strings.  The

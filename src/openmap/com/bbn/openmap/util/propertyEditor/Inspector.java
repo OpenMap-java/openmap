@@ -17,7 +17,9 @@
 package com.bbn.openmap.util.propertyEditor;
 
 import com.bbn.openmap.*;
-import com.bbn.openmap.layer.shape.*;
+import com.bbn.openmap.gui.WindowSupport;
+import com.bbn.openmap.layer.shape.*; // for main
+import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.*;
 
@@ -64,7 +66,7 @@ public class Inspector implements ActionListener {
     PropertyConsumer propertyConsumer = null;
 	
     /** Handle to the GUI.  Used for setVisible(true/false). */
-    protected JFrame frame = null;
+    protected WindowSupport windowSupport = null;
 
     /** Action command for the cancelButton. */
     //  public so it can be referenced from the actionListener
@@ -121,23 +123,15 @@ public class Inspector implements ActionListener {
 	String prefix = propertyConsumer.getPropertyPrefix();
 
 	// construct GUI
-	if (frame == null) {
-	    frame = new JFrame("Inspector - " + prefix);
-	} else {
-	    frame.setVisible(false);
-	    frame.dispose();
-	    frame = null;
-	    frame = new JFrame("Inspector - " + prefix);
+	if (windowSupport != null) {
+	    windowSupport.killWindow();
+	    windowSupport = null;
 	}
 
-	frame.getContentPane().add(createPropertyGUI(propertyConsumer));
-	frame.pack();
-
-	if (frame.getHeight() > 500) {
-	    frame.setSize(frame.getWidth(), 500);
-	}
-
-	frame.setVisible(true);
+	JComponent comp = createPropertyGUI(propertyConsumer);
+	windowSupport = new WindowSupport(comp, "Inspector - " + prefix);
+	windowSupport.setMaxSize(-1, 500);
+	windowSupport.displayInWindow();
     }
     
     public Vector sortKeys(Collection keySet) {
@@ -212,6 +206,11 @@ public class Inspector implements ActionListener {
     public JComponent createPropertyGUI(
 	String prefix, Properties props, Properties info) {
 
+	if (Debug.debugging("inspectordetail")) {
+	    Debug.output("Inspector creating GUI for " + prefix + "\n" +
+			 props + "\n" + info);
+	}
+
 	// collect the info needed...
 	Collection keySet = props.keySet();
 	String propertyList = info.getProperty(PropertyConsumer.initPropertiesProperty);
@@ -256,11 +255,9 @@ public class Inspector implements ActionListener {
 		marker = prop.substring(prefix.length()+1);
 	    }
 
-//  	    if (marker.equalsIgnoreCase("class") ||
-//  		marker.equalsIgnoreCase(Layer.PrettyNameProperty) ||
-//  		marker.equalsIgnoreCase("plugin")) {
-//  		continue;
-//  	    }
+	    if (marker.startsWith(".")) {
+		marker = marker.substring(1);
+	    }
 
 	    String editorClass = info.getProperty(marker + "." + PropertyConsumer.EditorProperty);
 	    if (editorClass == null) {
@@ -287,8 +284,14 @@ public class Inspector implements ActionListener {
 	    }
 
 	    if (editor != null) {
-		editor.setValue(props.get(prop));
+		Object propVal = props.get(prop);
+		if (Debug.debugging("inspector")) {
+		    Debug.output("Inspector loading " + prop + "(" + 
+				 propVal + ")");
+		}
+		editor.setValue(propVal);
 	    }
+
 	    JLabel label = new JLabel(marker + ":");
 	    label.setHorizontalAlignment(SwingConstants.RIGHT);
 
@@ -356,7 +359,7 @@ public class Inspector implements ActionListener {
 	    Properties props = collectProperties();
 
 	    if (!print) {
-		frame.setVisible(false);
+		windowSupport.killWindow();
 		propertyConsumer.setProperties(prefix, props);
 		if (actionListener != null) {
 		    actionListener.actionPerformed(e);
@@ -375,9 +378,7 @@ public class Inspector implements ActionListener {
 		actionListener.actionPerformed(e);
 	    }
 	    propertyConsumer = null; // to be garb. coll'd
-	    frame.setVisible(false);
-	    frame.dispose();
-	    frame = null;
+	    windowSupport.killWindow();
 
 	    if (print) {
 		System.exit(0);
