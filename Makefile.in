@@ -17,8 +17,8 @@
 # 
 # $Source: /cvs/distapps/openmap/Attic/Makefile.in,v $
 # $RCSfile: Makefile.in,v $
-# $Revision: 1.36 $
-# $Date: 2000/02/09 20:59:16 $
+# $Revision: 1.37 $
+# $Date: 2000/02/25 17:45:29 $
 # $Author: dietrick $
 # 
 # **********************************************************************
@@ -80,7 +80,9 @@ Layer.pkgs =	com.bbn.openmap.layer \
 		com.bbn.openmap.layer.link.shape \
 		com.bbn.openmap.layer.location \
 		com.bbn.openmap.layer.location.csv \
-		com.bbn.openmap.layer.location.db
+		com.bbn.openmap.layer.location.db \
+		com.bbn.openmap.layer.csvLocation \
+		com.bbn.openmap.layer.nexrad
 #		com.bbn.openmap.layer.terrain \
 
 
@@ -104,7 +106,9 @@ Layer.classes =	com/bbn/openmap/layer/*.class \
 		com/bbn/openmap/layer/link/shape/*.class \
 		com/bbn/openmap/layer/location/*.class \
 		com/bbn/openmap/layer/location/csv/*.class \
-		com/bbn/openmap/layer/location/db/*.class
+		com/bbn/openmap/layer/location/db/*.class \
+		com/bbn/openmap/layer/nexrad/*.class \
+		com/bbn/openmap/layer/csvLocation/*.class
 #		com/bbn/openmap/layer/terrain/*.class \
 
 Layer.props =   com/bbn/openmap/layer/vpf/*.properties

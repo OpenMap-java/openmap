@@ -1053,6 +1053,7 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/layer/csvLocation/Makefile
 	com/bbn/openmap/layer/link/Makefile
 	com/bbn/openmap/layer/link/shape/Makefile	
+	com/bbn/openmap/layer/nexrad/Makefile	
 	" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
@@ -1150,6 +1151,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/examples/simple/Makefile
 	com/bbn/openmap/examples/simple/simple
 	com/bbn/openmap/examples/simple/simple2
+	com/bbn/openmap/examples/cli/Makefile
 	com/bbn/openmap/gui/Makefile
 	com/bbn/openmap/image/Makefile
 	com/bbn/openmap/omGraphics/Makefile
@@ -1180,6 +1182,7 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/layer/csvLocation/Makefile
 	com/bbn/openmap/layer/link/Makefile	
 	com/bbn/openmap/layer/link/shape/Makefile	
+	com/bbn/openmap/layer/nexrad/Makefile	
 	"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
