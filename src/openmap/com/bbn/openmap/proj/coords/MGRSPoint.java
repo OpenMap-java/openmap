@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/02/02 13:20:43 $
+// $Revision: 1.12 $
+// $Date: 2005/02/16 21:05:36 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -43,7 +43,7 @@ import com.bbn.openmap.util.Debug;
  * coordiantes provided actually make sense. It assumes that the
  * values are valid.
  */
-public class MGRSPoint extends UTMPoint {
+public class MGRSPoint extends ZonedUTMPoint {
 
     /**
      * UTM zones are grouped, and assigned to one of a group of 6
@@ -255,7 +255,14 @@ public class MGRSPoint extends UTMPoint {
      */
     public static LatLonPoint MGRStoLL(MGRSPoint mgrsp, Ellipsoid ellip,
                                        LatLonPoint llp) {
-        return UTMtoLL(mgrsp, ellip, llp);
+        //        return UTMtoLL(mgrsp, ellip, llp);
+
+        return UTMtoLL(ellip,
+                mgrsp.northing,
+                mgrsp.easting,
+                mgrsp.zone_number,
+                MGRSPoint.MGRSZoneToUTMZone(mgrsp.zone_letter),
+                llp);
     }
 
     /**
@@ -301,6 +308,7 @@ public class MGRSPoint extends UTMPoint {
 
     /**
      * Convert MGRS zone letter to UTM zone letter, N or S.
+     * 
      * @param mgrsZone
      * @return N of given zone is equal or larger than N, S otherwise.
      */
@@ -326,64 +334,6 @@ public class MGRSPoint extends UTMPoint {
         }
 
         return zone;
-    }
-
-    /**
-     * Determines the correct MGRS letter designator for the given
-     * latitude returns 'Z' if latitude is outside the MGRS limits of
-     * 84N to 80S.
-     * 
-     * @param Lat The float value of the latitude.
-     * 
-     * @return A char value which is the MGRS zone letter.
-     */
-    protected char getLetterDesignator(double lat) {
-
-        //This is here as an error flag to show that the Latitude is
-        //outside MGRS limits
-        char LetterDesignator = 'Z';
-
-        if ((84 >= lat) && (lat >= 72))
-            LetterDesignator = 'X';
-        else if ((72 > lat) && (lat >= 64))
-            LetterDesignator = 'W';
-        else if ((64 > lat) && (lat >= 56))
-            LetterDesignator = 'V';
-        else if ((56 > lat) && (lat >= 48))
-            LetterDesignator = 'U';
-        else if ((48 > lat) && (lat >= 40))
-            LetterDesignator = 'T';
-        else if ((40 > lat) && (lat >= 32))
-            LetterDesignator = 'S';
-        else if ((32 > lat) && (lat >= 24))
-            LetterDesignator = 'R';
-        else if ((24 > lat) && (lat >= 16))
-            LetterDesignator = 'Q';
-        else if ((16 > lat) && (lat >= 8))
-            LetterDesignator = 'P';
-        else if ((8 > lat) && (lat >= 0))
-            LetterDesignator = 'N';
-        else if ((0 > lat) && (lat >= -8))
-            LetterDesignator = 'M';
-        else if ((-8 > lat) && (lat >= -16))
-            LetterDesignator = 'L';
-        else if ((-16 > lat) && (lat >= -24))
-            LetterDesignator = 'K';
-        else if ((-24 > lat) && (lat >= -32))
-            LetterDesignator = 'J';
-        else if ((-32 > lat) && (lat >= -40))
-            LetterDesignator = 'H';
-        else if ((-40 > lat) && (lat >= -48))
-            LetterDesignator = 'G';
-        else if ((-48 > lat) && (lat >= -56))
-            LetterDesignator = 'F';
-        else if ((-56 > lat) && (lat >= -64))
-            LetterDesignator = 'E';
-        else if ((-64 > lat) && (lat >= -72))
-            LetterDesignator = 'D';
-        else if ((-72 > lat) && (lat >= -80))
-            LetterDesignator = 'C';
-        return LetterDesignator;
     }
 
     /**
