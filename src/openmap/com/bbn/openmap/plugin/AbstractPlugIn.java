@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/AbstractPlugIn.java,v $
 // $RCSfile: AbstractPlugIn.java,v $
-// $Revision: 1.2 $
-// $Date: 2003/03/21 22:44:16 $
+// $Revision: 1.3 $
+// $Date: 2003/08/21 22:02:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -405,6 +405,12 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer, MapMou
      * that might have happened because of another motion event
      * response.
      */
-    public void mouseMoved(){}
+    public void mouseMoved() {}
+
+    /**
+     * Method that gets called when the PlugInLayer has been removed
+     * from the map, so the PlugIn can free up resources.
+     */
+    public void removed() {}
 
 }

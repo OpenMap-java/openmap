@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugIn.java,v $
 // $RCSfile: PlugIn.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/08/21 22:02:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -92,5 +92,11 @@ public interface PlugIn extends PropertyConsumer {
      * its attributes.
      */
     public java.awt.Component getGUI();
+
+    /**
+     * Notification to the PlugIn that it has been removed from the
+     * map, so it can free resources.
+     */
+    public void removed();
 
 }

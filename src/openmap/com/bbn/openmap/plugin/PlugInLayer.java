@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/PlugInLayer.java,v $
 // $RCSfile: PlugInLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2003/03/21 22:44:16 $
+// $Revision: 1.7 $
+// $Date: 2003/08/21 22:02:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -94,6 +94,17 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
     public PlugInLayer() {
 	setName("PlugInLayer");
 	setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+    }
+
+    /**
+     * Layer method that gets called when the Layer gets removed from
+     * the map.
+     */
+    public void removed(java.awt.Container container) {
+	PlugIn pi = getPlugIn();
+	if (pi != null) {
+	    pi.removed();
+	}
     }
 
     /**
