@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileGenerator.java,v $
 // $RCSfile: ProfileGenerator.java,v $
-// $Revision: 1.3 $
-// $Date: 2003/12/23 20:43:31 $
+// $Revision: 1.4 $
+// $Date: 2003/12/29 17:17:49 $
 // $Author: wjeuerle $
 // 
 // **********************************************************************
@@ -222,28 +222,23 @@ public class ProfileGenerator implements TerrainTool {
     /**
      * Create the image and write it the location.
      *
-     * @param total_distance total length of line, in pixels
-     * @param max_height highest point, in meters of all the heights in the line.
-     * @param distances array of pixel distances between the points
-     * @param heights the array of heights
+     * @param distance total length of line, in pixels
+     * @param max highest point, in meters of all the heights in the line.
+     * @param post_dist array of pixel distances between the points
+     * @param post_height the array of heights
      */
-    protected void createGIFFile(int distance, int max, 
-				 int[] post_dist,
-				 int[] post_height) {
-
-	int gif_height, gif_width, box_height, box_width;
-	int i;
+    protected void createGIFFile(int distance, int max,
+				 int[] post_dist, int[] post_height) {
 
 	int box_height_buffer = 20;
 	int gif_height_buffer = 20;
 	int gif_width_buffer = 20;
 	int text_width = 100;
-	int last_x, last_height;
 	
-	box_height = max + (box_height_buffer*2);
-	box_width = distance;
-	gif_height = box_height + (gif_height_buffer*2);
-	gif_width = box_width + (gif_width_buffer*2) + text_width;
+	int box_height = max + (box_height_buffer*2);
+	int box_width = distance;
+	int gif_height = box_height + (gif_height_buffer*2);
+	int gif_width = box_width + (gif_width_buffer*2) + text_width;
 
 	AcmeGifFormatter formatter = new AcmeGifFormatter();
 	java.awt.Graphics graphics = formatter.getGraphics(gif_width, gif_height);
@@ -284,7 +279,7 @@ public class ProfileGenerator implements TerrainTool {
 
 	Debug.message("terrain", 
 		      "ProfileGenerator gif creation: drawing level lines");
-	for (i = 1; i < 9; i++) {
+	for (int i = 1; i < 9; i++) {
 
 	    graphics.drawLine(gif_width_buffer,
 			      gif_height_buffer+box_height-box_height_buffer - (max*i/8),
@@ -301,14 +296,14 @@ public class ProfileGenerator implements TerrainTool {
 				gif_height_buffer+box_height-box_height_buffer - (max*i/8) + (f.getAscent()/2));
 	}
 
-	last_x = gif_width_buffer+1;
-	last_height = gif_height_buffer+box_height-box_height_buffer - post_height[0];
+	int last_x = gif_width_buffer+1;
+	int last_height = gif_height_buffer+box_height-box_height_buffer - post_height[0];
 
 	int total_distance = 0;
 	Debug.message("terrain", "ProfileGenerator gif creation: drawing profile");
 
 	graphics.setColor(Color.red);
-	for (i = 1; i<post_height.length; i++) {
+	for (int i = 1; i<post_height.length; i++) {
 	    graphics.drawLine(gif_width_buffer+total_distance, 
 			      gif_height_buffer+box_height-box_height_buffer - post_height[i-1],
 			      gif_width_buffer+post_dist[i]+total_distance, 
