@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMText.java,v $
 // $RCSfile: EditableOMText.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:12 $
+// $Revision: 1.4 $
+// $Date: 2004/02/06 00:03:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -522,13 +522,13 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         javax.swing.Box palette = javax.swing.Box.createHorizontalBox();
         textField = new JTextField(Integer.toString((int)(text.getRotationAngle()*180/Math.PI)), 5);
         textField.setActionCommand(TextRotationCommand);
-        textField.setToolTipText("Text Rotation");
+        textField.setToolTipText("Text rotation in degrees");
         textField.setMargin(new Insets(0, 1, 0, 1));
         textField.addActionListener(this);
         textField.setMinimumSize(new java.awt.Dimension(30, 20));
         textField.setPreferredSize(new java.awt.Dimension(30, 20));
         palette.add(textField);
-        palette.add(new JLabel("degree "));
+        palette.add(new JLabel("\u00b0 "));
         attributeBox.add(palette);
         
         String[] sizesStrings = {"3","5","8","10","12","14","18","20","24","36","48"};
