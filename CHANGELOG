@@ -1,3 +1,10 @@
+2003-12-30  Bill Euerle  <wjeuerle@bbn.com>
+
+	* Cleaned up numerous javadoc warnings
+
+	* Updated the VPF layer to more fully use the Java2 Collections
+	API. Removed one (formerly deprecated) method from DcwRecordFile.
+
 2003-06-26  Don Dietrick  <dietrick@bbn.com>
 
 	* Added the com.bbn.openmap.gui.time package, which has standard
