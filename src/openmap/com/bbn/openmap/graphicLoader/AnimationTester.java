@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/AnimationTester.java,v $
 // $RCSfile: AnimationTester.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/01/26 18:18:07 $
+// $Revision: 1.4 $
+// $Date: 2004/03/15 23:45:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,7 +55,10 @@ public class AnimationTester extends AbstractGraphicLoader {
     }
 
     public void manageGraphics() {
-//      Debug.message("animationtester", "AnimationTester.manageGraphics");
+        if (Debug.debugging("animationtester")) {
+            Debug.output("AnimationTester.manageGraphics with " + nodes.size() + 
+                         " node(s).");
+        }
         Projection p = getProjection();
 
         Iterator it = nodes.iterator();
