@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in OpenMap Revision
+# From configure.in OpenMap Revision: 1.1 
 
 
 
@@ -901,8 +901,10 @@ trap 'rm -fr `echo "openmap.mk
 	com/bbn/openmap/dted/Makefile
 	com/bbn/openmap/shape/Makefile
 	com/bbn/openmap/terrain/Makefile
+	com/bbn/openmap/vpf/Makefile
 	com/bbn/openmap/dcwSpecialist/Makefile
 	com/bbn/openmap/specialist/Makefile
+	com/bbn/openmap/specialist/vpf/Makefile
 	com/bbn/openmap/corba/Makefile
 	" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
@@ -1008,8 +1010,10 @@ CONFIG_FILES=\${CONFIG_FILES-"openmap.mk
 	com/bbn/openmap/dted/Makefile
 	com/bbn/openmap/shape/Makefile
 	com/bbn/openmap/terrain/Makefile
+	com/bbn/openmap/vpf/Makefile
 	com/bbn/openmap/dcwSpecialist/Makefile
 	com/bbn/openmap/specialist/Makefile
+	com/bbn/openmap/specialist/vpf/Makefile
 	com/bbn/openmap/corba/Makefile
 	"}
 EOF
