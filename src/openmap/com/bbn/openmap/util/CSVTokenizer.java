@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/CSVTokenizer.java,v $
 // $RCSfile: CSVTokenizer.java,v $
-// $Revision: 1.1.1.1 $
-// $Date: 2003/02/14 21:35:49 $
+// $Revision: 1.2 $
+// $Date: 2003/04/23 15:21:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -61,34 +61,55 @@ public class CSVTokenizer extends Tokenizer {
      */
     public Object token() {
 	int c = next();
-	if (c == ',')         return null;
-	else if (c == '\n')        return NEWLINE;
-	else if (c == '"')         return tokenString(next());
+	if (c == ',') 
+	    return null;
+	else if (c == '\n') 
+	    return NEWLINE;
+  	else if (c == '"')
+	    return tokenString(next());
+	else if (c == '\\')
+	    return tokenString(c);
 	else if ((c == '-' || c == '.' || isDigit(c)) && !numberReadAsString)
 	    return tokenNumber(c);
-	else if (c == -1)          return EOF;
-	else                       return tokenAny(c);
+	else if (c == -1)
+	    return EOF;
+	else                       
+	    return tokenAny(c);
     }
-    
+
     /**
      * seq(is('"'), many(alt(seq(isNot('"')), bpush)<BR>
      * seq(is('"')),alt(seq(is('"'), bpush))),
      */
 
     Object tokenString(int c) {
-	while (true){
-	    if (c == '"') {
-		int c1 = next();
-		if (c1 == '"') {
-		    bpush(c1);
-		    c = next();
-		} else {
-		    if (isDelimiter(c1)){
-			return bclear();
-		    } else {
-			return error("Expected Delimiter after string!");
-		    }
-		}
+	while (true) {
+	    // Enable escapes to force characters into string.
+	    if (c == '\\') {
+		bpush(next());
+		c = next();
+	    } else if (c == '"') {
+		// Changed from the commented-out code below, 
+		// in order to ignore quotes in any order until
+		// delimiter is reached.  Quotes preceded by the
+		// escape character live on in the string, via the
+		// code above.
+		c = next();
+		if (isDelimiter(c)) return bclear();
+		else continue;
+
+// 		int c1 = next();
+// 		if (c1 == '"') {
+// 		    bpush(c1);
+// 		    c = next();
+// 		} else {
+// 		    if (isDelimiter(c1)) {
+// 			return bclear();
+// 		    } else {
+// 			return error("Expected Delimiter after string!");
+// 		    }
+// 		}
+
 	    } else if (isAny(c)) {
 		bpush(c);
 		c = next(); 
@@ -107,7 +128,7 @@ public class CSVTokenizer extends Tokenizer {
      * isDelimiter.set(alt(is(','), is(-1), seq(is('\n'), putback)));
      */
     boolean isDelimiter(int c) {
-	if (c == ',' || c == -1){
+	if (c == ',' || c == -1) {
 	    return true;
 	} else if (c == '\n') {
 	    putback(c);		// Wait for next token().
@@ -135,8 +156,8 @@ public class CSVTokenizer extends Tokenizer {
      * tokenAny.set(alt(seq(isDelimiter, bclear), seq(bpush,tokenAny)))
      */
     Object tokenAny(int c) {
-	while (true){
-	    if (isDelimiter(c)){
+	while (true) {
+	    if (isDelimiter(c)) {
 		return bclear();
 	    } else {
 		bpush(c);
@@ -156,7 +177,7 @@ public class CSVTokenizer extends Tokenizer {
 	    while(true) {
 		Object token = csv.token();
 		if (csv.isEOF(token)) return;
-		// System.out.println(token); 
+		System.out.println(token); 
 	    }
 	} catch(Exception e) {
 	    System.out.println(e); 
